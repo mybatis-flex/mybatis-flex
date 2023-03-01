@@ -1,19 +1,19 @@
 
-# Mybatis-Flex is an elegant Mybatis Enhancement Framework.
+# Mybatis-Flex 一个优雅的 Mybatis 增强框架
 
-## Features
+## 特征
 
-- 1、Mybatis-Flex is very lightweight, and it only depends on Mybatis and no other third-party dependencies
-- 2、Basic CRUD operator and paging query of Entity class
-- 3、Row mapping support, you can add, delete, modify and query the database without entity classes
-- 4、Support multiple databases, and expand through dialects flexibly.
-- 5、Support combined primary keys and different primary key content generation strategies
-- 6、Extremely friendly SQL query, IDE automatically prompts and no worries about mistakes
-- 7、More little surprises
+- 1、很轻量，整个框架只依赖 Mybatis 再无其他任何第三方依赖
+- 2、Entity 类基本的增删改查、分页查询
+- 3、Row 通用映射支持，可以无需实体类对数据库进行增删改查
+- 4、支持多种数据库类型，自由通过方言持续扩展
+- 5、支持联合主键，以及不同的主键下的主键内容生成策略
+- 6、极其友好的 SQL 联动查询，IDE 自动提示不再担心出错
+- 7、以及更多小惊喜
 
 ## hello world
 
-**Entity Class**
+**实体类**
 
 ```java
 
@@ -30,17 +30,17 @@ public class Account {
 }
 ```
 
-**AccountMapper Class**
+**AccountMapper 类**
 
 ```java
 public interface AccountMapper extends BaseMapper<Account> {
-    //only Mapper interface define.
+    //只需定义 Mapper 接口即可，可以无任何内容。
 }
 ```
 
 **Hello world**
 
-e.g. 1： query 1 data
+示例 1：查询 1 条数据
 ```java
 class HelloWorld {
     public static void main(String... args) {
@@ -56,7 +56,7 @@ class HelloWorld {
                 .start();
 
 
-        //id=100
+        //示例1：查询 id=100 条数据
         Account account = MybatisFlexBootstrap.getInstance()
                 .execute(AccountMapper.class, mapper ->
                         mapper.selectOneById(100)
@@ -65,7 +65,7 @@ class HelloWorld {
 }
 ```
 
-e.g.2: query list
+示例2：查询列表
 
 ```java
 class HelloWorld {
@@ -81,17 +81,17 @@ class HelloWorld {
                 .addMapper(AccountMapper.class)
                 .start();
         
-        //use QueryWrapper to build query conditions
+        //示例2：通过 QueryWrapper 构建条件查询数据列表
         QueryWrapper query = QueryWrapper.create()
                 .select()
                 .from(ACCOUNT)
                 .where(ACCOUNT.ID.ge(100))
-                .and(ACCOUNT.USER_NAME.like("zhang").or(ACCOUNT.USER_NAME.like("li")));
+                .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")));
 
-        // execute SQL：
+        // 执行 SQL：
         // ELECT * FROM `tb_account`
         // WHERE `tb_account`.`id` >=  100
-        // AND (`tb_account`.`user_name` LIKE '%zhang%' OR `tb_account`.`user_name` LIKE '%li%' )
+        // AND (`tb_account`.`user_name` LIKE '%张%' OR `tb_account`.`user_name` LIKE '%李%' )
         List<Account> accounts = MybatisFlexBootstrap.getInstance()
                 .execute(AccountMapper.class, mapper ->
                         mapper.selectListByQuery(query)
@@ -101,8 +101,7 @@ class HelloWorld {
 }
 ```
 
-e.g.3: paging query
-
+示例3：分页查询
 ```java
 class HelloWorld {
     public static void main(String... args) {
@@ -117,7 +116,8 @@ class HelloWorld {
                 .addMapper(AccountMapper.class)
                 .start();
 
-        //use QueryWrapper to build query conditions
+        // 示例3：分页查询
+        // 查询第 5 页，每页 10 条数据，通过 QueryWrapper 构建条件查询
         QueryWrapper query = QueryWrapper.create()
                 .select()
                 .from(ACCOUNT)
@@ -125,7 +125,7 @@ class HelloWorld {
                 .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")))
                 .orderBy(ACCOUNT.ID.desc());
 
-        // execute SQL：
+        // 执行 SQL：
         // ELECT * FROM `tb_account`
         // WHERE `tb_account`.`id` >=  100
         // AND (`tb_account`.`user_name` LIKE '%张%' OR `tb_account`.`user_name` LIKE '%李%' )
