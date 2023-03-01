@@ -177,11 +177,13 @@ query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
 
 ```java
  QueryWrapper query=new QueryWrapper()
-        .select(ACCOUNT.ID
-        ,ACCOUNT.USER_NAME
-        ,max(ACCOUNT.BIRTHDAY)
-        ,avg(ACCOUNT.SEX).as("sex_avg"))
-        .from(ACCOUNT);
+        .select(
+            ACCOUNT.ID,
+            ACCOUNT.USER_NAME,
+            max(ACCOUNT.BIRTHDAY),
+            avg(ACCOUNT.SEX).as("sex_avg")
+        ).from(ACCOUNT);
+
 
 // SQL: 
 // SELECT tb_account.id, tb_account.user_name, 
@@ -308,7 +310,9 @@ account.set("id",100);
 account.set("name","Michael");
 Db.insertRow("tb_account",account);
 ```
-更多 Db 的方法请查看 [Db.java](./mybatis-flex-core/src/main/java/com/mybatisflex/core/row/Db.java) 。
+> Db 工具类还提供了更多 增、删、改、查和分页查询等方法。
+> 
+> 具体参考： [Db.java](./mybatis-flex-core/src/main/java/com/mybatisflex/core/row/Db.java) 。
 
 ## 更多示例
 

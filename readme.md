@@ -177,11 +177,12 @@ query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
 
 ```java
  QueryWrapper query=new QueryWrapper()
-        .select(ACCOUNT.ID
-        ,ACCOUNT.USER_NAME
-        ,max(ACCOUNT.BIRTHDAY)
-        ,avg(ACCOUNT.SEX).as("sex_avg"))
-        .from(ACCOUNT);
+        .select(
+            ACCOUNT.ID,
+            ACCOUNT.USER_NAME,
+            max(ACCOUNT.BIRTHDAY),
+            avg(ACCOUNT.SEX).as("sex_avg")
+        ).from(ACCOUNT);
 
 // SQL: 
 // SELECT tb_account.id, tb_account.user_name, 
