@@ -3,13 +3,13 @@
 
 ## 特征
 
-- 1、很轻量，整个框架只依赖 Mybatis 再无其他任何第三方依赖
-- 2、Entity 类基本的增删改查、分页查询
+- 1、很轻量，整个框架只依赖 Mybatis 再无其他第三方依赖
+- 2、Entity 类的基本增删改查、以及分页查询
 - 3、Row 通用映射支持，可以无需实体类对数据库进行增删改查
 - 4、支持多种数据库类型，自由通过方言持续扩展
-- 5、支持联合主键，以及不同的主键下的主键内容生成策略
+- 5、支持联合主键，以及不同的主键内容生成策略
 - 6、极其友好的 SQL 联动查询，IDE 自动提示不再担心出错
-- 7、以及更多小惊喜
+- 7、更多小惊喜
 
 ## hello world
 
@@ -140,3 +140,8 @@ class HelloWorld {
 }
 ```
 
+## 更多示例
+
+- 1、[Mybatis-Flex 原生（无其他依赖）](./mybatis-flex-test/mybatis-flex-native-test)
+- 2、[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
+- 3、[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)

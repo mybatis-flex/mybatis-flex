@@ -140,3 +140,8 @@ class HelloWorld {
 }
 ```
 
+## More Samples
+
+- 1、[Mybatis-Flex Only (Native)](./mybatis-flex-test/mybatis-flex-native-test)
+- 2、[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
+- 3、[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
