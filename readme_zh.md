@@ -314,6 +314,37 @@ Db.insertRow("tb_account",account);
 > 
 > 具体参考： [Db.java](./mybatis-flex-core/src/main/java/com/mybatisflex/core/row/Db.java) 。
 
+## Entity 更新部分字段
+
+这部分单独拿来强调一下，是因为 MyBatis-Flex 等和其他框架的方法不太一样。在 BaseMapper 中，Mybatis-Flex 提供了如下的方法：
+
+```java
+update(T entity,  boolean ignoreNulls)
+```
+- 第一个参数是 entity 的对象。
+- 第二个参数是是否忽略 null 值。
+
+但是有些场景下，我们可能希望值更新 几个 字段，甚至其中个别字段需要更新为 null。此时需要用到 UpdateEntity 工具类，以下是示例代码：
+
+```java
+Account account = UpdateEntity.of(Account.class);
+account.setId(1);
+account.setUserName(null);
+account.setSex(1);
+
+accountMapper.update(account,false);
+```
+以上的示例中，会把 id 为 1 的数据中的 user_name 字段更新为 null，sex 字段更新为 1，其他字段不会被更新。也就是说，通过 UpdateEntity
+构建的对象，只会更新调用了 setter 方法的值，不调用 setter 方法的，不管这个对象里的属性的值是什么，都不会更新到数据库。
+
+其生成的 sql 内容如下：
+
+```sql
+update tb_account set user_name = ? ,sex = ? where id = ?
+#params: null,1,1
+```
+
+
 ## 更多示例
 
 - 1、[Mybatis-Flex 原生（无其他依赖）](./mybatis-flex-test/mybatis-flex-native-test)
