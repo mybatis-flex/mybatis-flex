@@ -295,6 +295,8 @@ build the project by IDE, or execute maven build command: `mvn clean package`
 
 ![](./docs/assets/images/build_idea.png)
 
+
+
 ## More Samples
 
 - 1、[Mybatis-Flex Only (Native)](./mybatis-flex-test/mybatis-flex-native-test)

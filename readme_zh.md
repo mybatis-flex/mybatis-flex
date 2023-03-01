@@ -295,6 +295,21 @@ QueryWrapper query=new QueryWrapper();
 
 ![](./docs/assets/images/build_idea.png)
 
+## Db 工具类
+
+Db 是一个极度轻量的数据库操作工具类，以下是一些示例：
+
+```java
+String sql = "insert into tb_account(id,name) value (?, ?)";
+Db.insertBySql(sql,1,"michael");
+
+Row account = new Row();
+account.set("id",100);
+account.set("name","Michael");
+Db.insertRow("tb_account",account);
+```
+更多 Db 的方法请查看 [Db.java](./mybatis-flex-core/src/main/java/com/mybatisflex/core/row/Db.java) 。
+
 ## 更多示例
 
 - 1、[Mybatis-Flex 原生（无其他依赖）](./mybatis-flex-test/mybatis-flex-native-test)
