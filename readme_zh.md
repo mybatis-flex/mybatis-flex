@@ -146,7 +146,7 @@ class HelloWorld {
 
 ```java
 QueryWrapper query=new QueryWrapper();
-        query.select().from(ACCOUNT)
+query.select().from(ACCOUNT)
 
 // SQL: 
 // SELECT * FROM tb_account
@@ -156,7 +156,7 @@ QueryWrapper query=new QueryWrapper();
 
 ```java
 QueryWrapper query=new QueryWrapper();
-        query.select(ACCOUNT.ID,ACCOUNT.USER_NAME).from(ACCOUNT)
+query.select(ACCOUNT.ID,ACCOUNT.USER_NAME).from(ACCOUNT)
 
 // SQL: 
 // SELECT tb_account.id, tb_account.user_name 
@@ -165,7 +165,7 @@ QueryWrapper query=new QueryWrapper();
 
 ```java
 QueryWrapper query=new QueryWrapper();
-        query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
+query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
 
 // SQL: 
 // SELECT tb_account.id, tb_account.user_name, tb_account.birthday, 
@@ -193,11 +193,11 @@ QueryWrapper query=new QueryWrapper();
 ### where
 
 ```java
-  QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .where(ACCOUNT.ID.ge(100))
-        .and(ACCOUNT.USER_NAME.like("michael"));
+QueryWrapper queryWrapper=QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100))
+    .and(ACCOUNT.USER_NAME.like("michael"));
 
 // SQL: 
 // SELECT * FROM tb_account 
@@ -208,15 +208,15 @@ QueryWrapper query=new QueryWrapper();
 ### exists, not exists
 
 ```java
-    QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .where(ACCOUNT.ID.ge(100))
-        .and(
+QueryWrapper queryWrapper=QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100))
+    .and(
         exist(
-        selectOne().from(ARTICLE).where(ARTICLE.ID.ge(100))
+            selectOne().from(ARTICLE).where(ARTICLE.ID.ge(100))
         )
-        );
+    );
 
 // SQL: 
 // SELECT * FROM tb_account 
@@ -229,12 +229,12 @@ QueryWrapper query=new QueryWrapper();
 ### and (...) or (...)
 
 ```java
-    QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .where(ACCOUNT.ID.ge(100))
-        .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
-        .or(ACCOUNT.AGE.in(18,19,20).or(ACCOUNT.USER_NAME.like("michael")));
+QueryWrapper queryWrapper=QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100))
+    .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
+    .or(ACCOUNT.AGE.in(18,19,20).or(ACCOUNT.USER_NAME.like("michael")));
 
 // SQL: 
 // SELECT * FROM tb_account 
@@ -246,10 +246,10 @@ QueryWrapper query=new QueryWrapper();
 ### group by
 
 ```java
-    QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .groupBy(ACCOUNT.USER_NAME);
+QueryWrapper queryWrapper=QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .groupBy(ACCOUNT.USER_NAME);
 
 // SQL: 
 // SELECT * FROM tb_account 
@@ -259,11 +259,11 @@ QueryWrapper query=new QueryWrapper();
 ### having
 
 ```java
-    QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .groupBy(ACCOUNT.USER_NAME)
-        .having(ACCOUNT.AGE.between(18,25));
+QueryWrapper queryWrapper=QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .groupBy(ACCOUNT.USER_NAME)
+    .having(ACCOUNT.AGE.between(18,25));
 
 // SQL: 
 // SELECT * FROM tb_account 
@@ -273,11 +273,11 @@ QueryWrapper query=new QueryWrapper();
 
 ### jion
 ```java
-   QueryWrapper queryWrapper = QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
-        .where(ACCOUNT.AGE.ge(10));
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+    .where(ACCOUNT.AGE.ge(10));
 
 // SQL: 
 // SELECT * FROM tb_account 
