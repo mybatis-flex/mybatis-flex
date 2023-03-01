@@ -17,6 +17,8 @@ public class Account {
 
     private int sex;
 
+    private Integer age;
+
     private boolean isNormal;
 
     public Long getId() {
@@ -49,6 +51,14 @@ public class Account {
 
     public void setSex(int sex) {
         this.sex = sex;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public boolean isNormal() {
