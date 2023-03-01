@@ -273,7 +273,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 // HAVING tb_account.age BETWEEN  ? AND ?
 ```
 
-### jion
+### join
 ```java
 QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
