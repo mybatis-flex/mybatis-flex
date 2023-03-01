@@ -59,4 +59,10 @@ public class FunctionQueryColumn extends QueryColumn {
         String sql = column.toSelectSql(queryTables, dialect);
         return StringUtil.isBlank(sql) ? "" : fnName + "(" + sql + ")" + WrapperUtil.buildAsAlias(alias);
     }
+
+    @Override
+    public QueryColumn as(String alias) {
+        this.alias = alias;
+        return this;
+    }
 }
