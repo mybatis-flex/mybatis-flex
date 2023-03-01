@@ -13,7 +13,7 @@
 
 ## hello world
 
-**实体类**
+**第一步：编写 Entity 实体类**
 
 ```java
 
@@ -30,7 +30,7 @@ public class Account {
 }
 ```
 
-**AccountMapper 类**
+**第二步，编写 Mapper 类，并继承 BaseMapper**
 
 ```java
 public interface AccountMapper extends BaseMapper<Account> {
@@ -38,7 +38,7 @@ public interface AccountMapper extends BaseMapper<Account> {
 }
 ```
 
-**Hello world**
+**第三步：开始查询数据**
 
 示例 1：查询 1 条数据
 ```java
@@ -140,8 +140,165 @@ class HelloWorld {
 }
 ```
 
+## QueryWrapper 示例
+
+### select *
+
+```java
+QueryWrapper query=new QueryWrapper();
+        query.select().from(ACCOUNT)
+
+// SQL: 
+// SELECT * FROM tb_account
+```
+
+### select columns
+
+```java
+QueryWrapper query=new QueryWrapper();
+        query.select(ACCOUNT.ID,ACCOUNT.USER_NAME).from(ACCOUNT)
+
+// SQL: 
+// SELECT tb_account.id, tb_account.user_name 
+// FROM tb_account
+```
+
+```java
+QueryWrapper query=new QueryWrapper();
+        query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
+
+// SQL: 
+// SELECT tb_account.id, tb_account.user_name, tb_account.birthday, 
+// tb_account.sex, tb_account.is_normal 
+// FROM tb_account
+```
+
+### select functions
+
+```java
+ QueryWrapper query=new QueryWrapper()
+        .select(ACCOUNT.ID
+        ,ACCOUNT.USER_NAME
+        ,max(ACCOUNT.BIRTHDAY)
+        ,avg(ACCOUNT.SEX).as("sex_avg"))
+        .from(ACCOUNT);
+
+// SQL: 
+// SELECT tb_account.id, tb_account.user_name, 
+// MAX(tb_account.birthday), 
+// AVG(tb_account.sex) AS sex_avg 
+// FROM tb_account
+```
+
+### where
+
+```java
+  QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .where(ACCOUNT.ID.ge(100))
+        .and(ACCOUNT.USER_NAME.like("michael"));
+
+// SQL: 
+// SELECT * FROM tb_account 
+// WHERE tb_account.id >=  ?  
+// AND tb_account.user_name LIKE  ? 
+```
+
+### exists, not exists
+
+```java
+    QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .where(ACCOUNT.ID.ge(100))
+        .and(
+        exist(
+        selectOne().from(ARTICLE).where(ARTICLE.ID.ge(100))
+        )
+        );
+
+// SQL: 
+// SELECT * FROM tb_account 
+// WHERE tb_account.id >=  ?  
+// AND EXIST (
+// SELECT 1 FROM tb_article WHERE tb_article.id >=  ? 
+// )
+```
+
+### and (...) or (...)
+
+```java
+    QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .where(ACCOUNT.ID.ge(100))
+        .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
+        .or(ACCOUNT.AGE.in(18,19,20).or(ACCOUNT.USER_NAME.like("michael")));
+
+// SQL: 
+// SELECT * FROM tb_account 
+// WHERE tb_account.id >=  ?  
+// AND (tb_account.sex =  ?  OR tb_account.sex =  ? ) 
+// OR (tb_account.age IN (?,?,?) OR tb_account.user_name LIKE  ? )
+```
+
+### group by
+
+```java
+    QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .groupBy(ACCOUNT.USER_NAME);
+
+// SQL: 
+// SELECT * FROM tb_account 
+// GROUP BY tb_account.user_name
+```
+
+### having
+
+```java
+    QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .groupBy(ACCOUNT.USER_NAME)
+        .having(ACCOUNT.AGE.between(18,25));
+
+// SQL: 
+// SELECT * FROM tb_account 
+// GROUP BY tb_account.user_name 
+// HAVING tb_account.age BETWEEN  ? AND ?
+```
+
+### jion
+```java
+   QueryWrapper queryWrapper = QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+        .where(ACCOUNT.AGE.ge(10));
+
+// SQL: 
+// SELECT * FROM tb_account 
+// LEFT JOIN tb_article 
+// ON tb_account.id = tb_article.account_id 
+// WHERE tb_account.age >=  ? 
+
+```
+
+### 可能存在问题
+
+**如何通过实体类 Account.java 生成 QueryWrapper 所需要的 "ACCOUNT" 类 ?**
+
+答：通过开发工具构建项目（如下图），或者执行 maven 编译命令: `mvn clean package`
+
+![](./docs/assets/images/build_idea.png)
+
 ## 更多示例
 
 - 1、[Mybatis-Flex 原生（无其他依赖）](./mybatis-flex-test/mybatis-flex-native-test)
 - 2、[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
 - 3、[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
+
+

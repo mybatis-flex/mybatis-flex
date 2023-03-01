@@ -1,4 +1,3 @@
-
 # Mybatis-Flex is an elegant Mybatis Enhancement Framework.
 
 ## Features
@@ -13,7 +12,7 @@
 
 ## hello world
 
-**Entity Class**
+**step 1: write entity class**
 
 ```java
 
@@ -30,7 +29,7 @@ public class Account {
 }
 ```
 
-**AccountMapper Class**
+**step 2: write mapper class(it needs extends BaseMapper)**
 
 ```java
 public interface AccountMapper extends BaseMapper<Account> {
@@ -38,9 +37,10 @@ public interface AccountMapper extends BaseMapper<Account> {
 }
 ```
 
-**Hello world**
+**step 3: start query data**
 
-e.g. 1： query 1 data
+e.g. 1： query by primary key
+
 ```java
 class HelloWorld {
     public static void main(String... args) {
@@ -80,7 +80,7 @@ class HelloWorld {
                 .setDatasource(dataSource)
                 .addMapper(AccountMapper.class)
                 .start();
-        
+
         //use QueryWrapper to build query conditions
         QueryWrapper query = QueryWrapper.create()
                 .select()
@@ -96,7 +96,7 @@ class HelloWorld {
                 .execute(AccountMapper.class, mapper ->
                         mapper.selectListByQuery(query)
                 );
-        
+
     }
 }
 ```
@@ -122,16 +122,16 @@ class HelloWorld {
                 .select()
                 .from(ACCOUNT)
                 .where(ACCOUNT.ID.ge(100))
-                .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")))
+                .and(ACCOUNT.USER_NAME.like("zhang").or(ACCOUNT.USER_NAME.like("li")))
                 .orderBy(ACCOUNT.ID.desc());
 
         // execute SQL：
         // ELECT * FROM `tb_account`
         // WHERE `tb_account`.`id` >=  100
-        // AND (`tb_account`.`user_name` LIKE '%张%' OR `tb_account`.`user_name` LIKE '%李%' )
+        // AND (`tb_account`.`user_name` LIKE '%zhang%' OR `tb_account`.`user_name` LIKE '%li%' )
         // ORDER BY `tb_account`.`id` DESC
         // LIMIT 40,10
-        Page<Account> accounts = MybatisFlexBootstrap.getInstance()
+        Page<Account> accountPage = MybatisFlexBootstrap.getInstance()
                 .execute(AccountMapper.class, mapper ->
                         mapper.paginate(5, 10, query)
                 );
@@ -140,8 +140,166 @@ class HelloWorld {
 }
 ```
 
+## QueryWrapper Samples
+
+### select *
+
+```java
+QueryWrapper query=new QueryWrapper();
+        query.select().from(ACCOUNT)
+
+// SQL: 
+// SELECT * FROM tb_account
+```
+
+### select columns
+
+```java
+QueryWrapper query=new QueryWrapper();
+        query.select(ACCOUNT.ID,ACCOUNT.USER_NAME).from(ACCOUNT)
+
+// SQL: 
+// SELECT tb_account.id, tb_account.user_name 
+// FROM tb_account
+```
+
+```java
+QueryWrapper query=new QueryWrapper();
+        query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
+
+// SQL: 
+// SELECT tb_account.id, tb_account.user_name, tb_account.birthday, 
+// tb_account.sex, tb_account.is_normal 
+// FROM tb_account
+```
+
+### select functions
+
+```java
+ QueryWrapper query=new QueryWrapper()
+        .select(ACCOUNT.ID
+        ,ACCOUNT.USER_NAME
+        ,max(ACCOUNT.BIRTHDAY)
+        ,avg(ACCOUNT.SEX).as("sex_avg"))
+        .from(ACCOUNT);
+
+// SQL: 
+// SELECT tb_account.id, tb_account.user_name, 
+// MAX(tb_account.birthday), 
+// AVG(tb_account.sex) AS sex_avg 
+// FROM tb_account
+```
+
+### where
+
+```java
+  QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .where(ACCOUNT.ID.ge(100))
+        .and(ACCOUNT.USER_NAME.like("michael"));
+
+// SQL: 
+// SELECT * FROM tb_account 
+// WHERE tb_account.id >=  ?  
+// AND tb_account.user_name LIKE  ? 
+```
+
+### exists, not exists
+
+```java
+    QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .where(ACCOUNT.ID.ge(100))
+        .and(
+        exist(
+        selectOne().from(ARTICLE).where(ARTICLE.ID.ge(100))
+        )
+        );
+
+// SQL: 
+// SELECT * FROM tb_account 
+// WHERE tb_account.id >=  ?  
+// AND EXIST (
+// SELECT 1 FROM tb_article WHERE tb_article.id >=  ? 
+// )
+```
+
+### and (...) or (...)
+
+```java
+    QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .where(ACCOUNT.ID.ge(100))
+        .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
+        .or(ACCOUNT.AGE.in(18,19,20).or(ACCOUNT.USER_NAME.like("michael")));
+
+// SQL: 
+// SELECT * FROM tb_account 
+// WHERE tb_account.id >=  ?  
+// AND (tb_account.sex =  ?  OR tb_account.sex =  ? ) 
+// OR (tb_account.age IN (?,?,?) OR tb_account.user_name LIKE  ? )
+```
+
+### group by
+
+```java
+    QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .groupBy(ACCOUNT.USER_NAME);
+
+// SQL: 
+// SELECT * FROM tb_account 
+// GROUP BY tb_account.user_name
+```
+
+### having
+
+```java
+    QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .groupBy(ACCOUNT.USER_NAME)
+        .having(ACCOUNT.AGE.between(18,25));
+
+// SQL: 
+// SELECT * FROM tb_account 
+// GROUP BY tb_account.user_name 
+// HAVING tb_account.age BETWEEN  ? AND ?
+```
+
+### jion
+```java
+   QueryWrapper queryWrapper = QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+        .where(ACCOUNT.AGE.ge(10));
+
+// SQL: 
+// SELECT * FROM tb_account 
+// LEFT JOIN tb_article 
+// ON tb_account.id = tb_article.account_id 
+// WHERE tb_account.age >=  ? 
+
+```
+
+### Questions？
+
+**1、how to generate "ACCOUNT" class for QueryWrapper by Account.java ?**
+
+build the project by IDE, or execute maven build command: `mvn clean package`
+
+![](./docs/assets/images/build_idea.png)
+
 ## More Samples
 
 - 1、[Mybatis-Flex Only (Native)](./mybatis-flex-test/mybatis-flex-native-test)
 - 2、[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
 - 3、[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
+
+
+
