@@ -17,11 +17,14 @@ package com.mybatisflex.core.provider;
 
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.querywrapper.QueryColumn;
+import com.mybatisflex.core.querywrapper.QueryCondition;
 import com.mybatisflex.core.querywrapper.QueryWrapper;
 import com.mybatisflex.core.querywrapper.CPI;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
 import java.io.Serializable;
@@ -127,7 +130,7 @@ public class EntitySqlProvider {
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
         ProviderUtil.setSqlArgs(params, primaryValues);
 
-        return DialectFactory.getDialect().forDeleteEntityBatchById(tableInfo, primaryValues);
+        return DialectFactory.getDialect().forDeleteEntityBatchByIds(tableInfo, primaryValues);
     }
 
 
@@ -149,7 +152,8 @@ public class EntitySqlProvider {
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
         queryWrapper.from(tableInfo.getTableName());
-        return DialectFactory.getDialect().forDeleteByQuery(queryWrapper);
+
+        return DialectFactory.getDialect().forDeleteEntityBatchByQuery(tableInfo, queryWrapper);
     }
 
 
@@ -194,8 +198,13 @@ public class EntitySqlProvider {
         boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
 
-
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
+
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+            queryWrapper.and(QueryCondition.create(new QueryColumn(tableInfo.getTableName(), logicDeleteColumn), 0));
+        }
+
         Object[] values = tableInfo.obtainUpdateValues(entity, ignoreNulls, true);
 
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(values, CPI.getValueArray(queryWrapper)));
@@ -259,11 +268,19 @@ public class EntitySqlProvider {
         if (queryWrapper == null) {
             throw FlexExceptions.wrap("queryWrapper can not be null.");
         }
+
+        TableInfo tableInfo = ProviderUtil.getTableInfo(context);
+
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+            queryWrapper.and(QueryCondition.create(new QueryColumn(tableInfo.getTableName(), logicDeleteColumn), 0));
+        }
+
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
 
-        TableInfo tableInfo = ProviderUtil.getTableInfo(context);
         queryWrapper.from(tableInfo.getTableName());
+
         return DialectFactory.getDialect().forSelectListByQuery(queryWrapper);
     }
 
@@ -281,10 +298,17 @@ public class EntitySqlProvider {
             throw FlexExceptions.wrap("queryWrapper can not be null.");
         }
 
+        TableInfo tableInfo = ProviderUtil.getTableInfo(context);
+
+        //逻辑删除
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+            queryWrapper.and(QueryCondition.create(new QueryColumn(tableInfo.getTableName(), logicDeleteColumn), 0));
+        }
+
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
 
-        TableInfo tableInfo = ProviderUtil.getTableInfo(context);
         queryWrapper.from(tableInfo.getTableName());
         return DialectFactory.getDialect().forSelectCountByQuery(queryWrapper);
     }

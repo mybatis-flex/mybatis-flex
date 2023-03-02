@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core;
 
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.EntitySqlProvider;
 import com.mybatisflex.core.querywrapper.QueryColumn;
@@ -82,6 +83,9 @@ public interface BaseMapper<T> {
      * @return 返回影响的行数
      */
     default int deleteByMap(Map<String, Object> whereConditions) {
+        if (whereConditions == null || whereConditions.isEmpty()) {
+            throw FlexExceptions.wrap("deleteByMap is not allow empty map.");
+        }
         return deleteByQuery(QueryWrapper.create().where(whereConditions));
     }
 
@@ -109,7 +113,7 @@ public interface BaseMapper<T> {
     /**
      * 根据主键来更新数据到数据库
      *
-     * @param entity           数据内容
+     * @param entity      数据内容
      * @param ignoreNulls 是否忽略空内容字段
      * @return 返回影响的行数
      * @see com.mybatisflex.core.provider.EntitySqlProvider#update(Map, ProviderContext)
@@ -145,9 +149,9 @@ public interface BaseMapper<T> {
     /**
      * 根据 query 构建的条件来更新数据
      *
-     * @param entity           数据内容
-     * @param ignoreNulls 是否忽略空值
-     * @param queryWrapper     query 条件
+     * @param entity       数据内容
+     * @param ignoreNulls  是否忽略空值
+     * @param queryWrapper query 条件
      * @return
      * @see com.mybatisflex.core.provider.EntitySqlProvider#updateByQuery(Map, ProviderContext)
      */

@@ -65,7 +65,9 @@ public interface IDialect {
 
     String forDeleteEntityById(TableInfo tableInfo);
 
-    String forDeleteEntityBatchById(TableInfo tableInfo, Object[] primaryValues);
+    String forDeleteEntityBatchByIds(TableInfo tableInfo, Object[] primaryValues);
+
+    String forDeleteEntityBatchByQuery(TableInfo tableInfo, QueryWrapper queryWrapper);
 
     String forUpdateEntity(TableInfo tableInfo, Object entity, boolean ignoreNulls);
 
