@@ -95,7 +95,11 @@ class WrapperUtil {
     }
 
 
-    public static String getRealTableName(List<QueryTable> queryTables, QueryTable queryTable) {
+    public static String getColumnTableName(List<QueryTable> queryTables, QueryTable queryTable) {
+        if (queryTables == null || queryTables.size() <= 1){
+            return "";
+        }
+
         QueryTable realTable = getRealTable(queryTables, queryTable);
         if (realTable == null) {
             return "";

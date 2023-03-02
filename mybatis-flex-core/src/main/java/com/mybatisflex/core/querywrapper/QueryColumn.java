@@ -302,13 +302,13 @@ public class QueryColumn implements Serializable {
     }
 
      String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
-        String tableName = WrapperUtil.getRealTableName(queryTables, table);
+        String tableName = WrapperUtil.getColumnTableName(queryTables, table);
         return wrap(dialect, tableName, name);
     }
 
 
      String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
-        String tableName = WrapperUtil.getRealTableName(queryTables, table);
+        String tableName = WrapperUtil.getColumnTableName(queryTables, table);
         return wrap(dialect, tableName, name) + WrapperUtil.buildAsAlias(dialect.wrap(alias));
     }
 
