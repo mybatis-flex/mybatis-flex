@@ -123,14 +123,17 @@ public class DialectFactory {
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.POSTGRESQL);
             case ORACLE_12C:
             case FIREBIRD:
-            case SQL_SERVER:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.DERBY);
+            case SQL_SERVER:
+                return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcesser.DERBY);
             case SQL_SERVER2005:
                 return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcesser.DB2);
             case INFORMIX:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.INFORMIX);
             case DB2:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.DB2);
+            case SYBASE:
+                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.SYBASE);
             default:
                 return new CommonsDialectImpl();
         }
