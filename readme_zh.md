@@ -139,9 +139,9 @@ class HelloWorld {
 
         // 执行 SQL：
         // ELECT * FROM `tb_account`
-        // WHERE `tb_account`.`id` >=  100
-        // AND (`tb_account`.`user_name` LIKE '%张%' OR `tb_account`.`user_name` LIKE '%李%' )
-        // ORDER BY `tb_account`.`id` DESC
+        // WHERE `id` >=  100
+        // AND (`user_name` LIKE '%张%' OR `user_name` LIKE '%李%' )
+        // ORDER BY `id` DESC
         // LIMIT 40,10
         Page<Account> accounts = MybatisFlexBootstrap.getInstance()
                 .execute(AccountMapper.class, mapper ->
@@ -171,7 +171,7 @@ QueryWrapper query=new QueryWrapper();
 query.select(ACCOUNT.ID,ACCOUNT.USER_NAME).from(ACCOUNT)
 
 // SQL: 
-// SELECT tb_account.id, tb_account.user_name 
+// SELECT id, user_name 
 // FROM tb_account
 ```
 
@@ -180,8 +180,7 @@ QueryWrapper query=new QueryWrapper();
 query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
 
 // SQL: 
-// SELECT tb_account.id, tb_account.user_name, tb_account.birthday, 
-// tb_account.sex, tb_account.is_normal 
+// SELECT id, user_name, birthday, sex, is_normal 
 // FROM tb_account
 ```
 
@@ -197,9 +196,9 @@ query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
         ).from(ACCOUNT);
 
 // SQL: 
-// SELECT tb_account.id, tb_account.user_name, 
-// MAX(tb_account.birthday), 
-// AVG(tb_account.sex) AS sex_avg 
+// SELECT id, user_name, 
+// MAX(birthday), 
+// AVG(sex) AS sex_avg 
 // FROM tb_account
 ```
 
@@ -214,8 +213,8 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 
 // SQL: 
 // SELECT * FROM tb_account 
-// WHERE tb_account.id >=  ?  
-// AND tb_account.user_name LIKE  ? 
+// WHERE id >=  ?  
+// AND user_name LIKE  ? 
 ```
 
 ### exists, not exists
@@ -233,9 +232,9 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 
 // SQL: 
 // SELECT * FROM tb_account 
-// WHERE tb_account.id >=  ?  
+// WHERE id >=  ?  
 // AND EXIST (
-//    SELECT 1 FROM tb_article WHERE tb_article.id >=  ? 
+//    SELECT 1 FROM tb_article WHERE id >=  ? 
 // )
 ```
 
@@ -251,9 +250,9 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 
 // SQL: 
 // SELECT * FROM tb_account 
-// WHERE tb_account.id >=  ?  
-// AND (tb_account.sex =  ?  OR tb_account.sex =  ? ) 
-// OR (tb_account.age IN (?,?,?) OR tb_account.user_name LIKE  ? )
+// WHERE id >=  ?  
+// AND (sex =  ? OR sex =  ? ) 
+// OR (age IN (?,?,?) OR user_name LIKE ? )
 ```
 
 ### group by
@@ -266,7 +265,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 
 // SQL: 
 // SELECT * FROM tb_account 
-// GROUP BY tb_account.user_name
+// GROUP BY user_name
 ```
 
 ### having
@@ -280,8 +279,8 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 
 // SQL: 
 // SELECT * FROM tb_account 
-// GROUP BY tb_account.user_name 
-// HAVING tb_account.age BETWEEN  ? AND ?
+// GROUP BY user_name 
+// HAVING age BETWEEN  ? AND ?
 ```
 
 ### join
@@ -290,12 +289,13 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+    .innerJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
     .where(ACCOUNT.AGE.ge(10));
 
 // SQL: 
 // SELECT * FROM tb_account 
-// LEFT JOIN tb_article 
-// ON tb_account.id = tb_article.account_id 
+// LEFT JOIN tb_article ON tb_account.id = tb_article.account_id 
+// INNER JOIN tb_article ON tb_account.id = tb_article.account_id 
 // WHERE tb_account.age >=  ?
 ```
 
@@ -352,7 +352,7 @@ Page<Row> rowPage = Db.paginate("tb_account",3,10,query);
 
 ## Entity 部分字段更新
 
-相比市面上的其他框架，这部分的功能应该也算是 MyBatis-Flex 的亮点之一（独创 ？）。在 BaseMapper 中，Mybatis-Flex 提供了如下的方法：
+相比市面上的其他框架，这部分的功能应该也算是 MyBatis-Flex 的亮点之一。在 BaseMapper 中，Mybatis-Flex 提供了如下的方法：
 
 ```java
 update(T entity,  boolean ignoreNulls)
