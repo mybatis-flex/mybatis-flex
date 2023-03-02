@@ -38,4 +38,13 @@ public class FlexConsts {
     public static final String IGNORE_NULLS = "$$ignoreNulls";
 
     public static final String METHOD_INSERT_BATCH = "insertBatch";
+
+    /**
+     * 当 entity 使用逻辑删除时，0 为 entity 的正常状态
+     */
+    public static final int DEL_STATUS_NORMAL = 0;
+    /**
+     * 当 entity 使用逻辑删除时，1 为 entity 的删除状态
+     */
+    public static final int DEL_STATUS_DELETED = 1;
 }
