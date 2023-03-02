@@ -54,7 +54,7 @@ public @interface Column {
     boolean isLogicDelete() default false;
 
     /**
-     * 是否为乐观锁字段，如果是的话更新的时候会去检测当前版本号，更新成功的话会设置当前版本号 +1
+     * 是否为乐观锁字段，若是乐观锁字段的话，数据更新的时候会去检测当前版本号，若更新成功的话会设置当前版本号 +1
      * 只能用于数值的字段
      */
     boolean version() default false;

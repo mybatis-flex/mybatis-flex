@@ -58,6 +58,9 @@ public class EntitySqlProvider {
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
+        //设置乐观锁版本字段的初始化
+        tableInfo.initVersionValueIfNecessary(entity);
+
         Object[] values = tableInfo.obtainInsertValues(entity);
         ProviderUtil.setSqlArgs(params, values);
 
@@ -81,6 +84,10 @@ public class EntitySqlProvider {
         }
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
+        for (Object entity : entities) {
+            tableInfo.initVersionValueIfNecessary(entity);
+        }
+
         Object[] values = new Object[0];
         for (Object entity : entities) {
             values = ArrayUtil.concat(values, tableInfo.obtainInsertValues(entity));

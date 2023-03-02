@@ -22,6 +22,7 @@ import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
@@ -285,7 +286,12 @@ public class TableInfo {
             }
             for (String property : properties) {
                 String column = getColumnByProperty(property);
-                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)){
+                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
+                    continue;
+                }
+
+                //过滤乐观锁字段
+                if (Objects.equals(column, versionColumn)) {
                     continue;
                 }
 
@@ -302,7 +308,12 @@ public class TableInfo {
         //not ModifyAttrsRecord
         else {
             for (String column : this.columns) {
-                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)){
+                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
+                    continue;
+                }
+
+                //过滤乐观锁字段
+                if (Objects.equals(column, versionColumn)) {
                     continue;
                 }
 
@@ -343,7 +354,11 @@ public class TableInfo {
             }
             for (String property : properties) {
                 String column = getColumnByProperty(property);
-                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)){
+                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
+                    continue;
+                }
+                //过滤乐观锁字段
+                if (Objects.equals(column, versionColumn)) {
                     continue;
                 }
 
@@ -360,7 +375,12 @@ public class TableInfo {
         // normal entity. not ModifyAttrsRecord
         else {
             for (String column : this.columns) {
-                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)){
+                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
+                    continue;
+                }
+
+                //过滤乐观锁字段
+                if (Objects.equals(column, versionColumn)) {
                     continue;
                 }
 
@@ -433,6 +453,11 @@ public class TableInfo {
         return getPropertyValue(metaObject, columnPropertyMapping.get(column));
     }
 
+    public Object getColumnValue(Object entityObject, String column) {
+        MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
+        return getPropertyValue(metaObject, columnPropertyMapping.get(column));
+    }
+
 
     private Object getPropertyValue(MetaObject metaObject, String property) {
         if (property != null && metaObject.hasGetter(property)) {
@@ -462,5 +487,22 @@ public class TableInfo {
             }
         }
         return (T) instance;
+    }
+
+    /**
+     * 初始化乐观锁版本号
+     *
+     * @param entityObject
+     */
+    public void initVersionValueIfNecessary(Object entityObject) {
+        if (StringUtil.isBlank(versionColumn)) {
+            return;
+        }
+
+        MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
+        Object columnValue = getColumnValue(entityObject, versionColumn);
+        if (columnValue == null) {
+            metaObject.setValue(columnPropertyMapping.get(versionColumn), 0);
+        }
     }
 }

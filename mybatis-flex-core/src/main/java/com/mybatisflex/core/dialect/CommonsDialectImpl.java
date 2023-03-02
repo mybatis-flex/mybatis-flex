@@ -528,6 +528,12 @@ public class CommonsDialectImpl implements IDialect {
             onUpdateColumns.forEach((column, value) -> stringJoiner.add(wrap(column) + " = " + value));
         }
 
+        //乐观锁字段
+        String versionColumn = tableInfo.getVersionColumn();
+        if (StringUtil.isNotBlank(versionColumn)) {
+            stringJoiner.add(wrap(versionColumn) + " = " + wrap(versionColumn) + " + 1 ");
+        }
+
         sql.append(stringJoiner);
 
         sql.append(" WHERE ");
@@ -538,10 +544,18 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(primaryKeys[i])).append(" = ?");
         }
 
+        //逻辑删除条件，已删除的数据不能被修改
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
             sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = 0 ");
         }
+
+        //乐观锁条件
+        if (StringUtil.isNotBlank(versionColumn)) {
+            Object versionValue = tableInfo.getColumnValue(entity, versionColumn);
+            sql.append(" AND ").append(wrap(versionColumn)).append(" = ").append(versionValue);
+        }
+
 
         return sql.toString();
     }
@@ -553,23 +567,41 @@ public class CommonsDialectImpl implements IDialect {
         Set<String> modifyAttrs = tableInfo.obtainUpdateColumns(entity, ignoreNulls, true);
 
         sql.append("UPDATE ").append(wrap(tableInfo.getTableName())).append(" SET ");
-        int index = 0;
+
+        StringJoiner stringJoiner = new StringJoiner(", ");
+
         for (String modifyAttr : modifyAttrs) {
-            if (index > 0) {
-                sql.append(", ");
-            }
-            sql.append(wrap(modifyAttr)).append(" = ? ");
-            index++;
+            stringJoiner.add(wrap(modifyAttr) + " = ?");
         }
 
         Map<String, String> onUpdateColumns = tableInfo.getOnUpdateColumns();
         if (onUpdateColumns != null && !onUpdateColumns.isEmpty()) {
-            StringJoiner stringJoiner = new StringJoiner(", ");
             onUpdateColumns.forEach((column, value) -> stringJoiner.add(wrap(column) + " = " + value));
-            sql.append(", ").append(stringJoiner);
         }
 
+        //乐观锁字段
+        String versionColumn = tableInfo.getVersionColumn();
+        if (StringUtil.isNotBlank(versionColumn)) {
+            stringJoiner.add(wrap(versionColumn) + " = " + wrap(versionColumn) + " + 1 ");
+        }
+
+        sql.append(stringJoiner);
+
+
         sql.append(" WHERE ");
+
+        //乐观锁条件
+        if (StringUtil.isNotBlank(versionColumn)) {
+            Object versionValue = tableInfo.getColumnValue(entity, versionColumn);
+            queryWrapper.and(new StringQueryCondition(wrap(versionColumn) + " = " + versionValue));
+        }
+
+        //逻辑删除条件，已删除的数据不能被修改
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+            queryWrapper.and(new StringQueryCondition(wrap(logicDeleteColumn) + " = 0"));
+        }
+
         sql.append(buildWhereConditionSql(queryWrapper));
 
         return sql.toString();
