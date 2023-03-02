@@ -300,7 +300,11 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 ### 存在疑问？
 
-**如何通过实体类 Account.java 生成 QueryWrapper 所需要的 "ACCOUNT" 类 ?**
+**疑问 1：QueryWrapper 是否可以在分布式项目中通过 RPC 传输？**
+
+答：可以。
+
+**疑问 2：如何通过实体类 Account.java 生成 QueryWrapper 所需要的 "ACCOUNT" 类 ?**
 
 答：Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时候，会自动根据 Entity 类定义的字段帮你生成 "ACCOUNT" 类，
 通过开发工具构建项目（如下图），或者执行 maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
