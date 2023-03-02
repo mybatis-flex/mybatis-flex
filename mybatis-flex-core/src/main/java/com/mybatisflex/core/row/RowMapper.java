@@ -92,7 +92,6 @@ public interface RowMapper {
      * @param row       id 和 值的数据，可以通过 {@link Row#ofKey(String, Object)} 来创建
      * @return 执行影响的行数
      */
-
     default int deleteById(@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROW) Row row) {
         return deleteById(tableName, StringUtil.join(",", row.obtainsPrimaryKeyStrings()), row.obtainsPrimaryValues());
     }

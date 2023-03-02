@@ -59,12 +59,11 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
         return row;
     }
 
-    public static Row ofKey(RowKey ...rowKeys) {
+    public static Row ofKey(RowKey... rowKeys) {
         Row row = new Row();
         row.primaryKeys = rowKeys;
         return row;
     }
-
 
 
     public static Row ofKey(RowKey rowKey, Object value) {
@@ -88,16 +87,16 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     public Row set(String key, Object value) {
         put(key, value);
         boolean isPrimaryKey = false;
-        if (this.primaryKeys != null){
+        if (this.primaryKeys != null) {
             for (RowKey rowKey : primaryKeys) {
-                if (rowKey.getKeyColumn().equals(key)){
+                if (rowKey.getKeyColumn().equals(key)) {
                     isPrimaryKey = true;
                     break;
                 }
             }
         }
 
-        if (!isPrimaryKey){
+        if (!isPrimaryKey) {
             addModifyAttr(key);
         }
 

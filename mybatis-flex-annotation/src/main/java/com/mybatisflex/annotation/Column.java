@@ -49,6 +49,7 @@ public @interface Column {
 
     /**
      * 是否是逻辑删除字段，一张表中只能存在 1 一个逻辑删除字段
+     * 逻辑删除的字段，被删除时，会设置为 1，正常状态为 0
      */
     boolean isLogicDelete() default false;
 
