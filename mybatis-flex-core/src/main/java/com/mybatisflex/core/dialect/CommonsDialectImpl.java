@@ -380,12 +380,12 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ").append(wrap(tableInfo.getTableName()));
         String[] insertColumns = tableInfo.obtainInsertColumns();
-        sql.append("(").append(StringUtil.join(",", insertColumns)).append(")");
+        sql.append("(").append(StringUtil.join(", ", insertColumns)).append(")");
         sql.append(" VALUES ");
 
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
         for (int i = 0; i < entities.size(); i++) {
-            StringJoiner stringJoiner = new StringJoiner("(", ", ", ")");
+            StringJoiner stringJoiner = new StringJoiner(", ", "(", ")");
             for (String insertColumn : insertColumns) {
                 if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                     stringJoiner.add(onInsertColumns.get(insertColumn));
@@ -440,10 +440,11 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         StringBuilder sql = new StringBuilder();
-        sql.append("UPDATE");
+        sql.append("UPDATE ");
         sql.append(wrap(tableInfo.getTableName()));
-        sql.append("SET ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.DEL_STATUS_DELETED);
+        sql.append(" SET ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.DEL_STATUS_DELETED);
         sql.append(" WHERE ");
+        sql.append("(");
 
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
@@ -471,6 +472,10 @@ public class CommonsDialectImpl implements IDialect {
                 }
                 sql.append(wrap(primaryKeys[0])).append(" = ?");
             }
+        }
+
+        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+            sql.append(") AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.DEL_STATUS_NORMAL);
         }
         return sql.toString();
     }
@@ -598,6 +603,9 @@ public class CommonsDialectImpl implements IDialect {
         //乐观锁条件
         if (StringUtil.isNotBlank(versionColumn)) {
             Object versionValue = tableInfo.getColumnValue(entity, versionColumn);
+            if (versionValue == null) {
+                throw FlexExceptions.wrap("The version value of entity[%s] must not be null.", entity);
+            }
             queryWrapper.and(new StringQueryCondition(wrap(versionColumn) + " = " + versionValue));
         }
 
