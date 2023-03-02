@@ -68,9 +68,10 @@ public class EntitySqlProvider {
      * @param params
      * @param context
      * @return sql
-     * @see com.mybatisflex.core.BaseMapper#insertBatchWithFirstEntityColumns(List)
+     * @see com.mybatisflex.core.BaseMapper#insertBatch(List)
+     * @see com.mybatisflex.core.FlexConsts#METHOD_INSERT_BATCH
      */
-    public static String insertBatchWithFirstEntityColumns(Map params, ProviderContext context) {
+    public static String insertBatch(Map params, ProviderContext context) {
         List<Object> entities = ProviderUtil.getEntities(params);
         if (CollectionUtil.isEmpty(entities)) {
             throw FlexExceptions.wrap("entities can not be null or empty.");
@@ -84,7 +85,7 @@ public class EntitySqlProvider {
 
         ProviderUtil.setSqlArgs(params, values);
 
-        return DialectFactory.getDialect().forInsertBatchWithFirstEntityColumns(tableInfo, entities);
+        return DialectFactory.getDialect().forInsertEntityBatch(tableInfo, entities);
     }
 
 

@@ -374,7 +374,7 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     @Override
-    public String forInsertBatchWithFirstEntityColumns(TableInfo tableInfo, List<Object> entities) {
+    public String forInsertEntityBatch(TableInfo tableInfo, List<Object> entities) {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ").append(wrap(tableInfo.getTableName()));
         String[] insertColumns = tableInfo.obtainInsertColumns();

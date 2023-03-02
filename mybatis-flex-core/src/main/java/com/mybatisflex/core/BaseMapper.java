@@ -46,10 +46,11 @@ public interface BaseMapper<T> {
      *
      * @param entities 插入的数据列表
      * @return 返回影响的行数
-     * @see com.mybatisflex.core.provider.EntitySqlProvider#insertBatchWithFirstEntityColumns(Map, ProviderContext)
+     * @see com.mybatisflex.core.provider.EntitySqlProvider#insertBatch(Map, ProviderContext)
+     * @see com.mybatisflex.core.FlexConsts#METHOD_INSERT_BATCH
      */
-    @InsertProvider(type = EntitySqlProvider.class, method = "insertBatchWithFirstEntityColumns")
-    int insertBatchWithFirstEntityColumns(@Param(FlexConsts.ENTITIES) List<T> entities);
+    @InsertProvider(type = EntitySqlProvider.class, method = FlexConsts.METHOD_INSERT_BATCH)
+    int insertBatch(@Param(FlexConsts.ENTITIES) List<T> entities);
 
     /**
      * 根据 id 删除数据

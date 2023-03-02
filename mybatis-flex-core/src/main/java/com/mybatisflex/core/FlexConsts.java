@@ -36,4 +36,6 @@ public class FlexConsts {
     public static final String ENTITY = "$$entity";
     public static final String ENTITIES = "$$entities";
     public static final String IGNORE_NULLS = "$$ignoreNulls";
+
+    public static final String METHOD_INSERT_BATCH = "insertBatch";
 }

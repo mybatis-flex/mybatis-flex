@@ -101,7 +101,7 @@ public class FlexConfiguration extends Configuration {
             ms = replaceRowKeyGenerator(ms);
         }
         //entity insert methods
-        else if (StringUtil.endsWithAny(ms.getId(), "insert", "insertBatchWithFirstEntityColumns")
+        else if (StringUtil.endsWithAny(ms.getId(), "insert", FlexConsts.METHOD_INSERT_BATCH)
                 && ms.getKeyGenerator() == NoKeyGenerator.INSTANCE) {
             ms = replaceEntityKeyGenerator(ms);
         }
@@ -208,7 +208,7 @@ public class FlexConfiguration extends Configuration {
         }
 
         //批量插入
-        if (ms.getId().endsWith("insertBatchWithFirstEntityColumns")) {
+        if (ms.getId().endsWith(FlexConsts.METHOD_INSERT_BATCH)) {
             keyGenerator = new MultiEntityKeyGenerator(keyGenerator);
         }
 
