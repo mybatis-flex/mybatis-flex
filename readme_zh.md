@@ -11,17 +11,18 @@
 - 6、极其友好的 SQL 联动查询，IDE 自动提示不再担心出错
 - 7、更多小惊喜
 
-## 开始
-
-- [Maven 依赖](./docs/zh/maven.md)
-- [示例项目](./mybatis-flex-test)
-
-
 ## QQ 群
 
 群号： 532992631
 
 ![](./docs/assets/images/qq_group.png)
+
+
+## 开始
+
+- [Maven 依赖](./docs/zh/maven.md)
+- [示例项目](./mybatis-flex-test)
+
 
 ## hello world
 
@@ -349,9 +350,9 @@ Page<Row> rowPage = Db.paginate("tb_account",3,10,query);
 > 
 > 具体参考： [Db.java](./mybatis-flex-core/src/main/java/com/mybatisflex/core/row/Db.java) 。
 
-## Entity 更新部分字段
+## Entity 部分字段更新
 
-这部分单独拿来强调一下，是因为 MyBatis-Flex 等和其他框架的方法不太一样。在 BaseMapper 中，Mybatis-Flex 提供了如下的方法：
+相比市面上的其他框架，这部分的功能应该也算是 MyBatis-Flex 的亮点之一（独创 ？）。在 BaseMapper 中，Mybatis-Flex 提供了如下的方法：
 
 ```java
 update(T entity,  boolean ignoreNulls)
@@ -359,7 +360,7 @@ update(T entity,  boolean ignoreNulls)
 - 第一个参数是 entity 的对象。
 - 第二个参数是是否忽略 null 值。
 
-但是有些场景下，我们可能希望值更新 几个 字段，甚至其中个别字段需要更新为 null。此时需要用到 UpdateEntity 工具类，以下是示例代码：
+有些场景下，我们可能希望只更新 几个 字段，而其中个别字段需要更新为 null。此时需要用到 `UpdateEntity` 工具类，以下是示例代码：
 
 ```java
 Account account = UpdateEntity.of(Account.class);
@@ -369,8 +370,8 @@ account.setSex(1);
 
 accountMapper.update(account,false);
 ```
-以上的示例中，会把 id 为 1 的数据中的 user_name 字段更新为 null，sex 字段更新为 1，其他字段不会被更新。也就是说，通过 UpdateEntity
-构建的对象，只会更新调用了 setter 方法的值，不调用 setter 方法的，不管这个对象里的属性的值是什么，都不会更新到数据库。
+以上的示例中，会把 id 为 1 这条数据中的 user_name 字段更新为 null，sex 字段更新为 1，其他字段不会被更新。也就是说，通过 `UpdateEntity`
+创建的对象，只会更新调用了 setter 方法的字段，若不调用 setter 方法，不管这个对象里的属性的值是什么，都不会更新到数据库。
 
 其生成的 sql 内容如下：
 
@@ -381,7 +382,7 @@ update tb_account set user_name = ? ,sex = ? where id = ?
 
 ## 多主键
 
-Mybatis-Flex 多主键就是在 Entity 类里有多个 `@id` 主键标识而已，比如：
+Mybatis-Flex 多主键就是在 Entity 类里有多个 `@Id` 注解标识而已，比如：
 
 ```java
 @Table("tb_account")
