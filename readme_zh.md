@@ -309,20 +309,22 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 ## Db + Row 工具类
 
-Db 工具类及其配套的 Row 类，提供了在 Entity 实体类之外的数据库操作能力。使用 Db 与 Row 类时，无需对数据库表进行映射，
+Db + Row 工具类，提供了在 Entity 实体类之外的数据库操作能力。使用 Db + Row 时，无需对数据库表进行映射，
 Row 是一个 HashMap 的子类，相当于一个通用的 Entity。以下为 Db + Row 的一些示例：
 
 ```java
+//使用原生 SQL 插入数据
 String sql = "insert into tb_account(id,name) value (?, ?)";
 Db.insertBySql(sql,1,"michael");
 
+//使用 Row 插入数据
 Row account = new Row();
 account.set("id",100);
 account.set("name","Michael");
 Db.insertRow("tb_account",account);
 
 
-//row 是一个 hashmap
+//根据主键查询数据
 Row row = Db.selectOneById("tb_account","id",1);
 
 //Row 可以直接转换为 Entity 实体类，且性能极高
@@ -337,7 +339,7 @@ List<Row> rows = Db.selectListBySql(sql,18);
 //分页查询：每页 10 条数据，查询第 3 页的年龄大于 18 的用户
 QueryWrapper query = QueryWrapper.create()
         .where(ACCOUNT.AGE.ge(18));
-Page<Row> rowPage = Db.paginate(3,10,query);
+Page<Row> rowPage = Db.paginate("tb_account",3,10,query);
 ```
 > Db 工具类还提供了更多 增、删、改、查和分页查询等方法。
 > 
