@@ -22,7 +22,6 @@
 **第一步：编写 Entity 实体类**
 
 ```java
-
 @Table("tb_account")
 public class Account {
 
@@ -315,6 +314,13 @@ Row account = new Row();
 account.set("id",100);
 account.set("name","Michael");
 Db.insertRow("tb_account",account);
+
+
+//row 是一个 hashmap
+Row row = Db.selectOneById("tb_account","id",1);
+
+//Row 可以直接转换为 Entity 实体类，且性能极高
+Account account = row.toEntity(Account.class);
 ```
 > Db 工具类还提供了更多 增、删、改、查和分页查询等方法。
 > 
@@ -348,6 +354,72 @@ accountMapper.update(account,false);
 ```sql
 update tb_account set user_name = ? ,sex = ? where id = ?
 #params: null,1,1
+```
+
+## 多主键
+
+Mybatis-Flex 多主键就是在 Entity 类里有多个 `@id` 主键标识而已，比如：
+
+```java
+@Table("tb_account")
+public class Account {
+
+    @Id((keyType=KeyType.Auto)
+    private Long id;
+    
+    @Id(keyType=KeyType.Generator, value="uuid")
+    private String otherId;
+    
+    private String userName;
+    private Date birthday;
+    private int sex;
+
+    //getter setter
+}
+```
+当我们保存数据的时候，Account 的 id 主键为自增，而 otherId 主键则通过 uuid 生成。
+
+### 自定义主键生成器
+
+第 1 步：编写一个类，实现 `IKeyGenerator` 接口，例如：
+
+```java
+public class UUIDKeyGenerator implements IKeyGenerator {
+
+    @Override
+    public Object generate(Object entity, String keyColumn) {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
+}
+```
+
+第 2 步：注册 UUIDKeyGenerator
+```java
+KeyGeneratorFactory.register("myUUID",new UUIDKeyGenerator());
+```
+
+第 3 步：在 Entity 里使用 "myUUID" 生成器：
+```java
+@Table("tb_account")
+public class Account {
+    
+    @Id(keyType=KeyType.Generator, value="myUUID")
+    private String otherId;
+
+    //getter setter
+}
+```
+
+### 使用数据库 Sequence 生成
+
+```java
+@Table("tb_account")
+public class Account {
+
+    @Id((keyType=KeyType.Sequence, value="select SEQ_USER_ID.nextval as id from dual")
+    private Long id;
+    
+}
 ```
 
 
