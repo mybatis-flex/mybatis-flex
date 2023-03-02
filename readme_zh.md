@@ -11,6 +11,12 @@
 - 6、极其友好的 SQL 联动查询，IDE 自动提示不再担心出错
 - 7、更多小惊喜
 
+## 开始
+
+- [Maven 依赖](./docs/zh/maven.md)
+- [示例项目](./mybatis-flex-test)
+
+
 ## QQ 群
 
 群号： 532992631
@@ -424,8 +430,8 @@ public class Account {
 
 ## 更多示例
 
-- 1、[Mybatis-Flex 原生（无其他依赖）](./mybatis-flex-test/mybatis-flex-native-test)
-- 2、[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
-- 3、[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
+- 示例 1：[Mybatis-Flex 原生（非 Spring）](./mybatis-flex-test/mybatis-flex-native-test)
+- 示例 2：[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
+- 示例 3：[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
 
 
