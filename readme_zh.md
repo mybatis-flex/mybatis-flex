@@ -189,7 +189,6 @@ query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
             avg(ACCOUNT.SEX).as("sex_avg")
         ).from(ACCOUNT);
 
-
 // SQL: 
 // SELECT tb_account.id, tb_account.user_name, 
 // MAX(tb_account.birthday), 
@@ -229,7 +228,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 // SELECT * FROM tb_account 
 // WHERE tb_account.id >=  ?  
 // AND EXIST (
-// SELECT 1 FROM tb_article WHERE tb_article.id >=  ? 
+//    SELECT 1 FROM tb_article WHERE tb_article.id >=  ? 
 // )
 ```
 
@@ -290,15 +289,15 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 // SELECT * FROM tb_account 
 // LEFT JOIN tb_article 
 // ON tb_account.id = tb_article.account_id 
-// WHERE tb_account.age >=  ? 
-
+// WHERE tb_account.age >=  ?
 ```
 
-### 可能存在问题
+### 存在疑问？
 
 **如何通过实体类 Account.java 生成 QueryWrapper 所需要的 "ACCOUNT" 类 ?**
 
-答：通过开发工具构建项目（如下图），或者执行 maven 编译命令: `mvn clean package`
+答：Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时候，会自动根据 Entity 类定义的字段帮你生成 "ACCOUNT" 类，
+通过开发工具构建项目（如下图），或者执行 maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
 
 ![](./docs/assets/images/build_idea.png)
 
