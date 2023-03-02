@@ -4,8 +4,8 @@
 ## 特征
 
 - 1、很轻量，整个框架只依赖 Mybatis 再无其他第三方依赖
-- 2、只增强，Entity 的增删改查、以及分页查询，但不缺少原有的任何功能
-- 3、Db + Row 通用映射支持，可以无需实体类对数据库进行增删改查
+- 2、只增强，支持 Entity 的增删改查、及分页查询，但不丢失 Mybatis 原有功能
+- 3、Db + Row，可以无需实体类对数据库进行增删改查
 - 4、支持多种数据库类型，自由通过方言持续扩展
 - 5、支持联合主键，以及不同的主键内容生成策略
 - 6、极其友好的 SQL 联动查询，IDE 自动提示不再担心出错
@@ -307,9 +307,10 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 ![](./docs/assets/images/build_idea.png)
 
-## Db 工具类
+## Db + Row 工具类
 
-Db 是一个极度轻量的数据库操作工具类，以下是一些示例：
+Db 工具类及其配套的 Row 类，提供了在 Entity 实体类之外的数据库操作能力。使用 Db 与 Row 类时，无需对数据库表进行映射，
+Row 是一个 HashMap 的子类，相当于一个通用的 Entity。以下为 Db + Row 的一些示例：
 
 ```java
 String sql = "insert into tb_account(id,name) value (?, ?)";
@@ -326,6 +327,17 @@ Row row = Db.selectOneById("tb_account","id",1);
 
 //Row 可以直接转换为 Entity 实体类，且性能极高
 Account account = row.toEntity(Account.class);
+
+
+//查询所有大于 18 岁的用户
+String listsql = "select * from tb_account where age > ?"
+List<Row> rows = Db.selectListBySql(sql,18);
+
+
+//分页查询：每页 10 条数据，查询第 3 页的年龄大于 18 的用户
+QueryWrapper query = QueryWrapper.create()
+        .where(ACCOUNT.AGE.ge(18));
+Page<Row> rowPage = Db.paginate(3,10,query);
 ```
 > Db 工具类还提供了更多 增、删、改、查和分页查询等方法。
 > 
