@@ -285,6 +285,10 @@ public class TableInfo {
             }
             for (String property : properties) {
                 String column = getColumnByProperty(property);
+                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)){
+                    continue;
+                }
+
                 if (!includePrimary && ArrayUtil.contains(primaryKeys, column)) {
                     continue;
                 }
@@ -298,6 +302,10 @@ public class TableInfo {
         //not ModifyAttrsRecord
         else {
             for (String column : this.columns) {
+                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)){
+                    continue;
+                }
+
                 Object value = getColumnValue(metaObject, column);
                 if (ignoreNulls && value == null) {
                     continue;
@@ -335,6 +343,10 @@ public class TableInfo {
             }
             for (String property : properties) {
                 String column = getColumnByProperty(property);
+                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)){
+                    continue;
+                }
+
                 if (!includePrimary && ArrayUtil.contains(primaryKeys, column)) {
                     continue;
                 }
@@ -345,9 +357,13 @@ public class TableInfo {
                 values.add(value);
             }
         }
-        // not ModifyAttrsRecord
+        // normal entity. not ModifyAttrsRecord
         else {
             for (String column : this.columns) {
+                if (onUpdateColumns != null && onUpdateColumns.containsKey(column)){
+                    continue;
+                }
+
                 Object value = getColumnValue(metaObject, column);
                 if (ignoreNulls && value == null) {
                     continue;

@@ -427,6 +427,14 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(modifyAttr)).append(" = ? ");
             index++;
         }
+
+        Map<String, String> onUpdateColumns = tableInfo.getOnUpdateColumns();
+        if (onUpdateColumns != null && !onUpdateColumns.isEmpty()) {
+            StringJoiner stringJoiner = new StringJoiner(", ");
+            onUpdateColumns.forEach((column, value) -> stringJoiner.add(wrap(column) + " = " + value));
+            sql.append(", ").append(stringJoiner);
+        }
+
         sql.append(" WHERE ");
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
@@ -453,6 +461,14 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(modifyAttr)).append(" = ? ");
             index++;
         }
+
+        Map<String, String> onUpdateColumns = tableInfo.getOnUpdateColumns();
+        if (onUpdateColumns != null && !onUpdateColumns.isEmpty()) {
+            StringJoiner stringJoiner = new StringJoiner(", ");
+            onUpdateColumns.forEach((column, value) -> stringJoiner.add(wrap(column) + " = " + value));
+            sql.append(", ").append(stringJoiner);
+        }
+
         sql.append(" WHERE ");
         sql.append(buildWhereConditionSql(queryWrapper));
 
