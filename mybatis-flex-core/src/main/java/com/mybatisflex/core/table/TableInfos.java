@@ -19,6 +19,7 @@ import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
@@ -37,6 +38,10 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TableInfos {
+
+    /**
+     * 支持映射到数据库的数据类型
+     */
     private static final Set<Class<?>> defaultSupportColumnTypes = CollectionUtil.newHashSet(
             int.class, Integer.class,
             short.class, Short.class,
@@ -106,6 +111,19 @@ public class TableInfos {
 
         Field idField = null;
 
+        String logicDeleteColumn = null;
+        String versionColumn = null;
+
+        //数据插入时，默认插入数据字段
+        Map<String, String> onInsertColumns = new HashMap<>();
+
+        //数据更新时，默认更新内容的字段
+        Map<String, String> onUpdateColumns = new HashMap<>();
+
+        //大字段列
+        Set<String> largeColumns = new LinkedHashSet<>();
+
+
         List<Field> entityFields = ClassUtil.getAllFields(entityClass);
         for (Field field : entityFields) {
 
@@ -119,9 +137,43 @@ public class TableInfos {
                 continue; // ignore
             }
 
+            //列名
             String columnName = column != null && StringUtil.isNotBlank(column.value())
                     ? column.value()
                     : (tableInfo.isCamelToUnderline() ? StringUtil.camelToUnderline(field.getName()) : field.getName());
+
+            //逻辑删除字段
+            if (column != null && column.isLogicDelete()) {
+                if (logicDeleteColumn == null) {
+                    logicDeleteColumn = columnName;
+                } else {
+                    throw FlexExceptions.wrap("The logic delete column of entity[%s] must be less then 2.", entityClass.getName());
+                }
+            }
+
+            //乐观锁版本字段
+            if (column != null && column.version()) {
+                if (versionColumn == null) {
+                    versionColumn = columnName;
+                } else {
+                    throw FlexExceptions.wrap("The version column of entity[%s] must be less then 2.", entityClass.getName());
+                }
+            }
+
+            if (column != null && StringUtil.isNotBlank(column.onInsertValue())) {
+                onInsertColumns.put(columnName, column.onInsertValue().trim());
+            }
+
+
+            if (column != null && StringUtil.isNotBlank(column.onUpdateValue())) {
+                onUpdateColumns.put(columnName, column.onUpdateValue().trim());
+            }
+
+
+            if (column != null && column.isLarge()) {
+                largeColumns.add(columnName);
+            }
+
 
             Id id = field.getAnnotation(Id.class);
             ColumnInfo columnInfo;
@@ -158,8 +210,24 @@ public class TableInfos {
             }
         }
 
+        tableInfo.setLogicDeleteColumn(logicDeleteColumn);
+        tableInfo.setVersionColumn(versionColumn);
+
+        if (!onInsertColumns.isEmpty()) {
+            tableInfo.setOnInsertColumns(onInsertColumns);
+        }
+
+        if (!onUpdateColumns.isEmpty()) {
+            tableInfo.setOnUpdateColumns(onUpdateColumns);
+        }
+
+        if (!largeColumns.isEmpty()) {
+            tableInfo.setLargeColumns(largeColumns.toArray(new String[0]));
+        }
+
         tableInfo.setColumnInfoList(columnInfoList);
         tableInfo.setPrimaryKeyList(idInfos);
+
 
         return tableInfo;
     }

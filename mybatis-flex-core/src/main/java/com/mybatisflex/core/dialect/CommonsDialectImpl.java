@@ -25,6 +25,7 @@ import com.mybatisflex.core.util.StringUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 
 /**
  * 通用的方言设计，其他方言可以继承于当前 CommonsDialectImpl
@@ -350,11 +351,26 @@ public class CommonsDialectImpl implements IDialect {
     public String forInsertEntity(TableInfo tableInfo, Object entity) {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ").append(wrap(tableInfo.getTableName()));
+
+
         String[] insertColumns = tableInfo.obtainInsertColumns();
-        sql.append("(").append(StringUtil.join(",", insertColumns)).append(")");
-        sql.append(" VALUES ");
-        sql.append(buildQuestion(insertColumns.length, true));
-        return sql.toString();
+        Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
+
+        StringJoiner sqlFields = new StringJoiner(", ");
+        StringJoiner sqlValues = new StringJoiner(", ");
+
+        for (String insertColumn : insertColumns) {
+            sqlFields.add(insertColumn);
+            if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
+                sqlValues.add(onInsertColumns.get(insertColumn));
+            } else {
+                sqlValues.add("?");
+            }
+        }
+
+        return sql.append("(").append(sqlFields).append(")")
+                .append(" VALUES ")
+                .append("(").append(sqlValues).append(")").toString();
     }
 
     @Override
@@ -365,12 +381,22 @@ public class CommonsDialectImpl implements IDialect {
         sql.append("(").append(StringUtil.join(",", insertColumns)).append(")");
         sql.append(" VALUES ");
 
+        Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
         for (int i = 0; i < entities.size(); i++) {
-            sql.append(buildQuestion(insertColumns.length, true));
+            StringJoiner stringJoiner = new StringJoiner("(", ", ", ")");
+            for (String insertColumn : insertColumns) {
+                if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
+                    stringJoiner.add(onInsertColumns.get(insertColumn));
+                } else {
+                    stringJoiner.add("?");
+                }
+            }
+            sql.append(stringJoiner);
             if (i != entities.size() - 1) {
                 sql.append(", ");
             }
         }
+
         return sql.toString();
     }
 

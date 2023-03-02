@@ -20,10 +20,10 @@ public class Article {
     @Column(isLarge = true)
     private String content;
 
-    @Column(insert = "now()")
+    @Column(onInsertValue = "now()")
     private Date created;
 
-    @Column(update = "now()")
+    @Column(onUpdateValue = "now()")
     private Date modified;
 
 }

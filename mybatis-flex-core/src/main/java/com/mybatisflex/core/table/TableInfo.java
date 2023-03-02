@@ -40,12 +40,29 @@ public class TableInfo {
     private boolean useCached = false;
     private boolean camelToUnderline = true;
 
+    //逻辑删除数据库列名
+    private String logicDeleteColumn;
 
-    private String[] columns = new String[0];  // 所有的字段，但除了主键的列
-    private String[] primaryKeys = new String[0]; //主键字段
+    //乐观锁字段
+    private String versionColumn;
+
+    //数据插入时，默认插入数据字段
+    private Map<String, String> onInsertColumns;
+
+    //数据更新时，默认更新内容的字段
+    private Map<String, String> onUpdateColumns;
+
+    //大字段列
+    private String[] largeColumns = new String[0];
+
+    // 所有的字段，但除了主键的列
+    private String[] columns = new String[0];
+
+    //主键字段
+    private String[] primaryKeys = new String[0];
 
     //在插入数据的时候，支持主动插入的主键字段
-    //排除主键为 auto 和 before 为 false 的主键字段
+    //通过自定义生成器生成 或者 Sequence 在 before 生成的时候，是需要主动插入数据的
     private String[] insertPrimaryKeys;
 
     private List<ColumnInfo> columnInfoList;
@@ -101,6 +118,54 @@ public class TableInfo {
 
     public void setCamelToUnderline(boolean camelToUnderline) {
         this.camelToUnderline = camelToUnderline;
+    }
+
+    public String getLogicDeleteColumn() {
+        return logicDeleteColumn;
+    }
+
+    public void setLogicDeleteColumn(String logicDeleteColumn) {
+        this.logicDeleteColumn = logicDeleteColumn;
+    }
+
+    public String getVersionColumn() {
+        return versionColumn;
+    }
+
+    public void setVersionColumn(String versionColumn) {
+        this.versionColumn = versionColumn;
+    }
+
+    public Map<String, String> getOnInsertColumns() {
+        return onInsertColumns;
+    }
+
+    public void setOnInsertColumns(Map<String, String> onInsertColumns) {
+        this.onInsertColumns = onInsertColumns;
+    }
+
+    public Map<String, String> getOnUpdateColumns() {
+        return onUpdateColumns;
+    }
+
+    public void setOnUpdateColumns(Map<String, String> onUpdateColumns) {
+        this.onUpdateColumns = onUpdateColumns;
+    }
+
+    public String[] getLargeColumns() {
+        return largeColumns;
+    }
+
+    public void setLargeColumns(String[] largeColumns) {
+        this.largeColumns = largeColumns;
+    }
+
+    public String[] getInsertPrimaryKeys() {
+        return insertPrimaryKeys;
+    }
+
+    public void setInsertPrimaryKeys(String[] insertPrimaryKeys) {
+        this.insertPrimaryKeys = insertPrimaryKeys;
     }
 
     public Reflector getReflector() {
@@ -191,13 +256,15 @@ public class TableInfo {
     public Object[] obtainInsertValues(Object entity) {
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
         String[] insertColumns = obtainInsertColumns();
-        Object[] values = new Object[insertColumns.length];
-        for (int i = 0; i < insertColumns.length; i++) {
-            Object value = getColumnValue(metaObject, insertColumns[i]);
-            values[i] = value;
-        }
 
-        return values;
+        List<Object> values = new ArrayList<>(insertColumns.length);
+        for (String insertColumn : insertColumns) {
+            if (onInsertColumns == null || !onInsertColumns.containsKey(insertColumn)) {
+                Object value = getColumnValue(metaObject, insertColumn);
+                values.add(value);
+            }
+        }
+        return values.toArray();
     }
 
 
@@ -366,6 +433,7 @@ public class TableInfo {
 
     /**
      * 通过 row 实例类转换为一个 entity
+     *
      * @return entity
      */
     public <T> T newInstanceByRow(Row row) {

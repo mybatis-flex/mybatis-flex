@@ -30,12 +30,12 @@ public @interface Column {
     /**
      * update 的时候自动赋值，这个值会直接被拼接到 sql 而不通过参数设置
      */
-    String update() default "";
+    String onUpdateValue() default "";
 
     /**
      * insert 的时候默认值，这个值会直接被拼接到 sql 而不通过参数设置
      */
-    String insert() default "";
+    String onInsertValue() default "";
 
     /**
      * 是否忽略该字段，可能只是业务字段，而非数据库对应字段
