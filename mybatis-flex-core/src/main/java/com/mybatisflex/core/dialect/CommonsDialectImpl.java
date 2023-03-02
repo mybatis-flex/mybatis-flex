@@ -32,7 +32,7 @@ import java.util.Set;
  */
 public class CommonsDialectImpl implements IDialect {
 
-    protected KeywordWrap keywordWrap = KeywordWrap.NONE;
+    protected KeywordWrap keywordWrap = KeywordWrap.BACKQUOTE;
     private LimitOffsetProcesser limitOffsetProcesser = LimitOffsetProcesser.MYSQL;
 
     public CommonsDialectImpl() {
