@@ -96,7 +96,11 @@ class WrapperUtil {
 
 
     public static String getColumnTableName(List<QueryTable> queryTables, QueryTable queryTable) {
-        if (queryTables == null || queryTables.size() <= 1){
+        if (queryTables == null) {
+            return "";
+        }
+
+        if (queryTables.size() == 1 && queryTables.get(0).isSameTable(queryTable)) {
             return "";
         }
 
@@ -104,6 +108,7 @@ class WrapperUtil {
         if (realTable == null) {
             return "";
         }
+
         return StringUtil.isNotBlank(realTable.alias) ? realTable.alias : realTable.name;
     }
 
