@@ -13,7 +13,7 @@ public class Article {
     @Id(keyType = KeyType.Auto)
     private Long id;
 
-    @Id(keyType = KeyType.Generator,value = "uuid")
+    @Id(keyType = KeyType.Generator, value = "uuid")
     private String uuid;
 
     private Long accountId;
@@ -34,6 +34,8 @@ public class Article {
 
     @Column(version = true)
     private Long version;
+
+    private Account account;
 
     public Long getId() {
         return id;
@@ -105,5 +107,13 @@ public class Article {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

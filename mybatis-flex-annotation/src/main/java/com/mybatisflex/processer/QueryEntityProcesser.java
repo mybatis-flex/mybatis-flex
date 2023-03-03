@@ -27,13 +27,34 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Consumer;
 
 public class QueryEntityProcesser extends AbstractProcessor {
+
+    private static final List<String> defaultSupportColumnTypes = Arrays.asList(
+            int.class.getName(), Integer.class.getName(),
+            short.class.getName(), Short.class.getName(),
+            long.class.getName(), Long.class.getName(),
+            float.class.getName(), Float.class.getName(),
+            double.class.getName(), Double.class.getName(),
+            boolean.class.getName(), Boolean.class.getName(),
+            Date.class.getName(), java.sql.Date.class.getName(), LocalDate.class.getName(), LocalDateTime.class.getName(), LocalTime.class.getName(),
+            byte[].class.getName(), Byte[].class.getName(),
+            BigInteger.class.getName(), BigDecimal.class.getName(),
+            char.class.getName(), String.class.getName()
+    );
 
     private static final String classTableTemplate = "package @package;\n" +
             "\n" +
@@ -52,6 +73,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
             "    public static class @entityClassTableDef extends TableDef {\n" +
             "\n" +
             "@queryColumns" +
+            "@defaultColumns" +
             "@allColumns" +
             "\n" +
             "        public @entityClassTableDef(String tableName) {\n" +
@@ -61,14 +83,20 @@ public class QueryEntityProcesser extends AbstractProcessor {
 
 
     private static final String columnsTemplate = "        public QueryColumn @property = new QueryColumn(this, \"@columnName\");\n";
-    private static final String allColumnsTemplate = "\n        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{@allColumns};\n\n";
 
-    protected Filer filer;
+    private static final String defaultColumnsTemplate = "\n        public QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{@allColumns};\n";
+    private static final String allColumnsTemplate = "        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{@allColumns};\n\n";
+
+    private Filer filer;
+    private Elements elementUtils;
+    private Types typeUtils;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         this.filer = processingEnvironment.getFiler();
+        this.elementUtils = processingEnvironment.getElementUtils();
+        this.typeUtils = processingEnvironment.getTypeUtils();
     }
 
     @Override
@@ -111,23 +139,36 @@ public class QueryEntityProcesser extends AbstractProcessor {
 
 
                 Map<String, String> propertyAndColumns = new LinkedHashMap<>();
+                List<String> defaultColumns = new ArrayList<>();
 
                 TypeElement classElement = (TypeElement) entityClassElement;
                 for (Element fieldElement : classElement.getEnclosedElements()) {
 
                     //all fields
                     if (ElementKind.FIELD == fieldElement.getKind()) {
+
+                        TypeMirror typeMirror = fieldElement.asType();
+//                        Element typeElement = typeUtils.asElement(typeMirror);
+
+                        if (!defaultSupportColumnTypes.contains(typeMirror.toString())) {
+                            continue;
+                        }
+
                         Column column = fieldElement.getAnnotation(Column.class);
                         if (column != null && column.ignore()) {
                             continue;
                         }
                         String columnName = column != null && column.value().trim().length() > 0 ? column.value() : camelToUnderline(fieldElement.toString());
                         propertyAndColumns.put(fieldElement.toString(), columnName);
+
+                        if (column == null || (!column.isLarge() && !column.isLogicDelete())) {
+                            defaultColumns.add(columnName);
+                        }
                     }
                 }
 
                 String entityClassName = entityClassElement.getSimpleName().toString();
-                tablesContent.append(buildClass(entityClassName, tableName, propertyAndColumns));
+                tablesContent.append(buildClass(entityClassName, tableName, propertyAndColumns, defaultColumns));
             });
 
             if (tablesContent.length() > 0) {
@@ -141,7 +182,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
         return false;
     }
 
-    private String buildClass(String entityClass, String tableName, Map<String, String> propertyAndColumns) {
+    private String buildClass(String entityClass, String tableName, Map<String, String> propertyAndColumns, List<String> defaultColumns) {
 
         // tableDefTemplate = "    public static final @entityClassTableDef @tableField = new @entityClassTableDef(\"@tableName\");\n";
 
@@ -165,6 +206,11 @@ public class QueryEntityProcesser extends AbstractProcessor {
         String allColumnsString = allColumnsTemplate.replace("@allColumns", allColumns.toString());
 
 
+        StringJoiner defaultColumnStringJoiner = new StringJoiner(", ");
+        defaultColumns.forEach(s -> defaultColumnStringJoiner.add(camelToUnderline(s).toUpperCase()));
+        String defaultColumnsString = defaultColumnsTemplate.replace("@allColumns", defaultColumnStringJoiner.toString());
+
+
 //        classTemplate = "\n" +
 //                "    public static class @entityClassTableDef extends TableDef {\n" +
 //                "\n" +
@@ -178,6 +224,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
 
         String tableClass = classTemplate.replace("@entityClass", entityClass)
                 .replace("@queryColumns", queryColumns)
+                .replace("@defaultColumns", defaultColumnsString)
                 .replace("@allColumns", allColumnsString);
 
         return tableDef + tableClass;

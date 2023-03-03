@@ -34,4 +34,6 @@ public class TableDef implements Serializable {
     public QueryTable as(String alias) {
         return new QueryTable(tableName, alias);
     }
+
+
 }

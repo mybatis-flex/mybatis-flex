@@ -39,9 +39,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TableInfos {
 
-    /**
-     * 支持映射到数据库的数据类型
-     */
     private static final Set<Class<?>> defaultSupportColumnTypes = CollectionUtil.newHashSet(
             int.class, Integer.class,
             short.class, Short.class,
