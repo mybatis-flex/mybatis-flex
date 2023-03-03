@@ -13,6 +13,9 @@ public class Article {
     @Id(keyType = KeyType.Auto)
     private Long id;
 
+    @Id(keyType = KeyType.Generator,value = "uuid")
+    private String uuid;
+
     private Long accountId;
 
     private String title;
@@ -38,6 +41,14 @@ public class Article {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public Long getAccountId() {

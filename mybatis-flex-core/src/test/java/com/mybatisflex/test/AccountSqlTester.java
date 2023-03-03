@@ -96,7 +96,7 @@ public class AccountSqlTester {
                 .where(ACCOUNT.ID.ge(100))
                 .and(
                         exist(
-                                selectOne().from(ARTICLE).where(ARTICLE.ID.ge(100))
+                                selectOne().from(ARTICLE).as("a").where(ARTICLE.ID.ge(100))
                         )
                 );
 
