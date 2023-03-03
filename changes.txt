@@ -3,6 +3,7 @@ mybatis-flex v1.0.0-beta.2 20230303:
 优化：完善对 @Column(onUpdateValue=xxx,onInsertValue=xxx) 的支持
 优化：完善对 @Column(version = true) 的支持
 优化：重命名 BaseMapper 的 insertBatchWithFirstEntityColumns 为 insertBatch
+优化：重命名 DialectFactory 的 createDialectByDbType 为 createDialect
 优化：为逻辑删除的默认值功能添加常量
 修复：createDialectByDbType 方法中pg库的 KeywordWrap 错误
 文档：优化文档

@@ -48,7 +48,7 @@ public class DialectFactory {
      */
     public static IDialect getDialect() {
         DbType dbType = ObjectUtil.requireNonNullElse(dbTypeThreadLocal.get(), FlexGlobalConfig.getDefaultConfig().getDbType());
-        return MapUtil.computeIfAbsent(dialectMap, dbType, DialectFactory::createDialectByDbType);
+        return MapUtil.computeIfAbsent(dialectMap, dbType, DialectFactory::createDialect);
     }
 
     /**
@@ -89,7 +89,7 @@ public class DialectFactory {
     }
 
 
-    private static IDialect createDialectByDbType(DbType dbType) {
+    private static IDialect createDialect(DbType dbType) {
         switch (dbType) {
             case MYSQL:
             case H2:
