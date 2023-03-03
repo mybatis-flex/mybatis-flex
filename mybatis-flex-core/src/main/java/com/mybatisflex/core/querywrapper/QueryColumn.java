@@ -18,6 +18,7 @@ package com.mybatisflex.core.querywrapper;
 
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.table.TableDef;
+import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.io.Serializable;
@@ -38,15 +39,18 @@ public class QueryColumn implements Serializable {
     }
 
     public QueryColumn(String name) {
+        SqlUtil.keepColumnSafely(name);
         this.name = name;
     }
 
     public QueryColumn(String tableName, String name) {
+        SqlUtil.keepColumnSafely(name);
         this.table = new QueryTable(tableName);
         this.name = name;
     }
 
     public QueryColumn(TableDef tableDef, String name) {
+        SqlUtil.keepColumnSafely(name);
         this.table = new QueryTable(tableDef.getTableName());
         this.name = name;
     }
@@ -77,6 +81,7 @@ public class QueryColumn implements Serializable {
     }
 
     public QueryColumn as(String alias) {
+        SqlUtil.keepColumnSafely(alias);
         QueryColumn newColumn = new QueryColumn();
         newColumn.table = this.table;
         newColumn.name = this.name;
@@ -175,7 +180,6 @@ public class QueryColumn implements Serializable {
     }
 
 
-
     /**
      * IS NOT NULL
      *
@@ -203,6 +207,7 @@ public class QueryColumn implements Serializable {
 
     /**
      * in child select
+     *
      * @param queryWrapper
      * @return
      */
@@ -254,6 +259,7 @@ public class QueryColumn implements Serializable {
 
     /**
      * not in child select
+     *
      * @param queryWrapper
      */
     public QueryCondition notIn(QueryWrapper queryWrapper) {
@@ -263,6 +269,7 @@ public class QueryColumn implements Serializable {
 
     /**
      * between
+     *
      * @param start
      * @param end
      */
@@ -301,13 +308,13 @@ public class QueryColumn implements Serializable {
         }
     }
 
-     String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
+    String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
         String tableName = WrapperUtil.getColumnTableName(queryTables, table);
         return wrap(dialect, tableName, name);
     }
 
 
-     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
+    String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String tableName = WrapperUtil.getColumnTableName(queryTables, table);
         return wrap(dialect, tableName, name) + WrapperUtil.buildAsAlias(dialect.wrap(alias));
     }

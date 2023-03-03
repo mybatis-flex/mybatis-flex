@@ -16,12 +16,16 @@
 package com.mybatisflex.core.row;
 
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
+import com.mybatisflex.core.querywrapper.QueryColumn;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfos;
 import com.mybatisflex.core.util.ArrayUtil;
+import com.mybatisflex.core.util.SqlUtil;
+import com.mybatisflex.core.util.StringUtil;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Map;
 
 public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     private static final Object[] NULL_ARGS = new Object[0];
@@ -84,12 +88,19 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     }
 
 
-    public Row set(String key, Object value) {
-        put(key, value);
+    public Row set(String column, Object value) {
+        if (StringUtil.isBlank(column)) {
+            throw new IllegalArgumentException("key column not be null or empty.");
+        }
+
+        SqlUtil.keepColumnSafely(column);
+
+        put(column, value);
+
         boolean isPrimaryKey = false;
         if (this.primaryKeys != null) {
             for (RowKey rowKey : primaryKeys) {
-                if (rowKey.getKeyColumn().equals(key)) {
+                if (rowKey.getKeyColumn().equals(column)) {
                     isPrimaryKey = true;
                     break;
                 }
@@ -97,10 +108,14 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
         }
 
         if (!isPrimaryKey) {
-            addModifyAttr(key);
+            addModifyAttr(column);
         }
 
         return this;
+    }
+
+    public Row set(QueryColumn queryColumn, Object value) {
+        return set(queryColumn.getName(), value);
     }
 
 
@@ -123,7 +138,25 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     }
 
 
-    public void keep(Set<String> attrs) {
+    public Map<String, Object> toCamelKeysMap() {
+        Map<String, Object> ret = new HashMap<>();
+        for (String key : keySet()) {
+            ret.put(StringUtil.underlineToCamel(key), get(key));
+        }
+        return ret;
+    }
+
+
+    public Map<String, Object> toUnderlineKeysMap() {
+        Map<String, Object> ret = new HashMap<>();
+        for (String key : keySet()) {
+            ret.put(StringUtil.camelToUnderline(key), get(key));
+        }
+        return ret;
+    }
+
+
+    public void keepModifyAttrs(Collection<String> attrs) {
         if (attrs == null) {
             throw new NullPointerException("attrs is null.");
         }
@@ -174,7 +207,7 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     }
 
 
-    public Object[] obtainModifyValuesAndPrimaryValues() {
+    public Object[] obtainAllModifyValues() {
         return ArrayUtil.concat(obtainModifyValues(), obtainsPrimaryValues());
     }
 

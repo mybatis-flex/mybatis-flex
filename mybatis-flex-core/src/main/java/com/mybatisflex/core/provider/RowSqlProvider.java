@@ -84,7 +84,7 @@ public class RowSqlProvider {
 
         //让所有 row 的列顺序和值的数量与第条数据保持一致
         Set<String> modifyAttrs = rows.get(0).obtainModifyAttrs();
-        rows.forEach(row -> row.keep(modifyAttrs));
+        rows.forEach(row -> row.keepModifyAttrs(modifyAttrs));
 
 
         Object[] values = new Object[]{};
@@ -164,7 +164,7 @@ public class RowSqlProvider {
     public static String updateById(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         Row row = ProviderUtil.getRow(params);
-        ProviderUtil.setSqlArgs(params, row.obtainModifyValuesAndPrimaryValues());
+        ProviderUtil.setSqlArgs(params, row.obtainAllModifyValues());
         return DialectFactory.getDialect().forUpdateById(tableName, row);
     }
 
@@ -208,7 +208,7 @@ public class RowSqlProvider {
 
         Object[] values = new Object[0];
         for (Row row : rows) {
-            values = ArrayUtil.concat(values, row.obtainModifyValuesAndPrimaryValues());
+            values = ArrayUtil.concat(values, row.obtainAllModifyValues());
         }
         ProviderUtil.setSqlArgs(params, values);
         return DialectFactory.getDialect().forUpdateBatchById(tableName, rows);

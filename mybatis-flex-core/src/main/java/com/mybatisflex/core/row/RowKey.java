@@ -16,6 +16,7 @@
 package com.mybatisflex.core.row;
 
 import com.mybatisflex.core.enums.KeyType;
+import com.mybatisflex.core.util.SqlUtil;
 
 /**
  * row 的主键策略
@@ -25,21 +26,23 @@ public class RowKey {
     /**
      * 自增 ID
      */
-    public static final RowKey ID_AUTO = new UnModifiableRowKey("id",KeyType.Auto,null,false);
+    public static final RowKey ID_AUTO = new UnModifiableRowKey("id", KeyType.Auto, null, false);
 
     /**
      * UUID 的 ID
      */
-    public static final RowKey ID_UUID = new UnModifiableRowKey("id",KeyType.Generator,"uuid",true);
+    public static final RowKey ID_UUID = new UnModifiableRowKey("id", KeyType.Generator, "uuid", true);
 
 
     public static RowKey of(String keyColumn) {
+        SqlUtil.keepColumnSafely(keyColumn);
         RowKey rowKey = new RowKey();
         rowKey.keyColumn = keyColumn;
         return rowKey;
     }
 
     public static RowKey of(String keyColumn, KeyType keyType) {
+        SqlUtil.keepColumnSafely(keyColumn);
         RowKey rowKey = new RowKey();
         rowKey.keyColumn = keyColumn;
         rowKey.keyType = keyType;
@@ -47,6 +50,7 @@ public class RowKey {
     }
 
     public static RowKey of(String keyColumn, KeyType keyType, String keyTypeValue) {
+        SqlUtil.keepColumnSafely(keyColumn);
         RowKey rowKey = new RowKey();
         rowKey.keyColumn = keyColumn;
         rowKey.keyType = keyType;
@@ -55,6 +59,7 @@ public class RowKey {
     }
 
     public static RowKey of(String keyColumn, KeyType keyType, String keyTypeValue, boolean before) {
+        SqlUtil.keepColumnSafely(keyColumn);
         RowKey rowKey = new RowKey();
         rowKey.keyColumn = keyColumn;
         rowKey.keyType = keyType;
@@ -116,7 +121,7 @@ public class RowKey {
         this.before = before;
     }
 
-    static class UnModifiableRowKey extends RowKey{
+    static class UnModifiableRowKey extends RowKey {
 
         public UnModifiableRowKey(String keyColumn, KeyType keyType, String value, boolean before) {
             super();

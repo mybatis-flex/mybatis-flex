@@ -17,6 +17,7 @@ package com.mybatisflex.core.querywrapper;
 
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.util.SqlUtil;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class StringQueryOrderBy extends QueryOrderBy {
     private String orderBy;
 
     public StringQueryOrderBy(String orderBy) {
+        SqlUtil.keepOrderBySqlSafely(orderBy);
         this.orderBy = orderBy;
     }
 

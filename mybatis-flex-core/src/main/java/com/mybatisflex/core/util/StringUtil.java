@@ -27,7 +27,6 @@ public class StringUtil {
      * 第一个字符转换为小写
      *
      * @param string
-     * @return
      */
     public static String firstCharToLowerCase(String string) {
         char firstChar = string.charAt(0);
@@ -65,9 +64,9 @@ public class StringUtil {
         if (isBlank(string)) {
             return "";
         }
-        int len = string.length();
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
+        int strLen = string.length();
+        StringBuilder sb = new StringBuilder(strLen);
+        for (int i = 0; i < strLen; i++) {
             char c = string.charAt(i);
             if (Character.isUpperCase(c) && i > 0) {
                 sb.append('_');
@@ -87,12 +86,12 @@ public class StringUtil {
             return "";
         }
         String temp = string.toLowerCase();
-        int len = temp.length();
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
+        int strLen = temp.length();
+        StringBuilder sb = new StringBuilder(strLen);
+        for (int i = 0; i < strLen; i++) {
             char c = temp.charAt(i);
             if (c == '_') {
-                if (++i < len) {
+                if (++i < strLen) {
                     sb.append(Character.toUpperCase(temp.charAt(i)));
                 }
             } else {

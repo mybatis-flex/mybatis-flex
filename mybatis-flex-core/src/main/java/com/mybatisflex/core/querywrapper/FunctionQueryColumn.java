@@ -16,6 +16,7 @@
 package com.mybatisflex.core.querywrapper;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
@@ -29,11 +30,14 @@ public class FunctionQueryColumn extends QueryColumn {
     protected QueryColumn column;
 
     public FunctionQueryColumn(String fnName, String column) {
+        SqlUtil.keepColumnSafely(fnName);
+        SqlUtil.keepColumnSafely(column);
         this.fnName = fnName;
         this.column = new QueryColumn(column);
     }
 
     public FunctionQueryColumn(String fnName, QueryColumn column) {
+        SqlUtil.keepColumnSafely(fnName);
         this.fnName = fnName;
         this.column = column;
     }
@@ -62,6 +66,7 @@ public class FunctionQueryColumn extends QueryColumn {
 
     @Override
     public QueryColumn as(String alias) {
+        SqlUtil.keepColumnSafely(alias);
         this.alias = alias;
         return this;
     }
