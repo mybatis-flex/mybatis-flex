@@ -80,76 +80,44 @@ class HelloWorld {
 示例2：查询列表
 
 ```java
-class HelloWorld {
-    public static void main(String... args) {
+//示例2：通过 QueryWrapper 构建条件查询数据列表
+QueryWrapper query = QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .where(ACCOUNT.ID.ge(100))
+        .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")));
 
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/mybatis-flex");
-        dataSource.setUsername("username");
-        dataSource.setPassword("password");
-
-        MybatisFlexBootstrap.getInstance()
-                .setDatasource(dataSource)
-                .addMapper(AccountMapper.class)
-                .start();
-        
-        //示例2：通过 QueryWrapper 构建条件查询数据列表
-        QueryWrapper query = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.ge(100))
-                .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")));
-
-        // 执行 SQL：
-        // ELECT * FROM `tb_account`
-        // WHERE `tb_account`.`id` >=  100
-        // AND (`tb_account`.`user_name` LIKE '%张%' OR `tb_account`.`user_name` LIKE '%李%' )
-        List<Account> accounts = MybatisFlexBootstrap.getInstance()
-                .execute(AccountMapper.class, mapper ->
-                        mapper.selectListByQuery(query)
-                );
-        
-    }
-}
+// 执行 SQL：
+// ELECT * FROM `tb_account`
+// WHERE `tb_account`.`id` >=  100
+// AND (`tb_account`.`user_name` LIKE '%张%' OR `tb_account`.`user_name` LIKE '%李%' )
+List<Account> accounts = MybatisFlexBootstrap.getInstance()
+        .execute(AccountMapper.class, mapper ->
+                mapper.selectListByQuery(query)
+        );
 ```
 
 示例3：分页查询
 ```java
-class HelloWorld {
-    public static void main(String... args) {
+// 示例3：分页查询
+// 查询第 5 页，每页 10 条数据，通过 QueryWrapper 构建条件查询
+QueryWrapper query = QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .where(ACCOUNT.ID.ge(100))
+        .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")))
+        .orderBy(ACCOUNT.ID.desc());
 
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/mybatis-flex");
-        dataSource.setUsername("username");
-        dataSource.setPassword("password");
-
-        MybatisFlexBootstrap.getInstance()
-                .setDatasource(dataSource)
-                .addMapper(AccountMapper.class)
-                .start();
-
-        // 示例3：分页查询
-        // 查询第 5 页，每页 10 条数据，通过 QueryWrapper 构建条件查询
-        QueryWrapper query = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.ge(100))
-                .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")))
-                .orderBy(ACCOUNT.ID.desc());
-
-        // 执行 SQL：
-        // ELECT * FROM `tb_account`
-        // WHERE `id` >=  100
-        // AND (`user_name` LIKE '%张%' OR `user_name` LIKE '%李%' )
-        // ORDER BY `id` DESC
-        // LIMIT 40,10
-        Page<Account> accounts = MybatisFlexBootstrap.getInstance()
-                .execute(AccountMapper.class, mapper ->
-                        mapper.paginate(5, 10, query)
-                );
-
-    }
-}
+// 执行 SQL：
+// ELECT * FROM `tb_account`
+// WHERE `id` >=  100
+// AND (`user_name` LIKE '%张%' OR `user_name` LIKE '%李%' )
+// ORDER BY `id` DESC
+// LIMIT 40,10
+Page<Account> accounts = MybatisFlexBootstrap.getInstance()
+        .execute(AccountMapper.class, mapper ->
+                mapper.paginate(5, 10, query)
+        );
 ```
 
 ## QueryWrapper 示例
@@ -388,15 +356,11 @@ Mybatis-Flex 多主键就是在 Entity 类里有多个 `@Id` 注解标识而已�
 @Table("tb_account")
 public class Account {
 
-    @Id((keyType=KeyType.Auto)
+    @Id(keyType=KeyType.Auto)
     private Long id;
     
     @Id(keyType=KeyType.Generator, value="uuid")
     private String otherId;
-    
-    private String userName;
-    private Date birthday;
-    private int sex;
 
     //getter setter
 }
@@ -418,11 +382,13 @@ public class UUIDKeyGenerator implements IKeyGenerator {
 ```
 
 第 2 步：注册 UUIDKeyGenerator
+
 ```java
 KeyGeneratorFactory.register("myUUID",new UUIDKeyGenerator());
 ```
 
 第 3 步：在 Entity 里使用 "myUUID" 生成器：
+
 ```java
 @Table("tb_account")
 public class Account {
@@ -440,7 +406,7 @@ public class Account {
 @Table("tb_account")
 public class Account {
 
-    @Id((keyType=KeyType.Sequence, value="select SEQ_USER_ID.nextval as id from dual")
+    @Id(keyType=KeyType.Sequence, value="select SEQ_USER_ID.nextval as id from dual")
     private Long id;
     
 }
