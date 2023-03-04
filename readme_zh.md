@@ -5,11 +5,13 @@
 
 - 1、很轻量，整个框架只依赖 Mybatis 再无其他第三方依赖
 - 2、只增强，支持 Entity 的增删改查、及分页查询，但不丢失 Mybatis 原有功能
-- 3、Db + Row，可以无需实体类对数据库进行增删改查
-- 4、支持多种数据库类型，自由通过方言持续扩展
-- 5、支持联合主键，以及不同的主键内容生成策略
-- 6、极其友好的 SQL 联动查询，IDE 自动提示不再担心出错
-- 7、更多小惊喜
+- 3、内置 Db + Row 工具，可以无需实体类对数据库进行增删改查
+- 4、支持多种数据库类型，还可以通过方言持续扩展
+- 5、支持多（联合）主键，以及不同的主键内容生成策略
+- 6、支持逻辑删除设置、更新或插入的默认值配置以及大字段等设置
+- 7、支持乐观锁字段配置，在数据更新时自动进行乐观锁检测
+- 8、极其友好的 SQL 联动查询，IDE 自动提示不再担心出错
+- 9、更多小惊喜
 
 ## QQ 群
 
@@ -125,7 +127,7 @@ Page<Account> accounts = MybatisFlexBootstrap.getInstance()
 ### select *
 
 ```java
-QueryWrapper query=new QueryWrapper();
+QueryWrapper query = new QueryWrapper();
 query.select().from(ACCOUNT)
 
 // SQL: 
@@ -135,7 +137,7 @@ query.select().from(ACCOUNT)
 ### select columns
 
 ```java
-QueryWrapper query=new QueryWrapper();
+QueryWrapper query = new QueryWrapper();
 query.select(ACCOUNT.ID,ACCOUNT.USER_NAME).from(ACCOUNT)
 
 // SQL: 
@@ -214,13 +216,13 @@ QueryWrapper queryWrapper=QueryWrapper.create()
     .from(ACCOUNT)
     .where(ACCOUNT.ID.ge(100))
     .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
-    .or(ACCOUNT.AGE.in(18,19,20).or(ACCOUNT.USER_NAME.like("michael")));
+    .or(ACCOUNT.AGE.in(18,19,20).and(ACCOUNT.USER_NAME.like("michael")));
 
 // SQL: 
 // SELECT * FROM tb_account 
 // WHERE id >=  ?  
 // AND (sex =  ? OR sex =  ? ) 
-// OR (age IN (?,?,?) OR user_name LIKE ? )
+// OR (age IN (?,?,?) AND user_name LIKE ? )
 ```
 
 ### group by
@@ -384,7 +386,7 @@ public class UUIDKeyGenerator implements IKeyGenerator {
 第 2 步：注册 UUIDKeyGenerator
 
 ```java
-KeyGeneratorFactory.register("myUUID",new UUIDKeyGenerator());
+KeyGeneratorFactory.register("myUUID", new UUIDKeyGenerator());
 ```
 
 第 3 步：在 Entity 里使用 "myUUID" 生成器：
