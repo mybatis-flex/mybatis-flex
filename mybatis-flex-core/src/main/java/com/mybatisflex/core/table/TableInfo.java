@@ -505,4 +505,21 @@ public class TableInfo {
             metaObject.setValue(columnPropertyMapping.get(versionColumn), 0);
         }
     }
+
+    /**
+     * 初始化逻辑删除的默认值
+     *
+     * @param entityObject
+     */
+    public void initLogicDeleteValueIfNecessary(Object entityObject) {
+        if (StringUtil.isBlank(logicDeleteColumn)) {
+            return;
+        }
+
+        MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
+        Object columnValue = getColumnValue(entityObject, logicDeleteColumn);
+        if (columnValue == null) {
+            metaObject.setValue(columnPropertyMapping.get(logicDeleteColumn), 0);
+        }
+    }
 }
