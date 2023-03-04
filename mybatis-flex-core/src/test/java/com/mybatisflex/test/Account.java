@@ -1,5 +1,6 @@
 package com.mybatisflex.test;
 
+import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 
@@ -20,6 +21,10 @@ public class Account {
     private Integer age;
 
     private boolean isNormal;
+
+    @Column(isLogicDelete = true)
+    private Boolean isDelete;
+
 
     public Long getId() {
         return id;
@@ -67,5 +72,13 @@ public class Account {
 
     public void setNormal(boolean normal) {
         isNormal = normal;
+    }
+
+    public Boolean getDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(Boolean delete) {
+        isDelete = delete;
     }
 }

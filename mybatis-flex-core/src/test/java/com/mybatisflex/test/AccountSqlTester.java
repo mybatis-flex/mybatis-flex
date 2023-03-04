@@ -1,9 +1,11 @@
 package com.mybatisflex.test;
 
-import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.CommonsDialectImpl;
+import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.querywrapper.CPI;
 import com.mybatisflex.core.querywrapper.QueryWrapper;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfos;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -155,6 +157,14 @@ public class AccountSqlTester {
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectListByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
+    @Test
+    public void testDeleteSql() {
+        IDialect dialect = new CommonsDialectImpl();
+        TableInfo tableInfo = TableInfos.ofEntityClass(Account.class);
+        String sql = dialect.forDeleteEntityById(tableInfo);
         System.out.println(sql);
     }
 
