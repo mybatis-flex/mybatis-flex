@@ -26,12 +26,12 @@ public class RowKey {
     /**
      * 自增 ID
      */
-    public static final RowKey ID_AUTO = new UnModifiableRowKey("id", KeyType.Auto, null, false);
+    public static final RowKey ID_AUTO = RowKey.of("id", KeyType.Auto, null, false);
 
     /**
      * UUID 的 ID
      */
-    public static final RowKey ID_UUID = new UnModifiableRowKey("id", KeyType.Generator, "uuid", true);
+    public static final RowKey ID_UUID = RowKey.of("id", KeyType.Generator, "uuid", true);
 
 
     public static RowKey of(String keyColumn) {
@@ -93,62 +93,20 @@ public class RowKey {
         return keyColumn;
     }
 
-    public void setKeyColumn(String keyColumn) {
-        this.keyColumn = keyColumn;
-    }
 
     public KeyType getKeyType() {
         return keyType;
     }
 
-    public void setKeyType(KeyType keyType) {
-        this.keyType = keyType;
-    }
 
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
 
     public boolean isBefore() {
         return before;
     }
 
-    public void setBefore(boolean before) {
-        this.before = before;
-    }
 
-    static class UnModifiableRowKey extends RowKey {
-
-        public UnModifiableRowKey(String keyColumn, KeyType keyType, String value, boolean before) {
-            super();
-            this.keyColumn = keyColumn;
-            this.keyType = keyType;
-            this.value = value;
-            this.before = before;
-        }
-
-        @Override
-        public void setKeyColumn(String keyColumn) {
-            throw new UnsupportedOperationException("unsupported setKeyColumn!");
-        }
-
-        @Override
-        public void setKeyType(KeyType keyType) {
-            throw new UnsupportedOperationException("unsupported setKeyType!");
-        }
-
-        @Override
-        public void setValue(String value) {
-            throw new UnsupportedOperationException("unsupported setValue!");
-        }
-
-        @Override
-        public void setBefore(boolean before) {
-            throw new UnsupportedOperationException("unsupported setBefore!");
-        }
-    }
 }
