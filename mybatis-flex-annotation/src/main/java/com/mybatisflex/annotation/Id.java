@@ -25,7 +25,7 @@ import java.lang.annotation.*;
 public @interface Id {
 
     /**
-     * ID 生成策略，默认为 auto
+     * ID 生成策略，默认为 none
      *
      * @return 生成策略
      */
