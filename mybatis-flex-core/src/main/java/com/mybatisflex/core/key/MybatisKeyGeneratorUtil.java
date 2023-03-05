@@ -16,6 +16,7 @@
 package com.mybatisflex.core.key;
 
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.enums.KeyType;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.table.IdInfo;
@@ -53,22 +54,25 @@ public class MybatisKeyGeneratorUtil {
 
 
     public static KeyGenerator createIdKeyGenerator(TableInfo tableInfo, MappedStatement ms, IdInfo idInfo) {
-        if (idInfo.getKeyType() == KeyType.None) {
+        FlexGlobalConfig.KeyConfig globalKeyConfig = FlexGlobalConfig.getConfig(ms.getConfiguration()).getKeyConfig();
+        KeyType keyType = getKeyType(idInfo, globalKeyConfig);
+
+        if (keyType == KeyType.None) {
             return NoKeyGenerator.INSTANCE;
         }
 
         //自增主键
-        if (idInfo.getKeyType() == KeyType.Auto) {
+        if (keyType == KeyType.Auto) {
             return Jdbc3KeyGenerator.INSTANCE;
         }
 
         //通过 java 生成的主键
-        if (idInfo.getKeyType() == KeyType.Generator) {
+        if (keyType == KeyType.Generator) {
             return new CustomKeyGenerator(ms.getConfiguration(), tableInfo, idInfo);
         }
 
         //通过序列生成的注解
-        String sequence = idInfo.getValue();
+        String sequence = getKeyValue(idInfo, globalKeyConfig);
         if (StringUtil.isBlank(sequence)) {
             throw FlexExceptions.wrap("please config @Id(value=\"...\") for field: %s in class: %s"
                     , idInfo.getProperty()
@@ -103,8 +107,7 @@ public class MybatisKeyGeneratorUtil {
         //因为只有在 xml 解析的时候，才可能存在多一个 MappedStatement 拥有同一个 keyGenerator 的情况
         //当前每个方法都拥有一个自己的 keyGenerator 了，没必要添加
         //this.addKeyGenerator(selectId, keyGenerator);
-
-        return new SelectKeyGenerator(keyMappedStatement, idInfo.isBefore());
+        return new SelectKeyGenerator(keyMappedStatement, isKeyBefore(idInfo, globalKeyConfig));
     }
 
 
@@ -113,6 +116,42 @@ public class MybatisKeyGeneratorUtil {
         ResultMap resultMap = new ResultMap.Builder(configuration, statementId, resultType, resultMappings, null)
                 .build();
         return Arrays.asList(resultMap);
+    }
+
+
+    /**
+     * 获取主键的 keyType，优先通过 @id 获取，获取不到通过全局配置获取
+     */
+    public static KeyType getKeyType(IdInfo idInfo, FlexGlobalConfig.KeyConfig keyConfig) {
+        KeyType keyType = idInfo.getKeyType();
+        if (keyType != KeyType.None) {
+            return keyType;
+        }
+
+        if (keyConfig != null) {
+            return keyConfig.getKeyType();
+        }
+
+        return keyType;
+    }
+
+
+    public static String getKeyValue(IdInfo idInfo, FlexGlobalConfig.KeyConfig keyConfig) {
+        String value = idInfo.getValue();
+        if (StringUtil.isBlank(value)) {
+            value = keyConfig.getValue();
+        }
+        return value;
+    }
+
+
+    public static boolean isKeyBefore(IdInfo idInfo, FlexGlobalConfig.KeyConfig keyConfig) {
+        Boolean before = idInfo.getBefore();
+        if (before == null) {
+            return keyConfig.isBefore();
+        } else {
+            return before;
+        }
     }
 
 }

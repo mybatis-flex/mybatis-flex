@@ -228,7 +228,7 @@ public class TableInfo {
             IdInfo idInfo = primaryKeyList.get(i);
             primaryKeys[i] = idInfo.getColumn();
 
-            if (idInfo.getKeyType() != KeyType.Auto && idInfo.isBefore()) {
+            if (idInfo.getKeyType() != KeyType.Auto || (idInfo.getBefore() != null && idInfo.getBefore())) {
                 insertIdFields.add(idInfo.getColumn());
             }
 

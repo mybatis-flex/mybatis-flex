@@ -16,6 +16,8 @@
 package com.mybatisflex.core;
 
 import com.mybatisflex.core.dialect.DbType;
+import com.mybatisflex.core.enums.KeyType;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +38,12 @@ public class FlexGlobalConfig {
     private SqlSessionFactory sqlSessionFactory;
 
 
+    /**
+     * 全局的 ID 生成策略配置，当 @Id 未配置 或者 配置 KeyType 为 None 时
+     * 使用当前全局配置
+     */
+    private KeyConfig keyConfig;
+
 
     public DbType getDbType() {
         return dbType;
@@ -53,6 +61,47 @@ public class FlexGlobalConfig {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
+    public KeyConfig getKeyConfig() {
+        return keyConfig;
+    }
+
+    public void setKeyConfig(KeyConfig keyConfig) {
+        this.keyConfig = keyConfig;
+    }
+
+    /**
+     * 对应的是 注解 {@link com.mybatisflex.annotation.Id} 的配置
+     */
+    public static class KeyConfig {
+        private KeyType keyType;
+        private String value;
+        private boolean before = true;
+
+        public KeyType getKeyType() {
+            return keyType;
+        }
+
+        public void setKeyType(KeyType keyType) {
+            this.keyType = keyType;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public boolean isBefore() {
+            return before;
+        }
+
+        public void setBefore(boolean before) {
+            this.before = before;
+        }
+    }
+
 
     /////static factory methods/////
     private static ConcurrentHashMap<String, FlexGlobalConfig> globalConfigs = new ConcurrentHashMap();
@@ -66,6 +115,10 @@ public class FlexGlobalConfig {
         defaultConfig = config;
     }
 
+    public static FlexGlobalConfig getConfig(Configuration configuration) {
+        return globalConfigs.get(configuration.getEnvironment().getId());
+    }
+    
     public static FlexGlobalConfig getConfig(String environmentId) {
         return globalConfigs.get(environmentId);
     }

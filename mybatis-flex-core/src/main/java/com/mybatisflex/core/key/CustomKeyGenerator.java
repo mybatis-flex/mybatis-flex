@@ -16,6 +16,7 @@
 package com.mybatisflex.core.key;
 
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.table.IdInfo;
 import com.mybatisflex.core.table.TableInfo;
@@ -44,7 +45,9 @@ public class CustomKeyGenerator implements KeyGenerator {
 
     public CustomKeyGenerator(Configuration configuration, TableInfo tableInfo, IdInfo idInfo) {
         this.configuration = configuration;
-        this.keyGenerator = KeyGeneratorFactory.getKeyGenerator(idInfo.getValue());
+        FlexGlobalConfig.KeyConfig globalKeyConfig = FlexGlobalConfig.getConfig(configuration).getKeyConfig();
+        String keyValue = MybatisKeyGeneratorUtil.getKeyValue(idInfo, globalKeyConfig);
+        this.keyGenerator = KeyGeneratorFactory.getKeyGenerator(keyValue);
         this.tableInfo = tableInfo;
         this.idInfo = idInfo;
 

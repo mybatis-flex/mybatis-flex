@@ -38,7 +38,7 @@ public class RowMapperInvoker {
 
     public RowMapperInvoker(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
-        this.dbType = FlexGlobalConfig.getConfig(sqlSessionFactory.getConfiguration().getEnvironment().getId()).getDbType();
+        this.dbType = FlexGlobalConfig.getConfig(sqlSessionFactory.getConfiguration()).getDbType();
     }
 
     public RowSessionManager getRowSessionManager() {

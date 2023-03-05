@@ -29,7 +29,7 @@ public @interface Id {
      *
      * @return 生成策略
      */
-    KeyType keyType() default KeyType.Auto;
+    KeyType keyType() default KeyType.None;
 
     /**
      * 若 keyType 类型是 sequence， value 则代表的是

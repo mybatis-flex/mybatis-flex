@@ -23,7 +23,7 @@ public class IdInfo extends ColumnInfo {
     /**
      * id 生成策略
      */
-    private KeyType keyType;
+    private KeyType keyType  = KeyType.None;
 
     /**
      * 若 keyType 类型是 sequence， value 则代表的是
@@ -40,7 +40,7 @@ public class IdInfo extends ColumnInfo {
      *
      * @see org.apache.ibatis.executor.keygen.SelectKeyGenerator
      */
-    private boolean before;
+    private Boolean before;
 
 
     public IdInfo(ColumnInfo columnInfo) {
@@ -81,11 +81,11 @@ public class IdInfo extends ColumnInfo {
         this.value = value;
     }
 
-    public boolean isBefore() {
+    public Boolean getBefore() {
         return before;
     }
 
-    public void setBefore(boolean before) {
+    public void setBefore(Boolean before) {
         this.before = before;
     }
 }
