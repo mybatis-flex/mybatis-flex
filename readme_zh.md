@@ -282,6 +282,8 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 ![](./docs/assets/images/build_idea.png)
 
+> 更多关于 Mybatis-Flex APT 的配置点击 [这里](./docs/zh/apt.md)。
+
 ## Db + Row 工具类
 
 Db + Row 工具类，提供了在 Entity 实体类之外的数据库操作能力。使用 Db + Row 时，无需对数据库表进行映射，
