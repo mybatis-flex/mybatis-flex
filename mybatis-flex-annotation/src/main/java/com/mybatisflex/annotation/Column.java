@@ -28,9 +28,9 @@ public @interface Column {
     String value() default "";
 
     /**
-     * update 的时候自动赋值，这个值会直接被拼接到 sql 而不通过参数设置
+     * 是否忽略该字段，可能只是业务字段，而非数据库对应字段
      */
-    String onUpdateValue() default "";
+    boolean ignore() default false;
 
     /**
      * insert 的时候默认值，这个值会直接被拼接到 sql 而不通过参数设置
@@ -38,12 +38,12 @@ public @interface Column {
     String onInsertValue() default "";
 
     /**
-     * 是否忽略该字段，可能只是业务字段，而非数据库对应字段
+     * update 的时候自动赋值，这个值会直接被拼接到 sql 而不通过参数设置
      */
-    boolean ignore() default false;
+    String onUpdateValue() default "";
 
     /**
-     * 是否是大字段，大字默认不会对齐进行查询，除非指定查询
+     * 是否是大字段，大字段 APT 不会生成到 ALL_COLUMNS 里
      */
     boolean isLarge() default false;
 
