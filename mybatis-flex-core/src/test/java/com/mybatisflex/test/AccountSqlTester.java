@@ -161,6 +161,18 @@ public class AccountSqlTester {
     }
 
     @Test
+    public void testOrderBySql() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select()
+                .from(ACCOUNT)
+                .orderBy(ACCOUNT.AGE.asc(),ACCOUNT.USER_NAME.desc().nullsLast());
+
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forSelectListByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
+    @Test
     public void testDeleteSql() {
         IDialect dialect = new CommonsDialectImpl();
         TableInfo tableInfo = TableInfos.ofEntityClass(Account.class);

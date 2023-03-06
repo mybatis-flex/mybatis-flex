@@ -253,6 +253,19 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 // HAVING age BETWEEN  ? AND ?
 ```
 
+### orderBy
+
+```java
+QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .orderBy(ACCOUNT.AGE.asc(), ACCOUNT.USER_NAME.desc().nullsLast());
+
+// SQL: 
+// SELECT * FROM `tb_account` 
+// ORDER BY `age` ASC, `user_name` DESC NULLS LAST
+```
+
 ### join
 
 ```java
