@@ -9,7 +9,7 @@
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-core</artifactId>
-    <version>1.0.0-beta.2</version>
+    <version>1.0.0-rc.1</version>
 </dependency>
 ```
 
@@ -19,7 +19,7 @@
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-spring</artifactId>
-    <version>1.0.0-beta.2</version>
+    <version>1.0.0-rc.1</version>
 </dependency>
 ``````
 
@@ -29,6 +29,6 @@
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-spring-boot-starter</artifactId>
-    <version>1.0.0-beta.2</version>
+    <version>1.0.0-rc.1</version>
 </dependency>
 ```
