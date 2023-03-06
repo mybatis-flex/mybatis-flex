@@ -1,3 +1,16 @@
+mybatis-flex v1.0.0-rc.1 20230306:
+优化：对 RowSqlProvider.java 的一些方法名进行重构
+优化：QueryEntityProcesser 添加对 DEFAULT_COLUMNS 属性的生成
+优化：RowKey.java 移除其 set 方法
+优化：Entity 数据在被插入时，会自动设置逻辑删除的默认值
+优化：添加主键生成的全局配置，可以不用为每个 Entity 单独配置主键内容
+文档：添加 "逻辑删除" 的相关文档
+文档：添加 "乐观锁" 的相关文档
+文档：添加 entity 插入和更新的默认值设置的文档
+文档：添加 OrderBy 的 QueryWrapper 示例
+
+
+
 mybatis-flex v1.0.0-beta.2 20230303:
 优化：当只查询一张表时，SQL生成的字段不添加表前缀
 优化：完善对 @Column(onUpdateValue=xxx,onInsertValue=xxx) 的支持
