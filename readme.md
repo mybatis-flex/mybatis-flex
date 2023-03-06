@@ -68,76 +68,44 @@ class HelloWorld {
 e.g.2: query list
 
 ```java
-class HelloWorld {
-    public static void main(String... args) {
+//use QueryWrapper to build query conditions
+QueryWrapper query = QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .where(ACCOUNT.ID.ge(100))
+        .and(ACCOUNT.USER_NAME.like("zhang").or(ACCOUNT.USER_NAME.like("li")));
 
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/mybatis-flex");
-        dataSource.setUsername("username");
-        dataSource.setPassword("password");
-
-        MybatisFlexBootstrap.getInstance()
-                .setDatasource(dataSource)
-                .addMapper(AccountMapper.class)
-                .start();
-
-        //use QueryWrapper to build query conditions
-        QueryWrapper query = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.ge(100))
-                .and(ACCOUNT.USER_NAME.like("zhang").or(ACCOUNT.USER_NAME.like("li")));
-
-        // execute SQL：
-        // ELECT * FROM `tb_account`
-        // WHERE `tb_account`.`id` >=  100
-        // AND (`tb_account`.`user_name` LIKE '%zhang%' OR `tb_account`.`user_name` LIKE '%li%' )
-        List<Account> accounts = MybatisFlexBootstrap.getInstance()
-                .execute(AccountMapper.class, mapper ->
-                        mapper.selectListByQuery(query)
-                );
-
-    }
-}
+// execute SQL：
+// ELECT * FROM `tb_account`
+// WHERE `tb_account`.`id` >=  100
+// AND (`tb_account`.`user_name` LIKE '%zhang%' OR `tb_account`.`user_name` LIKE '%li%' )
+List<Account> accounts = MybatisFlexBootstrap.getInstance()
+        .execute(AccountMapper.class, mapper ->
+                mapper.selectListByQuery(query)
+        );
 ```
 
 e.g.3: paging query
 
 ```java
-class HelloWorld {
-    public static void main(String... args) {
+//use QueryWrapper to build query conditions
+QueryWrapper query = QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .where(ACCOUNT.ID.ge(100))
+        .and(ACCOUNT.USER_NAME.like("zhang").or(ACCOUNT.USER_NAME.like("li")))
+        .orderBy(ACCOUNT.ID.desc());
 
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/mybatis-flex");
-        dataSource.setUsername("username");
-        dataSource.setPassword("password");
-
-        MybatisFlexBootstrap.getInstance()
-                .setDatasource(dataSource)
-                .addMapper(AccountMapper.class)
-                .start();
-
-        //use QueryWrapper to build query conditions
-        QueryWrapper query = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.ge(100))
-                .and(ACCOUNT.USER_NAME.like("zhang").or(ACCOUNT.USER_NAME.like("li")))
-                .orderBy(ACCOUNT.ID.desc());
-
-        // execute SQL：
-        // ELECT * FROM `tb_account`
-        // WHERE `tb_account`.`id` >=  100
-        // AND (`tb_account`.`user_name` LIKE '%zhang%' OR `tb_account`.`user_name` LIKE '%li%' )
-        // ORDER BY `tb_account`.`id` DESC
-        // LIMIT 40,10
-        Page<Account> accountPage = MybatisFlexBootstrap.getInstance()
-                .execute(AccountMapper.class, mapper ->
-                        mapper.paginate(5, 10, query)
-                );
-
-    }
-}
+// execute SQL：
+// ELECT * FROM `tb_account`
+// WHERE `tb_account`.`id` >=  100
+// AND (`tb_account`.`user_name` LIKE '%zhang%' OR `tb_account`.`user_name` LIKE '%li%' )
+// ORDER BY `tb_account`.`id` DESC
+// LIMIT 40,10
+Page<Account> accountPage = MybatisFlexBootstrap.getInstance()
+        .execute(AccountMapper.class, mapper ->
+                mapper.paginate(5, 10, query)
+        );
 ```
 
 ## QueryWrapper Samples
@@ -223,7 +191,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 // SELECT * FROM tb_account 
 // WHERE tb_account.id >=  ?  
 // AND EXIST (
-// SELECT 1 FROM tb_article WHERE tb_article.id >=  ? 
+//  SELECT 1 FROM tb_article WHERE tb_article.id >=  ? 
 // )
 ```
 
@@ -271,6 +239,21 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 // GROUP BY tb_account.user_name 
 // HAVING tb_account.age BETWEEN  ? AND ?
 ```
+
+
+### orderBy
+
+```java
+QueryWrapper queryWrapper=QueryWrapper.create()
+        .select()
+        .from(ACCOUNT)
+        .orderBy(ACCOUNT.AGE.asc(), ACCOUNT.USER_NAME.desc().nullsLast());
+
+// SQL: 
+// SELECT * FROM `tb_account` 
+// ORDER BY `age` ASC, `user_name` DESC NULLS LAST
+```
+
 
 ### join
 ```java
