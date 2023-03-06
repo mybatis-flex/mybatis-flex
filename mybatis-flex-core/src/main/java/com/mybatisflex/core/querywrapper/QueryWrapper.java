@@ -181,6 +181,14 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return joining(Join.TYPE_INNER, table, condition);
     }
 
+    public Joiner<QueryWrapper> innerJoin(TableDef table) {
+        return innerJoinIf(table, true);
+    }
+
+    public Joiner<QueryWrapper> innerJoinIf(TableDef table, boolean condition) {
+        return joining(Join.TYPE_INNER, table.getTableName(), condition);
+    }
+
     public Joiner<QueryWrapper> innerJoin(QueryWrapper table) {
         return joining(Join.TYPE_INNER, table, true);
     }
