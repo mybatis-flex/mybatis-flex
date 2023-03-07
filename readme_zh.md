@@ -83,19 +83,19 @@ class HelloWorld {
 ```java
 //示例2：通过 QueryWrapper 构建条件查询数据列表
 QueryWrapper query=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .where(ACCOUNT.ID.ge(100))
-        .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")));
+    .select()
+    .from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100))
+    .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")));
 
 // 执行 SQL：
 // ELECT * FROM `tb_account`
 // WHERE `tb_account`.`id` >=  100
 // AND (`tb_account`.`user_name` LIKE '%张%' OR `tb_account`.`user_name` LIKE '%李%' )
-        List<Account> accounts=MybatisFlexBootstrap.getInstance()
-        .execute(AccountMapper.class,mapper->
+List<Account> accounts=MybatisFlexBootstrap.getInstance()
+    .execute(AccountMapper.class,mapper->
         mapper.selectListByQuery(query)
-        );
+    );
 ```
 
 示例3：分页查询
@@ -104,11 +104,11 @@ QueryWrapper query=QueryWrapper.create()
 // 示例3：分页查询
 // 查询第 5 页，每页 10 条数据，通过 QueryWrapper 构建条件查询
 QueryWrapper query=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .where(ACCOUNT.ID.ge(100))
-        .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")))
-        .orderBy(ACCOUNT.ID.desc());
+    .select()
+    .from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100))
+    .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")))
+    .orderBy(ACCOUNT.ID.desc());
 
 // 执行 SQL：
 // ELECT * FROM `tb_account`
@@ -116,10 +116,10 @@ QueryWrapper query=QueryWrapper.create()
 // AND (`user_name` LIKE '%张%' OR `user_name` LIKE '%李%' )
 // ORDER BY `id` DESC
 // LIMIT 40,10
-        Page<Account> accounts=MybatisFlexBootstrap.getInstance()
-        .execute(AccountMapper.class,mapper->
-        mapper.paginate(5,10,query)
-        );
+Page<Account> accounts=MybatisFlexBootstrap.getInstance()
+.execute(AccountMapper.class,mapper->
+    mapper.paginate(5,10,query)
+);
 ```
 
 ## QueryWrapper 示例
@@ -128,7 +128,7 @@ QueryWrapper query=QueryWrapper.create()
 
 ```java
 QueryWrapper query=new QueryWrapper();
-        query.select().from(ACCOUNT)
+query.select().from(ACCOUNT)
 
 // SQL: 
 // SELECT * FROM tb_account
@@ -138,7 +138,8 @@ QueryWrapper query=new QueryWrapper();
 
 ```java
 QueryWrapper query=new QueryWrapper();
-        query.select(ACCOUNT.ID,ACCOUNT.USER_NAME).from(ACCOUNT)
+query.select(ACCOUNT.ID,ACCOUNT.USER_NAME)
+    .from(ACCOUNT)
 
 // SQL: 
 // SELECT id, user_name 
@@ -147,7 +148,7 @@ QueryWrapper query=new QueryWrapper();
 
 ```java
 QueryWrapper query=new QueryWrapper();
-        query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
+query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
 
 // SQL: 
 // SELECT id, user_name, birthday, sex, is_normal 
@@ -157,13 +158,13 @@ QueryWrapper query=new QueryWrapper();
 ### select functions
 
 ```java
- QueryWrapper query=new QueryWrapper()
-        .select(
+QueryWrapper query=new QueryWrapper()
+    .select(
         ACCOUNT.ID,
         ACCOUNT.USER_NAME,
         max(ACCOUNT.BIRTHDAY),
         avg(ACCOUNT.SEX).as("sex_avg")
-        ).from(ACCOUNT);
+    ).from(ACCOUNT);
 
 // SQL: 
 // SELECT id, user_name, 
@@ -176,10 +177,10 @@ QueryWrapper query=new QueryWrapper();
 
 ```java
 QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .where(ACCOUNT.ID.ge(100))
-        .and(ACCOUNT.USER_NAME.like("michael"));
+    .select()
+    .from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100))
+    .and(ACCOUNT.USER_NAME.like("michael"));
 
 // SQL: 
 // SELECT * FROM tb_account 
@@ -187,18 +188,33 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 // AND user_name LIKE  ? 
 ```
 
+### where select
+```java
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(
+       select(ARTICLE.ACCOUNT_ID).from(ARTICLE).where(ARTICLE.ID.ge(100))
+    ));
+
+// SQL: 
+// SELECT * FROM `tb_account` 
+// WHERE `id` >= 
+// (SELECT `account_id` FROM `tb_article` WHERE `id` >=  ? )
+```
+
 ### exists, not exists
 
 ```java
 QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .where(ACCOUNT.ID.ge(100))
-        .and(
+    .select()
+    .from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100))
+    .and(
         exist(
-        selectOne().from(ARTICLE).where(ARTICLE.ID.ge(100))
+            selectOne().from(ARTICLE).where(ARTICLE.ID.ge(100))
         )
-        );
+    );
 
 // SQL: 
 // SELECT * FROM tb_account 
@@ -212,11 +228,11 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 
 ```java
 QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .where(ACCOUNT.ID.ge(100))
-        .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
-        .or(ACCOUNT.AGE.in(18,19,20).and(ACCOUNT.USER_NAME.like("michael")));
+    .select()
+    .from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100))
+    .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
+    .or(ACCOUNT.AGE.in(18,19,20).and(ACCOUNT.USER_NAME.like("michael")));
 
 // SQL: 
 // SELECT * FROM tb_account 
@@ -229,9 +245,9 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 
 ```java
 QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .groupBy(ACCOUNT.USER_NAME);
+    .select()
+    .from(ACCOUNT)
+    .groupBy(ACCOUNT.USER_NAME);
 
 // SQL: 
 // SELECT * FROM tb_account 
@@ -242,10 +258,10 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 
 ```java
 QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .groupBy(ACCOUNT.USER_NAME)
-        .having(ACCOUNT.AGE.between(18,25));
+    .select()
+    .from(ACCOUNT)
+    .groupBy(ACCOUNT.USER_NAME)
+    .having(ACCOUNT.AGE.between(18,25));
 
 // SQL: 
 // SELECT * FROM tb_account 
@@ -257,9 +273,10 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 
 ```java
 QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .orderBy(ACCOUNT.AGE.asc(), ACCOUNT.USER_NAME.desc().nullsLast());
+    .select()
+    .from(ACCOUNT)
+    .orderBy(ACCOUNT.AGE.asc()
+        , ACCOUNT.USER_NAME.desc().nullsLast());
 
 // SQL: 
 // SELECT * FROM `tb_account` 
@@ -270,11 +287,11 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 
 ```java
 QueryWrapper queryWrapper=QueryWrapper.create()
-        .select()
-        .from(ACCOUNT)
-        .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
-        .innerJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
-        .where(ACCOUNT.AGE.ge(10));
+    .select()
+    .from(ACCOUNT)
+    .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+    .innerJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+    .where(ACCOUNT.AGE.ge(10));
 
 // SQL: 
 // SELECT * FROM tb_account 
@@ -354,11 +371,11 @@ update(T entity,boolean ignoreNulls)
 
 ```java
 Account account=UpdateEntity.of(Account.class);
-        account.setId(100);
-        account.setUserName(null);
-        account.setSex(1);
+account.setId(100);
+account.setUserName(null);
+account.setSex(1);
 
-        accountMapper.update(account,false);
+accountMapper.update(account,false);
 ```
 
 以上的示例中，会把 id 为 100 这条数据中的 user_name 字段更新为 null，sex 字段更新为 1，其他字段不会被更新。也就是说，通过 `UpdateEntity`

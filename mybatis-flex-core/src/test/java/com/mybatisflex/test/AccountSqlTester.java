@@ -123,6 +123,20 @@ public class AccountSqlTester {
     }
 
     @Test
+    public void testWhereSelectSql() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select()
+                .from(ACCOUNT)
+                .where(ACCOUNT.ID.ge(
+                        select(ARTICLE.ACCOUNT_ID).from(ARTICLE).where(ARTICLE.ID.ge(100))
+                ));
+
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forSelectListByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
+    @Test
     public void testGroupSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select()
@@ -140,7 +154,7 @@ public class AccountSqlTester {
                 .select()
                 .from(ACCOUNT)
                 .groupBy(ACCOUNT.USER_NAME)
-                .having(ACCOUNT.AGE.between(18,25));
+                .having(ACCOUNT.AGE.between(18, 25));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectListByQuery(queryWrapper);
@@ -165,7 +179,7 @@ public class AccountSqlTester {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select()
                 .from(ACCOUNT)
-                .orderBy(ACCOUNT.AGE.asc(),ACCOUNT.USER_NAME.desc().nullsLast());
+                .orderBy(ACCOUNT.AGE.asc(), ACCOUNT.USER_NAME.desc().nullsLast());
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectListByQuery(queryWrapper);
