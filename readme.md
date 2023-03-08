@@ -1,3 +1,5 @@
+![](./docs/assets/images/logo.png)
+
 # Mybatis-Flex is an elegant Mybatis Enhancement Framework.
 
 ## Features
@@ -10,7 +12,7 @@
 - 6、Extremely friendly SQL query, IDE automatically prompts and no worries about mistakes
 - 7、More little surprises
 
-## hello world
+## hello world（Without Spring）
 
 **step 1: write entity class**
 
