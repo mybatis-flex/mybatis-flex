@@ -55,7 +55,7 @@ Map result = row.toCamelKeysMap();
 
 ```java
 Row row = Db.selectOneById("tb_account","id",1);
-Map result = row.toCamelKeysMap();
+Map result = row.toUnderlineKeysMap();
 ```
 
 ## Row 插入时，设置主键生成方式
@@ -66,6 +66,7 @@ Map result = row.toCamelKeysMap();
 // ID 自增
 Row row = Row.ofKey(RowKey.ID_AUTO);
 row.set(ACCOUNT.USER_NAME,"Michael");
+
 Db.insertRow("tb_account",row);
 ```
 
@@ -75,6 +76,7 @@ Db.insertRow("tb_account",row);
 // ID 为 uuid
 Row row = Row.ofKey(RowKey.ID_UUID);
 row.set(ACCOUNT.USER_NAME,"Michael");
+
 Db.insertRow("tb_account",row);
 ```
 **自定义 Row 主键生成方式**
@@ -86,6 +88,7 @@ RowKey myRowKey = RowKey.of("id", KeyType.Generator, "uuid", true);
 // 使用自定义的 RowKey
 Row row = Row.ofKey(myRowKey);
 row.set(ACCOUNT.USER_NAME,"Michael");
+
 Db.insertRow("tb_account",row);
 ```
 
