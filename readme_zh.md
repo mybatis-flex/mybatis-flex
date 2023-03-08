@@ -21,9 +21,13 @@
 ## 开始
 
 - [Maven 依赖](./docs/zh/maven.md)
-- [示例项目](./mybatis-flex-test)
+- 示例 1：[Mybatis-Flex 原生（非 Spring）](./mybatis-flex-test/mybatis-flex-native-test)
+- 示例 2：[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
+- 示例 3：[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
 
-## hello world
+
+
+## hello world（原生）
 
 **第一步：编写 Entity 实体类**
 
@@ -468,11 +472,4 @@ public class Account {
 - [乐观锁](./docs/zh/version.md)
 - [Db + Row](./docs/zh/db_row.md)
 - [APT](./docs/zh/apt.md)
-
-## 更多示例
-
-- 示例 1：[Mybatis-Flex 原生（非 Spring）](./mybatis-flex-test/mybatis-flex-native-test)
-- 示例 2：[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
-- 示例 3：[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
-
 
