@@ -68,7 +68,6 @@ class MyBatisFlexProps {
 
             if (inputStream != null) {
                 properties.load(new InputStreamReader(inputStream, encoding));
-            } else if (!fileName.contains("-")) {
             }
         } catch (Exception e) {
         } finally {

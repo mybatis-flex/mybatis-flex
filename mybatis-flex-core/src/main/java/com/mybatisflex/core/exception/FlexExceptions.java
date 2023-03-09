@@ -31,7 +31,7 @@ public final class FlexExceptions {
      * @return MybatisFlexException
      */
     public static MybatisFlexException wrap(Throwable throwable) {
-        if (throwable instanceof MybatisFlexException){
+        if (throwable instanceof MybatisFlexException) {
             return (MybatisFlexException) throwable;
         }
         return new MybatisFlexException(throwable);
@@ -63,15 +63,38 @@ public final class FlexExceptions {
 
 
     /**
-     * 抛出一个新的 MybatisFlexException 异常
+     * 断言 condition 必须为 true
      *
-     * @param condition 抛出条件
+     * @param condition 条件
      * @param msg       消息
      * @param params    消息参数
      */
-    public static void throwIf(boolean condition, String msg, Object... params) {
-        if (condition) {
+    public static void assertTrue(boolean condition, String msg, Object... params) {
+        if (!condition) {
             throw wrap(msg, params);
+        }
+    }
+
+
+    /**
+     * 断言传入的内容不能为 null
+     */
+    public static void assertNotNull(Object object, String msg, Object params) {
+        assertTrue(object != null, msg, params);
+    }
+
+
+    /**
+     * 断言传入的数组内容不能为 null 或者 空
+     */
+    public static <T> void assertAreNotNull(T[] elements, String msg, Object params) {
+        if (elements == null || elements.length == 0) {
+            throw wrap(msg, params);
+        }
+        for (T element : elements) {
+            if (element == null) {
+                throw wrap(msg, params);
+            }
         }
     }
 }

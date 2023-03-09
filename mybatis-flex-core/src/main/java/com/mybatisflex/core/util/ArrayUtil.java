@@ -88,12 +88,5 @@ public class ArrayUtil {
         return false;
     }
 
-    /**
-     * 急速构建数组
-     */
-    public static <T> T[] asArray(T... elements) {
-        return elements;
-    }
-
 
 }

@@ -187,6 +187,9 @@ public class EntitySqlProvider {
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
         Object[] updateValues = tableInfo.obtainUpdateValues(entity, ignoreNulls, false);
         Object[] primaryValues = tableInfo.obtainPrimaryValues(entity);
+
+        FlexExceptions.assertAreNotNull(primaryValues, "The value of primary key must not be null, entity[%s]", entity);
+
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(updateValues, primaryValues));
 
         return DialectFactory.getDialect().forUpdateEntity(tableInfo, entity, ignoreNulls);
