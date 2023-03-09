@@ -1,7 +1,7 @@
 ![](./docs/assets/images/logo.png)
 
 
-# Mybatis-Flex 一个优雅的 Mybatis 增强框架
+# Mybatis-Flex - 让 Mybatis 飞起来
 
 ## 特征
 
