@@ -92,6 +92,8 @@ public class FlexConfiguration extends Configuration {
         return statementHandler;
     }
 
+
+
     @Override
     public void addMappedStatement(MappedStatement ms) {
         //替换 RowMapper.insertRow 的主键生成器
@@ -106,8 +108,8 @@ public class FlexConfiguration extends Configuration {
         }
         //entity select
         else if (StringUtil.endsWithAny(ms.getId(), "selectOneById", "selectListByIds"
-                , "selectListByQuery", "selectCountByQuery")) {
-            ms = replaceResultHandler(ms);
+                , "selectListByQuery")) {
+            ms = replaceResultMap(ms);
         }
 
         super.addMappedStatement(ms);
@@ -115,9 +117,9 @@ public class FlexConfiguration extends Configuration {
 
 
     /**
-     * 替换 entity 查询的 ResultHandler
+     * 替换 entity 查询的 ResultMap
      */
-    private MappedStatement replaceResultHandler(MappedStatement ms) {
+    private MappedStatement replaceResultMap(MappedStatement ms) {
 
         TableInfo tableInfo = getTableInfo(ms);
         if (tableInfo == null) {
@@ -221,8 +223,8 @@ public class FlexConfiguration extends Configuration {
                 .timeout(ms.getTimeout())
                 .statementType(ms.getStatementType())
                 .keyGenerator(keyGenerator) // 替换主键生成器
-                .keyProperty(tableInfo.getMappedStatementKeyProperties())
-                .keyColumn(tableInfo.getMappedStatementKeyColumns())
+                .keyProperty(tableInfo.getKeyProperties())
+                .keyColumn(tableInfo.getKeyColumns())
                 .databaseId(databaseId)
                 .lang(ms.getLang())
                 .resultOrdered(ms.isResultOrdered())

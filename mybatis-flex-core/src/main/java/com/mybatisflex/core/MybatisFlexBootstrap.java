@@ -108,16 +108,17 @@ public class MybatisFlexBootstrap {
                 configuration.setLogImpl(logImpl);
             }
 
-            //init mappers
-            if (mappers != null) {
-                mappers.forEach(configuration::addMapper);
-            }
-
             //init sqlSessionFactory
             this.sqlSessionFactory = new FlexSqlSessionFactoryBuilder().build(configuration);
 
             //init dbType
             this.dbType = FlexGlobalConfig.getConfig(environmentId).getDbType();
+
+            //init mappers
+            if (mappers != null) {
+                mappers.forEach(configuration::addMapper);
+            }
+
 
             LogFactory.getLog(MybatisFlexBootstrap.class).debug("Mybatis-Flex has started.");
         }

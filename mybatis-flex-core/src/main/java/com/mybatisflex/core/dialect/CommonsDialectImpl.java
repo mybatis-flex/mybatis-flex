@@ -239,7 +239,7 @@ public class CommonsDialectImpl implements IDialect {
             if (i > 0) {
                 sql.append(" AND ");
             }
-            sql.append('`').append(primaryKeys[i]).append("` = ?");
+            sql.append(wrap(primaryKeys[i])).append(" = ?");
         }
         return sql.toString();
     }
@@ -380,6 +380,9 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ").append(wrap(tableInfo.getTableName()));
         String[] insertColumns = tableInfo.obtainInsertColumns();
+        for (int i = 0; i < insertColumns.length; i++) {
+            insertColumns[i] = wrap(insertColumns[i]);
+        }
         sql.append("(").append(StringUtil.join(", ", insertColumns)).append(")");
         sql.append(" VALUES ");
 

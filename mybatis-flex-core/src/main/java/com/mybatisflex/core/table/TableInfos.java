@@ -99,7 +99,8 @@ public class TableInfos {
             tableInfo.setCamelToUnderline(table.camelToUnderline());
         } else {
             //默认为类名转驼峰下划线
-            tableInfo.setTableName(StringUtil.camelToUnderline(entityClass.getSimpleName()));
+            String tableName = StringUtil.camelToUnderline(entityClass.getSimpleName());
+            tableInfo.setTableName(tableName);
         }
 
         //初始化字段相关

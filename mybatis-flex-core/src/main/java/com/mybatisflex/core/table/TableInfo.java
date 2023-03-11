@@ -228,7 +228,7 @@ public class TableInfo {
             IdInfo idInfo = primaryKeyList.get(i);
             primaryKeys[i] = idInfo.getColumn();
 
-            if (idInfo.getKeyType() != KeyType.Auto || (idInfo.getBefore() != null && idInfo.getBefore())) {
+            if (idInfo.getKeyType() != KeyType.Auto && (idInfo.getBefore() != null && idInfo.getBefore())) {
                 insertIdFields.add(idInfo.getColumn());
             }
 
@@ -409,7 +409,7 @@ public class TableInfo {
     }
 
 
-    public String getMappedStatementKeyProperties() {
+    public String getKeyProperties() {
         StringJoiner joiner = new StringJoiner(",");
         for (IdInfo value : primaryKeyList) {
             joiner.add(FlexConsts.ENTITY + "." + value.getProperty());
@@ -418,10 +418,10 @@ public class TableInfo {
     }
 
 
-    public String getMappedStatementKeyColumns() {
+    public String getKeyColumns() {
         StringJoiner joiner = new StringJoiner(",");
         for (IdInfo value : primaryKeyList) {
-            joiner.add(FlexConsts.ENTITY + "." + value.getColumn());
+            joiner.add(value.getColumn());
         }
         return joiner.toString();
     }

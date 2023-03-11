@@ -28,7 +28,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import javax.sql.DataSource;
 import java.util.*;
 
-public class MybatisFlexStarter {
+public class RowTestStarter {
 
     public static void main(String[] args) {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
