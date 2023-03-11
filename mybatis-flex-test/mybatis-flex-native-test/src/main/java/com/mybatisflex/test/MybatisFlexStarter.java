@@ -22,6 +22,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 public class MybatisFlexStarter {
 
@@ -38,7 +39,11 @@ public class MybatisFlexStarter {
 
         Row row = bootstrap.execute(RowMapper.class, rowMapper ->
                 rowMapper.selectOneById("tb_account", "id", 1));
-
         System.out.println(row);
+
+
+        List<Row> rows = bootstrap.execute(RowMapper.class, rowMapper ->
+                rowMapper.selectAll("tb_account"));
+        System.out.println(rows);
     }
 }
