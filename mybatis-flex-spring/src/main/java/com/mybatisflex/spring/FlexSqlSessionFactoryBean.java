@@ -95,7 +95,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
 
     private Properties configurationProperties;
 
-//    private SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
+    //    private SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
     private SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new FlexSqlSessionFactoryBuilder();
 
     private SqlSessionFactory sqlSessionFactory;
@@ -335,6 +335,9 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      */
     @Override
     public void setConfiguration(Configuration configuration) {
+        if (!(configuration instanceof FlexConfiguration)) {
+            throw new IllegalArgumentException("Only support FlexConfiguration.");
+        }
         this.configuration = configuration;
     }
 
