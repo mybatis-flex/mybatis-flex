@@ -243,11 +243,12 @@ public class RowSqlProvider {
     public static String selectListByQuery(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
+        queryWrapper.from(tableName);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
 
-        queryWrapper.from(tableName);
+
         return DialectFactory.getDialect().forSelectListByQuery(queryWrapper);
     }
 
@@ -261,6 +262,7 @@ public class RowSqlProvider {
     public static String selectCountByQuery(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
+        queryWrapper.from(tableName);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);

@@ -76,10 +76,6 @@ public class MybatisFlexBootstrap {
     }
 
 
-
-
-
-
     public <T> MybatisFlexBootstrap addMapper(Class<T> type) {
         if (this.mappers == null) {
             mappers = new ArrayList<>();
@@ -87,8 +83,6 @@ public class MybatisFlexBootstrap {
         mappers.add(type);
         return this;
     }
-
-
 
 
     public MybatisFlexBootstrap start() {
@@ -138,7 +132,7 @@ public class MybatisFlexBootstrap {
 
 
     private SqlSession openSession() {
-        return sqlSessionFactory.openSession(configuration.getDefaultExecutorType());
+        return sqlSessionFactory.openSession(configuration.getDefaultExecutorType(), true);
     }
 
 

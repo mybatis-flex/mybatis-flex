@@ -48,8 +48,8 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
             row.primaryKeys[i] = RowKey.of(primaryKeyStrings[i].trim());
         }
 
-        if (primaryKeyStrings.length > 0 && !value.getClass().isArray()) {
-            throw new IllegalArgumentException("the type of value[\"" + value + "\"] must be an array.");
+        if (primaryKeyStrings.length > 1 && !value.getClass().isArray()) {
+            throw new IllegalArgumentException("The type of \"" + value + "\" must be an array.");
         }
 
         if (primaryKeyStrings.length == 1) {
