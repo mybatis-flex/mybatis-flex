@@ -141,6 +141,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param objectFactory a custom ObjectFactory
      * @since 1.1.2
      */
+    @Override
     public void setObjectFactory(ObjectFactory objectFactory) {
         this.objectFactory = objectFactory;
     }
@@ -151,6 +152,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param objectWrapperFactory a specified ObjectWrapperFactory
      * @since 1.1.2
      */
+    @Override
     public void setObjectWrapperFactory(ObjectWrapperFactory objectWrapperFactory) {
         this.objectWrapperFactory = objectWrapperFactory;
     }
@@ -161,6 +163,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @return a specified DatabaseIdProvider
      * @since 1.1.0
      */
+    @Override
     public DatabaseIdProvider getDatabaseIdProvider() {
         return databaseIdProvider;
     }
@@ -171,6 +174,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param databaseIdProvider a DatabaseIdProvider
      * @since 1.1.0
      */
+    @Override
     public void setDatabaseIdProvider(DatabaseIdProvider databaseIdProvider) {
         this.databaseIdProvider = databaseIdProvider;
     }
@@ -180,6 +184,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      *
      * @return a specified VFS
      */
+    @Override
     public Class<? extends VFS> getVfs() {
         return this.vfs;
     }
@@ -189,6 +194,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      *
      * @param vfs a VFS
      */
+    @Override
     public void setVfs(Class<? extends VFS> vfs) {
         this.vfs = vfs;
     }
@@ -198,6 +204,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      *
      * @return a specified Cache
      */
+    @Override
     public Cache getCache() {
         return this.cache;
     }
@@ -207,6 +214,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      *
      * @param cache a Cache
      */
+    @Override
     public void setCache(Cache cache) {
         this.cache = cache;
     }
@@ -217,6 +225,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param plugins list of plugins
      * @since 1.0.1
      */
+    @Override
     public void setPlugins(Interceptor... plugins) {
         this.plugins = plugins;
     }
@@ -230,6 +239,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param typeAliasesPackage package to scan for domain objects
      * @since 1.0.1
      */
+    @Override
     public void setTypeAliasesPackage(String typeAliasesPackage) {
         this.typeAliasesPackage = typeAliasesPackage;
     }
@@ -241,6 +251,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param typeAliasesSuperType super class for domain objects
      * @since 1.1.2
      */
+    @Override
     public void setTypeAliasesSuperType(Class<?> typeAliasesSuperType) {
         this.typeAliasesSuperType = typeAliasesSuperType;
     }
@@ -254,6 +265,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param typeHandlersPackage package to scan for type handlers
      * @since 1.0.1
      */
+    @Override
     public void setTypeHandlersPackage(String typeHandlersPackage) {
         this.typeHandlersPackage = typeHandlersPackage;
     }
@@ -264,6 +276,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param typeHandlers Type handler list
      * @since 1.0.1
      */
+    @Override
     public void setTypeHandlers(TypeHandler<?>... typeHandlers) {
         this.typeHandlers = typeHandlers;
     }
@@ -274,6 +287,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param defaultEnumTypeHandler The default type handler class for enum
      * @since 2.0.5
      */
+    @Override
     public void setDefaultEnumTypeHandler(
             @SuppressWarnings("rawtypes") Class<? extends TypeHandler> defaultEnumTypeHandler) {
         this.defaultEnumTypeHandler = defaultEnumTypeHandler;
@@ -285,6 +299,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param typeAliases Type aliases list
      * @since 1.0.1
      */
+    @Override
     public void setTypeAliases(Class<?>... typeAliases) {
         this.typeAliases = typeAliases;
     }
@@ -296,6 +311,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param failFast enable failFast
      * @since 1.0.1
      */
+    @Override
     public void setFailFast(boolean failFast) {
         this.failFast = failFast;
     }
@@ -306,6 +322,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      *
      * @param configLocation a location the MyBatis config file
      */
+    @Override
     public void setConfigLocation(Resource configLocation) {
         this.configLocation = configLocation;
     }
@@ -316,6 +333,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param configuration MyBatis configuration
      * @since 1.3.0
      */
+    @Override
     public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
     }
@@ -330,6 +348,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      *
      * @param mapperLocations location of MyBatis mapper files
      */
+    @Override
     public void setMapperLocations(Resource... mapperLocations) {
         this.mapperLocations = mapperLocations;
     }
@@ -341,6 +360,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      *
      * @param sqlSessionFactoryProperties optional properties for the SqlSessionFactory
      */
+    @Override
     public void setConfigurationProperties(Properties sqlSessionFactoryProperties) {
         this.configurationProperties = sqlSessionFactoryProperties;
     }
@@ -361,6 +381,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      *
      * @param dataSource a JDBC {@code DataSource}
      */
+    @Override
     public void setDataSource(DataSource dataSource) {
         if (dataSource instanceof TransactionAwareDataSourceProxy) {
             // If we got a TransactionAwareDataSourceProxy, we need to perform
@@ -381,6 +402,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      *
      * @param sqlSessionFactoryBuilder a SqlSessionFactoryBuilder
      */
+    @Override
     public void setSqlSessionFactoryBuilder(SqlSessionFactoryBuilder sqlSessionFactoryBuilder) {
         this.sqlSessionFactoryBuilder = sqlSessionFactoryBuilder;
     }
@@ -398,6 +420,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param transactionFactory the MyBatis TransactionFactory
      * @see SpringManagedTransactionFactory
      */
+    @Override
     public void setTransactionFactory(TransactionFactory transactionFactory) {
         this.transactionFactory = transactionFactory;
     }
@@ -408,6 +431,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      *
      * @param environment the environment name
      */
+    @Override
     public void setEnvironment(String environment) {
         this.environment = environment;
     }
@@ -418,6 +442,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param scriptingLanguageDrivers scripting language drivers
      * @since 2.0.2
      */
+    @Override
     public void setScriptingLanguageDrivers(LanguageDriver... scriptingLanguageDrivers) {
         this.scriptingLanguageDrivers = scriptingLanguageDrivers;
     }
@@ -428,6 +453,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @param defaultScriptingLanguageDriver A default scripting language driver class
      * @since 2.0.2
      */
+    @Override
     public void setDefaultScriptingLanguageDriver(Class<? extends LanguageDriver> defaultScriptingLanguageDriver) {
         this.defaultScriptingLanguageDriver = defaultScriptingLanguageDriver;
     }
@@ -455,6 +481,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * @return SqlSessionFactory
      * @throws Exception if configuration is failed
      */
+    @Override
     protected SqlSessionFactory buildSqlSessionFactory() throws Exception {
 
         final Configuration targetConfiguration;
