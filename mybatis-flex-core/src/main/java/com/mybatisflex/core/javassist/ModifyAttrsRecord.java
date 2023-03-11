@@ -15,8 +15,9 @@
  */
 package com.mybatisflex.core.javassist;
 
+import org.apache.ibatis.javassist.util.proxy.ProxyObject;
+
 import java.io.Serializable;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 public interface ModifyAttrsRecord extends Serializable {
@@ -26,22 +27,25 @@ public interface ModifyAttrsRecord extends Serializable {
      * 对于 entity 来说，这里存放的只是 属性的名称，而非字段
      * 对于 row 来说，存放的则是 字段 名称
      */
-    Set<String> modifyAttrs = new LinkedHashSet<>();
+    default Set<String> getModifyAttrs(){
+        ModifyAttrsRecordHandler handler = (ModifyAttrsRecordHandler) ((ProxyObject) this).getHandler();
+        return handler.getModifyAttrs();
+    }
 
     default void addModifyAttr(String attr) {
-        modifyAttrs.add(attr);
+        getModifyAttrs().add(attr);
     }
 
     default void removeModifyAttr(String attr) {
-        modifyAttrs.remove(attr);
+        getModifyAttrs().remove(attr);
     }
 
     default Set<String> obtainModifyAttrs() {
-        return new LinkedHashSet<>(modifyAttrs);
+        return getModifyAttrs();
     }
 
     default void clearModifyFlag() {
-        modifyAttrs.clear();
+        getModifyAttrs().clear();
     }
 
 

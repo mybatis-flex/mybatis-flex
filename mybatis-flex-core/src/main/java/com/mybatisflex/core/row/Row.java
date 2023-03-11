@@ -23,9 +23,7 @@ import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     private static final Object[] NULL_ARGS = new Object[0];
@@ -36,6 +34,14 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     public static Row of(String key, Object value) {
         Row row = new Row();
         return row.set(key, value);
+    }
+
+
+    private Set<String> modifyAttrs = new LinkedHashSet<>();
+
+    @Override
+    public Set<String> getModifyAttrs() {
+        return modifyAttrs;
     }
 
 
@@ -210,5 +216,6 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     public Object[] obtainAllModifyValues() {
         return ArrayUtil.concat(obtainModifyValues(), obtainsPrimaryValues());
     }
+
 
 }

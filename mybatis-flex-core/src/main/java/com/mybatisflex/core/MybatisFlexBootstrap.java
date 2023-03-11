@@ -19,6 +19,7 @@ import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
+import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -60,6 +61,7 @@ public class MybatisFlexBootstrap {
 
     private DbType dbType;
     private SqlSessionFactory sqlSessionFactory;
+    private Class<? extends Log> logImpl;
 
 
     private static volatile MybatisFlexBootstrap instance;
@@ -100,6 +102,10 @@ public class MybatisFlexBootstrap {
 
                 Environment environment = new Environment(environmentId, transactionFactory, dataSource);
                 configuration = new FlexConfiguration(environment);
+            }
+
+            if (logImpl != null) {
+                configuration.setLogImpl(logImpl);
             }
 
             //init mappers
@@ -192,6 +198,15 @@ public class MybatisFlexBootstrap {
 
     public MybatisFlexBootstrap setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
+        return this;
+    }
+
+    public Class<? extends Log> getLogImpl() {
+        return logImpl;
+    }
+
+    public MybatisFlexBootstrap setLogImpl(Class<? extends Log> logImpl) {
+        this.logImpl = logImpl;
         return this;
     }
 }

@@ -21,13 +21,12 @@ import com.mybatisflex.core.querywrapper.QueryWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowKey;
 import com.mybatisflex.core.row.RowMapper;
+import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class MybatisFlexStarter {
 
@@ -40,6 +39,7 @@ public class MybatisFlexStarter {
 
         MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
                 .setDataSource(dataSource)
+                .setLogImpl(StdOutImpl.class)
                 .start();
 
 
@@ -83,11 +83,46 @@ public class MybatisFlexStarter {
                 rowMapper.insertBatchWithFirstRowColumns("tb_account", newRowList));
 
 
+        //根据主键 ID 删除数据
+        bootstrap.execute(RowMapper.class, rowMapper ->
+                rowMapper.deleteById("tb_account", Row.ofKey(RowKey.ID_AUTO, 1)));
+
+
+        //根据原生 SQL 删除数据
+        bootstrap.execute(RowMapper.class, rowMapper ->
+                rowMapper.deleteBySql("delete from tb_account where id  = ? ", 2));
+
+
+        //根据主键 列表 删除数据
+        bootstrap.execute(RowMapper.class, rowMapper ->
+                rowMapper.deleteBatchByIds("tb_account", "id", Arrays.asList(2, 3, 4)));
+
+
+        Map<String, Object> where = new HashMap<>();
+        where.put("id", 2);
+        //根据 map 删除数据
+        bootstrap.execute(RowMapper.class, rowMapper ->
+                rowMapper.deleteByByMap("tb_account", where));
+
+
+        //更新数据
+        Row updateRow = Row.ofKey(RowKey.ID_AUTO, 6)
+                .set("user_name", "newNameTest");
+        bootstrap.execute(RowMapper.class, rowMapper ->
+                rowMapper.updateById("tb_account", updateRow));
+
+
+        //更新数据
+        bootstrap.execute(RowMapper.class, rowMapper ->
+                rowMapper.updateBySql("update tb_account set user_name = ? where id = ?", "李四", 7));
+
+
         //查询全部数据
         List<Row> rows = bootstrap.execute(RowMapper.class, rowMapper ->
                 rowMapper.selectAll("tb_account"));
 
-        System.out.println("rows count: " + rows.size()); //9
+
+        System.out.println("rows count: " + rows.size()); // 7
         System.out.println(rows);
 
 

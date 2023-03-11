@@ -36,10 +36,10 @@ public class ModifyAttrsRecordProxyFactory {
         ProxyFactory factory = new ProxyFactory();
         factory.setSuperclass(target);
 
-
         Class<?>[] interfaces = Arrays.copyOf(target.getInterfaces(), target.getInterfaces().length + 1);
         interfaces[interfaces.length - 1] = ModifyAttrsRecord.class;
         factory.setInterfaces(interfaces);
+
 
         final Class<?> proxyClass = factory.createClass();
 
@@ -53,6 +53,8 @@ public class ModifyAttrsRecordProxyFactory {
 
         return proxyObject;
     }
+
+
 
 
 }

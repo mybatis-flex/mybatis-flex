@@ -20,9 +20,17 @@ import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.javassist.util.proxy.MethodHandler;
 
 import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 
 public class ModifyAttrsRecordHandler implements MethodHandler {
+
+    private Set<String>  modifyAttrs = new LinkedHashSet<>();
+
+    public Set<String> getModifyAttrs() {
+        return modifyAttrs;
+    }
 
 
     @Override
@@ -30,12 +38,12 @@ public class ModifyAttrsRecordHandler implements MethodHandler {
 
         if (originalMethod.getName().startsWith("set")){
             String property = StringUtil.firstCharToLowerCase(originalMethod.getName().substring(3));
-            ((ModifyAttrsRecord) self).addModifyAttr(property);
+            modifyAttrs.add(property);
+//            ((ModifyAttrsRecord) self).addModifyAttr(property);
         }
 
         return proxyMethod.invoke(self, args);
     }
-
 
 
 

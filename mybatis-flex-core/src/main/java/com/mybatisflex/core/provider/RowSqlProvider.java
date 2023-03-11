@@ -24,10 +24,7 @@ import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class RowSqlProvider {
 
@@ -83,7 +80,8 @@ public class RowSqlProvider {
         }
 
         //让所有 row 的列顺序和值的数量与第条数据保持一致
-        Set<String> modifyAttrs = rows.get(0).obtainModifyAttrs();
+        //这个必须 new 一个 LinkedHashSet，因为 keepModifyAttrs 会清除 row 所有的 modifyAttrs
+        Set<String> modifyAttrs = new LinkedHashSet<>(rows.get(0).obtainModifyAttrs());
         rows.forEach(row -> row.keepModifyAttrs(modifyAttrs));
 
 
@@ -146,11 +144,11 @@ public class RowSqlProvider {
     public static String deleteByQuery(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
+        queryWrapper.from(tableName);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
 
-        queryWrapper.from(tableName);
         return DialectFactory.getDialect().forDeleteByQuery(queryWrapper);
     }
 
