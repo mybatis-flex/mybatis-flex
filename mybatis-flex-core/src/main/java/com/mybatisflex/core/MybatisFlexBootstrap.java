@@ -76,26 +76,8 @@ public class MybatisFlexBootstrap {
     }
 
 
-    public MybatisFlexBootstrap setDatasource(DataSource datasource) {
-        this.dataSource = datasource;
-        return this;
-    }
-
-    public MybatisFlexBootstrap setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
-        return this;
-    }
-
-    public MybatisFlexBootstrap setTransactionFactory(TransactionFactory transactionFactory) {
-        this.transactionFactory = transactionFactory;
-        return this;
-    }
 
 
-    public MybatisFlexBootstrap setEnvironmentId(String environmentId) {
-        this.environmentId = environmentId;
-        return this;
-    }
 
 
     public <T> MybatisFlexBootstrap addMapper(Class<T> type) {
@@ -105,6 +87,8 @@ public class MybatisFlexBootstrap {
         mappers.add(type);
         return this;
     }
+
+
 
 
     public MybatisFlexBootstrap start() {
@@ -157,4 +141,60 @@ public class MybatisFlexBootstrap {
         return sqlSessionFactory.openSession(configuration.getDefaultExecutorType());
     }
 
+
+    public String getEnvironmentId() {
+        return environmentId;
+    }
+
+    public void setEnvironmentId(String environmentId) {
+        this.environmentId = environmentId;
+    }
+
+    public TransactionFactory getTransactionFactory() {
+        return transactionFactory;
+    }
+
+    public void setTransactionFactory(TransactionFactory transactionFactory) {
+        this.transactionFactory = transactionFactory;
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(FlexConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public List<Class<?>> getMappers() {
+        return mappers;
+    }
+
+    public void setMappers(List<Class<?>> mappers) {
+        this.mappers = mappers;
+    }
+
+    public DbType getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(DbType dbType) {
+        this.dbType = dbType;
+    }
+
+    public SqlSessionFactory getSqlSessionFactory() {
+        return sqlSessionFactory;
+    }
+
+    public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+        this.sqlSessionFactory = sqlSessionFactory;
+    }
 }
