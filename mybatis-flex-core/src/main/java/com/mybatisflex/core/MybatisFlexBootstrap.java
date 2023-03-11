@@ -146,55 +146,58 @@ public class MybatisFlexBootstrap {
         return environmentId;
     }
 
-    public void setEnvironmentId(String environmentId) {
+    public MybatisFlexBootstrap setEnvironmentId(String environmentId) {
         this.environmentId = environmentId;
+        return this;
     }
 
     public TransactionFactory getTransactionFactory() {
         return transactionFactory;
     }
 
-    public void setTransactionFactory(TransactionFactory transactionFactory) {
+    public MybatisFlexBootstrap setTransactionFactory(TransactionFactory transactionFactory) {
         this.transactionFactory = transactionFactory;
+        return this;
     }
 
     public DataSource getDataSource() {
         return dataSource;
     }
 
-    public void setDataSource(DataSource dataSource) {
+    public MybatisFlexBootstrap setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+        return this;
     }
 
     public Configuration getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(FlexConfiguration configuration) {
+    public MybatisFlexBootstrap setConfiguration(FlexConfiguration configuration) {
         this.configuration = configuration;
+        return this;
     }
 
     public List<Class<?>> getMappers() {
         return mappers;
     }
 
-    public void setMappers(List<Class<?>> mappers) {
-        this.mappers = mappers;
-    }
 
     public DbType getDbType() {
         return dbType;
     }
 
-    public void setDbType(DbType dbType) {
+    public MybatisFlexBootstrap setDbType(DbType dbType) {
         this.dbType = dbType;
+        return this;
     }
 
     public SqlSessionFactory getSqlSessionFactory() {
         return sqlSessionFactory;
     }
 
-    public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+    public MybatisFlexBootstrap setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
+        return this;
     }
 }

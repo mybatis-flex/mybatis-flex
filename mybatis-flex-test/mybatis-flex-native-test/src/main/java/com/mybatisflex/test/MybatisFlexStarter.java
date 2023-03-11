@@ -33,7 +33,7 @@ public class MybatisFlexStarter {
                 .build();
 
         MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
-                .setDatasource(dataSource)
+                .setDataSource(dataSource)
                 .start();
 
         Row row = bootstrap.execute(RowMapper.class, rowMapper ->
