@@ -49,7 +49,6 @@ public class MybatisFlexStarter {
         System.out.println(row);
 
 
-
         //新增一条数据，自增
         Row newRow = Row.ofKey(RowKey.ID_AUTO) // id 自增
                 .set("user_name", "lisi")
@@ -63,11 +62,17 @@ public class MybatisFlexStarter {
         System.out.println(">>>>>>newRow.id: " + newRow.get("id"));
 
 
+        bootstrap.execute(RowMapper.class, rowMapper ->
+                rowMapper.insertBySql("insert into tb_account(user_name,age,birthday) values (?,?,?)"
+                        , "张三"
+                        , 18
+                        , new Date()));
+
 
         List<Row> newRowList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            Row insertRow = Row.ofKey(RowKey.ID_AUTO) // id 自增
-                    .set("user_name", "new_user_"+i)
+            Row insertRow = Row.ofKey(RowKey.ID_AUTO) //id 自增
+                    .set("user_name", "new_user_" + i)
                     .set("age", 22)
                     .set("birthday", new Date());
             newRowList.add(insertRow);
@@ -75,20 +80,20 @@ public class MybatisFlexStarter {
 
         //批量插入数据
         bootstrap.execute(RowMapper.class, rowMapper ->
-                rowMapper.insertBatchWithFirstRowColumns("tb_account",newRowList));
+                rowMapper.insertBatchWithFirstRowColumns("tb_account", newRowList));
 
 
         //查询全部数据
         List<Row> rows = bootstrap.execute(RowMapper.class, rowMapper ->
                 rowMapper.selectAll("tb_account"));
 
-        System.out.println("rows count: " + rows.size()); //8
+        System.out.println("rows count: " + rows.size()); //9
         System.out.println(rows);
 
 
-        //分页查询，第 2 页，每页 3 条数据
+        //分页查询，第 2 页，每页 4 条数据
         Page<Row> rowPage = bootstrap.execute(RowMapper.class, rowMapper ->
-                rowMapper.paginate("tb_account", 2, 3, QueryWrapper.create()));
+                rowMapper.paginate("tb_account", 2, 4, QueryWrapper.create()));
         System.out.println(rowPage);
     }
 }

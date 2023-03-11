@@ -162,6 +162,10 @@ public class FlexConfiguration extends Configuration {
      */
     private MappedStatement replaceRowKeyGenerator(MappedStatement ms) {
 
+        //执行原生 SQL，不需要为其设置主键生成器
+        if (ms.getId().endsWith("BySql")) {
+            return ms;
+        }
 
         KeyGenerator keyGenerator = new RowKeyGenerator(ms);
         if (ms.getId().endsWith("insertBatchWithFirstRowColumns")) {
