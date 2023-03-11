@@ -19,8 +19,8 @@ import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.key.MultiEntityKeyGenerator;
 import com.mybatisflex.core.key.MultiRowKeyGenerator;
 import com.mybatisflex.core.key.MybatisKeyGeneratorUtil;
-import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.key.RowKeyGenerator;
+import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfos;
 import com.mybatisflex.core.util.CollectionUtil;
@@ -31,7 +31,6 @@ import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -48,12 +47,12 @@ public class FlexConfiguration extends Configuration {
     public FlexConfiguration(Environment environment) {
         super(environment);
         setMapUnderscoreToCamelCase(true);
-        setLogImpl(StdOutImpl.class);
+//        setLogImpl(StdOutImpl.class);
         initDefaultMappers();
     }
 
     public FlexConfiguration() {
-        setLogImpl(StdOutImpl.class);
+//        setLogImpl(StdOutImpl.class);
         initDefaultMappers();
     }
 
