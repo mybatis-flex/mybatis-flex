@@ -13,27 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.core.table;
+package com.mybatisflex.core.query;
 
-import com.mybatisflex.core.query.QueryTable;
+/**
+ * @author michael yang (fuhai999@gmail.com)
+ * @Date: 2020/1/14
+ */
+public class Joiner<M> {
 
-import java.io.Serializable;
+    private M queryWrapper;
+    private Join join;
 
-public class TableDef implements Serializable {
-
-    private String tableName;
-
-    public TableDef(String tableName) {
-        this.tableName = tableName;
+    public Joiner(M queryWrapper, Join join) {
+        this.queryWrapper = queryWrapper;
+        this.join = join;
     }
 
-    public String getTableName() {
-        return tableName;
+    public Joiner<M> as(String alias) {
+        join.getQueryTable().as(alias);
+        return this;
     }
 
-    public QueryTable as(String alias) {
-        return new QueryTable(tableName, alias);
+    public M on(String on) {
+        join.on(new StringQueryCondition(on));
+        return queryWrapper;
     }
 
-
+    public M on(QueryCondition on) {
+        join.on(on);
+        return queryWrapper;
+    }
 }
+

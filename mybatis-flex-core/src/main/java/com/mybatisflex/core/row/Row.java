@@ -16,7 +16,7 @@
 package com.mybatisflex.core.row;
 
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
-import com.mybatisflex.core.querywrapper.QueryColumn;
+import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfos;
 import com.mybatisflex.core.util.ArrayUtil;

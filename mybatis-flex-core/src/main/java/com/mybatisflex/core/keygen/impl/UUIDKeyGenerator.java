@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.core.table;
+package com.mybatisflex.core.keygen.impl;
 
-import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.keygen.IKeyGenerator;
 
-import java.io.Serializable;
+import java.util.UUID;
 
-public class TableDef implements Serializable {
+public class UUIDKeyGenerator implements IKeyGenerator {
 
-    private String tableName;
-
-    public TableDef(String tableName) {
-        this.tableName = tableName;
+    @Override
+    public Object generate(Object entity, String keyColumn) {
+        return UUID.randomUUID().toString().replace("-", "");
     }
-
-    public String getTableName() {
-        return tableName;
-    }
-
-    public QueryTable as(String alias) {
-        return new QueryTable(tableName, alias);
-    }
-
-
 }

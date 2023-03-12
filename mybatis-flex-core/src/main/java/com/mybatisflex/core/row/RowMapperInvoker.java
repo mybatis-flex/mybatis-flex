@@ -19,7 +19,7 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.querywrapper.QueryWrapper;
+import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;

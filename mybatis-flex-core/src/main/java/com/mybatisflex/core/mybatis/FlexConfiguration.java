@@ -16,10 +16,10 @@
 package com.mybatisflex.core.mybatis;
 
 import com.mybatisflex.core.FlexConsts;
-import com.mybatisflex.core.key.MultiEntityKeyGenerator;
-import com.mybatisflex.core.key.MultiRowKeyGenerator;
-import com.mybatisflex.core.key.MybatisKeyGeneratorUtil;
-import com.mybatisflex.core.key.RowKeyGenerator;
+import com.mybatisflex.core.keygen.MultiEntityKeyGenerator;
+import com.mybatisflex.core.keygen.MultiRowKeyGenerator;
+import com.mybatisflex.core.keygen.MybatisKeyGeneratorUtil;
+import com.mybatisflex.core.keygen.RowKeyGenerator;
 import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfos;

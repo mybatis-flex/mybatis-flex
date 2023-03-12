@@ -1,6 +1,6 @@
 package com.mybatisflex.core.dialect;
 
-import com.mybatisflex.core.querywrapper.QueryWrapper;
+import com.mybatisflex.core.query.QueryWrapper;
 
 /**
  * limit 和 offset 参数的处理器

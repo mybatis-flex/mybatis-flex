@@ -18,9 +18,9 @@ package com.mybatisflex.core;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.EntitySqlProvider;
-import com.mybatisflex.core.querywrapper.QueryColumn;
-import com.mybatisflex.core.querywrapper.QueryWrapper;
-import com.mybatisflex.core.querywrapper.CPI;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.CPI;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 

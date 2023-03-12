@@ -2,7 +2,7 @@ package com.mybatisflex.test;
 
 import com.mybatisflex.core.dialect.CommonsDialectImpl;
 import com.mybatisflex.core.dialect.IDialect;
-import com.mybatisflex.core.querywrapper.QueryWrapper;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfos;
 import com.mybatisflex.core.util.CollectionUtil;

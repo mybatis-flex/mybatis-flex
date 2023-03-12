@@ -17,7 +17,7 @@ package com.mybatisflex.core.dialect;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.querywrapper.*;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.util.ArrayUtil;

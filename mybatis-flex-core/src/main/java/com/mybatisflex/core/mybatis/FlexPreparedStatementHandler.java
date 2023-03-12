@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.core.mybatis;
 
-import com.mybatisflex.core.key.IMultiKeyGenerator;
+import com.mybatisflex.core.keygen.IMultiKeyGenerator;
 import com.mybatisflex.core.util.ArrayUtil;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;

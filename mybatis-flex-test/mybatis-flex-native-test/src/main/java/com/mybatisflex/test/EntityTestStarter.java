@@ -17,7 +17,7 @@ package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.querywrapper.QueryWrapper;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;

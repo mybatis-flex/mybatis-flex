@@ -13,27 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.core.table;
+package com.mybatisflex.core.query;
 
-import com.mybatisflex.core.query.QueryTable;
+public enum SqlConnector {
 
-import java.io.Serializable;
 
-public class TableDef implements Serializable {
+    AND(" AND "),
+//    AND_NOT(" AND NOT "),
+//    AND_EXISTS(" AND EXISTS "),
+//    AND_NOT_EXISTS(" AND NOT EXISTS "),
+    OR(" OR "),
+//    OR_NOT(" OR NOT "),
+//    OR_EXISTS(" OR EXISTS "),
+//    OR_NOT_EXISTS(" OR NOT EXISTS "),
+//    NOT(" NOT "),
+    ;
 
-    private String tableName;
 
-    public TableDef(String tableName) {
-        this.tableName = tableName;
+    private String value;
+
+    SqlConnector(String value) {
+        this.value = value;
     }
 
-    public String getTableName() {
-        return tableName;
+    @Override
+    public String toString() {
+        return value;
     }
-
-    public QueryTable as(String alias) {
-        return new QueryTable(tableName, alias);
-    }
-
-
 }

@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.core.dialect;
 
-import com.mybatisflex.core.querywrapper.QueryWrapper;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.TableInfo;
 

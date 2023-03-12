@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.core.table;
+package com.mybatisflex.core.keygen;
 
-import com.mybatisflex.core.query.QueryTable;
+public interface IMultiKeyGenerator {
 
-import java.io.Serializable;
+    /**
+     * 是否需要数据库生成主键
+     *
+     * @return true 需要生成主键
+     */
+    boolean isNeedGeneratedKeys();
 
-public class TableDef implements Serializable {
-
-    private String tableName;
-
-    public TableDef(String tableName) {
-        this.tableName = tableName;
-    }
-
-    public String getTableName() {
-        return tableName;
-    }
-
-    public QueryTable as(String alias) {
-        return new QueryTable(tableName, alias);
-    }
-
-
+    /**
+     * 数据库主键的列名
+     *
+     * @return 列名数组
+     */
+    String[] getKeyColumnNames();
 }

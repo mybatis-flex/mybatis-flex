@@ -16,7 +16,7 @@
 package com.mybatisflex.test.controller;
 
 import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.querywrapper.QueryWrapper;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.mapper.AccountMapper;
 import com.mybatisflex.test.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;

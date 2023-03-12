@@ -17,10 +17,10 @@ package com.mybatisflex.core.provider;
 
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.querywrapper.QueryColumn;
-import com.mybatisflex.core.querywrapper.QueryCondition;
-import com.mybatisflex.core.querywrapper.QueryWrapper;
-import com.mybatisflex.core.querywrapper.CPI;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;

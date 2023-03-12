@@ -17,7 +17,7 @@ package com.mybatisflex.core.row;
 
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.querywrapper.QueryWrapper;
+import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.util.MapUtil;
 

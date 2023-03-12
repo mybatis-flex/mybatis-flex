@@ -13,27 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.core.table;
+package com.mybatisflex.core.keygen;
 
-import com.mybatisflex.core.query.QueryTable;
+public interface IKeyGenerator {
 
-import java.io.Serializable;
-
-public class TableDef implements Serializable {
-
-    private String tableName;
-
-    public TableDef(String tableName) {
-        this.tableName = tableName;
-    }
-
-    public String getTableName() {
-        return tableName;
-    }
-
-    public QueryTable as(String alias) {
-        return new QueryTable(tableName, alias);
-    }
-
+    Object generate(Object entity,String keyColumn);
 
 }

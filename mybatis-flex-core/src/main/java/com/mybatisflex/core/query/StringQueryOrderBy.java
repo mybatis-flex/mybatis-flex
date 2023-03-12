@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.core.table;
+package com.mybatisflex.core.query;
 
-import com.mybatisflex.core.query.QueryTable;
 
-import java.io.Serializable;
+import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.util.SqlUtil;
 
-public class TableDef implements Serializable {
+import java.util.List;
 
-    private String tableName;
+/**
+ * 排序字段
+ */
+public class StringQueryOrderBy extends QueryOrderBy {
 
-    public TableDef(String tableName) {
-        this.tableName = tableName;
+    private String orderBy;
+
+    public StringQueryOrderBy(String orderBy) {
+        SqlUtil.keepOrderBySqlSafely(orderBy);
+        this.orderBy = orderBy;
     }
 
-    public String getTableName() {
-        return tableName;
+    @Override
+    public String toSql(List<QueryTable> queryTables, IDialect dialect) {
+        return orderBy;
     }
-
-    public QueryTable as(String alias) {
-        return new QueryTable(tableName, alias);
-    }
-
-
 }

@@ -4,15 +4,15 @@ import com.mybatisflex.core.dialect.CommonsDialectImpl;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcesser;
-import com.mybatisflex.core.querywrapper.CPI;
-import com.mybatisflex.core.querywrapper.QueryWrapper;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfos;
 import org.junit.Test;
 
 import java.util.Arrays;
 
-import static com.mybatisflex.core.querywrapper.QueryMethods.*;
+import static com.mybatisflex.core.query.QueryMethods.*;
 import static com.mybatisflex.test.table.Tables.ACCOUNT;
 import static com.mybatisflex.test.table.Tables.ARTICLE;
 
