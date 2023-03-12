@@ -1,3 +1,8 @@
+mybatis-flex v1.0.0 2023012:
+主要对 beta 和 rc 版本进行大量的重构和测试
+
+
+
 mybatis-flex v1.0.0-rc.1 20230306:
 优化：对 RowSqlProvider.java 的一些方法名进行重构
 优化：QueryEntityProcesser 添加对 DEFAULT_COLUMNS 属性的生成
