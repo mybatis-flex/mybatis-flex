@@ -16,7 +16,7 @@
 package com.mybatisflex.core.table;
 
 import com.mybatisflex.annotation.Id;
-import com.mybatisflex.core.enums.KeyType;
+import com.mybatisflex.annotation.KeyType;
 
 public class IdInfo extends ColumnInfo {
 

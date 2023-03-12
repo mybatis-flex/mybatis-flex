@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.core.row;
 
-import com.mybatisflex.core.enums.KeyType;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.util.SqlUtil;
 
 /**

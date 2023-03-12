@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.key;
 
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
@@ -33,7 +34,7 @@ import java.util.Map;
 /**
  * 通过 java 编码的方式生成主键
  * 当主键类型配置为 KeyType#Generator 时，使用此生成器生成
- * {@link com.mybatisflex.core.enums.KeyType#Generator}
+ * {@link KeyType#Generator}
  */
 public class CustomKeyGenerator implements KeyGenerator {
 

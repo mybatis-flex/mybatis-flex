@@ -16,7 +16,7 @@
 package com.mybatisflex.core.key;
 
 import com.mybatisflex.core.FlexConsts;
-import com.mybatisflex.core.enums.KeyType;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowKey;
 import com.mybatisflex.core.util.ArrayUtil;

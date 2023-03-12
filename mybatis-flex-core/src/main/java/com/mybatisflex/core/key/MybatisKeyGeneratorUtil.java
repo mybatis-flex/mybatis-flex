@@ -17,7 +17,7 @@ package com.mybatisflex.core.key;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
-import com.mybatisflex.core.enums.KeyType;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.table.IdInfo;
 import com.mybatisflex.core.table.TableInfo;

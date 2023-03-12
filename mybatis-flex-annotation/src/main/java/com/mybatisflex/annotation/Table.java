@@ -33,11 +33,6 @@ public @interface Table {
     String schema() default "";
 
     /**
-     * 是否使用 mybatis 缓存
-     */
-    boolean useCached() default false;
-
-    /**
      * 默认为 驼峰属性 转换为 下划线字段
      */
     boolean camelToUnderline() default true;

@@ -15,8 +15,6 @@
  */
 package com.mybatisflex.annotation;
 
-import com.mybatisflex.core.enums.KeyType;
-
 import java.lang.annotation.*;
 
 @Inherited

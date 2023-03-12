@@ -16,7 +16,7 @@
 package com.mybatisflex.core.table;
 
 import com.mybatisflex.core.FlexConsts;
-import com.mybatisflex.core.enums.KeyType;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.util.ArrayUtil;
@@ -38,7 +38,6 @@ public class TableInfo {
     private String schema; //schema
     private String tableName; //表名
     private Class<?> entityClass; //实体类
-    private boolean useCached = false;
     private boolean camelToUnderline = true;
 
     //逻辑删除数据库列名
@@ -103,14 +102,6 @@ public class TableInfo {
 
     public void setEntityClass(Class<?> entityClass) {
         this.entityClass = entityClass;
-    }
-
-    public boolean isUseCached() {
-        return useCached;
-    }
-
-    public void setUseCached(boolean useCached) {
-        this.useCached = useCached;
     }
 
     public boolean isCamelToUnderline() {

@@ -2,7 +2,7 @@ package com.mybatisflex.test;
 
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
-import com.mybatisflex.core.enums.KeyType;
+import com.mybatisflex.annotation.KeyType;
 
 import java.util.Date;
 

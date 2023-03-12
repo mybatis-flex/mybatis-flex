@@ -95,7 +95,6 @@ public class TableInfos {
         if (table != null) {
             tableInfo.setTableName(table.value());
             tableInfo.setSchema(table.schema());
-            tableInfo.setUseCached(table.useCached());
             tableInfo.setCamelToUnderline(table.camelToUnderline());
         } else {
             //默认为类名转驼峰下划线

@@ -47,12 +47,10 @@ public class FlexConfiguration extends Configuration {
     public FlexConfiguration(Environment environment) {
         super(environment);
         setMapUnderscoreToCamelCase(true);
-//        setLogImpl(StdOutImpl.class);
         initDefaultMappers();
     }
 
     public FlexConfiguration() {
-//        setLogImpl(StdOutImpl.class);
         initDefaultMappers();
     }
 
@@ -91,7 +89,6 @@ public class FlexConfiguration extends Configuration {
         statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
         return statementHandler;
     }
-
 
 
     @Override

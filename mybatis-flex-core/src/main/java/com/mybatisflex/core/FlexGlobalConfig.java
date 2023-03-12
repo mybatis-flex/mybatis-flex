@@ -16,7 +16,7 @@
 package com.mybatisflex.core;
 
 import com.mybatisflex.core.dialect.DbType;
-import com.mybatisflex.core.enums.KeyType;
+import com.mybatisflex.annotation.KeyType;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
