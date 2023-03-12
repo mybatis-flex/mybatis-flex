@@ -309,6 +309,43 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 // WHERE tb_account.age >=  ?
 ```
 
+
+### limit... offset
+
+```java
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .orderBy(ACCOUNT.ID.desc())
+    .limit(10)
+    .offset(20);
+
+// MySql: 
+// SELECT * FROM `tb_account` ORDER BY `id` DESC LIMIT 20, 10
+
+// postgreSQL: 
+// SELECT * FROM "tb_account" ORDER BY "id" DESC LIMIT 20 OFFSET 10
+
+// informix: 
+// SELECT SKIP 20 FIRST 10 * FROM "tb_account" ORDER BY "id" DESC
+
+// oracle: 
+// SELECT * FROM (SELECT TEMP_DATAS.*, 
+//  ROWNUM RN FROM (
+//          SELECT * FROM "tb_account" ORDER BY "id" DESC) 
+//      TEMP_DATAS WHERE  ROWNUM <=30) 
+//  WHERE RN >20
+
+// db2: 
+// SELECT * FROM "tb_account" ORDER BY "id" DESC OFFSET 20  ROWS FETCH NEXT 10 ROWS ONLY
+
+// sybase: 
+// SELECT TOP 10 START AT 30 * FROM "tb_account" ORDER BY "id" DESC
+
+// firebird: 
+// SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
+```
+
 ### 存在疑问？
 
 **疑问 1：QueryWrapper 是否可以在分布式项目中通过 RPC 传输？**
