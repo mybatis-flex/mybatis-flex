@@ -341,7 +341,7 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 // OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY
 
 // sybase: 
-// SELECT TOP 10 START AT 30 * FROM "tb_account" ORDER BY "id" DESC
+// SELECT TOP 10 START AT 21 * FROM "tb_account" ORDER BY "id" DESC
 
 // firebird: 
 // SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
