@@ -15,22 +15,46 @@
  */
 package com.mybatisflex.test.controller;
 
+import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.querywrapper.QueryWrapper;
 import com.mybatisflex.test.mapper.AccountMapper;
 import com.mybatisflex.test.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-//@RequestMapping("/accounts")
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 public class AccountController {
 
     @Autowired
     AccountMapper accountMapper;
 
+
+    @PostMapping("/account/add")
+    String add(@RequestBody Account account){
+        accountMapper.insert(account);
+        return "add ok!";
+    }
+
+
     @GetMapping("/account/{id}")
     Account selectOne(@PathVariable("id") Long id) {
         return accountMapper.selectOneById(id);
+    }
+
+
+    @GetMapping("/selectListByIds/{id}")
+    List<Account> selectListByIds(@PathVariable("id") String id) {
+        List<Long> ids = Arrays.stream(id.split(",")).mapToLong(Long::parseLong).boxed().collect(Collectors.toList());
+        return accountMapper.selectListByIds(ids);
+    }
+
+
+    @GetMapping("/paginate")
+    Page<Account> paginate(@RequestParam(defaultValue = "1") int pageNumber, @RequestParam(defaultValue = "10")  int pageSize) {
+        return accountMapper.paginate(pageNumber,pageSize, QueryWrapper.create());
     }
 }

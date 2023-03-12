@@ -17,13 +17,14 @@ package com.mybatisflex.test.model;
 
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
+import com.mybatisflex.core.enums.KeyType;
 
 import java.util.Date;
 
 @Table("tb_account")
 public class Account {
 
-    @Id
+    @Id(keyType = KeyType.Auto)
     private Long id;
     private String userName;
     private Integer age;
@@ -59,5 +60,15 @@ public class Account {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", age=" + age +
+                ", birthday=" + birthday +
+                '}';
     }
 }
