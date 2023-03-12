@@ -310,8 +310,6 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 // SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 ```
 
-> 在以上的 "limit... offset" 示例中，Mybatis-Flex 能够自动识别当前数据库，并生成不同的 SQL，用户也可以很轻易的通过
-> `DialectFactory` 注册（新增或改写）自己的实现方言。
 
 ### Questions？
 
