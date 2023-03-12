@@ -58,7 +58,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
 
     private static final String classTableTemplate = "package @package;\n" +
             "\n" +
-            "import com.mybatisflex.core.querywrapper.QueryColumn;\n" +
+            "import com.mybatisflex.core.query.QueryColumn;\n" +
             "import com.mybatisflex.core.table.TableDef;\n" +
             "\n" +
             "// Auto generate by mybatis-flex, do not modify it.\n" +

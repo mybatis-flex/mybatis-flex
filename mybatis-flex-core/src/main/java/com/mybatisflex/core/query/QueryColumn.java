@@ -288,7 +288,7 @@ public class QueryColumn implements Serializable {
     }
 
 
-    ////orrder by ////
+    ////order by ////
     public QueryOrderBy asc() {
         QueryOrderBy queryOrderBy = new QueryOrderBy(this);
         return queryOrderBy;
@@ -300,7 +300,7 @@ public class QueryColumn implements Serializable {
     }
 
 
-    public String wrap(IDialect dialect, String table, String column) {
+    protected String wrap(IDialect dialect, String table, String column) {
         if (StringUtil.isNotBlank(table)) {
             return dialect.wrap(table) + "." + dialect.wrap(column);
         } else {
