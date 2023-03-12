@@ -31,8 +31,9 @@ public class ClassUtil {
     private static final List<String> PROXY_CLASS_NAMES = Arrays.asList("net.sf.cglib.proxy.Factory"
             // cglib
             , "org.springframework.cglib.proxy.Factory"
-            , "javassist.util.proxy.ProxyObject"
+
             // javassist
+            , "javassist.util.proxy.ProxyObject"
             , "org.apache.ibatis.javassist.util.proxy.ProxyObject");
 
     public static boolean isProxy(Class<?> clazz) {
