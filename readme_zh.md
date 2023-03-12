@@ -337,7 +337,8 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 //  WHERE RN >20
 
 // db2: 
-// SELECT * FROM "tb_account" ORDER BY "id" DESC OFFSET 20  ROWS FETCH NEXT 10 ROWS ONLY
+// SELECT * FROM "tb_account" ORDER BY "id" DESC 
+// OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY
 
 // sybase: 
 // SELECT TOP 10 START AT 30 * FROM "tb_account" ORDER BY "id" DESC
