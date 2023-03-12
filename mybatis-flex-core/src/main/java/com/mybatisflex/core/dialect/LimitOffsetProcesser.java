@@ -118,7 +118,7 @@ public interface LimitOffsetProcesser {
     LimitOffsetProcesser SYBASE = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             //SELECT TOP 1 START AT 3 * FROM
-            sql.insert(6, " TOP " + limitRows + " START AT " + (limitRows + limitOffset));
+            sql.insert(6, " TOP " + limitRows + " START AT " + (limitOffset + 1));
         } else if (limitRows != null) {
             sql.insert(6, " TOP " + limitRows);
         }
