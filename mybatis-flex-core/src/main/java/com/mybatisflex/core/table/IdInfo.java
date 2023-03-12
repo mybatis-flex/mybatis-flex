@@ -23,14 +23,14 @@ public class IdInfo extends ColumnInfo {
     /**
      * id 生成策略
      */
-    private KeyType keyType  = KeyType.None;
+    private KeyType keyType;
 
     /**
-     * 若 keyType 类型是 sequence， value 则代表的是
+     * 1、若 keyType 类型是 sequence， value 则代表的是
      * sequence 序列的 sql 内容
      * 例如：select SEQ_USER_ID.nextval as id from dual
-     *
-     * 若 keyType 是 Generator，value 则代表的是使用的那个 keyGenerator 的名称
+     * <p>
+     * 2、若 keyType 是 Generator，value 则代表的是使用的那个 keyGenerator 的名称
      */
     private String value;
 

@@ -79,7 +79,6 @@ public class TableInfos {
                 return getEntityClass((Class<?>) type);
             }
         }
-
         return null;
     }
 

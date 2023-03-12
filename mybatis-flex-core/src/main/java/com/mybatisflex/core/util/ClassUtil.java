@@ -27,7 +27,6 @@ import java.util.List;
  */
 public class ClassUtil {
 
-
     //proxy frameworks
     private static final List<String> PROXY_CLASS_NAMES = Arrays.asList("net.sf.cglib.proxy.Factory"
             // cglib
@@ -68,8 +67,8 @@ public class ClassUtil {
 
     public static <T> T newInstance(Class<T> clazz) {
         try {
-            Constructor constructor = clazz.getDeclaredConstructor();
-            return (T) constructor.newInstance();
+            Constructor<T> constructor = clazz.getDeclaredConstructor();
+            return constructor.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,8 +86,7 @@ public class ClassUtil {
                     return (T) ret;
                 }
             }
-
-            throw new IllegalArgumentException("Can not matched constructor by paras" + Arrays.toString(paras) + " for class: " + clazz.getName());
+            throw new IllegalArgumentException("Can not find constructor by paras: \"" + Arrays.toString(paras) + "\" in class[" + clazz.getName()+"]");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,46 +118,13 @@ public class ClassUtil {
     }
 
 
-    public static String buildMethodString(Method method) {
-        StringBuilder sb = new StringBuilder()
-                .append(method.getDeclaringClass().getName())
-                .append(".")
-                .append(method.getName())
-                .append("(");
-
-        Class<?>[] params = method.getParameterTypes();
-        int in = 0;
-        for (Class<?> clazz : params) {
-            sb.append(clazz.getName());
-            if (++in < params.length) {
-                sb.append(",");
-            }
-        }
-
-        return sb.append(")").toString();
-    }
-
-
-    public static boolean hasClass(String className) {
-        try {
-            Class.forName(className, false, getClassLoader());
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
-
-
-    public static ClassLoader getClassLoader() {
-        ClassLoader ret = Thread.currentThread().getContextClassLoader();
-        return ret != null ? ret : ClassUtil.class.getClassLoader();
-    }
 
     public static List<Field> getAllFields(Class<?> cl) {
         List<Field> fields = new ArrayList<>();
         doGetFields(cl, fields);
         return fields;
     }
+
 
     private static void doGetFields(Class<?> cl, List<Field> fields) {
         if (cl == null || cl == Object.class) {
