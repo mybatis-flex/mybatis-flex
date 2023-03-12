@@ -1,4 +1,4 @@
-![](./docs/assets/images/logo.png)
+![](./docs/assets/images/logo_en.png)
 
 # Mybatis-Flex is an elegant Mybatis Enhancement Framework.
 
