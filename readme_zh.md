@@ -1,7 +1,9 @@
 ![](./docs/assets/images/logo.png)
 
 
-# Mybatis-Flex - 让 Mybatis 飞起来
+# Mybatis-Flex： 更灵活、更轻量、更好用
+
+
 
 ## 特征
 
