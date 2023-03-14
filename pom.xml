@@ -45,7 +45,7 @@
         <module>mybatis-flex-core</module>
         <module>mybatis-flex-spring</module>
         <module>mybatis-flex-spring-boot-starter</module>
-        <module>mybatis-flex-test</module>
+<!--        <module>mybatis-flex-test</module>-->
     </modules>
 
     <properties>
