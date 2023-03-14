@@ -1,9 +1,9 @@
-# Maven 安装
+# Maven 依赖
 
 > 以下的 xml maven 依赖示例中，可能并非最新的 Mybatis-Flex 版本，请自行查看最新版本，并修改版本号。
 
 
-1、只用到了 Mybatis，没用到 Spring 等框架的场景：
+1、只用到了 Mybatis，没用到 Spring 场景：
 
 ```xml
 <dependency>
@@ -23,7 +23,7 @@
 </dependency>
 ``````
 
-2、用到了 Spring Boot 的场景
+3、用到了 Spring Boot 的场景
 
 ```xml
 <dependency>
