@@ -1,10 +1,14 @@
 package com.mybatisflex.test;
 
+import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.Table;
 import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
+import com.mybatisflex.core.handler.Fastjson2TypeHandler;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Table("tb_account")
 public class Account {
@@ -17,6 +21,9 @@ public class Account {
     private int age;
 
     private Date birthday;
+
+    @Column(typeHandler = Fastjson2TypeHandler.class)
+    private Map<String, Object> options;
 
     public Long getId() {
         return id;
@@ -50,6 +57,21 @@ public class Account {
         this.birthday = birthday;
     }
 
+    public Map<String, Object> getOptions() {
+        return options;
+    }
+
+    public void setOptions(Map<String, Object> options) {
+        this.options = options;
+    }
+
+    public void addOption(String key, Object value) {
+        if (options == null) {
+            options = new HashMap<>();
+        }
+        options.put(key, value);
+    }
+
     @Override
     public String toString() {
         return "Account{" +
@@ -57,6 +79,7 @@ public class Account {
                 ", userName='" + userName + '\'' +
                 ", age=" + age +
                 ", birthday=" + birthday +
+                ", options=" + options +
                 '}';
     }
 }

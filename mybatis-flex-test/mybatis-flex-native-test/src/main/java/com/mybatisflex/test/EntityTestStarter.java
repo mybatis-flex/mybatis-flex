@@ -112,5 +112,20 @@ public class EntityTestStarter {
                 accountMapper.paginate(2, 3, QueryWrapper.create()));
         System.out.println(accountPage);
 
+
+        Account optionsAccount = new Account();
+        optionsAccount.setUserName("optionstest");
+        optionsAccount.addOption("c1", 11);
+        optionsAccount.addOption("c2", "zhang");
+        optionsAccount.addOption("c3", new Date());
+        bootstrap.execute(AccountMapper.class, accountMapper ->
+                accountMapper.insert(optionsAccount));
+        System.out.println(">>>>>>> optionsAccount: " + optionsAccount.getId());
+
+
+        Account selectOptionsAccount = bootstrap.execute(AccountMapper.class, accountMapper ->
+                accountMapper.selectOneById(optionsAccount.getId()));
+        System.out.println(selectOptionsAccount);
+
     }
 }
