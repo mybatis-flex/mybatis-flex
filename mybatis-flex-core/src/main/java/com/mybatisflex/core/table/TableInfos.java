@@ -37,13 +37,15 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.*;
+import java.time.chrono.JapaneseDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TableInfos {
+
 
     private static final Set<Class<?>> defaultSupportColumnTypes = CollectionUtil.newHashSet(
             int.class, Integer.class,
@@ -52,10 +54,12 @@ public class TableInfos {
             float.class, Float.class,
             double.class, Double.class,
             boolean.class, Boolean.class,
-            Date.class, java.sql.Date.class, LocalDate.class, LocalDateTime.class, LocalTime.class,
+            Date.class, java.sql.Date.class, Time.class, Timestamp.class,
+            Instant.class, LocalDate.class, LocalDateTime.class, LocalTime.class, OffsetDateTime.class, OffsetTime.class, ZonedDateTime.class,
+            Year.class, Month.class, YearMonth.class, JapaneseDate.class,
             byte[].class, Byte[].class,
             BigInteger.class, BigDecimal.class,
-            char.class, String.class
+            char.class, String.class, Character.class
     );
 
 
@@ -206,7 +210,7 @@ public class TableInfos {
             }
 
 
-            if (column != null && column.jdbcType() != JdbcType.UNDEFINED){
+            if (column != null && column.jdbcType() != JdbcType.UNDEFINED) {
                 columnInfo.setJdbcType(column.jdbcType());
             }
 

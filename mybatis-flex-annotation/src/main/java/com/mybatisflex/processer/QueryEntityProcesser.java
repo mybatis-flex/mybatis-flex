@@ -18,6 +18,7 @@ package com.mybatisflex.processer;
 
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Table;
+import org.apache.ibatis.type.UnknownTypeHandler;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -35,9 +36,10 @@ import javax.tools.JavaFileObject;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.*;
+import java.time.chrono.JapaneseDate;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -50,10 +52,13 @@ public class QueryEntityProcesser extends AbstractProcessor {
             float.class.getName(), Float.class.getName(),
             double.class.getName(), Double.class.getName(),
             boolean.class.getName(), Boolean.class.getName(),
-            Date.class.getName(), java.sql.Date.class.getName(), LocalDate.class.getName(), LocalDateTime.class.getName(), LocalTime.class.getName(),
+            Date.class.getName(), java.sql.Date.class.getName(), Time.class.getName(), Timestamp.class.getName(),
+            Instant.class.getName(), LocalDate.class.getName(), LocalDateTime.class.getName(), LocalTime.class.getName(),
+            OffsetDateTime.class.getName(), OffsetTime.class.getName(), ZonedDateTime.class.getName(),
+            Year.class.getName(), Month.class.getName(), YearMonth.class.getName(), JapaneseDate.class.getName(),
             byte[].class.getName(), Byte[].class.getName(),
             BigInteger.class.getName(), BigDecimal.class.getName(),
-            char.class.getName(), String.class.getName()
+            char.class.getName(), String.class.getName(), Character.class.getName()
     );
 
     private static final String classTableTemplate = "package @package;\n" +
@@ -148,16 +153,19 @@ public class QueryEntityProcesser extends AbstractProcessor {
                     if (ElementKind.FIELD == fieldElement.getKind()) {
 
                         TypeMirror typeMirror = fieldElement.asType();
-//                        Element typeElement = typeUtils.asElement(typeMirror);
-
-                        if (!defaultSupportColumnTypes.contains(typeMirror.toString())) {
-                            continue;
-                        }
 
                         Column column = fieldElement.getAnnotation(Column.class);
                         if (column != null && column.ignore()) {
                             continue;
                         }
+
+                        //未配置 typeHandler 的情况下，只支持基本数据类型，不支持比如 list set 或者自定义的类等
+                        if ((column == null || column.typeHandler() == UnknownTypeHandler.class)
+                                && !defaultSupportColumnTypes.contains(typeMirror.toString())) {
+                            continue;
+                        }
+
+
                         String columnName = column != null && column.value().trim().length() > 0 ? column.value() : camelToUnderline(fieldElement.toString());
                         propertyAndColumns.put(fieldElement.toString(), columnName);
 
