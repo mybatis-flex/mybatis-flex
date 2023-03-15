@@ -69,7 +69,10 @@ public class FlexConfiguration extends Configuration {
     @Override
     public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
         String mappedStatementId = mappedStatement.getId();
-        // 以 "!selectKey" 结尾的 mappedStatementId，是用于主键生成的，无需为其设置参数
+        /**
+         *  以 "!selectKey" 结尾的 mappedStatementId，是用于 Sequence 生成主键的，无需为其设置参数
+         *  {@link SelectKeyGenerator#SELECT_KEY_SUFFIX}
+         */
         if (!mappedStatementId.endsWith(SelectKeyGenerator.SELECT_KEY_SUFFIX)
                 && parameterObject instanceof Map
                 && ((Map<?, ?>) parameterObject).containsKey(FlexConsts.SQL_ARGS)) {

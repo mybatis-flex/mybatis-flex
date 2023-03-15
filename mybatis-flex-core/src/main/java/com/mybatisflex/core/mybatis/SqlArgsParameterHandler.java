@@ -51,17 +51,16 @@ public class SqlArgsParameterHandler extends DefaultParameterHandler {
         if (sqlArgs != null && sqlArgs.length > 0) {
             int index = 1;
             for (Object value : sqlArgs) {
-                if (value instanceof TypeHandlerObject){
-                    ((TypeHandlerObject) value).setParameter(ps,index++);
+                //通过配置的 TypeHandler 去设置内容
+                if (value instanceof TypeHandlerObject) {
+                    ((TypeHandlerObject) value).setParameter(ps, index++);
                 }
                 //在 Oracle、SqlServer 中 TIMESTAMP、DATE 类型的数据是支持 java.util.Date 给值的
                 else if (value instanceof java.util.Date) {
                     setDateParameter(ps, (Date) value, index++);
                 } else if (value instanceof byte[]) {
                     ps.setBytes(index++, (byte[]) value);
-                }
-
-                else {
+                } else {
                     /** 在 MySql，Oracle 等驱动中，通过 PreparedStatement.setObject 后，驱动会自动根据 value 内容进行转换
                      * 源码可参考： {{@link com.mysql.jdbc.PreparedStatement#setObject(int, Object)}
                      **/
