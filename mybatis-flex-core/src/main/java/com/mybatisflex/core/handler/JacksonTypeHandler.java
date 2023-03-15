@@ -18,27 +18,22 @@ package com.mybatisflex.core.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybatisflex.core.exception.FlexExceptions;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.MappedJdbcTypes;
-import org.apache.ibatis.type.MappedTypes;
 
 import java.io.IOException;
 
-@MappedTypes({Object.class})
-@MappedJdbcTypes(JdbcType.VARCHAR)
 public class JacksonTypeHandler extends BaseJsonTypeHandler<Object> {
 
     private static ObjectMapper objectMapper;
-    private final Class<?> type;
+    private final Class<?> propertyType;
 
-    public JacksonTypeHandler(Class<?> type) {
-        this.type = type;
+    public JacksonTypeHandler(Class<?> propertyType) {
+        this.propertyType = propertyType;
     }
 
     @Override
     protected Object parseJson(String json) {
         try {
-            return getObjectMapper().readValue(json, type);
+            return getObjectMapper().readValue(json, propertyType);
         } catch (IOException e) {
             throw FlexExceptions.wrap(e, "Can not parseJson by JacksonTypeHandler: " + json);
         }

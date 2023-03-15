@@ -16,24 +16,19 @@
 package com.mybatisflex.core.handler;
 
 import com.google.gson.Gson;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.MappedJdbcTypes;
-import org.apache.ibatis.type.MappedTypes;
 
-@MappedTypes({Object.class})
-@MappedJdbcTypes(JdbcType.VARCHAR)
 public class GsonTypeHandler extends BaseJsonTypeHandler<Object> {
 
     private static Gson gson;
-    private final Class<?> type;
+    private final Class<?> propertyType;
 
     public GsonTypeHandler(Class<?> type) {
-        this.type = type;
+        this.propertyType = type;
     }
 
     @Override
     protected Object parseJson(String json) {
-        return getGson().fromJson(json, type);
+        return getGson().fromJson(json, propertyType);
     }
 
     @Override

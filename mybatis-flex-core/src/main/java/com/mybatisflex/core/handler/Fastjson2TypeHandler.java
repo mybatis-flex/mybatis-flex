@@ -17,23 +17,18 @@ package com.mybatisflex.core.handler;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.MappedJdbcTypes;
-import org.apache.ibatis.type.MappedTypes;
 
-@MappedTypes({Object.class})
-@MappedJdbcTypes(JdbcType.VARCHAR)
 public class Fastjson2TypeHandler extends BaseJsonTypeHandler<Object> {
 
-    private final Class<?> type;
+    private final Class<?> propertyType;
 
     public Fastjson2TypeHandler(Class<?> type) {
-        this.type = type;
+        this.propertyType = type;
     }
 
     @Override
     protected Object parseJson(String json) {
-        return JSON.parseObject(json, type);
+        return JSON.parseObject(json, propertyType);
     }
 
     @Override
