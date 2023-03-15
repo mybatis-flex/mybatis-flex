@@ -354,7 +354,6 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ").append(wrap(tableInfo.getTableName()));
 
-
         String[] insertColumns = tableInfo.obtainInsertColumns();
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
 
@@ -380,17 +379,19 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ").append(wrap(tableInfo.getTableName()));
         String[] insertColumns = tableInfo.obtainInsertColumns();
+        String[] warpedInsertColumns = new String[insertColumns.length];
         for (int i = 0; i < insertColumns.length; i++) {
-            insertColumns[i] = wrap(insertColumns[i]);
+            warpedInsertColumns[i] = wrap(insertColumns[i]);
         }
-        sql.append("(").append(StringUtil.join(", ", insertColumns)).append(")");
+        sql.append("(").append(StringUtil.join(", ", warpedInsertColumns)).append(")");
         sql.append(" VALUES ");
 
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
         for (int i = 0; i < entities.size(); i++) {
             StringJoiner stringJoiner = new StringJoiner(", ", "(", ")");
-            for (String insertColumn : insertColumns) {
+            for (String insertColumn : warpedInsertColumns) {
                 if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
+                    //直接读取 onInsert 配置的值，而不用 "?" 代替
                     stringJoiner.add(onInsertColumns.get(insertColumn));
                 } else {
                     stringJoiner.add("?");
