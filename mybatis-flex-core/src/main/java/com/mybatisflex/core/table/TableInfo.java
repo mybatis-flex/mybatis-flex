@@ -431,6 +431,7 @@ public class TableInfo {
                     .build();
             resultMappings.add(mapping);
         }
+
         for (IdInfo idInfo : primaryKeyList) {
             ResultMapping mapping = new ResultMapping.Builder(configuration, idInfo.getProperty(),
                     idInfo.getColumn(), idInfo.getPropertyType())
@@ -441,7 +442,6 @@ public class TableInfo {
         }
 
         return new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build();
-
     }
 
 

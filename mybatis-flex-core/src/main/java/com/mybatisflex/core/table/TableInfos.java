@@ -19,11 +19,16 @@ import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.reflection.Reflector;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.apache.ibatis.type.UnknownTypeHandler;
 import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.Field;
@@ -123,15 +128,18 @@ public class TableInfos {
         List<Field> entityFields = ClassUtil.getAllFields(entityClass);
         for (Field field : entityFields) {
 
-            //只支持基本数据类型，不支持比如 list set 或者自定义的类等
-            if (!defaultSupportColumnTypes.contains(field.getType())) {
-                continue;
-            }
-
             Column column = field.getAnnotation(Column.class);
             if (column != null && column.ignore()) {
                 continue; // ignore
             }
+
+
+            //未配置 typeHandler 的情况下，只支持基本数据类型，不支持比如 list set 或者自定义的类等
+            if ((column == null || column.typeHandler() == UnknownTypeHandler.class)
+                    && !defaultSupportColumnTypes.contains(field.getType())) {
+                continue;
+            }
+
 
             //列名
             String columnName = column != null && StringUtil.isNotBlank(column.value())
@@ -184,6 +192,17 @@ public class TableInfos {
             columnInfo.setColumn(columnName);
             columnInfo.setProperty(field.getName());
             columnInfo.setPropertyType(field.getType());
+
+            if (column != null && column.typeHandler() != UnknownTypeHandler.class) {
+                Class<? extends TypeHandler> typeHandlerClass = column.typeHandler();
+                Configuration configuration = FlexGlobalConfig.getDefaultConfig().getConfiguration();
+                TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+                if (!typeHandlerRegistry.hasTypeHandler(typeHandlerClass)) {
+                    typeHandlerRegistry.register(typeHandlerClass);
+                }
+                TypeHandler<? extends TypeHandler> typeHandler = typeHandlerRegistry.getTypeHandler(typeHandlerClass);
+                columnInfo.setTypeHandler(typeHandler);
+            }
 
             if (FlexConsts.DEFAULT_PRIMARY_FIELD.equals(field.getName())) {
                 idField = field;

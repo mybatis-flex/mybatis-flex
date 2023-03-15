@@ -82,6 +82,7 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
         FlexGlobalConfig flexGlobalConfig = new FlexGlobalConfig();
         flexGlobalConfig.setSqlSessionFactory(sessionFactory);
         flexGlobalConfig.setDbType(dbType);
+        flexGlobalConfig.setConfiguration(config);
 
         String environmentId = config.getEnvironment().getId();
         FlexGlobalConfig.setConfig(environmentId, flexGlobalConfig);

@@ -32,11 +32,13 @@ public class FlexGlobalConfig {
      */
     private DbType dbType = DbType.MYSQL;
 
+
+    private Configuration configuration;
+
     /**
      * 创建好的 sqlSessionFactory
      */
     private SqlSessionFactory sqlSessionFactory;
-
 
     /**
      * 全局的 ID 生成策略配置，当 @Id 未配置 或者 配置 KeyType 为 None 时
@@ -51,6 +53,14 @@ public class FlexGlobalConfig {
 
     public void setDbType(DbType dbType) {
         this.dbType = dbType;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     public SqlSessionFactory getSqlSessionFactory() {

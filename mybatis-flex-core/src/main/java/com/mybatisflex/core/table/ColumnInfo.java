@@ -15,6 +15,9 @@
  */
 package com.mybatisflex.core.table;
 
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
+
 public class ColumnInfo {
 
     /**
@@ -31,6 +34,18 @@ public class ColumnInfo {
      * 属性类型
      */
     protected Class<?> propertyType;
+
+    /**
+     * 该列对应的 jdbcType
+     */
+    protected JdbcType jdbcType;
+
+    /**
+     * 自定义 TypeHandler
+     */
+    protected TypeHandler typeHandler;
+
+
 
     public String getColumn() {
         return column;
@@ -56,5 +71,19 @@ public class ColumnInfo {
         this.propertyType = propertyType;
     }
 
+    public JdbcType getJdbcType() {
+        return jdbcType;
+    }
 
+    public void setJdbcType(JdbcType jdbcType) {
+        this.jdbcType = jdbcType;
+    }
+
+    public TypeHandler getTypeHandler() {
+        return typeHandler;
+    }
+
+    public void setTypeHandler(TypeHandler typeHandler) {
+        this.typeHandler = typeHandler;
+    }
 }

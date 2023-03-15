@@ -15,6 +15,10 @@
  */
 package com.mybatisflex.annotation;
 
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.type.UnknownTypeHandler;
+
 import java.lang.annotation.*;
 
 @Inherited
@@ -58,5 +62,15 @@ public @interface Column {
      * 只能用于数值的字段
      */
     boolean version() default false;
+
+    /**
+     * 配置的 jdbcType
+     */
+    JdbcType jdbcType() default JdbcType.UNDEFINED;
+
+    /**
+     * 自定义 TypeHandler
+     */
+    Class<? extends TypeHandler> typeHandler() default UnknownTypeHandler.class;
 
 }
