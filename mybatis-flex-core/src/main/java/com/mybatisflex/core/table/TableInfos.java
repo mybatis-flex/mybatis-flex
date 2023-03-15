@@ -199,16 +199,12 @@ public class TableInfos {
             columnInfo.setPropertyType(field.getType());
 
             if (column != null && column.typeHandler() != UnknownTypeHandler.class) {
-                Class<? extends TypeHandler> typeHandlerClass = column.typeHandler();
+                Class<?> typeHandlerClass = column.typeHandler();
                 Configuration configuration = FlexGlobalConfig.getDefaultConfig().getConfiguration();
                 TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
-                if (!typeHandlerRegistry.hasTypeHandler(typeHandlerClass)) {
-                    typeHandlerRegistry.register(typeHandlerClass);
-                }
-                TypeHandler<? extends TypeHandler> typeHandler = typeHandlerRegistry.getTypeHandler(typeHandlerClass);
+                TypeHandler<?> typeHandler = typeHandlerRegistry.getInstance(columnInfo.getPropertyType(), typeHandlerClass);
                 columnInfo.setTypeHandler(typeHandler);
             }
-
 
             if (column != null && column.jdbcType() != JdbcType.UNDEFINED) {
                 columnInfo.setJdbcType(column.jdbcType());
