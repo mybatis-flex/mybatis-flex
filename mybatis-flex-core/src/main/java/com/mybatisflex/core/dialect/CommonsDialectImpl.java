@@ -562,7 +562,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //乐观锁条件
         if (StringUtil.isNotBlank(versionColumn)) {
-            Object versionValue = tableInfo.getColumnValue(entity, versionColumn);
+            Object versionValue = tableInfo.buildColumnSqlArg(entity, versionColumn);
             if (versionValue == null) {
                 throw FlexExceptions.wrap("The version value of entity[%s] must not be null.", entity);
             }
@@ -605,7 +605,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //乐观锁条件
         if (StringUtil.isNotBlank(versionColumn)) {
-            Object versionValue = tableInfo.getColumnValue(entity, versionColumn);
+            Object versionValue = tableInfo.buildColumnSqlArg(entity, versionColumn);
             if (versionValue == null) {
                 throw FlexExceptions.wrap("The version value of entity[%s] must not be null.", entity);
             }

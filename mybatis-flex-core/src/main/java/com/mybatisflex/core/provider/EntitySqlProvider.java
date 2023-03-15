@@ -64,7 +64,7 @@ public class EntitySqlProvider {
         //设置逻辑删除字段的出初始化数据
         tableInfo.initLogicDeleteValueIfNecessary(entity);
 
-        Object[] values = tableInfo.obtainInsertValues(entity);
+        Object[] values = tableInfo.buildInsertSqlArgs(entity);
         ProviderUtil.setSqlArgs(params, values);
 
         return DialectFactory.getDialect().forInsertEntity(tableInfo, entity);
@@ -94,7 +94,7 @@ public class EntitySqlProvider {
 
         Object[] values = new Object[0];
         for (Object entity : entities) {
-            values = ArrayUtil.concat(values, tableInfo.obtainInsertValues(entity));
+            values = ArrayUtil.concat(values, tableInfo.buildInsertSqlArgs(entity));
         }
 
         ProviderUtil.setSqlArgs(params, values);
@@ -185,8 +185,9 @@ public class EntitySqlProvider {
         boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
-        Object[] updateValues = tableInfo.obtainUpdateValues(entity, ignoreNulls, false);
-        Object[] primaryValues = tableInfo.obtainPrimaryValues(entity);
+
+        Object[] updateValues = tableInfo.buildUpdateSqlArgs(entity, ignoreNulls, false);
+        Object[] primaryValues = tableInfo.buildPkSqlArgs(entity);
 
         FlexExceptions.assertAreNotNull(primaryValues, "The value of primary key must not be null, entity[%s]", entity);
 
@@ -219,7 +220,7 @@ public class EntitySqlProvider {
             queryWrapper.and(QueryCondition.create(new QueryColumn(tableInfo.getTableName(), logicDeleteColumn), 0));
         }
 
-        Object[] values = tableInfo.obtainUpdateValues(entity, ignoreNulls, true);
+        Object[] values = tableInfo.buildUpdateSqlArgs(entity, ignoreNulls, true);
 
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(values, CPI.getValueArray(queryWrapper)));
 

@@ -209,6 +209,7 @@ public class TableInfo {
         }
     }
 
+
     public List<IdInfo> getPrimaryKeyList() {
         return primaryKeyList;
     }
@@ -242,20 +243,20 @@ public class TableInfo {
         return ArrayUtil.concat(insertPrimaryKeys, columns);
     }
 
+
     /**
-     * 根据 插入字段 获取所有插入的值
-     *
+     * 构建 insert 的 Sql 参数
      * @param entity 从 entity 中获取
      * @return 数组
      */
-    public Object[] obtainInsertValues(Object entity) {
+    public Object[] buildInsertSqlArgs(Object entity) {
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
         String[] insertColumns = obtainInsertColumns();
 
         List<Object> values = new ArrayList<>(insertColumns.length);
         for (String insertColumn : insertColumns) {
             if (onInsertColumns == null || !onInsertColumns.containsKey(insertColumn)) {
-                Object value = getColumnValue(metaObject, insertColumn);
+                Object value = buildColumnSqlArg(metaObject, insertColumn);
                 values.add(value);
             }
         }
@@ -279,7 +280,7 @@ public class TableInfo {
                 return Collections.emptySet();
             }
             for (String property : properties) {
-                String column = getColumnByProperty(property);
+                String column = propertyColumnMapping.get(property);
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
                     continue;
                 }
@@ -311,7 +312,7 @@ public class TableInfo {
                     continue;
                 }
 
-                Object value = getColumnValue(metaObject, column);
+                Object value = buildColumnSqlArg(metaObject, column);
                 if (ignoreNulls && value == null) {
                     continue;
                 }
@@ -338,7 +339,7 @@ public class TableInfo {
      * @param entity 实体对象
      * @return 数组
      */
-    public Object[] obtainUpdateValues(Object entity, boolean ignoreNulls, boolean includePrimary) {
+    public Object[] buildUpdateSqlArgs(Object entity, boolean ignoreNulls, boolean includePrimary) {
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
         List<Object> values = new ArrayList<>();
         if (entity instanceof ModifyAttrsRecord) {
@@ -347,7 +348,7 @@ public class TableInfo {
                 return values.toArray();
             }
             for (String property : properties) {
-                String column = getColumnByProperty(property);
+                String column = propertyColumnMapping.get(property);
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
                     continue;
                 }
@@ -373,12 +374,12 @@ public class TableInfo {
                     continue;
                 }
 
-                //过滤乐观锁字段
+                //忽略乐观锁字段，乐观锁字段会直接通过 sql 对其操作
                 if (Objects.equals(column, versionColumn)) {
                     continue;
                 }
 
-                Object value = getColumnValue(metaObject, column);
+                Object value = buildColumnSqlArg(metaObject, column);
                 if (ignoreNulls && value == null) {
                     continue;
                 }
@@ -393,11 +394,15 @@ public class TableInfo {
     }
 
 
-    public Object[] obtainPrimaryValues(Object entity) {
+    /**
+     * 构建主键的 sql 参数数据
+     * @param entity
+     */
+    public Object[] buildPkSqlArgs(Object entity) {
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
         Object[] values = new Object[primaryKeys.length];
         for (int i = 0; i < primaryKeys.length; i++) {
-            values[i] = getColumnValue(metaObject, primaryKeys[i]);
+            values[i] = buildColumnSqlArg(metaObject, primaryKeys[i]);
         }
         return values;
     }
@@ -445,7 +450,7 @@ public class TableInfo {
     }
 
 
-    private Object getColumnValue(MetaObject metaObject, String column) {
+    private Object buildColumnSqlArg(MetaObject metaObject, String column) {
         ColumnInfo columnInfo = columnInfoMapping.get(column);
         Object value = getPropertyValue(metaObject, columnInfo.property);
 
@@ -458,9 +463,9 @@ public class TableInfo {
     }
 
 
-    public Object getColumnValue(Object entityObject, String column) {
+    public Object buildColumnSqlArg(Object entityObject, String column) {
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
-        return getColumnValue(metaObject, column);
+        return buildColumnSqlArg(metaObject, column);
     }
 
 
@@ -471,10 +476,6 @@ public class TableInfo {
         return null;
     }
 
-
-    public String getColumnByProperty(String property) {
-        return propertyColumnMapping.get(property);
-    }
 
 
     /**
@@ -494,6 +495,7 @@ public class TableInfo {
         return (T) instance;
     }
 
+
     /**
      * 初始化乐观锁版本号
      *
@@ -505,7 +507,7 @@ public class TableInfo {
         }
 
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
-        Object columnValue = getColumnValue(entityObject, versionColumn);
+        Object columnValue = buildColumnSqlArg(entityObject, versionColumn);
         if (columnValue == null) {
             metaObject.setValue(columnInfoMapping.get(versionColumn).property, 0);
         }
@@ -522,7 +524,7 @@ public class TableInfo {
         }
 
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
-        Object columnValue = getColumnValue(entityObject, logicDeleteColumn);
+        Object columnValue = buildColumnSqlArg(entityObject, logicDeleteColumn);
         if (columnValue == null) {
             metaObject.setValue(columnInfoMapping.get(logicDeleteColumn).property, 0);
         }
