@@ -26,6 +26,7 @@ import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.apache.ibatis.type.UnknownTypeHandler;
@@ -202,6 +203,11 @@ public class TableInfos {
                 }
                 TypeHandler<? extends TypeHandler> typeHandler = typeHandlerRegistry.getTypeHandler(typeHandlerClass);
                 columnInfo.setTypeHandler(typeHandler);
+            }
+
+
+            if (column != null && column.jdbcType() != JdbcType.UNDEFINED){
+                columnInfo.setJdbcType(column.jdbcType());
             }
 
             if (FlexConsts.DEFAULT_PRIMARY_FIELD.equals(field.getName())) {

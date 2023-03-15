@@ -432,6 +432,7 @@ public class TableInfo {
         for (ColumnInfo columnInfo : columnInfoList) {
             ResultMapping mapping = new ResultMapping.Builder(configuration, columnInfo.getProperty(),
                     columnInfo.getColumn(), columnInfo.getPropertyType())
+                    .jdbcType(columnInfo.getJdbcType())
                     .typeHandler(columnInfo.getTypeHandler())
                     .build();
             resultMappings.add(mapping);
@@ -441,6 +442,7 @@ public class TableInfo {
             ResultMapping mapping = new ResultMapping.Builder(configuration, idInfo.getProperty(),
                     idInfo.getColumn(), idInfo.getPropertyType())
                     .flags(CollectionUtil.newArrayList(ResultFlag.ID))
+                    .jdbcType(idInfo.getJdbcType())
                     .typeHandler(idInfo.getTypeHandler())
                     .build();
             resultMappings.add(mapping);
@@ -456,7 +458,7 @@ public class TableInfo {
 
         TypeHandler typeHandler = columnInfo.getTypeHandler();
         if (value != null && typeHandler != null) {
-            return new TypeHandlerObject(typeHandler, value, columnInfo.jdbcType);
+            return new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
         }
 
         return value;
