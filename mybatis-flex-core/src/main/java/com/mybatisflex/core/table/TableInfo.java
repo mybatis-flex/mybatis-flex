@@ -18,6 +18,7 @@ package com.mybatisflex.core.table;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
+import com.mybatisflex.core.mybatis.TypeHandlerObject;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.ClassUtil;
@@ -30,6 +31,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.type.TypeHandler;
 
 import java.util.*;
 
@@ -69,8 +71,9 @@ public class TableInfo {
     private List<IdInfo> primaryKeyList;
 
     //column 和 java 属性的称的关系映射
-    private Map<String, String> columnPropertyMapping = new HashMap<>();
+    private Map<String, ColumnInfo> columnInfoMapping = new HashMap<>();
     private Map<String, String> propertyColumnMapping = new HashMap<>();
+
 
     private final ReflectorFactory reflectorFactory = new BaseReflectorFactory() {
         @Override
@@ -201,7 +204,7 @@ public class TableInfo {
         for (int i = 0; i < columnInfoList.size(); i++) {
             ColumnInfo columnInfo = columnInfoList.get(i);
             columns[i] = columnInfo.getColumn();
-            columnPropertyMapping.put(columnInfo.column, columnInfo.property);
+            columnInfoMapping.put(columnInfo.column, columnInfo);
             propertyColumnMapping.put(columnInfo.property, columnInfo.column);
         }
     }
@@ -223,7 +226,7 @@ public class TableInfo {
                 insertIdFields.add(idInfo.getColumn());
             }
 
-            columnPropertyMapping.put(idInfo.column, idInfo.property);
+            columnInfoMapping.put(idInfo.column, idInfo);
             propertyColumnMapping.put(idInfo.property, idInfo.column);
         }
         this.insertPrimaryKeys = insertIdFields.toArray(new String[0]);
@@ -423,14 +426,16 @@ public class TableInfo {
 
         for (ColumnInfo columnInfo : columnInfoList) {
             ResultMapping mapping = new ResultMapping.Builder(configuration, columnInfo.getProperty(),
-                    columnInfo.getColumn(), columnInfo.getPropertyType()).build();
+                    columnInfo.getColumn(), columnInfo.getPropertyType())
+                    .typeHandler(columnInfo.getTypeHandler())
+                    .build();
             resultMappings.add(mapping);
         }
         for (IdInfo idInfo : primaryKeyList) {
             ResultMapping mapping = new ResultMapping.Builder(configuration, idInfo.getProperty(),
                     idInfo.getColumn(), idInfo.getPropertyType())
                     .flags(CollectionUtil.newArrayList(ResultFlag.ID))
-//                    .typeHandler()
+                    .typeHandler(idInfo.getTypeHandler())
                     .build();
             resultMappings.add(mapping);
         }
@@ -441,12 +446,21 @@ public class TableInfo {
 
 
     private Object getColumnValue(MetaObject metaObject, String column) {
-        return getPropertyValue(metaObject, columnPropertyMapping.get(column));
+        ColumnInfo columnInfo = columnInfoMapping.get(column);
+        Object value = getPropertyValue(metaObject, columnInfo.property);
+
+        TypeHandler typeHandler = columnInfo.getTypeHandler();
+        if (value != null && typeHandler != null) {
+            return new TypeHandlerObject(typeHandler, value, columnInfo.jdbcType);
+        }
+
+        return value;
     }
+
 
     public Object getColumnValue(Object entityObject, String column) {
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
-        return getPropertyValue(metaObject, columnPropertyMapping.get(column));
+        return getColumnValue(metaObject, column);
     }
 
 
@@ -472,9 +486,9 @@ public class TableInfo {
         Object instance = ClassUtil.newInstance(entityClass);
         MetaObject metaObject = EntityMetaObject.forObject(instance, reflectorFactory);
         for (String column : row.keySet()) {
-            String property = columnPropertyMapping.get(column);
-            if (metaObject.hasSetter(property)) {
-                metaObject.setValue(property, row.get(column));
+            ColumnInfo columnInfo = columnInfoMapping.get(column);
+            if (columnInfo != null && metaObject.hasSetter(columnInfo.property)) {
+                metaObject.setValue(columnInfo.property, row.get(column));
             }
         }
         return (T) instance;
@@ -493,7 +507,7 @@ public class TableInfo {
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
         Object columnValue = getColumnValue(entityObject, versionColumn);
         if (columnValue == null) {
-            metaObject.setValue(columnPropertyMapping.get(versionColumn), 0);
+            metaObject.setValue(columnInfoMapping.get(versionColumn).property, 0);
         }
     }
 
@@ -510,7 +524,7 @@ public class TableInfo {
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
         Object columnValue = getColumnValue(entityObject, logicDeleteColumn);
         if (columnValue == null) {
-            metaObject.setValue(columnPropertyMapping.get(logicDeleteColumn), 0);
+            metaObject.setValue(columnInfoMapping.get(logicDeleteColumn).property, 0);
         }
     }
 }
