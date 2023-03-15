@@ -25,9 +25,7 @@ import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -41,6 +39,7 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.time.chrono.JapaneseDate;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class QueryEntityProcesser extends AbstractProcessor {
@@ -159,8 +158,20 @@ public class QueryEntityProcesser extends AbstractProcessor {
                             continue;
                         }
 
+                        //获取 typeHandlerClass 的名称，通过 column.typeHandler() 获取会抛出异常：MirroredTypeException:
+                        //参考 https://stackoverflow.com/questions/7687829/java-6-annotation-processing-getting-a-class-from-an-annotation
+                        final String[] typeHandlerClass = {""};
+                        List<? extends AnnotationMirror> annotationMirrors = fieldElement.getAnnotationMirrors();
+                        for (AnnotationMirror annotationMirror : annotationMirrors) {
+                            annotationMirror.getElementValues().forEach((BiConsumer<ExecutableElement, AnnotationValue>) (executableElement, annotationValue) -> {
+                                if (executableElement.getSimpleName().equals("typeHandler")){
+                                    typeHandlerClass[0] = annotationValue.toString();
+                                }
+                            });
+                        }
+
                         //未配置 typeHandler 的情况下，只支持基本数据类型，不支持比如 list set 或者自定义的类等
-                        if ((column == null || column.typeHandler() == UnknownTypeHandler.class)
+                        if ((column == null || typeHandlerClass[0].equals(UnknownTypeHandler.class.getName()))
                                 && !defaultSupportColumnTypes.contains(typeMirror.toString())) {
                             continue;
                         }
@@ -186,9 +197,12 @@ public class QueryEntityProcesser extends AbstractProcessor {
 
         }
 
-
         return false;
     }
+
+
+
+
 
     private String buildClass(String entityClass, String tableName, Map<String, String> propertyAndColumns, List<String> defaultColumns) {
 
