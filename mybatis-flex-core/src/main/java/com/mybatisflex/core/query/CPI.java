@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.util.CollectionUtil;
 
 import java.util.List;
 
@@ -126,5 +127,11 @@ public class CPI {
 
     public static String toSelectSql(QueryColumn queryColumn,List<QueryTable> queryTables, IDialect dialect) {
         return queryColumn.toSelectSql(queryTables,dialect);
+    }
+
+    public static void setFromIfNecessary(QueryWrapper queryWrapper,String tableName){
+        if (CollectionUtil.isEmpty(queryWrapper.getQueryTables())){
+            queryWrapper.from(tableName);
+        }
     }
 }

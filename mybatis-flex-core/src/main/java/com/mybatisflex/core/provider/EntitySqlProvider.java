@@ -34,13 +34,12 @@ import java.util.Map;
 
 public class EntitySqlProvider {
 
-
     /**
      * 不让实例化，使用静态方法的模式，效率更高，非静态方法每次都会实例化当前类
      * 参考源码: {{@link org.apache.ibatis.builder.annotation.ProviderSqlSource#getBoundSql(Object)}
      */
-    private EntitySqlProvider() {
-    }
+    private EntitySqlProvider() {}
+
 
     /**
      * insert 的 sql 构建
@@ -72,7 +71,7 @@ public class EntitySqlProvider {
 
 
     /**
-     * insertBatchWithFirstEntityColumns 的 sql 构建
+     * insertBatch 的 sql 构建
      *
      * @param params
      * @param context
@@ -92,12 +91,13 @@ public class EntitySqlProvider {
             tableInfo.initLogicDeleteValueIfNecessary(entity);
         }
 
-        Object[] values = new Object[0];
+
+        Object[] allValues = new Object[0];
         for (Object entity : entities) {
-            values = ArrayUtil.concat(values, tableInfo.buildInsertSqlArgs(entity));
+            allValues = ArrayUtil.concat(allValues, tableInfo.buildInsertSqlArgs(entity));
         }
 
-        ProviderUtil.setSqlArgs(params, values);
+        ProviderUtil.setSqlArgs(params, allValues);
 
         return DialectFactory.getDialect().forInsertEntityBatch(tableInfo, entities);
     }
@@ -162,7 +162,9 @@ public class EntitySqlProvider {
         ProviderUtil.setSqlArgs(params, CPI.getValueArray(queryWrapper));
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
-        queryWrapper.from(tableInfo.getTableName());
+
+//        queryWrapper.from(tableInfo.getTableName());
+        CPI.setFromIfNecessary(queryWrapper,tableInfo.getTableName());
 
         return DialectFactory.getDialect().forDeleteEntityBatchByQuery(tableInfo, queryWrapper);
     }
@@ -294,7 +296,8 @@ public class EntitySqlProvider {
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
 
-        queryWrapper.from(tableInfo.getTableName());
+//        queryWrapper.from(tableInfo.getTableName());
+        CPI.setFromIfNecessary(queryWrapper,tableInfo.getTableName());
 
         return DialectFactory.getDialect().forSelectListByQuery(queryWrapper);
     }
@@ -324,7 +327,8 @@ public class EntitySqlProvider {
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
 
-        queryWrapper.from(tableInfo.getTableName());
+//        queryWrapper.from(tableInfo.getTableName());
+        CPI.setFromIfNecessary(queryWrapper,tableInfo.getTableName());
         return DialectFactory.getDialect().forSelectCountByQuery(queryWrapper);
     }
 
