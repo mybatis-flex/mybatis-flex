@@ -280,7 +280,7 @@ public class CommonsDialectImpl implements IDialect {
                 index++;
             }
         }
-        sqlBuilder.append(" FROM ").append(StringUtil.join(",", queryTables, queryTable -> queryTable.toSql(this)));
+        sqlBuilder.append(" FROM ").append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
         buildWhereSql(sqlBuilder, queryWrapper, allTables);
@@ -306,7 +306,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //ignore selectColumns
         StringBuilder sqlBuilder = new StringBuilder("SELECT COUNT(*) FROM ");
-        sqlBuilder.append(StringUtil.join(",", queryTables, queryTable -> queryTable.toSql(this)));
+        sqlBuilder.append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
 
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
@@ -329,7 +329,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //ignore selectColumns
         StringBuilder sqlBuilder = new StringBuilder("DELETE FROM ");
-        sqlBuilder.append(StringUtil.join(",", queryTables, queryTable -> queryTable.toSql(this)));
+        sqlBuilder.append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
         buildWhereSql(sqlBuilder, queryWrapper, allTables);
