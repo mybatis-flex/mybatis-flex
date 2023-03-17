@@ -361,7 +361,7 @@ public class CommonsDialectImpl implements IDialect {
         StringJoiner sqlValues = new StringJoiner(", ");
 
         for (String insertColumn : insertColumns) {
-            sqlFields.add(insertColumn);
+            sqlFields.add(wrap(insertColumn));
             if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                 sqlValues.add(onInsertColumns.get(insertColumn));
             } else {
