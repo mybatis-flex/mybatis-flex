@@ -21,7 +21,7 @@
 @Table("tb_account")
 public class Account {
 
-    @Id()
+    @Id(keyType = KeyType.Auto)
     private Long id;
     private String userName;
     private Date birthday;
