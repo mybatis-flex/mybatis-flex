@@ -118,6 +118,8 @@ public class EntityTestStarter {
         optionsAccount.addOption("c1", 11);
         optionsAccount.addOption("c2", "zhang");
         optionsAccount.addOption("c3", new Date());
+
+
         bootstrap.execute(AccountMapper.class, accountMapper ->
                 accountMapper.insert(optionsAccount));
         System.out.println(">>>>>>> optionsAccount: " + optionsAccount.getId());

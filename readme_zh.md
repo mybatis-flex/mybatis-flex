@@ -447,6 +447,50 @@ set user_name = ?, sex = ? where id = ?
 #params: null,1,100
 ```
 
+
+## 自定义 TypeHandler
+
+使用 @column 注解：
+
+```java
+@Table("tb_account")
+public class Account {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    private String userName;
+
+    @Column(typeHandler = Fastjson2TypeHandler.class)
+    private Map<String, Object> options;
+
+    //getter setter
+    
+    public void addOption(String key, Object value) {
+        if (options == null) {
+            options = new HashMap<>();
+        }
+        options.put(key, value);
+    }
+    
+}
+```
+
+插入数据：
+
+```java
+Account account = new Account();
+account.setUserName("test");
+account.addOption("c1", 11);
+account.addOption("c2", "zhang");
+account.addOption("c3", new Date());
+```
+mybatis 日志：
+```
+==>  Preparing: INSERT INTO `tb_account`(user_name, options) VALUES (?, ?)
+==> Parameters: test(String), {"c3":"2023-03-17 09:10:16.546","c1":11,"c2":"zhang"}(String)
+```
+
 ## 多主键
 
 Mybatis-Flex 多主键就是在 Entity 类里有多个 `@Id` 注解标识而已，比如：
