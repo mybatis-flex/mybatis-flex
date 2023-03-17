@@ -1,3 +1,15 @@
+mybatis-flex v1.0.2 2023017:
+新增：添加自定义字段 typeHandler @Column(typeHandler=xxx) 的配置
+新增：内置默认的  fastjson fastjson2 gson jackson 的 TypeHandler，方便开发者直接使用
+增强：entity 查询支持通过 QueryWrapper 传入表名以实现更灵活的需求
+优化：对方言 CommonsDialectImpl.forInsertEntity 添加字段 wrap
+优化：重构 TableInfo 的方法名，使其更加明确
+优化：代码生成和 columns 构建支持更多默认的数据类型
+优化：优化源码的中文注释描述
+文档：优化 maven 依赖相关描述
+
+
+
 mybatis-flex v1.0.0 2023012:
 主要对 beta 和 rc 版本进行大量的重构和测试
 
