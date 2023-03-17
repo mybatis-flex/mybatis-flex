@@ -42,6 +42,19 @@ public class AccountSqlTester {
     }
 
     @Test
+    public void testSelect1ColumnsSql() {
+        QueryWrapper query = new QueryWrapper()
+                .select(ACCOUNT.ID, ACCOUNT.USER_NAME,
+                        ARTICLE.ID.as("articleId"), ARTICLE.TITLE)
+                .from(ACCOUNT.as("a"), ARTICLE.as("b"))
+                .where(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
+
+        IDialect dialect = new CommonsDialectImpl(KeywordWrap.NONE,LimitOffsetProcesser.MYSQL);
+        String sql = dialect.forSelectListByQuery(query);
+        System.out.println(sql);
+    }
+
+    @Test
     public void testSelectColumnsAndFunctionsSql() {
         QueryWrapper query = new QueryWrapper()
                 .select(ACCOUNT.ID, ACCOUNT.USER_NAME, max(ACCOUNT.BIRTHDAY), avg(ACCOUNT.SEX).as("sex_avg"))

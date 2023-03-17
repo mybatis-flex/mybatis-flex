@@ -21,6 +21,7 @@ import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
@@ -40,29 +41,37 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
 
-    public QueryWrapper from(TableDef tableDef) {
-        return from(tableDef.getTableName());
+    public QueryWrapper from(TableDef... tableDefs) {
+        for (TableDef tableDef : tableDefs) {
+            from(new QueryTable(tableDef.getTableName()));
+        }
+        return this;
     }
 
 
-    public QueryWrapper from(String table) {
-        return from(new QueryTable(table));
+    public QueryWrapper from(String... tables) {
+        for (String table : tables) {
+            from(new QueryTable(table));
+        }
+        return this;
     }
 
 
-    public QueryWrapper from(QueryTable table) {
+    public QueryWrapper from(QueryTable... tables) {
         if (CollectionUtil.isEmpty(queryTables)) {
             queryTables = new ArrayList<>();
-            queryTables.add(table);
+            queryTables.addAll(Arrays.asList(tables));
         } else {
-            boolean contains = false;
-            for (QueryTable queryTable : queryTables) {
-                if (queryTable.isSameTable(table)) {
-                    contains = true;
+            for (QueryTable table : tables) {
+                boolean contains = false;
+                for (QueryTable queryTable : queryTables) {
+                    if (queryTable.isSameTable(table)) {
+                        contains = true;
+                    }
                 }
-            }
-            if (!contains) {
-                queryTables.add(table);
+                if (!contains) {
+                    queryTables.add(table);
+                }
             }
         }
         return this;
@@ -72,6 +81,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     public QueryWrapper from(QueryWrapper queryWrapper) {
         return from(new SelectQueryTable(queryWrapper));
     }
+
 
     public QueryWrapper as(String alias) {
         if (CollectionUtil.isEmpty(queryTables)) {
@@ -212,6 +222,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     public Joiner<QueryWrapper> fullJoinIf(QueryWrapper table, boolean condition) {
         return joining(Join.TYPE_FULL, table, condition);
     }
+
     public Joiner<QueryWrapper> crossJoin(String table) {
         return joining(Join.TYPE_CROSS, table, true);
     }
@@ -227,7 +238,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     public Joiner<QueryWrapper> crossJoinIf(QueryWrapper table, boolean condition) {
         return joining(Join.TYPE_CROSS, table, condition);
     }
-
 
 
     protected Joiner<QueryWrapper> joining(String type, String table, boolean condition) {
