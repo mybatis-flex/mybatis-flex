@@ -136,14 +136,15 @@ query.select(ACCOUNT.ID,ACCOUNT.USER_NAME).from(ACCOUNT)
 
 ```java
 QueryWrapper query = new QueryWrapper()
-    .select(ACCOUNT.ID, ACCOUNT.USER_NAME,
-    ARTICLE.ID.as("articleId"), ARTICLE.TITLE)
+    .select(ACCOUNT.ID
+        , ACCOUNT.USER_NAME
+        , ARTICLE.ID.as("articleId")
+        , ARTICLE.TITLE)
     .from(ACCOUNT.as("a"), ARTICLE.as("b"))
     .where(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
 
 // SQL: 
-// SELECT a.id, a.user_name, 
-// b.id AS articleId, b.title 
+// SELECT a.id, a.user_name, b.id AS articleId, b.title 
 // FROM tb_account AS a, tb_article AS b 
 // WHERE a.id = b.account_id
 ```
