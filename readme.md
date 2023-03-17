@@ -133,14 +133,19 @@ query.select(ACCOUNT.ID,ACCOUNT.USER_NAME).from(ACCOUNT)
 // FROM tb_account
 ```
 
+
 ```java
-QueryWrapper query=new QueryWrapper();
-query.select(ACCOUNT.ALL_COLUMNS).from(ACCOUNT)
+QueryWrapper query = new QueryWrapper()
+    .select(ACCOUNT.ID, ACCOUNT.USER_NAME,
+    ARTICLE.ID.as("articleId"), ARTICLE.TITLE)
+    .from(ACCOUNT.as("a"), ARTICLE.as("b"))
+    .where(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
 
 // SQL: 
-// SELECT tb_account.id, tb_account.user_name, tb_account.birthday, 
-// tb_account.sex, tb_account.is_normal 
-// FROM tb_account
+// SELECT a.id, a.user_name, 
+// b.id AS articleId, b.title 
+// FROM tb_account AS a, tb_article AS b 
+// WHERE a.id = b.account_id
 ```
 
 ### select functions
