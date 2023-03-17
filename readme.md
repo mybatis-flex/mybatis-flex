@@ -78,9 +78,9 @@ QueryWrapper query = QueryWrapper.create()
         .and(ACCOUNT.USER_NAME.like("zhang").or(ACCOUNT.USER_NAME.like("li")));
 
 // execute SQL：
-// ELECT * FROM `tb_account`
-// WHERE `tb_account`.`id` >=  100
-// AND (`tb_account`.`user_name` LIKE '%zhang%' OR `tb_account`.`user_name` LIKE '%li%' )
+// ELECT * FROM tb_account
+// WHERE tb_account.id >=  100
+// AND (tb_account.user_name LIKE '%zhang%' OR tb_account.user_name LIKE '%li%' )
 List<Account> accounts = MybatisFlexBootstrap.getInstance()
         .execute(AccountMapper.class, mapper ->
                 mapper.selectListByQuery(query)
@@ -99,10 +99,10 @@ QueryWrapper query = QueryWrapper.create()
         .orderBy(ACCOUNT.ID.desc());
 
 // execute SQL：
-// ELECT * FROM `tb_account`
-// WHERE `tb_account`.`id` >=  100
-// AND (`tb_account`.`user_name` LIKE '%zhang%' OR `tb_account`.`user_name` LIKE '%li%' )
-// ORDER BY `tb_account`.`id` DESC
+// ELECT * FROM tb_account
+// WHERE tb_account.id >=  100
+// AND (tb_account.user_name LIKE '%zhang%' OR tb_account.user_name LIKE '%li%' )
+// ORDER BY tb_account.id DESC
 // LIMIT 40,10
 Page<Account> accountPage = MybatisFlexBootstrap.getInstance()
         .execute(AccountMapper.class, mapper ->
@@ -257,8 +257,8 @@ QueryWrapper queryWrapper=QueryWrapper.create()
         .orderBy(ACCOUNT.AGE.asc(), ACCOUNT.USER_NAME.desc().nullsLast());
 
 // SQL: 
-// SELECT * FROM `tb_account` 
-// ORDER BY `age` ASC, `user_name` DESC NULLS LAST
+// SELECT * FROM tb_account
+// ORDER BY age ASC, user_name DESC NULLS LAST
 ```
 
 
@@ -291,27 +291,27 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 // MySql: 
 // SELECT * FROM `tb_account` ORDER BY `id` DESC LIMIT 20, 10
 
-// postgreSQL: 
+// PostgreSQL: 
 // SELECT * FROM "tb_account" ORDER BY "id" DESC LIMIT 20 OFFSET 10
 
-// informix: 
+// Informix: 
 // SELECT SKIP 20 FIRST 10 * FROM "tb_account" ORDER BY "id" DESC
 
-// oracle: 
+// Oracle: 
 // SELECT * FROM (SELECT TEMP_DATAS.*, 
 //  ROWNUM RN FROM (
 //          SELECT * FROM "tb_account" ORDER BY "id" DESC) 
 //      TEMP_DATAS WHERE  ROWNUM <=30) 
 //  WHERE RN >20
 
-// db2: 
+// Db2: 
 // SELECT * FROM "tb_account" ORDER BY "id" DESC 
 // OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY
 
-// sybase: 
+// Sybase: 
 // SELECT TOP 10 START AT 21 * FROM "tb_account" ORDER BY "id" DESC
 
-// firebird: 
+// Firebird: 
 // SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 ```
 
