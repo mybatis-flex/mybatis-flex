@@ -39,13 +39,13 @@ import java.util.function.Function;
  *
  * <code>
  * MybatisFlexBootstrap.getInstance()
- * .setDatasource(...)
- * .addMapper(...)
- * .start();
+ *  .setDatasource(...)
+ *  .addMapper(...)
+ *  .start();
  * <p>
  * <p>
  * MybatisFlexBootstrap.getInstance()
- * .execute(...)
+ *  .execute(...)
  * </code>
  */
 public class MybatisFlexBootstrap {
@@ -62,6 +62,12 @@ public class MybatisFlexBootstrap {
     private DbType dbType;
     private SqlSessionFactory sqlSessionFactory;
     private Class<? extends Log> logImpl;
+
+    /**
+     * 虽然提供了 getInstance，但也允许自己进行实例化，可以用于创建多个 MybatisFlexBootstrap 达到管理数据源的目的
+     */
+    public MybatisFlexBootstrap() {
+    }
 
 
     private static volatile MybatisFlexBootstrap instance;
@@ -119,7 +125,6 @@ public class MybatisFlexBootstrap {
                 mappers.forEach(configuration::addMapper);
             }
 
-
             LogFactory.getLog(MybatisFlexBootstrap.class).debug("Mybatis-Flex has started.");
         }
 
@@ -176,6 +181,7 @@ public class MybatisFlexBootstrap {
 
     public MybatisFlexBootstrap setConfiguration(FlexConfiguration configuration) {
         this.configuration = configuration;
+        this.environmentId = configuration.getEnvironment().getId();
         return this;
     }
 
