@@ -50,25 +50,25 @@ import java.util.function.Function;
  */
 public class MybatisFlexBootstrap {
 
-    private final AtomicBoolean started = new AtomicBoolean(false);
+    protected final AtomicBoolean started = new AtomicBoolean(false);
 
-    private String environmentId = "mybatis-flex";
-    private TransactionFactory transactionFactory;
+    protected String environmentId = "mybatis-flex";
+    protected TransactionFactory transactionFactory;
 
-    private DataSource dataSource;
-    private Configuration configuration;
-    private List<Class<?>> mappers;
+    protected DataSource dataSource;
+    protected Configuration configuration;
+    protected List<Class<?>> mappers;
 
-    private DbType dbType;
-    private SqlSessionFactory sqlSessionFactory;
-    private Class<? extends Log> logImpl;
+    protected DbType dbType;
+    protected SqlSessionFactory sqlSessionFactory;
+    protected Class<? extends Log> logImpl;
 
     /**
-     * 虽然提供了 getInstance，但也允许自己进行实例化，可以用于创建多个 MybatisFlexBootstrap 达到管理数据源的目的
+     * 虽然提供了 getInstance，但也允许用户进行实例化，
+     * 用于创建多个 MybatisFlexBootstrap 实例达到管理多数据源的目的
      */
     public MybatisFlexBootstrap() {
     }
-
 
     private static volatile MybatisFlexBootstrap instance;
 
