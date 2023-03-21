@@ -49,7 +49,7 @@ public class AccountSqlTester {
                 .from(ACCOUNT.as("a"), ARTICLE.as("b"))
                 .where(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
 
-        IDialect dialect = new CommonsDialectImpl(KeywordWrap.NONE,LimitOffsetProcesser.MYSQL);
+        IDialect dialect = new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcesser.MYSQL);
         String sql = dialect.forSelectListByQuery(query);
         System.out.println(sql);
     }
@@ -118,6 +118,27 @@ public class AccountSqlTester {
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectListByQuery(queryWrapper);
         System.out.println(sql);
+
+        Object[] valueArray = CPI.getValueArray(queryWrapper);
+        System.out.println(Arrays.toString(valueArray));
+    }
+
+
+    @Test
+    public void testWhereCond2Sql() {
+        boolean flag = false;
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select()
+                .from(ACCOUNT)
+                .where(flag ? ACCOUNT.ID.ge(100) : noCondition())
+                .and(ACCOUNT.USER_NAME.like("michael"));
+
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forSelectListByQuery(queryWrapper);
+        System.out.println(sql);
+
+        Object[] valueArray = CPI.getValueArray(queryWrapper);
+        System.out.println(Arrays.toString(valueArray));
     }
 
 
