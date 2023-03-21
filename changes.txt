@@ -1,3 +1,11 @@
+mybatis-flex v1.0.3 2023021:
+新增：APT 自动生成 Mapper 代码的功能，无需在手动编写
+新增：APT 新增 "processer.mappersGenerateEnable" 配置，用于开启是否自动生成 Mapper 类
+修复：condition.when(flag) 的 value 值有返回的问题
+文档：添加 where 动态条件文档示例，同步 APT 的文档
+
+
+
 mybatis-flex v1.0.2 2023017:
 新增：添加自定义字段 typeHandler @Column(typeHandler=xxx) 的配置
 新增：内置默认的  fastjson fastjson2 gson jackson 的 TypeHandler，方便开发者直接使用
