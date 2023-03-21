@@ -34,7 +34,7 @@
 
 ## hello world（原生）
 
-**第一步：编写 Entity 实体类**
+**第 1 步：编写 Entity 实体类**
 
 ```java
 
@@ -51,15 +51,8 @@ public class Account {
 }
 ```
 
-**第二步，编写 Mapper 类，并继承 BaseMapper**
 
-```java
-public interface AccountMapper extends BaseMapper<Account> {
-    //只需定义 Mapper 接口即可，可以无任何内容。
-}
-```
-
-**第三步：开始查询数据**
+**第 2 步：开始查询数据**
 
 示例 1：查询 1 条数据
 
@@ -86,6 +79,8 @@ class HelloWorld {
     }
 }
 ```
+
+> 以上的 `AccountMapper.class` 为 Mybatis-Flex 自动通过 APT 生成，无需手动编码。也手动编写 AccountMapper，关闭自动生成功能，更多查看 APT 文档。
 
 示例2：查询列表
 
@@ -396,8 +391,8 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 **疑问 2：如何通过实体类 Account.java 生成 QueryWrapper 所需要的 "ACCOUNT" 类 ?**
 
-答：Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时候，会自动根据 Entity 类定义的字段帮你生成 "ACCOUNT" 类， 通过开发工具构建项目（如下图），或者执行
-maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
+答：Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时候，会自动根据 Entity 类定义的字段帮你生成 "ACCOUNT" 类以及 Entity 对应的 Mapper 类，
+通过开发工具构建项目（如下图），或者执行 maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
 
 ![](./docs/assets/images/build_idea.png)
 
