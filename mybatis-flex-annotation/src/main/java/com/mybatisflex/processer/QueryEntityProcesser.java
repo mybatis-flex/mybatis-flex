@@ -27,8 +27,6 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.*;
@@ -101,15 +99,15 @@ public class QueryEntityProcesser extends AbstractProcessor {
     private static final String allColumnsTemplate = "        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{@allColumns};\n\n";
 
     private Filer filer;
-    private Elements elementUtils;
-    private Types typeUtils;
+//    private Elements elementUtils;
+//    private Types typeUtils;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         this.filer = processingEnvironment.getFiler();
-        this.elementUtils = processingEnvironment.getElementUtils();
-        this.typeUtils = processingEnvironment.getTypeUtils();
+//        this.elementUtils = processingEnvironment.getElementUtils();
+//        this.typeUtils = processingEnvironment.getTypeUtils();
     }
 
     @Override
@@ -124,8 +122,9 @@ public class QueryEntityProcesser extends AbstractProcessor {
                 return true;
             }
             String genPath = props.getProperties().getProperty("processer.genPath", "");
-            final String genTablesPackage = props.getProperties().getProperty("processer.tablesPackage");
-            final String genMappersPackage = props.getProperties().getProperty("processer.mappersPackage");
+            String genTablesPackage = props.getProperties().getProperty("processer.tablesPackage");
+            String mappersGenerateEnable = props.getProperties().getProperty("processer.mappersGenerateEnable");
+            String genMappersPackage = props.getProperties().getProperty("processer.mappersPackage");
             String className = props.getProperties().getProperty("processer.tablesClassName", "Tables");
 
             StringBuilder guessPackage = new StringBuilder();
@@ -200,9 +199,12 @@ public class QueryEntityProcesser extends AbstractProcessor {
                 tablesContent.append(buildTablesClass(entityClassName, tableName, propertyAndColumns, defaultColumns));
 
 
-                String realMapperPackage = genMappersPackage == null || genMappersPackage.trim().length() == 0
-                        ? guessPackage.substring(0, guessPackage.length() - 5) + "mapper" : genMappersPackage;
-                genMapperClass(genPath, realMapperPackage, entityClassElement.toString());
+                //是否开启 mapper 生成功能
+                if (!"false".equalsIgnoreCase(mappersGenerateEnable)) {
+                    String realMapperPackage = genMappersPackage == null || genMappersPackage.trim().length() == 0
+                            ? guessPackage.substring(0, guessPackage.length() - 5) + "mapper" : genMappersPackage;
+                    genMapperClass(genPath, realMapperPackage, entityClassElement.toString());
+                }
             });
 
             if (tablesContent.length() > 0) {
