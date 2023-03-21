@@ -65,6 +65,7 @@ public class AccountSqlTester {
         System.out.println(sql);
     }
 
+
     @Test
     public void testSelectAllColumnsSql() {
         QueryWrapper query = new QueryWrapper()
@@ -97,6 +98,21 @@ public class AccountSqlTester {
                 .select()
                 .from(ACCOUNT)
                 .where(ACCOUNT.ID.ge(100))
+                .and(ACCOUNT.USER_NAME.like("michael"));
+
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forSelectListByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
+
+    @Test
+    public void testWhereCond1Sql() {
+        boolean flag = false;
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select()
+                .from(ACCOUNT)
+                .where(ACCOUNT.ID.ge(100).when(flag))
                 .and(ACCOUNT.USER_NAME.like("michael"));
 
         IDialect dialect = new CommonsDialectImpl();

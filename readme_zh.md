@@ -205,6 +205,35 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 // AND user_name LIKE  ? 
 ```
 
+### where 动态条件 1
+
+```java
+boolean flag = false;
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select().from(ACCOUNT)
+    .where(flag ? ACCOUNT.ID.ge(100) : noCondition())
+    .and(ACCOUNT.USER_NAME.like("michael"));
+
+// SQL: 
+// SELECT * FROM tb_account 
+// WHERE user_name LIKE  ? 
+```
+
+### where 动态条件 2
+
+```java
+boolean flag = false;
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select().from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100).when(flag))
+    .and(ACCOUNT.USER_NAME.like("michael"));
+
+// SQL: 
+// SELECT * FROM tb_account 
+// WHERE user_name LIKE  ? 
+```
+
+
 ### where select
 ```java
 QueryWrapper queryWrapper = QueryWrapper.create()
