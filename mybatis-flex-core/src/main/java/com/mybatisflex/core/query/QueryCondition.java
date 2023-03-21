@@ -83,7 +83,7 @@ public class QueryCondition implements Serializable {
     }
 
     public Object getValue() {
-        return value;
+        return checkEffective() ? value : null;
     }
 
     public void setValue(Object value) {
