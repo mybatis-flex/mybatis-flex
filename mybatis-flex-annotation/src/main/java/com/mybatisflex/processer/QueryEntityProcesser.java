@@ -60,6 +60,15 @@ public class QueryEntityProcesser extends AbstractProcessor {
             char.class.getName(), String.class.getName(), Character.class.getName()
     );
 
+    private static final String mapperTemplate = "package @package;\n" +
+            "\n" +
+            "import com.mybatisflex.core.BaseMapper;\n" +
+            "import @entityClass;\n" +
+            "\n" +
+            "public interface @entityNameMapper extends BaseMapper<@entityName> {\n" +
+            "}\n";
+
+
     private static final String classTableTemplate = "package @package;\n" +
             "\n" +
             "import com.mybatisflex.core.query.QueryColumn;\n" +
@@ -115,8 +124,9 @@ public class QueryEntityProcesser extends AbstractProcessor {
                 return true;
             }
             String genPath = props.getProperties().getProperty("processer.genPath", "");
-            final String genPackage = props.getProperties().getProperty("processer.package");
-            String className = props.getProperties().getProperty("processer.className", "Tables");
+            final String genTablesPackage = props.getProperties().getProperty("processer.tablesPackage");
+            final String genMappersPackage = props.getProperties().getProperty("processer.mappersPackage");
+            String className = props.getProperties().getProperty("processer.tablesClassName", "Tables");
 
             StringBuilder guessPackage = new StringBuilder();
 
@@ -127,7 +137,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
                 Table table = entityClassElement.getAnnotation(Table.class);
 
                 //init genPackage
-                if ((genPackage == null || genPackage.trim().length() == 0)
+                if ((genTablesPackage == null || genTablesPackage.trim().length() == 0)
                         && guessPackage.length() == 0) {
                     String entityClassName = entityClassElement.toString();
                     if (!entityClassName.contains(".")) {
@@ -164,7 +174,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
                         List<? extends AnnotationMirror> annotationMirrors = fieldElement.getAnnotationMirrors();
                         for (AnnotationMirror annotationMirror : annotationMirrors) {
                             annotationMirror.getElementValues().forEach((BiConsumer<ExecutableElement, AnnotationValue>) (executableElement, annotationValue) -> {
-                                if (executableElement.getSimpleName().equals("typeHandler")){
+                                if (executableElement.getSimpleName().equals("typeHandler")) {
                                     typeHandlerClass[0] = annotationValue.toString();
                                 }
                             });
@@ -187,12 +197,17 @@ public class QueryEntityProcesser extends AbstractProcessor {
                 }
 
                 String entityClassName = entityClassElement.getSimpleName().toString();
-                tablesContent.append(buildClass(entityClassName, tableName, propertyAndColumns, defaultColumns));
+                tablesContent.append(buildTablesClass(entityClassName, tableName, propertyAndColumns, defaultColumns));
+
+
+                String realMapperPackage = genMappersPackage == null || genMappersPackage.trim().length() == 0
+                        ? guessPackage.substring(0, guessPackage.length() - 5) + "mapper" : genMappersPackage;
+                genMapperClass(genPath, realMapperPackage, entityClassElement.toString());
             });
 
             if (tablesContent.length() > 0) {
-                String realGenPackage = genPackage == null || genPackage.trim().length() == 0 ? guessPackage.toString() : genPackage;
-                genClass(genPath, realGenPackage, className, tablesContent.toString());
+                String realGenPackage = genTablesPackage == null || genTablesPackage.trim().length() == 0 ? guessPackage.toString() : genTablesPackage;
+                genTablesClass(genPath, realGenPackage, className, tablesContent.toString());
             }
 
         }
@@ -201,10 +216,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
     }
 
 
-
-
-
-    private String buildClass(String entityClass, String tableName, Map<String, String> propertyAndColumns, List<String> defaultColumns) {
+    private String buildTablesClass(String entityClass, String tableName, Map<String, String> propertyAndColumns, List<String> defaultColumns) {
 
         // tableDefTemplate = "    public static final @entityClassTableDef @tableField = new @entityClassTableDef(\"@tableName\");\n";
 
@@ -253,7 +265,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
     }
 
 
-    private void genClass(String genBasePath, String genPackageName, String className, String classContent) {
+    private void genTablesClass(String genBasePath, String genPackageName, String className, String classContent) {
         String genContent = classTableTemplate.replace("@package", genPackageName)
                 .replace("@classesInfo", classContent);
 
@@ -300,10 +312,80 @@ public class QueryEntityProcesser extends AbstractProcessor {
             }
 
             writer = new PrintWriter(new FileOutputStream(genJavaFile));
-            writer.write(classContent);
+            writer.write(genContent);
             writer.flush();
 
             printMessage(">>>>> mybatis-flex success generate tables class: \n" + genJavaFile.toURI());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+
+
+    private void genMapperClass(String genBasePath, String genPackageName, String entityClass) {
+        String entityName = entityClass.substring(entityClass.lastIndexOf(".") + 1);
+
+        String genContent = mapperTemplate
+                .replace("@package", genPackageName)
+                .replace("@entityClass", entityClass)
+                .replace("@entityName", entityName);
+
+        String mapperClassName = entityName + "Mapper";
+        Writer writer = null;
+        try {
+            JavaFileObject sourceFile = filer.createSourceFile(genPackageName + "." + mapperClassName);
+            if (genBasePath == null || genBasePath.trim().length() == 0) {
+                writer = sourceFile.openWriter();
+                writer.write(genContent);
+                writer.flush();
+
+                printMessage(">>>>> mybatis-flex success generate mapper class: \n" + sourceFile.toUri());
+                return;
+            }
+
+
+            String defaultGenPath = sourceFile.toUri().getPath();
+
+            //真实的生成代码的目录
+            String realPath;
+
+            //用户配置的路径为绝对路径
+            if (isAbsolutePath(genBasePath)) {
+                realPath = genBasePath;
+            }
+            //配置的是相对路径，那么则以项目根目录为相对路径
+            else {
+                String projectRootPath = getProjectRootPath(defaultGenPath);
+                realPath = new File(projectRootPath, genBasePath).getAbsolutePath();
+            }
+
+            //通过在 test/java 目录下执行编译生成的
+            boolean fromTestSource = isFromTestSource(defaultGenPath);
+            if (fromTestSource) {
+                realPath = new File(realPath, "src/test/java").getAbsolutePath();
+            } else {
+                realPath = new File(realPath, "src/main/java").getAbsolutePath();
+            }
+
+            File genJavaFile = new File(realPath, (genPackageName + "." + mapperClassName).replace(".", "/") + ".java");
+            if (!genJavaFile.getParentFile().exists() && !genJavaFile.getParentFile().mkdirs()) {
+                System.out.println(">>>>>ERROR: can not mkdirs by mybatis-flex processer for: " + genJavaFile.getParentFile());
+                return;
+            }
+
+            writer = new PrintWriter(new FileOutputStream(genJavaFile));
+            writer.write(genContent);
+            writer.flush();
+
+            printMessage(">>>>> mybatis-flex success generate mapper class: \n" + genJavaFile.toURI());
 
         } catch (IOException e) {
             e.printStackTrace();
