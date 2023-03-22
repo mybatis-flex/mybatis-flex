@@ -29,6 +29,7 @@
 - 示例 1：[Mybatis-Flex 原生（非 Spring）](./mybatis-flex-test/mybatis-flex-native-test)
 - 示例 2：[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
 - 示例 3：[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
+- [Db + Row 实例](./mybatis-flex-test/mybatis-flex-native-test/src/main/java/com/mybatisflex/test/DbTestStarter.java)
 
 
 
@@ -80,7 +81,7 @@ class HelloWorld {
 }
 ```
 
-> 以上的 `AccountMapper.class` 为 Mybatis-Flex 自动通过 APT 生成，无需手动编码。也手动编写 AccountMapper，关闭自动生成功能，更多查看 APT 文档。
+> 以上的 `AccountMapper.class` 为 Mybatis-Flex 自动通过 APT 生成，无需手动编码。也可以关闭自动生成功能，手动编写 AccountMapper，更多查看 APT 文档。
 
 示例2：查询列表
 
