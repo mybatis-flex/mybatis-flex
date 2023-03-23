@@ -8,7 +8,7 @@ Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 
 ## 关闭 APT 功能
 
-在项目的 resources 目录下添加 `mybatis-flex.porperties` 配置文件，配置内容如下：
+在项目的 resources 目录下添加 `mybatis-flex.properties` 配置文件，配置内容如下：
 
 ```properties
 processer.enable = false
