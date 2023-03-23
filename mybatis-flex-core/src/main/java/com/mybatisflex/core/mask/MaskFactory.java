@@ -25,7 +25,7 @@ public class MaskFactory {
 
 
     /**
-     * 脱敏处理器
+     * 脱敏处理器，type : processer
      */
     private static Map<String, MaskProcesser> processerMap = new HashMap<>();
 
@@ -43,16 +43,46 @@ public class MaskFactory {
     }
 
 
+    /**
+     * 注册处理器，用户可以注册新的脱敏处理器 或者 覆盖内置的处理器
+     *
+     * @param type      处理器类型
+     * @param processer 脱敏处理器
+     */
     public static void registerMaskProcesser(String type, MaskProcesser processer) {
         processerMap.put(type, processer);
     }
 
 
+    private static ThreadLocal<Boolean> skipFlags = new ThreadLocal<>();
+
+    /**
+     * 跳过脱敏处理
+     */
+    public static void skipMask() {
+        skipFlags.set(Boolean.TRUE);
+    }
+
+
+    /**
+     * 恢复脱敏处理
+     */
+    public static void restoreMask() {
+        skipFlags.remove();
+    }
+
+
     public static Object mask(String type, Object data) {
+        Boolean skipMask = skipFlags.get();
+        if (skipMask != null && skipMask) {
+            return data;
+        }
+
         MaskProcesser maskProcesser = processerMap.get(type);
         if (maskProcesser == null) {
             throw new IllegalStateException("Can not get mask processer for by type: " + type);
         }
+
         return maskProcesser.mask(data);
     }
 
