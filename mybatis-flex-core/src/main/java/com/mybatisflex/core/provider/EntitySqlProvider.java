@@ -163,7 +163,6 @@ public class EntitySqlProvider {
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
-//        queryWrapper.from(tableInfo.getTableName());
         CPI.setFromIfNecessary(queryWrapper,tableInfo.getTableName());
 
         return DialectFactory.getDialect().forDeleteEntityBatchByQuery(tableInfo, queryWrapper);
@@ -296,7 +295,6 @@ public class EntitySqlProvider {
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
 
-//        queryWrapper.from(tableInfo.getTableName());
         CPI.setFromIfNecessary(queryWrapper,tableInfo.getTableName());
 
         return DialectFactory.getDialect().forSelectListByQuery(queryWrapper);
@@ -327,7 +325,6 @@ public class EntitySqlProvider {
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
 
-//        queryWrapper.from(tableInfo.getTableName());
         CPI.setFromIfNecessary(queryWrapper,tableInfo.getTableName());
         return DialectFactory.getDialect().forSelectCountByQuery(queryWrapper);
     }
