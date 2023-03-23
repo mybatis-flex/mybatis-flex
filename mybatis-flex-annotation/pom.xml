@@ -36,6 +36,9 @@
                     </exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>target/generated-sources</directory>
+            </resource>
         </resources>
 
         <plugins>
