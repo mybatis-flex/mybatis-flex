@@ -48,6 +48,11 @@ public class EntityTestStarter {
         System.out.println(account);
 
 
+        List<Account> allAccount = bootstrap.execute(AccountMapper.class, accountMapper ->
+                accountMapper.selectListByQuery(QueryWrapper.create()));
+        System.out.println(allAccount);
+
+
         Account newAccount = new Account();
         newAccount.setUserName("lisi");
         newAccount.setAge(18);

@@ -1,10 +1,8 @@
 package com.mybatisflex.test;
 
-import com.mybatisflex.annotation.Column;
-import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.KeyType;
-import com.mybatisflex.annotation.Table;
+import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.handler.Fastjson2TypeHandler;
+import com.mybatisflex.core.mask.Masks;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +14,7 @@ public class Account {
     @Id(keyType = KeyType.Auto)
     private Long id;
 
+    @ColumnMask(Masks.CHINESE_NAME)
     private String userName;
 
     private int age;
