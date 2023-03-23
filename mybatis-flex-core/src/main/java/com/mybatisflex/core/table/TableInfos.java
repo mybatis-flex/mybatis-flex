@@ -16,6 +16,7 @@
 package com.mybatisflex.core.table;
 
 import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.ColumnMask;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.FlexConsts;
@@ -204,6 +205,14 @@ public class TableInfos {
                 TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
                 TypeHandler<?> typeHandler = typeHandlerRegistry.getInstance(columnInfo.getPropertyType(), typeHandlerClass);
                 columnInfo.setTypeHandler(typeHandler);
+            }
+
+            ColumnMask columnMask = field.getAnnotation(ColumnMask.class);
+            if (columnMask != null && StringUtil.isNotBlank(columnMask.value())) {
+                if (String.class != field.getType()) {
+                    throw new IllegalStateException("@ColumnMask() only support for string type field. error: " + entityClass.getName() + "." + field.getName());
+                }
+                columnInfo.setMaskType(columnMask.value().trim());
             }
 
             if (column != null && column.jdbcType() != JdbcType.UNDEFINED) {

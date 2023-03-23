@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.core.table;
 
+import com.mybatisflex.core.mask.MaskTypeHandler;
+import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
@@ -44,6 +46,9 @@ public class ColumnInfo {
      * 自定义 TypeHandler
      */
     protected TypeHandler typeHandler;
+
+
+    protected String maskType;
 
 
 
@@ -79,11 +84,29 @@ public class ColumnInfo {
         this.jdbcType = jdbcType;
     }
 
-    public TypeHandler getTypeHandler() {
+    public TypeHandler buildTypeHandler() {
+
+        //优先使用自定义的 typeHandler
+        if (typeHandler != null){
+            return typeHandler;
+        }
+        //若用户未定义 typeHandler，而配置了数据脱敏，则使用脱敏的 handler 处理
+        else if (StringUtil.isNotBlank(maskType)){
+            typeHandler =  new MaskTypeHandler(maskType);
+        }
+
         return typeHandler;
     }
 
     public void setTypeHandler(TypeHandler typeHandler) {
         this.typeHandler = typeHandler;
+    }
+
+    public String getMaskType() {
+        return maskType;
+    }
+
+    public void setMaskType(String maskType) {
+        this.maskType = maskType;
     }
 }
