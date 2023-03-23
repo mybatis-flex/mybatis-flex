@@ -230,6 +230,16 @@ public interface BaseMapper<T> {
 
 
     /**
+     * 查询全部数据
+     *
+     * @return 数据列表
+     */
+    default List<T> selectAll() {
+        return selectListByQuery(new QueryWrapper());
+    }
+
+
+    /**
      * 根据 queryWrapper 来查询数据量
      *
      * @param queryWrapper
