@@ -603,10 +603,3 @@ public class Account {
 
 ![](./docs/assets/images/qq_group.png)
 
-
-## 团队的另一个开源项目
-
-![](./docs/assets/images/react-better-admin.png)
-
-[React-Better-Admin](https://gitee.com/better-admin/react-better-admin) 是一个基于 React 18、TypeScript、Ant Design v5.x、Redux 开发的
-后台 UI 系统，基于 MIT 开源协议永久免费可商用，点击 [这里](https://gitee.com/better-admin/react-better-admin) 进一步了解。
