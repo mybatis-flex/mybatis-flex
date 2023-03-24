@@ -4,7 +4,6 @@
 # Mybatis-Flex： 更灵活、更轻量、更好用
 
 
-
 ## 特征
 
 - 1、很轻量，整个框架只依赖 Mybatis 再无其他第三方依赖
@@ -596,6 +595,7 @@ public class Account {
 - [乐观锁](./docs/zh/version.md)
 - [Db + Row](./docs/zh/db_row.md)
 - [APT](./docs/zh/apt.md)
+- [代码生成器](./docs/zh/codegen.md)
 
 ## 还有问题？
 
