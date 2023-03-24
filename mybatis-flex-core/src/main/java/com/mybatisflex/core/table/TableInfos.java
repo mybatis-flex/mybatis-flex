@@ -15,10 +15,7 @@
  */
 package com.mybatisflex.core.table;
 
-import com.mybatisflex.annotation.Column;
-import com.mybatisflex.annotation.ColumnMask;
-import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.Table;
+import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
@@ -106,6 +103,15 @@ public class TableInfos {
             tableInfo.setTableName(table.value());
             tableInfo.setSchema(table.schema());
             tableInfo.setCamelToUnderline(table.camelToUnderline());
+
+            if (table.onInsert() != NoneListener.class){
+                tableInfo.setOnInsertListener(ClassUtil.newInstance(table.onInsert()));
+            }
+
+            if (table.onUpdate() != NoneListener.class){
+                tableInfo.setOnUpdateListener(ClassUtil.newInstance(table.onUpdate()));
+            }
+
         } else {
             //默认为类名转驼峰下划线
             String tableName = StringUtil.camelToUnderline(entityClass.getSimpleName());
@@ -183,6 +189,7 @@ public class TableInfos {
             if (column != null && column.isLarge()) {
                 largeColumns.add(columnName);
             }
+
 
 
             Id id = field.getAnnotation(Id.class);

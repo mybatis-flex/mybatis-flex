@@ -15,35 +15,14 @@
  */
 package com.mybatisflex.annotation;
 
-import java.lang.annotation.*;
+public class NoneListener implements InsertListener, UpdateListener {
+    @Override
+    public void onInsert(Object entity) {
 
-@Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Table {
+    }
 
-    /**
-     * 显式指定表名称
-     */
-    String value();
+    @Override
+    public void onUpdate(Object entity) {
 
-    /**
-     * 数据库的 schema
-     */
-    String schema() default "";
-
-    /**
-     * 默认为 驼峰属性 转换为 下划线字段
-     */
-    boolean camelToUnderline() default true;
-
-    /**
-     * 监听 entity 的 insert 行为
-     */
-    Class<? extends InsertListener> onInsert() default NoneListener.class;
-
-    /**
-     * 监听 entity 的 update 行为
-     */
-    Class<? extends UpdateListener> onUpdate() default NoneListener.class;
+    }
 }

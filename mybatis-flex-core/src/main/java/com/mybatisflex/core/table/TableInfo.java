@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.core.table;
 
+import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
@@ -73,6 +75,9 @@ public class TableInfo {
     //column 和 java 属性的称的关系映射
     private Map<String, ColumnInfo> columnInfoMapping = new HashMap<>();
     private Map<String, String> propertyColumnMapping = new HashMap<>();
+
+    private InsertListener onInsertListener;
+    private UpdateListener onUpdateListener;
 
 
     private final ReflectorFactory reflectorFactory = new BaseReflectorFactory() {
@@ -193,9 +198,27 @@ public class TableInfo {
     }
 
 
+    public InsertListener getOnInsertListener() {
+        return onInsertListener;
+    }
+
+    public void setOnInsertListener(InsertListener onInsertListener) {
+        this.onInsertListener = onInsertListener;
+    }
+
+    public UpdateListener getOnUpdateListener() {
+        return onUpdateListener;
+    }
+
+    public void setOnUpdateListener(UpdateListener onUpdateListener) {
+        this.onUpdateListener = onUpdateListener;
+    }
+
     public List<ColumnInfo> getColumnInfoList() {
         return columnInfoList;
     }
+
+
 
 
     void setColumnInfoList(List<ColumnInfo> columnInfoList) {
@@ -246,6 +269,7 @@ public class TableInfo {
 
     /**
      * 构建 insert 的 Sql 参数
+     *
      * @param entity 从 entity 中获取
      * @return 数组
      */
@@ -396,6 +420,7 @@ public class TableInfo {
 
     /**
      * 构建主键的 sql 参数数据
+     *
      * @param entity
      */
     public Object[] buildPkSqlArgs(Object entity) {
@@ -479,7 +504,6 @@ public class TableInfo {
     }
 
 
-
     /**
      * 通过 row 实例类转换为一个 entity
      *
@@ -529,6 +553,19 @@ public class TableInfo {
         Object columnValue = buildColumnSqlArg(entityObject, logicDeleteColumn);
         if (columnValue == null) {
             metaObject.setValue(columnInfoMapping.get(logicDeleteColumn).property, 0);
+        }
+    }
+
+
+    public void invokeOnInsert(Object entity) {
+        if (onInsertListener != null) {
+            onInsertListener.onInsert(entity);
+        }
+    }
+
+    public void invokeUpUpdate(Object entity) {
+        if (onUpdateListener != null) {
+            onUpdateListener.onUpdate(entity);
         }
     }
 }

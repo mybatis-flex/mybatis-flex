@@ -16,7 +16,9 @@
 package com.mybatisflex.core.util;
 
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +89,7 @@ public class ClassUtil {
                     return (T) ret;
                 }
             }
-            throw new IllegalArgumentException("Can not find constructor by paras: \"" + Arrays.toString(paras) + "\" in class[" + clazz.getName()+"]");
+            throw new IllegalArgumentException("Can not find constructor by paras: \"" + Arrays.toString(paras) + "\" in class[" + clazz.getName() + "]");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -117,7 +119,6 @@ public class ClassUtil {
 
         return true;
     }
-
 
 
     public static List<Field> getAllFields(Class<?> cl) {

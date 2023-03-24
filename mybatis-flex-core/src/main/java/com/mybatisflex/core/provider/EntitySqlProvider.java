@@ -17,10 +17,10 @@ package com.mybatisflex.core.provider;
 
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
@@ -38,7 +38,8 @@ public class EntitySqlProvider {
      * 不让实例化，使用静态方法的模式，效率更高，非静态方法每次都会实例化当前类
      * 参考源码: {{@link org.apache.ibatis.builder.annotation.ProviderSqlSource#getBoundSql(Object)}
      */
-    private EntitySqlProvider() {}
+    private EntitySqlProvider() {
+    }
 
 
     /**
@@ -62,6 +63,9 @@ public class EntitySqlProvider {
 
         //设置逻辑删除字段的出初始化数据
         tableInfo.initLogicDeleteValueIfNecessary(entity);
+
+        //执行 onInsert 监听器
+        tableInfo.invokeOnInsert(entity);
 
         Object[] values = tableInfo.buildInsertSqlArgs(entity);
         ProviderUtil.setSqlArgs(params, values);
@@ -89,6 +93,9 @@ public class EntitySqlProvider {
         for (Object entity : entities) {
             tableInfo.initVersionValueIfNecessary(entity);
             tableInfo.initLogicDeleteValueIfNecessary(entity);
+
+            //执行 onInsert 监听器
+            tableInfo.invokeOnInsert(entity);
         }
 
 
@@ -118,6 +125,7 @@ public class EntitySqlProvider {
         }
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
+
         ProviderUtil.setSqlArgs(params, primaryValues);
 
         return DialectFactory.getDialect().forDeleteEntityById(tableInfo);
@@ -139,6 +147,7 @@ public class EntitySqlProvider {
         }
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
+
         ProviderUtil.setSqlArgs(params, primaryValues);
 
         return DialectFactory.getDialect().forDeleteEntityBatchByIds(tableInfo, primaryValues);
@@ -159,12 +168,10 @@ public class EntitySqlProvider {
             throw FlexExceptions.wrap("queryWrapper can not be null or empty.");
         }
 
-        ProviderUtil.setSqlArgs(params, CPI.getValueArray(queryWrapper));
-
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
+        CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
 
-        CPI.setFromIfNecessary(queryWrapper,tableInfo.getTableName());
-
+        ProviderUtil.setSqlArgs(params, CPI.getValueArray(queryWrapper));
         return DialectFactory.getDialect().forDeleteEntityBatchByQuery(tableInfo, queryWrapper);
     }
 
@@ -187,6 +194,9 @@ public class EntitySqlProvider {
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
+        //执行 onUpdate 监听器
+        tableInfo.invokeUpUpdate(entity);
+
         Object[] updateValues = tableInfo.buildUpdateSqlArgs(entity, ignoreNulls, false);
         Object[] primaryValues = tableInfo.buildPkSqlArgs(entity);
 
@@ -204,7 +214,7 @@ public class EntitySqlProvider {
      * @param params
      * @param context
      * @return sql
-     * @see com.mybatisflex.core.BaseMapper#updateByQuery(Object, QueryWrapper)
+     * @see com.mybatisflex.core.BaseMapper#updateByQuery(Object, boolean, QueryWrapper)
      */
     public static String updateByQuery(Map params, ProviderContext context) {
         Object entity = ProviderUtil.getEntity(params);
@@ -220,6 +230,9 @@ public class EntitySqlProvider {
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
             queryWrapper.and(QueryCondition.create(new QueryColumn(tableInfo.getTableName(), logicDeleteColumn), 0));
         }
+
+//        执行 onUpdate 监听器
+//        tableInfo.invokeUpUpdate(entity);
 
         Object[] values = tableInfo.buildUpdateSqlArgs(entity, ignoreNulls, true);
 
@@ -243,9 +256,10 @@ public class EntitySqlProvider {
             throw FlexExceptions.wrap("primaryValues can not be null or empty.");
         }
 
+        TableInfo tableInfo = ProviderUtil.getTableInfo(context);
+
         ProviderUtil.setSqlArgs(params, primaryValues);
 
-        TableInfo tableInfo = ProviderUtil.getTableInfo(context);
         return DialectFactory.getDialect().forSelectOneEntityById(tableInfo);
     }
 
@@ -295,7 +309,7 @@ public class EntitySqlProvider {
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
 
-        CPI.setFromIfNecessary(queryWrapper,tableInfo.getTableName());
+        CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
 
         return DialectFactory.getDialect().forSelectListByQuery(queryWrapper);
     }
@@ -325,7 +339,7 @@ public class EntitySqlProvider {
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
 
-        CPI.setFromIfNecessary(queryWrapper,tableInfo.getTableName());
+        CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
         return DialectFactory.getDialect().forSelectCountByQuery(queryWrapper);
     }
 
