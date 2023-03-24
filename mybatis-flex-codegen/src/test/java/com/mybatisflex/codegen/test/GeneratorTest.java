@@ -18,6 +18,7 @@ package com.mybatisflex.codegen.test;
 import com.mybatisflex.codegen.Generator;
 import com.mybatisflex.codegen.config.ColumnConfig;
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.TableConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Test;
 
@@ -34,6 +35,7 @@ public class GeneratorTest {
 
 
         GlobalConfig globalConfig = new GlobalConfig();
+        globalConfig.setSourceDir(System.getProperty("user.dir") + "/src/test/java");
 
         //设置只生成哪些表
         globalConfig.addGenerateTable("account", "account_session");
@@ -47,12 +49,19 @@ public class GeneratorTest {
         //设置 mapper 类的包名
         globalConfig.setMapperPackage("com.test.mapper");
 
+
+        TableConfig tableConfig = new TableConfig();
+        tableConfig.setTableName("account");
+        tableConfig.setUpdateListenerClass(MyUpdateListener.class);
+        globalConfig.addTableConfig(tableConfig);
+
+
         //可以单独配置某个列
         ColumnConfig columnConfig = new ColumnConfig();
         columnConfig.setColumnName("tenant_id");
         columnConfig.setLarge(true);
         columnConfig.setVersion(true);
-        globalConfig.addColumnConfig("account",columnConfig);
+        globalConfig.addColumnConfig("account", columnConfig);
 
 
         //通过 datasource 和 globalConfig 创建代码生成器

@@ -15,6 +15,9 @@
  */
 package com.mybatisflex.codegen.config;
 
+import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.annotation.UpdateListener;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +34,12 @@ public class TableConfig {
      * 默认为 驼峰属性 转换为 下划线字段
      */
     private Boolean camelToUnderline;
+
+
+    private Class<? extends InsertListener> insertListenerClass;
+
+
+    private Class<? extends UpdateListener> updateListenerClass;
 
 
     private Map<String,ColumnConfig> columnConfigMap;
@@ -60,6 +69,22 @@ public class TableConfig {
         this.camelToUnderline = camelToUnderline;
     }
 
+    public Class<? extends InsertListener> getInsertListenerClass() {
+        return insertListenerClass;
+    }
+
+    public void setInsertListenerClass(Class<? extends InsertListener> insertListenerClass) {
+        this.insertListenerClass = insertListenerClass;
+    }
+
+    public Class<? extends UpdateListener> getUpdateListenerClass() {
+        return updateListenerClass;
+    }
+
+    public void setUpdateListenerClass(Class<? extends UpdateListener> updateListenerClass) {
+        this.updateListenerClass = updateListenerClass;
+    }
+
     public Map<String, ColumnConfig> getColumnConfigMap() {
         return columnConfigMap;
     }
@@ -78,4 +103,6 @@ public class TableConfig {
     public ColumnConfig getColumnConfig(String columnName){
         return columnConfigMap == null ? null: columnConfigMap.get(columnName);
     }
+
+
 }

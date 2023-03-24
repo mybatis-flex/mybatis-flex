@@ -98,6 +98,16 @@ public class Table {
         for (Column column : columns) {
             imports.addAll(column.getImportClasses());
         }
+
+        if (tableConfig != null) {
+            if (tableConfig.getInsertListenerClass() != null) {
+                imports.add(tableConfig.getInsertListenerClass().getName());
+            }
+            if (tableConfig.getUpdateListenerClass() != null) {
+                imports.add(tableConfig.getUpdateListenerClass().getName());
+            }
+        }
+
         return imports.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
     }
 
@@ -121,14 +131,20 @@ public class Table {
      */
     public String buildTableAnnotation() {
         StringBuilder tableAnnotation = new StringBuilder("@Table(");
-        tableAnnotation.append("value=\"").append(name).append("\"");
+        tableAnnotation.append("value = \"").append(name).append("\"");
 
         if (tableConfig != null) {
             if (tableConfig.getSchema() != null) {
-                tableAnnotation.append(", schema=\"" + tableConfig.getSchema() + "\"");
+                tableAnnotation.append(", schema = \"" + tableConfig.getSchema() + "\"");
             }
             if (tableConfig.getCamelToUnderline() != null) {
-                tableAnnotation.append(", camelToUnderline=\"" + tableConfig.getCamelToUnderline() + "\"");
+                tableAnnotation.append(", camelToUnderline = \"" + tableConfig.getCamelToUnderline() + "\"");
+            }
+            if (tableConfig.getInsertListenerClass() != null) {
+                tableAnnotation.append(", onInsert = " + tableConfig.getInsertListenerClass().getSimpleName() + ".class");
+            }
+            if (tableConfig.getUpdateListenerClass() != null) {
+                tableAnnotation.append(", onUpdate = " + tableConfig.getUpdateListenerClass().getSimpleName() + ".class");
             }
         }
         return tableAnnotation.append(")").toString();
