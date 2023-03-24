@@ -26,34 +26,46 @@ import java.util.Set;
 
 public class GlobalConfig {
 
+    //代码生成目录
     private String sourceDir;
 
+    //entity 的包名
     private String entityPackage;
 
+    //entity 是否使用 Lombok
     private Boolean entityWithLombok = false;
 
-    //是否生成 mapper 文件
+    //是否生成 mapper 类
     private boolean mapperGenerateEnable = false;
 
+    //mapper 的包名
     private String mapperPackage;
 
+    //数据库表前缀
     private String tablePrefix;
 
+    //逻辑删除的默认字段名称
     private String logicDeleteColumn;
 
+    //乐观锁的字段名称
     private String versionColumn;
 
-    //是否支持生成视图映射
+    //是否生成视图映射
     private boolean generateForView = false;
 
+    //单独为某张表添加独立的配置
     private Map<String, TableConfig> tableConfigMap;
 
+    //设置某个列的全局配置
     private Map<String, ColumnConfig> defaultColumnConfigMap;
 
+    //生成那些表，白名单
     private Set<String> generateTables;
 
+    //不生成那些表，黑名单
     private Set<String> unGenerateTables;
 
+    //使用哪个模板引擎来生成代码
     protected ITemplate templateEngine;
 
 

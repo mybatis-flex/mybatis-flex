@@ -41,13 +41,13 @@ public class GeneratorTest {
         //设置 entity 的包名
         globalConfig.setEntityPackage("com.test.test");
 
-        //是否生成 mapper 文件，默认为 false
+        //是否生成 mapper 类，默认为 false
         globalConfig.setMapperGenerateEnable(true);
 
-        //设置 mapper 文件的包名
+        //设置 mapper 类的包名
         globalConfig.setMapperPackage("com.test.mapper");
 
-        //可以单独配置某个列的数据
+        //可以单独配置某个列
         ColumnConfig columnConfig = new ColumnConfig();
         columnConfig.setColumnName("tenant_id");
         columnConfig.setLarge(true);
