@@ -2,12 +2,14 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  lang: 'zh-CN',
   title: "Mybatis-Flex",
-  description: "MyBatis-Flex Office website",
+  description: "一个优雅的 Mybatis 增强框架",
   // logo: '/assets/images/logo02.png',
 
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+    // logo: '/assets/images/logo01.png',
     nav: [
       { text: '首页', link: '/' },
       { text: '帮助文档', link: '/zh/maven' },

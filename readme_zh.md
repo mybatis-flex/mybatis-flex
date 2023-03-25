@@ -24,7 +24,7 @@
 
 ## 开始
 
-- [Maven 依赖](./docs/zh/maven.md)
+- [快速开始](https://mybatis-flex.com/zh/getting-started.html)
 - 示例 1：[Mybatis-Flex 原生（非 Spring）](./mybatis-flex-test/mybatis-flex-native-test)
 - 示例 2：[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
 - 示例 3：[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
@@ -588,14 +588,7 @@ public class Account {
 
 ## 更多文档
 
-- [Maven依赖](./docs/zh/maven.md)
-- [主键设置](./docs/zh/id.md)
-- [列的设置](./docs/zh/column.md)
-- [逻辑删除](./docs/zh/logic_delete.md)
-- [乐观锁](./docs/zh/version.md)
-- [Db + Row](./docs/zh/db_row.md)
-- [APT](./docs/zh/apt.md)
-- [代码生成器](./docs/zh/codegen.md)
+- [https://mybatis-flex.com](https://mybatis-flex.com)
 
 ## 还有问题？
 
