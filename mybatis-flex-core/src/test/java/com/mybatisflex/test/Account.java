@@ -2,11 +2,12 @@ package com.mybatisflex.test;
 
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.NoneListener;
 import com.mybatisflex.annotation.Table;
 
 import java.util.Date;
 
-@Table("tb_account")
+@Table(value = "tb_account",onUpdate = NoneListener.class)
 public class Account {
 
     @Id

@@ -1,4 +1,4 @@
-# Entity 的 @Column 配置
+# E@Column 注解的使用
 
 Mybatis-Flex 提供了 `@Column` 用来对字段进行更多的配置，以下是 `@Column` 的代码定义：
 

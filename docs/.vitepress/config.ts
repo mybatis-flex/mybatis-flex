@@ -25,6 +25,7 @@ export default defineConfig({
           { text: 'Mybatis-Flex 是什么', link: '/zh/what-is-mybatisflex' },
           { text: '快速开始', link: '/zh/getting-started' },
           { text: 'Maven 依赖', link: '/zh/maven' },
+          { text: 'QQ 交流群', link: '/zh/qq_group' },
         ]
       },
       {
@@ -38,9 +39,9 @@ export default defineConfig({
       {
         text: '核心功能',
         items: [
-          { text: '实体类配置', link: '/zh/table' },
-          { text: '主键配置', link: '/zh/id' },
-          { text: '列配置', link: '/zh/column' },
+          { text: '@Table 注解', link: '/zh/table' },
+          { text: '@Id 注解', link: '/zh/id' },
+          { text: '@Column 注解', link: '/zh/column' },
           { text: 'Db + Row', link: '/zh/db_row' },
           { text: '逻辑删除', link: '/zh/logic_delete' },
           { text: '乐观锁', link: '/zh/version' },
@@ -60,7 +61,7 @@ export default defineConfig({
 
     footer: {
       message: 'Released under the Apache License.',
-      copyright: 'Copyright © 2022-present Mybatis-Flex '
+      copyright: 'Copyright © 2022-present Mybatis-Flex，<span style="font-size: 12px">备案号：<a style="color:#777" target="_blank" rel="noopener" href="http://beian.miit.gov.cn/">黔ICP备19009310号-9 </a></span>'
     }
   },
   head: [

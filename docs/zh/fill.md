@@ -1,169 +1,77 @@
-# Entity 的主键配置
+# 数据填充
 
-在 Entity 类中，Mybatis-Flex 是使用 `@Id` 注解来标识主键的，如下代码所示：
+数据填充指的是，当 Entity 数据被插入 或者 更新的时候，会为字段进行一些默认的数据设置。这个非常有用，比如说当某个 entity 被插入时候
+会设置一些数据插入的时间、数据插入的用户 id，多租户的场景下设置当前租户信息等等。
 
-```java
-@Table("tb_account")
-public class Account {
+Mybatis-Flex 提供了两种方式，帮助开发者进行数据填充。
 
-    // id 为自增主键
+- 1、通过 `@Table` 注解的 `onInsert` 和 `onUpdate` 配置进行操作。这部分可以参考 [@Table 注解](./table) 章节。
+- 2、通过 `@Column` 注解的 `onInsertValue` 和 `onUpdateValue` 配置进行操作。这部分可以参考 [@Column 注解](./column) 章节。
+
+
+
+## 疑惑点
+**1、`@Table` 注解的 `onInsert` 和  `@Column` 注解的 `onInsertValue` 有什么区别？**
+
+答：`@Table` 注解的 `onInsert` 主要是在 Java 应用层面进行数据设置，而 `@Column` 注解的 `onInsertValue` 则是在数据库层面进行数据设置。
+
+例如：
+
+```java 9
+@Table("tb_article")
+public class Article {
+
     @Id(keyType = KeyType.Auto)
     private Long id;
 
-    //getter setter
+    private String title;
+    
+    @Column(onInsertValue = "now()")
+    private Date created;
 }
 ```
 
-`@Id` 注解的内容如下：
+当数据被插入时，其执行的 Sql 如下：
 
-```java
-public @interface Id {
-
-    /**
-     * ID 生成策略，默认为 none
-     *
-     * @return 生成策略
-     */
-    KeyType keyType() default KeyType.None;
-
-    /**
-     * 若 keyType 类型是 sequence， value 则代表的是
-     * sequence 序列的 sql 内容
-     * 例如：select SEQ_USER_ID.nextval as id from dual
-     *
-     * 若 keyType 是 Generator，value 则代表的是使用的那个 keyGenerator 的名称
-     *
-     */
-    String value() default "";
-
-
-    /**
-     * sequence 序列执行顺序
-     * 是在 entity 数据插入之前执行，还是之后执行，之后执行的一般是数据主动生成的 id
-     *
-     * @return 执行之前还是之后
-     */
-    boolean before() default true;
-}
+```sql
+INSERT INTO `tb_article`(title, created)
+VALUES (?, now())
 ```
 
-keyType 为主键的生成方式，KeyType 有 4 种类型：
+`@Column(onInsertValue = "now()")` 中的 `now()` 是 Sql 的一部分（一个函数），我们可以配置更加复杂，例如：
 
-```java
-public enum KeyType {
+```java 9
+@Table("tb_article")
+public class Article {
 
-    /**
-     * 自增的方式
-     */
-    Auto,
-
-    /**
-     * 通过执行数据库 sql 生成
-     * 例如：select SEQ_USER_ID.nextval as id from dual
-     */
-    Sequence,
-
-    /**
-     * 通过 IKeyGenerator 生成器生成
-     */
-    Generator,
-
-    /**
-     * 其他方式，比如说在代码层用户手动设置
-     */
-    None,
-}
-```
-
-## 多主键、复合主键
-
-Mybatis-Flex 多主键就是在 Entity 类里有多个 `@Id` 注解标识而已，比如：
-
-```java
-@Table("tb_account")
-public class Account {
-
-    @Id(keyType=KeyType.Auto)
+    @Id(keyType = KeyType.Auto)
     private Long id;
+
+    private String title;
     
-    @Id(keyType=KeyType.Generator, value="uuid")
-    private String otherId;
-
-    //getter setter
-}
-```
-当我们保存数据的时候，Account 的 id 主键为自增，而 otherId 主键则通过 uuid 生成。
-
-## 主键生成器
-
-第 1 步：编写一个类，实现 `IKeyGenerator` 接口，例如：
-
-```java
-public class UUIDKeyGenerator implements IKeyGenerator {
-
-    @Override
-    public Object generate(Object entity, String keyColumn) {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
+    @Column(onUpdateValue = "version + 1")
+    private int version;
 }
 ```
 
-第 2 步：注册 UUIDKeyGenerator
+当数据被 update 的时候，其执行的 sql 如下：
 
-```java
-KeyGeneratorFactory.register("myUUID", new UUIDKeyGenerator());
+```sql
+update tb_article set title = ?,version = version + 1
 ```
 
-第 3 步：在 Entity 里使用 "myUUID" 生成器：
+更复杂的场景，我们可以配置如下：
 
-```java
-@Table("tb_account")
-public class Account {
-    
-    @Id(keyType=KeyType.Generator, value="myUUID")
-    private String otherId;
+```java 9
+@Table("tb_article")
+public class Article {
 
-    //getter setter
-}
-```
-
-
-## 使用序列 Sequence 生成
-
-```java
-@Table("tb_account")
-public class Account {
-
-    @Id(keyType=KeyType.Sequence, value="select SEQ_USER_ID.nextval as id from dual")
+    @Id(keyType = KeyType.Auto)
     private Long id;
+
+    private String title;
     
-}
-```
-
-## 全局配置
-
-一般的项目中，通常是许多的 Entity 使用同一个数据库，同时使用一种主键生成方式，比如说都使用 自增，
-或者都使用通过序列（Sequence）生成，此时，我们是没有必要为每个 Entity 单独配置一样内容的。
-
-Mybatis-Flex 提供了一种全局配置的方式，代码如下：
-
-```java
-FlexGlobalConfig.KeyConfig keyConfig = new FlexGlobalConfig.KeyConfig();
-keyConfig.setKeyType(KeyType.Sequence);
-keyConfig.setValue("select SEQ_USER_ID.nextval as id from dual")
-keyConfig.setBefore(true);
-
-FlexGlobalConfig.getDefaultConfig().setKeyConfig(keyConfig);
-```
-
-此时，Entity 类 Account.java 只需要如下配置即可。
-
-```java
-@Table("tb_account")
-public class Account {
-
-    @Id()
-    private Long id;
-    
+    @Column(onUpdateValue = "(select xxx from other_table where ...)")
+    private int version;
 }
 ```

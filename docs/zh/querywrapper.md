@@ -30,7 +30,7 @@ public class AccountController {
     }
 }
 ```
-在以上的示例中，其核心代码为：构造 QueryWrapper，通过 Mapper 查询，如下所示：
+在以上的示例中，其核心代码如下所示：
 
 ```java
 //构造 QueryWrapper
@@ -357,4 +357,14 @@ Firebird 下执行的代码如下：
 SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 ```
 
+## 存在疑问？
 
+**疑问1：示例代码中的 QueryWrapper 所需要的 "ACCOUNT" 从哪里来的？**
+
+答：答：Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时候，
+会自动根据 Entity 类定义的字段帮你生成 "ACCOUNT" 类以及 Entity 对应的 Mapper 类， 通过开发工具构建项目（如下图），
+或者执行 maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
+
+![](../../assets/images/build_idea.png)
+
+> 更多关于 APT 的配置，请进入 [APT 配置章节](./apt) 了解。

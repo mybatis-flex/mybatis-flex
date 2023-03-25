@@ -1,169 +1,84 @@
-# Entity 的主键配置
+# 数据脱敏
 
-在 Entity 类中，Mybatis-Flex 是使用 `@Id` 注解来标识主键的，如下代码所示：
+## 数据脱敏是什么
+
+随着《网络安全法》的颁布施行，对个人隐私数据的保护已经上升到法律层面。 数据脱敏是指对某些敏感信息通过脱敏规则进行数据的变形，
+实现敏感隐私数据的可靠保护。在涉及客户安全数据或者一些商业性敏感数据的情况下，在不违反系统规则条件下，对真实数据进行改造并提供使用，
+如身份证号、手机号、卡号、客户号等个人信息都需要进行数据脱敏。
+
+## @ColumnMask
+
+Mybatis-Flex 提供了 `@ColumnMask()` 注解，以及内置的 9 种脱敏规则，帮助开发者方便的进行数据脱敏。例如：
 
 ```java
 @Table("tb_account")
 public class Account {
 
-    // id 为自增主键
     @Id(keyType = KeyType.Auto)
     private Long id;
 
-    //getter setter
+    @ColumnMask(Masks.CHINESE_NAME)
+    private String userName;
 }
 ```
 
-`@Id` 注解的内容如下：
+以上的示例中，使用了 `CHINESE_NAME` 的脱敏规则，其主要用于处理 "中文名字" 的场景。当我们查询到 userName 为 `张三丰` 的时候，其内容自动被处理成 `张**`。
+
+除此之外，Mybatis-Flex 还提供了如下的 8 中脱敏规则，方便开发者直接使用：
+
+- 手机号脱敏
+- 固定电话脱敏
+- 身份证号脱敏
+- 身份证号脱敏
+- 地址脱敏
+- 邮件脱敏
+- 密码脱敏
+- 银行卡号脱敏
+
+## 自定义脱敏规则
+
+当 Mybaits-Flex 内置的 9 中脱敏规则无法满足要求时，我们还可以自定义脱敏规则，其步骤如下：
+
+1、通过 `MaskFactory` 注册新的脱敏规则：
 
 ```java
-public @interface Id {
-
-    /**
-     * ID 生成策略，默认为 none
-     *
-     * @return 生成策略
-     */
-    KeyType keyType() default KeyType.None;
-
-    /**
-     * 若 keyType 类型是 sequence， value 则代表的是
-     * sequence 序列的 sql 内容
-     * 例如：select SEQ_USER_ID.nextval as id from dual
-     *
-     * 若 keyType 是 Generator，value 则代表的是使用的那个 keyGenerator 的名称
-     *
-     */
-    String value() default "";
-
-
-    /**
-     * sequence 序列执行顺序
-     * 是在 entity 数据插入之前执行，还是之后执行，之后执行的一般是数据主动生成的 id
-     *
-     * @return 执行之前还是之后
-     */
-    boolean before() default true;
-}
+MaskFactory.registerMaskProcesser("自定义规则名称"
+        , data -> {
+            return data;
+        })
 ```
 
-keyType 为主键的生成方式，KeyType 有 4 种类型：
-
-```java
-public enum KeyType {
-
-    /**
-     * 自增的方式
-     */
-    Auto,
-
-    /**
-     * 通过执行数据库 sql 生成
-     * 例如：select SEQ_USER_ID.nextval as id from dual
-     */
-    Sequence,
-
-    /**
-     * 通过 IKeyGenerator 生成器生成
-     */
-    Generator,
-
-    /**
-     * 其他方式，比如说在代码层用户手动设置
-     */
-    None,
-}
-```
-
-## 多主键、复合主键
-
-Mybatis-Flex 多主键就是在 Entity 类里有多个 `@Id` 注解标识而已，比如：
-
-```java
+2、使用自定义的脱敏规则
+```java 7
 @Table("tb_account")
 public class Account {
 
-    @Id(keyType=KeyType.Auto)
+    @Id(keyType = KeyType.Auto)
     private Long id;
+
+    @ColumnMask("自定义规则名称")
+    private String userName;
+}
+```
+
+## 取消脱敏处理
+
+在某些场景下，程序希望查询得到的数据是原始数据，而非脱敏数据。比如要去查询用户的手机号，然后给用户发送短信。又或者说，我们进入编辑页面编辑用户数据，
+如果编辑页面展示的是脱敏数据，然后再次点击保存，那么数据库的真实数据也会被脱敏覆盖。
+
+因此，MaskFactory 提供了 `skipMask`、`restoreMask` 两个方法来处理这种场景：
+
+```java 2,7
+try {
+    MaskFactory.skipMask()
     
-    @Id(keyType=KeyType.Generator, value="uuid")
-    private String otherId;
-
-    //getter setter
-}
-```
-当我们保存数据的时候，Account 的 id 主键为自增，而 otherId 主键则通过 uuid 生成。
-
-## 主键生成器
-
-第 1 步：编写一个类，实现 `IKeyGenerator` 接口，例如：
-
-```java
-public class UUIDKeyGenerator implements IKeyGenerator {
-
-    @Override
-    public Object generate(Object entity, String keyColumn) {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
+    //此处查询到的数据不会进行脱敏处理
+    accountMapper.selectListByQuery(...)
+} finally {
+    MaskFactory.restoreMask()
 }
 ```
 
-第 2 步：注册 UUIDKeyGenerator
-
-```java
-KeyGeneratorFactory.register("myUUID", new UUIDKeyGenerator());
-```
-
-第 3 步：在 Entity 里使用 "myUUID" 生成器：
-
-```java
-@Table("tb_account")
-public class Account {
-    
-    @Id(keyType=KeyType.Generator, value="myUUID")
-    private String otherId;
-
-    //getter setter
-}
-```
-
-
-## 使用序列 Sequence 生成
-
-```java
-@Table("tb_account")
-public class Account {
-
-    @Id(keyType=KeyType.Sequence, value="select SEQ_USER_ID.nextval as id from dual")
-    private Long id;
-    
-}
-```
-
-## 全局配置
-
-一般的项目中，通常是许多的 Entity 使用同一个数据库，同时使用一种主键生成方式，比如说都使用 自增，
-或者都使用通过序列（Sequence）生成，此时，我们是没有必要为每个 Entity 单独配置一样内容的。
-
-Mybatis-Flex 提供了一种全局配置的方式，代码如下：
-
-```java
-FlexGlobalConfig.KeyConfig keyConfig = new FlexGlobalConfig.KeyConfig();
-keyConfig.setKeyType(KeyType.Sequence);
-keyConfig.setValue("select SEQ_USER_ID.nextval as id from dual")
-keyConfig.setBefore(true);
-
-FlexGlobalConfig.getDefaultConfig().setKeyConfig(keyConfig);
-```
-
-此时，Entity 类 Account.java 只需要如下配置即可。
-
-```java
-@Table("tb_account")
-public class Account {
-
-    @Id()
-    private Long id;
-    
-}
-```
+::: tip 提示
+在具体的应用中，我们通常会把 `skipMask()` 和 `restoreMask()` 放到统一的拦截器里，对某一类业务进行统一拦截和处理。
+:::

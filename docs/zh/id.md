@@ -1,8 +1,8 @@
-# Entity 的主键配置
+# @Id 主键的使用
 
 在 Entity 类中，Mybatis-Flex 是使用 `@Id` 注解来标识主键的，如下代码所示：
 
-```java
+```java 5
 @Table("tb_account")
 public class Account {
 
