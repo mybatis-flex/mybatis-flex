@@ -74,12 +74,12 @@ public class HelloWorld {
 ```
 
 > 以上的示例中， `AccountMapper.class` 为 Mybatis-Flex 通过 APT 自动生成，无需手动编码。
-> 也可以关闭自动生成功能，手动编写 AccountMapper，更多查看 [APT 文档](/zh/apt)。
+> 也可以关闭自动生成功能，手动编写 AccountMapper，更多查看 [APT 文档](./apt)。
 
 
 ## 更多示例
 
 - 示例 1：[Mybatis-Flex 原生（非 Spring）](https://gitee.com/mybatis-flex/mybatis-flex/tree/main/mybatis-flex-test/mybatis-flex-native-test)
-- 示例 2：[Mybatis-Flex with Spring]()
-- 示例 3：[Mybatis-Flex with Spring boot]()
-- 示例 4：[Db + Row]()
+- 示例 2：[Mybatis-Flex with Spring](https://gitee.com/mybatis-flex/mybatis-flex/tree/main/mybatis-flex-test/mybatis-flex-spring-test)
+- 示例 3：[Mybatis-Flex with Spring boot](https://gitee.com/mybatis-flex/mybatis-flex/tree/main/mybatis-flex-test/mybatis-flex-spring-boot-test)
+- 示例 4：[Db + Row](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-test/mybatis-flex-native-test/src/main/java/com/mybatisflex/test/DbTestStarter.java)
