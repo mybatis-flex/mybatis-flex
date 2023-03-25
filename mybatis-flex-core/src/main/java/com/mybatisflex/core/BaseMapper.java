@@ -219,6 +219,17 @@ public interface BaseMapper<T> {
 
 
     /**
+     * 根据 map 来构建查询条件，查询多条数据
+     *
+     * @param whereConditions 条件列表
+     * @return 数据列表
+     */
+    default List<T> selectListByMap(Map<String, Object> whereConditions, int count) {
+        return selectListByQuery(QueryWrapper.create().where(whereConditions).limit(count));
+    }
+
+
+    /**
      * 根据 query 来构建条件查询数据列表
      *
      * @param queryWrapper 查询条件
