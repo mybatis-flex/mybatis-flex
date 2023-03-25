@@ -1,0 +1,85 @@
+# 快速开始
+
+## Hello World
+
+**第 1 步：创建数据库表**
+
+```sql
+CREATE TABLE IF NOT EXISTS `tb_account`
+(
+    `id`        INTEGER PRIMARY KEY auto_increment,
+    `user_name` VARCHAR(100),
+    `age`       Integer,
+    `birthday`  DATETIME
+);
+```
+
+**第 2 步：创建 java 项目，并添加 Maven 依赖**
+
+```xml
+<dependency>
+    <groupId>com.mybatis-flex</groupId>
+    <artifactId>mybatis-flex-core</artifactId>
+    <version>1.0.3</version>
+</dependency>
+```
+
+**第 3 步：编写实体类**
+```java
+@Table("tb_account")
+public class Account {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+    private String userName;
+    private Integer age;
+    private Date birthday;
+    
+    //getter setter
+}
+```
+- `@Table("tb_account")` 设置实体类与表名的映射关系
+- `@Id(keyType = KeyType.Auto)` 标识主键为自增
+
+**第 4 步：编写一个 main 方法开始使用**
+
+```java
+public class HelloWorld {
+    public static void main(String... args) {
+
+        //创建数据源
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/mybatis-flex");
+        dataSource.setUsername("username");
+        dataSource.setPassword("password");
+
+        //配置数据源
+        MybatisFlexBootstrap.getInstance()
+                .setDatasource(dataSource)
+                .addMapper(AccountMapper.class)
+                .start();
+
+
+        //示例1：查询 id=1 条数据
+        Account account = MybatisFlexBootstrap.getInstance()
+                .execute(AccountMapper.class, mapper ->
+                        mapper.selectOneById(1)
+                );
+        
+        //示例2：或者使用 Db + Row 查询
+        String sql = "select * from tb_account where age > ?";
+        List<Row> rows = Db.selectListBySql(sql, 18);
+    }
+}
+```
+
+> 以上的示例中， `AccountMapper.class` 为 Mybatis-Flex 通过 APT 自动生成，无需手动编码。
+> 也可以关闭自动生成功能，手动编写 AccountMapper，更多查看 [APT 文档](/zh/apt)。
+
+
+## 更多示例
+
+- 示例 1：[Mybatis-Flex 原生（非 Spring）](https://gitee.com/mybatis-flex/mybatis-flex/tree/main/mybatis-flex-test/mybatis-flex-native-test)
+- 示例 2：[Mybatis-Flex with Spring]()
+- 示例 3：[Mybatis-Flex with Spring boot]()
+- 示例 4：[Db + Row]()

@@ -1,0 +1,86 @@
+import { defineConfig } from 'vitepress'
+
+// https://vitepress.dev/reference/site-config
+export default defineConfig({
+  title: "Mybatis-Flex",
+  description: "MyBatis-Flex Office website",
+  // logo: '/assets/images/logo02.png',
+
+  themeConfig: {
+    // https://vitepress.dev/reference/default-theme-config
+    nav: [
+      { text: '首页', link: '/' },
+      { text: '帮助文档', link: '/zh/maven' },
+      { text: '更新日志', link: 'https://gitee.com/mybatis-flex/mybatis-flex/blob/main/changes.txt' },
+      { text: '源码',  items: [
+          { text: 'Gitee', link: 'https://gitee.com/mybatis-flex/mybatis-flex' },
+          { text: 'Github', link: 'https://github.com/mybatis-flex/mybatis-flex' }
+        ] },
+    ],
+
+    sidebar: [
+      {
+        text: '简介',
+        items: [
+          { text: 'Mybatis-Flex 是什么', link: '/zh/what-is-mybatisflex' },
+          { text: '快速开始', link: '/zh/getting-started' },
+          { text: 'Maven 依赖', link: '/zh/maven' },
+        ]
+      },
+      {
+        text: '基础功能',
+        items: [
+          { text: '增删改', link: '/zh/add-delete-update' },
+          { text: '查询和分页', link: '/zh/query' },
+          { text: 'QueryWrapper', link: '/zh/querywrapper' },
+        ]
+      },
+      {
+        text: '核心功能',
+        items: [
+          { text: '实体类配置', link: '/zh/table' },
+          { text: '主键配置', link: '/zh/id' },
+          { text: '列配置', link: '/zh/column' },
+          { text: 'Db + Row', link: '/zh/db_row' },
+          { text: '逻辑删除', link: '/zh/logic_delete' },
+          { text: '乐观锁', link: '/zh/version' },
+          { text: '数据填充', link: '/zh/fill' },
+          { text: '数据脱敏', link: '/zh/mask' },
+          { text: '数据审计', link: '/zh/audit' },
+        ]
+      },
+      {
+        text: '其他',
+        items: [
+          { text: '代码生成器', link: '/zh/codegen' },
+          { text: 'APT 设置', link: '/zh/apt' },
+        ]
+      }
+    ],
+
+    footer: {
+      message: 'Released under the Apache License.',
+      copyright: 'Copyright © 2022-present Mybatis-Flex '
+    }
+  },
+  head: [
+    [
+      'link',{ rel: 'icon', href: '/assets/images/logo02.png' }
+    ],
+
+    [
+      // 添加百度统计
+      "script",
+      {},
+      `
+      var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?3f50d5fbe3bf955411748b5616b24a24";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+      })();
+        `
+    ]
+  ],
+})
