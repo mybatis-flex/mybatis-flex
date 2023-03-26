@@ -1,3 +1,14 @@
+mybatis-flex v1.0.4 2023026:
+新增：@ColumnMask() 注解用于数据脱敏，内置 9 中脱敏方式
+新增：BaseMapper.selectAll() 方法
+新增：BaseMapper.selectListByMap(Map whereConditions, int count) 方法
+新增：添加 resource 配置，使得生成的代码自动集成到 classpath 中。 感谢 @piggsoft
+新增：mybatis-flex-codegen 模块，用于 数据库-> Java 的代码生成
+新增：@Table() 注解添加 OnInsert 和 OnUpdate 的配置支持
+文档：新文档站点 https://mybatis-flex.com 上线
+
+
+
 mybatis-flex v1.0.3 2023021:
 新增：APT 自动生成 Mapper 代码的功能，无需在手动编写
 新增：APT 新增 "processer.mappersGenerateEnable" 配置，用于开启是否自动生成 Mapper 类
