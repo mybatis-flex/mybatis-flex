@@ -12,7 +12,7 @@ export default defineConfig({
     // logo: '/assets/images/logo01.png',
     nav: [
       { text: '首页', link: '/' },
-      { text: '帮助文档', link: '/zh/maven' },
+      { text: '帮助文档', link: '/zh/what-is-mybatisflex' },
       { text: '更新日志', link: 'https://gitee.com/mybatis-flex/mybatis-flex/blob/main/changes.txt' },
       { text: '源码',  items: [
           { text: 'Gitee', link: 'https://gitee.com/mybatis-flex/mybatis-flex' },

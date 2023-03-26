@@ -42,6 +42,16 @@ public @interface Column {
      */
     boolean version() default false;
 
+    /**
+     * 配置的 jdbcType
+     */
+    JdbcType jdbcType() default JdbcType.UNDEFINED;
+
+    /**
+     * 自定义 TypeHandler
+     */
+    Class<? extends TypeHandler> typeHandler() default UnknownTypeHandler.class;
+
 }
 ```
 
@@ -189,4 +199,74 @@ QueryWrapper.create()
 
 ## version
 
-这部分的文档参考 [乐观锁章节](./logic_delete.md)。
+这部分的文档参考 [乐观锁章节](./version.md)。
+
+## typeHandler
+
+typeHandler，顾名思义为类型处理器，其作用是在 insert 数据的时候，把数据转换为 数据库需要的类型，在查询的时候，又把数据库的数据转换为 java 需要的类型。
+mybatis 已经内置了非常多的类型处理器。
+
+但是，在某些场景下，我们还是需要定义自己的类型处理器，例如：
+
+```java 9,10
+@Table("tb_account")
+public class Account {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    private String userName;
+
+    @Column(typeHandler = Fastjson2TypeHandler.class)
+    private Map<String, Object> options;
+
+    public void addOption(String key, Object value) {
+        if (options == null) {
+            options = new HashMap<>();
+        }
+        options.put(key, value);
+    }
+}
+```
+
+在以上的代码中，`Account` 有一个 `options` 字段，我们希望当保存 account 数据的时候，`options` 自动转换为一段 json 字符串保存到数据库，
+在查询的时候，自动把数据库的 json 取出来，转换为 map 赋值给 `options`。
+
+此时，我们便可以添加上注解 `@Column(typeHandler = Fastjson2TypeHandler.class)` ，`Fastjson2TypeHandler` 是 mybatis-flex 内置的
+一个扩展的 typeHandler，以下是代码示例：
+
+插入数据：
+
+```java
+Account account = new Account();
+account.setUserName("test");
+account.addOption("c1", 11);
+account.addOption("c2", "zhang");
+account.addOption("c3", new Date());
+
+accountMapper.insert(account);
+```
+
+mybatis 日志：
+```
+==>  Preparing: INSERT INTO tb_account (user_name, options) VALUES (?, ?)
+==> Parameters: test(String), {"c3":"2023-03-17 09:10:16.546","c1":11,"c2":"zhang"}(String)
+```
+
+需要注意的是：在使用 `Fastjson2TypeHandler` 时，需要添加 fastjson2 的 maven 依赖：
+
+```xml
+<dependency>
+    <groupId>com.alibaba.fastjson2</groupId>
+    <artifactId>fastjson2</artifactId>
+    <version>2.0.26</version>
+</dependency>
+```
+
+mybatis-flex 内置的扩展 typeHandler 还有：
+
+- FastjsonTypeHandler
+- GsonTypeHandler
+- JacksonTypeHandler
+
+当然，我们也可以写一个自己的类，实现 `TypeHandler` 接口，然后通过 `@Column(typeHandler = YourHandler.class)` 注释给需要的字段。
