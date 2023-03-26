@@ -20,4 +20,25 @@ QueryWrapper 帮助我们极大的减少了 SQL 编写的工作的同时，减�
 **数据填充** 等等功能。
 
 
+## 一些评价
+
+
+![](../assets/images/comments/01.png)
+
+---
+
+![](../assets/images/comments/02.png)
+
+---
+
+![](../assets/images/comments/03.png)
+
+--- 
+
+![](../assets/images/comments/04.png)
+
+--- 
+
+![](../assets/images/comments/05.png)
+
 

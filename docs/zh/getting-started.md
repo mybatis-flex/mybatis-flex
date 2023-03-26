@@ -1,5 +1,10 @@
 # 快速开始
 
+在开始之前，我们假定您已经：
+
+- 熟悉 Java 开发和及其环境配置
+- 熟悉 关系型 数据库，比如 MySql
+
 ## Hello World
 
 **第 1 步：创建数据库表**
@@ -38,10 +43,10 @@ public class Account {
     //getter setter
 }
 ```
-- `@Table("tb_account")` 设置实体类与表名的映射关系
-- `@Id(keyType = KeyType.Auto)` 标识主键为自增
+- 使用 `@Table("tb_account")` 设置实体类与表名的映射关系
+- 使用 `@Id(keyType = KeyType.Auto)` 标识主键为自增
 
-**第 4 步：编写一个 main 方法开始使用**
+**第 4 步：通过 main 方法开始使用（无 Spring 的场景）**
 
 ```java
 public class HelloWorld {

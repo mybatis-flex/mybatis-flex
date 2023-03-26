@@ -13,8 +13,8 @@ hero:
       text: 快速开始
       link: /zh/getting-started
     - theme: alt
-      text: 在 Gitee 上查看
-      link: https://gitee.com/mybatis-flex/mybatis-flex
+      text: Mybatis-Flex 是什么
+      link: /zh/what-is-mybatisflex
 
 features:
   - title: 更轻量
