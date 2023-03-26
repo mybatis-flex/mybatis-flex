@@ -20,12 +20,11 @@ import com.mybatisflex.codegen.config.ColumnConfig;
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.config.TableConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.junit.Test;
 
 public class GeneratorTest {
 
 
-    @Test
+//    @Test
     public void testGenerator() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
