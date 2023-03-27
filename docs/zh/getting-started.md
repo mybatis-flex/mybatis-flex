@@ -30,6 +30,9 @@ CREATE TABLE IF NOT EXISTS `tb_account`
 ```
 
 **第 3 步：编写实体类**
+
+> 这部分可以使用 Mybatis-Flex 的代码生成器来生成实体类哟，功能非常强大的。详情进入：[代码生成器章节](./codegen.md) 了解。
+
 ```java
 @Table("tb_account")
 public class Account {

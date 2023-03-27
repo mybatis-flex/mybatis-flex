@@ -46,7 +46,7 @@ public class Page<T> implements Serializable {
 Page<T> paginate(Page<T> page, QueryWrapper queryWrapper);
 ```
 
-这个方法的使用示例如下：
+这个方法可以直接传入 数据的总量 `totalPage`，示例如下：
 
 ```java
 // 多一个 totalPage 参数
