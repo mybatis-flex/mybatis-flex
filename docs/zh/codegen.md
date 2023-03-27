@@ -49,7 +49,13 @@ public class Codegen {
         globalConfig.addGenerateTable("account", "account_session");
 
         //设置 entity 的包名
-        globalConfig.setEntityPackage("com.test.test");
+        globalConfig.setEntityPackage("com.test.entity");
+
+        //设置表前缀
+        //globalConfig.setTablePrefix("tb_");
+        
+        //设置 entity 是否使用 Lombok
+        //globalConfig.setEntityWithLombok(true);
 
         //是否生成 mapper 类，默认为 false
         globalConfig.setMapperGenerateEnable(true);
@@ -121,5 +127,55 @@ public class GlobalConfig {
     //使用哪个模板引擎来生成代码
     protected ITemplate templateEngine;
 
+}
+```
+
+
+TableConfig 支持的配置如下：
+
+```java
+public class TableConfig {
+
+    private String tableName;
+
+    /**
+     * 数据库的 schema
+     */
+    private String schema;
+
+    /**
+     * 默认为 驼峰属性 转换为 下划线字段
+     */
+    private Boolean camelToUnderline;
+
+
+    private Class<? extends InsertListener> insertListenerClass;
+
+
+    private Class<? extends UpdateListener> updateListenerClass;
+}
+```
+
+ColumnConfig 支持的配置如下：
+
+```java
+public class ColumnConfig implements Serializable {
+
+    private String onInsertValue;
+    private String onUpdateValue;
+
+    private Boolean isLarge;
+    private Boolean isLogicDelete;
+    private Boolean version;
+
+    private JdbcType jdbcType;
+    private Class<? extends TypeHandler> typeHandler;
+
+    private String mask;
+
+    private boolean isPrimaryKey = false;
+    private KeyType keyType;
+    private String keyValue;
+    private Boolean keyBefore;
 }
 ```
