@@ -83,12 +83,12 @@ public class FlexConfiguration extends Configuration {
     }
 
     /**
-     * 替换为 FlexRoutingStatementHandler，主要用来为实体类的多主键做支持
-     * FlexRoutingStatementHandler 和 原生的 RoutingStatementHandler 对比，没有任何性能影响
+     * 替换为 FlexStatementHandler，主要用来为实体类的多主键做支持、和数据审计
+     * FlexStatementHandler 和 原生的 RoutingStatementHandler 对比，没有任何性能影响
      */
     @Override
     public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
-        StatementHandler statementHandler = new FlexRoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
+        StatementHandler statementHandler = new FlexStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
         statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
         return statementHandler;
     }

@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.mybatis;
 
+import com.mybatisflex.core.audit.AuditManager;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.ExecutorException;
@@ -33,14 +34,17 @@ import java.sql.Statement;
 import java.util.List;
 
 /**
- * 源于 {@link org.apache.ibatis.executor.statement.RoutingStatementHandler}
- * 主要是替换 PreparedStatementHandler 为 FlexPreparedStatementHandler
+ * 参考 {@link org.apache.ibatis.executor.statement.RoutingStatementHandler}
+ * 主要作用：
+ * 1、替换 PreparedStatementHandler 为 FlexPreparedStatementHandler
+ * 2、进行数据审计
  */
-public class FlexRoutingStatementHandler implements StatementHandler {
+public class FlexStatementHandler implements StatementHandler {
 
     private final StatementHandler delegate;
+    private final BoundSql boundSql;
 
-    public FlexRoutingStatementHandler(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+    public FlexStatementHandler(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
 
         switch (ms.getStatementType()) {
             case STATEMENT:
@@ -58,6 +62,7 @@ public class FlexRoutingStatementHandler implements StatementHandler {
                 throw new ExecutorException("Unknown statement type: " + ms.getStatementType());
         }
 
+        this.boundSql = boundSql;
     }
 
     @Override
@@ -72,22 +77,25 @@ public class FlexRoutingStatementHandler implements StatementHandler {
 
     @Override
     public void batch(Statement statement) throws SQLException {
-        delegate.batch(statement);
+        AuditManager.startAudit(() -> {
+            delegate.batch(statement);
+            return null;
+        }, boundSql);
     }
 
     @Override
     public int update(Statement statement) throws SQLException {
-        return delegate.update(statement);
+        return AuditManager.startAudit(() -> delegate.update(statement), boundSql);
     }
 
     @Override
     public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
-        return delegate.query(statement, resultHandler);
+        return AuditManager.startAudit(() -> delegate.query(statement, resultHandler), boundSql);
     }
 
     @Override
     public <E> Cursor<E> queryCursor(Statement statement) throws SQLException {
-        return delegate.queryCursor(statement);
+        return AuditManager.startAudit(() -> delegate.queryCursor(statement), boundSql);
     }
 
     @Override
@@ -99,4 +107,5 @@ public class FlexRoutingStatementHandler implements StatementHandler {
     public ParameterHandler getParameterHandler() {
         return delegate.getParameterHandler();
     }
+
 }
