@@ -305,7 +305,7 @@ WHERE tb_account.age >=  ?
 ## limit... offset
 
 ::: tip 提示
-在 "limit... offset" 的示例中，Mybatis-Flex 能够自动识别当前数据库，并根据数据库的类型生成不同的 SQL，用户也可以很轻易的通过 DialectFactory 注册（新增或改写）自己的实现方言。
+在 "limit... offset" 的示例中，Mybatis-Flex 能够自动识别当前数据库👍，并根据数据库的类型生成不同的 SQL，用户也可以很轻易的通过 DialectFactory 注册（新增或改写）自己的实现方言。
 :::
 
 
@@ -361,8 +361,8 @@ SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 
 **疑问1：示例代码中的 QueryWrapper 所需要的 "ACCOUNT" 从哪里来的？**
 
-答：答：Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时候，
-会自动根据 Entity 类定义的字段帮你生成 "ACCOUNT" 类以及 Entity 对应的 Mapper 类， 通过开发工具构建项目（如下图），
+答：Mybatis-Flex 使用了 APT（Annotation Processing Tool）在项目编译的时候，
+会自动根据 Entity 类定义的字段生成 "ACCOUNT" 类以及 Entity 对应的 Mapper 类， 通过开发工具构建项目（如下图），
 或者执行 maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
 
 ![](../assets/images/build_idea.png)

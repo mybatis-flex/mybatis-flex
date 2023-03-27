@@ -5,8 +5,8 @@
 
 Mybatis-Flex 提供了两种方式，帮助开发者进行数据填充。
 
-- 1、通过 `@Table` 注解的 `onInsert` 和 `onUpdate` 配置进行操作。这部分可以参考 [@Table 注解](./table) 章节。
-- 2、通过 `@Column` 注解的 `onInsertValue` 和 `onUpdateValue` 配置进行操作。这部分可以参考 [@Column 注解](./column) 章节。
+- 1、通过 `@Table` 注解的 `onInsert` 和 `onUpdate` 配置进行操作。这部分可以参考 [@Table 注解章节](./table) 。
+- 2、通过 `@Column` 注解的 `onInsertValue` 和 `onUpdateValue` 配置进行操作。这部分可以参考 [@Column 注解章节](./column)。
 
 
 

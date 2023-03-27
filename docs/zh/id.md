@@ -94,7 +94,7 @@ public class Account {
 ```
 当我们保存数据的时候，Account 的 id 主键为自增，而 otherId 主键则通过 uuid 生成。
 
-## 主键生成器
+## 自定义主键生成器
 
 第 1 步：编写一个类，实现 `IKeyGenerator` 接口，例如：
 
