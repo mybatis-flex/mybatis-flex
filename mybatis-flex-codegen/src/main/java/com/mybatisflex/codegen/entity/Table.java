@@ -99,6 +99,18 @@ public class Table {
             imports.addAll(column.getImportClasses());
         }
 
+        //开启 lombok
+        if (globalConfig.isEntityWithLombok()) {
+            //import lombok.AllArgsConstructor;
+            //import lombok.Builder;
+            //import lombok.Data;
+            //import lombok.NoArgsConstructor;
+            imports.add("lombok.AllArgsConstructor");
+            imports.add("lombok.Builder");
+            imports.add("lombok.Data");
+            imports.add("lombok.NoArgsConstructor");
+        }
+
         if (tableConfig != null) {
             if (tableConfig.getInsertListenerClass() != null) {
                 imports.add(tableConfig.getInsertListenerClass().getName());
@@ -120,8 +132,15 @@ public class Table {
     public String buildEntityClassName() {
         String entityJavaFileName = name;
         String tablePrefix = globalConfig.getTablePrefix();
-        if (tablePrefix != null && name.startsWith(tablePrefix)) {
-            entityJavaFileName = name.substring(tablePrefix.length());
+        if (tablePrefix != null) {
+            String[] tablePrefixes = tablePrefix.split(",");
+            for (String prefix : tablePrefixes) {
+                String trimPrefix = prefix.trim();
+                if (trimPrefix.length() > 0 && name.startsWith(trimPrefix)) {
+                    entityJavaFileName = name.substring(trimPrefix.length());
+                    break;
+                }
+            }
         }
         return StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(entityJavaFileName));
     }
@@ -130,8 +149,19 @@ public class Table {
      * 构建 @Table(...) 注解
      */
     public String buildTableAnnotation() {
-        StringBuilder tableAnnotation = new StringBuilder("@Table(");
-        tableAnnotation.append("value = \"").append(name).append("\"");
+        StringBuilder tableAnnotation = new StringBuilder();
+        if (globalConfig.isEntityWithLombok()) {
+            //@Data
+            //@Builder
+            //@NoArgsConstructor
+            //@AllArgsConstructor
+            tableAnnotation.append("@Data\n");
+            tableAnnotation.append("@Builder\n");
+            tableAnnotation.append("@NoArgsConstructor\n");
+            tableAnnotation.append("@AllArgsConstructor\n");
+        }
+
+        tableAnnotation.append("@Table(value = \"").append(name).append("\"");
 
         if (tableConfig != null) {
             if (tableConfig.getSchema() != null) {

@@ -33,7 +33,7 @@ public class GlobalConfig {
     private String entityPackage;
 
     //entity 是否使用 Lombok
-    private Boolean entityWithLombok = false;
+    private boolean entityWithLombok = false;
 
     //是否生成 mapper 类
     private boolean mapperGenerateEnable = false;
@@ -41,7 +41,7 @@ public class GlobalConfig {
     //mapper 的包名
     private String mapperPackage;
 
-    //数据库表前缀
+    //数据库表前缀，多个前缀用英文逗号（,） 隔开
     private String tablePrefix;
 
     //逻辑删除的默认字段名称
@@ -91,11 +91,11 @@ public class GlobalConfig {
         this.entityPackage = entityPackage.trim();
     }
 
-    public Boolean getEntityWithLombok() {
+    public boolean isEntityWithLombok() {
         return entityWithLombok;
     }
 
-    public void setEntityWithLombok(Boolean entityWithLombok) {
+    public void setEntityWithLombok(boolean entityWithLombok) {
         this.entityWithLombok = entityWithLombok;
     }
 

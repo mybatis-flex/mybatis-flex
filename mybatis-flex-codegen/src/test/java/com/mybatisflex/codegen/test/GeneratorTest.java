@@ -35,12 +35,14 @@ public class GeneratorTest {
 
         GlobalConfig globalConfig = new GlobalConfig();
         globalConfig.setSourceDir(System.getProperty("user.dir") + "/src/test/java");
+//        globalConfig.setTablePrefix("tb_");
+//        globalConfig.setEntityWithLombok(true);
 
         //设置只生成哪些表
-        globalConfig.addGenerateTable("account", "account_session");
+        globalConfig.addGenerateTable("tb_account", "account_session");
 
         //设置 entity 的包名
-        globalConfig.setEntityPackage("com.test.test");
+        globalConfig.setEntityPackage("com.test.entity");
 
         //是否生成 mapper 类，默认为 false
         globalConfig.setMapperGenerateEnable(true);

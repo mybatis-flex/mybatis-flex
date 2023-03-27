@@ -102,6 +102,7 @@ public class Generator {
 
 
     private void buildTableColumns(Table table) throws SQLException {
+
         Map<String, String> columnRemarks = buildColumnRemarks(table);
 
         String sql = dialect.forBuildColumns(table.getName());

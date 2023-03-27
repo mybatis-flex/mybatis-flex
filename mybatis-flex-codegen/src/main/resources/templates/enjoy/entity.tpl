@@ -13,6 +13,7 @@ public class #(table.buildEntityClassName()) {
 
 #end
 
+    #if(!globalConfig.isEntityWithLombok())
     #for(column: table.columns)
     public #(column.propertySimpleType) #(column.buildGetter())() {
         return #(column.property);
@@ -22,5 +23,6 @@ public class #(table.buildEntityClassName()) {
         this.#(column.property) = #(column.property);
     }
 
+    #end
     #end
 }
