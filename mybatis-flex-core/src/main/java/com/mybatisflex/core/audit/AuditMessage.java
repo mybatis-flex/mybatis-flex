@@ -18,7 +18,9 @@ package com.mybatisflex.core.audit;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AuditMessage implements Serializable {
 
@@ -35,6 +37,8 @@ public class AuditMessage implements Serializable {
 
     private long extTime;     // Sql 执行的当前时间，单位毫秒
     private long elapsedTime; // Sql 执行消耗的时间，单位毫秒
+
+    private Map<String, Object> metas; //其他信息，元信息
 
 
     public String getPlatform() {
@@ -138,6 +142,20 @@ public class AuditMessage implements Serializable {
         this.elapsedTime = elapsedTime;
     }
 
+    public Map<String, Object> getMetas() {
+        return metas;
+    }
+
+    public void setMetas(Map<String, Object> metas) {
+        this.metas = metas;
+    }
+
+    public void addMeta(String key, Object value) {
+        if (metas == null) {
+            metas = new HashMap<>();
+        }
+        metas.put(key, value);
+    }
 
     @Override
     public String toString() {

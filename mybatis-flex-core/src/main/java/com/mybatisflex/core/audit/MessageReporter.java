@@ -15,12 +15,15 @@
  */
 package com.mybatisflex.core.audit;
 
-/**
- * 审计消息创建器，在一般的 web 服务中，用户应该自定义自己的 AuditMessageCreator
- * 用来配置当前操作用户、用户 IP 地址，访问的 url 地址等
- */
-public interface AuditMessageCreator {
 
-     AuditMessage create();
+import java.util.List;
+
+/**
+ * 审计消息发送器，作用是把审计消息发送到指定的位置
+ * 比如控制台，磁盘、或者 kafka 服务器， http 服务器等
+ */
+public interface MessageReporter {
+
+    void sendMessages(List<AuditMessage> messages);
 
 }

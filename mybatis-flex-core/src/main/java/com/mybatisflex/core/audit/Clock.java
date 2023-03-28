@@ -15,15 +15,11 @@
  */
 package com.mybatisflex.core.audit;
 
-
-import java.util.List;
-
 /**
- * 审计消息发送器，作用是把审计消息发送到指定的位置
- * 比如控制台，磁盘、或者 kafka 服务器， http 服务器等
+ * 对于性要求特别高的场景，用户可以定义自己的时钟，用来代替 {@link System#currentTimeMillis()}
  */
-public interface AuditMessageSender {
+public interface Clock {
 
-    void sendMessages(List<AuditMessage> messages);
+     long getTick();
 
 }

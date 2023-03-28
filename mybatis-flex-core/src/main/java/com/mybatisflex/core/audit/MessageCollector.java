@@ -18,6 +18,6 @@ package com.mybatisflex.core.audit;
 /**
  * 审计消息收集器
  */
-public interface AuditMessageCollector {
+public interface MessageCollector {
     void collect(AuditMessage message);
 }

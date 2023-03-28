@@ -23,7 +23,7 @@ import java.util.Enumeration;
 /**
  * 默认的审计消息创建器，用来创建带有 hostIp 的审计消息
  */
-public class DefaultAuditMessageCreator implements AuditMessageCreator {
+public class DefaultMessageCreator implements MessageCreator {
 
     private String platform = "mybatis-flex";
     private String hostIp = getHostIp();

@@ -24,30 +24,32 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * 默认的审计消息收集器，其收集消息后，定时通过消息发送器{@link AuditMessageSender}把消息发送过去
+ * 默认的审计消息收集器，其收集消息后，定时通过消息发送器{@link MessageReporter}把消息发送过去
  */
-public class DefaultAuditMessageCollector implements AuditMessageCollector, Runnable {
+public class ScheduledMessageCollector implements MessageCollector, Runnable {
 
     private long period = 10;
     private ScheduledExecutorService scheduler;
-    private AuditMessageSender messageSender = new ConsoleAuditMessageSender();
+    private MessageReporter messageSender = new ConsoleMessageReporter();
 
     private List<AuditMessage> messages = Collections.synchronizedList(new ArrayList<>());
     private ReentrantReadWriteLock rrwLock = new ReentrantReadWriteLock();
 
-    public DefaultAuditMessageCollector() {
+    public ScheduledMessageCollector() {
         scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
-            Thread thread = new Thread(runnable, "DefaultAuditMessageCollector");
+            Thread thread = new Thread(runnable, "ScheduledMessageCollector");
             thread.setDaemon(true);
             return thread;
         });
         scheduler.scheduleAtFixedRate(this, period, period, TimeUnit.SECONDS);
     }
 
-    public DefaultAuditMessageCollector(long period, AuditMessageSender messageSender) {
+
+    public ScheduledMessageCollector(long period, MessageReporter messageSender) {
         this.period = period;
         this.messageSender = messageSender;
     }
+
 
     @Override
     public void collect(AuditMessage message) {

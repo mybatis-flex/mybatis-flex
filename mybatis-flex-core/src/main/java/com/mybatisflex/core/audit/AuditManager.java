@@ -23,47 +23,50 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * 审计管理器，统一执行如何和配置入口
+ */
 public class AuditManager {
 
-    private static AuditTimeCreator auditTimeCreator = System::currentTimeMillis;
-    private static AuditMessageCreator auditMessageCreator = new DefaultAuditMessageCreator();
-    private static AuditMessageCollector auditMessageCollector = new DefaultAuditMessageCollector();
+    private static Clock clock = System::currentTimeMillis;
+    private static MessageCreator messageCreator = new DefaultMessageCreator();
+    private static MessageCollector messageCollector = new ScheduledMessageCollector();
 
 
-    public static AuditTimeCreator getAuditTimeCreator() {
-        return auditTimeCreator;
+    public static Clock getClock() {
+        return clock;
     }
 
-    public static void setAuditTimeCreator(AuditTimeCreator auditTimeCreator) {
-        AuditManager.auditTimeCreator = auditTimeCreator;
+    public static void setClock(Clock clock) {
+        AuditManager.clock = clock;
     }
 
-    public static AuditMessageCreator getAuditMessageCreator() {
-        return auditMessageCreator;
+    public static MessageCreator getMessageCreator() {
+        return messageCreator;
     }
 
-    public static void setAuditMessageCreator(AuditMessageCreator auditMessageCreator) {
-        AuditManager.auditMessageCreator = auditMessageCreator;
+    public static void setMessageCreator(MessageCreator messageCreator) {
+        AuditManager.messageCreator = messageCreator;
     }
 
-    public static AuditMessageCollector getAuditMessageCollector() {
-        return auditMessageCollector;
+    public static MessageCollector getMessageCollector() {
+        return messageCollector;
     }
 
-    public static void setAuditMessageCollector(AuditMessageCollector auditMessageCollector) {
-        AuditManager.auditMessageCollector = auditMessageCollector;
+    public static void setMessageCollector(MessageCollector messageCollector) {
+        AuditManager.messageCollector = messageCollector;
     }
 
     public static <T> T startAudit(AuditRunnable<T> supplier, BoundSql boundSql) throws SQLException {
-        AuditMessage auditMessage = auditMessageCreator.create();
+        AuditMessage auditMessage = messageCreator.create();
         if (auditMessage == null) {
             return supplier.execute();
         }
-        auditMessage.setExtTime(auditTimeCreator.now());
+        auditMessage.setExtTime(clock.getTick());
         try {
             return supplier.execute();
         } finally {
-            auditMessage.setElapsedTime(auditTimeCreator.now() - auditMessage.getExtTime());
+            auditMessage.setElapsedTime(clock.getTick() - auditMessage.getExtTime());
             auditMessage.setQuery(boundSql.getSql());
 
             Object parameter = boundSql.getParameterObject();
@@ -87,7 +90,7 @@ public class AuditManager {
                     }
                 }
             }
-            auditMessageCollector.collect(auditMessage);
+            messageCollector.collect(auditMessage);
         }
     }
 

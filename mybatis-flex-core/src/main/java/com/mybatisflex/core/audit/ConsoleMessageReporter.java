@@ -15,12 +15,18 @@
  */
 package com.mybatisflex.core.audit;
 
-/**
- * 审计时间创建器，对于性要求特别高的场景
- * 可以定义自己的时间构建器，用来代替 {@link System#currentTimeMillis()}
- */
-public interface AuditTimeCreator {
+import java.util.List;
 
-     long now();
+/**
+ * 控制台输出审计消息
+ */
+public class ConsoleMessageReporter implements MessageReporter {
+
+    @Override
+    public void sendMessages(List<AuditMessage> messages) {
+        for (AuditMessage message : messages) {
+            System.out.println(">>>>>> Sql Audit: " + message.toString());
+        }
+    }
 
 }
