@@ -17,17 +17,17 @@ package com.mybatisflex.codegen;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.dialect.IDialect;
-import com.mybatisflex.codegen.entity.Column;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.template.ITemplate;
 
 import javax.sql.DataSource;
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Generator {
 
@@ -101,56 +101,6 @@ public class Generator {
     }
 
 
-    private void buildTableColumns(Table table) throws SQLException {
-
-        Map<String, String> columnRemarks = buildColumnRemarks(table);
-
-        String sql = dialect.forBuildColumns(table.getName());
-        try (Statement stm = conn.createStatement(); ResultSet rs = stm.executeQuery(sql)) {
-
-            ResultSetMetaData columnMetaData = rs.getMetaData();
-            int columnCount = columnMetaData.getColumnCount();
-
-            for (int i = 1; i <= columnCount; i++) {
-                Column column = new Column();
-                column.setName(columnMetaData.getColumnName(i));
-                column.setPropertyType(columnMetaData.getColumnClassName(i));
-                column.setAutoIncrement(columnMetaData.isAutoIncrement(i));
-
-                //主键
-                if (table.getPrimaryKeys() != null && table.getPrimaryKeys().contains(column.getName())) {
-                    column.setPrimaryKey(true);
-                }
-
-                //注释
-                column.setRemarks(columnRemarks.get(column.getName()));
-
-                column.setColumnConfig(globalConfig.getColumnConfig(table.getName(), column.getName()));
-                table.addColumn(column);
-            }
-        }
-    }
-
-
-    private Map<String, String> buildColumnRemarks(Table table) throws SQLException {
-        Map<String, String> columnRemarks = new HashMap<>();
-        ResultSet colRs = null;
-        try {
-            colRs = dbMeta.getColumns(conn.getCatalog(), null, table.getName(), null);
-            while (colRs.next()) {
-                columnRemarks.put(colRs.getString("COLUMN_NAME"), colRs.getString("REMARKS"));
-            }
-        } catch (Exception e) {
-            System.err.println("无法获取字段的备注内容：" + e.getMessage());
-        } finally {
-            if (colRs != null) {
-                colRs.close();
-            }
-        }
-        return columnRemarks;
-    }
-
-
     private List<Table> buildTables() throws SQLException {
         List<Table> tables = new ArrayList<>();
         try (ResultSet rs = getTablesResultSet()) {
@@ -171,7 +121,8 @@ public class Generator {
 
 
                 buildPrimaryKey(table);
-                buildTableColumns(table);
+
+                dialect.buildTableColumns(table, globalConfig, dbMeta, conn);
 
                 tables.add(table);
             }

@@ -39,10 +39,20 @@
         </dependency>
 
 
+        <!-- for test only-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.32</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.41.2.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>

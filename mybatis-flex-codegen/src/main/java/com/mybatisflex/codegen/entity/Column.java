@@ -51,10 +51,6 @@ public class Column {
         return property;
     }
 
-    public void setProperty(String property) {
-        this.property = property;
-    }
-
     public String getPropertyType() {
         return propertyType;
     }

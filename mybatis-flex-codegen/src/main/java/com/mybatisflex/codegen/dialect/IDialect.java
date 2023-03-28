@@ -15,6 +15,9 @@
  */
 package com.mybatisflex.codegen.dialect;
 
+import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.entity.Table;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -22,9 +25,9 @@ import java.sql.SQLException;
 
 public interface IDialect {
 
-    IDialect MYSQL = new IDialect() {
+    IDialect MYSQL = new JdbcDialect() {
         @Override
-        public String forBuildColumns(String tableName) {
+        String forBuildColumnsSql(String tableName) {
             return "SELECT * FROM `" + tableName + "` WHERE 1 = 2";
         }
 
@@ -35,10 +38,9 @@ public interface IDialect {
     };
 
 
-
-    IDialect ORACLE = new IDialect() {
+    IDialect ORACLE = new JdbcDialect() {
         @Override
-        public String forBuildColumns(String tableName) {
+        public String forBuildColumnsSql(String tableName) {
             return "SELECT * FROM \"" +tableName+ "\" WHERE rownum < 1";
         }
 
@@ -48,10 +50,10 @@ public interface IDialect {
         }
     };
 
+    IDialect SQLITE = new SqliteDialect();
 
 
-
-    String forBuildColumns(String tableName);
+    void buildTableColumns( Table table, GlobalConfig globalConfig,DatabaseMetaData dbMeta, Connection conn) throws SQLException;
 
     ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String[] types) throws SQLException;
 }

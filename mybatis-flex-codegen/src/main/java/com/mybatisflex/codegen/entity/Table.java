@@ -19,6 +19,7 @@ import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.config.TableConfig;
 import com.mybatisflex.core.util.StringUtil;
 
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -73,6 +74,23 @@ public class Table {
     }
 
     public void addColumn(Column column) {
+
+        //主键
+        if (primaryKeys != null && primaryKeys.contains(column.getName())) {
+            column.setPrimaryKey(true);
+            if (column.getAutoIncrement() == null){
+                if (column.getPropertyType().equals(Integer.class.getName()) || column.getPropertyType().equals(BigInteger.class.getName())){
+                    column.setAutoIncrement(true);
+                }
+            }
+        }
+
+        if (column.getAutoIncrement() == null){
+            column.setAutoIncrement(false);
+        }
+
+        column.setColumnConfig(globalConfig.getColumnConfig(name, column.getName()));
+
         columns.add(column);
     }
 
