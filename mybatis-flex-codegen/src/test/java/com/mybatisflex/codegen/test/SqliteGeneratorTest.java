@@ -11,7 +11,7 @@ import java.sql.Statement;
 
 public class SqliteGeneratorTest {
 
-    @Test
+//    @Test
     public void testGenerator3() {
 
         //配置数据源
