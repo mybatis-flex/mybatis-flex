@@ -132,7 +132,7 @@ public interface RowMapper {
      * @param whereConditions 条件，通过 map 的 key:value 来构建，都是 and 的关系
      * @return 执行影响的行数
      */
-    default int deleteByByMap(String tableName, Map<String, Object> whereConditions) {
+    default int deleteByMap(String tableName, Map<String, Object> whereConditions) {
         if (whereConditions == null || whereConditions.isEmpty()) {
             throw FlexExceptions.wrap("whereConditions can not be null or empty.");
         }

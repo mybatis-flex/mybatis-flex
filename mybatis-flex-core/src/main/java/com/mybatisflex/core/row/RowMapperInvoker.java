@@ -119,8 +119,8 @@ public class RowMapperInvoker {
         return execute(mapper -> mapper.deleteBatchByIds(tableName, primaryKey, ids));
     }
 
-    public int deleteByByMap(String tableName, Map<String, Object> whereColumns) {
-        return execute(mapper -> mapper.deleteByByMap(tableName, whereColumns));
+    public int deleteByMap(String tableName, Map<String, Object> whereColumns) {
+        return execute(mapper -> mapper.deleteByMap(tableName, whereColumns));
     }
 
     public int deleteByQuery(String tableName, QueryWrapper queryWrapper) {

@@ -100,7 +100,7 @@ public class RowTestStarter {
 //        where.put("id", 2);
 //        //根据 map 删除数据
 //        bootstrap.execute(RowMapper.class, rowMapper ->
-//                rowMapper.deleteByByMap("tb_account", where));
+//                rowMapper.deleteByMap("tb_account", where));
 //
 //
 //        //更新数据

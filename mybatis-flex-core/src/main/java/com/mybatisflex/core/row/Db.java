@@ -148,8 +148,8 @@ public class Db {
      * @param tableName    表名
      * @param whereColumns where 条件
      */
-    public static int deleteByByMap(String tableName, Map<String, Object> whereColumns) {
-        return invoker().deleteByByMap(tableName, whereColumns);
+    public static int deleteByMap(String tableName, Map<String, Object> whereColumns) {
+        return invoker().deleteByMap(tableName, whereColumns);
     }
 
     /**
