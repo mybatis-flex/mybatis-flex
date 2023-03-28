@@ -412,7 +412,7 @@ Db.insertBySql(sql,1,"michael");
 Row account=new Row();
 account.set("id",100);
 account.set("name","Michael");
-Db.insertRow("tb_account",account);
+Db.insert("tb_account",account);
 
 
 //根据主键查询数据

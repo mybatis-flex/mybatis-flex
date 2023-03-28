@@ -12,7 +12,7 @@ Db.insertBySql(sql,1,"michael");
 Row account = new Row();
 account.set("id",100);
 account.set(ACCOUNT.USER_NAME,"Michael");
-Db.insertRow("tb_account",account);
+Db.insert("tb_account",account);
 
 
 //根据主键查询数据
@@ -67,7 +67,7 @@ Map result = row.toUnderlineKeysMap();
 Row row = Row.ofKey(RowKey.ID_AUTO);
 row.set(ACCOUNT.USER_NAME,"Michael");
 
-Db.insertRow("tb_account",row);
+Db.insert("tb_account",row);
 ```
 
 **ID 为 UUID**
@@ -77,7 +77,7 @@ Db.insertRow("tb_account",row);
 Row row = Row.ofKey(RowKey.ID_UUID);
 row.set(ACCOUNT.USER_NAME,"Michael");
 
-Db.insertRow("tb_account",row);
+Db.insert("tb_account",row);
 ```
 **自定义 Row 主键生成方式**
 
@@ -89,7 +89,7 @@ RowKey myRowKey = RowKey.of("id", KeyType.Generator, "uuid", true);
 Row row = Row.ofKey(myRowKey);
 row.set(ACCOUNT.USER_NAME,"Michael");
 
-Db.insertRow("tb_account",row);
+Db.insert("tb_account",row);
 ```
 
 ## Db 中的 RowMapperInvoker

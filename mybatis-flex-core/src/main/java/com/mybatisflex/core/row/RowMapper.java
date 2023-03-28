@@ -36,6 +36,19 @@ public interface RowMapper {
     //////insert //////
 
     /**
+     * 插入 row 到数据表
+     *
+     * @param tableName 表名
+     * @param row       数据内容，当设置有主键时，主键会自动填充
+     * @return 执行影响的行数
+     * @see RowSqlProvider#insert(Map)
+     */
+    @InsertProvider(value = RowSqlProvider.class, method = "insert")
+    int insert(@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROW) Row row);
+
+
+
+    /**
      * 执行 insert sql 语句
      *
      * @param sql  insert sql 语句
@@ -45,18 +58,6 @@ public interface RowMapper {
      */
     @InsertProvider(value = RowSqlProvider.class, method = RowSqlProvider.METHOD_RAW_SQL)
     int insertBySql(@Param(FlexConsts.SQL) String sql, @Param(FlexConsts.SQL_ARGS) Object... args);
-
-
-    /**
-     * 插入 row 到数据表
-     *
-     * @param tableName 表名
-     * @param row       数据内容，当设置有主键时，主键会自动填充
-     * @return 执行影响的行数
-     * @see RowSqlProvider#insertRow(Map)
-     */
-    @InsertProvider(value = RowSqlProvider.class, method = "insertRow")
-    int insertRow(@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROW) Row row);
 
 
     /**

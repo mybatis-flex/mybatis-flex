@@ -96,7 +96,7 @@ public class FlexConfiguration extends Configuration {
 
     @Override
     public void addMappedStatement(MappedStatement ms) {
-        //替换 RowMapper.insertRow 的主键生成器
+        //替换 RowMapper.insert 的主键生成器
         //替换 RowMapper.insertBatchWithFirstRowColumns 的主键生成器
         if (ms.getId().startsWith("com.mybatisflex.core.row.RowMapper.insert")) {
             ms = replaceRowKeyGenerator(ms);

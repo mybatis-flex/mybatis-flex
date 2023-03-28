@@ -49,6 +49,18 @@ public class Db {
         });
     }
 
+
+    /**
+     * 网 tableName 插入一条 row 数据
+     *
+     * @param tableName 表名
+     * @param row       数据
+     */
+    public static int insert(String tableName, Row row) {
+        return invoker().insert(tableName, row);
+    }
+
+
     /**
      * 直接编写 sql 插入数据
      *
@@ -59,15 +71,6 @@ public class Db {
         return invoker().insertBySql(sql, args);
     }
 
-    /**
-     * 网 tableName 插入一条 row 数据
-     *
-     * @param tableName 表名
-     * @param row       数据
-     */
-    public static int insertRow(String tableName, Row row) {
-        return invoker().insertRow(tableName, row);
-    }
 
     /**
      * 批量插入数据

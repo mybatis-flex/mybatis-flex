@@ -52,13 +52,13 @@ public class RowSqlProvider {
     }
 
     /**
-     * insertRow 的 sql 构建
+     * insert 的 sql 构建
      *
      * @param params
      * @return sql
-     * @see RowMapper#insertRow(String, Row)
+     * @see RowMapper#insert(String, Row)
      */
-    public static String insertRow(Map params) {
+    public static String insert(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         Row row = ProviderUtil.getRow(params);
         ProviderUtil.setSqlArgs(params, row.obtainModifyValues());

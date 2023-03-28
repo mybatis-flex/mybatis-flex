@@ -53,7 +53,7 @@ public class RowTestStarter {
                 .set("age", 22)
                 .set("birthday", new Date());
         bootstrap.execute(RowMapper.class, rowMapper ->
-                rowMapper.insertRow("tb_account", newRow));
+                rowMapper.insert("tb_account", newRow));
 
 //
 //        //新增后，查看newRow 的 id，会自动被赋值
@@ -69,11 +69,11 @@ public class RowTestStarter {
 //
 //        List<Row> newRowList = new ArrayList<>();
 //        for (int i = 0; i < 5; i++) {
-//            Row insertRow = Row.ofKey(RowKey.ID_AUTO) //id 自增
+//            Row insert = Row.ofKey(RowKey.ID_AUTO) //id 自增
 //                    .set("user_name", "new_user_" + i)
 //                    .set("age", 22)
 //                    .set("birthday", new Date());
-//            newRowList.add(insertRow);
+//            newRowList.add(insert);
 //        }
 //
 //        //批量插入数据

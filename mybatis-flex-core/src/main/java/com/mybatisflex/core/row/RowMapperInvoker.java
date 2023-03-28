@@ -61,14 +61,15 @@ public class RowMapperInvoker {
         }
     }
 
+    public int insert(String tableName, Row row) {
+        return execute(mapper -> mapper.insert(tableName, row));
+    }
+
 
     public int insertBySql(String sql, Object... args) {
         return execute(mapper -> mapper.insertBySql(sql, args));
     }
 
-    public int insertRow(String tableName, Row row) {
-        return execute(mapper -> mapper.insertRow(tableName, row));
-    }
 
     public int[] insertBatch(String tableName, Collection<Row> rows, int batchSize) {
         int[] results = new int[rows.size()];
@@ -89,7 +90,7 @@ public class RowMapperInvoker {
                         }
                     }
                 } else {
-                    mapper.insertRow(tableName, row);
+                    mapper.insert(tableName, row);
                 }
             }
         } finally {

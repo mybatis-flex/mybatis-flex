@@ -49,7 +49,7 @@ public class DbTestStarter {
         row.set("user_name", "michael yang");
         row.set("age", 18);
         row.set("birthday", new Date());
-        Db.insertRow("tb_account", row);
+        Db.insert("tb_account", row);
 
         //查看刚刚插入数据的主键 id
         System.out.println(">>>>>>>>>id: " + row.get("id"));
