@@ -26,8 +26,8 @@ import java.util.Map;
 public abstract class JdbcDialect implements IDialect {
 
     @Override
-    public void buildTableColumns(Table table,GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
-        Map<String, String> columnRemarks = buildColumnRemarks(table,dbMeta,conn);
+    public void buildTableColumns(Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
+        Map<String, String> columnRemarks = buildColumnRemarks(table, dbMeta, conn);
 
         String sql = forBuildColumnsSql(table.getName());
         try (Statement stm = conn.createStatement(); ResultSet rs = stm.executeQuery(sql)) {
@@ -50,7 +50,7 @@ public abstract class JdbcDialect implements IDialect {
     }
 
 
-    private Map<String, String> buildColumnRemarks(Table table,DatabaseMetaData dbMeta, Connection conn) throws SQLException {
+    private Map<String, String> buildColumnRemarks(Table table, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
         Map<String, String> columnRemarks = new HashMap<>();
         ResultSet colRs = null;
         try {
@@ -67,7 +67,6 @@ public abstract class JdbcDialect implements IDialect {
         }
         return columnRemarks;
     }
-
 
 
     abstract String forBuildColumnsSql(String tableName);

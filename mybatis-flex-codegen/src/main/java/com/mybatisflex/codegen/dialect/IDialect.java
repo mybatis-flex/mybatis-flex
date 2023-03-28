@@ -41,7 +41,7 @@ public interface IDialect {
     IDialect ORACLE = new JdbcDialect() {
         @Override
         public String forBuildColumnsSql(String tableName) {
-            return "SELECT * FROM \"" +tableName+ "\" WHERE rownum < 1";
+            return "SELECT * FROM \"" + tableName + "\" WHERE rownum < 1";
         }
 
         @Override
@@ -53,7 +53,7 @@ public interface IDialect {
     IDialect SQLITE = new SqliteDialect();
 
 
-    void buildTableColumns( Table table, GlobalConfig globalConfig,DatabaseMetaData dbMeta, Connection conn) throws SQLException;
+    void buildTableColumns(Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException;
 
     ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String[] types) throws SQLException;
 }
