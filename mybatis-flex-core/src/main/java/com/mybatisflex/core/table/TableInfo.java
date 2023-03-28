@@ -219,8 +219,6 @@ public class TableInfo {
     }
 
 
-
-
     void setColumnInfoList(List<ColumnInfo> columnInfoList) {
         this.columnInfoList = columnInfoList;
         this.columns = new String[columnInfoList.size()];
@@ -515,7 +513,8 @@ public class TableInfo {
         for (String column : row.keySet()) {
             ColumnInfo columnInfo = columnInfoMapping.get(column);
             if (columnInfo != null && metaObject.hasSetter(columnInfo.property)) {
-                metaObject.setValue(columnInfo.property, row.get(column));
+                Object value = ConvertUtil.convert(row.get(column), metaObject.getSetterType(columnInfo.property));
+                metaObject.setValue(columnInfo.property, value);
             }
         }
         return (T) instance;

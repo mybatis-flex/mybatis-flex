@@ -142,6 +142,26 @@ public class StringUtil {
     }
 
 
+    /**
+     * 这个字符串是否是全是数字
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isNumeric(String str) {
+        if (isBlank(str)) {
+            return false;
+        }
+        for (int i = str.length(); --i >= 0; ) {
+            int chr = str.charAt(i);
+            if (chr < 48 || chr > 57) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public static boolean startsWithAny(String str, String... prefixes) {
         if (isBlank(str) || prefixes == null || prefixes.length == 0) {
             return false;
