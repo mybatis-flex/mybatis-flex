@@ -28,10 +28,18 @@ import java.util.Map;
  */
 public class AuditManager {
 
+    private static boolean auditEnable = false;
     private static Clock clock = System::currentTimeMillis;
     private static MessageCreator messageCreator = new DefaultMessageCreator();
     private static MessageCollector messageCollector = new ScheduledMessageCollector();
 
+    public static boolean isAuditEnable() {
+        return auditEnable;
+    }
+
+    public static void setAuditEnable(boolean auditEnable) {
+        AuditManager.auditEnable = auditEnable;
+    }
 
     public static Clock getClock() {
         return clock;

@@ -43,6 +43,7 @@ public class FlexStatementHandler implements StatementHandler {
 
     private final StatementHandler delegate;
     private final BoundSql boundSql;
+    private final boolean auditEnable = AuditManager.isAuditEnable();
 
     public FlexStatementHandler(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
 
@@ -77,25 +78,32 @@ public class FlexStatementHandler implements StatementHandler {
 
     @Override
     public void batch(Statement statement) throws SQLException {
-        AuditManager.startAudit(() -> {
+        if (auditEnable) {
+            AuditManager.startAudit(() -> {
+                delegate.batch(statement);
+                return null;
+            }, boundSql);
+        } else {
             delegate.batch(statement);
-            return null;
-        }, boundSql);
+        }
     }
 
     @Override
     public int update(Statement statement) throws SQLException {
-        return AuditManager.startAudit(() -> delegate.update(statement), boundSql);
+        return auditEnable ? AuditManager.startAudit(() -> delegate.update(statement), boundSql)
+                : delegate.update(statement);
     }
 
     @Override
     public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
-        return AuditManager.startAudit(() -> delegate.query(statement, resultHandler), boundSql);
+        return auditEnable ? AuditManager.startAudit(() -> delegate.query(statement, resultHandler), boundSql)
+                : delegate.query(statement, resultHandler);
     }
 
     @Override
     public <E> Cursor<E> queryCursor(Statement statement) throws SQLException {
-        return AuditManager.startAudit(() -> delegate.queryCursor(statement), boundSql);
+        return auditEnable ? AuditManager.startAudit(() -> delegate.queryCursor(statement), boundSql)
+                : delegate.queryCursor(statement);
     }
 
     @Override
