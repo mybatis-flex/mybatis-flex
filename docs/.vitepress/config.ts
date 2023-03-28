@@ -49,7 +49,7 @@ export default defineConfig({
           { text: '乐观锁', link: '/zh/version' },
           { text: '数据填充', link: '/zh/fill' },
           { text: '数据脱敏', link: '/zh/mask' },
-          { text: '数据审计', link: '/zh/audit' },
+          { text: 'SQL 审计', link: '/zh/audit' },
         ]
       },
       {
