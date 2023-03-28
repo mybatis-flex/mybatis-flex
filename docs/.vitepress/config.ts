@@ -13,7 +13,7 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '帮助文档', link: '/zh/what-is-mybatisflex' },
-      { text: '更新日志', link: 'https://gitee.com/mybatis-flex/mybatis-flex/blob/main/changes.txt' },
+      { text: '更新日志', link: 'https://gitee.com/mybatis-flex/mybatis-flex/releases' },
       { text: '源码',  items: [
           { text: 'Gitee', link: 'https://gitee.com/mybatis-flex/mybatis-flex' },
           { text: 'Github', link: 'https://github.com/mybatis-flex/mybatis-flex' }
