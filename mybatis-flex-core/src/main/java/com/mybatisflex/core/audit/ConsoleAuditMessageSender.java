@@ -25,7 +25,7 @@ public class ConsoleAuditMessageSender implements AuditMessageSender {
     @Override
     public void sendMessages(List<AuditMessage> messages) {
         for (AuditMessage message : messages) {
-            System.out.println(">>>>>> AUDIT: " + message.toString());
+            System.out.println(">>>>>> Sql Audit: " + message.toString());
         }
     }
 

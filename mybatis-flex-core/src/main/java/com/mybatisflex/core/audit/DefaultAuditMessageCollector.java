@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 默认的审计消息收集器，其收集消息后，定时通过消息发送器{@link AuditMessageSender}把消息发送过去
@@ -32,6 +33,7 @@ public class DefaultAuditMessageCollector implements AuditMessageCollector, Runn
     private AuditMessageSender messageSender = new ConsoleAuditMessageSender();
 
     private List<AuditMessage> messages = Collections.synchronizedList(new ArrayList<>());
+    private ReentrantReadWriteLock rrwLock = new ReentrantReadWriteLock();
 
     public DefaultAuditMessageCollector() {
         scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
@@ -49,7 +51,12 @@ public class DefaultAuditMessageCollector implements AuditMessageCollector, Runn
 
     @Override
     public void collect(AuditMessage message) {
-        messages.add(message);
+        try {
+            rrwLock.readLock().lock();
+            messages.add(message);
+        } finally {
+            rrwLock.readLock().unlock();
+        }
     }
 
 
@@ -58,8 +65,17 @@ public class DefaultAuditMessageCollector implements AuditMessageCollector, Runn
         if (messages.isEmpty()) {
             return;
         }
-        List<AuditMessage> sendMessages = new ArrayList(messages);
-        messages.clear();
+
+        List<AuditMessage> sendMessages;
+
+        try {
+            rrwLock.writeLock().lock();
+            sendMessages = new ArrayList<>(messages);
+            messages.clear();
+        } finally {
+            rrwLock.writeLock().unlock();
+        }
+
         messageSender.sendMessages(sendMessages);
     }
 }
