@@ -29,7 +29,7 @@ public class AuditMessage implements Serializable {
     private String url;
 
     private String user;
-    private String userIP;
+    private String userIp;
     private String hostIp;
 
     private String query;
@@ -73,12 +73,12 @@ public class AuditMessage implements Serializable {
         this.user = user;
     }
 
-    public String getUserIP() {
-        return userIP;
+    public String getUserIp() {
+        return userIp;
     }
 
-    public void setUserIP(String userIP) {
-        this.userIP = userIP;
+    public void setUserIp(String userIp) {
+        this.userIp = userIp;
     }
 
     public String getHostIp() {
@@ -159,12 +159,12 @@ public class AuditMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "AuditMessage{" +
+        return "{" +
                 "platform='" + platform + '\'' +
                 ", module='" + module + '\'' +
                 ", url='" + url + '\'' +
                 ", user='" + user + '\'' +
-                ", userIP='" + userIP + '\'' +
+                ", userIp='" + userIp + '\'' +
                 ", hostIp='" + hostIp + '\'' +
                 ", query='" + query + '\'' +
                 ", queryParams=" + queryParams +

@@ -25,7 +25,7 @@ public class ConsoleMessageReporter implements MessageReporter {
     @Override
     public void sendMessages(List<AuditMessage> messages) {
         for (AuditMessage message : messages) {
-            System.out.println(">>>>>> Sql Audit: " + message.toString());
+            System.out.println(">>>>>>Sql Audit: " + message.toString());
         }
     }
 
