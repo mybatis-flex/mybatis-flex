@@ -19,6 +19,7 @@ package com.mybatisflex.core.query;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,15 +53,18 @@ class WrapperUtil {
         if (value != null) {
             if (value.getClass().isArray()) {
                 Object[] values = (Object[]) value;
-                for (Object v : values) {
-                    if (v.getClass() == int[].class) {
-                        addAll(paras, (int[]) v);
-                    } else if (v.getClass() == long[].class) {
-                        addAll(paras, (long[]) v);
-                    } else if (v.getClass() == short[].class) {
-                        addAll(paras, (short[]) v);
+                for (Object object : values) {
+                    if (object != null && (object.getClass().isArray()
+                            || object.getClass() == int[].class
+                            || object.getClass() == long[].class
+                            || object.getClass() == short[].class
+                            || object.getClass() == float[].class
+                            || object.getClass() == double[].class)) {
+                        for (int i = 0; i < Array.getLength(object); i++) {
+                            paras.add(Array.get(object, i));
+                        }
                     } else {
-                        paras.add(v);
+                        paras.add(object);
                     }
                 }
             } else if (value instanceof QueryWrapper) {
@@ -72,26 +76,6 @@ class WrapperUtil {
         }
 
         getValues(condition.next, paras);
-    }
-
-
-    private static void addAll(List<Object> paras, int[] ints) {
-        for (int i : ints) {
-            paras.add(i);
-        }
-    }
-
-    private static void addAll(List<Object> paras, long[] longs) {
-        for (long i : longs) {
-            paras.add(i);
-        }
-    }
-
-
-    private static void addAll(List<Object> paras, short[] shorts) {
-        for (short i : shorts) {
-            paras.add(i);
-        }
     }
 
 
