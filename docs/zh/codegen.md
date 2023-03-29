@@ -185,6 +185,16 @@ public class ColumnConfig implements Serializable {
 }
 ```
 
+## 自定义属性类型
+
+Mybatis-Flex 内置了一个名为：`JdbcTypeMapping` 的 java 类，我们可以用其配置映射 Jdbc 驱动的数据类型为自定义的
+数据类型，在开始生成代码之前，可以先调用其进行配置，例如：
+
+```java
+JdbcTypeMapping.registerMapping(LocalDateTime.class, Date.class);
+```
+那么，当我们生成代码的时候，发现 JDBC 驱动的数据类型为 `LocalDateTime`，则 Entity 对应的属性类型为 `Date`。
+
 ## 常见问题
 
 **1、如何自定义代码模板**
