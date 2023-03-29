@@ -203,7 +203,10 @@ public class Column {
         List<String> importClasses = new ArrayList<>();
 
         //lang 包不需要显式导入
-        if (!propertyType.startsWith("java.lang.")) {
+        if (!propertyType.startsWith("java.lang.")
+                && !"byte[]".equals(propertyType)
+                && !"Byte[]".equals(propertyType)
+        ) {
             importClasses.add(propertyType);
         }
 

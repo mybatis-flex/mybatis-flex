@@ -38,7 +38,10 @@ public abstract class JdbcDialect implements IDialect {
             for (int i = 1; i <= columnCount; i++) {
                 Column column = new Column();
                 column.setName(columnMetaData.getColumnName(i));
-                column.setPropertyType(columnMetaData.getColumnClassName(i));
+
+                String jdbcType = columnMetaData.getColumnClassName(i);
+                column.setPropertyType(JdbcTypeMapping.getType(jdbcType));
+
                 column.setAutoIncrement(columnMetaData.isAutoIncrement(i));
 
                 //注释
