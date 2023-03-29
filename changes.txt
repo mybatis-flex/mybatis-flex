@@ -1,4 +1,22 @@
-mybatis-flex v1.0.4 2023026:
+mybatis-flex v1.0.5 20230330:
+新增：新增 SQL 审计模块，默认关闭
+新增：代码生成器新增 lombok 配置的支持
+新增：代码生成器新增可以配置多个表前缀的支持
+新增：代码生成器添加 SqliteDialect 方言的支持
+新增：代码生成器添加自定义 Entity 属性类型的配置支持
+优化：修改方法 "deleteByByMap" 为 "deleteByMap"
+优化：修改方法 "Db.insertRow()" 为 "Db.insert()"
+修复：在某些场景下，Row.toEntity() 出现类型转换错误的问题
+修复：queryWrapper 的 "in" 逻辑在某些场景下错误的问题
+修复：代码生成器对 Mysql 的 "blob" 类型生成错误的问题
+文档：新增关于代码生成器的相关文档
+文档：新增 SQL 审计模块的相关文档
+文档：优化 queryWrapper 的相关文档
+文档：优化 分页查询 的相关文档
+
+
+
+mybatis-flex v1.0.4 20230326:
 新增：@ColumnMask() 注解用于数据脱敏，内置 9 中脱敏方式
 新增：BaseMapper.selectAll() 方法
 新增：BaseMapper.selectListByMap(Map whereConditions, int count) 方法
@@ -9,7 +27,7 @@ mybatis-flex v1.0.4 2023026:
 
 
 
-mybatis-flex v1.0.3 2023021:
+mybatis-flex v1.0.3 20230321:
 新增：APT 自动生成 Mapper 代码的功能，无需在手动编写
 新增：APT 新增 "processer.mappersGenerateEnable" 配置，用于开启是否自动生成 Mapper 类
 修复：condition.when(flag) 的 value 值有返回的问题
@@ -17,7 +35,7 @@ mybatis-flex v1.0.3 2023021:
 
 
 
-mybatis-flex v1.0.2 2023017:
+mybatis-flex v1.0.2 20230317:
 新增：添加自定义字段 typeHandler @Column(typeHandler=xxx) 的配置
 新增：内置默认的  fastjson fastjson2 gson jackson 的 TypeHandler，方便开发者直接使用
 增强：entity 查询支持通过 QueryWrapper 传入表名以实现更灵活的需求
@@ -29,7 +47,7 @@ mybatis-flex v1.0.2 2023017:
 
 
 
-mybatis-flex v1.0.0 2023012:
+mybatis-flex v1.0.0 20230312:
 主要对 beta 和 rc 版本进行大量的重构和测试
 
 
