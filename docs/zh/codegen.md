@@ -79,6 +79,8 @@ public class Codegen {
 }
 ```
 
+## 全局配置 GlobalConfig 
+
 GlobalConfig 支持更多的配置如下：
 
 ```java
@@ -130,6 +132,7 @@ public class GlobalConfig {
 }
 ```
 
+## 表配置 TableConfig 
 
 TableConfig 支持的配置如下：
 
@@ -156,6 +159,8 @@ public class TableConfig {
 }
 ```
 
+## 列配置 ColumnConfig
+
 ColumnConfig 支持的配置如下：
 
 ```java
@@ -178,4 +183,53 @@ public class ColumnConfig implements Serializable {
     private String keyValue;
     private Boolean keyBefore;
 }
+```
+
+## 常见问题
+
+**1、如何自定义代码模板**
+> 答：通过 `globalConfig.setTemplateEngine()` 配置自己的模板引擎即可，以下是内置的 `EnjoyTemplate` 的代码示例：
+
+```java
+public class EnjoyTemplate implements ITemplate {
+
+    private Engine engine;
+
+    public EnjoyTemplate() {
+        engine = Engine.create("mybatis-flex", engine -> {
+            engine.setToClassPathSourceFactory();
+            engine.addSharedMethod(StringUtil.class);
+        });
+    }
+
+    /**
+     * 生成 entity 的方法实现
+     */
+    @Override
+    public void generateEntity(GlobalConfig globalConfig, Table table, File entityJavaFile) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        params.put("globalConfig", globalConfig);
+        params.put("table", table);
+
+
+        FileOutputStream fileOutputStream = new FileOutputStream(entityJavaFile);
+        engine.getTemplate("/templates/enjoy/entity.tpl").render(params, fileOutputStream);
+    }
+
+
+    /**
+     * 生成 mapper 的方法实现
+     */
+    @Override
+    public void generateMapper(GlobalConfig globalConfig, Table table, File mapperJavaFile) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        params.put("globalConfig", globalConfig);
+        params.put("table", table);
+
+
+        FileOutputStream fileOutputStream = new FileOutputStream(mapperJavaFile);
+        engine.getTemplate("/templates/enjoy/mapper.tpl").render(params, fileOutputStream);
+    }
+}
+
 ```
