@@ -40,18 +40,18 @@ public class MaskTypeHandler extends BaseTypeHandler<Object> {
     @Override
     public Object getNullableResult(ResultSet rs, String columnName) throws SQLException {
         String data = rs.getString(columnName);
-        return MaskFactory.mask(maskType,data);
+        return MaskManager.mask(maskType,data);
     }
 
     @Override
     public Object getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         String data = rs.getString(columnIndex);
-        return MaskFactory.mask(maskType,data);
+        return MaskManager.mask(maskType,data);
     }
 
     @Override
     public Object getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         String data = cs.getString(columnIndex);
-        return MaskFactory.mask(maskType,data);
+        return MaskManager.mask(maskType,data);
     }
 }

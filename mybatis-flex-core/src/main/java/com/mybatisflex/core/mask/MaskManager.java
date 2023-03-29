@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * 数据脱敏工厂类
  */
-public class MaskFactory {
+public class MaskManager {
 
 
     /**

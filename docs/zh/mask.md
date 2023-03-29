@@ -39,10 +39,10 @@ public class Account {
 
 当 Mybaits-Flex 内置的 9 中脱敏规则无法满足要求时，我们还可以自定义脱敏规则，其步骤如下：
 
-1、通过 `MaskFactory` 注册新的脱敏规则：
+1、通过 `MaskManager` 注册新的脱敏规则：
 
 ```java
-MaskFactory.registerMaskProcesser("自定义规则名称"
+MaskManager.registerMaskProcesser("自定义规则名称"
         , data -> {
             return data;
         })
@@ -66,16 +66,16 @@ public class Account {
 在某些场景下，程序希望查询得到的数据是原始数据，而非脱敏数据。比如要去查询用户的手机号，然后给用户发送短信。又或者说，我们进入编辑页面编辑用户数据，
 如果编辑页面展示的是脱敏数据，然后再次点击保存，那么数据库的真实数据也会被脱敏覆盖。
 
-因此，MaskFactory 提供了 `skipMask`、`restoreMask` 两个方法来处理这种场景：
+因此，MaskManager 提供了 `skipMask`、`restoreMask` 两个方法来处理这种场景：
 
 ```java 2,7
 try {
-    MaskFactory.skipMask()
+    MaskManager.skipMask()
     
     //此处查询到的数据不会进行脱敏处理
     accountMapper.selectListByQuery(...)
 } finally {
-    MaskFactory.restoreMask()
+    MaskManager.restoreMask()
 }
 ```
 
