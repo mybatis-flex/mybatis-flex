@@ -95,11 +95,11 @@ public class Column {
         this.columnConfig = columnConfig;
     }
 
-    public String buildGetter() {
+    public String getterMethod() {
         return "get" + StringUtil.firstCharToUpperCase(property);
     }
 
-    public String buildSetter() {
+    public String setterMethod() {
         return "set" + StringUtil.firstCharToUpperCase(property);
     }
 

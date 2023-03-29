@@ -15,11 +15,11 @@ public class #(table.buildEntityClassName()) {
 
     #if(!globalConfig.isEntityWithLombok())
     #for(column: table.columns)
-    public #(column.propertySimpleType) #(column.buildGetter())() {
+    public #(column.propertySimpleType) #(column.getterMethod())() {
         return #(column.property);
     }
 
-    public void  #(column.buildSetter())(#(column.propertySimpleType) #(column.property)) {
+    public void #(column.setterMethod())(#(column.propertySimpleType) #(column.property)) {
         this.#(column.property) = #(column.property);
     }
 
