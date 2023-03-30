@@ -39,10 +39,13 @@ public class EntityTestStarter {
 
 
 //        //查询 ID 为 1 的数据
-        Account account = bootstrap.execute(AccountMapper.class, accountMapper ->
-                accountMapper.selectOneById(1));
-        System.out.println(account);
+//        Account account = bootstrap.execute(AccountMapper.class, accountMapper ->
+//                accountMapper.selectOneById(1));
+//        System.out.println(account);
 
+        AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
+        Account account = accountMapper.selectOneById(1);
+        System.out.println(account);
 //
 //        List<Account> allAccount = bootstrap.execute(AccountMapper.class, accountMapper ->
 //                accountMapper.selectListByQuery(QueryWrapper.create()));

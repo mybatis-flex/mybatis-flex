@@ -27,25 +27,30 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.apache.ibatis.util.MapUtil;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * MybatisFlex 的启动类
  *
  * <code>
  * MybatisFlexBootstrap.getInstance()
- *  .setDatasource(...)
- *  .addMapper(...)
- *  .start();
+ * .setDatasource(...)
+ * .addMapper(...)
+ * .start();
  * <p>
  * <p>
  * MybatisFlexBootstrap.getInstance()
- *  .execute(...)
+ * .execute(...)
  * </code>
  */
 public class MybatisFlexBootstrap {
@@ -62,6 +67,8 @@ public class MybatisFlexBootstrap {
     protected DbType dbType;
     protected SqlSessionFactory sqlSessionFactory;
     protected Class<? extends Log> logImpl;
+    private Map<Class<?>, Object> mapperObjects = new ConcurrentHashMap<>();
+    private ThreadLocal<SqlSession> sessionThreadLocal = new ThreadLocal<>();
 
     /**
      * 虽然提供了 getInstance，但也允许用户进行实例化，
@@ -132,6 +139,7 @@ public class MybatisFlexBootstrap {
     }
 
 
+    @Deprecated
     public <R, T> R execute(Class<T> mapperClass, Function<T, R> function) {
         try (SqlSession sqlSession = openSession()) {
             DialectFactory.setHintDbType(dbType);
@@ -143,9 +151,64 @@ public class MybatisFlexBootstrap {
     }
 
 
-    private SqlSession openSession() {
+    protected SqlSession openSession() {
+        SqlSession sqlSession = sessionThreadLocal.get();
+        if (sqlSession != null) {
+            return sqlSession;
+        }
         return sqlSessionFactory.openSession(configuration.getDefaultExecutorType(), true);
     }
+
+
+    /**
+     * 直接获取 mapper 对象执行
+     * @param mapperClass
+     * @return mapperObject
+     */
+    public <T> T getMapper(Class<T> mapperClass) {
+        Object mapperObject = MapUtil.computeIfAbsent(mapperObjects, mapperClass, clazz ->
+                Proxy.newProxyInstance(MybatisFlexBootstrap.class.getClassLoader()
+                        , new Class[]{mapperClass}
+                        , (proxy, method, args) -> {
+                            try (SqlSession sqlSession = openSession()) {
+                                DialectFactory.setHintDbType(dbType);
+                                T mapper1 = sqlSession.getMapper(mapperClass);
+                                return method.invoke(mapper1, args);
+                            } finally {
+                                DialectFactory.clearHintDbType();
+                            }
+                        }));
+        return (T) mapperObject;
+    }
+
+
+    /**
+     * 执行事务操作，不支持嵌套事务
+     *
+     * @param supplier
+     * @return false 回滚事务，true 正常执行
+     */
+    public boolean tx(Supplier<Boolean> supplier) {
+        SqlSession sqlSession = sqlSessionFactory.openSession(configuration.getDefaultExecutorType());
+        boolean success = false;
+        boolean rollback = true;
+        try {
+            sessionThreadLocal.set(sqlSession);
+            success = supplier.get();
+        } catch (Throwable e) {
+            rollback = false;
+            sqlSession.rollback();
+        } finally {
+            sessionThreadLocal.remove();
+            if (!success && rollback) {
+                sqlSession.rollback();
+            } else if (success) {
+                sqlSession.commit();
+            }
+        }
+        return success;
+    }
+
 
 
     public String getEnvironmentId() {

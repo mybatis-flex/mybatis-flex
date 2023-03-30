@@ -52,6 +52,7 @@ public class RowTestStarter {
                 .set("user_name", "lisi")
                 .set("age", 22)
                 .set("birthday", new Date());
+
         bootstrap.execute(RowMapper.class, rowMapper ->
                 rowMapper.insert("tb_account", newRow));
 
