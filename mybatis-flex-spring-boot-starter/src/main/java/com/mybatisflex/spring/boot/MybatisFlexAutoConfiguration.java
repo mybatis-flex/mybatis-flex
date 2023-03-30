@@ -42,6 +42,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
@@ -83,8 +84,7 @@ import java.util.stream.Stream;
 @ConditionalOnProperty("spring.datasource.url")
 @ConditionalOnSingleCandidate(DataSource.class)
 @EnableConfigurationProperties(MybatisFlexProperties.class)
-//@AutoConfigureAfter({DataSourceAutoConfiguration.class, MybatisLanguageDriverAutoConfiguration.class})
-@AutoConfigureAfter({ MybatisLanguageDriverAutoConfiguration.class})
+@AutoConfigureAfter({DataSourceAutoConfiguration.class, MybatisLanguageDriverAutoConfiguration.class})
 public class MybatisFlexAutoConfiguration implements InitializingBean {
 
     protected static final Logger logger = LoggerFactory.getLogger(MybatisFlexAutoConfiguration.class);
