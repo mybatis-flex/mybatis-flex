@@ -15,8 +15,8 @@
  */
 package com.mybatisflex.core;
 
+import com.mybatisflex.core.datasource.RoutingDataSource;
 import com.mybatisflex.core.dialect.DbType;
-import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
 import org.apache.ibatis.logging.Log;
@@ -57,7 +57,7 @@ public class MybatisFlexBootstrap {
 
     protected final AtomicBoolean started = new AtomicBoolean(false);
 
-    protected String environmentId = "mybatis-flex";
+    protected String environmentId;
     protected TransactionFactory transactionFactory;
 
     protected DataSource dataSource;
@@ -74,7 +74,8 @@ public class MybatisFlexBootstrap {
      * 虽然提供了 getInstance，但也允许用户进行实例化，
      * 用于创建多个 MybatisFlexBootstrap 实例达到管理多数据源的目的
      */
-    public MybatisFlexBootstrap() {
+    public MybatisFlexBootstrap(String environmentId) {
+        this.environmentId = environmentId;
     }
 
     private static volatile MybatisFlexBootstrap instance;
@@ -83,7 +84,7 @@ public class MybatisFlexBootstrap {
         if (instance == null) {
             synchronized (MybatisFlexBootstrap.class) {
                 if (instance == null) {
-                    instance = new MybatisFlexBootstrap();
+                    instance = new MybatisFlexBootstrap(FlexConsts.NAME);
                 }
             }
         }
@@ -113,7 +114,7 @@ public class MybatisFlexBootstrap {
                     transactionFactory = new JdbcTransactionFactory();
                 }
 
-                Environment environment = new Environment(environmentId, transactionFactory, dataSource);
+                Environment environment = new Environment(environmentId, transactionFactory, new RoutingDataSource(environmentId, dataSource));
                 configuration = new FlexConfiguration(environment);
             }
 
@@ -142,11 +143,8 @@ public class MybatisFlexBootstrap {
     @Deprecated
     public <R, T> R execute(Class<T> mapperClass, Function<T, R> function) {
         try (SqlSession sqlSession = openSession()) {
-            DialectFactory.setHintDbType(dbType);
             T mapper = sqlSession.getMapper(mapperClass);
             return function.apply(mapper);
-        } finally {
-            DialectFactory.clearHintDbType();
         }
     }
 
@@ -162,20 +160,18 @@ public class MybatisFlexBootstrap {
 
     /**
      * 直接获取 mapper 对象执行
+     *
      * @param mapperClass
      * @return mapperObject
      */
     public <T> T getMapper(Class<T> mapperClass) {
         Object mapperObject = MapUtil.computeIfAbsent(mapperObjects, mapperClass, clazz ->
-                Proxy.newProxyInstance(MybatisFlexBootstrap.class.getClassLoader()
+                Proxy.newProxyInstance(mapperClass.getClassLoader()
                         , new Class[]{mapperClass}
                         , (proxy, method, args) -> {
                             try (SqlSession sqlSession = openSession()) {
-                                DialectFactory.setHintDbType(dbType);
                                 T mapper1 = sqlSession.getMapper(mapperClass);
                                 return method.invoke(mapper1, args);
-                            } finally {
-                                DialectFactory.clearHintDbType();
                             }
                         }));
         return (T) mapperObject;
@@ -208,7 +204,6 @@ public class MybatisFlexBootstrap {
         }
         return success;
     }
-
 
 
     public String getEnvironmentId() {

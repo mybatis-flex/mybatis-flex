@@ -40,8 +40,8 @@ import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
@@ -80,28 +80,30 @@ import java.util.stream.Stream;
  */
 @org.springframework.context.annotation.Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
+@ConditionalOnProperty("spring.datasource.url")
 @ConditionalOnSingleCandidate(DataSource.class)
 @EnableConfigurationProperties(MybatisFlexProperties.class)
-@AutoConfigureAfter({DataSourceAutoConfiguration.class, MybatisLanguageDriverAutoConfiguration.class})
+//@AutoConfigureAfter({DataSourceAutoConfiguration.class, MybatisLanguageDriverAutoConfiguration.class})
+@AutoConfigureAfter({ MybatisLanguageDriverAutoConfiguration.class})
 public class MybatisFlexAutoConfiguration implements InitializingBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(MybatisFlexAutoConfiguration.class);
+    protected static final Logger logger = LoggerFactory.getLogger(MybatisFlexAutoConfiguration.class);
 
-    private final MybatisFlexProperties properties;
+    protected final MybatisFlexProperties properties;
 
-    private final Interceptor[] interceptors;
+    protected final Interceptor[] interceptors;
 
-    private final TypeHandler[] typeHandlers;
+    protected final TypeHandler[] typeHandlers;
 
-    private final LanguageDriver[] languageDrivers;
+    protected final LanguageDriver[] languageDrivers;
 
-    private final ResourceLoader resourceLoader;
+    protected final ResourceLoader resourceLoader;
 
-    private final DatabaseIdProvider databaseIdProvider;
+    protected final DatabaseIdProvider databaseIdProvider;
 
-    private final List<ConfigurationCustomizer> configurationCustomizers;
+    protected final List<ConfigurationCustomizer> configurationCustomizers;
 
-    private final List<SqlSessionFactoryBeanCustomizer> sqlSessionFactoryBeanCustomizers;
+    protected final List<SqlSessionFactoryBeanCustomizer> sqlSessionFactoryBeanCustomizers;
 
     public MybatisFlexAutoConfiguration(MybatisFlexProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider,
                                         ObjectProvider<TypeHandler[]> typeHandlersProvider, ObjectProvider<LanguageDriver[]> languageDriversProvider,
@@ -188,7 +190,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         return factory.getObject();
     }
 
-    private void applyConfiguration(SqlSessionFactoryBean factory) {
+    protected void applyConfiguration(SqlSessionFactoryBean factory) {
         MybatisFlexProperties.CoreConfiguration coreConfiguration = this.properties.getConfiguration();
 //    Configuration configuration = null;
         FlexConfiguration configuration = null;
@@ -206,7 +208,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         factory.setConfiguration(configuration);
     }
 
-    private void applySqlSessionFactoryBeanCustomizers(SqlSessionFactoryBean factory) {
+    protected void applySqlSessionFactoryBeanCustomizers(SqlSessionFactoryBean factory) {
         if (!CollectionUtils.isEmpty(this.sqlSessionFactoryBeanCustomizers)) {
             for (SqlSessionFactoryBeanCustomizer customizer : this.sqlSessionFactoryBeanCustomizers) {
                 customizer.customize(factory);

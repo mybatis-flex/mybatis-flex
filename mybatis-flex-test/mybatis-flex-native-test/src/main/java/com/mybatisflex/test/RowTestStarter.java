@@ -35,7 +35,7 @@ public class RowTestStarter {
                 .addScript("data.sql")
                 .build();
 
-        MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
+        MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
                 .setDataSource(dataSource)
                 .setLogImpl(StdOutImpl.class)
                 .start();

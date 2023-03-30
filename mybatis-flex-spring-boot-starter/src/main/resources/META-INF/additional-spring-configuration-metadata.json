@@ -25,6 +25,12 @@
         "reason": "The 'userdirective' is deprecated since Velocity 2.x. This property defined for keeping backward compatibility with older velocity version.",
         "replacement": "mybatis-flex.scripting-language-driver.velocity.velocity-settings.runtime.custom_directives"
       }
+    },
+    {
+      "defaultValue": true,
+      "name": "mybatis-flex.datasource",
+      "description": "多数据源配置",
+      "type": "java.util.Map<java.lang.String,com.mybatisflex.spring.boot.DataSourceProperty>"
     }
   ]
 }

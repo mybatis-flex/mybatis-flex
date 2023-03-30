@@ -29,6 +29,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -42,649 +43,662 @@ import java.util.stream.Stream;
 public class MybatisFlexProperties {
 
 
-  private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
+    private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 
-  /**
-   * Location of MyBatis xml config file.
-   */
-  private String configLocation;
-
-  /**
-   * Locations of MyBatis mapper files.
-   */
-  private String[] mapperLocations;
-
-  /**
-   * Packages to search type aliases. (Package delimiters are ",; \t\n")
-   */
-  private String typeAliasesPackage;
-
-  /**
-   * The super class for filtering type alias. If this not specifies, the MyBatis deal as type alias all classes that
-   * searched from typeAliasesPackage.
-   */
-  private Class<?> typeAliasesSuperType;
-
-  /**
-   * Packages to search for type handlers. (Package delimiters are ",; \t\n")
-   */
-  private String typeHandlersPackage;
-
-  /**
-   * Indicates whether perform presence check of the MyBatis xml config file.
-   */
-  private boolean checkConfigLocation = false;
-
-  /**
-   * Execution mode for {@link org.mybatis.spring.SqlSessionTemplate}.
-   */
-  private ExecutorType executorType;
-
-  /**
-   * The default scripting language driver class. (Available when use together with mybatis-spring 2.0.2+)
-   */
-  private Class<? extends LanguageDriver> defaultScriptingLanguageDriver;
-
-  /**
-   * Externalized properties for MyBatis configuration.
-   */
-  private Properties configurationProperties;
-
-  /**
-   * A Configuration object for customize default settings. If {@link #configLocation} is specified, this property is
-   * not used.
-   */
-  private CoreConfiguration configuration;
-
-  /**
-   * @since 1.1.0
-   */
-  public String getConfigLocation() {
-    return this.configLocation;
-  }
-
-  /**
-   * @since 1.1.0
-   */
-  public void setConfigLocation(String configLocation) {
-    this.configLocation = configLocation;
-  }
-
-  public String[] getMapperLocations() {
-    return this.mapperLocations;
-  }
-
-  public void setMapperLocations(String[] mapperLocations) {
-    this.mapperLocations = mapperLocations;
-  }
-
-  public String getTypeHandlersPackage() {
-    return this.typeHandlersPackage;
-  }
-
-  public void setTypeHandlersPackage(String typeHandlersPackage) {
-    this.typeHandlersPackage = typeHandlersPackage;
-  }
-
-  public String getTypeAliasesPackage() {
-    return this.typeAliasesPackage;
-  }
-
-  public void setTypeAliasesPackage(String typeAliasesPackage) {
-    this.typeAliasesPackage = typeAliasesPackage;
-  }
-
-  /**
-   * @since 1.3.3
-   */
-  public Class<?> getTypeAliasesSuperType() {
-    return typeAliasesSuperType;
-  }
-
-  /**
-   * @since 1.3.3
-   */
-  public void setTypeAliasesSuperType(Class<?> typeAliasesSuperType) {
-    this.typeAliasesSuperType = typeAliasesSuperType;
-  }
-
-  public boolean isCheckConfigLocation() {
-    return this.checkConfigLocation;
-  }
-
-  public void setCheckConfigLocation(boolean checkConfigLocation) {
-    this.checkConfigLocation = checkConfigLocation;
-  }
-
-  public ExecutorType getExecutorType() {
-    return this.executorType;
-  }
-
-  public void setExecutorType(ExecutorType executorType) {
-    this.executorType = executorType;
-  }
-
-  /**
-   * @since 2.1.0
-   */
-  public Class<? extends LanguageDriver> getDefaultScriptingLanguageDriver() {
-    return defaultScriptingLanguageDriver;
-  }
-
-  /**
-   * @since 2.1.0
-   */
-  public void setDefaultScriptingLanguageDriver(Class<? extends LanguageDriver> defaultScriptingLanguageDriver) {
-    this.defaultScriptingLanguageDriver = defaultScriptingLanguageDriver;
-  }
-
-  /**
-   * @since 1.2.0
-   */
-  public Properties getConfigurationProperties() {
-    return configurationProperties;
-  }
-
-  /**
-   * @since 1.2.0
-   */
-  public void setConfigurationProperties(Properties configurationProperties) {
-    this.configurationProperties = configurationProperties;
-  }
-
-  public CoreConfiguration getConfiguration() {
-    return configuration;
-  }
-
-  public void setConfiguration(CoreConfiguration configuration) {
-    this.configuration = configuration;
-  }
-
-  public Resource[] resolveMapperLocations() {
-    return Stream.of(Optional.ofNullable(this.mapperLocations).orElse(new String[0]))
-        .flatMap(location -> Stream.of(getResources(location))).toArray(Resource[]::new);
-  }
-
-  private Resource[] getResources(String location) {
-    try {
-      return resourceResolver.getResources(location);
-    } catch (IOException e) {
-      return new Resource[0];
-    }
-  }
-
-  /**
-   * The configuration properties for mybatis core module.
-   *
-   * @since 3.0.0
-   */
-  public static class CoreConfiguration {
+    //多数据源的配置
+    //mybatis-flex.datasource.ds1.url=***
+    //mybatis-flex.datasource.ds2.url=***
+    private Map<String, DataSourceProperty> datasource;
 
     /**
-     * Allows using RowBounds on nested statements. If allow, set the false. Default is false.
+     * Location of MyBatis xml config file.
      */
-    private Boolean safeRowBoundsEnabled;
+    private String configLocation;
 
     /**
-     * Allows using ResultHandler on nested statements. If allow, set the false. Default is true.
+     * Locations of MyBatis mapper files.
      */
-    private Boolean safeResultHandlerEnabled;
+    private String[] mapperLocations;
 
     /**
-     * Enables automatic mapping from classic database column names A_COLUMN to camel case classic Java property names
-     * aColumn. Default is true.
+     * Packages to search type aliases. (Package delimiters are ",; \t\n")
      */
-    private Boolean mapUnderscoreToCamelCase = true;
+    private String typeAliasesPackage;
 
     /**
-     * When enabled, any method call will load all the lazy properties of the object. Otherwise, each property is loaded
-     * on demand (see also lazyLoadTriggerMethods). Default is false.
+     * The super class for filtering type alias. If this not specifies, the MyBatis deal as type alias all classes that
+     * searched from typeAliasesPackage.
      */
-    private Boolean aggressiveLazyLoading;
+    private Class<?> typeAliasesSuperType;
 
     /**
-     * Allows or disallows multiple ResultSets to be returned from a single statement (compatible driver required).
-     * Default is true.
+     * Packages to search for type handlers. (Package delimiters are ",; \t\n")
      */
-    private Boolean multipleResultSetsEnabled;
+    private String typeHandlersPackage;
 
     /**
-     * Allows JDBC support for generated keys. A compatible driver is required. This setting forces generated keys to be
-     * used if set to true, as some drivers deny compatibility but still work (e.g. Derby). Default is false.
+     * Indicates whether perform presence check of the MyBatis xml config file.
      */
-    private Boolean useGeneratedKeys;
+    private boolean checkConfigLocation = false;
 
     /**
-     * Uses the column label instead of the column name. Different drivers behave differently in this respect. Refer to
-     * the driver documentation, or test out both modes to determine how your driver behaves. Default is true.
+     * Execution mode for {@link org.mybatis.spring.SqlSessionTemplate}.
      */
-    private Boolean useColumnLabel;
+    private ExecutorType executorType;
 
     /**
-     * Globally enables or disables any caches configured in any mapper under this configuration. Default is true.
+     * The default scripting language driver class. (Available when use together with mybatis-spring 2.0.2+)
      */
-    private Boolean cacheEnabled;
+    private Class<? extends LanguageDriver> defaultScriptingLanguageDriver;
 
     /**
-     * Specifies if setters or map's put method will be called when a retrieved value is null. It is useful when you
-     * rely on Map.keySet() or null value initialization. Note primitives such as (int,boolean,etc.) will not be set to
-     * null. Default is false.
+     * Externalized properties for MyBatis configuration.
      */
-    private Boolean callSettersOnNulls;
+    private Properties configurationProperties;
 
     /**
-     * Allow referencing statement parameters by their actual names declared in the method signature. To use this
-     * feature, your project must be compiled in Java 8 with -parameters option. Default is true.
+     * A Configuration object for customize default settings. If {@link #configLocation} is specified, this property is
+     * not used.
      */
-    private Boolean useActualParamName;
+    private CoreConfiguration configuration;
+
+    public Map<String, DataSourceProperty> getDatasource() {
+        return datasource;
+    }
+
+    public void setDatasource(Map<String, DataSourceProperty> datasource) {
+        this.datasource = datasource;
+    }
 
     /**
-     * MyBatis, by default, returns null when all the columns of a returned row are NULL. When this setting is enabled,
-     * MyBatis returns an empty instance instead. Note that it is also applied to nested results (i.e. collectioin and
-     * association). Default is false.
+     * @since 1.1.0
      */
-    private Boolean returnInstanceForEmptyRow;
+    public String getConfigLocation() {
+        return this.configLocation;
+    }
 
     /**
-     * Removes extra whitespace characters from the SQL. Note that this also affects literal strings in SQL. Default is
-     * false.
+     * @since 1.1.0
      */
-    private Boolean shrinkWhitespacesInSql;
+    public void setConfigLocation(String configLocation) {
+        this.configLocation = configLocation;
+    }
+
+    public String[] getMapperLocations() {
+        return this.mapperLocations;
+    }
+
+    public void setMapperLocations(String[] mapperLocations) {
+        this.mapperLocations = mapperLocations;
+    }
+
+    public String getTypeHandlersPackage() {
+        return this.typeHandlersPackage;
+    }
+
+    public void setTypeHandlersPackage(String typeHandlersPackage) {
+        this.typeHandlersPackage = typeHandlersPackage;
+    }
+
+    public String getTypeAliasesPackage() {
+        return this.typeAliasesPackage;
+    }
+
+    public void setTypeAliasesPackage(String typeAliasesPackage) {
+        this.typeAliasesPackage = typeAliasesPackage;
+    }
 
     /**
-     * Specifies the default value of 'nullable' attribute on 'foreach' tag. Default is false.
+     * @since 1.3.3
      */
-    private Boolean nullableOnForEach;
+    public Class<?> getTypeAliasesSuperType() {
+        return typeAliasesSuperType;
+    }
 
     /**
-     * When applying constructor auto-mapping, argument name is used to search the column to map instead of relying on
-     * the column order. Default is false.
+     * @since 1.3.3
      */
-    private Boolean argNameBasedConstructorAutoMapping;
+    public void setTypeAliasesSuperType(Class<?> typeAliasesSuperType) {
+        this.typeAliasesSuperType = typeAliasesSuperType;
+    }
+
+    public boolean isCheckConfigLocation() {
+        return this.checkConfigLocation;
+    }
+
+    public void setCheckConfigLocation(boolean checkConfigLocation) {
+        this.checkConfigLocation = checkConfigLocation;
+    }
+
+    public ExecutorType getExecutorType() {
+        return this.executorType;
+    }
+
+    public void setExecutorType(ExecutorType executorType) {
+        this.executorType = executorType;
+    }
 
     /**
-     * Globally enables or disables lazy loading. When enabled, all relations will be lazily loaded. This value can be
-     * superseded for a specific relation by using the fetchType attribute on it. Default is False.
+     * @since 2.1.0
      */
-    private Boolean lazyLoadingEnabled;
+    public Class<? extends LanguageDriver> getDefaultScriptingLanguageDriver() {
+        return defaultScriptingLanguageDriver;
+    }
 
     /**
-     * Sets the number of seconds the driver will wait for a response from the database.
+     * @since 2.1.0
      */
-    private Integer defaultStatementTimeout;
+    public void setDefaultScriptingLanguageDriver(Class<? extends LanguageDriver> defaultScriptingLanguageDriver) {
+        this.defaultScriptingLanguageDriver = defaultScriptingLanguageDriver;
+    }
 
     /**
-     * Sets the driver a hint as to control fetching size for return results. This parameter value can be override by a
-     * query setting.
+     * @since 1.2.0
      */
-    private Integer defaultFetchSize;
+    public Properties getConfigurationProperties() {
+        return configurationProperties;
+    }
 
     /**
-     * MyBatis uses local cache to prevent circular references and speed up repeated nested queries. By default
-     * (SESSION) all queries executed during a session are cached. If localCacheScope=STATEMENT local session will be
-     * used just for statement execution, no data will be shared between two different calls to the same SqlSession.
-     * Default is SESSION.
+     * @since 1.2.0
      */
-    private LocalCacheScope localCacheScope;
+    public void setConfigurationProperties(Properties configurationProperties) {
+        this.configurationProperties = configurationProperties;
+    }
+
+    public CoreConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(CoreConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public Resource[] resolveMapperLocations() {
+        return Stream.of(Optional.ofNullable(this.mapperLocations).orElse(new String[0]))
+                .flatMap(location -> Stream.of(getResources(location))).toArray(Resource[]::new);
+    }
+
+    private Resource[] getResources(String location) {
+        try {
+            return resourceResolver.getResources(location);
+        } catch (IOException e) {
+            return new Resource[0];
+        }
+    }
 
     /**
-     * Specifies the JDBC type for null values when no specific JDBC type was provided for the parameter. Some drivers
-     * require specifying the column JDBC type but others work with generic values like NULL, VARCHAR or OTHER. Default
-     * is OTHER.
+     * The configuration properties for mybatis core module.
+     *
+     * @since 3.0.0
      */
-    private JdbcType jdbcTypeForNull;
+    public static class CoreConfiguration {
 
-    /**
-     * Specifies a scroll strategy when omit it per statement settings.
-     */
-    private ResultSetType defaultResultSetType;
+        /**
+         * Allows using RowBounds on nested statements. If allow, set the false. Default is false.
+         */
+        private Boolean safeRowBoundsEnabled;
 
-    /**
-     * Configures the default executor. SIMPLE executor does nothing special. REUSE executor reuses prepared statements.
-     * BATCH executor reuses statements and batches updates. Default is SIMPLE.
-     */
-    private ExecutorType defaultExecutorType;
+        /**
+         * Allows using ResultHandler on nested statements. If allow, set the false. Default is true.
+         */
+        private Boolean safeResultHandlerEnabled;
 
-    /**
-     * Specifies if and how MyBatis should automatically map columns to fields/properties. NONE disables auto-mapping.
-     * PARTIAL will only auto-map results with no nested result mappings defined inside. FULL will auto-map result
-     * mappings of any complexity (containing nested or otherwise). Default is PARTIAL.
-     */
-    private AutoMappingBehavior autoMappingBehavior;
+        /**
+         * Enables automatic mapping from classic database column names A_COLUMN to camel case classic Java property names
+         * aColumn. Default is true.
+         */
+        private Boolean mapUnderscoreToCamelCase = true;
 
-    /**
-     * Specify the behavior when detects an unknown column (or unknown property type) of automatic mapping target.
-     * Default is NONE.
-     */
-    private AutoMappingUnknownColumnBehavior autoMappingUnknownColumnBehavior;
+        /**
+         * When enabled, any method call will load all the lazy properties of the object. Otherwise, each property is loaded
+         * on demand (see also lazyLoadTriggerMethods). Default is false.
+         */
+        private Boolean aggressiveLazyLoading;
 
-    /**
-     * Specifies the prefix string that MyBatis will add to the logger names.
-     */
-    private String logPrefix;
+        /**
+         * Allows or disallows multiple ResultSets to be returned from a single statement (compatible driver required).
+         * Default is true.
+         */
+        private Boolean multipleResultSetsEnabled;
 
-    /**
-     * Specifies which Object's methods trigger a lazy load. Default is [equals,clone,hashCode,toString].
-     */
-    private Set<String> lazyLoadTriggerMethods;
+        /**
+         * Allows JDBC support for generated keys. A compatible driver is required. This setting forces generated keys to be
+         * used if set to true, as some drivers deny compatibility but still work (e.g. Derby). Default is false.
+         */
+        private Boolean useGeneratedKeys;
 
-    /**
-     * Specifies which logging implementation MyBatis should use. If this setting is not present logging implementation
-     * will be autodiscovered.
-     */
-    private Class<? extends Log> logImpl;
+        /**
+         * Uses the column label instead of the column name. Different drivers behave differently in this respect. Refer to
+         * the driver documentation, or test out both modes to determine how your driver behaves. Default is true.
+         */
+        private Boolean useColumnLabel;
 
-    /**
-     * Specifies VFS implementations.
-     */
-    private Class<? extends VFS> vfsImpl;
+        /**
+         * Globally enables or disables any caches configured in any mapper under this configuration. Default is true.
+         */
+        private Boolean cacheEnabled;
 
-    /**
-     * Specifies an sql provider class that holds provider method. This class apply to the type(or value) attribute on
-     * sql provider annotation(e.g. @SelectProvider), when these attribute was omitted.
-     */
-    private Class<?> defaultSqlProviderType;
+        /**
+         * Specifies if setters or map's put method will be called when a retrieved value is null. It is useful when you
+         * rely on Map.keySet() or null value initialization. Note primitives such as (int,boolean,etc.) will not be set to
+         * null. Default is false.
+         */
+        private Boolean callSettersOnNulls;
 
-    /**
-     * Specifies the TypeHandler used by default for Enum.
-     */
-    Class<? extends TypeHandler> defaultEnumTypeHandler;
+        /**
+         * Allow referencing statement parameters by their actual names declared in the method signature. To use this
+         * feature, your project must be compiled in Java 8 with -parameters option. Default is true.
+         */
+        private Boolean useActualParamName;
 
-    /**
-     * Specifies the class that provides an instance of Configuration. The returned Configuration instance is used to
-     * load lazy properties of deserialized objects. This class must have a method with a signature static Configuration
-     * getConfiguration().
-     */
-    private Class<?> configurationFactory;
+        /**
+         * MyBatis, by default, returns null when all the columns of a returned row are NULL. When this setting is enabled,
+         * MyBatis returns an empty instance instead. Note that it is also applied to nested results (i.e. collectioin and
+         * association). Default is false.
+         */
+        private Boolean returnInstanceForEmptyRow;
 
-    /**
-     * Specify any configuration variables.
-     */
-    private Properties variables;
+        /**
+         * Removes extra whitespace characters from the SQL. Note that this also affects literal strings in SQL. Default is
+         * false.
+         */
+        private Boolean shrinkWhitespacesInSql;
 
-    public Boolean getSafeRowBoundsEnabled() {
-      return safeRowBoundsEnabled;
+        /**
+         * Specifies the default value of 'nullable' attribute on 'foreach' tag. Default is false.
+         */
+        private Boolean nullableOnForEach;
+
+        /**
+         * When applying constructor auto-mapping, argument name is used to search the column to map instead of relying on
+         * the column order. Default is false.
+         */
+        private Boolean argNameBasedConstructorAutoMapping;
+
+        /**
+         * Globally enables or disables lazy loading. When enabled, all relations will be lazily loaded. This value can be
+         * superseded for a specific relation by using the fetchType attribute on it. Default is False.
+         */
+        private Boolean lazyLoadingEnabled;
+
+        /**
+         * Sets the number of seconds the driver will wait for a response from the database.
+         */
+        private Integer defaultStatementTimeout;
+
+        /**
+         * Sets the driver a hint as to control fetching size for return results. This parameter value can be override by a
+         * query setting.
+         */
+        private Integer defaultFetchSize;
+
+        /**
+         * MyBatis uses local cache to prevent circular references and speed up repeated nested queries. By default
+         * (SESSION) all queries executed during a session are cached. If localCacheScope=STATEMENT local session will be
+         * used just for statement execution, no data will be shared between two different calls to the same SqlSession.
+         * Default is SESSION.
+         */
+        private LocalCacheScope localCacheScope;
+
+        /**
+         * Specifies the JDBC type for null values when no specific JDBC type was provided for the parameter. Some drivers
+         * require specifying the column JDBC type but others work with generic values like NULL, VARCHAR or OTHER. Default
+         * is OTHER.
+         */
+        private JdbcType jdbcTypeForNull;
+
+        /**
+         * Specifies a scroll strategy when omit it per statement settings.
+         */
+        private ResultSetType defaultResultSetType;
+
+        /**
+         * Configures the default executor. SIMPLE executor does nothing special. REUSE executor reuses prepared statements.
+         * BATCH executor reuses statements and batches updates. Default is SIMPLE.
+         */
+        private ExecutorType defaultExecutorType;
+
+        /**
+         * Specifies if and how MyBatis should automatically map columns to fields/properties. NONE disables auto-mapping.
+         * PARTIAL will only auto-map results with no nested result mappings defined inside. FULL will auto-map result
+         * mappings of any complexity (containing nested or otherwise). Default is PARTIAL.
+         */
+        private AutoMappingBehavior autoMappingBehavior;
+
+        /**
+         * Specify the behavior when detects an unknown column (or unknown property type) of automatic mapping target.
+         * Default is NONE.
+         */
+        private AutoMappingUnknownColumnBehavior autoMappingUnknownColumnBehavior;
+
+        /**
+         * Specifies the prefix string that MyBatis will add to the logger names.
+         */
+        private String logPrefix;
+
+        /**
+         * Specifies which Object's methods trigger a lazy load. Default is [equals,clone,hashCode,toString].
+         */
+        private Set<String> lazyLoadTriggerMethods;
+
+        /**
+         * Specifies which logging implementation MyBatis should use. If this setting is not present logging implementation
+         * will be autodiscovered.
+         */
+        private Class<? extends Log> logImpl;
+
+        /**
+         * Specifies VFS implementations.
+         */
+        private Class<? extends VFS> vfsImpl;
+
+        /**
+         * Specifies an sql provider class that holds provider method. This class apply to the type(or value) attribute on
+         * sql provider annotation(e.g. @SelectProvider), when these attribute was omitted.
+         */
+        private Class<?> defaultSqlProviderType;
+
+        /**
+         * Specifies the TypeHandler used by default for Enum.
+         */
+        Class<? extends TypeHandler> defaultEnumTypeHandler;
+
+        /**
+         * Specifies the class that provides an instance of Configuration. The returned Configuration instance is used to
+         * load lazy properties of deserialized objects. This class must have a method with a signature static Configuration
+         * getConfiguration().
+         */
+        private Class<?> configurationFactory;
+
+        /**
+         * Specify any configuration variables.
+         */
+        private Properties variables;
+
+        public Boolean getSafeRowBoundsEnabled() {
+            return safeRowBoundsEnabled;
+        }
+
+        public void setSafeRowBoundsEnabled(Boolean safeRowBoundsEnabled) {
+            this.safeRowBoundsEnabled = safeRowBoundsEnabled;
+        }
+
+        public Boolean getSafeResultHandlerEnabled() {
+            return safeResultHandlerEnabled;
+        }
+
+        public void setSafeResultHandlerEnabled(Boolean safeResultHandlerEnabled) {
+            this.safeResultHandlerEnabled = safeResultHandlerEnabled;
+        }
+
+        public Boolean getMapUnderscoreToCamelCase() {
+            return mapUnderscoreToCamelCase;
+        }
+
+        public void setMapUnderscoreToCamelCase(Boolean mapUnderscoreToCamelCase) {
+            this.mapUnderscoreToCamelCase = mapUnderscoreToCamelCase;
+        }
+
+        public Boolean getAggressiveLazyLoading() {
+            return aggressiveLazyLoading;
+        }
+
+        public void setAggressiveLazyLoading(Boolean aggressiveLazyLoading) {
+            this.aggressiveLazyLoading = aggressiveLazyLoading;
+        }
+
+        public Boolean getMultipleResultSetsEnabled() {
+            return multipleResultSetsEnabled;
+        }
+
+        public void setMultipleResultSetsEnabled(Boolean multipleResultSetsEnabled) {
+            this.multipleResultSetsEnabled = multipleResultSetsEnabled;
+        }
+
+        public Boolean getUseGeneratedKeys() {
+            return useGeneratedKeys;
+        }
+
+        public void setUseGeneratedKeys(Boolean useGeneratedKeys) {
+            this.useGeneratedKeys = useGeneratedKeys;
+        }
+
+        public Boolean getUseColumnLabel() {
+            return useColumnLabel;
+        }
+
+        public void setUseColumnLabel(Boolean useColumnLabel) {
+            this.useColumnLabel = useColumnLabel;
+        }
+
+        public Boolean getCacheEnabled() {
+            return cacheEnabled;
+        }
+
+        public void setCacheEnabled(Boolean cacheEnabled) {
+            this.cacheEnabled = cacheEnabled;
+        }
+
+        public Boolean getCallSettersOnNulls() {
+            return callSettersOnNulls;
+        }
+
+        public void setCallSettersOnNulls(Boolean callSettersOnNulls) {
+            this.callSettersOnNulls = callSettersOnNulls;
+        }
+
+        public Boolean getUseActualParamName() {
+            return useActualParamName;
+        }
+
+        public void setUseActualParamName(Boolean useActualParamName) {
+            this.useActualParamName = useActualParamName;
+        }
+
+        public Boolean getReturnInstanceForEmptyRow() {
+            return returnInstanceForEmptyRow;
+        }
+
+        public void setReturnInstanceForEmptyRow(Boolean returnInstanceForEmptyRow) {
+            this.returnInstanceForEmptyRow = returnInstanceForEmptyRow;
+        }
+
+        public Boolean getShrinkWhitespacesInSql() {
+            return shrinkWhitespacesInSql;
+        }
+
+        public void setShrinkWhitespacesInSql(Boolean shrinkWhitespacesInSql) {
+            this.shrinkWhitespacesInSql = shrinkWhitespacesInSql;
+        }
+
+        public Boolean getNullableOnForEach() {
+            return nullableOnForEach;
+        }
+
+        public void setNullableOnForEach(Boolean nullableOnForEach) {
+            this.nullableOnForEach = nullableOnForEach;
+        }
+
+        public Boolean getArgNameBasedConstructorAutoMapping() {
+            return argNameBasedConstructorAutoMapping;
+        }
+
+        public void setArgNameBasedConstructorAutoMapping(Boolean argNameBasedConstructorAutoMapping) {
+            this.argNameBasedConstructorAutoMapping = argNameBasedConstructorAutoMapping;
+        }
+
+        public String getLogPrefix() {
+            return logPrefix;
+        }
+
+        public void setLogPrefix(String logPrefix) {
+            this.logPrefix = logPrefix;
+        }
+
+        public Class<? extends Log> getLogImpl() {
+            return logImpl;
+        }
+
+        public void setLogImpl(Class<? extends Log> logImpl) {
+            this.logImpl = logImpl;
+        }
+
+        public Class<? extends VFS> getVfsImpl() {
+            return vfsImpl;
+        }
+
+        public void setVfsImpl(Class<? extends VFS> vfsImpl) {
+            this.vfsImpl = vfsImpl;
+        }
+
+        public Class<?> getDefaultSqlProviderType() {
+            return defaultSqlProviderType;
+        }
+
+        public void setDefaultSqlProviderType(Class<?> defaultSqlProviderType) {
+            this.defaultSqlProviderType = defaultSqlProviderType;
+        }
+
+        public LocalCacheScope getLocalCacheScope() {
+            return localCacheScope;
+        }
+
+        public void setLocalCacheScope(LocalCacheScope localCacheScope) {
+            this.localCacheScope = localCacheScope;
+        }
+
+        public JdbcType getJdbcTypeForNull() {
+            return jdbcTypeForNull;
+        }
+
+        public void setJdbcTypeForNull(JdbcType jdbcTypeForNull) {
+            this.jdbcTypeForNull = jdbcTypeForNull;
+        }
+
+        public Set<String> getLazyLoadTriggerMethods() {
+            return lazyLoadTriggerMethods;
+        }
+
+        public void setLazyLoadTriggerMethods(Set<String> lazyLoadTriggerMethods) {
+            this.lazyLoadTriggerMethods = lazyLoadTriggerMethods;
+        }
+
+        public Integer getDefaultStatementTimeout() {
+            return defaultStatementTimeout;
+        }
+
+        public void setDefaultStatementTimeout(Integer defaultStatementTimeout) {
+            this.defaultStatementTimeout = defaultStatementTimeout;
+        }
+
+        public Integer getDefaultFetchSize() {
+            return defaultFetchSize;
+        }
+
+        public void setDefaultFetchSize(Integer defaultFetchSize) {
+            this.defaultFetchSize = defaultFetchSize;
+        }
+
+        public ResultSetType getDefaultResultSetType() {
+            return defaultResultSetType;
+        }
+
+        public void setDefaultResultSetType(ResultSetType defaultResultSetType) {
+            this.defaultResultSetType = defaultResultSetType;
+        }
+
+        public ExecutorType getDefaultExecutorType() {
+            return defaultExecutorType;
+        }
+
+        public void setDefaultExecutorType(ExecutorType defaultExecutorType) {
+            this.defaultExecutorType = defaultExecutorType;
+        }
+
+        public AutoMappingBehavior getAutoMappingBehavior() {
+            return autoMappingBehavior;
+        }
+
+        public void setAutoMappingBehavior(AutoMappingBehavior autoMappingBehavior) {
+            this.autoMappingBehavior = autoMappingBehavior;
+        }
+
+        public AutoMappingUnknownColumnBehavior getAutoMappingUnknownColumnBehavior() {
+            return autoMappingUnknownColumnBehavior;
+        }
+
+        public void setAutoMappingUnknownColumnBehavior(AutoMappingUnknownColumnBehavior autoMappingUnknownColumnBehavior) {
+            this.autoMappingUnknownColumnBehavior = autoMappingUnknownColumnBehavior;
+        }
+
+        public Properties getVariables() {
+            return variables;
+        }
+
+        public void setVariables(Properties variables) {
+            this.variables = variables;
+        }
+
+        public Boolean getLazyLoadingEnabled() {
+            return lazyLoadingEnabled;
+        }
+
+        public void setLazyLoadingEnabled(Boolean lazyLoadingEnabled) {
+            this.lazyLoadingEnabled = lazyLoadingEnabled;
+        }
+
+        public Class<?> getConfigurationFactory() {
+            return configurationFactory;
+        }
+
+        public void setConfigurationFactory(Class<?> configurationFactory) {
+            this.configurationFactory = configurationFactory;
+        }
+
+        public Class<? extends TypeHandler> getDefaultEnumTypeHandler() {
+            return defaultEnumTypeHandler;
+        }
+
+        public void setDefaultEnumTypeHandler(Class<? extends TypeHandler> defaultEnumTypeHandler) {
+            this.defaultEnumTypeHandler = defaultEnumTypeHandler;
+        }
+
+        void applyTo(Configuration target) {
+            PropertyMapper mapper = PropertyMapper.get().alwaysApplyingWhenNonNull();
+            mapper.from(getSafeRowBoundsEnabled()).to(target::setSafeRowBoundsEnabled);
+            mapper.from(getSafeResultHandlerEnabled()).to(target::setSafeResultHandlerEnabled);
+            mapper.from(getMapUnderscoreToCamelCase()).to(target::setMapUnderscoreToCamelCase);
+            mapper.from(getAggressiveLazyLoading()).to(target::setAggressiveLazyLoading);
+            mapper.from(getMultipleResultSetsEnabled()).to(target::setMultipleResultSetsEnabled);
+            mapper.from(getUseGeneratedKeys()).to(target::setUseGeneratedKeys);
+            mapper.from(getUseColumnLabel()).to(target::setUseColumnLabel);
+            mapper.from(getCacheEnabled()).to(target::setCacheEnabled);
+            mapper.from(getCallSettersOnNulls()).to(target::setCallSettersOnNulls);
+            mapper.from(getUseActualParamName()).to(target::setUseActualParamName);
+            mapper.from(getReturnInstanceForEmptyRow()).to(target::setReturnInstanceForEmptyRow);
+            mapper.from(getShrinkWhitespacesInSql()).to(target::setShrinkWhitespacesInSql);
+            mapper.from(getNullableOnForEach()).to(target::setNullableOnForEach);
+            mapper.from(getArgNameBasedConstructorAutoMapping()).to(target::setArgNameBasedConstructorAutoMapping);
+            mapper.from(getLazyLoadingEnabled()).to(target::setLazyLoadingEnabled);
+            mapper.from(getLogPrefix()).to(target::setLogPrefix);
+            mapper.from(getLazyLoadTriggerMethods()).to(target::setLazyLoadTriggerMethods);
+            mapper.from(getDefaultStatementTimeout()).to(target::setDefaultStatementTimeout);
+            mapper.from(getDefaultFetchSize()).to(target::setDefaultFetchSize);
+            mapper.from(getLocalCacheScope()).to(target::setLocalCacheScope);
+            mapper.from(getJdbcTypeForNull()).to(target::setJdbcTypeForNull);
+            mapper.from(getDefaultResultSetType()).to(target::setDefaultResultSetType);
+            mapper.from(getDefaultExecutorType()).to(target::setDefaultExecutorType);
+            mapper.from(getAutoMappingBehavior()).to(target::setAutoMappingBehavior);
+            mapper.from(getAutoMappingUnknownColumnBehavior()).to(target::setAutoMappingUnknownColumnBehavior);
+            mapper.from(getVariables()).to(target::setVariables);
+            mapper.from(getLogImpl()).to(target::setLogImpl);
+            mapper.from(getVfsImpl()).to(target::setVfsImpl);
+            mapper.from(getDefaultSqlProviderType()).to(target::setDefaultSqlProviderType);
+            mapper.from(getConfigurationFactory()).to(target::setConfigurationFactory);
+            mapper.from(getDefaultEnumTypeHandler()).to(target::setDefaultEnumTypeHandler);
+        }
+
     }
-
-    public void setSafeRowBoundsEnabled(Boolean safeRowBoundsEnabled) {
-      this.safeRowBoundsEnabled = safeRowBoundsEnabled;
-    }
-
-    public Boolean getSafeResultHandlerEnabled() {
-      return safeResultHandlerEnabled;
-    }
-
-    public void setSafeResultHandlerEnabled(Boolean safeResultHandlerEnabled) {
-      this.safeResultHandlerEnabled = safeResultHandlerEnabled;
-    }
-
-    public Boolean getMapUnderscoreToCamelCase() {
-      return mapUnderscoreToCamelCase;
-    }
-
-    public void setMapUnderscoreToCamelCase(Boolean mapUnderscoreToCamelCase) {
-      this.mapUnderscoreToCamelCase = mapUnderscoreToCamelCase;
-    }
-
-    public Boolean getAggressiveLazyLoading() {
-      return aggressiveLazyLoading;
-    }
-
-    public void setAggressiveLazyLoading(Boolean aggressiveLazyLoading) {
-      this.aggressiveLazyLoading = aggressiveLazyLoading;
-    }
-
-    public Boolean getMultipleResultSetsEnabled() {
-      return multipleResultSetsEnabled;
-    }
-
-    public void setMultipleResultSetsEnabled(Boolean multipleResultSetsEnabled) {
-      this.multipleResultSetsEnabled = multipleResultSetsEnabled;
-    }
-
-    public Boolean getUseGeneratedKeys() {
-      return useGeneratedKeys;
-    }
-
-    public void setUseGeneratedKeys(Boolean useGeneratedKeys) {
-      this.useGeneratedKeys = useGeneratedKeys;
-    }
-
-    public Boolean getUseColumnLabel() {
-      return useColumnLabel;
-    }
-
-    public void setUseColumnLabel(Boolean useColumnLabel) {
-      this.useColumnLabel = useColumnLabel;
-    }
-
-    public Boolean getCacheEnabled() {
-      return cacheEnabled;
-    }
-
-    public void setCacheEnabled(Boolean cacheEnabled) {
-      this.cacheEnabled = cacheEnabled;
-    }
-
-    public Boolean getCallSettersOnNulls() {
-      return callSettersOnNulls;
-    }
-
-    public void setCallSettersOnNulls(Boolean callSettersOnNulls) {
-      this.callSettersOnNulls = callSettersOnNulls;
-    }
-
-    public Boolean getUseActualParamName() {
-      return useActualParamName;
-    }
-
-    public void setUseActualParamName(Boolean useActualParamName) {
-      this.useActualParamName = useActualParamName;
-    }
-
-    public Boolean getReturnInstanceForEmptyRow() {
-      return returnInstanceForEmptyRow;
-    }
-
-    public void setReturnInstanceForEmptyRow(Boolean returnInstanceForEmptyRow) {
-      this.returnInstanceForEmptyRow = returnInstanceForEmptyRow;
-    }
-
-    public Boolean getShrinkWhitespacesInSql() {
-      return shrinkWhitespacesInSql;
-    }
-
-    public void setShrinkWhitespacesInSql(Boolean shrinkWhitespacesInSql) {
-      this.shrinkWhitespacesInSql = shrinkWhitespacesInSql;
-    }
-
-    public Boolean getNullableOnForEach() {
-      return nullableOnForEach;
-    }
-
-    public void setNullableOnForEach(Boolean nullableOnForEach) {
-      this.nullableOnForEach = nullableOnForEach;
-    }
-
-    public Boolean getArgNameBasedConstructorAutoMapping() {
-      return argNameBasedConstructorAutoMapping;
-    }
-
-    public void setArgNameBasedConstructorAutoMapping(Boolean argNameBasedConstructorAutoMapping) {
-      this.argNameBasedConstructorAutoMapping = argNameBasedConstructorAutoMapping;
-    }
-
-    public String getLogPrefix() {
-      return logPrefix;
-    }
-
-    public void setLogPrefix(String logPrefix) {
-      this.logPrefix = logPrefix;
-    }
-
-    public Class<? extends Log> getLogImpl() {
-      return logImpl;
-    }
-
-    public void setLogImpl(Class<? extends Log> logImpl) {
-      this.logImpl = logImpl;
-    }
-
-    public Class<? extends VFS> getVfsImpl() {
-      return vfsImpl;
-    }
-
-    public void setVfsImpl(Class<? extends VFS> vfsImpl) {
-      this.vfsImpl = vfsImpl;
-    }
-
-    public Class<?> getDefaultSqlProviderType() {
-      return defaultSqlProviderType;
-    }
-
-    public void setDefaultSqlProviderType(Class<?> defaultSqlProviderType) {
-      this.defaultSqlProviderType = defaultSqlProviderType;
-    }
-
-    public LocalCacheScope getLocalCacheScope() {
-      return localCacheScope;
-    }
-
-    public void setLocalCacheScope(LocalCacheScope localCacheScope) {
-      this.localCacheScope = localCacheScope;
-    }
-
-    public JdbcType getJdbcTypeForNull() {
-      return jdbcTypeForNull;
-    }
-
-    public void setJdbcTypeForNull(JdbcType jdbcTypeForNull) {
-      this.jdbcTypeForNull = jdbcTypeForNull;
-    }
-
-    public Set<String> getLazyLoadTriggerMethods() {
-      return lazyLoadTriggerMethods;
-    }
-
-    public void setLazyLoadTriggerMethods(Set<String> lazyLoadTriggerMethods) {
-      this.lazyLoadTriggerMethods = lazyLoadTriggerMethods;
-    }
-
-    public Integer getDefaultStatementTimeout() {
-      return defaultStatementTimeout;
-    }
-
-    public void setDefaultStatementTimeout(Integer defaultStatementTimeout) {
-      this.defaultStatementTimeout = defaultStatementTimeout;
-    }
-
-    public Integer getDefaultFetchSize() {
-      return defaultFetchSize;
-    }
-
-    public void setDefaultFetchSize(Integer defaultFetchSize) {
-      this.defaultFetchSize = defaultFetchSize;
-    }
-
-    public ResultSetType getDefaultResultSetType() {
-      return defaultResultSetType;
-    }
-
-    public void setDefaultResultSetType(ResultSetType defaultResultSetType) {
-      this.defaultResultSetType = defaultResultSetType;
-    }
-
-    public ExecutorType getDefaultExecutorType() {
-      return defaultExecutorType;
-    }
-
-    public void setDefaultExecutorType(ExecutorType defaultExecutorType) {
-      this.defaultExecutorType = defaultExecutorType;
-    }
-
-    public AutoMappingBehavior getAutoMappingBehavior() {
-      return autoMappingBehavior;
-    }
-
-    public void setAutoMappingBehavior(AutoMappingBehavior autoMappingBehavior) {
-      this.autoMappingBehavior = autoMappingBehavior;
-    }
-
-    public AutoMappingUnknownColumnBehavior getAutoMappingUnknownColumnBehavior() {
-      return autoMappingUnknownColumnBehavior;
-    }
-
-    public void setAutoMappingUnknownColumnBehavior(AutoMappingUnknownColumnBehavior autoMappingUnknownColumnBehavior) {
-      this.autoMappingUnknownColumnBehavior = autoMappingUnknownColumnBehavior;
-    }
-
-    public Properties getVariables() {
-      return variables;
-    }
-
-    public void setVariables(Properties variables) {
-      this.variables = variables;
-    }
-
-    public Boolean getLazyLoadingEnabled() {
-      return lazyLoadingEnabled;
-    }
-
-    public void setLazyLoadingEnabled(Boolean lazyLoadingEnabled) {
-      this.lazyLoadingEnabled = lazyLoadingEnabled;
-    }
-
-    public Class<?> getConfigurationFactory() {
-      return configurationFactory;
-    }
-
-    public void setConfigurationFactory(Class<?> configurationFactory) {
-      this.configurationFactory = configurationFactory;
-    }
-
-    public Class<? extends TypeHandler> getDefaultEnumTypeHandler() {
-      return defaultEnumTypeHandler;
-    }
-
-    public void setDefaultEnumTypeHandler(Class<? extends TypeHandler> defaultEnumTypeHandler) {
-      this.defaultEnumTypeHandler = defaultEnumTypeHandler;
-    }
-
-    void applyTo(Configuration target) {
-      PropertyMapper mapper = PropertyMapper.get().alwaysApplyingWhenNonNull();
-      mapper.from(getSafeRowBoundsEnabled()).to(target::setSafeRowBoundsEnabled);
-      mapper.from(getSafeResultHandlerEnabled()).to(target::setSafeResultHandlerEnabled);
-      mapper.from(getMapUnderscoreToCamelCase()).to(target::setMapUnderscoreToCamelCase);
-      mapper.from(getAggressiveLazyLoading()).to(target::setAggressiveLazyLoading);
-      mapper.from(getMultipleResultSetsEnabled()).to(target::setMultipleResultSetsEnabled);
-      mapper.from(getUseGeneratedKeys()).to(target::setUseGeneratedKeys);
-      mapper.from(getUseColumnLabel()).to(target::setUseColumnLabel);
-      mapper.from(getCacheEnabled()).to(target::setCacheEnabled);
-      mapper.from(getCallSettersOnNulls()).to(target::setCallSettersOnNulls);
-      mapper.from(getUseActualParamName()).to(target::setUseActualParamName);
-      mapper.from(getReturnInstanceForEmptyRow()).to(target::setReturnInstanceForEmptyRow);
-      mapper.from(getShrinkWhitespacesInSql()).to(target::setShrinkWhitespacesInSql);
-      mapper.from(getNullableOnForEach()).to(target::setNullableOnForEach);
-      mapper.from(getArgNameBasedConstructorAutoMapping()).to(target::setArgNameBasedConstructorAutoMapping);
-      mapper.from(getLazyLoadingEnabled()).to(target::setLazyLoadingEnabled);
-      mapper.from(getLogPrefix()).to(target::setLogPrefix);
-      mapper.from(getLazyLoadTriggerMethods()).to(target::setLazyLoadTriggerMethods);
-      mapper.from(getDefaultStatementTimeout()).to(target::setDefaultStatementTimeout);
-      mapper.from(getDefaultFetchSize()).to(target::setDefaultFetchSize);
-      mapper.from(getLocalCacheScope()).to(target::setLocalCacheScope);
-      mapper.from(getJdbcTypeForNull()).to(target::setJdbcTypeForNull);
-      mapper.from(getDefaultResultSetType()).to(target::setDefaultResultSetType);
-      mapper.from(getDefaultExecutorType()).to(target::setDefaultExecutorType);
-      mapper.from(getAutoMappingBehavior()).to(target::setAutoMappingBehavior);
-      mapper.from(getAutoMappingUnknownColumnBehavior()).to(target::setAutoMappingUnknownColumnBehavior);
-      mapper.from(getVariables()).to(target::setVariables);
-      mapper.from(getLogImpl()).to(target::setLogImpl);
-      mapper.from(getVfsImpl()).to(target::setVfsImpl);
-      mapper.from(getDefaultSqlProviderType()).to(target::setDefaultSqlProviderType);
-      mapper.from(getConfigurationFactory()).to(target::setConfigurationFactory);
-      mapper.from(getDefaultEnumTypeHandler()).to(target::setDefaultEnumTypeHandler);
-    }
-
-  }
 
 }

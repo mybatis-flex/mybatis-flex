@@ -17,7 +17,6 @@ package com.mybatisflex.core.row;
 
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.DbType;
-import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.executor.BatchResult;
@@ -52,11 +51,9 @@ public class RowMapperInvoker {
     private <R> R execute(Function<RowMapper, R> function) {
         SqlSession sqlSession = rowSessionManager.getSqlSession(sqlSessionFactory);
         try {
-            DialectFactory.setHintDbType(dbType);
             RowMapper mapper = sqlSession.getMapper(RowMapper.class);
             return function.apply(mapper);
         } finally {
-            DialectFactory.clearHintDbType();
             rowSessionManager.releaseSqlSession(sqlSession, sqlSessionFactory);
         }
     }
@@ -75,7 +72,6 @@ public class RowMapperInvoker {
         int[] results = new int[rows.size()];
         SqlSession sqlSession = rowSessionManager.getSqlSession(sqlSessionFactory, ExecutorType.BATCH);
         try {
-            DialectFactory.setHintDbType(dbType);
             RowMapper mapper = sqlSession.getMapper(RowMapper.class);
             int counter = 0;
             int resultsPos = 0;
@@ -94,7 +90,6 @@ public class RowMapperInvoker {
                 }
             }
         } finally {
-            DialectFactory.clearHintDbType();
             rowSessionManager.releaseSqlSession(sqlSession, sqlSessionFactory);
         }
         return results;

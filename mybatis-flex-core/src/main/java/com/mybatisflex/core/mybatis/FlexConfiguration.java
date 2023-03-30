@@ -38,7 +38,9 @@ import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
 
+import java.lang.reflect.Proxy;
 import java.util.Map;
 
 public class FlexConfiguration extends Configuration {
@@ -237,6 +239,7 @@ public class FlexConfiguration extends Configuration {
                 .build();
     }
 
+
     private TableInfo getTableInfo(MappedStatement ms) {
         String mapperClassName = ms.getId().substring(0, ms.getId().lastIndexOf("."));
         try {
@@ -248,4 +251,12 @@ public class FlexConfiguration extends Configuration {
     }
 
 
+    @Override
+    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
+        T mapper = super.getMapper(type, sqlSession);
+        return (T) Proxy.newProxyInstance(type.getClassLoader()
+                , new Class[]{type}
+                , new MapperInvocationHandler(mapper, this));
+
+    }
 }

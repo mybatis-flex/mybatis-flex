@@ -31,6 +31,8 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 
 public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
@@ -94,17 +96,14 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
      */
     private DbType getDbType(Configuration configuration) {
         DataSource dataSource = configuration.getEnvironment().getDataSource();
+
         String jdbcUrl = getJdbcUrl(dataSource);
-        if (StringUtil.isNotBlank(jdbcUrl)){
+
+        if (StringUtil.isNotBlank(jdbcUrl)) {
             return DbTypeUtil.parseDbType(jdbcUrl);
         }
 
-        if ("org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory$EmbeddedDataSourceProxy"
-                .equals(dataSource.getClass().getName())){
-            return DbType.H2;
-        }
-
-        return null;
+        throw new IllegalStateException("Cannot get dataSource jdbcUrl: " + dataSource.getClass().getName());
     }
 
     /**
@@ -125,6 +124,22 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
                 //ignore
             }
         }
+
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            return connection.getMetaData().getURL();
+        } catch (Exception e) {
+            //ignore
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
         return null;
     }
 }
