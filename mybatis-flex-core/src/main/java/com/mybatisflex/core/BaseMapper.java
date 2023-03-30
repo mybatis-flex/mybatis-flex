@@ -156,7 +156,7 @@ public interface BaseMapper<T> {
      * @see com.mybatisflex.core.provider.EntitySqlProvider#updateByQuery(Map, ProviderContext)
      */
     @UpdateProvider(type = EntitySqlProvider.class, method = "updateByQuery")
-    int updateByQuery(@Param(FlexConsts.ENTITY) T entity, @Param("ignoreNulls") boolean ignoreNulls, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+    int updateByQuery(@Param(FlexConsts.ENTITY) T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
     /**
