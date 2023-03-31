@@ -15,19 +15,39 @@
  */
 package com.mybatisflex.core.datasource;
 
+import java.util.function.Supplier;
+
 public class DataSourceKey {
 
     private static ThreadLocal<String> keyThreadLocal = new ThreadLocal<>();
 
-    public static void use(String environmentId){
+    public static void use(String environmentId) {
         keyThreadLocal.set(environmentId);
     }
 
-    public static void clear(){
+    public static <T> T use(String environmentId, Supplier<T> supplier) {
+        try {
+            use(environmentId);
+            return supplier.get();
+        } finally {
+            clear();
+        }
+    }
+
+    public static void use(String environmentId, Runnable runnable) {
+        try {
+            use(environmentId);
+            runnable.run();
+        } finally {
+            clear();
+        }
+    }
+
+    public static void clear() {
         keyThreadLocal.remove();
     }
 
-    public static String get(){
+    public static String get() {
         return keyThreadLocal.get();
     }
 

@@ -93,14 +93,13 @@ public class DataSourceBuilder {
 
 
     public static String attrToCamel(String string) {
-        String temp = string.toLowerCase();
-        int strLen = temp.length();
+        int strLen = string.length();
         StringBuilder sb = new StringBuilder(strLen);
         for (int i = 0; i < strLen; i++) {
-            char c = temp.charAt(i);
+            char c = string.charAt(i);
             if (c == '-') {
                 if (++i < strLen) {
-                    sb.append(Character.toUpperCase(temp.charAt(i)));
+                    sb.append(Character.toUpperCase(string.charAt(i)));
                 }
             } else {
                 sb.append(c);
