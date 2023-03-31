@@ -1,4 +1,4 @@
-package com.mybatisflex.test;
+package com.mybatisflex.coretest;
 
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;

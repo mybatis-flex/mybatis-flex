@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.core.datasource;
 
+import com.mybatisflex.core.dialect.DbType;
+import com.mybatisflex.core.dialect.DbTypeUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import javax.sql.DataSource;
@@ -25,13 +27,23 @@ import java.util.Map;
 
 public class RoutingDataSource extends AbstractDataSource {
 
-    private static Map<String, DataSource> dataSourceMap = new HashMap<>();
+    private final Map<String, DataSource> dataSourceMap = new HashMap<>();
+    private final Map<String, DbType> dbTypeHashMap = new HashMap<>();
+    private final DataSource defaultDataSource;
 
-    private DataSource delegate;
+    public RoutingDataSource(String dataSourceKey, DataSource dataSource) {
+        this.defaultDataSource = dataSource;
+        dataSourceMap.put(dataSourceKey, dataSource);
+        dbTypeHashMap.put(dataSourceKey, DbTypeUtil.getDbType(dataSource));
+    }
 
-    public RoutingDataSource(String environmentId, DataSource delegate) {
-        this.delegate = delegate;
-        dataSourceMap.put(environmentId, delegate);
+    public void addDataSource(String dataSourceKey, DataSource dataSource) {
+        dataSourceMap.put(dataSourceKey, dataSource);
+        dbTypeHashMap.put(dataSourceKey, DbTypeUtil.getDbType(dataSource));
+    }
+
+    public DbType getDbType(String dataSourceKey){
+        return dbTypeHashMap.get(dataSourceKey);
     }
 
     @Override
@@ -44,22 +56,33 @@ public class RoutingDataSource extends AbstractDataSource {
         return getDataSource().getConnection(username, password);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface.isInstance(this)) {
+            return (T) this;
+        }
+        return getDataSource().unwrap(iface);
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return (iface.isInstance(this) || getDataSource().isWrapperFor(iface));
+    }
+
     private DataSource getDataSource() {
-        DataSource dataSource = delegate;
+        DataSource dataSource = defaultDataSource;
         if (dataSourceMap.size() > 1) {
-            String environmentId = DataSourceKey.get();
-            if (StringUtil.isNotBlank(environmentId)) {
-                dataSource = dataSourceMap.get(environmentId);
+            String dataSourceKey = DataSourceKey.get();
+            if (StringUtil.isNotBlank(dataSourceKey)) {
+                dataSource = dataSourceMap.get(dataSourceKey);
                 if (dataSource == null) {
-                    throw new IllegalStateException("Cannot get target DataSource for environmentId [" + environmentId + "]");
+                    throw new IllegalStateException("Cannot get target DataSource for dataSourceKey [" + dataSourceKey + "]");
                 }
             }
         }
         return dataSource;
     }
 
-    public DataSource getDelegate() {
-        return delegate;
-    }
 
 }

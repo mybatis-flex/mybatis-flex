@@ -15,8 +15,6 @@
  */
 package com.mybatisflex.core.row;
 
-import com.mybatisflex.core.FlexGlobalConfig;
-import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.executor.BatchResult;
@@ -32,12 +30,10 @@ import java.util.function.Function;
 public class RowMapperInvoker {
 
     private final SqlSessionFactory sqlSessionFactory;
-    private final DbType dbType;
     private RowSessionManager rowSessionManager = RowSessionManager.DEFAULT;
 
     public RowMapperInvoker(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
-        this.dbType = FlexGlobalConfig.getConfig(sqlSessionFactory.getConfiguration()).getDbType();
     }
 
     public RowSessionManager getRowSessionManager() {

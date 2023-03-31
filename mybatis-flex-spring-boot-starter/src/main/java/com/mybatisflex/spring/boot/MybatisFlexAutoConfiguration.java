@@ -40,7 +40,6 @@ import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -81,7 +80,6 @@ import java.util.stream.Stream;
  */
 @org.springframework.context.annotation.Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
-@ConditionalOnProperty("spring.datasource.url")
 @ConditionalOnSingleCandidate(DataSource.class)
 @EnableConfigurationProperties(MybatisFlexProperties.class)
 @AutoConfigureAfter({DataSourceAutoConfiguration.class, MybatisLanguageDriverAutoConfiguration.class})

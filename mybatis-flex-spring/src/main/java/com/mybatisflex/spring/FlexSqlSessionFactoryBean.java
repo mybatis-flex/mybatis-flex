@@ -16,7 +16,6 @@
 package com.mybatisflex.spring;
 
 import com.mybatisflex.core.FlexConsts;
-import com.mybatisflex.core.datasource.RoutingDataSource;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
 import com.mybatisflex.core.mybatis.FlexXMLConfigBuilder;
@@ -583,8 +582,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
         }
 
         targetConfiguration.setEnvironment(new Environment(this.environment,
-                this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,
-                dataSource instanceof RoutingDataSource ? dataSource : new RoutingDataSource(environment, this.dataSource)));
+                this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory, dataSource));
 
         if (this.mapperLocations != null) {
             if (this.mapperLocations.length == 0) {

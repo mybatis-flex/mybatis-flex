@@ -1,4 +1,4 @@
-package com.mybatisflex.test;
+package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.dialect.CommonsDialectImpl;
 import com.mybatisflex.core.dialect.IDialect;
@@ -13,8 +13,8 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static com.mybatisflex.core.query.QueryMethods.*;
-import static com.mybatisflex.test.table.Tables.ACCOUNT;
-import static com.mybatisflex.test.table.Tables.ARTICLE;
+import static com.mybatisflex.coretest.table.Tables.ACCOUNT;
+import static com.mybatisflex.coretest.table.Tables.ARTICLE;
 
 public class AccountSqlTester {
 

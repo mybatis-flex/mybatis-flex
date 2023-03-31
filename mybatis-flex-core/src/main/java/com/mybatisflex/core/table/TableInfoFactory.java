@@ -66,7 +66,7 @@ public class TableInfoFactory {
 
     public static TableInfo ofMapperClass(Class<?> mapperClass) {
         return MapUtil.computeIfAbsent(tableInfoMap, mapperClass, key -> {
-            Class<?> entityClass = getEntityClass(key);
+            Class<?> entityClass = getEntityClass(mapperClass);
             return entityClass != null ? ofEntityClass(entityClass) : null;
         });
     }

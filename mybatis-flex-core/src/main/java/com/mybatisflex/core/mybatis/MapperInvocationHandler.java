@@ -18,22 +18,32 @@ package com.mybatisflex.core.mybatis;
 import com.mybatisflex.annotation.UseDataSource;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.datasource.DataSourceKey;
+import com.mybatisflex.core.datasource.RoutingDataSource;
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DialectFactory;
+import com.mybatisflex.core.row.RowMapper;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.util.MapUtil;
 
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MapperInvocationHandler implements InvocationHandler {
+    private static final String NONE_KEY = "!NONE";
+    private static final Map<Method, String> methodDataSourceKeyMap = new ConcurrentHashMap<>();
 
-    private Object mapper;
-    private Configuration configuration;
+    private final Object mapper;
+    private final DataSource dataSource;
 
     public MapperInvocationHandler(Object mapper, Configuration configuration) {
         this.mapper = mapper;
-        this.configuration = configuration;
+        this.dataSource = configuration.getEnvironment().getDataSource();
     }
 
 
@@ -43,25 +53,26 @@ public class MapperInvocationHandler implements InvocationHandler {
         boolean clearDbType = false;
         try {
             //获取用户动态指定，由用户指定数据源，则应该有用户清除
-            String environmentId = DataSourceKey.get();
+            String dataSourceKey = DataSourceKey.get();
 
-            //通过 方法 的注解去获取
-            if (StringUtil.isBlank(environmentId)) {
-                environmentId = getMethodEnvironmentId(method);
-                if (StringUtil.isNotBlank(environmentId)) {
-                    DataSourceKey.use(environmentId);
+            if (StringUtil.isBlank(dataSourceKey)) {
+                String methodKey = getMethodDataSource(method, proxy);
+                if (!NONE_KEY.equals(methodKey)) {
+                    dataSourceKey = methodKey;
+                    DataSourceKey.use(dataSourceKey);
                     clearDsKey = true;
                 }
-            }
-
-            if (StringUtil.isBlank(environmentId)) {
-                environmentId = configuration.getEnvironment().getId();
             }
 
             //优先获取用户自己配置的 dbType
             DbType dbType = DialectFactory.getHintDbType();
             if (dbType == null) {
-                dbType = FlexGlobalConfig.getConfig(environmentId).getDbType();
+                if (dataSourceKey != null && dataSource instanceof RoutingDataSource) {
+                    dbType = ((RoutingDataSource) dataSource).getDbType(dataSourceKey);
+                }
+                if (dbType == null) {
+                    dbType = FlexGlobalConfig.getDefaultConfig().getDbType();
+                }
                 DialectFactory.setHintDbType(dbType);
                 clearDbType = true;
             }
@@ -77,9 +88,26 @@ public class MapperInvocationHandler implements InvocationHandler {
     }
 
 
-    private String getMethodEnvironmentId(Method method) {
-        UseDataSource useDataSource = method.getAnnotation(UseDataSource.class);
-        return useDataSource != null ? useDataSource.value() : null;
+    private static String getMethodDataSource(Method method, Object proxy) {
+        return MapUtil.computeIfAbsent(methodDataSourceKeyMap, method, method1 -> {
+            UseDataSource useDataSource = method1.getAnnotation(UseDataSource.class);
+            if (useDataSource != null && StringUtil.isNotBlank(useDataSource.value())) {
+                return useDataSource.value();
+            }
+
+            Class<?>[] interfaces = proxy.getClass().getInterfaces();
+            if (interfaces[0] != RowMapper.class) {
+                TableInfo tableInfo = TableInfoFactory.ofMapperClass(interfaces[0]);
+                if (tableInfo != null) {
+                    String dataSourceKey = tableInfo.getDataSource();
+                    if (StringUtil.isNotBlank(dataSourceKey)) {
+                        return dataSourceKey;
+                    }
+                }
+            }
+            return NONE_KEY;
+        });
     }
+
 
 }

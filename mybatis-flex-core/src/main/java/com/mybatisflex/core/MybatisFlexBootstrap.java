@@ -16,7 +16,6 @@
 package com.mybatisflex.core;
 
 import com.mybatisflex.core.datasource.RoutingDataSource;
-import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
 import org.apache.ibatis.logging.Log;
@@ -64,7 +63,6 @@ public class MybatisFlexBootstrap {
     protected Configuration configuration;
     protected List<Class<?>> mappers;
 
-    protected DbType dbType;
     protected SqlSessionFactory sqlSessionFactory;
     protected Class<? extends Log> logImpl;
 
@@ -115,7 +113,7 @@ public class MybatisFlexBootstrap {
                     transactionFactory = new JdbcTransactionFactory();
                 }
 
-                Environment environment = new Environment(environmentId, transactionFactory, new RoutingDataSource(environmentId, dataSource));
+                Environment environment = new Environment(environmentId, transactionFactory, dataSource);
                 configuration = new FlexConfiguration(environment);
             }
 
@@ -126,8 +124,6 @@ public class MybatisFlexBootstrap {
             //init sqlSessionFactory
             this.sqlSessionFactory = new FlexSqlSessionFactoryBuilder().build(configuration);
 
-            //init dbType
-            this.dbType = FlexGlobalConfig.getConfig(environmentId).getDbType();
 
             //init mappers
             if (mappers != null) {
@@ -234,6 +230,18 @@ public class MybatisFlexBootstrap {
         return this;
     }
 
+    public MybatisFlexBootstrap addDataSource(String dataSourceKey, DataSource dataSource) {
+        if (this.dataSource == null) {
+            this.dataSource = new RoutingDataSource(dataSourceKey, dataSource);
+        } else if (this.dataSource instanceof RoutingDataSource) {
+            ((RoutingDataSource) this.dataSource).addDataSource(dataSourceKey, dataSource);
+        } else {
+            this.dataSource = new RoutingDataSource("default", this.dataSource);
+            ((RoutingDataSource) this.dataSource).addDataSource(dataSourceKey, dataSource);
+        }
+        return this;
+    }
+
     public Configuration getConfiguration() {
         return configuration;
     }
@@ -248,15 +256,6 @@ public class MybatisFlexBootstrap {
         return mappers;
     }
 
-
-    public DbType getDbType() {
-        return dbType;
-    }
-
-    public MybatisFlexBootstrap setDbType(DbType dbType) {
-        this.dbType = dbType;
-        return this;
-    }
 
     public SqlSessionFactory getSqlSessionFactory() {
         return sqlSessionFactory;

@@ -1,4 +1,4 @@
-package com.mybatisflex.test;
+package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.dialect.CommonsDialectImpl;
 import com.mybatisflex.core.dialect.IDialect;
@@ -8,7 +8,7 @@ import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.CollectionUtil;
 import org.junit.Test;
 
-import static com.mybatisflex.test.table.Tables.ARTICLE;
+import static com.mybatisflex.coretest.table.Tables.ARTICLE;
 
 public class ArticleSqlTester {
 

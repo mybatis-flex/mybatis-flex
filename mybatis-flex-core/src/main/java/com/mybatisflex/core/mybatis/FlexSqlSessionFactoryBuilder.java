@@ -19,20 +19,14 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DbTypeUtil;
 import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.util.StringUtil;
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.exceptions.ExceptionFactory;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Properties;
 
 public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
@@ -64,8 +58,7 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
         }
 
         SqlSessionFactory sessionFactory = super.build(configuration);
-
-        DbType dbType = getDbType(configuration);
+        DbType dbType = DbTypeUtil.getDbType(configuration.getEnvironment().getDataSource());
 
         //设置全局配置的 sessionFactory 和 dbType
         initGlobalConfig(configuration, sessionFactory, dbType);
@@ -91,55 +84,5 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
     }
 
 
-    /**
-     * 获取当前配置的 DbType
-     */
-    private DbType getDbType(Configuration configuration) {
-        DataSource dataSource = configuration.getEnvironment().getDataSource();
 
-        String jdbcUrl = getJdbcUrl(dataSource);
-
-        if (StringUtil.isNotBlank(jdbcUrl)) {
-            return DbTypeUtil.parseDbType(jdbcUrl);
-        }
-
-        throw new IllegalStateException("Cannot get dataSource jdbcUrl: " + dataSource.getClass().getName());
-    }
-
-    /**
-     * 通过数据源中获取 jdbc 的 url 配置
-     * 符合 HikariCP, druid, c3p0, DBCP, beecp 数据源框架 以及 MyBatis UnpooledDataSource 的获取规则
-     * UnpooledDataSource 参考 @{@link UnpooledDataSource#getUrl()}
-     * TODO: 2023/2/18 可能极个别特殊的数据源无法获取 JDBC 配置的 URL
-     *
-     * @return jdbc url 配置
-     */
-    private String getJdbcUrl(DataSource dataSource) {
-        String[] methodNames = new String[]{"getUrl", "getJdbcUrl"};
-        for (String methodName : methodNames) {
-            try {
-                Method method = dataSource.getClass().getMethod(methodName);
-                return (String) method.invoke(dataSource);
-            } catch (Exception e) {
-                //ignore
-            }
-        }
-
-        Connection connection = null;
-        try {
-            connection = dataSource.getConnection();
-            return connection.getMetaData().getURL();
-        } catch (Exception e) {
-            //ignore
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                }
-            }
-        }
-
-        return null;
-    }
 }

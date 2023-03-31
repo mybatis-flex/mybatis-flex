@@ -44,8 +44,12 @@ public class EntityTestStarter {
 //        System.out.println(account);
 
         AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
-        Account account = accountMapper.selectOneById(1);
-        System.out.println(account);
+
+        for (int i = 0; i < 100; i++) {
+            Account account = accountMapper.selectOneById(1);
+        }
+
+//        System.out.println(account);
 //
 //        List<Account> allAccount = bootstrap.execute(AccountMapper.class, accountMapper ->
 //                accountMapper.selectListByQuery(QueryWrapper.create()));

@@ -15,36 +15,19 @@
  */
 package com.mybatisflex.spring.boot;
 
+import com.mybatisflex.core.datasource.DataSourceBuilder;
 import com.mybatisflex.core.datasource.RoutingDataSource;
-import com.mybatisflex.spring.FlexSqlSessionFactoryBean;
-import org.apache.ibatis.mapping.DatabaseIdProvider;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.type.TypeHandler;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
-import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -54,116 +37,35 @@ import java.util.stream.Stream;
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
 @ConditionalOnPropertyEmpty("spring.datasource.url")
 @EnableConfigurationProperties(MybatisFlexProperties.class)
-@AutoConfigureAfter({MybatisLanguageDriverAutoConfiguration.class})
 @AutoConfigureBefore({DataSourceAutoConfiguration.class})
-public class MultiDataSourceAutoConfiguration extends MybatisFlexAutoConfiguration {
+public class MultiDataSourceAutoConfiguration {
 
-    private List<SqlSessionFactory> sqlSessionFactories = new ArrayList<>();
-    private List<DataSource> dataSources = new ArrayList<>();
-
-
-    public MultiDataSourceAutoConfiguration(MybatisFlexProperties properties
-            , ObjectProvider<Interceptor[]> interceptorsProvider
-            , ObjectProvider<TypeHandler[]> typeHandlersProvider
-            , ObjectProvider<LanguageDriver[]> languageDriversProvider
-            , ResourceLoader resourceLoader
-            , ObjectProvider<DatabaseIdProvider> databaseIdProvider
-            , ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider
-            , ObjectProvider<List<SqlSessionFactoryBeanCustomizer>> sqlSessionFactoryBeanCustomizers) {
-        super(properties, interceptorsProvider, typeHandlersProvider, languageDriversProvider, resourceLoader, databaseIdProvider, configurationCustomizersProvider, sqlSessionFactoryBeanCustomizers);
-
-        initDataSources(properties.getDatasource());
-    }
+    private Map<String, Map<String, String>> dataSourceProperties;
 
 
-    private void initDataSources(Map<String, Map<String, String>> datasourceMap) {
-        if (datasourceMap != null) {
-            datasourceMap.forEach((s, dsp) -> {
-                DataSource dataSource = new DataSourceBuilder(dsp).build();
-                SqlSessionFactory sqlSessionFactory = buildSqlSessionFactory(s, dataSource);
-                sqlSessionFactories.add(sqlSessionFactory);
-            });
-        }
-    }
-
-
-    public SqlSessionFactory buildSqlSessionFactory(String environmentId, DataSource dataSource) {
-//    SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
-        SqlSessionFactoryBean factory = new FlexSqlSessionFactoryBean();
-
-        dataSource = new RoutingDataSource(environmentId, dataSource);
-        dataSources.add(dataSource);
-
-        factory.setDataSource(new RoutingDataSource(environmentId, dataSource));
-//        factory.setEnvironment(environmentId);
-
-        if (properties.getConfiguration() == null || properties.getConfiguration().getVfsImpl() == null) {
-            factory.setVfs(SpringBootVFS.class);
-        }
-        if (StringUtils.hasText(this.properties.getConfigLocation())) {
-            factory.setConfigLocation(this.resourceLoader.getResource(this.properties.getConfigLocation()));
-        }
-        applyConfiguration(factory);
-        if (this.properties.getConfigurationProperties() != null) {
-            factory.setConfigurationProperties(this.properties.getConfigurationProperties());
-        }
-        if (!ObjectUtils.isEmpty(this.interceptors)) {
-            factory.setPlugins(this.interceptors);
-        }
-        if (this.databaseIdProvider != null) {
-            factory.setDatabaseIdProvider(this.databaseIdProvider);
-        }
-        if (StringUtils.hasLength(this.properties.getTypeAliasesPackage())) {
-            factory.setTypeAliasesPackage(this.properties.getTypeAliasesPackage());
-        }
-        if (this.properties.getTypeAliasesSuperType() != null) {
-            factory.setTypeAliasesSuperType(this.properties.getTypeAliasesSuperType());
-        }
-        if (StringUtils.hasLength(this.properties.getTypeHandlersPackage())) {
-            factory.setTypeHandlersPackage(this.properties.getTypeHandlersPackage());
-        }
-        if (!ObjectUtils.isEmpty(this.typeHandlers)) {
-            factory.setTypeHandlers(this.typeHandlers);
-        }
-        Resource[] mapperLocations = this.properties.resolveMapperLocations();
-        if (!ObjectUtils.isEmpty(mapperLocations)) {
-            factory.setMapperLocations(mapperLocations);
-        }
-        Set<String> factoryPropertyNames = Stream
-                .of(new BeanWrapperImpl(SqlSessionFactoryBean.class).getPropertyDescriptors()).map(PropertyDescriptor::getName)
-                .collect(Collectors.toSet());
-        Class<? extends LanguageDriver> defaultLanguageDriver = this.properties.getDefaultScriptingLanguageDriver();
-        if (factoryPropertyNames.contains("scriptingLanguageDrivers") && !ObjectUtils.isEmpty(this.languageDrivers)) {
-            // Need to mybatis-spring 2.0.2+
-            factory.setScriptingLanguageDrivers(this.languageDrivers);
-            if (defaultLanguageDriver == null && this.languageDrivers.length == 1) {
-                defaultLanguageDriver = this.languageDrivers[0].getClass();
-            }
-        }
-        if (factoryPropertyNames.contains("defaultScriptingLanguageDriver")) {
-            // Need to mybatis-spring 2.0.2+
-            factory.setDefaultScriptingLanguageDriver(defaultLanguageDriver);
-        }
-        applySqlSessionFactoryBeanCustomizers(factory);
-        try {
-            return factory.getObject();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    @Bean
-    @ConditionalOnMissingBean
-    public SqlSessionFactory sqlSessionFactory() {
-        return sqlSessionFactories.isEmpty() ? null : sqlSessionFactories.get(0);
+    public MultiDataSourceAutoConfiguration(MybatisFlexProperties properties) {
+        dataSourceProperties = properties.getDatasource();
     }
 
 
     @Bean
     @ConditionalOnMissingBean
     public DataSource dataSource() {
-        return dataSources.isEmpty() ? null : dataSources.get(0);
+
+        RoutingDataSource routingDataSource = null;
+
+        if (dataSourceProperties != null && !dataSourceProperties.isEmpty()) {
+            for (String key : dataSourceProperties.keySet()) {
+                DataSource dataSource = new DataSourceBuilder(dataSourceProperties.get(key)).build();
+                if (routingDataSource == null) {
+                    routingDataSource = new RoutingDataSource(key, dataSource);
+                } else {
+                    routingDataSource.addDataSource(key, dataSource);
+                }
+            }
+        }
+
+        return routingDataSource;
     }
 
 

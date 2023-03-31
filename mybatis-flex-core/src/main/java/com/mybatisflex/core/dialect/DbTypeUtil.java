@@ -16,12 +16,68 @@
 package com.mybatisflex.core.dialect;
 
 
+import com.mybatisflex.core.util.StringUtil;
+
+import javax.sql.DataSource;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.regex.Pattern;
 
 /**
  * DbType 解析 工具类
  */
 public class DbTypeUtil {
+
+
+    /**
+     * 获取当前配置的 DbType
+     */
+    public static DbType getDbType(DataSource dataSource) {
+        String jdbcUrl = getJdbcUrl(dataSource);
+
+        if (StringUtil.isNotBlank(jdbcUrl)) {
+            return parseDbType(jdbcUrl);
+        }
+
+        throw new IllegalStateException("Cannot get dataSource jdbcUrl: " + dataSource.getClass().getName());
+    }
+
+    /**
+     * 通过数据源中获取 jdbc 的 url 配置
+     * 符合 HikariCP, druid, c3p0, DBCP, beecp 数据源框架 以及 MyBatis UnpooledDataSource 的获取规则
+     * UnpooledDataSource 参考 @{@link UnpooledDataSource#getUrl()}
+     *
+     * @return jdbc url 配置
+     */
+    private static String getJdbcUrl(DataSource dataSource) {
+        String[] methodNames = new String[]{"getUrl", "getJdbcUrl"};
+        for (String methodName : methodNames) {
+            try {
+                Method method = dataSource.getClass().getMethod(methodName);
+                return (String) method.invoke(dataSource);
+            } catch (Exception e) {
+                //ignore
+            }
+        }
+
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
+            return connection.getMetaData().getURL();
+        } catch (Exception e) {
+            //ignore
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return null;
+    }
 
 
     /**
@@ -32,7 +88,7 @@ public class DbTypeUtil {
      * @param jdbcUrl jdbcURL
      * @return 返回数据库类型
      */
-    public static DbType parseDbType(String jdbcUrl) {
+    private static DbType parseDbType(String jdbcUrl) {
         jdbcUrl = jdbcUrl.toLowerCase();
         if (jdbcUrl.contains(":mysql:") || jdbcUrl.contains(":cobar:")) {
             return DbType.MYSQL;

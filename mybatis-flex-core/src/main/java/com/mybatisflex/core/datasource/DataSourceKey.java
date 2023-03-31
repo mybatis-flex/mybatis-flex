@@ -21,22 +21,22 @@ public class DataSourceKey {
 
     private static ThreadLocal<String> keyThreadLocal = new ThreadLocal<>();
 
-    public static void use(String environmentId) {
-        keyThreadLocal.set(environmentId);
+    public static void use(String dataSourceKey) {
+        keyThreadLocal.set(dataSourceKey);
     }
 
-    public static <T> T use(String environmentId, Supplier<T> supplier) {
+    public static <T> T use(String dataSourceKey, Supplier<T> supplier) {
         try {
-            use(environmentId);
+            use(dataSourceKey);
             return supplier.get();
         } finally {
             clear();
         }
     }
 
-    public static void use(String environmentId, Runnable runnable) {
+    public static void use(String dataSourceKey, Runnable runnable) {
         try {
-            use(environmentId);
+            use(dataSourceKey);
             runnable.run();
         } finally {
             clear();
