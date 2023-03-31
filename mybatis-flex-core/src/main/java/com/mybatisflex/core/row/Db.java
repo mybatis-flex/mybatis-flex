@@ -26,7 +26,6 @@ import org.apache.ibatis.util.MapUtil;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -395,34 +394,29 @@ public class Db {
 
     public static boolean tx(Supplier<Boolean> supplier) {
         //上一级事务的id，支持事务嵌套
-        String prevXID = TransactionContext.getXID();
+        String higherXID = TransactionContext.getXID();
         try {
-            String xid = UUID.randomUUID().toString();
-            TransactionContext.hold(xid);
+            String xid = TransactionalManager.startTransactional();
             Boolean success = false;
             boolean rollbacked = false;
             try {
                 success = supplier.get();
             } catch (Exception e) {
                 rollbacked = true;
-                TransactionContext.release();
                 TransactionalManager.rollback(xid);
                 e.printStackTrace();
             } finally {
                 if (success != null && success) {
-                    //必须优先 release 掉 xid，才能正常 commit()
-                    TransactionContext.release();
                     TransactionalManager.commit(xid);
                 } else if (!rollbacked) {
-                    TransactionContext.release();
                     TransactionalManager.rollback(xid);
                 }
             }
             return success != null && success;
         } finally {
             //恢复上一级事务
-            if (prevXID != null) {
-                TransactionContext.hold(prevXID);
+            if (higherXID != null) {
+                TransactionContext.hold(higherXID);
             }
         }
     }

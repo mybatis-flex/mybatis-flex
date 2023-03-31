@@ -21,6 +21,7 @@ import org.apache.ibatis.logging.LogFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -33,6 +34,7 @@ public class TransactionalManager {
     //<xid : <datasource : connection>>
     private static final ThreadLocal<Map<String, Map<String, Connection>>> CONNECTION_HOLDER
             = ThreadLocal.withInitial(ConcurrentHashMap::new);
+
 
     public static void hold(String xid, String ds, Connection connection) {
         Map<String, Map<String, Connection>> holdMap = CONNECTION_HOLDER.get();
@@ -63,6 +65,12 @@ public class TransactionalManager {
     }
 
 
+    public static String startTransactional() {
+        String xid = UUID.randomUUID().toString();
+        TransactionContext.hold(xid);
+        return xid;
+    }
+
     public static void commit(String xid) {
         release(xid, true);
     }
@@ -71,8 +79,10 @@ public class TransactionalManager {
         release(xid, false);
     }
 
-
     private static void release(String xid, boolean commit) {
+        //先release，才能正常的进行 commit 或者 rollback.
+        TransactionContext.release();
+
         Exception exception = null;
         Map<String, Map<String, Connection>> holdMap = CONNECTION_HOLDER.get();
         try {

@@ -32,5 +32,4 @@ public class TransactionContext {
         XID_HOLDER.set(xid);
     }
 
-
 }

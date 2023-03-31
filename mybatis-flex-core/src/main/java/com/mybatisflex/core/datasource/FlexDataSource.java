@@ -28,7 +28,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -154,7 +153,6 @@ public class FlexDataSource extends AbstractDataSource {
                 //do nothing
                 return null;
             }
-            System.out.println(">>>>>>invoke: " + method.getName() + "   args: " + Arrays.toString(args));
             return method.invoke(original, args);
         }
 
