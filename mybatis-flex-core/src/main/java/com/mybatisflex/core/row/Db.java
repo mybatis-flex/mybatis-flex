@@ -18,13 +18,17 @@ package com.mybatisflex.core.row;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.transaction.TransactionContext;
+import com.mybatisflex.core.transaction.TransactionalManager;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.util.MapUtil;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  * 针对 RowMapper 的静态方法进行封装
@@ -386,5 +390,37 @@ public class Db {
      */
     public static Page<Row> paginate(String tableName, Page<Row> page, QueryWrapper queryWrapper) {
         return invoker().paginate(tableName, page, queryWrapper);
+    }
+
+
+    public static boolean tx(Supplier<Boolean> supplier) {
+        //上一级事务的id，支持事务嵌套
+        String prevXID = TransactionContext.getXID();
+        try {
+            String xid = UUID.randomUUID().toString();
+            TransactionContext.hold(xid);
+            boolean success = false;
+            boolean rollbacked = false;
+            try {
+                success = supplier.get();
+            } catch (Exception e) {
+                rollbacked = true;
+                TransactionalManager.rollback(xid);
+                e.printStackTrace();
+            } finally {
+                if (success) {
+                    TransactionalManager.commit(xid);
+                } else if (!rollbacked) {
+                    TransactionalManager.rollback(xid);
+                }
+                TransactionContext.release();
+            }
+            return success;
+        } finally {
+            //恢复上一级事务
+            if (prevXID != null) {
+                TransactionContext.hold(prevXID);
+            }
+        }
     }
 }

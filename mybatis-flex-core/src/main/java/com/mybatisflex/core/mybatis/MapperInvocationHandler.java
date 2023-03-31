@@ -18,7 +18,7 @@ package com.mybatisflex.core.mybatis;
 import com.mybatisflex.annotation.UseDataSource;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.datasource.DataSourceKey;
-import com.mybatisflex.core.datasource.RoutingDataSource;
+import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.row.RowMapper;
@@ -28,7 +28,6 @@ import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.util.MapUtil;
 
-import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -39,11 +38,11 @@ public class MapperInvocationHandler implements InvocationHandler {
     private static final Map<Method, String> methodDataSourceKeyMap = new ConcurrentHashMap<>();
 
     private final Object mapper;
-    private final DataSource dataSource;
+    private final FlexDataSource dataSource;
 
     public MapperInvocationHandler(Object mapper, Configuration configuration) {
         this.mapper = mapper;
-        this.dataSource = configuration.getEnvironment().getDataSource();
+        this.dataSource = (FlexDataSource) configuration.getEnvironment().getDataSource();
     }
 
 
@@ -67,8 +66,8 @@ public class MapperInvocationHandler implements InvocationHandler {
             //优先获取用户自己配置的 dbType
             DbType dbType = DialectFactory.getHintDbType();
             if (dbType == null) {
-                if (dataSourceKey != null && dataSource instanceof RoutingDataSource) {
-                    dbType = ((RoutingDataSource) dataSource).getDbType(dataSourceKey);
+                if (dataSourceKey != null) {
+                    dbType = dataSource.getDbType(dataSourceKey);
                 }
                 if (dbType == null) {
                     dbType = FlexGlobalConfig.getDefaultConfig().getDbType();

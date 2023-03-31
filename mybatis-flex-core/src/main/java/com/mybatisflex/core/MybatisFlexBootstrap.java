@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.core;
 
-import com.mybatisflex.core.datasource.RoutingDataSource;
+import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
 import org.apache.ibatis.logging.Log;
@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * MybatisFlex 的启动类
@@ -56,10 +55,10 @@ public class MybatisFlexBootstrap {
 
     protected final AtomicBoolean started = new AtomicBoolean(false);
 
-    protected String environmentId;
+    protected String environmentId = FlexConsts.NAME;
     protected TransactionFactory transactionFactory;
 
-    protected DataSource dataSource;
+    protected FlexDataSource dataSource;
     protected Configuration configuration;
     protected List<Class<?>> mappers;
 
@@ -67,14 +66,13 @@ public class MybatisFlexBootstrap {
     protected Class<? extends Log> logImpl;
 
     private Map<Class<?>, Object> mapperObjects = new ConcurrentHashMap<>();
-    private ThreadLocal<SqlSession> sessionThreadLocal = new ThreadLocal<>();
 
     /**
      * 虽然提供了 getInstance，但也允许用户进行实例化，
      * 用于创建多个 MybatisFlexBootstrap 实例达到管理多数据源的目的
      */
-    public MybatisFlexBootstrap(String environmentId) {
-        this.environmentId = environmentId;
+    public MybatisFlexBootstrap() {
+
     }
 
     private static volatile MybatisFlexBootstrap instance;
@@ -83,7 +81,7 @@ public class MybatisFlexBootstrap {
         if (instance == null) {
             synchronized (MybatisFlexBootstrap.class) {
                 if (instance == null) {
-                    instance = new MybatisFlexBootstrap(FlexConsts.NAME);
+                    instance = new MybatisFlexBootstrap();
                 }
             }
         }
@@ -124,7 +122,6 @@ public class MybatisFlexBootstrap {
             //init sqlSessionFactory
             this.sqlSessionFactory = new FlexSqlSessionFactoryBuilder().build(configuration);
 
-
             //init mappers
             if (mappers != null) {
                 mappers.forEach(configuration::addMapper);
@@ -147,10 +144,6 @@ public class MybatisFlexBootstrap {
 
 
     protected SqlSession openSession() {
-        SqlSession sqlSession = sessionThreadLocal.get();
-        if (sqlSession != null) {
-            return sqlSession;
-        }
         return sqlSessionFactory.openSession(configuration.getDefaultExecutorType(), true);
     }
 
@@ -172,34 +165,6 @@ public class MybatisFlexBootstrap {
                             }
                         }));
         return (T) mapperObject;
-    }
-
-
-    /**
-     * 执行事务操作，不支持嵌套事务
-     *
-     * @param supplier
-     * @return false 回滚事务，true 正常执行
-     */
-    public boolean tx(Supplier<Boolean> supplier) {
-        SqlSession sqlSession = sqlSessionFactory.openSession(configuration.getDefaultExecutorType());
-        boolean success = false;
-        boolean rollback = true;
-        try {
-            sessionThreadLocal.set(sqlSession);
-            success = supplier.get();
-        } catch (Throwable e) {
-            rollback = false;
-            sqlSession.rollback();
-        } finally {
-            sessionThreadLocal.remove();
-            if (!success && rollback) {
-                sqlSession.rollback();
-            } else if (success) {
-                sqlSession.commit();
-            }
-        }
-        return success;
     }
 
 
@@ -226,18 +191,15 @@ public class MybatisFlexBootstrap {
     }
 
     public MybatisFlexBootstrap setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+        this.dataSource = new FlexDataSource(FlexConsts.NAME, dataSource);
         return this;
     }
 
     public MybatisFlexBootstrap addDataSource(String dataSourceKey, DataSource dataSource) {
         if (this.dataSource == null) {
-            this.dataSource = new RoutingDataSource(dataSourceKey, dataSource);
-        } else if (this.dataSource instanceof RoutingDataSource) {
-            ((RoutingDataSource) this.dataSource).addDataSource(dataSourceKey, dataSource);
+            this.dataSource = new FlexDataSource(dataSourceKey, dataSource);
         } else {
-            this.dataSource = new RoutingDataSource("default", this.dataSource);
-            ((RoutingDataSource) this.dataSource).addDataSource(dataSourceKey, dataSource);
+            this.dataSource.addDataSource(dataSourceKey, dataSource);
         }
         return this;
     }

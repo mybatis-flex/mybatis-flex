@@ -16,7 +16,7 @@
 package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.datasource.DataSourceBuilder;
-import com.mybatisflex.core.datasource.RoutingDataSource;
+import com.mybatisflex.core.datasource.FlexDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -52,13 +52,13 @@ public class MultiDataSourceAutoConfiguration {
     @ConditionalOnMissingBean
     public DataSource dataSource() {
 
-        RoutingDataSource routingDataSource = null;
+        FlexDataSource routingDataSource = null;
 
         if (dataSourceProperties != null && !dataSourceProperties.isEmpty()) {
             for (String key : dataSourceProperties.keySet()) {
                 DataSource dataSource = new DataSourceBuilder(dataSourceProperties.get(key)).build();
                 if (routingDataSource == null) {
-                    routingDataSource = new RoutingDataSource(key, dataSource);
+                    routingDataSource = new FlexDataSource(key, dataSource);
                 } else {
                     routingDataSource.addDataSource(key, dataSource);
                 }

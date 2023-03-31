@@ -17,6 +17,8 @@ package com.mybatisflex.core.datasource;
 
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DbTypeUtil;
+import com.mybatisflex.core.transaction.TransactionContext;
+import com.mybatisflex.core.transaction.TransactionalManager;
 import com.mybatisflex.core.util.StringUtil;
 
 import javax.sql.DataSource;
@@ -25,13 +27,16 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RoutingDataSource extends AbstractDataSource {
+public class FlexDataSource extends AbstractDataSource {
 
     private final Map<String, DataSource> dataSourceMap = new HashMap<>();
     private final Map<String, DbType> dbTypeHashMap = new HashMap<>();
+
+    private final String defaultDataSourceKey;
     private final DataSource defaultDataSource;
 
-    public RoutingDataSource(String dataSourceKey, DataSource dataSource) {
+    public FlexDataSource(String dataSourceKey, DataSource dataSource) {
+        this.defaultDataSourceKey = dataSourceKey;
         this.defaultDataSource = dataSource;
         dataSourceMap.put(dataSourceKey, dataSource);
         dbTypeHashMap.put(dataSourceKey, DbTypeUtil.getDbType(dataSource));
@@ -42,19 +47,54 @@ public class RoutingDataSource extends AbstractDataSource {
         dbTypeHashMap.put(dataSourceKey, DbTypeUtil.getDbType(dataSource));
     }
 
-    public DbType getDbType(String dataSourceKey){
+    public DbType getDbType(String dataSourceKey) {
         return dbTypeHashMap.get(dataSourceKey);
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-        return getDataSource().getConnection();
+        String xid = TransactionContext.getXID();
+        if (StringUtil.isNotBlank(xid)) {
+            String dataSourceKey = DataSourceKey.get();
+            if (StringUtil.isBlank(dataSourceKey)) {
+                dataSourceKey = defaultDataSourceKey;
+            }
+
+            Connection connection = TransactionalManager.getConnection(xid, dataSourceKey);
+            if (connection != null) {
+                return connection;
+            } else {
+                connection = getDataSource().getConnection();
+                TransactionalManager.hold(xid, dataSourceKey, connection);
+                return connection;
+            }
+        } else {
+            return getDataSource().getConnection();
+        }
     }
+
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return getDataSource().getConnection(username, password);
+        String xid = TransactionContext.getXID();
+        if (StringUtil.isNotBlank(xid)) {
+            String dataSourceKey = DataSourceKey.get();
+            if (StringUtil.isBlank(dataSourceKey)) {
+                dataSourceKey = defaultDataSourceKey;
+            }
+            Connection connection = TransactionalManager.getConnection(xid, dataSourceKey);
+            if (connection != null) {
+                return connection;
+            } else {
+                connection = getDataSource().getConnection(username, password);
+                TransactionalManager.hold(xid, dataSourceKey, connection);
+                return connection;
+            }
+        } else {
+            return getDataSource().getConnection(username, password);
+        }
     }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -69,6 +109,7 @@ public class RoutingDataSource extends AbstractDataSource {
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         return (iface.isInstance(this) || getDataSource().isWrapperFor(iface));
     }
+
 
     private DataSource getDataSource() {
         DataSource dataSource = defaultDataSource;
