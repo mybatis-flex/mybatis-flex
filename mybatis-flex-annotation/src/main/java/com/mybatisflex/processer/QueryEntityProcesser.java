@@ -123,7 +123,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
             }
             String genPath = props.getProperties().getProperty("processer.genPath", "");
             String genTablesPackage = props.getProperties().getProperty("processer.tablesPackage");
-            String mappersGenerateEnable = props.getProperties().getProperty("processer.mappersGenerateEnable");
+            String mappersGenerateEnable = props.getProperties().getProperty("processer.mappersGenerateEnable","false");
             String genMappersPackage = props.getProperties().getProperty("processer.mappersPackage");
             String className = props.getProperties().getProperty("processer.tablesClassName", "Tables");
 
@@ -200,7 +200,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
 
 
                 //是否开启 mapper 生成功能
-                if (!"false".equalsIgnoreCase(mappersGenerateEnable)) {
+                if ("true".equalsIgnoreCase(mappersGenerateEnable)) {
                     String realMapperPackage = genMappersPackage == null || genMappersPackage.trim().length() == 0
                             ? guessPackage.substring(0, guessPackage.length() - 5) + "mapper" : genMappersPackage;
                     genMapperClass(genPath, realMapperPackage, entityClassElement.toString());
