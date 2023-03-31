@@ -53,6 +53,7 @@ public class TransactionalManager {
                 log.debug("Error set AutoCommit to false.  Cause: " + e);
             }
         }
+        connMap.put(ds, connection);
     }
 
 

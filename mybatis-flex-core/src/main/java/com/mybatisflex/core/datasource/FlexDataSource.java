@@ -19,13 +19,19 @@ import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DbTypeUtil;
 import com.mybatisflex.core.transaction.TransactionContext;
 import com.mybatisflex.core.transaction.TransactionalManager;
+import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import javax.sql.DataSource;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class FlexDataSource extends AbstractDataSource {
 
@@ -64,7 +70,7 @@ public class FlexDataSource extends AbstractDataSource {
             if (connection != null) {
                 return connection;
             } else {
-                connection = getDataSource().getConnection();
+                connection = proxy(getDataSource().getConnection(), xid);
                 TransactionalManager.hold(xid, dataSourceKey, connection);
                 return connection;
             }
@@ -86,13 +92,19 @@ public class FlexDataSource extends AbstractDataSource {
             if (connection != null) {
                 return connection;
             } else {
-                connection = getDataSource().getConnection(username, password);
+                connection = proxy(getDataSource().getConnection(username, password), xid);
                 TransactionalManager.hold(xid, dataSourceKey, connection);
                 return connection;
             }
         } else {
             return getDataSource().getConnection(username, password);
         }
+    }
+
+    public Connection proxy(Connection connection, String xid) {
+        return (Connection) Proxy.newProxyInstance(FlexDataSource.class.getClassLoader()
+                , new Class[]{Connection.class}
+                , new ConnectionHandler(connection, xid));
     }
 
 
@@ -123,6 +135,32 @@ public class FlexDataSource extends AbstractDataSource {
             }
         }
         return dataSource;
+    }
+
+    private static class ConnectionHandler implements InvocationHandler {
+        private static String[] proxyMethods = new String[]{"commit", "rollback", "close",};
+        private Connection original;
+        private String xid;
+
+        public ConnectionHandler(Connection original, String xid) {
+            this.original = original;
+            this.xid = xid;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (ArrayUtil.contains(proxyMethods, method.getName())
+                    && isTransactional()) {
+                //do nothing
+                return null;
+            }
+            System.out.println(">>>>>>invoke: " + method.getName() + "   args: " + Arrays.toString(args));
+            return method.invoke(original, args);
+        }
+
+        private boolean isTransactional() {
+            return Objects.equals(xid, TransactionContext.getXID());
+        }
     }
 
 

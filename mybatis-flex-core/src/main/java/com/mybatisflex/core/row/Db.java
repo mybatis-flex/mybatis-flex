@@ -399,23 +399,26 @@ public class Db {
         try {
             String xid = UUID.randomUUID().toString();
             TransactionContext.hold(xid);
-            boolean success = false;
+            Boolean success = false;
             boolean rollbacked = false;
             try {
                 success = supplier.get();
             } catch (Exception e) {
                 rollbacked = true;
+                TransactionContext.release();
                 TransactionalManager.rollback(xid);
                 e.printStackTrace();
             } finally {
-                if (success) {
+                if (success != null && success) {
+                    //必须优先 release 掉 xid，才能正常 commit()
+                    TransactionContext.release();
                     TransactionalManager.commit(xid);
                 } else if (!rollbacked) {
+                    TransactionContext.release();
                     TransactionalManager.rollback(xid);
                 }
-                TransactionContext.release();
             }
-            return success;
+            return success != null && success;
         } finally {
             //恢复上一级事务
             if (prevXID != null) {
