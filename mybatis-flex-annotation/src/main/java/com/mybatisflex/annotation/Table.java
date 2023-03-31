@@ -38,6 +38,11 @@ public @interface Table {
     boolean camelToUnderline() default true;
 
     /**
+     * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源
+     */
+    String dataSource() default "";
+
+    /**
      * 监听 entity 的 insert 行为
      */
     Class<? extends InsertListener> onInsert() default NoneListener.class;
