@@ -195,6 +195,11 @@ public class MybatisFlexBootstrap {
         return this;
     }
 
+    public MybatisFlexBootstrap setDataSource(String dataSourceKey, DataSource dataSource) {
+        this.dataSource = new FlexDataSource(dataSourceKey, dataSource);
+        return this;
+    }
+
     public MybatisFlexBootstrap addDataSource(String dataSourceKey, DataSource dataSource) {
         if (this.dataSource == null) {
             this.dataSource = new FlexDataSource(dataSourceKey, dataSource);

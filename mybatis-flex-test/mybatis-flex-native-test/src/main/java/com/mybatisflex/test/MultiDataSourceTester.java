@@ -48,10 +48,13 @@ public class MultiDataSourceTester {
                 .start();
 
         //默认查询 db1
-        List<Row> rows = Db.selectAll("tb_account");
-        System.out.println(rows);
+        List<Row> rows1 = Db.selectAll("tb_account");
+        System.out.println(rows1);
 
         System.out.println("------");
+
+        List<Row> rows =  DataSourceKey.use("ds2"
+                , () -> Db.selectAll("tb_account"));
 
 
         //查询数据源 ds2

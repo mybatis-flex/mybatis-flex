@@ -51,6 +51,7 @@ export default defineConfig({
           { text: '数据脱敏', link: '/zh/mask' },
           { text: 'SQL 审计', link: '/zh/audit' },
           { text: '多数据源', link: '/zh/multi-datasource' },
+          { text: '事务管理', link: '/zh/tx' },
         ]
       },
       {
