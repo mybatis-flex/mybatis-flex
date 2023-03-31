@@ -63,7 +63,7 @@ public class FlexStatementHandler implements StatementHandler {
                 throw new ExecutorException("Unknown statement type: " + ms.getStatementType());
         }
 
-        this.boundSql = boundSql;
+        this.boundSql = delegate.getBoundSql();
     }
 
     @Override

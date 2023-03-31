@@ -76,8 +76,8 @@ public class AuditManager {
         } finally {
             auditMessage.setElapsedTime(clock.getTick() - auditMessage.getExtTime());
             auditMessage.setQuery(boundSql.getSql());
-
             Object parameter = boundSql.getParameterObject();
+
 
             /** parameter 的组装请查看 getNamedParams 方法
              * @see ParamNameResolver#getNamedParams(Object[])
