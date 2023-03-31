@@ -15,13 +15,8 @@
  */
 package com.mybatisflex.spring.boot;
 
-import cn.beecp.BeeDataSource;
-import com.alibaba.druid.pool.DruidDataSource;
 import com.mybatisflex.core.datasource.RoutingDataSource;
-import com.mybatisflex.core.util.StringUtil;
 import com.mybatisflex.spring.FlexSqlSessionFactoryBean;
-import com.zaxxer.hikari.HikariDataSource;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.scripting.LanguageDriver;
@@ -31,8 +26,10 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
@@ -42,7 +39,10 @@ import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.beans.PropertyDescriptor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,23 +55,11 @@ import java.util.stream.Stream;
 @ConditionalOnPropertyEmpty("spring.datasource.url")
 @EnableConfigurationProperties(MybatisFlexProperties.class)
 @AutoConfigureAfter({MybatisLanguageDriverAutoConfiguration.class})
+@AutoConfigureBefore({DataSourceAutoConfiguration.class})
 public class MultiDataSourceAutoConfiguration extends MybatisFlexAutoConfiguration {
 
     private List<SqlSessionFactory> sqlSessionFactories = new ArrayList<>();
     private List<DataSource> dataSources = new ArrayList<>();
-
-
-    private static Map<String, String> dataSourceAlias = new HashMap<>();
-
-    static {
-        dataSourceAlias.put("druid", "com.alibaba.druid.pool.DruidDataSource");
-        dataSourceAlias.put("hikari", "com.zaxxer.hikari.HikariDataSource");
-        dataSourceAlias.put("hikaricp", "com.zaxxer.hikari.HikariDataSource");
-        dataSourceAlias.put("bee", "cn.beecp.BeeDataSource");
-        dataSourceAlias.put("beecp", "cn.beecp.BeeDataSource");
-        dataSourceAlias.put("dbcp", "org.apache.commons.dbcp2.BasicDataSource");
-        dataSourceAlias.put("dbcp2", "org.apache.commons.dbcp2.BasicDataSource");
-    }
 
 
     public MultiDataSourceAutoConfiguration(MybatisFlexProperties properties
@@ -88,110 +76,14 @@ public class MultiDataSourceAutoConfiguration extends MybatisFlexAutoConfigurati
     }
 
 
-    private void initDataSources(Map<String, DataSourceProperty> datasourceMap) {
-        datasourceMap.forEach((s, dsp) -> {
-            SqlSessionFactory sqlSessionFactory = buildSqlSessionFactory(s, createDataSource(dsp));
-            sqlSessionFactories.add(sqlSessionFactory);
-        });
-    }
-
-
-    private DataSource createDataSource(DataSourceProperty dataSourceProperty) {
-        String type = dataSourceProperty.getType();
-        if (StringUtil.isBlank(type)) {
-            type = detectDataSourceClass();
+    private void initDataSources(Map<String, Map<String, String>> datasourceMap) {
+        if (datasourceMap != null) {
+            datasourceMap.forEach((s, dsp) -> {
+                DataSource dataSource = new DataSourceBuilder(dsp).build();
+                SqlSessionFactory sqlSessionFactory = buildSqlSessionFactory(s, dataSource);
+                sqlSessionFactories.add(sqlSessionFactory);
+            });
         }
-        if (StringUtil.isBlank(type)) {
-            throw new IllegalArgumentException("The dataSource cannot be null or empty.");
-        }
-
-        switch (type) {
-            case "druid":
-            case "com.alibaba.druid.pool.DruidDataSource":
-                return createDruidDataSource(dataSourceProperty);
-            case "hikari":
-            case "hikaricp":
-            case "com.zaxxer.hikari.HikariDataSource":
-                return createHikariDataSource(dataSourceProperty);
-            case "bee":
-            case "beecp":
-            case "cn.beecp.BeeDataSource":
-                return createBeeDataSource(dataSourceProperty);
-            case "dbcp":
-            case "dbcp2":
-            case "org.apache.commons.dbcp2.BasicDataSource":
-                return createDbcpDataSource(dataSourceProperty);
-            default:
-                throw new IllegalArgumentException("Cannot Support the dataSource type:" + dataSourceProperty.getType());
-        }
-    }
-
-
-    private String detectDataSourceClass() {
-        String[] detectClassNames = new String[]{
-                "com.alibaba.druid.pool.DruidDataSource",
-                "com.zaxxer.hikari.HikariDataSource",
-                "cn.beecp.BeeDataSource",
-                "org.apache.commons.dbcp2.BasicDataSource",
-        };
-
-        for (String detectClassName : detectClassNames) {
-            String result = doDetectDataSourceClass(detectClassName);
-            if (result != null) {
-                return result;
-            }
-        }
-
-        return null;
-    }
-
-    private String doDetectDataSourceClass(String className) {
-        try {
-            Class.forName(className);
-            return className;
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
-    private DataSource createDbcpDataSource(DataSourceProperty dataSourceProperty) {
-        BasicDataSource ds = new BasicDataSource();
-        ds.setUrl(dataSourceProperty.getUrl());
-        ds.setUsername(dataSourceProperty.getUsername());
-        ds.setPassword(dataSourceProperty.getPassword());
-        ds.setDriverClassName(dataSourceProperty.getDriverClassName());
-        return ds;
-    }
-
-    private DataSource createBeeDataSource(DataSourceProperty dataSourceProperty) {
-        BeeDataSource ds = new BeeDataSource();
-        ds.setJdbcUrl(dataSourceProperty.getUrl());
-        ds.setUsername(dataSourceProperty.getUsername());
-        ds.setPassword(dataSourceProperty.getPassword());
-        ds.setDriverClassName(dataSourceProperty.getDriverClassName());
-        return ds;
-    }
-
-
-    private DataSource createDruidDataSource(DataSourceProperty dataSourceProperty) {
-        DruidDataSource ds = new DruidDataSource();
-        ds.setUrl(dataSourceProperty.getUrl());
-        ds.setUsername(dataSourceProperty.getUsername());
-        ds.setPassword(dataSourceProperty.getPassword());
-        ds.setDriverClassName(dataSourceProperty.getDriverClassName());
-        return ds;
-    }
-
-
-    private DataSource createHikariDataSource(DataSourceProperty dataSourceProperty) {
-        HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(dataSourceProperty.getUrl());
-        ds.setUsername(dataSourceProperty.getUsername());
-        ds.setPassword(dataSourceProperty.getPassword());
-        if (StringUtil.isNotBlank(dataSourceProperty.getDriverClassName())) {
-            ds.setDriverClassName(dataSourceProperty.getDriverClassName());
-        }
-        return ds;
     }
 
 
@@ -264,14 +156,14 @@ public class MultiDataSourceAutoConfiguration extends MybatisFlexAutoConfigurati
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionFactory sqlSessionFactory() {
-        return sqlSessionFactories.get(0);
+        return sqlSessionFactories.isEmpty() ? null : sqlSessionFactories.get(0);
     }
 
 
     @Bean
     @ConditionalOnMissingBean
     public DataSource dataSource() {
-        return dataSources.get(0);
+        return dataSources.isEmpty() ? null : dataSources.get(0);
     }
 
 

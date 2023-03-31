@@ -48,7 +48,7 @@ public class MybatisFlexProperties {
     //多数据源的配置
     //mybatis-flex.datasource.ds1.url=***
     //mybatis-flex.datasource.ds2.url=***
-    private Map<String, DataSourceProperty> datasource;
+    private Map<String, Map<String,String>> datasource;
 
     /**
      * Location of MyBatis xml config file.
@@ -102,11 +102,11 @@ public class MybatisFlexProperties {
      */
     private CoreConfiguration configuration;
 
-    public Map<String, DataSourceProperty> getDatasource() {
+    public Map<String, Map<String, String>> getDatasource() {
         return datasource;
     }
 
-    public void setDatasource(Map<String, DataSourceProperty> datasource) {
+    public void setDatasource(Map<String, Map<String, String>> datasource) {
         this.datasource = datasource;
     }
 
