@@ -20,7 +20,7 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.TableInfo;
-import com.mybatisflex.core.table.TableInfos;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
@@ -83,7 +83,7 @@ class ProviderUtil {
     }
 
     public static TableInfo getTableInfo(ProviderContext context){
-        return TableInfos.ofMapperClass(context.getMapperType());
+        return TableInfoFactory.ofMapperClass(context.getMapperType());
     }
 
     public static Object getEntity(Map params) {

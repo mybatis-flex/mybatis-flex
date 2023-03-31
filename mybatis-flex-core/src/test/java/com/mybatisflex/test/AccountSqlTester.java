@@ -7,7 +7,7 @@ import com.mybatisflex.core.dialect.LimitOffsetProcesser;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
-import com.mybatisflex.core.table.TableInfos;
+import com.mybatisflex.core.table.TableInfoFactory;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -241,7 +241,7 @@ public class AccountSqlTester {
     @Test
     public void testDeleteSql() {
         IDialect dialect = new CommonsDialectImpl();
-        TableInfo tableInfo = TableInfos.ofEntityClass(Account.class);
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(Account.class);
         String sql = dialect.forDeleteEntityById(tableInfo);
         System.out.println(sql);
     }

@@ -22,7 +22,7 @@ import com.mybatisflex.core.keygen.MybatisKeyGeneratorUtil;
 import com.mybatisflex.core.keygen.RowKeyGenerator;
 import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
-import com.mybatisflex.core.table.TableInfos;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.executor.Executor;
@@ -244,7 +244,7 @@ public class FlexConfiguration extends Configuration {
         String mapperClassName = ms.getId().substring(0, ms.getId().lastIndexOf("."));
         try {
             Class<?> mapperClass = Class.forName(mapperClassName);
-            return TableInfos.ofMapperClass(mapperClass);
+            return TableInfoFactory.ofMapperClass(mapperClass);
         } catch (ClassNotFoundException e) {
             return null;
         }

@@ -42,7 +42,7 @@ import java.time.chrono.JapaneseDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TableInfos {
+public class TableInfoFactory {
 
 
     private static final Set<Class<?>> defaultSupportColumnTypes = CollectionUtil.newHashSet(
@@ -112,6 +112,9 @@ public class TableInfos {
                 tableInfo.setOnUpdateListener(ClassUtil.newInstance(table.onUpdate()));
             }
 
+            if (StringUtil.isNotBlank(table.dataSource())){
+                tableInfo.setDataSource(table.dataSource());
+            }
         } else {
             //默认为类名转驼峰下划线
             String tableName = StringUtil.camelToUnderline(entityClass.getSimpleName());

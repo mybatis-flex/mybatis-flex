@@ -67,6 +67,7 @@ public class MybatisFlexBootstrap {
     protected DbType dbType;
     protected SqlSessionFactory sqlSessionFactory;
     protected Class<? extends Log> logImpl;
+
     private Map<Class<?>, Object> mapperObjects = new ConcurrentHashMap<>();
     private ThreadLocal<SqlSession> sessionThreadLocal = new ThreadLocal<>();
 

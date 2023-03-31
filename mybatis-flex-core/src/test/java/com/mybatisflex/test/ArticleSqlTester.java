@@ -4,7 +4,7 @@ import com.mybatisflex.core.dialect.CommonsDialectImpl;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
-import com.mybatisflex.core.table.TableInfos;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.CollectionUtil;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class ArticleSqlTester {
         article.setContent("aaa");
 
         IDialect dialect = new CommonsDialectImpl();
-        TableInfo tableInfo = TableInfos.ofEntityClass(Article.class);
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forInsertEntity(tableInfo, article);
         System.out.println(sql);
     }
@@ -47,7 +47,7 @@ public class ArticleSqlTester {
         article2.setContent("bbb");
 
         IDialect dialect = new CommonsDialectImpl();
-        TableInfo tableInfo = TableInfos.ofEntityClass(Article.class);
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forInsertEntityBatch(tableInfo, CollectionUtil.newArrayList(article1, article2));
         System.out.println(sql);
     }
@@ -56,7 +56,7 @@ public class ArticleSqlTester {
     @Test
     public void testDeleteSql() {
         IDialect dialect = new CommonsDialectImpl();
-        TableInfo tableInfo = TableInfos.ofEntityClass(Article.class);
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forDeleteEntityById(tableInfo);
         System.out.println(sql);
     }
@@ -65,7 +65,7 @@ public class ArticleSqlTester {
     @Test
     public void testDeleteByIdsSql() {
         IDialect dialect = new CommonsDialectImpl();
-        TableInfo tableInfo = TableInfos.ofEntityClass(Article.class);
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forDeleteEntityBatchByIds(tableInfo, new Object[]{1, 2, 3});
         System.out.println(sql);
     }
@@ -79,7 +79,7 @@ public class ArticleSqlTester {
         article.setVersion(1L);
 
         IDialect dialect = new CommonsDialectImpl();
-        TableInfo tableInfo = TableInfos.ofEntityClass(Article.class);
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forUpdateEntity(tableInfo, article, true);
         System.out.println(sql);
     }
@@ -96,7 +96,7 @@ public class ArticleSqlTester {
                 .where(ARTICLE.ID.ge(100));
 
         IDialect dialect = new CommonsDialectImpl();
-        TableInfo tableInfo = TableInfos.ofEntityClass(Article.class);
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forUpdateEntityByQuery(tableInfo, article, true, queryWrapper);
         System.out.println(sql);
     }

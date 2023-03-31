@@ -43,6 +43,7 @@ public class TableInfo {
     private String tableName; //表名
     private Class<?> entityClass; //实体类
     private boolean camelToUnderline = true;
+    private String dataSource;
 
     //逻辑删除数据库列名
     private String logicDeleteColumn;
@@ -118,6 +119,14 @@ public class TableInfo {
 
     public void setCamelToUnderline(boolean camelToUnderline) {
         this.camelToUnderline = camelToUnderline;
+    }
+
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
     }
 
     public String getLogicDeleteColumn() {
