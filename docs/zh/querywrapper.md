@@ -293,6 +293,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
     .where(ACCOUNT.AGE.ge(10));
 ```
 
+
 其查询生成的 Sql 如下：
 
 ```sql
@@ -301,6 +302,51 @@ LEFT JOIN tb_article ON tb_account.id = tb_article.account_id
 INNER JOIN tb_article ON tb_account.id = tb_article.account_id
 WHERE tb_account.age >=  ?
 ```
+
+## join on 多个条件
+
+```java
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .leftJoin(ARTICLE).on(
+        ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID).and(ACCOUNT.AGE.eq(18))
+    )
+    .where(ACCOUNT.AGE.ge(10));
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT * FROM tb_account LEFT JOIN tb_article 
+ON tb_account.id = tb_article.account_id AND tb_account.age =  ?  
+WHERE tb_account.age >=  ? 
+```
+
+## join select
+
+```java
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .leftJoin(
+        select().from(ARTICLE).where(ARTICLE.ID.ge(100))
+    ).as("a").on(
+        ACCOUNT.ID.eq(raw("a.id"))
+    )
+    .where(ACCOUNT.AGE.ge(10));
+
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT * FROM tb_account 
+LEFT JOIN (SELECT * FROM tb_article WHERE id >=  ? ) AS a
+ON tb_account.id = a.id 
+WHERE tb_account.age >=  ? 
+```
+
 
 ## limit... offset
 
