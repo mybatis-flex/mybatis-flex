@@ -47,7 +47,7 @@ System.out.println(rows);
 
 通过编码的方式，切换到数据源 `ds2`：
 
-```java
+```java 2,6
 try{
     DataSourceKey.use("ds2")
     List<Row> rows = Db.selectAll("tb_account");
@@ -67,10 +67,103 @@ List<Row> rows =  DataSourceKey.use("ds2"
 ## 数据源切换（设置）
 
 MyBatis-Flex 提供了 3 种方式来配置数据源：
-- 1、编码，使用` DataSourceKey.use` 方法。
+- 1、编码，使用`DataSourceKey.use` 方法。
 - 2、`@UseDataSource("dataSourceName")` 在 Mapper 方法上，添加注解，用于指定使用哪个数据源。
 - 3、`@Table(dataSource="dataSourceName")` 在 Entity 类上添加注解，该 Entity 的增删改查请求默认使用该数据源。
 
+
+`DataSourceKey.use` 示例：
+```java 2,6
+try{
+    DataSourceKey.use("ds2")
+    List<Row> rows = Db.selectAll("tb_account");
+    System.out.println(rows); 
+}finally{
+    DataSourceKey.clear(); 
+}
+```
+
+`@UseDataSource("dataSourceName")` 示例：
+```java 3
+interface AccountMapper extends BaseMapper{
+
+    @UseDataSource("ds2")
+    List<Account> myMethod();
+}
+```
+
+`@Table(dataSource="dataSourceName")` 示例：
+```java 1
+@Table(value = "tb_account", dataSource = "ds2")
+public class Account {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    private String userName;
+}
+```
+
 ::: tip 数据源配置的优先级
 `DataSourceKey.use()` > `@UseDataSource()` > `@Table(dataSource="...")`
+:::
+
+## 更多的 Spring Yaml 配置支持
+```yaml
+mybatis-flex:
+  datasource:
+    ds1:
+      url: jdbc:mysql://127.0.0.1:3306/db
+      username: root
+      password: 123456
+    ds2:
+      url: jdbc:mysql://127.0.0.1:3306/db2
+      username: root
+      password: 123456
+```
+在以上配置中，`ds1` 和 `ds2` 并未指定使用哪个数据连接池，MyBatis-Flex 会 **自动探测** 当前项目依赖了哪个连接池。
+目前支持了 `druid`、`hikaricp`、`dbcp2`、`beecp` 的自动探测，如果项目中使用的不是这 4 种类型只有，需要添加 `type` 配置，如下所示：
+
+```yaml 4,9
+mybatis-flex:
+  datasource:
+    ds1:
+      type: com.your.datasource.type1
+      url: jdbc:mysql://127.0.0.1:3306/db
+      username: root
+      password: 123456
+    ds2:
+      type: com.your.datasource.type2
+      url: jdbc:mysql://127.0.0.1:3306/db2
+      username: root
+      password: 123456
+```
+
+同时，项目若使用到了多个数据源类型，则也需要添加 `type` 来指定当前数据源的类型。
+
+
+除了 `type`、`url`、`username`、`password` 的配置以为，MyBatis-Flex 支持该 `DataSource` 类型的所有参数配置，
+例如，在 `DruidDataSource` 类中存在 `setAsyncInit` 方法，我们就可以添加 `asyncInit` 的配置，如下所示：
+
+```yaml 8
+mybatis-flex:
+  datasource:
+    ds1:
+      type: druid
+      url: jdbc:mysql://127.0.0.1:3306/db
+      username: root
+      password: 123456
+      asyncInit: true
+    ds2:
+      type: com.your.datasource.type2
+      url: jdbc:mysql://127.0.0.1:3306/db2
+      username: root
+      password: 123456
+```
+
+因此，只要该 `DataSource` 有 setter 方法，我们就可以在配置文件中进行配。与此相反的是：若该 `DataSource` 类型没有该属性，则不能使用这个配置。
+
+::: tip 提示
+在数据源的配置中，`type` 可以配置为某个 DataSource 的类名，也可以配置为别名，别名支持有：`druid`、
+`hikari`、`hikaricp`、`bee`、`beecp`、`dbcp`、`dbcp2`。
 :::
