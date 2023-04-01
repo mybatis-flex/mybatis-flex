@@ -16,6 +16,7 @@
 package com.mybatisflex.core.table;
 
 import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.annotation.KeyType;
@@ -79,6 +80,7 @@ public class TableInfo {
 
     private InsertListener onInsertListener;
     private UpdateListener onUpdateListener;
+    private SetListener onSetListener;
 
 
     private final ReflectorFactory reflectorFactory = new BaseReflectorFactory() {
@@ -221,6 +223,14 @@ public class TableInfo {
 
     public void setOnUpdateListener(UpdateListener onUpdateListener) {
         this.onUpdateListener = onUpdateListener;
+    }
+
+    public SetListener getOnSetListener() {
+        return onSetListener;
+    }
+
+    public void setOnSetListener(SetListener onSetListener) {
+        this.onSetListener = onSetListener;
     }
 
     public List<ColumnInfo> getColumnInfoList() {
@@ -523,6 +533,9 @@ public class TableInfo {
             ColumnInfo columnInfo = columnInfoMapping.get(column);
             if (columnInfo != null && metaObject.hasSetter(columnInfo.property)) {
                 Object value = ConvertUtil.convert(row.get(column), metaObject.getSetterType(columnInfo.property));
+                if (onSetListener != null) {
+                    value = onSetListener.onSet(instance, columnInfo.property, value);
+                }
                 metaObject.setValue(columnInfo.property, value);
             }
         }

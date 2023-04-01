@@ -51,4 +51,9 @@ public @interface Table {
      * 监听 entity 的 update 行为
      */
     Class<? extends UpdateListener> onUpdate() default NoneListener.class;
+
+    /**
+     * 监听 entity 的查询数据的 set 行为，用户主动 set 不会触发
+     */
+    Class<? extends SetListener> onSet() default NoneListener.class;
 }

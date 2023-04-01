@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Table(value = "tb_account",dataSource = "ds2")
+@Table(value = "tb_account",dataSource = "ds2",onSet = AccountOnSetListener.class)
 public class Account {
 
     @Id(keyType = KeyType.Auto)

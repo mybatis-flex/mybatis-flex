@@ -77,6 +77,11 @@ public class TableInfoFactory {
     }
 
 
+    public static TableInfo getByEntityClass(Class<?> entityClass) {
+        return tableInfoMap.get(entityClass);
+    }
+
+
     private static Class<?> getEntityClass(Class<?> mapperClass) {
         Type[] genericInterfaces = mapperClass.getGenericInterfaces();
         if (genericInterfaces.length == 1) {
@@ -110,6 +115,10 @@ public class TableInfoFactory {
 
             if (table.onUpdate() != NoneListener.class){
                 tableInfo.setOnUpdateListener(ClassUtil.newInstance(table.onUpdate()));
+            }
+
+            if (table.onSet() != NoneListener.class){
+                tableInfo.setOnSetListener(ClassUtil.newInstance(table.onSet()));
             }
 
             if (StringUtil.isNotBlank(table.dataSource())){

@@ -16,11 +16,13 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
+import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 public class EntityTestStarter {
 
@@ -44,10 +46,14 @@ public class EntityTestStarter {
 //        System.out.println(account);
 
         AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
+        Account account = accountMapper.selectOneById(1);
 
-        for (int i = 0; i < 100; i++) {
-            Account account = accountMapper.selectOneById(1);
-        }
+
+        List<Account> accounts = accountMapper.selectAll();
+        System.out.println(accounts);
+//
+        long l = accountMapper.selectCountByQuery(QueryWrapper.create());
+        System.out.println("count: "+ l);
 
 //        System.out.println(account);
 //

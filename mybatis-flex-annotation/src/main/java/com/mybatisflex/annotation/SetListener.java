@@ -15,19 +15,7 @@
  */
 package com.mybatisflex.annotation;
 
-public class NoneListener implements InsertListener, UpdateListener, SetListener {
-    @Override
-    public void onInsert(Object entity) {
+public interface SetListener {
 
-    }
-
-    @Override
-    public void onUpdate(Object entity) {
-
-    }
-
-    @Override
-    public Object onSet(Object entity, String property, Object value) {
-        return null;
-    }
+    Object onSet(Object entity, String property, Object value);
 }

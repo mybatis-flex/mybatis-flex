@@ -21,6 +21,7 @@ import com.mybatisflex.core.keygen.MultiRowKeyGenerator;
 import com.mybatisflex.core.keygen.MybatisKeyGeneratorUtil;
 import com.mybatisflex.core.keygen.RowKeyGenerator;
 import com.mybatisflex.core.row.RowMapper;
+import com.mybatisflex.core.table.EntityWrapperFactory;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.CollectionUtil;
@@ -35,7 +36,6 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
-import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
@@ -50,6 +50,7 @@ public class FlexConfiguration extends Configuration {
     public FlexConfiguration(Environment environment) {
         super(environment);
         setMapUnderscoreToCamelCase(true);
+        setObjectWrapperFactory(new EntityWrapperFactory());
         initDefaultMappers();
     }
 
@@ -65,11 +66,6 @@ public class FlexConfiguration extends Configuration {
         addMapper(RowMapper.class);
     }
 
-
-    @Override
-    public MetaObject newMetaObject(Object object) {
-        return super.newMetaObject(object);
-    }
 
     /**
      * 为原生 sql 设置参数
