@@ -20,6 +20,11 @@ public @interface Table {
     String schema() default "";
 
     /**
+     * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源
+     */
+    String dataSource() default "";
+
+    /**
      * 默认为 驼峰属性 转换为 下划线字段
      */
     boolean camelToUnderline() default true;
@@ -33,6 +38,11 @@ public @interface Table {
      * 监听 entity 的 update 行为
      */
     Class<? extends UpdateListener> onUpdate() default NoneListener.class;
+
+    /**
+     * 监听 entity 的查询数据的 set 行为，用户主动 set 不会触发
+     */
+    Class<? extends SetListener> onSet() default NoneListener.class;
 }
 ```
 
@@ -95,3 +105,42 @@ public class MyInsertListener implements InsertListener {
 ## onUpdate
 
 使用方式同 onInsert 一致，用于在数据被更新的时候，设置一些默认数据。
+
+
+## onSet
+
+onSet 可以用于配置：查询数据 entity （或者 entity 列表、分页等）时，对 entity 的属性设置的监听，这种场景
+可以用于一些数据转换，业务字段赋值、字段权限等场景。
+
+示例代码如下：
+
+```java 2
+//配置  onSet = MySetListener.class
+@Table(value = "tb_account", onSet = MySetListener.class)
+public class Account {
+
+}
+```
+
+```java
+public class MySetListener implements SetListener {
+
+    @Override
+    public Object onSet(Object entity, String property, Object value){
+        //场景1：用于检测当前账户是否拥有该字段权限，
+        //      有正常返回 value，没有权限返回 null
+        
+        
+        //场景2：entity 中可能定义某个业务值
+        //      当监听到某个字段被赋值了，这
+        //      里可以主动去给另外的其他字段赋值
+        
+        
+        //场景3：内容转换和二次加工，对 value 值进行修改后返回
+        
+        return value;
+    }
+}
+```
+
+> 注意：若 entity 的属性配置了 `typeHandler`，`typeHandler` 的执行顺序高于 `SetListener`。
