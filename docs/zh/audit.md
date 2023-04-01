@@ -15,9 +15,9 @@ AuditManager.setAuditEnable(true)
 默认情况下，Mybaits-Flex 的审计消息（日志）只会输出到控制台，如下所示：
 
 ```
->>>>>>Sql Audit: {platform='mybatis-flex', module='null', url='null', user='null', userIp='null', hostIp='192.168.3.24', query='SELECT * FROM `tb_account` WHERE `id` = ?', queryParams=[1], extTime=1679991024523, elapsedTime=1}
->>>>>>Sql Audit: {platform='mybatis-flex', module='null', url='null', user='null', userIp='null', hostIp='192.168.3.24', query='SELECT * FROM `tb_account` WHERE `id` = ?', queryParams=[1], extTime=1679991024854, elapsedTime=3}
->>>>>>Sql Audit: {platform='mybatis-flex', module='null', url='null', user='null', userIp='null', hostIp='192.168.3.24', query='SELECT * FROM `tb_account` WHERE `id` = ?', queryParams=[1], extTime=1679991025100, elapsedTime=2}
+>>>>>>Sql Audit: {platform='mybatis-flex', module='null', url='null', user='null', userIp='null', hostIp='192.168.3.24', query='SELECT * FROM `tb_account` WHERE `id` = ?', queryParams=[1], queryTime=1679991024523, elapsedTime=1}
+>>>>>>Sql Audit: {platform='mybatis-flex', module='null', url='null', user='null', userIp='null', hostIp='192.168.3.24', query='SELECT * FROM `tb_account` WHERE `id` = ?', queryParams=[1], queryTime=1679991024854, elapsedTime=3}
+>>>>>>Sql Audit: {platform='mybatis-flex', module='null', url='null', user='null', userIp='null', hostIp='192.168.3.24', query='SELECT * FROM `tb_account` WHERE `id` = ?', queryParams=[1], queryTime=1679991025100, elapsedTime=2}
 ```
 
 Mybaits-Flex 消息包含了如下内容：
@@ -30,7 +30,7 @@ Mybaits-Flex 消息包含了如下内容：
 - **hostIp**：执行这个 sql 的服务器 IP 地址
 - **query**：sql 内容
 - **queryParams**：sql 参数
-- **extTime**：sql 执行的时间
+- **queryTime**：sql 执行的时间
 - **elapsedTime**：sql 执行消耗的时间
 - **metas**：其他扩展元信息
 
@@ -53,7 +53,7 @@ public class MyMessageCreator implements MessageCreator {
        
         // 在这里
         // 设置 message 的基础内容，包括 platform、module、url、user、userIp、hostIp 内容
-        // 剩下的 query、queryParams、extTime、elapsedTime 为 mybatis-flex 设置
+        // 剩下的 query、queryParams、queryTime、elapsedTime 为 mybatis-flex 设置
         
         return message;
     }
