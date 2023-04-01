@@ -35,8 +35,8 @@ public class AuditMessage implements Serializable {
     private String query;
     private List<Object> queryParams;
 
-    private long extTime;     // Sql 执行的当前时间，单位毫秒
-    private long elapsedTime; // Sql 执行消耗的时间，单位毫秒
+    private long queryTime;     // Sql 执行的当前时间，单位毫秒
+    private long elapsedTime;   // Sql 执行消耗的时间，单位毫秒
 
     private Map<String, Object> metas; //其他信息，元信息
 
@@ -126,12 +126,12 @@ public class AuditMessage implements Serializable {
         }
     }
 
-    public long getExtTime() {
-        return extTime;
+    public long getQueryTime() {
+        return queryTime;
     }
 
-    public void setExtTime(long extTime) {
-        this.extTime = extTime;
+    public void setQueryTime(long queryTime) {
+        this.queryTime = queryTime;
     }
 
     public long getElapsedTime() {
@@ -168,7 +168,7 @@ public class AuditMessage implements Serializable {
                 ", hostIp='" + hostIp + '\'' +
                 ", query='" + query + '\'' +
                 ", queryParams=" + queryParams +
-                ", extTime=" + extTime +
+                ", queryTime=" + queryTime +
                 ", elapsedTime=" + elapsedTime +
                 '}';
     }

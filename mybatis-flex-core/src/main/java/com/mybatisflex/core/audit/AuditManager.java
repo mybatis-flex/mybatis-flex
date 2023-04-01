@@ -70,11 +70,11 @@ public class AuditManager {
         if (auditMessage == null) {
             return supplier.execute();
         }
-        auditMessage.setExtTime(clock.getTick());
+        auditMessage.setQueryTime(clock.getTick());
         try {
             return supplier.execute();
         } finally {
-            auditMessage.setElapsedTime(clock.getTick() - auditMessage.getExtTime());
+            auditMessage.setElapsedTime(clock.getTick() - auditMessage.getQueryTime());
             auditMessage.setQuery(boundSql.getSql());
             Object parameter = boundSql.getParameterObject();
 

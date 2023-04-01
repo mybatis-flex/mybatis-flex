@@ -35,6 +35,7 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
+import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
@@ -64,6 +65,11 @@ public class FlexConfiguration extends Configuration {
         addMapper(RowMapper.class);
     }
 
+
+    @Override
+    public MetaObject newMetaObject(Object object) {
+        return super.newMetaObject(object);
+    }
 
     /**
      * 为原生 sql 设置参数
