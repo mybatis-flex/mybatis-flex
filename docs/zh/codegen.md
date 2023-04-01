@@ -58,7 +58,7 @@ public class Codegen {
         //globalConfig.setEntityWithLombok(true);
 
         //是否生成 mapper 类，默认为 false
-        globalConfig.setMapperGenerateEnable(true);
+        //globalConfig.setMapperGenerateEnable(true);
 
         //设置 mapper 类的包名
         globalConfig.setMapperPackage("com.test.mapper");
@@ -78,6 +78,11 @@ public class Codegen {
     }
 }
 ```
+
+注意：由于 MyBatis-Flex 的 APT 功能会自动帮我们生成了 Mapper 的 Java 类，如果我们在代码生成器中选择生成 Mapper，
+则建议把 APT 的 Mapper 生成功能给关闭掉，否则系统中会存在两份一样功能的 Mapper。
+
+关闭 APT 的 Mapper 类文件生成，请参考：[APT 设置章节](./apt.md)
 
 ## 全局配置 GlobalConfig 
 
@@ -195,10 +200,9 @@ JdbcTypeMapping.registerMapping(LocalDateTime.class, Date.class);
 ```
 那么，当我们生成代码的时候，发现 JDBC 驱动的数据类型为 `LocalDateTime`，则 Entity 对应的属性类型为 `Date`。
 
-## 常见问题
+## 自定义代码模板
 
-**1、如何自定义代码模板**
-> 答：通过 `globalConfig.setTemplateEngine()` 配置自己的模板引擎即可，以下是内置的 `EnjoyTemplate` 的代码示例：
+通过 `GlobalConfig`（全局配置）的 `setTemplateEngine()` 方法，可以配置自己的模板引擎以及模板，以下是内置的 `EnjoyTemplate` 的代码示例：
 
 ```java
 public class EnjoyTemplate implements ITemplate {

@@ -58,3 +58,14 @@ processer.mappersPackage = com.your-package
 ```properties
 processer.mappersGenerateEnable = false
 ```
+
+## 开发工具无法导入生成的代码？
+
+如下图所示，点击项目目录（注意是项目的根目录），右键 > Maven：
+
+- 1、 先点击 `Generate Sources and Update Folders`。
+- 2、 再点击 `Reload project`。
+
+![](../assets/images/apt_idea.png)
+
+
