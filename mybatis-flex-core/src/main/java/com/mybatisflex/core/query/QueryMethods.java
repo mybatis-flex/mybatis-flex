@@ -95,4 +95,8 @@ public class QueryMethods {
         return select(new StringQueryColumn("1"));
     }
 
+    public static RawValue raw(String raw){
+        return new RawValue(raw);
+    }
+
 }

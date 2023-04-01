@@ -227,6 +227,38 @@ public class AccountSqlTester {
     }
 
     @Test
+    public void testJoin2Sql() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select()
+                .from(ACCOUNT)
+                .leftJoin(ARTICLE).on(
+                        ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID).and(ACCOUNT.AGE.eq(18))
+                )
+                .where(ACCOUNT.AGE.ge(10));
+
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forSelectListByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
+    @Test
+    public void testJoin3Sql() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select()
+                .from(ACCOUNT)
+                .leftJoin(
+                        select().from(ARTICLE).where(ARTICLE.ID.ge(100))
+                ).as("a").on(
+                        ACCOUNT.ID.eq(raw("a.id"))
+                )
+                .where(ACCOUNT.AGE.ge(10));
+
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forSelectListByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
+    @Test
     public void testOrderBySql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select()

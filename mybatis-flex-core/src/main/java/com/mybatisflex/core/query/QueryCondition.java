@@ -151,6 +151,10 @@ public class QueryCondition implements Serializable {
             else if (value instanceof QueryWrapper) {
                 sql.append("(").append(dialect.buildSelectSql((QueryWrapper) value)).append(")");
             }
+            //原生sql
+            else if (value instanceof RawValue){
+                sql.append(((RawValue) value).getContext());
+            }
             //正常查询，构建问号
             else {
                 appendQuestionMark(sql);
@@ -180,7 +184,8 @@ public class QueryCondition implements Serializable {
         if (LOGIC_IS_NULL.equals(logic)
                 || LOGIC_IS_NOT_NULL.equals(logic)
                 || value instanceof QueryColumn
-                || value instanceof QueryWrapper) {
+                || value instanceof QueryWrapper
+                || value instanceof RawValue) {
             //do nothing
         }
 
