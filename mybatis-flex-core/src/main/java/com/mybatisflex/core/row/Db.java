@@ -39,7 +39,8 @@ public class Db {
 
     public static RowMapperInvoker invoker() {
         if (defaultRowMapperInvoker == null) {
-            SqlSessionFactory sqlSessionFactory = FlexGlobalConfig.getDefaultConfig().getSqlSessionFactory();
+            FlexGlobalConfig defaultConfig = FlexGlobalConfig.getDefaultConfig();
+            SqlSessionFactory sqlSessionFactory = defaultConfig.getSqlSessionFactory();
             defaultRowMapperInvoker = new RowMapperInvoker(sqlSessionFactory);
         }
         return defaultRowMapperInvoker;

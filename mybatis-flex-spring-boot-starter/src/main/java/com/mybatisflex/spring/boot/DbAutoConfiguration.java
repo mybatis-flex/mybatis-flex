@@ -15,11 +15,15 @@
  */
 package com.mybatisflex.spring.boot;
 
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.spring.SpringRowSessionManager;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @ConditionalOnClass(Db.class)
 @Configuration(proxyBeanMethods = false)
@@ -27,6 +31,11 @@ import org.springframework.context.annotation.Configuration;
 public class DbAutoConfiguration {
 
     public DbAutoConfiguration() {
-        Db.invoker().setRowSessionManager(new SpringRowSessionManager());
+        FlexGlobalConfig defaultConfig = FlexGlobalConfig.getDefaultConfig();
+        if (defaultConfig == null){
+            Logger.getLogger(Db.class.getName()).log(Level.WARNING,"Cannot get FlexGlobalConfig instance, Perhaps the dataSource config error.");
+        }else {
+            Db.invoker().setRowSessionManager(new SpringRowSessionManager());
+        }
     }
 }
