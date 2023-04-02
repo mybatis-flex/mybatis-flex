@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.keygen;
 
+import com.mybatisflex.core.keygen.impl.FlexIDKeyGenerator;
 import com.mybatisflex.core.keygen.impl.UUIDKeyGenerator;
 
 import java.util.HashMap;
@@ -28,6 +29,7 @@ public class KeyGeneratorFactory {
          * {@link com.mybatisflex.annotation.Id}
          */
         register("uuid", new UUIDKeyGenerator());
+        register("flex", new FlexIDKeyGenerator());
     }
 
 
