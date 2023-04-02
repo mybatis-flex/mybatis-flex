@@ -57,12 +57,12 @@ class HelloWorld {
                 .addMapper(AccountMapper.class)
                 .start();
 
+        AccountMapper mapper = MybatisFlexBootstrap.getInstance()
+                .getMapper(AccountMapper.class);
+
 
         //id=100
-        Account account = MybatisFlexBootstrap.getInstance()
-                .execute(AccountMapper.class, mapper ->
-                        mapper.selectOneById(100)
-                );
+        Account account = mapper.selectOneById(100);
     }
 }
 ```
@@ -81,10 +81,7 @@ QueryWrapper query = QueryWrapper.create()
 // ELECT * FROM tb_account
 // WHERE tb_account.id >=  100
 // AND (tb_account.user_name LIKE '%zhang%' OR tb_account.user_name LIKE '%li%' )
-List<Account> accounts = MybatisFlexBootstrap.getInstance()
-        .execute(AccountMapper.class, mapper ->
-                mapper.selectListByQuery(query)
-        );
+List<Account> accounts = mapper.selectListByQuery(query);
 ```
 
 e.g.3: paging query
@@ -104,10 +101,7 @@ QueryWrapper query = QueryWrapper.create()
 // AND (tb_account.user_name LIKE '%zhang%' OR tb_account.user_name LIKE '%li%' )
 // ORDER BY tb_account.id DESC
 // LIMIT 40,10
-Page<Account> accountPage = MybatisFlexBootstrap.getInstance()
-        .execute(AccountMapper.class, mapper ->
-                mapper.paginate(5, 10, query)
-        );
+Page<Account> accountPage = mapper.paginate(5, 10, query);
 ```
 
 ## QueryWrapper Samples

@@ -67,14 +67,14 @@ public class HelloWorld {
                 .addMapper(AccountMapper.class)
                 .start();
 
+        //获取 mapper
+        AccountMapper mapper = MybatisFlexBootstrap.getInstance()
+                .getMapper(AccountMapper.class);
 
-        //示例1：查询 id=1 条数据
-        Account account = MybatisFlexBootstrap.getInstance()
-                .execute(AccountMapper.class, mapper ->
-                        mapper.selectOneById(1)
-                );
+        //示例1：查询 id=1 的数据
+        Account account = mapper.selectOneById(1);
         
-        //示例2：或者使用 Db + Row 查询
+        //示例2：者使用 Db + Row 查询
         String sql = "select * from tb_account where age > ?";
         List<Row> rows = Db.selectListBySql(sql, 18);
     }

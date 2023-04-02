@@ -70,12 +70,12 @@ class HelloWorld {
                 .addMapper(AccountMapper.class)
                 .start();
 
+        AccountMapper mapper = MybatisFlexBootstrap.getInstance()
+                .getMapper(AccountMapper.class);
+
 
         //示例1：查询 id=100 条数据
-        Account account = MybatisFlexBootstrap.getInstance()
-                .execute(AccountMapper.class, mapper ->
-                        mapper.selectOneById(100)
-                );
+        Account account = mapper.selectOneById(100);
     }
 }
 ```
@@ -96,10 +96,7 @@ QueryWrapper query=QueryWrapper.create()
 // ELECT * FROM tb_account
 // WHERE tb_account.id >=  100
 // AND (tb_account.user_name LIKE '%张%' OR tb_account.user_name LIKE '%李%' )
-List<Account> accounts = MybatisFlexBootstrap.getInstance()
-    .execute(AccountMapper.class,mapper->
-        mapper.selectListByQuery(query)
-    );
+List<Account> accounts = mapper.selectListByQuery(query);
 ```
 
 示例3：分页查询
@@ -120,10 +117,7 @@ QueryWrapper query=QueryWrapper.create()
 // AND (user_name LIKE '%张%' OR user_name LIKE '%李%' )
 // ORDER BY `id` DESC
 // LIMIT 40,10
-Page<Account> accounts = MybatisFlexBootstrap.getInstance()
-.execute(AccountMapper.class,mapper->
-    mapper.paginate(5,10,query)
-);
+Page<Account> accounts = mapper.paginate(5,10,query);
 ```
 
 ## QueryWrapper 示例
