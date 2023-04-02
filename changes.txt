@@ -1,3 +1,22 @@
+mybatis-flex v1.0.6 20230403:
+新增：新增多数据源的支持
+新增：Db.tx() 的事务提交方法
+新增：RawValue 类，用于一些不需要进行 Sql 编译的场景
+新增：@Table() 注解，添加 onSet 配置，用于监听 entity 被设置内容
+新增：添加独创的 FlexIDKeyGenerator ID 生成器，用于分布式 ID 生成
+优化：重命名 TableInfos 为 TableInfoFactory
+优化：重命名审计日志的 "extTime" 为 "queryTime"
+修复：AuditManager 在某些场景下会出现空指针的问题
+文档：添加多数据源的相关文档
+文档：添加事务管理的相关文档
+文档：添加与 Spring 整合的相关文档
+文档：优化 Db + Row 的相关文档
+文档：QueryWrapper 添加关于 join 的更多示例
+文档：添加关于 APT 使用的相关文档
+文档：优化 readme 和 快速开始的相关文档
+
+
+
 mybatis-flex v1.0.5 20230330:
 新增：新增 SQL 审计模块，默认关闭
 新增：代码生成器新增 lombok 配置的支持
