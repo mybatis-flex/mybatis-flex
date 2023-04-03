@@ -19,6 +19,7 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.EntitySqlProvider;
 import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.CPI;
 import org.apache.ibatis.annotations.*;
@@ -182,6 +183,17 @@ public interface BaseMapper<T> {
 
 
     /**
+     * 根据 condition 来查询数据
+     *
+     * @param condition 条件
+     * @return 1 条数据
+     */
+    default T selectOneByCondition(QueryCondition condition) {
+        return selectOneByQuery(QueryWrapper.create().where(condition));
+    }
+
+
+    /**
      * 根据 queryWrapper 构建的条件来查询 1 条数据
      *
      * @param queryWrapper query 条件
@@ -230,6 +242,29 @@ public interface BaseMapper<T> {
 
 
     /**
+     * 根据 condition 来查询数据
+     *
+     * @param condition condition 条件
+     * @return 数据列表
+     */
+    default List<T> selectListByCondition(QueryCondition condition) {
+        return selectListByQuery(QueryWrapper.create().where(condition));
+    }
+
+
+    /**
+     * 根据 condition 来查询数据
+     *
+     * @param condition condition 条件
+     * @param count     数据量
+     * @return 数据列表
+     */
+    default List<T> selectListByCondition(QueryCondition condition, int count) {
+        return selectListByQuery(QueryWrapper.create().where(condition).limit(count));
+    }
+
+
+    /**
      * 根据 query 来构建条件查询数据列表
      *
      * @param queryWrapper 查询条件
@@ -247,6 +282,17 @@ public interface BaseMapper<T> {
      */
     default List<T> selectAll() {
         return selectListByQuery(new QueryWrapper());
+    }
+
+
+    /**
+     * 根据条件查询数据总量
+     *
+     * @param condition 条件
+     * @return 数据量
+     */
+    default long selectCountByQuery(QueryCondition condition) {
+        return selectCountByQuery(QueryWrapper.create().where(condition));
     }
 
 
@@ -272,6 +318,49 @@ public interface BaseMapper<T> {
     default Page<T> paginate(int pageNumber, int pageSize, QueryWrapper queryWrapper) {
         Page<T> page = new Page<>(pageNumber, pageSize);
         return paginate(page, queryWrapper);
+    }
+
+
+    /**
+     * 根据条件分页查询
+     *
+     * @param pageNumber 当前页面
+     * @param pageSize   每页的数据量
+     * @param condition  查询条件
+     * @return 返回 Page 数据
+     */
+    default Page<T> paginate(int pageNumber, int pageSize, QueryCondition condition) {
+        Page<T> page = new Page<>(pageNumber, pageSize);
+        return paginate(page, new QueryWrapper().where(condition));
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param pageNumber   当前页码
+     * @param pageSize     每页的数据量
+     * @param totalRow     数据总量
+     * @param queryWrapper 查询条件
+     * @return 返回 Page 数据
+     */
+    default Page<T> paginate(int pageNumber, int pageSize, int totalRow, QueryWrapper queryWrapper) {
+        Page<T> page = new Page<>(pageNumber, pageSize, totalRow);
+        return paginate(page, queryWrapper);
+    }
+
+
+    /**
+     * 根据条件分页查询
+     *
+     * @param pageNumber 当前页面
+     * @param pageSize   每页的数据量
+     * @param totalRow   数据总量
+     * @param condition  查询条件
+     * @return 返回 Page 数据
+     */
+    default Page<T> paginate(int pageNumber, int pageSize, int totalRow, QueryCondition condition) {
+        Page<T> page = new Page<>(pageNumber, pageSize, totalRow);
+        return paginate(page, new QueryWrapper().where(condition));
     }
 
 
