@@ -17,6 +17,7 @@ package com.mybatisflex.core.row;
 
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.transaction.TransactionContext;
 import com.mybatisflex.core.transaction.TransactionalManager;
@@ -159,6 +160,17 @@ public class Db {
         return invoker().deleteByMap(tableName, whereColumns);
     }
 
+
+    /**
+     * 根据 condition 条件删除数据
+     *
+     * @param tableName 表名
+     * @param condition 条件内容
+     */
+    public static int deleteByCondition(String tableName, QueryCondition condition) {
+        return invoker().deleteByCondition(tableName, condition);
+    }
+
     /**
      * 根据 query 构建的条件来删除数据
      *
@@ -200,6 +212,17 @@ public class Db {
      */
     public static int updateByMap(String tableName, Row data, Map<String, Object> whereColumns) {
         return invoker().updateByMap(tableName, data, whereColumns);
+    }
+
+    /**
+     * 根据 condition 来更新数据
+     *
+     * @param tableName 表名
+     * @param data      数据
+     * @param condition 条件
+     */
+    public static int updateByCondition(String tableName, Row data, QueryCondition condition) {
+        return invoker().updateByCondition(tableName, data, condition);
     }
 
 
@@ -270,6 +293,16 @@ public class Db {
         return invoker().selectOneByMap(tableName, whereColumns);
     }
 
+    /**
+     * 根据 condition 来查询数据
+     *
+     * @param tableName 表名
+     * @param condition 条件
+     */
+    public static Row selectOneByCondition(String tableName, QueryCondition condition) {
+        return invoker().selectOneByCondition(tableName, condition);
+    }
+
 
     /**
      * 根据 queryWrapper 来查询 1 条数据
@@ -301,6 +334,39 @@ public class Db {
      */
     public static List<Row> selectListByMap(String tableName, Map<String, Object> whereColumns) {
         return invoker().selectListByMap(tableName, whereColumns);
+    }
+
+    /**
+     * 根据 map 构建的条件来查询数据列表
+     *
+     * @param tableName    表名
+     * @param whereColumns 条件
+     * @param count        数据量
+     */
+    public static List<Row> selectListByMap(String tableName, Map<String, Object> whereColumns, int count) {
+        return invoker().selectListByMap(tableName, whereColumns, count);
+    }
+
+
+    /**
+     * 通过 condition 条件来查询数据列表
+     *
+     * @param tableName 表名
+     * @param condition where 条件
+     */
+    public static List<Row> selectListByCondition(String tableName, QueryCondition condition) {
+        return invoker().selectListByCondition(tableName, condition);
+    }
+
+    /**
+     * 根据 condition 条件来查询数据列表
+     *
+     * @param tableName 表名
+     * @param condition 条件
+     * @param count     数据量
+     */
+    public static List<Row> selectListByCondition(String tableName, QueryCondition condition, int count) {
+        return invoker().selectListByCondition(tableName, condition, count);
     }
 
 
@@ -354,6 +420,17 @@ public class Db {
      */
     public static long selectCount(String sql, Object... args) {
         return invoker().selectCount(sql, args);
+    }
+
+
+    /**
+     * 根据 condition 条件来查询数量
+     *
+     * @param tableName 表名
+     * @param condition 条件
+     */
+    public static long selectCountByCondition(String tableName, QueryCondition condition) {
+        return invoker().selectCountByCondition(tableName, condition);
     }
 
 

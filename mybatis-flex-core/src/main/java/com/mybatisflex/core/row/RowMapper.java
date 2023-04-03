@@ -21,6 +21,7 @@ import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.RowSqlProvider;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.annotations.*;
@@ -45,7 +46,6 @@ public interface RowMapper {
      */
     @InsertProvider(value = RowSqlProvider.class, method = "insert")
     int insert(@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROW) Row row);
-
 
 
     /**
@@ -142,6 +142,18 @@ public interface RowMapper {
 
 
     /**
+     * 根据 condition 来删除数据
+     *
+     * @param tableName 表名
+     * @param condition 数据
+     * @return 执行影响的行数
+     */
+    default int deleteByCondition(String tableName, QueryCondition condition) {
+        return deleteByQuery(tableName, new QueryWrapper().where(condition));
+    }
+
+
+    /**
      * 根据 queryWrapper 构建 where 条件来删除数据
      *
      * @param tableName    表名
@@ -188,6 +200,19 @@ public interface RowMapper {
      */
     default int updateByMap(String tableName, Row data, Map<String, Object> whereConditions) {
         return updateByQuery(tableName, data, new QueryWrapper().where(whereConditions));
+    }
+
+
+    /**
+     * 根据 condition 来更新数据
+     *
+     * @param tableName 表名
+     * @param data      要更新的数据
+     * @param condition 更新条件
+     * @return 执行影响的行数
+     */
+    default int updateByCondition(String tableName, Row data, QueryCondition condition) {
+        return updateByQuery(tableName, data, new QueryWrapper().where(condition));
     }
 
 
@@ -269,10 +294,20 @@ public interface RowMapper {
      *
      * @param tableName
      * @param whereConditions
-     * @return
      */
     default Row selectOneByMap(String tableName, Map whereConditions) {
         return selectOneByQuery(tableName, new QueryWrapper().where(whereConditions));
+    }
+
+
+    /**
+     * 根据 condition 来查询数据
+     *
+     * @param tableName 表名
+     * @param condition 条件内容
+     */
+    default Row selectOneByCondition(String tableName, QueryCondition condition) {
+        return selectOneByQuery(tableName, new QueryWrapper().where(condition));
     }
 
 
@@ -312,6 +347,42 @@ public interface RowMapper {
      */
     default List<Row> selectListByMap(String tableName, Map<String, Object> whereConditions) {
         return selectListByQuery(tableName, new QueryWrapper().where(whereConditions));
+    }
+
+    /**
+     * 根据 map 来查询一个 Row 列表
+     *
+     * @param tableName       表名
+     * @param whereConditions 条件
+     * @param count           数据量
+     * @return row 列表
+     */
+    default List<Row> selectListByMap(String tableName, Map<String, Object> whereConditions, int count) {
+        return selectListByQuery(tableName, new QueryWrapper().where(whereConditions).limit(count));
+    }
+
+
+    /**
+     * 根据 condition 来查询 Row 列表
+     *
+     * @param tableName 表名
+     * @param condition 条件
+     * @return row 列表
+     */
+    default List<Row> selectListByCondition(String tableName, QueryCondition condition) {
+        return selectListByQuery(tableName, new QueryWrapper().where(condition));
+    }
+
+    /**
+     * 根据 condition 来查询 Row 列表
+     *
+     * @param tableName 表名
+     * @param condition 条件
+     * @param count     数据量
+     * @return row 列表
+     */
+    default List<Row> selectListByCondition(String tableName, QueryCondition condition, int count) {
+        return selectListByQuery(tableName, new QueryWrapper().where(condition).limit(count));
     }
 
 
@@ -379,7 +450,18 @@ public interface RowMapper {
     }
 
     /**
-     * 根据 queryWrapper 来查询数据
+     * 根据 condition 条件来查询数据量
+     *
+     * @param tableName
+     * @param condition
+     * @return
+     */
+    default long selectCountByCondition(String tableName, QueryCondition condition) {
+        return selectCountByQuery(tableName, new QueryWrapper().where(condition));
+    }
+
+    /**
+     * 根据 queryWrapper 来查询数量
      *
      * @param tableName    表名
      * @param queryWrapper queryWrapper
@@ -402,6 +484,53 @@ public interface RowMapper {
     default Page<Row> paginate(String tableName, int pageNumber, int pageSize, QueryWrapper queryWrapper) {
         Page<Row> page = new Page<>(pageNumber, pageSize);
         return paginate(tableName, page, queryWrapper);
+    }
+
+
+    /**
+     * 分页查询某张表的数据
+     *
+     * @param tableName  表名
+     * @param pageNumber 当前页码
+     * @param pageSize   每页的数据量
+     * @param condition  条件
+     * @return
+     */
+    default Page<Row> paginate(String tableName, int pageNumber, int pageSize, QueryCondition condition) {
+        Page<Row> page = new Page<>(pageNumber, pageSize);
+        return paginate(tableName, page, new QueryWrapper().where(condition));
+    }
+
+
+    /**
+     * 分页查询某张表的数据
+     *
+     * @param tableName    表名
+     * @param pageNumber   当前页码
+     * @param pageSize     每页的数据量
+     * @param totalRow     数据总量
+     * @param queryWrapper 条件封装
+     * @return 一页数据
+     */
+    default Page<Row> paginate(String tableName, int pageNumber, int pageSize, int totalRow, QueryWrapper queryWrapper) {
+        Page<Row> page = new Page<>(pageNumber, pageSize, totalRow);
+        return paginate(tableName, page, queryWrapper);
+    }
+
+
+    /**
+     * 分页查询某张表的数据
+     *
+     * @param tableName  表名
+     * @param pageNumber 当前页码
+     * @param pageSize   每页的数据量
+     * @param totalRow   数据总量
+     * @param condition  条件
+     * @return
+     */
+    default Page<Row> paginate(String tableName, int pageNumber, int pageSize, int totalRow, QueryCondition condition) {
+        Page<Row> page = new Page<>(pageNumber, pageSize, totalRow);
+        return paginate(tableName, page, new QueryWrapper().where(condition));
     }
 
 
