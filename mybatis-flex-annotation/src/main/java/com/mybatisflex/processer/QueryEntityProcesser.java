@@ -202,7 +202,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
                 //是否开启 mapper 生成功能
                 if ("true".equalsIgnoreCase(mappersGenerateEnable)) {
                     String realMapperPackage = genMappersPackage == null || genMappersPackage.trim().length() == 0
-                            ? guessPackage.substring(0, guessPackage.length() - 5) + "mapper" : genMappersPackage;
+                            ? guessMapperPackage(entityClassElement.toString()) : genMappersPackage;
                     genMapperClass(genPath, realMapperPackage, entityClassElement.toString());
                 }
             });
@@ -215,6 +215,20 @@ public class QueryEntityProcesser extends AbstractProcessor {
         }
 
         return false;
+    }
+
+
+    private static String guessMapperPackage(String entityClassName) {
+        if (!entityClassName.contains(".")) {
+            return "mapper";
+        } else {
+            String entityPackage = entityClassName.substring(0, entityClassName.lastIndexOf("."));
+            if (entityPackage.contains(".")) {
+                return entityPackage.substring(0, entityPackage.lastIndexOf(".")) + ".mapper";
+            } else {
+                return "mapper";
+            }
+        }
     }
 
 
@@ -279,7 +293,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
                 writer.write(genContent);
                 writer.flush();
 
-                printMessage(">>>>> mybatis-flex success generate tables class: \n" + sourceFile.toUri());
+//                printMessage(">>>>> mybatis-flex success generate tables class: \n" + sourceFile.toUri());
                 return;
             }
 
@@ -317,7 +331,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
             writer.write(genContent);
             writer.flush();
 
-            printMessage(">>>>> mybatis-flex success generate tables class: \n" + genJavaFile.toURI());
+//            printMessage(">>>>> mybatis-flex success generate tables class: \n" + genJavaFile.toURI());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -349,7 +363,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
                 writer.write(genContent);
                 writer.flush();
 
-                printMessage(">>>>> mybatis-flex success generate mapper class: \n" + sourceFile.toUri());
+//                printMessage(">>>>> mybatis-flex success generate mapper class: \n" + sourceFile.toUri());
                 return;
             }
 
@@ -387,7 +401,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
             writer.write(genContent);
             writer.flush();
 
-            printMessage(">>>>> mybatis-flex success generate mapper class: \n" + genJavaFile.toURI());
+//            printMessage(">>>>> mybatis-flex success generate mapper class: \n" + genJavaFile.toURI());
 
         } catch (IOException e) {
             e.printStackTrace();
