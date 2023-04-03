@@ -123,7 +123,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
             }
             String genPath = props.getProperties().getProperty("processer.genPath", "");
             String genTablesPackage = props.getProperties().getProperty("processer.tablesPackage");
-            String mappersGenerateEnable = props.getProperties().getProperty("processer.mappersGenerateEnable","true");
+            String mappersGenerateEnable = props.getProperties().getProperty("processer.mappersGenerateEnable", "true");
             String genMappersPackage = props.getProperties().getProperty("processer.mappersPackage");
             String className = props.getProperties().getProperty("processer.tablesClassName", "Tables");
 
@@ -223,7 +223,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
         // tableDefTemplate = "    public static final @entityClassTableDef @tableField = new @entityClassTableDef(\"@tableName\");\n";
 
         String tableDef = tableDefTemplate.replace("@entityClass", entityClass)
-                .replace("@tableField", entityClass.toUpperCase())
+                .replace("@tableField", camelToUnderline(entityClass).toUpperCase())
                 .replace("@tableName", tableName);
 
 
