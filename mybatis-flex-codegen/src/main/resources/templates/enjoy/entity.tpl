@@ -10,7 +10,6 @@ public class #(table.buildEntityClassName()) {
 
 #for(column: table.columns)    #(column.buildAnnotations())
     private #(column.propertySimpleType) #(column.property);
-
 #end
 
     #if(!globalConfig.isEntityWithLombok())
