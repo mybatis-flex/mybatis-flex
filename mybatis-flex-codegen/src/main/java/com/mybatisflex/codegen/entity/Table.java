@@ -78,14 +78,14 @@ public class Table {
         //主键
         if (primaryKeys != null && primaryKeys.contains(column.getName())) {
             column.setPrimaryKey(true);
-            if (column.getAutoIncrement() == null){
-                if (column.getPropertyType().equals(Integer.class.getName()) || column.getPropertyType().equals(BigInteger.class.getName())){
+            if (column.getAutoIncrement() == null) {
+                if (column.getPropertyType().equals(Integer.class.getName()) || column.getPropertyType().equals(BigInteger.class.getName())) {
                     column.setAutoIncrement(true);
                 }
             }
         }
 
-        if (column.getAutoIncrement() == null){
+        if (column.getAutoIncrement() == null) {
             column.setAutoIncrement(false);
         }
 
@@ -135,6 +135,9 @@ public class Table {
             }
             if (tableConfig.getUpdateListenerClass() != null) {
                 imports.add(tableConfig.getUpdateListenerClass().getName());
+            }
+            if (tableConfig.getSetListenerClass() != null) {
+                imports.add(tableConfig.getSetListenerClass().getName());
             }
         }
 
@@ -193,6 +196,9 @@ public class Table {
             }
             if (tableConfig.getUpdateListenerClass() != null) {
                 tableAnnotation.append(", onUpdate = " + tableConfig.getUpdateListenerClass().getSimpleName() + ".class");
+            }
+            if (tableConfig.getSetListenerClass() != null) {
+                tableAnnotation.append(", onSet = " + tableConfig.getUpdateListenerClass().getSimpleName() + ".class");
             }
         }
         return tableAnnotation.append(")").toString();

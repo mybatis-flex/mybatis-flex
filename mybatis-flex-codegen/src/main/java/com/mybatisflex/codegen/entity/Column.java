@@ -135,7 +135,11 @@ public class Column {
                 annotations.append("before=" + columnConfig.getKeyBefore());
             }
 
-            annotations.append(")");
+            if (annotations.length() == 4) {
+                annotations.deleteCharAt(annotations.length() - 1);
+            } else {
+                annotations.append(")");
+            }
         }
 
         //@Column 注解

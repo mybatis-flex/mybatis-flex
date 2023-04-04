@@ -16,6 +16,7 @@
 package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 
 import java.util.HashMap;
@@ -42,7 +43,10 @@ public class TableConfig {
     private Class<? extends UpdateListener> updateListenerClass;
 
 
-    private Map<String,ColumnConfig> columnConfigMap;
+    private Class<? extends SetListener> setListenerClass;
+
+
+    private Map<String, ColumnConfig> columnConfigMap;
 
 
     public String getTableName() {
@@ -85,6 +89,14 @@ public class TableConfig {
         this.updateListenerClass = updateListenerClass;
     }
 
+    public Class<? extends SetListener> getSetListenerClass() {
+        return setListenerClass;
+    }
+
+    public void setSetListenerClass(Class<? extends SetListener> setListenerClass) {
+        this.setListenerClass = setListenerClass;
+    }
+
     public Map<String, ColumnConfig> getColumnConfigMap() {
         return columnConfigMap;
     }
@@ -93,15 +105,15 @@ public class TableConfig {
         this.columnConfigMap = columnConfigMap;
     }
 
-    public void addColumnConfig(ColumnConfig columnConfig){
-        if (columnConfigMap == null){
+    public void addColumnConfig(ColumnConfig columnConfig) {
+        if (columnConfigMap == null) {
             columnConfigMap = new HashMap<>();
         }
         columnConfigMap.put(columnConfig.getColumnName(), columnConfig);
     }
 
-    public ColumnConfig getColumnConfig(String columnName){
-        return columnConfigMap == null ? null: columnConfigMap.get(columnName);
+    public ColumnConfig getColumnConfig(String columnName) {
+        return columnConfigMap == null ? null : columnConfigMap.get(columnName);
     }
 
 
