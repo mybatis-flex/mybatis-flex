@@ -24,12 +24,14 @@ import java.util.Map;
 public class KeyGeneratorFactory {
 
     private static final Map<String, IKeyGenerator> KEY_GENERATOR_MAP = new HashMap<>();
+
     static {
         /** 内置了 uuid 的生成器，因此主键配置的时候可以直接配置为 @Id(keyType = KeyType.Generator, value = "uuid")
          * {@link com.mybatisflex.annotation.Id}
          */
         register("uuid", new UUIDKeyGenerator());
         register("flex", new FlexIDKeyGenerator());
+        register("flexId", new FlexIDKeyGenerator());
     }
 
 
