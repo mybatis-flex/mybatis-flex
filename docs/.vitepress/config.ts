@@ -54,6 +54,9 @@ export default defineConfig({
           { text: 'SQL 审计', link: '/zh/audit' },
           { text: '多数据源', link: '/zh/multi-datasource' },
           { text: '事务管理', link: '/zh/tx' },
+          { text: '字段权限', link: '/zh/columns_permission' },
+          { text: '字段加密', link: '/zh/columns_encrypt' },
+          { text: '字典回显', link: '/zh/columns_dict' },
         ]
       },
       {
