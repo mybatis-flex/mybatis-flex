@@ -22,6 +22,7 @@ import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.util.ObjectUtil;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
@@ -35,7 +36,7 @@ public interface BaseMapper<T> {
     /**
      * 插入 entity 数据
      *
-     * @param entity
+     * @param entity 实体类
      * @return 返回影响的行数
      * @see com.mybatisflex.core.provider.EntitySqlProvider#insert(Map, ProviderContext)
      */
@@ -80,11 +81,11 @@ public interface BaseMapper<T> {
     /**
      * 根据 map 构建的条件来删除数据
      *
-     * @param whereConditions
+     * @param whereConditions 条件
      * @return 返回影响的行数
      */
     default int deleteByMap(Map<String, Object> whereConditions) {
-        if (whereConditions == null || whereConditions.isEmpty()) {
+        if (ObjectUtil.areNull(whereConditions) || whereConditions.isEmpty()) {
             throw FlexExceptions.wrap("deleteByMap is not allow empty map.");
         }
         return deleteByQuery(QueryWrapper.create().where(whereConditions));
@@ -153,7 +154,6 @@ public interface BaseMapper<T> {
      * @param entity       数据内容
      * @param ignoreNulls  是否忽略空值
      * @param queryWrapper query 条件
-     * @return
      * @see com.mybatisflex.core.provider.EntitySqlProvider#updateByQuery(Map, ProviderContext)
      */
     @UpdateProvider(type = EntitySqlProvider.class, method = "updateByQuery")
@@ -299,7 +299,7 @@ public interface BaseMapper<T> {
     /**
      * 根据 queryWrapper 来查询数据量
      *
-     * @param queryWrapper
+     * @param queryWrapper 查询包装器
      * @return 数据量
      * @see EntitySqlProvider#selectCountByQuery(Map, ProviderContext)
      */
