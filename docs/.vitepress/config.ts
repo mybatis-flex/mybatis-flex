@@ -28,7 +28,8 @@ export default defineConfig({
           { text: 'Mybatis-Flex 是什么', link: '/zh/what-is-mybatisflex' },
           { text: '快速开始', link: '/zh/getting-started' },
           { text: 'Maven 依赖', link: '/zh/maven' },
-          { text: 'Spring 整合', link: '/zh/mybatis-flex-with-spring' },
+          { text: '和 Spring 整合', link: '/zh/mybatis-flex-with-spring' },
+          { text: '和同类框架对比', link: '/zh/comparison' },
           { text: 'QQ 交流群', link: '/zh/qq_group' },
         ]
       },
