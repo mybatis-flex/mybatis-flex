@@ -201,11 +201,7 @@ public interface BaseMapper<T> {
      */
     default T selectOneByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper) {
         List<T> entities = selectListByQuery(queryWrapper.limit(1));
-        if (entities == null || entities.isEmpty()) {
-            return null;
-        } else {
-            return entities.get(0);
-        }
+        return (entities == null || entities.isEmpty()) ? null : entities.get(0);
     }
 
     /**

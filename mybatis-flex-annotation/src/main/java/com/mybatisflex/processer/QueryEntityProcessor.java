@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class QueryEntityProcesser extends AbstractProcessor {
+public class QueryEntityProcessor extends AbstractProcessor {
 
     private static final List<String> defaultSupportColumnTypes = Arrays.asList(
             int.class.getName(), Integer.class.getName(),
@@ -339,7 +339,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
             if (writer != null) {
                 try {
                     writer.close();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
             }
         }
@@ -409,7 +409,7 @@ public class QueryEntityProcesser extends AbstractProcessor {
             if (writer != null) {
                 try {
                     writer.close();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
             }
         }
