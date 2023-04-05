@@ -61,8 +61,21 @@ public class AuditManager {
         return messageCollector;
     }
 
+
+    public static void setMessageReporter(MessageReporter messageReporter){
+        MessageCollector newMessageCollector = new ScheduledMessageCollector(10,messageReporter);
+        setMessageCollector(newMessageCollector);
+    }
+
     public static void setMessageCollector(MessageCollector messageCollector) {
+        releaseScheduledMessageCollector();
         AuditManager.messageCollector = messageCollector;
+    }
+
+    private static void releaseScheduledMessageCollector() {
+        if (messageCollector instanceof ScheduledMessageCollector){
+            ((ScheduledMessageCollector) messageCollector).release();
+        }
     }
 
     public static <T> T startAudit(AuditRunnable<T> supplier, BoundSql boundSql) throws SQLException {

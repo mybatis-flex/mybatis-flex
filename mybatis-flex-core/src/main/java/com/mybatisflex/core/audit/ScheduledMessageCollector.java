@@ -48,6 +48,12 @@ public class ScheduledMessageCollector implements MessageCollector, Runnable {
     public ScheduledMessageCollector(long period, MessageReporter messageSender) {
         this.period = period;
         this.messageSender = messageSender;
+        scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
+            Thread thread = new Thread(runnable, "ScheduledMessageCollector");
+            thread.setDaemon(true);
+            return thread;
+        });
+        scheduler.scheduleAtFixedRate(this, period, period, TimeUnit.SECONDS);
     }
 
 
@@ -79,5 +85,9 @@ public class ScheduledMessageCollector implements MessageCollector, Runnable {
         }
 
         messageSender.sendMessages(sendMessages);
+    }
+
+    public void release() {
+        scheduler.shutdown();
     }
 }

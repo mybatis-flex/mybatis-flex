@@ -40,7 +40,7 @@ public class HttpMessageReporter implements MessageReporter {
         HttpUtil.post(url, jsonFormatter.toJSONString(messages));
     }
 
-    interface JSONFormatter {
+    public interface JSONFormatter {
         String toJSONString(Object object);
     }
 
