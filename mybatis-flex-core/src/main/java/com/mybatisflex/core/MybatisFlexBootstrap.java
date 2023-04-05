@@ -65,7 +65,7 @@ public class MybatisFlexBootstrap {
     protected SqlSessionFactory sqlSessionFactory;
     protected Class<? extends Log> logImpl;
 
-    private Map<Class<?>, Object> mapperObjects = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Object> mapperObjects = new ConcurrentHashMap<>();
 
     /**
      * 虽然提供了 getInstance，但也允许用户进行实例化，
