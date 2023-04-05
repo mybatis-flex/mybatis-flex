@@ -68,11 +68,13 @@ public class AuditManager {
     }
 
     public static void setMessageCollector(MessageCollector messageCollector) {
-        releaseScheduledMessageCollector();
+        MessageCollector temp = AuditManager.messageCollector;
         AuditManager.messageCollector = messageCollector;
+        releaseScheduledMessageCollector(temp);
+
     }
 
-    private static void releaseScheduledMessageCollector() {
+    private static void releaseScheduledMessageCollector(MessageCollector messageCollector) {
         if (messageCollector instanceof ScheduledMessageCollector){
             ((ScheduledMessageCollector) messageCollector).release();
         }

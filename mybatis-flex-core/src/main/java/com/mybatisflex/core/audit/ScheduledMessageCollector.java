@@ -28,32 +28,27 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class ScheduledMessageCollector implements MessageCollector, Runnable {
 
-    private long period = 10;
+    private long period;
     private ScheduledExecutorService scheduler;
-    private MessageReporter messageSender = new ConsoleMessageReporter();
+    private MessageReporter messageSender;
 
     private List<AuditMessage> messages = Collections.synchronizedList(new ArrayList<>());
     private ReentrantReadWriteLock rrwLock = new ReentrantReadWriteLock();
 
     public ScheduledMessageCollector() {
-        scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
-            Thread thread = new Thread(runnable, "ScheduledMessageCollector");
-            thread.setDaemon(true);
-            return thread;
-        });
-        scheduler.scheduleAtFixedRate(this, period, period, TimeUnit.SECONDS);
+        this(10, new ConsoleMessageReporter());
     }
 
 
     public ScheduledMessageCollector(long period, MessageReporter messageSender) {
         this.period = period;
         this.messageSender = messageSender;
-        scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
+        this.scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
             Thread thread = new Thread(runnable, "ScheduledMessageCollector");
             thread.setDaemon(true);
             return thread;
         });
-        scheduler.scheduleAtFixedRate(this, period, period, TimeUnit.SECONDS);
+        this.scheduler.scheduleAtFixedRate(this, period, period, TimeUnit.SECONDS);
     }
 
 
@@ -73,9 +68,7 @@ public class ScheduledMessageCollector implements MessageCollector, Runnable {
         if (messages.isEmpty()) {
             return;
         }
-
         List<AuditMessage> sendMessages;
-
         try {
             rrwLock.writeLock().lock();
             sendMessages = new ArrayList<>(messages);
@@ -83,11 +76,11 @@ public class ScheduledMessageCollector implements MessageCollector, Runnable {
         } finally {
             rrwLock.writeLock().unlock();
         }
-
         messageSender.sendMessages(sendMessages);
     }
 
     public void release() {
+        run(); //clear the messages
         scheduler.shutdown();
     }
 }
