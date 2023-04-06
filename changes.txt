@@ -1,3 +1,18 @@
+mybatis-flex v1.0.7 20230406:
+新增：BaseMapper 添加可以直接根据 Condition 查询的方法，更加方便
+新增：Db 添加可以直接根据 Condition 查询的方法，更加方便
+新增：代码生成器添加 @Table(onSet) 的配置
+新增：添加 HttpMessageReporter，用于可以往服务器发送审计日志
+优化：APT 生成的 java 属性默认使用下划线的方式
+优化：优化 APT 生成 mapper 的默认存放路径
+优化：重命名 QueryEntityProcesser 为 QueryEntityProcessor
+文档：添加字段权限的相关文档
+文档：添加字典回写的相关文档
+文档：添加字段加密的相关文档
+文档：添加 Mybatis-Flex 与同类框架对比的文档
+
+
+
 mybatis-flex v1.0.6 20230403:
 新增：新增多数据源的支持
 新增：Db.tx() 的事务提交方法
