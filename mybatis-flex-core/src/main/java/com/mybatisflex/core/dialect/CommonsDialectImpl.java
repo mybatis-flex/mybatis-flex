@@ -195,11 +195,17 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     @Override
-    public String forUpdateByQuery(String tableName, Row row, QueryWrapper queryWrapper) {
+    public String forUpdateByQuery(QueryWrapper queryWrapper, Row row) {
         StringBuilder sql = new StringBuilder();
 
         Set<String> modifyAttrs = row.obtainModifyAttrs();
 
+        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        if (queryTables == null || queryTables.size() != 1) {
+            throw FlexExceptions.wrap("update sql must need 1 table.");
+        }
+
+        String tableName = queryTables.get(0).getName();
         sql.append("UPDATE ").append(wrap(tableName)).append(" SET ");
         int index = 0;
         for (String modifyAttr : modifyAttrs) {

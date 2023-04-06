@@ -16,8 +16,11 @@
 package com.mybatisflex.core.row;
 
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.transaction.TransactionContext;
 import com.mybatisflex.core.transaction.TransactionalManager;
@@ -157,7 +160,7 @@ public class Db {
      * @param whereColumns where 条件
      */
     public static int deleteByMap(String tableName, Map<String, Object> whereColumns) {
-        return invoker().deleteByMap(tableName, whereColumns);
+        return invoker().deleteByQuery(tableName, new QueryWrapper().where(whereColumns));
     }
 
 
@@ -168,7 +171,7 @@ public class Db {
      * @param condition 条件内容
      */
     public static int deleteByCondition(String tableName, QueryCondition condition) {
-        return invoker().deleteByCondition(tableName, condition);
+        return invoker().deleteByQuery(tableName, new QueryWrapper().where(condition));
     }
 
     /**
@@ -211,7 +214,7 @@ public class Db {
      * @param whereColumns where 条件
      */
     public static int updateByMap(String tableName, Row data, Map<String, Object> whereColumns) {
-        return invoker().updateByMap(tableName, data, whereColumns);
+        return invoker().updateByQuery(tableName, data, new QueryWrapper().where(whereColumns));
     }
 
     /**
@@ -222,7 +225,7 @@ public class Db {
      * @param condition 条件
      */
     public static int updateByCondition(String tableName, Row data, QueryCondition condition) {
-        return invoker().updateByCondition(tableName, data, condition);
+        return invoker().updateByQuery(tableName, data, new QueryWrapper().where(condition));
     }
 
 
@@ -290,7 +293,7 @@ public class Db {
      * @param whereColumns where条件
      */
     public static Row selectOneByMap(String tableName, Map whereColumns) {
-        return invoker().selectOneByMap(tableName, whereColumns);
+        return invoker().selectOneByQuery(tableName, new QueryWrapper().where(whereColumns));
     }
 
     /**
@@ -300,7 +303,7 @@ public class Db {
      * @param condition 条件
      */
     public static Row selectOneByCondition(String tableName, QueryCondition condition) {
-        return invoker().selectOneByCondition(tableName, condition);
+        return invoker().selectOneByQuery(tableName, new QueryWrapper().where(condition));
     }
 
 
@@ -312,6 +315,20 @@ public class Db {
      */
     public static Row selectOneByQuery(String tableName, QueryWrapper queryWrapper) {
         return invoker().selectOneByQuery(tableName, queryWrapper);
+    }
+
+
+    /**
+     * 直接根据 queryWrapper 查询 1 条数据
+     *
+     * @param queryWrapper 必须带有 from 的 queryWrapper
+     */
+    public static Row selectOneByQuery(QueryWrapper queryWrapper) {
+        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        if (queryTables == null || queryTables.isEmpty()) {
+            throw FlexExceptions.wrap("table must not be null or empty in Db.selectOneByQuery");
+        }
+        return invoker().selectOneByQuery(null, queryWrapper);
     }
 
 
@@ -333,7 +350,7 @@ public class Db {
      * @param whereColumns where 条件
      */
     public static List<Row> selectListByMap(String tableName, Map<String, Object> whereColumns) {
-        return invoker().selectListByMap(tableName, whereColumns);
+        return invoker().selectListByQuery(tableName, new QueryWrapper().where(whereColumns));
     }
 
     /**
@@ -344,7 +361,7 @@ public class Db {
      * @param count        数据量
      */
     public static List<Row> selectListByMap(String tableName, Map<String, Object> whereColumns, int count) {
-        return invoker().selectListByMap(tableName, whereColumns, count);
+        return invoker().selectListByQuery(tableName, new QueryWrapper().where(whereColumns).limit(count));
     }
 
 
@@ -355,7 +372,7 @@ public class Db {
      * @param condition where 条件
      */
     public static List<Row> selectListByCondition(String tableName, QueryCondition condition) {
-        return invoker().selectListByCondition(tableName, condition);
+        return invoker().selectListByQuery(tableName, new QueryWrapper().where(condition));
     }
 
     /**
@@ -366,7 +383,7 @@ public class Db {
      * @param count     数据量
      */
     public static List<Row> selectListByCondition(String tableName, QueryCondition condition, int count) {
-        return invoker().selectListByCondition(tableName, condition, count);
+        return invoker().selectListByQuery(tableName, new QueryWrapper().where(condition).limit(count));
     }
 
 
@@ -378,6 +395,20 @@ public class Db {
      */
     public static List<Row> selectListByQuery(String tableName, QueryWrapper queryWrapper) {
         return invoker().selectListByQuery(tableName, queryWrapper);
+    }
+
+
+    /**
+     * 通过 query 来查询数据列表
+     *
+     * @param queryWrapper 必须带有 from 的 queryWrapper
+     */
+    public static List<Row> selectListByQuery(QueryWrapper queryWrapper) {
+        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        if (queryTables == null || queryTables.isEmpty()) {
+            throw FlexExceptions.wrap("table must not be null or empty in Db.selectListByQuery");
+        }
+        return invoker().selectListByQuery(null, queryWrapper);
     }
 
     /**
@@ -430,7 +461,7 @@ public class Db {
      * @param condition 条件
      */
     public static long selectCountByCondition(String tableName, QueryCondition condition) {
-        return invoker().selectCountByCondition(tableName, condition);
+        return invoker().selectCountByQuery(tableName, new QueryWrapper().where(condition));
     }
 
 
@@ -446,6 +477,48 @@ public class Db {
 
 
     /**
+     * 直接根据 query 来查询数据量
+     *
+     * @param queryWrapper 必须带有表名的 queryWrapper
+     * @return 数据量
+     */
+    public static long selectCountByQuery(QueryWrapper queryWrapper) {
+        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        if (queryTables == null || queryTables.isEmpty()) {
+            throw FlexExceptions.wrap("table must not be null or empty in Db.selectCountByQuery");
+        }
+        return invoker().selectCountByQuery(null, queryWrapper);
+    }
+
+
+    /**
+     * 分页查询
+     *
+     * @param tableName  表名
+     * @param pageNumber 当前的页码
+     * @param pageSize   每页的数据量
+     * @param condition  条件
+     */
+    public static Page<Row> paginate(String tableName, int pageNumber, int pageSize, QueryCondition condition) {
+        return invoker().paginate(tableName, new Page<>(pageNumber, pageSize), QueryWrapper.create().where(condition));
+    }
+
+
+    /**
+     * 分页查询
+     *
+     * @param tableName  表名
+     * @param pageNumber 当前的页码
+     * @param pageSize   每页的数据量
+     * @param totalRow   数据总量
+     * @param condition  条件
+     */
+    public static Page<Row> paginate(String tableName, int pageNumber, int pageSize, int totalRow, QueryCondition condition) {
+        return invoker().paginate(tableName, new Page<>(pageNumber, pageSize, totalRow), QueryWrapper.create().where(condition));
+    }
+
+
+    /**
      * 分页查询
      *
      * @param tableName    表名
@@ -454,7 +527,21 @@ public class Db {
      * @param queryWrapper 条件
      */
     public static Page<Row> paginate(String tableName, int pageNumber, int pageSize, QueryWrapper queryWrapper) {
-        return invoker().paginate(tableName, pageNumber, pageSize, queryWrapper);
+        return invoker().paginate(tableName, new Page<>(pageNumber, pageSize), queryWrapper);
+    }
+
+
+    /**
+     * 分页查询
+     *
+     * @param tableName    表名
+     * @param pageNumber   当前的页码
+     * @param pageSize     每页的数据量
+     * @param totalRow     数据总量
+     * @param queryWrapper 条件
+     */
+    public static Page<Row> paginate(String tableName, int pageNumber, int pageSize, int totalRow, QueryWrapper queryWrapper) {
+        return invoker().paginate(tableName, new Page<>(pageNumber, pageSize, totalRow), queryWrapper);
     }
 
 
@@ -470,6 +557,11 @@ public class Db {
     }
 
 
+    /**
+     * 进行事务操作
+     *
+     * @param supplier
+     */
     public static boolean tx(Supplier<Boolean> supplier) {
         //上一级事务的id，支持事务嵌套
         String higherXID = TransactionContext.getXID();

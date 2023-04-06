@@ -144,7 +144,7 @@ public class RowSqlProvider {
     public static String deleteByQuery(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        queryWrapper.from(tableName);
+        CPI.setFromIfNecessary(queryWrapper,tableName);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
@@ -177,15 +177,16 @@ public class RowSqlProvider {
     public static String updateByQuery(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         Row data = ProviderUtil.getRow(params);
-        QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
 
+        QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
+        CPI.setFromIfNecessary(queryWrapper, tableName);
 
         Object[] modifyValues = data.obtainModifyValues();
         Object[] valueArray = CPI.getValueArray(queryWrapper);
 
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(modifyValues, valueArray));
 
-        return DialectFactory.getDialect().forUpdateByQuery(tableName, data, queryWrapper);
+        return DialectFactory.getDialect().forUpdateByQuery(queryWrapper, data);
     }
 
 
@@ -241,7 +242,7 @@ public class RowSqlProvider {
     public static String selectListByQuery(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        queryWrapper.from(tableName);
+        CPI.setFromIfNecessary(queryWrapper, tableName);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
@@ -259,8 +260,9 @@ public class RowSqlProvider {
      */
     public static String selectCountByQuery(Map params) {
         String tableName = ProviderUtil.getTableName(params);
+
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        queryWrapper.from(tableName);
+        CPI.setFromIfNecessary(queryWrapper, tableName);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);

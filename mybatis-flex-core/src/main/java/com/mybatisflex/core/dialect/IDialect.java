@@ -37,7 +37,7 @@ public interface IDialect {
 
     String forUpdateById(String tableName, Row row);
 
-    String forUpdateByQuery(String tableName, Row data, QueryWrapper queryWrapper);
+    String forUpdateByQuery(QueryWrapper queryWrapper, Row data);
 
     String forUpdateBatchById(String tableName, List<Row> rows);
 

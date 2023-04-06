@@ -19,6 +19,7 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +52,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     public QueryWrapper from(String... tables) {
         for (String table : tables) {
+            if (StringUtil.isBlank(table)) {
+                throw new IllegalArgumentException("table must not be null or blank.");
+            }
             from(new QueryTable(table));
         }
         return this;

@@ -22,18 +22,18 @@ import java.util.function.Function;
 public class CollectionUtil {
 
 
-    public static boolean isEmpty(Collection<?> coll) {
-        return (coll == null || coll.isEmpty());
+    public static boolean isEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
     }
 
 
-    public static boolean isNotEmpty(Collection<?> coll) {
-        return !isEmpty(coll);
+    public static boolean isNotEmpty(Collection<?> collection) {
+        return !isEmpty(collection);
     }
 
 
     public static boolean isEmpty(Map<?, ?> map) {
-        return (map == null || map.isEmpty());
+        return map == null || map.isEmpty();
     }
 
 

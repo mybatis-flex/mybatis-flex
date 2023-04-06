@@ -16,7 +16,6 @@
 package com.mybatisflex.core.row;
 
 import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.ExecutorType;
@@ -25,7 +24,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 public class RowMapperInvoker {
@@ -112,13 +110,6 @@ public class RowMapperInvoker {
         return execute(mapper -> mapper.deleteBatchByIds(tableName, primaryKey, ids));
     }
 
-    public int deleteByMap(String tableName, Map<String, Object> whereColumns) {
-        return execute(mapper -> mapper.deleteByMap(tableName, whereColumns));
-    }
-
-    public int deleteByCondition(String tableName, QueryCondition condition) {
-        return execute(mapper -> mapper.deleteByCondition(tableName, condition));
-    }
 
     public int deleteByQuery(String tableName, QueryWrapper queryWrapper) {
         return execute(mapper -> mapper.deleteByQuery(tableName, queryWrapper));
@@ -130,14 +121,6 @@ public class RowMapperInvoker {
 
     public int updateById(String tableName, Row row) {
         return execute(mapper -> mapper.updateById(tableName, row));
-    }
-
-    public int updateByMap(String tableName, Row data, Map<String, Object> whereColumns) {
-        return execute(mapper -> mapper.updateByMap(tableName, data, whereColumns));
-    }
-
-    public int updateByCondition(String tableName, Row data, QueryCondition condition) {
-        return execute(mapper -> mapper.updateByCondition(tableName, data, condition));
     }
 
     public int updateByQuery(String tableName, Row data, QueryWrapper queryWrapper) {
@@ -160,14 +143,6 @@ public class RowMapperInvoker {
         return execute(mapper -> mapper.selectOneById(tableName, primaryKey, id));
     }
 
-    public Row selectOneByMap(String tableName, Map whereColumns) {
-        return execute(mapper -> mapper.selectOneByMap(tableName, whereColumns));
-    }
-
-    public Row selectOneByCondition(String tableName, QueryCondition condition) {
-        return execute(mapper -> mapper.selectOneByCondition(tableName, condition));
-    }
-
     public Row selectOneByQuery(String tableName, QueryWrapper queryWrapper) {
         return execute(mapper -> mapper.selectOneByQuery(tableName, queryWrapper));
     }
@@ -175,23 +150,6 @@ public class RowMapperInvoker {
     public List<Row> selectListBySql(String sql, Object... args) {
         return execute(mapper -> mapper.selectListBySql(sql, args));
     }
-
-    public List<Row> selectListByMap(String tableName, Map<String, Object> whereColumns) {
-        return execute(mapper -> mapper.selectListByMap(tableName, whereColumns));
-    }
-
-    public List<Row> selectListByMap(String tableName, Map<String, Object> whereColumns, int count) {
-        return execute(mapper -> mapper.selectListByMap(tableName, whereColumns, count));
-    }
-
-    public List<Row> selectListByCondition(String tableName, QueryCondition condition) {
-        return execute(mapper -> mapper.selectListByCondition(tableName, condition));
-    }
-
-    public List<Row> selectListByCondition(String tableName, QueryCondition condition, int count) {
-        return execute(mapper -> mapper.selectListByCondition(tableName, condition, count));
-    }
-
 
     public List<Row> selectListByQuery(String tableName, QueryWrapper queryWrapper) {
         return execute(mapper -> mapper.selectListByQuery(tableName, queryWrapper));
@@ -213,16 +171,9 @@ public class RowMapperInvoker {
         return execute(mapper -> mapper.selectCount(sql, args));
     }
 
-    public long selectCountByCondition(String tableName, QueryCondition condition) {
-        return execute(mapper -> mapper.selectCountByCondition(tableName, condition));
-    }
 
     public long selectCountByQuery(String tableName, QueryWrapper queryWrapper) {
         return execute(mapper -> mapper.selectCountByQuery(tableName, queryWrapper));
-    }
-
-    public Page<Row> paginate(String tableName, int pageNumber, int pageSize, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.paginate(tableName, pageNumber, pageSize, queryWrapper));
     }
 
     public Page<Row> paginate(String tableName, Page<Row> page, QueryWrapper queryWrapper) {

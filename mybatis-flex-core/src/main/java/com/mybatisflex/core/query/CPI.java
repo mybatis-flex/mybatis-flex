@@ -17,6 +17,7 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class CPI {
         return queryWrapper.getJoinTables();
     }
 
-    public static void setJoinTables(QueryWrapper queryWrapper,List<QueryTable> joinTables) {
+    public static void setJoinTables(QueryWrapper queryWrapper, List<QueryTable> joinTables) {
         queryWrapper.setJoinTables(joinTables);
     }
 
@@ -121,16 +122,17 @@ public class CPI {
     }
 
 
-    public static String toConditionSql(QueryColumn queryColumn,List<QueryTable> queryTables, IDialect dialect) {
-        return queryColumn.toConditionSql(queryTables,dialect);
+    public static String toConditionSql(QueryColumn queryColumn, List<QueryTable> queryTables, IDialect dialect) {
+        return queryColumn.toConditionSql(queryTables, dialect);
     }
 
-    public static String toSelectSql(QueryColumn queryColumn,List<QueryTable> queryTables, IDialect dialect) {
-        return queryColumn.toSelectSql(queryTables,dialect);
+    public static String toSelectSql(QueryColumn queryColumn, List<QueryTable> queryTables, IDialect dialect) {
+        return queryColumn.toSelectSql(queryTables, dialect);
     }
 
-    public static void setFromIfNecessary(QueryWrapper queryWrapper,String tableName){
-        if (CollectionUtil.isEmpty(queryWrapper.getQueryTables())){
+    public static void setFromIfNecessary(QueryWrapper queryWrapper, String tableName) {
+        if (StringUtil.isNotBlank(tableName)
+                && CollectionUtil.isEmpty(queryWrapper.getQueryTables())) {
             queryWrapper.from(tableName);
         }
     }
