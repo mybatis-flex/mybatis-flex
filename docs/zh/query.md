@@ -6,12 +6,16 @@
 
 - **selectOneById(id)**：根据主键 id 查询数据
 - **selectOneByMap(map)**：根据 `map<字段名，值>` 组成的条件查询 1 条数据，若命中多条数据，则只返回第一条数据。
+- **selectOneByCondition(condition)**：根据 condition 组成的条件查询 1 条数据，若命中多条数据，则只返回第一条数据。
 - **selectOneByQuery(query)**：根据 QueryWrapper 组成的条件查询 1 条数据，若命中多条数据，则只返回第一条数据。
 - **selectListByIds(idList)**：根据多个 id 查询，返回多条数据
 - **selectListByMap(map)**：根据  `map<字段名，值>` 组成的条件查询数据。
 - **selectListByMap(map, count)**：根据  `map<字段名，值>` 组成的条件查询数据，只取前 count 条。
+- **selectListByCondition(condition)**：根据 condition 组成的条件查询数据。
+- **selectListByCondition(condition, count)**：根据  condition 组成的条件查询数据，只取前 count 条。
 - **selectListByQuery(query)**： 根据  QueryWrapper 组成的条件查询数据。
 - **selectAll**：查询所有数据。
+- **selectCountByCondition**：根据 QueryWrapper 查询数据量。
 - **selectCountByQuery**：根据 QueryWrapper 查询数据量。
 
 ## 分页查询
@@ -20,10 +24,21 @@
 
 ```java
 Page<T> paginate(int pageNumber, int pageSize, QueryWrapper queryWrapper);
+Page<T> paginate(int pageNumber, int pageSize, int totalRow, QueryWrapper queryWrapper);
+
+Page<T> paginate(int pageNumber, int pageSize, QueryCondition condition);
+Page<T> paginate(int pageNumber, int pageSize, int totalRow, QueryCondition condition);
 ```
 - pageNumber： 当前页码，从 1 开始
 - pageSize： 每 1 页的数据量
+- totalRow： 非必须值，若传入该值，mybatis-flex 则不再去查询总数据量（若传入小于 0 的数值，也会去查询总量）。
 - queryWrapper： 查询条件
+- QueryCondition： 查询条件
+
+::: tip totalRow 的说明
+在一般的分页场景中，只有第一页的时候有必要去查询数据总量，第二页以后是没必要的（因为第一页已经拿到总量了），因此，
+第二页的时候，我们可以带入 `totalRow`，这样能提高程序的查询效率。
+:::
 
 paginate 的返回值为 Page 对象，Page 类的定义如下：
 
@@ -37,23 +52,4 @@ public class Page<T> implements Serializable {
 }
 ```
 
-在 Page 的定义中，我们知道：通过 `paginate` 方法去查询数据的时候，除了数据列表以外，还查询的数据的总量，才能构造出 `Page` 对象。
-
-
-在一般的分页场景中，只有第一页的时候有必要去查询数据总量，第二页以后是没必要的（因为第一页已经拿到总量了），因此，Mybatis-Flex 的分页查询还提供了另一个方法：
-
-```java
-Page<T> paginate(Page<T> page, QueryWrapper queryWrapper);
-```
-
-这个方法可以直接传入 数据的总量 `totalPage`，示例如下：
-
-```java
-// 多一个 totalPage 参数
-Page<T> page = new Page<>(pageNumber, pageSize, totalPage);
-Page<T> resultPage = paginate(page, queryWrapper);
-```
-当构造的 `page` 对象已经有 totalPage 后，再通过 `paginate(page, queryWrapper)` 方法去查询，则不会再查询数据总量，从提高了性能。
-
-> 只有 totalRow 小于 0 的时候才会去查询总量。
 

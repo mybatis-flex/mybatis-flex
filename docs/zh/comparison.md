@@ -5,7 +5,7 @@
 MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来源其官网、git 或者 网络文章，若有错误欢迎指正。
 
 - MyBatis-Plus：老牌的 MyBatis 增强框架
-- Fluent-Mybatis：阿里开发的 Mybatis 增强框架（是阿里开发的吗？）
+- Fluent-Mybatis：阿里云开发的 Mybatis 增强框架（来至于阿里云·云效产品团队）
 
 | 功能或特点 | MyBatis-Flex     | MyBatis-Plus    | Fluent-Mybatis     |
 | -------- | -------- | -------- | -------- |

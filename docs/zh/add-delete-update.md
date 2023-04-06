@@ -20,6 +20,7 @@ Mybatis-Flex 内置了一个名为 `BaseMapper` 的接口，它实现了基本�
 - **deleteBatchByIds(idList)** ：根据主键的 集合，批量删除多条数据
 - **deleteByMap(map)** ：根据 `map<字段名，值>` 组成的条件删除数据，字段名和值的关系为相等的关系，同时，防止 "不小心" 全表 
 删除数据，map 的值不允许为 null 或者 空数据。
+- **deleteByCondition(condition)**：根据 condition 构建的条件来删除数据
 - **deleteByQuery(queryWrapper)**：根据 queryWrapper 组成的条件删除数据。
 
 
@@ -32,6 +33,14 @@ queryWrapper.where(ACCOUNT.ID.ge(100));
 //通过 queryWrapper 删除
 accountMapper.deleteByQuery(queryWrapper);
 ```
+
+**deleteByCondition(condition)** 方法示例：
+
+```java
+accountMapper.deleteByCondition(ACCOUNT.ID.ge(100));
+```
+
+
 以上的代码，会删除所有 id >= 100 的数据，其执行的 Sql 如下：
 
 ```sql
@@ -48,6 +57,8 @@ delete from tb_account where id >= 100;
 - **update(entity)**：根据主键更新到 entity 到数据库，要求主键值不能为空，否则会抛出异常。同时，数据为 null 的字段 **不会** 更新到数据库。 
 - **update(entity, ignoreNulls)**：根据主键更新到 entity 到数据库，要求主键值不能为空。ignoreNulls 为是否忽略 null 字段，如果为 true，所有 null 字段都会更新到数据库。
 - **updateByMap(entity, map)**：根据 `map<字段名，值>` 组成的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）, entity 的 null 属性，会自动被忽略。
+- **updateByCondition(entity, condition)**：根据 condition 构建的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）, entity 的 null 属性，会自动被忽略。
+- **updateByCondition(entity, ignoreNulls, condition)**：ignoreNulls 是否忽略 null 值，默认为 true
 - **updateByQuery(entity, queryWrapper)**：根据 queryWrapper 组成的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）, entity 的 null 属性，会自动被忽略。
 - **updateByQuery(entity, ignoreNulls, queryWrapper)**：据 queryWrapper 组成的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）。 ignoreNulls 用于是否忽略 entity 的 null 属性
 ， 若 ignoreNulls 为 true，entity 的所有 null 属性都会被更新到数据库。
