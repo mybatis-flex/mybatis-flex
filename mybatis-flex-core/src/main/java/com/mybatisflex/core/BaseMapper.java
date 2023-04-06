@@ -92,6 +92,16 @@ public interface BaseMapper<T> {
     }
 
     /**
+     * 根据条件来删除数据
+     *
+     * @param condition 条件
+     * @return 返回影响的行数
+     */
+    default int deleteByCondition(QueryCondition condition) {
+        return deleteByQuery(QueryWrapper.create().where(condition));
+    }
+
+    /**
      * 根据 query 构建的条件来数据吗
      *
      * @param queryWrapper query 条件
@@ -133,6 +143,29 @@ public interface BaseMapper<T> {
      */
     default int updateByMap(T entity, Map<String, Object> map) {
         return updateByQuery(entity, QueryWrapper.create().where(map));
+    }
+
+    /**
+     * 根据 condition 来更新数据
+     *
+     * @param entity    数据
+     * @param condition 条件
+     * @return 返回影响的行数
+     */
+    default int updateByCondition(T entity, QueryCondition condition) {
+        return updateByQuery(entity, QueryWrapper.create().where(condition));
+    }
+
+    /**
+     * 根据 condition 来更新数据
+     *
+     * @param entity      数据
+     * @param ignoreNulls 是否忽略 null 数据，默认为 true
+     * @param condition   条件
+     * @return 返回影响的行数
+     */
+    default int updateByCondition(T entity, boolean ignoreNulls, QueryCondition condition) {
+        return updateByQuery(entity, ignoreNulls, QueryWrapper.create().where(condition));
     }
 
 
@@ -287,7 +320,7 @@ public interface BaseMapper<T> {
      * @param condition 条件
      * @return 数据量
      */
-    default long selectCountByQuery(QueryCondition condition) {
+    default long selectCountByCondition(QueryCondition condition) {
         return selectCountByQuery(QueryWrapper.create().where(condition));
     }
 
