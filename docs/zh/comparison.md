@@ -4,7 +4,7 @@
 
 MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来源其官网、git 或者 网络文章，若有错误欢迎指正。
 
-- MyBatis-Plus：老版的 MyBatis 增强框架
+- MyBatis-Plus：老牌的 MyBatis 增强框架
 - Fluent-Mybatis：阿里开发的 Mybatis 增强框架（是阿里开发的吗？）
 
 | 功能或特点 | MyBatis-Flex     | MyBatis-Plus    | Fluent-Mybatis     |
@@ -71,7 +71,6 @@ List<Employee> employees = employeeMapper.listEntity(query);
 
 > 总结：MyBatis-Flex 和 Fluent-MyBatis 的字段有 IDE 自动提示，不担心写错，同时在后续版本升级和重构时，更好的利用 IDE 的重构功能,
 > 字段错误在项目编译期间就能发现及时纠正。
-> 不过在设计上，Fluent-MyBatis 使用 "方法" 来代替字段，同时还设计有多余的 `end()` 方法，明显不太符合 sql 直觉。
 
 ## 查询集合函数
 
@@ -143,8 +142,8 @@ QueryWrapper query = QueryWrapper.create()
 ```java
 QueryWrapper<Employee> query = new QueryWrapper<>();
 queryWrapper.ge("id",100)
-        .or(i->i.eq("sex",1).or(x->x.eq("sex",2)))
-        .and(i->i.in("age",{18,19,20}).like("user_name","michael"));
+        .and(i->i.eq("sex",1).or(x->x.eq("sex",2)))
+        .or(i->i.in("age",{18,19,20}).like("user_name","michael"));
 ```
 
 **Fluent-Mybatis：**
@@ -162,10 +161,10 @@ AccountQuery query = new AccountQuery()
     )
     .end();
 ```
-> 缺点：一堆的 `.end()` 方法调用，容易出错（或者是我写错了？欢迎指正）。
+> 缺点：许多 `.end()` 方法调用，容易忘记出错（或者是我写错了？欢迎指正）。
 
 
-## 多表查询
+## 多表查询 1
 **MyBatis-Flex：**
 ````java
 QueryWrapper query = QueryWrapper.create()
@@ -199,3 +198,38 @@ IQuery query = leftQuery
 List<StudentEntity> entities = this.mapper.listEntity(query);
 ````
 >缺点：编写内容不符合 sql 直觉。同时在编写 `end()` 和 `endJoin()` 容易忘记。
+
+
+## 多表查询 2
+假设查询的 SQL 如下：
+
+```sql
+SELECT a.id, a.user_name, b.id AS articleId, b.title
+FROM tb_account AS a, tb_article AS b
+WHERE a.id = b.account_id
+```
+
+**MyBatis-Flex：**
+````java
+QueryWrapper query = new QueryWrapper()
+.select(
+      ACCOUNT.ID
+    , ACCOUNT.USER_NAME
+    , ARTICLE.ID.as("articleId")
+    , ARTICLE.TITLE)
+.from(ACCOUNT.as("a"), ARTICLE.as("b"))
+.where(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
+````
+
+**MyBatis-Plus：**
+
+````java
+// 不支持~~~~
+````
+
+**Fluent-MyBatis：**
+
+````java
+// 不支持~~~~
+````
+>PS：也有可能是我自己不知道如何支持，而 Fluent-MyBatis 原因，有知道的同学可以给下示例代码。
