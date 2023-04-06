@@ -123,7 +123,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-
     public QueryWrapper and(QueryCondition queryCondition) {
         return addWhereQueryCondition(queryCondition, SqlConnector.AND);
     }
@@ -133,15 +132,23 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-
     public QueryWrapper and(String sql, Object... params) {
         this.addWhereQueryCondition(new StringQueryCondition(sql, params), SqlConnector.AND);
         return this;
     }
 
-
     public QueryWrapper or(QueryCondition queryCondition) {
         return addWhereQueryCondition(queryCondition, SqlConnector.OR);
+    }
+
+    public QueryWrapper or(String sql) {
+        this.addWhereQueryCondition(new StringQueryCondition(sql), SqlConnector.OR);
+        return this;
+    }
+
+    public QueryWrapper or(String sql, Object... params) {
+        this.addWhereQueryCondition(new StringQueryCondition(sql, params), SqlConnector.OR);
+        return this;
     }
 
 
