@@ -33,7 +33,7 @@ public class Generator {
 
     protected DataSource dataSource;
     protected GlobalConfig globalConfig;
-    protected IDialect dialect = IDialect.MYSQL;
+    protected IDialect dialect = IDialect.DEFAULT;
 
     protected Connection conn = null;
     protected DatabaseMetaData dbMeta = null;

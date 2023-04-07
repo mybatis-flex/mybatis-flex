@@ -25,10 +25,10 @@ import java.sql.SQLException;
 
 public interface IDialect {
 
-    IDialect MYSQL = new JdbcDialect() {
+    IDialect DEFAULT = new JdbcDialect() {
         @Override
         String forBuildColumnsSql(String tableName) {
-            return "SELECT * FROM `" + tableName + "` WHERE 1 = 2";
+            return "SELECT * FROM " + tableName + " WHERE 1 = 2";
         }
 
         @Override
