@@ -21,7 +21,10 @@ public class Account {
 
     private Date birthday;
 
-    @Column(typeHandler = Fastjson2TypeHandler.class)
+    @Column("DEPT_ID_")
+    private String deptId;
+
+    @Column(typeHandler = Fastjson2TypeHandler.class,isLarge = true)
     private Map<String, Object> options;
 
     public Long getId() {

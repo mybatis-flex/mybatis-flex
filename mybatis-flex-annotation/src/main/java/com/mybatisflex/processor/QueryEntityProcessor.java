@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.processer;
+package com.mybatisflex.processor;
 
 
 import com.mybatisflex.annotation.Column;
@@ -257,7 +257,11 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
 
         StringJoiner defaultColumnStringJoiner = new StringJoiner(", ");
-        defaultColumns.forEach(s -> defaultColumnStringJoiner.add(camelToUnderline(s).toUpperCase()));
+        propertyAndColumns.forEach((property, column) -> {
+            if (defaultColumns.contains(column)) {
+                defaultColumnStringJoiner.add(camelToUnderline(property).toUpperCase());
+            }
+        });
         String defaultColumnsString = defaultColumnsTemplate.replace("@allColumns", defaultColumnStringJoiner.toString());
 
 
