@@ -231,9 +231,6 @@ public class EntitySqlProvider {
             queryWrapper.and(QueryCondition.create(new QueryColumn(tableInfo.getTableName(), logicDeleteColumn), 0));
         }
 
-//        执行 onUpdate 监听器
-//        tableInfo.invokeUpUpdate(entity);
-
         Object[] values = tableInfo.buildUpdateSqlArgs(entity, ignoreNulls, true);
 
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(values, CPI.getValueArray(queryWrapper)));

@@ -401,10 +401,14 @@ public class TableInfo {
                 if (!includePrimary && ArrayUtil.contains(primaryKeys, column)) {
                     continue;
                 }
+
                 Object value = getPropertyValue(metaObject, property);
-                if (ignoreNulls && value == null) {
-                    continue;
-                }
+
+                // ModifyAttrsRecord 忽略 ignoreNulls 的设置，
+                // 当使用 ModifyAttrsRecord 时，可以理解为要对字段进行 null 值进行更新，否则没必要使用 ModifyAttrsRecord
+                //  if (ignoreNulls && value == null) {
+                //     continue;
+                //  }
                 values.add(value);
             }
         }
@@ -420,15 +424,18 @@ public class TableInfo {
                     continue;
                 }
 
+                // 普通 entity 忽略 includePrimary 的设置，
+                // 因为 for 循环中的 this.columns 本身就不包含有主键
+                // if (includePrimary) {
+                // }
+
                 Object value = buildColumnSqlArg(metaObject, column);
                 if (ignoreNulls && value == null) {
                     continue;
                 }
+
                 values.add(value);
             }
-            // 普通 entity 忽略 includePrimary 的设置
-//            if (includePrimary) {
-//            }
         }
 
         return values.toArray();

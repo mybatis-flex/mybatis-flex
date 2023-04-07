@@ -20,14 +20,15 @@ MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来
 | 支持多主键、复合主键 | ✅ | ❌ | ❌ |
 | 字段的 typeHandler 配置 | ✅ | ✅ | ✅ |
 | 除了 Mybatis，无其他第三方依赖（更轻量） | ✅ | ❌ | ❌ |
+| QueryWrapper 是否支持在微服务项目下进行 RPC 传输 | ✅ | ❌ | 未知 |
 | 逻辑删除 | ✅ | ✅ | ✅ |
 | 乐观锁 | ✅ | ✅ | ✅ |
 | SQL 审计 | ✅ | ❌ | ❌ |
-| 数据填充 | ✅ | ✅（收费） | ✅ |
-| 数据脱敏 | ✅ | ✅（收费） | ❌ |
-| 字段权限 | ✅ | ✅（收费） | ❌ |
-| 字段加密 | ✅ | ✅（收费） | ❌ |
-| 字典回显 | ✅ | ✅（收费） | ❌ |
+| 数据填充 | ✅ |  ✔️ **（收费）** | ✅ |
+| 数据脱敏 | ✅ |  ✔️ **（收费）** | ❌ |
+| 字段权限 | ✅ |  ✔️ **（收费）** | ❌ |
+| 字段加密 | ✅ |  ✔️ **（收费）** | ❌ |
+| 字典回显 | ✅ |  ✔️ **（收费）** | ❌ |
 | Db + Row | ✅ | ❌ | ❌ |
 | Entity 监听 | ✅ | ❌ | ❌ |
 | 多数据源支持 | ✅ | ✅ | ❌ |
@@ -46,6 +47,7 @@ QueryCondition condition = EMPLOYEE.LAST_NAME.like("B")
         .and(EMPLOYEE.AGE.gt(24));
 List<Employee> employees = employeeMapper.selectListByCondition(condition);
 ````
+
 **MyBatis-Plus：**
 
 ````java
@@ -56,6 +58,16 @@ queryWrapper
         .gt("age",24);
 List<Employee> employees = employeeMapper.selectList(queryWrapper);
 ````
+或者 MyBatis-Plus 的另一种写法：
+
+```java
+LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+queryWrapper
+        .like(Employee::getUserName,"B")
+        .eq(Employee::getGender,1)
+        .gt(Employee::getAge,24);
+List<Employee> employees = employeeMapper.selectList(queryWrapper);
+```
 
 
 **Fluent-MyBatis：**
@@ -69,8 +81,7 @@ EmployeeQuery query = new EmployeeQuery()
 List<Employee> employees = employeeMapper.listEntity(query);
 ````
 
-> 总结：MyBatis-Flex 和 Fluent-MyBatis 的字段有 IDE 自动提示，不担心写错，同时在后续版本升级和重构时，更好的利用 IDE 的重构功能,
-> 字段错误在项目编译期间就能发现及时纠正。
+
 
 ## 查询集合函数
 
@@ -232,4 +243,57 @@ QueryWrapper query = new QueryWrapper()
 ````java
 // 不支持~~~~
 ````
->PS：也有可能是我自己不知道如何支持，而 Fluent-MyBatis 原因，有知道的同学可以给下示例代码。
+>PS：也有可能是我自己不知道如何支持，而非 Fluent-MyBatis 原因，有知道的同学可以给下示例代码。
+
+
+## 部分字段更新
+假设一个实体类 Account 中，我们要更新其内容如下：
+
+- `userName` 为 "michael"
+- `age` 为 "18"
+- `birthday` 为 null
+
+其他字段保持数据库原有内容不变，要求执行的 SQL 如下：
+
+```sql
+update tb_account
+set user_name = "michael", age = 18, birthday = null 
+where id = 100
+```
+
+**Mybatis-Flex** 代码如下：
+
+```java
+Account account = UpdateEntity.of(Account.class);
+account.setId(100); //设置主键
+account.setUserName("michael");
+account.setAge(18);
+account.setBirthday(null);
+
+accountMapper.update(account);
+```
+
+**Mybatis-Plus** 代码如下：
+
+```java 
+UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+updateWrapper.eq("id", 100);
+updateWrapper.set("user_name", "michael");
+updateWrapper.set("age", 18);
+updateWrapper.set("birthday", null);
+
+accountMapper.update(null, updateWrapper);
+```
+
+**Fluent-Mybatis** 代码如下：
+
+```java 
+AccountUpdate update = new AccountUpdate()
+.update.userName().is("michael")
+.age().is(18)
+.birthday().is(null)
+.end()
+.where.id().eq(100)
+.end();
+accountMapper.updateBy(update);
+```
