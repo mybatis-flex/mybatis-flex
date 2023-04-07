@@ -69,9 +69,16 @@ AuditManager.setMessageCreator(creator);
 
 
 
-## 自定义 SQL 审计 Reporter
+## 自定义 MessageReporter
 
-Reporter 负责把 Mybaits-Flex 收集的 SQL 审计日志发送到指定位置，在当前的版本中，只内置了一个 `ConsoleMessageReporter` 用于把 SQL 审计日志发送到控制台的，代码如下：
+`MessageReporter` 负责把 Mybaits-Flex 收集的 SQL 审计日志发送到指定位置，在 MyBatis-Flex 中只内置两个
+`MessageReporter`，他们分别是：
+
+- `ConsoleMessageReporter` 用于把 SQL 审计日志发送到控制台。
+- `HttpMessageReporter` 用于把 SQL 审计日志发动到指定服务器。
+
+
+`ConsoleMessageReporter` 代码如下：
 
 ```java
 public class ConsoleMessageReporter implements MessageReporter {
@@ -86,7 +93,7 @@ public class ConsoleMessageReporter implements MessageReporter {
 }
 ```
 
-通过去实现 `MessageReporter` 接口，我们便可以自定义自己的 Reporter，示例代码如下：
+我们也可以自己去实现 `MessageReporter` 接口，示例代码如下：
 
 ```java
 public class MyMessageReporter implements MessageReporter {
@@ -103,15 +110,39 @@ public class MyMessageReporter implements MessageReporter {
 }
 ```
 
-编写好 `MyMessageReporter` ，在应用启动的时候，为 `AuditManager` 配置新的 `MessageCollector`，示例如下：
+编写好 `MyMessageReporter` ，在应用启动的时候，为 `AuditManager` 配置新的 `MessageReporter`，示例如下：
 
 ```java
-MessageCollector collector = new ScheduledMessageCollector(10, new MyMessageReporter());
-AuditManager.setMessageCollector(collector);
+MessageReporter reporter = new MyMessageReporter();
+AuditManager.setMessageReporter(reporter);
 ```
 
-## ScheduledMessageCollector
+## 自定义 MessageCollector
 
-`ScheduledMessageCollector` 是用于收集 SQL 审计消息（日志），并 **定时的** 把收集的日志通过 `MessageReporter` 发送到指定位置。
-我们也可以通过调用 `AuditManager.setMessageCollector()` 方法配置自己的消息收集器（MessageCollector）。
+MyBatis-Flex 内置了两个 Collector，他们分别是：
 
+- **ScheduledMessageCollector** 定时把消息通过 MessageReporter 发送到指定位置。
+- **ConsoleMessageCollector** 使用其把消息输出到控制台。
+
+::: tip 提示
+`ConsoleMessageCollector` 和 `ConsoleMessageReporter` 都能把 SQL 审计日志发送到控制台打印，
+区别是 `ConsoleMessageCollector` 是实时打印；`ConsoleMessageReporter` 是通过 `ScheduledMessageCollector`
+进行定时打印（默认情况下：每 10s 打印一次日志）。
+:::
+
+## SQL 调试输出
+
+使用 `ConsoleMessageCollector` 实时输出 SQL 日志，代码如下：
+
+```java
+MessageCollector collector = new ConsoleMessageCollector();
+AuditManager.setMessageCollector(collector);
+AuditManager.setEnable(true);
+```
+通过以上代码，配置 `AuditManager` 的 `MessageCollector` 为 `ConsoleMessageCollector` 后，
+每次执行 sql 请求，控制台将输入内容如下：
+
+```
+Flex exec sql taked 2 ms >>>  SELECT * FROM `tb_account` WHERE `id` = 1
+Flex exec sql taked 3 ms >>>  INSERT INTO `tb_account`(`user_name`, `age`, `birthday`)  VALUES ('lisi', 22, '2023-04-07 15:28:46')
+```
