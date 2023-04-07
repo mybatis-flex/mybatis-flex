@@ -21,7 +21,7 @@ import com.mybatisflex.annotation.KeyType;
 
 import java.util.Date;
 
-@Table("tb_account")
+@Table(value = "tb_account",onSet = AccountOnSetListener.class)
 public class Account {
 
     @Id(keyType = KeyType.Auto)
@@ -29,6 +29,8 @@ public class Account {
     private String userName;
     private Integer age;
     private Date birthday;
+
+
 
     public Long getId() {
         return id;

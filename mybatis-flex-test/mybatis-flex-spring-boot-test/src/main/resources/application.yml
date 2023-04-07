@@ -1,12 +1,14 @@
 # DataSource Config
 spring:
+  h2:
+    console:
+      enabled: true
   datasource:
+    url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
-    schema: classpath:schema.sql
-    username: root
-    password: test
+    username: sa
+    password:
   sql:
     init:
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
-  mybatis-flex:

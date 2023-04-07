@@ -20,7 +20,7 @@ import com.mybatisflex.annotation.Table;
 
 import java.util.Date;
 
-@Table("tb_account")
+@Table(value = "tb_account", onSet = AccountOnSetListener.class)
 public class Account {
 
     @Id
@@ -59,5 +59,15 @@ public class Account {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", age=" + age +
+                ", birthday=" + birthday +
+                '}';
     }
 }

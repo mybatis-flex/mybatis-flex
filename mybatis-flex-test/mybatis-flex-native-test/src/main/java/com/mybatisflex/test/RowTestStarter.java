@@ -16,10 +16,11 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
+import com.mybatisflex.core.audit.AuditManager;
+import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowKey;
 import com.mybatisflex.core.row.RowMapper;
-import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
@@ -37,8 +38,11 @@ public class RowTestStarter {
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
                 .setDataSource(dataSource)
-                .setLogImpl(StdOutImpl.class)
+//                .setLogImpl(StdOutImpl.class)
                 .start();
+
+        AuditManager.setAuditEnable(true);
+        AuditManager.setMessageCollector(new ConsoleMessageCollector());
 
 
         //查询 ID 为 1 的数据
