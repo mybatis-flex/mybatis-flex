@@ -105,6 +105,19 @@ public class AccountSqlTester {
         System.out.println(sql);
     }
 
+    @Test
+    public void testWhere2Sql() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(column("A.*"), column("b.x"))
+                .from(ACCOUNT)
+                .where(ACCOUNT.ID.ge(100))
+                .and(column("aaa").in("michael", "aaa"));
+
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forSelectListByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
 
     @Test
     public void testWhereCond1Sql() {

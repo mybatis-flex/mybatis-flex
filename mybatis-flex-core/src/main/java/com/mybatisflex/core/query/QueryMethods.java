@@ -65,6 +65,11 @@ public class QueryMethods {
         return new DistinctQueryColumn(columns);
     }
 
+
+    public static StringQueryColumn column(String column) {
+        return new StringQueryColumn(column);
+    }
+
     public static QueryCondition exist(QueryWrapper queryWrapper) {
         return new OperatorSelectCondition(" EXIST ", queryWrapper);
     }
@@ -72,7 +77,6 @@ public class QueryMethods {
     public static QueryCondition notExist(QueryWrapper queryWrapper) {
         return new OperatorSelectCondition(" NOT EXIST ", queryWrapper);
     }
-
 
     public static QueryCondition not(QueryCondition childCondition) {
         return new OperatorQueryCondition(" NOT ", childCondition);
@@ -82,17 +86,18 @@ public class QueryMethods {
         return QueryCondition.createEmpty();
     }
 
-
     private static QueryWrapper newWrapper() {
         return new QueryWrapper();
     }
+
 
     public static QueryWrapper select(QueryColumn... queryColumns) {
         return newWrapper().select(queryColumns);
     }
 
+
     public static QueryWrapper selectOne() {
-        return select(new StringQueryColumn("1"));
+        return select(column("1"));
     }
 
     public static RawValue raw(String raw){
