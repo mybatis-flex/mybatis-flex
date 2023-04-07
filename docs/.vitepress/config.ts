@@ -30,7 +30,7 @@ export default defineConfig({
           { text: 'Maven 依赖', link: '/zh/maven' },
           { text: '和 Spring 整合', link: '/zh/mybatis-flex-with-spring' },
           { text: '和同类框架对比', link: '/zh/comparison' },
-          { text: 'QQ 交流群', link: '/zh/qq_group' },
+          { text: 'QQ 交流群', link: '/zh/qq-group' },
         ]
       },
       {
@@ -47,17 +47,18 @@ export default defineConfig({
           { text: '@Table 注解', link: '/zh/table' },
           { text: '@Id 注解', link: '/zh/id' },
           { text: '@Column 注解', link: '/zh/column' },
-          { text: 'Db + Row', link: '/zh/db_row' },
-          { text: '逻辑删除', link: '/zh/logic_delete' },
+          { text: 'Db + Row', link: '/zh/db-row' },
+          { text: '逻辑删除', link: '/zh/logic-delete' },
           { text: '乐观锁', link: '/zh/version' },
           { text: '数据填充', link: '/zh/fill' },
           { text: '数据脱敏', link: '/zh/mask' },
           { text: 'SQL 审计', link: '/zh/audit' },
+          { text: 'SQL 打印', link: '/zh/sql-print' },
           { text: '多数据源', link: '/zh/multi-datasource' },
           { text: '事务管理', link: '/zh/tx' },
-          { text: '字段权限', link: '/zh/columns_permission' },
-          { text: '字段加密', link: '/zh/columns_encrypt' },
-          { text: '字典回显', link: '/zh/columns_dict' },
+          { text: '字段权限', link: '/zh/columns-permission' },
+          { text: '字段加密', link: '/zh/columns-encrypt' },
+          { text: '字典回显', link: '/zh/columns-dict' },
         ]
       },
       {
