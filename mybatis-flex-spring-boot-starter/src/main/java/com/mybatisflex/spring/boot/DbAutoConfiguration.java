@@ -32,9 +32,10 @@ public class DbAutoConfiguration {
 
     public DbAutoConfiguration() {
         FlexGlobalConfig defaultConfig = FlexGlobalConfig.getDefaultConfig();
-        if (defaultConfig == null){
-            Logger.getLogger(Db.class.getName()).log(Level.WARNING,"Cannot get FlexGlobalConfig instance, Perhaps the dataSource config error.");
-        }else {
+        if (defaultConfig == null) {
+            Logger.getLogger(DbAutoConfiguration.class.getName()).log(Level.WARNING
+                    , "Cannot get FlexGlobalConfig instance, Perhaps the dataSource config error.");
+        } else {
             Db.invoker().setRowSessionManager(new SpringRowSessionManager());
         }
     }
