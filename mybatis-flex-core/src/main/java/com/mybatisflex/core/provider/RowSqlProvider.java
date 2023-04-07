@@ -20,6 +20,7 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.row.RowCPI;
 import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
@@ -61,7 +62,7 @@ public class RowSqlProvider {
     public static String insert(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         Row row = ProviderUtil.getRow(params);
-        ProviderUtil.setSqlArgs(params, row.obtainModifyValues());
+        ProviderUtil.setSqlArgs(params, RowCPI.obtainModifyValues(row));
         return DialectFactory.getDialect().forInsertRow(tableName, row);
     }
 
@@ -82,15 +83,14 @@ public class RowSqlProvider {
         //让所有 row 的列顺序和值的数量与第条数据保持一致
         //这个必须 new 一个 LinkedHashSet，因为 keepModifyAttrs 会清除 row 所有的 modifyAttrs
         Set<String> modifyAttrs = new LinkedHashSet<>(rows.get(0).obtainModifyAttrs());
-        rows.forEach(row -> row.keepModifyAttrs(modifyAttrs));
+        rows.forEach(row -> RowCPI.keepModifyAttrs(row, modifyAttrs));
 
 
         Object[] values = new Object[]{};
         for (Row row : rows) {
-            values = ArrayUtil.concat(values, row.obtainModifyValues());
+            values = ArrayUtil.concat(values, RowCPI.obtainModifyValues(row));
         }
         ProviderUtil.setSqlArgs(params, values);
-
 
         //sql: INSERT INTO `tb_table`(`name`, `sex`) VALUES (?, ?),(?, ?),(?, ?)
         return DialectFactory.getDialect().forInsertBatchWithFirstRowColumns(tableName, rows);
@@ -144,7 +144,7 @@ public class RowSqlProvider {
     public static String deleteByQuery(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        CPI.setFromIfNecessary(queryWrapper,tableName);
+        CPI.setFromIfNecessary(queryWrapper, tableName);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
@@ -162,7 +162,7 @@ public class RowSqlProvider {
     public static String updateById(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         Row row = ProviderUtil.getRow(params);
-        ProviderUtil.setSqlArgs(params, row.obtainAllModifyValues());
+        ProviderUtil.setSqlArgs(params, RowCPI.obtainAllModifyValues(row));
         return DialectFactory.getDialect().forUpdateById(tableName, row);
     }
 
@@ -181,7 +181,7 @@ public class RowSqlProvider {
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
         CPI.setFromIfNecessary(queryWrapper, tableName);
 
-        Object[] modifyValues = data.obtainModifyValues();
+        Object[] modifyValues = RowCPI.obtainModifyValues(data);
         Object[] valueArray = CPI.getValueArray(queryWrapper);
 
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(modifyValues, valueArray));
@@ -207,7 +207,7 @@ public class RowSqlProvider {
 
         Object[] values = new Object[0];
         for (Row row : rows) {
-            values = ArrayUtil.concat(values, row.obtainAllModifyValues());
+            values = ArrayUtil.concat(values, RowCPI.obtainAllModifyValues(row));
         }
         ProviderUtil.setSqlArgs(params, values);
         return DialectFactory.getDialect().forUpdateBatchById(tableName, rows);

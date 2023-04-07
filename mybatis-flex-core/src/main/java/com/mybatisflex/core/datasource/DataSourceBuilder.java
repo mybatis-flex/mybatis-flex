@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.core.datasource;
 
-import com.mybatisflex.core.table.ConvertUtil;
+import com.mybatisflex.core.util.ConvertUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.invoker.Invoker;

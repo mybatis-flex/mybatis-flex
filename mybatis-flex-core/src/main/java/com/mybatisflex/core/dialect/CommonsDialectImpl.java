@@ -19,6 +19,7 @@ import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.row.RowCPI;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
@@ -169,7 +170,7 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder sql = new StringBuilder();
 
         Set<String> modifyAttrs = row.obtainModifyAttrs();
-        String[] primaryKeys = row.obtainsPrimaryKeyStrings();
+        String[] primaryKeys = RowCPI.obtainsPrimaryKeyStrings(row);
 
         sql.append("UPDATE ").append(wrap(tableName)).append(" SET ");
         int index = 0;

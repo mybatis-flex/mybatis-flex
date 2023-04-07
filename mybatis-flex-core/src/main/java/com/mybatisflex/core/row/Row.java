@@ -20,12 +20,19 @@ import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ArrayUtil;
+import com.mybatisflex.core.util.ConvertUtil;
 import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
+
     private static final Object[] NULL_ARGS = new Object[0];
 
     //主键，多个主键用英文逗号隔开
@@ -125,11 +132,144 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     }
 
 
-    public Object get(Object key, Object defaultValue) {
+    public Object get(String key, Object defaultValue) {
         Object result = super.get(key);
         return result != null ? result : defaultValue;
     }
 
+
+    public String getString(String key) {
+        Object s = super.get(key);
+        return s != null ? s.toString() : null;
+    }
+
+
+    public String getString(String key, String defaultValue) {
+        Object s = super.get(key);
+        if (s == null) {
+            return defaultValue;
+        }
+        String r = s.toString();
+        return r.trim().length() == 0 ? defaultValue : r;
+    }
+
+    public Integer getInt(String key) {
+        return ConvertUtil.toInt(super.get(key));
+    }
+
+    public Integer getInt(String key, Integer defaultValue) {
+        Integer r = ConvertUtil.toInt(super.get(key));
+        return r != null ? r : defaultValue;
+    }
+
+    public Long getLong(String key) {
+        return ConvertUtil.toLong(super.get(key));
+    }
+
+    public Long getLong(String key, Long defaultValue) {
+        Long r = ConvertUtil.toLong(super.get(key));
+        return r != null ? r : defaultValue;
+    }
+
+    public Double getDouble(String key) {
+        return ConvertUtil.toDouble(super.get(key));
+    }
+
+    public Double getDouble(String key, Double defaultValue) {
+        Double r = ConvertUtil.toDouble(super.get(key));
+        return r != null ? r : defaultValue;
+    }
+
+
+    public Float getFloat(String key, Float defaultValue) {
+        Float r = ConvertUtil.toFloat(super.get(key));
+        return r != null ? r : defaultValue;
+    }
+
+    public Float getFloat(String key) {
+        return ConvertUtil.toFloat(super.get(key));
+    }
+
+
+    public Short getShort(String key, Short defaultValue) {
+        Short r = ConvertUtil.toShort(super.get(key));
+        return r != null ? r : defaultValue;
+    }
+
+    public Short getShort(String key) {
+        return ConvertUtil.toShort(super.get(key));
+    }
+
+    public BigInteger getBigInteger(String key) {
+        return ConvertUtil.toBigInteger(super.get(key));
+    }
+
+    public BigInteger getBigInteger(String key, BigInteger defaultValue) {
+        BigInteger r = ConvertUtil.toBigInteger(super.get(key));
+        return r != null ? r : defaultValue;
+    }
+
+    public BigDecimal getBigDecimal(String key) {
+        return ConvertUtil.toBigDecimal(super.get(key));
+    }
+
+    public BigDecimal getBigDecimal(String key, BigDecimal defaultValue) {
+        BigDecimal r = ConvertUtil.toBigDecimal(super.get(key));
+        return r != null ? r : defaultValue;
+    }
+
+    public Boolean getBoolean(String key) {
+        return ConvertUtil.toBoolean(super.get(key));
+    }
+
+    public Boolean getBoolean(String key, Boolean defaultValue) {
+        Boolean r = ConvertUtil.toBoolean(super.get(key));
+        return r != null ? r : defaultValue;
+    }
+
+    public Date getDate(String key) {
+        return ConvertUtil.toDate(super.get(key));
+    }
+
+    public Date getDate(String key, Date defaultValue) {
+        Date r = ConvertUtil.toDate(super.get(key));
+        return r != null ? r : defaultValue;
+    }
+
+    public LocalDateTime getLocalDateTime(String key) {
+        return ConvertUtil.toLocalDateTime(super.get(key));
+    }
+
+    public LocalDateTime getLocalDateTime(String key, LocalDateTime defaultValue) {
+        LocalDateTime r = ConvertUtil.toLocalDateTime(super.get(key));
+        return r != null ? r : defaultValue;
+    }
+
+    public Time getTime(String key) {
+        return (Time) super.get(key);
+    }
+
+    public Time getTime(String key, Time defaultValue) {
+        Time r = (Time) super.get(key);
+        return r != null ? r : defaultValue;
+    }
+
+    public Timestamp getTimestamp(String key) {
+        return (Timestamp) super.get(key);
+    }
+
+    public Timestamp getTimestamp(String key, Timestamp defaultValue) {
+        Timestamp r = (Timestamp) super.get(key);
+        return r != null ? r : defaultValue;
+    }
+
+    public Byte getByte(String key) {
+        return ConvertUtil.toByte(super.get(key));
+    }
+
+    public byte[] getBytes(String key) {
+        return (byte[]) super.get(key);
+    }
 
     @Override
     public Object remove(Object key) {
@@ -137,12 +277,10 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
         return super.remove(key);
     }
 
-
     public <T> T toEntity(Class<T> entityClass) {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
         return tableInfo.newInstanceByRow(this);
     }
-
 
     public Map<String, Object> toCamelKeysMap() {
         Map<String, Object> ret = new HashMap<>();
@@ -151,7 +289,6 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
         }
         return ret;
     }
-
 
     public Map<String, Object> toUnderlineKeysMap() {
         Map<String, Object> ret = new HashMap<>();
@@ -162,22 +299,18 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     }
 
 
-    public void keepModifyAttrs(Collection<String> attrs) {
+    void keepModifyAttrs(Collection<String> attrs) {
         if (attrs == null) {
             throw new NullPointerException("attrs is null.");
         }
-
         clearModifyFlag();
         modifyAttrs.addAll(attrs);
     }
 
     /**
-     * 获取修改的值，值需要保持顺序
-     * 返回的内容不包含主键的值
-     *
-     * @return values 数组
+     * 获取修改的值，值需要保持顺序，返回的内容不包含主键的值
      */
-    public Object[] obtainModifyValues() {
+    Object[] obtainModifyValues() {
         Object[] values = new Object[modifyAttrs.size()];
         int index = 0;
         for (String modifyAttr : modifyAttrs) {
@@ -187,7 +320,7 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     }
 
 
-    public String[] obtainsPrimaryKeyStrings() {
+    String[] obtainsPrimaryKeyStrings() {
         String[] returnKeys = new String[primaryKeys.length];
         for (int i = 0; i < primaryKeys.length; i++) {
             returnKeys[i] = primaryKeys[i].keyColumn;
@@ -196,12 +329,12 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     }
 
 
-    public RowKey[] obtainsPrimaryKeys() {
+    RowKey[] obtainsPrimaryKeys() {
         return this.primaryKeys;
     }
 
 
-    public Object[] obtainsPrimaryValues() {
+    Object[] obtainsPrimaryValues() {
         if (ArrayUtil.isEmpty(primaryKeys)) {
             return NULL_ARGS;
         }
@@ -213,7 +346,7 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     }
 
 
-    public Object[] obtainAllModifyValues() {
+    Object[] obtainAllModifyValues() {
         return ArrayUtil.concat(obtainModifyValues(), obtainsPrimaryValues());
     }
 

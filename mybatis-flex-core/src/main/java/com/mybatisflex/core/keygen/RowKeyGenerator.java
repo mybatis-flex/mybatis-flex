@@ -15,9 +15,10 @@
  */
 package com.mybatisflex.core.keygen;
 
-import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.row.RowCPI;
 import com.mybatisflex.core.row.RowKey;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
@@ -52,7 +53,7 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
     @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
         Row row = (Row) ((Map) parameter).get(FlexConsts.ROW);
-        keyGenerators = buildRowKeyGenerators(row.obtainsPrimaryKeys());
+        keyGenerators = buildRowKeyGenerators(RowCPI.obtainsPrimaryKeys(row));
         for (KeyGenerator keyGenerator : keyGenerators) {
             keyGenerator.processBefore(executor, ms, stmt, parameter);
         }

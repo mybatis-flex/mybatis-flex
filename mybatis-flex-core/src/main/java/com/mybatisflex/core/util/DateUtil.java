@@ -20,13 +20,14 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @author michael yang (fuhai999@gmail.com)
- */
+
 public class DateUtil {
 
     public static String datePatternWithoutDividing = "yyyyMMdd";
@@ -39,6 +40,16 @@ public class DateUtil {
 
     private static final ThreadLocal<HashMap<String, SimpleDateFormat>> TL = ThreadLocal.withInitial(() -> new HashMap<>());
 
+    private static final Map<String, DateTimeFormatter> dateTimeFormatters = new ConcurrentHashMap<>();
+
+    public static DateTimeFormatter getDateTimeFormatter(String pattern) {
+        DateTimeFormatter ret = dateTimeFormatters.get(pattern);
+        if (ret == null) {
+            ret = DateTimeFormatter.ofPattern(pattern);
+            dateTimeFormatters.put(pattern, ret);
+        }
+        return ret;
+    }
 
     public static SimpleDateFormat getSimpleDateFormat(String pattern) {
         SimpleDateFormat ret = TL.get().get(pattern);
@@ -52,8 +63,6 @@ public class DateUtil {
         }
         return ret;
     }
-
-
 
 
     public static Date parseDate(Object value) {
@@ -122,6 +131,45 @@ public class DateUtil {
     }
 
 
+
+    public static LocalDateTime parseLocalDateTime(String dateString) {
+        if (StringUtil.isBlank(dateString)) {
+            return null;
+        }
+        dateString = dateString.trim();
+        DateTimeFormatter dateTimeFormatter = getDateTimeFormatter(getPattern(dateString));
+        try {
+            return LocalDateTime.parse(dateString, dateTimeFormatter);
+        } catch (Exception ex) {
+            //2022-10-23 00:00:00.0
+            int lastIndexOf = dateString.lastIndexOf(".");
+            if (lastIndexOf == 19) {
+                return parseLocalDateTime(dateString.substring(0, lastIndexOf));
+            }
+
+            //2022-10-23 00:00:00,0
+            lastIndexOf = dateString.lastIndexOf(",");
+            if (lastIndexOf == 19) {
+                return parseLocalDateTime(dateString.substring(0, lastIndexOf));
+            }
+
+            //2022-10-23 00:00:00 000123
+            lastIndexOf = dateString.lastIndexOf(" ");
+            if (lastIndexOf == 19) {
+                return parseLocalDateTime(dateString.substring(0, lastIndexOf));
+            }
+
+            if (dateString.contains(".") || dateString.contains("/")) {
+                dateString = dateString.replace(".", "-").replace("/", "-");
+                dateTimeFormatter = getDateTimeFormatter(getPattern(dateString));
+                return LocalDateTime.parse(dateString, dateTimeFormatter);
+            } else {
+                throw ex;
+            }
+        }
+    }
+
+
     private static String getPattern(String dateString) {
         int length = dateString.length();
         if (length == datetimePattern.length()) {
@@ -143,7 +191,6 @@ public class DateUtil {
             throw new IllegalArgumentException("The date format is not supported for the date string: " + dateString);
         }
     }
-
 
 
     public static LocalDateTime toLocalDateTime(Date date) {
@@ -175,7 +222,6 @@ public class DateUtil {
         LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
         return localDateTime.toLocalDate();
     }
-
 
 
     public static LocalTime toLocalTime(Date date) {

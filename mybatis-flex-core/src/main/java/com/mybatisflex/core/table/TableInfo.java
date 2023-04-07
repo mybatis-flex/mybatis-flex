@@ -23,10 +23,7 @@ import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
 import com.mybatisflex.core.row.Row;
-import com.mybatisflex.core.util.ArrayUtil;
-import com.mybatisflex.core.util.ClassUtil;
-import com.mybatisflex.core.util.CollectionUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.util.*;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
@@ -406,9 +403,9 @@ public class TableInfo {
 
                 // ModifyAttrsRecord 忽略 ignoreNulls 的设置，
                 // 当使用 ModifyAttrsRecord 时，可以理解为要对字段进行 null 值进行更新，否则没必要使用 ModifyAttrsRecord
-                //  if (ignoreNulls && value == null) {
-                //     continue;
-                //  }
+                // if (ignoreNulls && value == null) {
+                //    continue;
+                // }
                 values.add(value);
             }
         }
