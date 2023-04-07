@@ -55,6 +55,8 @@ public class FlexConfiguration extends Configuration {
     }
 
     public FlexConfiguration() {
+        setMapUnderscoreToCamelCase(true);
+        setObjectWrapperFactory(new EntityWrapperFactory());
         initDefaultMappers();
     }
 
