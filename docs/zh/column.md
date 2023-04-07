@@ -195,7 +195,7 @@ QueryWrapper.create()
 
 ## isLogicDelete
 
-这部分的文档参考 [逻辑删除章节](./logic_delete.md)。
+这部分的文档参考 [逻辑删除章节](./logic-delete.md)。
 
 ## version
 
