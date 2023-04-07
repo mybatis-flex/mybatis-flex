@@ -225,4 +225,15 @@ public class DateUtil {
         return Date.from(instant);
     }
 
+
+    public static String toDateTimeString(Date date) {
+        return toString(date, datetimePattern);
+    }
+
+
+    public static String toString(Date date, String pattern) {
+        return date == null ? null : getSimpleDateFormat(pattern).format(date);
+    }
+
+
 }
