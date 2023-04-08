@@ -17,6 +17,8 @@ package com.mybatisflex.core.tenant;
 
 public class TenantManager {
 
+    private static ThreadLocal<Boolean> ignoreFlags = new ThreadLocal<>();
+
     private static TenantFactory tenantFactory;
 
     public static TenantFactory getTenantFactory() {
@@ -27,7 +29,30 @@ public class TenantManager {
         TenantManager.tenantFactory = tenantFactory;
     }
 
+
+    /**
+     * 忽略 tenant 条件
+     */
+    public static void ignoreTenantCondition() {
+        ignoreFlags.set(Boolean.TRUE);
+    }
+
+
+    /**
+     * 恢复 tenant 条件
+     */
+    public static void restore() {
+        ignoreFlags.remove();
+    }
+
+
     public static Object[] getTenantIds() {
+        Boolean ignoreFlag = ignoreFlags.get();
+        if (ignoreFlag != null && ignoreFlag) {
+            return null;
+        }
         return tenantFactory != null ? tenantFactory.getTenantIds() : null;
     }
+
+
 }
