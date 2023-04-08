@@ -117,15 +117,15 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
             MyBatisFlexProps props = new MyBatisFlexProps("mybatis-flex.properties");
 
-            String enable = props.getProperties().getProperty("processer.enable", "");
+            String enable = props.getProperties().getProperty("processor.enable", "");
             if ("false".equalsIgnoreCase(enable)) {
                 return true;
             }
-            String genPath = props.getProperties().getProperty("processer.genPath", "");
-            String genTablesPackage = props.getProperties().getProperty("processer.tablesPackage");
-            String mappersGenerateEnable = props.getProperties().getProperty("processer.mappersGenerateEnable", "true");
-            String genMappersPackage = props.getProperties().getProperty("processer.mappersPackage");
-            String className = props.getProperties().getProperty("processer.tablesClassName", "Tables");
+            String genPath = props.getProperties().getProperty("processor.genPath", "");
+            String genTablesPackage = props.getProperties().getProperty("processor.tablesPackage");
+            String mappersGenerateEnable = props.getProperties().getProperty("processor.mappersGenerateEnable", "true");
+            String genMappersPackage = props.getProperties().getProperty("processor.mappersPackage");
+            String className = props.getProperties().getProperty("processor.tablesClassName", "Tables");
 
             StringBuilder guessPackage = new StringBuilder();
 
@@ -327,7 +327,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
             File genJavaFile = new File(realPath, (genPackageName + "." + className).replace(".", "/") + ".java");
             if (!genJavaFile.getParentFile().exists() && !genJavaFile.getParentFile().mkdirs()) {
-                System.out.println(">>>>>ERROR: can not mkdirs by mybatis-flex processer for: " + genJavaFile.getParentFile());
+                System.out.println(">>>>>ERROR: can not mkdirs by mybatis-flex processor for: " + genJavaFile.getParentFile());
                 return;
             }
 
@@ -397,7 +397,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
             File genJavaFile = new File(realPath, (genPackageName + "." + mapperClassName).replace(".", "/") + ".java");
             if (!genJavaFile.getParentFile().exists() && !genJavaFile.getParentFile().mkdirs()) {
-                System.out.println(">>>>>ERROR: can not mkdirs by mybatis-flex processer for: " + genJavaFile.getParentFile());
+                System.out.println(">>>>>ERROR: can not mkdirs by mybatis-flex processor for: " + genJavaFile.getParentFile());
                 return;
             }
 
