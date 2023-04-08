@@ -11,7 +11,7 @@ Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 在项目的 resources 目录下添加 `mybatis-flex.properties` 配置文件，配置内容如下：
 
 ```properties
-processer.enable = false
+processor.enable = false
 ```
 
 
@@ -24,7 +24,7 @@ processer.enable = false
 如果我们不想让生成的代码放在这些目录，这可以添加如下配置：
 
 ```properties
-processer.genPath = your-path
+processor.genPath = your-path
 ```
 
 genPath 可以是绝对路径，也可以是相对路径，如果填写的是相对路径，那么则是相对 Maven 根模块的目录。
@@ -38,8 +38,8 @@ genPath 可以是绝对路径，也可以是相对路径，如果填写的是相
 添加如下配置，自定义生成的类名和包名。
 
 ```properties
-processer.tablesPackage = com.your-package
-processer.tablesClassName = your-class-name
+processor.tablesPackage = com.your-package
+processor.tablesClassName = your-class-name
 ```
 
 ## APT 生成的 Mapper 包名
@@ -50,13 +50,13 @@ processer.tablesClassName = your-class-name
 添加如下配置，自定义 Mapper 生成的包名。
 
 ```properties
-processer.mappersPackage = com.your-package
+processor.mappersPackage = com.your-package
 ```
 
 ## APT 关闭 Mapper 生成
 
 ```properties
-processer.mappersGenerateEnable = false
+processor.mappersGenerateEnable = false
 ```
 
 ## 开发工具无法导入生成的代码？
