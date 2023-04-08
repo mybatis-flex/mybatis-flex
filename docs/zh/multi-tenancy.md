@@ -10,7 +10,7 @@
 
 Mybatis-Flex 使用多租户需要 2 个步骤：
 
-- step 1：通过 `@Column(tenantId = true)` 表示租户列。
+- step 1：通过 `@Column(tenantId = true)` 标识租户列。
 - step 2：为 `TenantManager` 配置 `TenantFactory`。
 
 > TenantFactory 是用于生产租户ID的，或者说是用于获取当前租户ID的。
@@ -62,6 +62,8 @@ public interface TenantFactory {
 
 ## 注意事项
 
+### 新增数据时
+
 ```java 7
 @Table("tb_article")
 public class Article {
@@ -90,3 +92,19 @@ articleMapper.insert(article);
 - 若 `TenantFactory` 返回的有值，`tenantId` 的值为 `TenantFactory` 返回数组的第一个值。
 - 若 `TenantFactory` 返回的数组为 `null` 或者 空数组，`tenantId` 的值为 `100`；
 
+### 删除、修改和查询
+
+当 Entity 被 `@Column(tenantId = true)` 标识租户列后，所有通过 `BaseMapper` 进行 删除、修改 和 查询，都会带上租户的条件。
+
+比如根据 ID 删除，那么执行的 SQL 如下：
+
+```sql
+DELETE FROM tb_article where id = ? and tenant_id = ?
+```
+当 `TenantFactory` 返回多个租户 ID 的时候，执行的 SQL 如下：
+
+```sql
+DELETE FROM tb_article where id = ? and tenant_id in (?, ?, ?)
+```
+
+同理，修改和查询，也都会带有 `tenant_id` 条件。

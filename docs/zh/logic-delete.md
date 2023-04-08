@@ -49,10 +49,7 @@ SELECT * FROM tb_account where id = ? and is_delete = 0
 
 不仅仅是 selectOneById 方法会添加 `is_delete = 0` 条件，BaseMapper 的以下方法也都会添加该条件：
 
-- selectOneByMap
-- selectOneByQuery
-- selectListByIds
-- selectListByMap
-- selectListByQuery
-- selectCountByQuery
+- selectOneBy**
+- selectListBy**
+- selectCountBy**
 - paginate
