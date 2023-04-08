@@ -41,7 +41,7 @@ public class TenantManager {
     /**
      * 恢复 tenant 条件
      */
-    public static void restore() {
+    public static void restoreTenantCondition() {
         ignoreFlags.remove();
     }
 
