@@ -59,6 +59,7 @@ export default defineConfig({
           { text: '字段权限', link: '/zh/columns-permission' },
           { text: '字段加密', link: '/zh/columns-encrypt' },
           { text: '字典回显', link: '/zh/columns-dict' },
+          { text: '多租户', link: '/zh/multi-tenancy' },
         ]
       },
       {

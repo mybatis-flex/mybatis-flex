@@ -1,0 +1,92 @@
+# 多租户
+
+**多租户技术**（英语：multi-tenancy technology），是一种软件架构技术，它是在探讨与实现如何于多用户的环境下共用相同的系统或程序组件，并且仍可确保各用户间数据的隔离性。
+
+多租户简单来说是指一个单独的实例可以为多个用户（或组织）服务。多租户技术要求所有用户共用同一个数据中心，但能提供多个客户端相同甚至可定制化的服务，并且仍然可以保障客户的数据隔离。
+
+多租户的数据隔离有许多种方案，但最为常见的是以列进行隔离的方式。Mybatis-Flex 内置的正是通过指定的列（租户ID `tenant_id`）进行隔离的方案。
+
+## 开始使用
+
+Mybatis-Flex 使用多租户需要 2 个步骤：
+
+- step 1：通过 `@Column(tenantId = true)` 表示租户列。
+- step 2：为 `TenantManager` 配置 `TenantFactory`。
+
+> TenantFactory 是用于生产租户ID的，或者说是用于获取当前租户ID的。
+
+以下是代码示例：
+
+```java 7
+@Table("tb_article")
+public class Article {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    @Column(tenantId = true)
+    private Long tenantId;
+}
+```
+
+> 通过 `@Column(tenantId = true)` 表示租户ID。
+
+```java
+TenantManager.setTenantFactory(new TenantFactory() {
+    @Override
+    public Object[] getTenantIds() {
+        //通过这里返回当前租户 ID
+        return new Object[]{100};
+    }
+});
+```
+
+## TenantFactory 说明
+
+`TenantFactory` 接口的主要作用，适用于获取当前的租户ID，并在数据新增、删除、修改 和 查询的时候，会自动带上 TenantFactory "生产" 的数据。
+
+`TenantFactory` 源码如下：
+
+```java
+public interface TenantFactory {
+    Object[] getTenantIds();
+}
+```
+
+`getTenantIds` 要求返回一个数组，原因有如下场景：
+
+- **场景1**：租户对自己的数据进行增删改查，返回的 `Object[]` 数组只有租户自己的 ID 就可以了。
+- **场景2**：租户可以对自己，以及其他租户（比如说下级租户）的数据进行增删改查，那么要求返回的 `Object[]` 必须包含其他租户的 ID。比如某个数据列表，
+除了显示租户自己的数据以外，还包含下级租户的数据，这种场景则要求 `getTenantIds` 返回多个值。
+- **场景3**：忽略租户条件，由代码自定义条件查询，此项要求 `getTenantIds` 返回 null 或者 空数组。
+
+## 注意事项
+
+```java 7
+@Table("tb_article")
+public class Article {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    @Column(tenantId = true)
+    private Long tenantId;
+}
+```
+
+在以上的代码中，我们 **新增** Article 的时候，无论 `Article` 设置 `tenantId` 的值是什么，都会被 `TenantFactory` 返回的内容进行覆盖，
+若 `TenantFactory` 返回多个 `tenantId`，则默认使用第一个为 `Article.tenantId` 赋值。若 `TenantFactory` 返回的内容为 null 或者 空数组，
+则保留 `Article.tenantId` 设置的值。
+
+以下是代码示例：
+
+```java
+Article article = new Article();
+article.setTenantId(100);
+
+articleMapper.insert(article);
+```
+
+- 若 `TenantFactory` 返回的有值，`tenantId` 的值为 `TenantFactory` 返回数组的第一个值。
+- 若 `TenantFactory` 返回的数组为 `null` 或者 空数组，`tenantId` 的值为 `100`；
+
