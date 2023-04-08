@@ -43,7 +43,7 @@ public interface LimitOffsetProcesser {
      */
     LimitOffsetProcesser POSTGRESQL = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
-            sql.append(" LIMIT ").append(limitOffset).append(" OFFSET ").append(limitRows);
+            sql.append(" LIMIT ").append(limitRows).append(" OFFSET ").append(limitOffset);
         } else if (limitRows != null) {
             sql.append(" LIMIT ").append(limitRows);
         }
