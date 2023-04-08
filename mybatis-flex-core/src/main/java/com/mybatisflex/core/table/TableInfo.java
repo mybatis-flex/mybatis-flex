@@ -632,10 +632,7 @@ public class TableInfo {
             return;
         }
 
-        if (tenantIds.length > 1) {
-            throw new IllegalStateException("TenantFactory return multi tenantId for insert.");
-        }
-
+        //默认使用第一个作为插入的租户ID
         Object tenantId = tenantIds[0];
         if (tenantId != null) {
             metaObject.setValue(columnInfoMapping.get(tenantIdColumn).property, tenantId);
