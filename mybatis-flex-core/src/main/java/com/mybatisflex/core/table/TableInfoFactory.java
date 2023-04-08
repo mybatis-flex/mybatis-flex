@@ -138,6 +138,7 @@ public class TableInfoFactory {
 
         String logicDeleteColumn = null;
         String versionColumn = null;
+        String tenantIdColumn = null;
 
         //数据插入时，默认插入数据字段
         Map<String, String> onInsertColumns = new HashMap<>();
@@ -185,6 +186,15 @@ public class TableInfoFactory {
                     versionColumn = columnName;
                 } else {
                     throw FlexExceptions.wrap("The version column of entity[%s] must be less then 2.", entityClass.getName());
+                }
+            }
+
+            //租户ID 字段
+            if (column != null && column.tenantId()) {
+                if (tenantIdColumn == null) {
+                    tenantIdColumn = columnName;
+                } else {
+                    throw FlexExceptions.wrap("The tenantId column of entity[%s] must be less then 2.", entityClass.getName());
                 }
             }
 
@@ -261,6 +271,7 @@ public class TableInfoFactory {
 
         tableInfo.setLogicDeleteColumn(logicDeleteColumn);
         tableInfo.setVersionColumn(versionColumn);
+        tableInfo.setTenantIdColumn(tenantIdColumn);
 
         if (!onInsertColumns.isEmpty()) {
             tableInfo.setOnInsertColumns(onInsertColumns);

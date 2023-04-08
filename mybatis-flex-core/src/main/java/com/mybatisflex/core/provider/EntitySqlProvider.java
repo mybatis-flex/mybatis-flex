@@ -18,13 +18,10 @@ package com.mybatisflex.core.provider;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.CPI;
-import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
-import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
 import java.io.Serializable;
@@ -61,6 +58,9 @@ public class EntitySqlProvider {
         //设置乐观锁版本字段的初始化数据
         tableInfo.initVersionValueIfNecessary(entity);
 
+        //设置租户ID
+        tableInfo.initTenantIdIfNecessary(entity);
+
         //设置逻辑删除字段的出初始化数据
         tableInfo.initLogicDeleteValueIfNecessary(entity);
 
@@ -92,6 +92,7 @@ public class EntitySqlProvider {
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
         for (Object entity : entities) {
             tableInfo.initVersionValueIfNecessary(entity);
+            tableInfo.initTenantIdIfNecessary(entity);
             tableInfo.initLogicDeleteValueIfNecessary(entity);
 
             //执行 onInsert 监听器
@@ -126,7 +127,8 @@ public class EntitySqlProvider {
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
-        ProviderUtil.setSqlArgs(params, primaryValues);
+        Object[] allValues = ArrayUtil.concat(primaryValues, tableInfo.buildTenantIdArgs());
+        ProviderUtil.setSqlArgs(params, allValues);
 
         return DialectFactory.getDialect().forDeleteEntityById(tableInfo);
     }
@@ -171,7 +173,10 @@ public class EntitySqlProvider {
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
         CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
 
+        tableInfo.appendConditions(null, queryWrapper);
         ProviderUtil.setSqlArgs(params, CPI.getValueArray(queryWrapper));
+
+
         return DialectFactory.getDialect().forDeleteEntityBatchByQuery(tableInfo, queryWrapper);
     }
 
@@ -199,10 +204,11 @@ public class EntitySqlProvider {
 
         Object[] updateValues = tableInfo.buildUpdateSqlArgs(entity, ignoreNulls, false);
         Object[] primaryValues = tableInfo.buildPkSqlArgs(entity);
+        Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
         FlexExceptions.assertAreNotNull(primaryValues, "The value of primary key must not be null, entity[%s]", entity);
 
-        ProviderUtil.setSqlArgs(params, ArrayUtil.concat(updateValues, primaryValues));
+        ProviderUtil.setSqlArgs(params, ArrayUtil.concat(updateValues, primaryValues, tenantIdArgs));
 
         return DialectFactory.getDialect().forUpdateEntity(tableInfo, entity, ignoreNulls);
     }
@@ -226,14 +232,13 @@ public class EntitySqlProvider {
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            queryWrapper.and(QueryCondition.create(new QueryColumn(tableInfo.getTableName(), logicDeleteColumn), 0));
-        }
+        //处理逻辑删除 和 多租户等
+        tableInfo.appendConditions(entity, queryWrapper);
 
         Object[] values = tableInfo.buildUpdateSqlArgs(entity, ignoreNulls, true);
+        Object[] queryParams = CPI.getValueArray(queryWrapper);
 
-        ProviderUtil.setSqlArgs(params, ArrayUtil.concat(values, CPI.getValueArray(queryWrapper)));
+        ProviderUtil.setSqlArgs(params, ArrayUtil.concat(values, queryParams));
 
         return DialectFactory.getDialect().forUpdateEntityByQuery(tableInfo, entity, ignoreNulls, queryWrapper);
     }
@@ -255,7 +260,9 @@ public class EntitySqlProvider {
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
-        ProviderUtil.setSqlArgs(params, primaryValues);
+        Object[] allValues = ArrayUtil.concat(primaryValues, tableInfo.buildTenantIdArgs());
+
+        ProviderUtil.setSqlArgs(params, allValues);
 
         return DialectFactory.getDialect().forSelectOneEntityById(tableInfo);
     }
@@ -275,9 +282,11 @@ public class EntitySqlProvider {
             throw FlexExceptions.wrap("primaryValues can not be null or empty.");
         }
 
-        ProviderUtil.setSqlArgs(params, primaryValues);
-
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
+
+        Object[] allValues = ArrayUtil.concat(primaryValues, tableInfo.buildTenantIdArgs());
+        ProviderUtil.setSqlArgs(params, allValues);
+
         return DialectFactory.getDialect().forSelectEntityListByIds(tableInfo, primaryValues);
     }
 
@@ -297,11 +306,7 @@ public class EntitySqlProvider {
         }
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
-
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            queryWrapper.and(QueryCondition.create(new QueryColumn(tableInfo.getTableName(), logicDeleteColumn), 0));
-        }
+        tableInfo.appendConditions(null, queryWrapper);
 
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
@@ -326,12 +331,7 @@ public class EntitySqlProvider {
         }
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
-
-        //逻辑删除
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            queryWrapper.and(QueryCondition.create(new QueryColumn(tableInfo.getTableName(), logicDeleteColumn), 0));
-        }
+        tableInfo.appendConditions(null, queryWrapper);
 
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);

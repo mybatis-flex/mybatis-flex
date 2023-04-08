@@ -15,27 +15,41 @@
  */
 package com.mybatisflex.core.util;
 
+import java.util.Objects;
+
 public class ObjectUtil {
 
     public static <T> T requireNonNullElse(T t1, T t2) {
         return t1 == null ? t2 : t1;
     }
 
-    public static boolean areNotNull(Object ... objs){
+    public static boolean areNotNull(Object... objs) {
         for (Object obj : objs) {
-            if (obj == null){
+            if (obj == null) {
                 return false;
             }
         }
         return true;
     }
 
-    public static boolean areNull(Object ... objs){
+    public static boolean areNull(Object... objs) {
         for (Object obj : objs) {
-            if (obj != null){
+            if (obj != null) {
                 return false;
             }
         }
         return true;
+    }
+
+    public static boolean equalsAny(Object a, Object... others) {
+        if (others == null || others.length == 0) {
+            throw new IllegalArgumentException("others must not be null or empty.");
+        }
+        for (Object other : others) {
+            if (Objects.equals(a, other)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

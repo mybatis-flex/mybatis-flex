@@ -64,6 +64,11 @@ public @interface Column {
     boolean version() default false;
 
     /**
+     * 是否是租户 ID
+     */
+    boolean tenantId() default false;
+
+    /**
      * 配置的 jdbcType
      */
     JdbcType jdbcType() default JdbcType.UNDEFINED;

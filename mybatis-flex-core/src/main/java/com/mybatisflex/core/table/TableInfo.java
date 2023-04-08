@@ -16,13 +16,17 @@
 package com.mybatisflex.core.table;
 
 import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.FlexConsts;
-import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.tenant.TenantManager;
 import com.mybatisflex.core.util.*;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
@@ -48,6 +52,9 @@ public class TableInfo {
 
     //乐观锁字段
     private String versionColumn;
+
+    //租户ID 字段
+    private String tenantIdColumn;
 
     //数据插入时，默认插入数据字段
     private Map<String, String> onInsertColumns;
@@ -142,6 +149,14 @@ public class TableInfo {
 
     public void setVersionColumn(String versionColumn) {
         this.versionColumn = versionColumn;
+    }
+
+    public String getTenantIdColumn() {
+        return tenantIdColumn;
+    }
+
+    public void setTenantIdColumn(String tenantIdColumn) {
+        this.tenantIdColumn = tenantIdColumn;
     }
 
     public Map<String, String> getOnInsertColumns() {
@@ -307,7 +322,6 @@ public class TableInfo {
      *
      * @param entity
      * @param ignoreNulls
-     * @return
      */
     public Set<String> obtainUpdateColumns(Object entity, boolean ignoreNulls, boolean includePrimary) {
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
@@ -323,8 +337,8 @@ public class TableInfo {
                     continue;
                 }
 
-                //过滤乐观锁字段
-                if (Objects.equals(column, versionColumn)) {
+                //过滤乐观锁字段 和 租户字段
+                if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 
@@ -345,8 +359,8 @@ public class TableInfo {
                     continue;
                 }
 
-                //过滤乐观锁字段
-                if (Objects.equals(column, versionColumn)) {
+                //过滤乐观锁字段 和 租户字段
+                if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 
@@ -390,8 +404,8 @@ public class TableInfo {
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
                     continue;
                 }
-                //过滤乐观锁字段
-                if (Objects.equals(column, versionColumn)) {
+                //过滤乐观锁字段 和 租户字段
+                if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 
@@ -416,8 +430,8 @@ public class TableInfo {
                     continue;
                 }
 
-                //忽略乐观锁字段，乐观锁字段会直接通过 sql 对其操作
-                if (Objects.equals(column, versionColumn)) {
+                //过滤乐观锁字段 和 租户字段
+                if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 
@@ -451,6 +465,44 @@ public class TableInfo {
             values[i] = buildColumnSqlArg(metaObject, primaryKeys[i]);
         }
         return values;
+    }
+
+
+    public Object[] buildTenantIdArgs() {
+        if (StringUtil.isBlank(tenantIdColumn)) {
+            return null;
+        }
+
+        return TenantManager.getTenantIds();
+    }
+
+
+    public void appendConditions(Object entity, QueryWrapper queryWrapper) {
+
+        //添加乐观锁条件，只有在 update 的时候进行处理
+        if (StringUtil.isNotBlank(versionColumn) && entity != null) {
+            Object versionValue = buildColumnSqlArg(entity, versionColumn);
+            if (versionValue == null) {
+                throw FlexExceptions.wrap("The version value of entity[%s] must not be null.", entity);
+            }
+            queryWrapper.and(QueryCondition.create(tableName, versionColumn, QueryCondition.LOGIC_EQUALS, versionValue));
+        }
+
+        //逻辑删除条件，已删除的数据不能被修改
+        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+            queryWrapper.and(QueryCondition.create(tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS, FlexConsts.LOGIC_DELETE_NORMAL));
+        }
+
+        //多租户
+        Object[] tenantIdArgs = buildTenantIdArgs();
+        if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
+            if (tenantIdArgs.length == 1) {
+                queryWrapper.and(QueryCondition.create(tableName, tenantIdColumn, QueryCondition.LOGIC_EQUALS, tenantIdArgs[0]));
+            } else {
+                queryWrapper.and(QueryCondition.create(tableName, tenantIdColumn, QueryCondition.LOGIC_IN, tenantIdArgs));
+            }
+        }
+
     }
 
 
@@ -558,9 +610,35 @@ public class TableInfo {
         }
 
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
-        Object columnValue = buildColumnSqlArg(entityObject, versionColumn);
+        Object columnValue = getPropertyValue(metaObject, columnInfoMapping.get(versionColumn).property);
         if (columnValue == null) {
             metaObject.setValue(columnInfoMapping.get(versionColumn).property, 0);
+        }
+    }
+
+    /**
+     * 设置租户id
+     *
+     * @param entityObject
+     */
+    public void initTenantIdIfNecessary(Object entityObject) {
+        if (StringUtil.isBlank(tenantIdColumn)) {
+            return;
+        }
+
+        MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
+        Object[] tenantIds = TenantManager.getTenantIds();
+        if (tenantIds == null || tenantIds.length == 0) {
+            return;
+        }
+
+        if (tenantIds.length > 1) {
+            throw new IllegalStateException("TenantFactory return multi tenantId for insert.");
+        }
+
+        Object tenantId = tenantIds[0];
+        if (tenantId != null) {
+            metaObject.setValue(columnInfoMapping.get(tenantIdColumn).property, tenantId);
         }
     }
 
@@ -575,7 +653,7 @@ public class TableInfo {
         }
 
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
-        Object columnValue = buildColumnSqlArg(entityObject, logicDeleteColumn);
+        Object columnValue = getPropertyValue(metaObject, columnInfoMapping.get(logicDeleteColumn).property);
         if (columnValue == null) {
             metaObject.setValue(columnInfoMapping.get(logicDeleteColumn).property, 0);
         }

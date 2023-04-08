@@ -60,16 +60,24 @@ public class QueryCondition implements Serializable {
     }
 
 
+    public static QueryCondition create(String table, String column, String logic, Object value) {
+        QueryCondition condition = new QueryCondition();
+        condition.setColumn(new QueryColumn(table, column));
+        condition.setLogic(logic);
+        condition.setValue(value);
+        return condition;
+    }
+
     public static QueryCondition create(QueryColumn queryColumn, Object value) {
         return create(queryColumn, LOGIC_EQUALS, value);
     }
 
     public static QueryCondition create(QueryColumn queryColumn, String logic, Object value) {
-        QueryCondition column = new QueryCondition();
-        column.setColumn(queryColumn);
-        column.setLogic(logic);
-        column.setValue(value);
-        return column;
+        QueryCondition condition = new QueryCondition();
+        condition.setColumn(queryColumn);
+        condition.setLogic(logic);
+        condition.setValue(value);
+        return condition;
     }
 
     public QueryCondition() {
@@ -152,7 +160,7 @@ public class QueryCondition implements Serializable {
                 sql.append("(").append(dialect.buildSelectSql((QueryWrapper) value)).append(")");
             }
             //原生sql
-            else if (value instanceof RawValue){
+            else if (value instanceof RawValue) {
                 sql.append(((RawValue) value).getContext());
             }
             //正常查询，构建问号

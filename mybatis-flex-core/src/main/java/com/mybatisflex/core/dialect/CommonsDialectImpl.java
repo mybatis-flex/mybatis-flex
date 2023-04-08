@@ -416,10 +416,15 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String forDeleteEntityById(TableInfo tableInfo) {
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
-
+        Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         //正常删除
         if (StringUtil.isBlank(logicDeleteColumn)) {
-            return forDeleteById(tableInfo.getTableName(), tableInfo.getPrimaryKeys());
+            String deleteByIdSql = forDeleteById(tableInfo.getTableName(), tableInfo.getPrimaryKeys());
+
+            if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
+                deleteByIdSql += " AND " + wrap(tableInfo.getTenantIdColumn()) + " IN " + buildQuestion(tenantIdArgs.length, true);
+            }
+            return deleteByIdSql;
         }
 
         //逻辑删除
@@ -438,16 +443,29 @@ public class CommonsDialectImpl implements IDialect {
 
         sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
 
+        //租户ID
+        if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
+            sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" IN ").append(buildQuestion(tenantIdArgs.length, true));
+        }
+
         return sql.toString();
     }
 
     @Override
     public String forDeleteEntityBatchByIds(TableInfo tableInfo, Object[] primaryValues) {
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
         //正常删除
         if (StringUtil.isBlank(logicDeleteColumn)) {
-            return forDeleteBatchByIds(tableInfo.getTableName(), tableInfo.getPrimaryKeys(), primaryValues);
+            String deleteSQL = forDeleteBatchByIds(tableInfo.getTableName(), tableInfo.getPrimaryKeys(), primaryValues);
+
+            //多租户
+            if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
+                deleteSQL = deleteSQL.replace(" WHERE ", " WHERE (") + ")";
+                deleteSQL += " AND " + wrap(tableInfo.getTenantIdColumn()) + " IN " + buildQuestion(tenantIdArgs.length, true);
+            }
+            return deleteSQL;
         }
 
         StringBuilder sql = new StringBuilder();
@@ -485,9 +503,12 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(") AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
+        sql.append(") AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
+
+        if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
+            sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" IN ").append(buildQuestion(tenantIdArgs.length, true));
         }
+
         return sql.toString();
     }
 
@@ -568,6 +589,17 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
         }
 
+
+        //租户ID字段
+        Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
+        if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
+            if (tenantIdArgs.length == 1) {
+                sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" = ?");
+            } else {
+                sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" IN ").append(buildQuestion(tenantIdArgs.length, true));
+            }
+        }
+
         //乐观锁条件
         if (StringUtil.isNotBlank(versionColumn)) {
             Object versionValue = tableInfo.buildColumnSqlArg(entity, versionColumn);
@@ -609,25 +641,14 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(stringJoiner);
 
 
-        sql.append(" WHERE ");
+        String whereConditionSql = buildWhereConditionSql(queryWrapper);
 
-        //乐观锁条件
-        if (StringUtil.isNotBlank(versionColumn)) {
-            Object versionValue = tableInfo.buildColumnSqlArg(entity, versionColumn);
-            if (versionValue == null) {
-                throw FlexExceptions.wrap("The version value of entity[%s] must not be null.", entity);
-            }
-            queryWrapper.and(new StringQueryCondition(wrap(versionColumn) + " = " + versionValue));
+        //不允许全量更新
+        if (StringUtil.isBlank(whereConditionSql)) {
+            throw new IllegalArgumentException(" where conditions can not be null or blank.");
         }
 
-        //逻辑删除条件，已删除的数据不能被修改
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            queryWrapper.and(new StringQueryCondition(wrap(logicDeleteColumn) + " = " + FlexConsts.LOGIC_DELETE_NORMAL));
-        }
-
-        sql.append(buildWhereConditionSql(queryWrapper));
-
+        sql.append(" WHERE ").append(whereConditionSql);
         return sql.toString();
     }
 
@@ -650,6 +671,12 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
         }
 
+        //多租户
+        Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
+        if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
+            sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" IN ").append(buildQuestion(tenantIdArgs.length, true));
+        }
+
         return sql.toString();
     }
 
@@ -662,9 +689,9 @@ public class CommonsDialectImpl implements IDialect {
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
-            sql.append(" AND (");
+        Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
+        if (StringUtil.isNotBlank(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
+            sql.append("(");
         }
 
         //多主键的场景
@@ -693,8 +720,17 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
+        if (StringUtil.isNotBlank(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
+            sql.append(")");
+        }
+
+
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(wrap(logicDeleteColumn)).append(" )");
+            sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
+        }
+
+        if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
+            sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" IN").append(buildQuestion(tenantIdArgs.length, true));
         }
 
         return sql.toString();

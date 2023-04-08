@@ -68,6 +68,19 @@ public class ArrayUtil {
     }
 
 
+    public static <T> T[] concat(T[] first, T[] second, T[] third, T[]... others) {
+        T[] results = concat(first, second);
+        results = concat(results, third);
+
+        if (others != null && others.length > 0) {
+            for (T[] other : others) {
+                results = concat(results, other);
+            }
+        }
+        return results;
+    }
+
+
     /**
      * 查看数组中是否包含某一个值
      *
