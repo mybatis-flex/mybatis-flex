@@ -108,3 +108,20 @@ DELETE FROM tb_article where id = ? and tenant_id in (?, ?, ?)
 ```
 
 同理，修改和查询，也都会带有 `tenant_id` 条件。
+
+### 忽略租户条件
+
+在某些场景下，在增删改查等操作，我们可能需要忽略租户条件，此时可以使用如下代码：
+
+```sql
+try {
+    TenantManager.ignoreTenantCondition()
+    
+    //此处操作的数据不会带有 tenant_id 的条件
+    accountMapper.selectListByQuery(...)
+} finally {
+    TenantManager.restoreTenantCondition()
+}
+```
+
+当然，TenantFactory 返回空数据，也会忽略 tenant 条件。
