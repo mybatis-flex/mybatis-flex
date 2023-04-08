@@ -130,8 +130,3 @@ public class AppService{
 }
 ```
 
-
-
-**具体可参考：**
-
-[https://gitee.com/noear/solon-examples/tree/main/4.Solon-Data/demo4035-mybatisflex](https://gitee.com/noear/solon-examples/tree/main/4.Solon-Data/demo4035-mybatisflex)
