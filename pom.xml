@@ -45,6 +45,7 @@
         <module>mybatis-flex-core</module>
         <module>mybatis-flex-spring</module>
         <module>mybatis-flex-spring-boot-starter</module>
+        <module>mybatis-flex-solon-plugin</module>
         <module>mybatis-flex-test</module>
     </modules>
 
@@ -63,6 +64,7 @@
 
         <spring.version>5.3.25</spring.version>
         <spring-boot.version>2.7.9</spring-boot.version>
+        <solon.version>2.2.10</solon.version>
 
         <junit.version>4.13.2</junit.version>
     </properties>
