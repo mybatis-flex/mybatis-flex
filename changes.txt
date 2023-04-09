@@ -1,3 +1,26 @@
+mybatis-flex v1.0.9 20230410:
+新增：新增 多租户 使用的相关模块
+新增：BaseMapper 添加 deleteByCondition 和 updateByCondition 方法
+新增：添加 paginate 的更简单易用的相关方法
+新增：QueryMethods 添加 column() 方法
+新增：ConsoleMessageCollector 用于在控制台输出 SQL 及其执行时间
+新增：QueryWrapper 添加 union 和 union all 的支持
+新增：mybatis-flex-solon-plugin 插件，方便在 solon 框架下使用
+修复：@Table(onSet) 配置在某些场景无法使用的问题
+修复：Postgresql 的 limit offset 方言出错的问题
+修复：多数据源的场景下，通过 @Table(dataSource) 配置无效的问题
+优化：修改错别字 processer 为 processor
+优化：优化 DbAutoConfiguration 未正确配置数据源时的错误信息
+优化：Row 添加 getString()/getInt() 等等相关方法
+优化：代码生成器通过 SqlServer 生成出错的问题
+文档：优化 QueryWrapper 的相关文档
+文档：优化 SQL 审计的相关文档
+文档：添加 SQL 控制台打印输出的相关文档
+文档：添加多租户的相关文档
+文档：优化逻辑删除的相关文档
+
+
+
 mybatis-flex v1.0.7 20230406:
 新增：BaseMapper 添加可以直接根据 Condition 查询的方法，更加方便
 新增：Db 添加可以直接根据 Condition 查询的方法，更加方便
