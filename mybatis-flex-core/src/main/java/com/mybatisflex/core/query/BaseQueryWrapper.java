@@ -23,7 +23,7 @@ import java.util.List;
 public class BaseQueryWrapper<T> implements Serializable {
 
     protected List<QueryTable> queryTables;
-    protected String datasource ;
+    protected String datasource;
 
     protected List<QueryColumn> selectColumns;
     protected List<Join> joins;
@@ -33,12 +33,14 @@ public class BaseQueryWrapper<T> implements Serializable {
     protected QueryCondition havingQueryCondition;
     protected List<QueryOrderBy> orderBys;
 
+    protected List<UnionWrapper> unions;
+
     protected Integer limitOffset;
     protected Integer limitRows;
 
 
-    protected T addSelectColumn(QueryColumn queryColumn){
-        if (selectColumns == null){
+    protected T addSelectColumn(QueryColumn queryColumn) {
+        if (selectColumns == null) {
             selectColumns = new LinkedList<>();
         }
 
@@ -47,8 +49,8 @@ public class BaseQueryWrapper<T> implements Serializable {
     }
 
 
-    protected T AddJoin(Join join){
-        if (joins == null){
+    protected T AddJoin(Join join) {
+        if (joins == null) {
             joins = new LinkedList<>();
         }
         joins.add(join);
@@ -56,9 +58,9 @@ public class BaseQueryWrapper<T> implements Serializable {
     }
 
 
-    protected T setWhereQueryCondition(QueryCondition queryCondition){
-        if (whereQueryCondition != null){
-            queryCondition.connect(whereQueryCondition,SqlConnector.AND);
+    protected T setWhereQueryCondition(QueryCondition queryCondition) {
+        if (whereQueryCondition != null) {
+            queryCondition.connect(whereQueryCondition, SqlConnector.AND);
         }
 
         whereQueryCondition = queryCondition;
@@ -66,7 +68,7 @@ public class BaseQueryWrapper<T> implements Serializable {
     }
 
 
-    protected T addWhereQueryCondition(QueryCondition queryCondition,SqlConnector connector){
+    protected T addWhereQueryCondition(QueryCondition queryCondition, SqlConnector connector) {
         if (queryCondition != null) {
             if (whereQueryCondition == null) {
                 whereQueryCondition = queryCondition;
@@ -78,9 +80,8 @@ public class BaseQueryWrapper<T> implements Serializable {
     }
 
 
-
-    protected T addGroupByColumns(QueryColumn queryColumn){
-        if (groupByColumns == null){
+    protected T addGroupByColumns(QueryColumn queryColumn) {
+        if (groupByColumns == null) {
             groupByColumns = new LinkedList<>();
         }
 
@@ -89,20 +90,18 @@ public class BaseQueryWrapper<T> implements Serializable {
     }
 
 
-
-    protected T addHavingQueryCondition(QueryCondition queryCondition,SqlConnector connector){
-        if (havingQueryCondition == null){
+    protected T addHavingQueryCondition(QueryCondition queryCondition, SqlConnector connector) {
+        if (havingQueryCondition == null) {
             havingQueryCondition = queryCondition;
-        }else {
-            havingQueryCondition.connect(queryCondition,connector);
+        } else {
+            havingQueryCondition.connect(queryCondition, connector);
         }
         return (T) this;
     }
 
 
-
-    protected T addOrderBy(QueryOrderBy queryOrderBy){
-        if (orderBys == null){
+    protected T addOrderBy(QueryOrderBy queryOrderBy) {
+        if (orderBys == null) {
             orderBys = new LinkedList<>();
         }
         orderBys.add(queryOrderBy);
@@ -110,8 +109,8 @@ public class BaseQueryWrapper<T> implements Serializable {
     }
 
 
-    protected void addJoinTable(QueryTable queryTable){
-        if (joinTables == null){
+    protected void addJoinTable(QueryTable queryTable) {
+        if (joinTables == null) {
             joinTables = new ArrayList<>();
         }
         joinTables.add(queryTable);
@@ -184,6 +183,14 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected void setOrderBys(List<QueryOrderBy> orderBys) {
         this.orderBys = orderBys;
+    }
+
+    protected List<UnionWrapper> getUnions() {
+        return unions;
+    }
+
+    protected void setUnions(List<UnionWrapper> unions) {
+        this.unions = unions;
     }
 
     protected Integer getLimitOffset() {

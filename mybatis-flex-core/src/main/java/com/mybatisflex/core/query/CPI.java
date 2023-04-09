@@ -105,6 +105,15 @@ public class CPI {
         queryWrapper.setOrderBys(orderBys);
     }
 
+    public static List<UnionWrapper> getUnions(QueryWrapper queryWrapper) {
+        return queryWrapper.getUnions();
+    }
+
+    public static void setUnions(QueryWrapper queryWrapper, List<UnionWrapper> unions) {
+        queryWrapper.setUnions(unions);
+    }
+
+
     public static Integer getLimitOffset(QueryWrapper queryWrapper) {
         return queryWrapper.getLimitOffset();
     }

@@ -79,6 +79,20 @@ public class AccountSqlTester {
 
 
     @Test
+    public void testUnionSql() {
+        QueryWrapper query = new QueryWrapper()
+                .select(ACCOUNT.ID)
+                .from(ACCOUNT)
+                .union(select(ARTICLE.ID).from(ARTICLE))
+                .unionAll(select(ARTICLE.ID).from(ARTICLE));
+
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forSelectListByQuery(query);
+        System.out.println(sql);
+    }
+
+
+    @Test
     public void testSelectCountSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select()
@@ -334,7 +348,7 @@ public class AccountSqlTester {
 
 
     @Test
-    public void testrSelectLimitSql() {
+    public void testSelectLimitSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(ACCOUNT.ALL_COLUMNS)
                 .select(ARTICLE.ID.as("article_id"))

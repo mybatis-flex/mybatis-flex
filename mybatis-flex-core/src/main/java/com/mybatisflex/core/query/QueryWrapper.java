@@ -250,6 +250,21 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return joining(Join.TYPE_CROSS, table, condition);
     }
 
+    public QueryWrapper union(QueryWrapper unionQuery) {
+        if (unions == null) {
+            unions = new ArrayList<>();
+        }
+        unions.add(UnionWrapper.union(unionQuery));
+        return this;
+    }
+
+    public QueryWrapper unionAll(QueryWrapper unionQuery) {
+        if (unions == null) {
+            unions = new ArrayList<>();
+        }
+        unions.add(UnionWrapper.unionAll(unionQuery));
+        return this;
+    }
 
     protected Joiner<QueryWrapper> joining(String type, String table, boolean condition) {
         Join join = new Join(type, table, condition);

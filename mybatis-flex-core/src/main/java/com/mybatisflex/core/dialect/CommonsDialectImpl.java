@@ -295,6 +295,14 @@ public class CommonsDialectImpl implements IDialect {
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
         buildOrderBySql(sqlBuilder, queryWrapper, allTables);
 
+        List<UnionWrapper> unions = CPI.getUnions(queryWrapper);
+        if (CollectionUtil.isNotEmpty(unions)) {
+            sqlBuilder.insert(0, "(").append(")");
+            for (UnionWrapper unionWrapper : unions) {
+                unionWrapper.buildSql(sqlBuilder, this);
+            }
+        }
+
         Integer limitRows = CPI.getLimitRows(queryWrapper);
         Integer limitOffset = CPI.getLimitOffset(queryWrapper);
         if (limitRows != null || limitOffset != null) {
