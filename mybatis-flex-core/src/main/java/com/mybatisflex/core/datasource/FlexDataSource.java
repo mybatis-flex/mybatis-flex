@@ -66,13 +66,11 @@ public class FlexDataSource extends AbstractDataSource {
             }
 
             Connection connection = TransactionalManager.getConnection(xid, dataSourceKey);
-            if (connection != null) {
-                return connection;
-            } else {
+            if (connection == null) {
                 connection = proxy(getDataSource().getConnection(), xid);
                 TransactionalManager.hold(xid, dataSourceKey, connection);
-                return connection;
             }
+            return connection;
         } else {
             return getDataSource().getConnection();
         }
@@ -88,13 +86,11 @@ public class FlexDataSource extends AbstractDataSource {
                 dataSourceKey = defaultDataSourceKey;
             }
             Connection connection = TransactionalManager.getConnection(xid, dataSourceKey);
-            if (connection != null) {
-                return connection;
-            } else {
+            if (connection == null) {
                 connection = proxy(getDataSource().getConnection(username, password), xid);
                 TransactionalManager.hold(xid, dataSourceKey, connection);
-                return connection;
             }
+            return connection;
         } else {
             return getDataSource().getConnection(username, password);
         }
@@ -137,9 +133,9 @@ public class FlexDataSource extends AbstractDataSource {
     }
 
     private static class ConnectionHandler implements InvocationHandler {
-        private static String[] proxyMethods = new String[]{"commit", "rollback", "close",};
-        private Connection original;
-        private String xid;
+        private static final String[] proxyMethods = new String[]{"commit", "rollback", "close",};
+        private final Connection original;
+        private final String xid;
 
         public ConnectionHandler(Connection original, String xid) {
             this.original = original;
@@ -150,8 +146,7 @@ public class FlexDataSource extends AbstractDataSource {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (ArrayUtil.contains(proxyMethods, method.getName())
                     && isTransactional()) {
-                //do nothing
-                return null;
+                return null;  //do nothing
             }
             return method.invoke(original, args);
         }

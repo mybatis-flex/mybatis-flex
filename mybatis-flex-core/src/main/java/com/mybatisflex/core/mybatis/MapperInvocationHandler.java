@@ -31,7 +31,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 public class MapperInvocationHandler implements InvocationHandler {
-    private static final String NONE_KEY = "!NONE";
 
     private final Object mapper;
     private final FlexDataSource dataSource;
@@ -51,9 +50,10 @@ public class MapperInvocationHandler implements InvocationHandler {
             String dataSourceKey = DataSourceKey.get();
 
             if (StringUtil.isBlank(dataSourceKey)) {
-                String methodKey = getMethodDataSource(method, proxy);
-                if (!NONE_KEY.equals(methodKey)) {
-                    dataSourceKey = methodKey;
+                //通过 @UseDataSource 或者 @Table(dataSource) 去获取
+                String configDataSourceKey = getConfigDataSourceKey(method, proxy);
+                if (StringUtil.isNotBlank(configDataSourceKey)) {
+                    dataSourceKey = configDataSourceKey;
                     DataSourceKey.use(dataSourceKey);
                     clearDsKey = true;
                 }
@@ -83,7 +83,7 @@ public class MapperInvocationHandler implements InvocationHandler {
     }
 
 
-    private static String getMethodDataSource(Method method, Object proxy) {
+    private static String getConfigDataSourceKey(Method method, Object proxy) {
         UseDataSource useDataSource = method.getAnnotation(UseDataSource.class);
         if (useDataSource != null && StringUtil.isNotBlank(useDataSource.value())) {
             return useDataSource.value();
@@ -99,7 +99,7 @@ public class MapperInvocationHandler implements InvocationHandler {
                 }
             }
         }
-        return NONE_KEY;
+        return null;
     }
 
 

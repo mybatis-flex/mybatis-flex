@@ -52,20 +52,20 @@ public class MultiDataSourceAutoConfiguration {
     @ConditionalOnMissingBean
     public DataSource dataSource() {
 
-        FlexDataSource routingDataSource = null;
+        FlexDataSource flexDataSource = null;
 
         if (dataSourceProperties != null && !dataSourceProperties.isEmpty()) {
             for (String key : dataSourceProperties.keySet()) {
                 DataSource dataSource = new DataSourceBuilder(dataSourceProperties.get(key)).build();
-                if (routingDataSource == null) {
-                    routingDataSource = new FlexDataSource(key, dataSource);
+                if (flexDataSource == null) {
+                    flexDataSource = new FlexDataSource(key, dataSource);
                 } else {
-                    routingDataSource.addDataSource(key, dataSource);
+                    flexDataSource.addDataSource(key, dataSource);
                 }
             }
         }
 
-        return routingDataSource;
+        return flexDataSource;
     }
 
 
