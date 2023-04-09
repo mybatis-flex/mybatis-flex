@@ -44,6 +44,7 @@ public class MultiDataSourceTester {
 
         MybatisFlexBootstrap.getInstance()
                 .setDataSource(dataSource)
+                .addMapper(AccountMapper.class)
                 .addDataSource("ds2", dataSource2)
                 .start();
 
@@ -68,9 +69,11 @@ public class MultiDataSourceTester {
             return false;
         });
         System.out.println("tx: " + success);
+        DataSourceKey.clear();
 
-        rows = Db.selectAll("tb_account");
-        System.out.println(rows);
+        AccountMapper mapper = MybatisFlexBootstrap.getInstance().getMapper(AccountMapper.class);
+        List<Account> accounts = mapper.selectAll();
+        System.out.println(accounts);
 
     }
 }
