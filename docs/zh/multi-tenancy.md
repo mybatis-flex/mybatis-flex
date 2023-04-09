@@ -113,7 +113,7 @@ DELETE FROM tb_article where id = ? and tenant_id in (?, ?, ?)
 
 在某些场景下，在增删改查等操作，我们可能需要忽略租户条件，此时可以使用如下代码：
 
-```sql
+```java
 try {
     TenantManager.ignoreTenantCondition()
     
@@ -124,4 +124,4 @@ try {
 }
 ```
 
-当然，TenantFactory 返回空数据，也会忽略 tenant 条件。
+当然，除此之外，`TenantFactory` 返回空数据，也会忽略 tenant 条件。
