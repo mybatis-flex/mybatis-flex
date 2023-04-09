@@ -7,7 +7,7 @@
     <groupId>com.mybatis-flex</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
 
     <name>mybatis-flex</name>
     <url>https://mybatis-flex.com</url>
@@ -63,7 +63,7 @@
         <HikariCP.version>4.0.3</HikariCP.version>
 
         <spring.version>5.3.25</spring.version>
-        <spring-boot.version>2.7.9</spring-boot.version>
+        <spring-boot.version>2.7.10</spring-boot.version>
         <solon.version>2.2.10</solon.version>
 
         <junit.version>4.13.2</junit.version>
@@ -119,7 +119,6 @@
                 <artifactId>spring-test</artifactId>
                 <version>${spring.version}</version>
             </dependency>
-
 
             <dependency>
                 <groupId>org.springframework.boot</groupId>

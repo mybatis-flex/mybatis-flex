@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `tb_account`
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-core</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
 </dependency>
 ```
 
