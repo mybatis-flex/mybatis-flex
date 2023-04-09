@@ -26,16 +26,12 @@ import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class MapperInvocationHandler implements InvocationHandler {
     private static final String NONE_KEY = "!NONE";
-    private static final Map<Method, String> methodDataSourceKeyMap = new ConcurrentHashMap<>();
 
     private final Object mapper;
     private final FlexDataSource dataSource;
@@ -88,24 +84,22 @@ public class MapperInvocationHandler implements InvocationHandler {
 
 
     private static String getMethodDataSource(Method method, Object proxy) {
-        return MapUtil.computeIfAbsent(methodDataSourceKeyMap, method, method1 -> {
-            UseDataSource useDataSource = method1.getAnnotation(UseDataSource.class);
-            if (useDataSource != null && StringUtil.isNotBlank(useDataSource.value())) {
-                return useDataSource.value();
-            }
+        UseDataSource useDataSource = method.getAnnotation(UseDataSource.class);
+        if (useDataSource != null && StringUtil.isNotBlank(useDataSource.value())) {
+            return useDataSource.value();
+        }
 
-            Class<?>[] interfaces = proxy.getClass().getInterfaces();
-            if (interfaces[0] != RowMapper.class) {
-                TableInfo tableInfo = TableInfoFactory.ofMapperClass(interfaces[0]);
-                if (tableInfo != null) {
-                    String dataSourceKey = tableInfo.getDataSource();
-                    if (StringUtil.isNotBlank(dataSourceKey)) {
-                        return dataSourceKey;
-                    }
+        Class<?>[] interfaces = proxy.getClass().getInterfaces();
+        if (interfaces[0] != RowMapper.class) {
+            TableInfo tableInfo = TableInfoFactory.ofMapperClass(interfaces[0]);
+            if (tableInfo != null) {
+                String dataSourceKey = tableInfo.getDataSource();
+                if (StringUtil.isNotBlank(dataSourceKey)) {
+                    return dataSourceKey;
                 }
             }
-            return NONE_KEY;
-        });
+        }
+        return NONE_KEY;
     }
 
 
