@@ -290,7 +290,7 @@ public class CommonsDialectImpl implements IDialect {
         sqlBuilder.append(" FROM ").append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
-        buildWhereSql(sqlBuilder, queryWrapper, allTables);
+        buildWhereSql(sqlBuilder, queryWrapper, allTables, true);
         buildGroupBySql(sqlBuilder, queryWrapper, allTables);
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
         buildOrderBySql(sqlBuilder, queryWrapper, allTables);
@@ -325,7 +325,7 @@ public class CommonsDialectImpl implements IDialect {
 
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
-        buildWhereSql(sqlBuilder, queryWrapper, allTables);
+        buildWhereSql(sqlBuilder, queryWrapper, allTables, true);
         buildGroupBySql(sqlBuilder, queryWrapper, allTables);
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
 
@@ -347,7 +347,7 @@ public class CommonsDialectImpl implements IDialect {
         sqlBuilder.append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
-        buildWhereSql(sqlBuilder, queryWrapper, allTables);
+        buildWhereSql(sqlBuilder, queryWrapper, allTables, false);
         buildGroupBySql(sqlBuilder, queryWrapper, allTables);
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
 
@@ -543,7 +543,7 @@ public class CommonsDialectImpl implements IDialect {
 
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
-        buildWhereSql(sqlBuilder, queryWrapper, allTables);
+        buildWhereSql(sqlBuilder, queryWrapper, allTables, false);
         buildGroupBySql(sqlBuilder, queryWrapper, allTables);
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
 
@@ -653,7 +653,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //不允许全量更新
         if (StringUtil.isBlank(whereConditionSql)) {
-            throw new IllegalArgumentException(" where conditions can not be null or blank.");
+            throw new IllegalArgumentException("Not allowed UPDATE a table without where condition.");
         }
 
         sql.append(" WHERE ").append(whereConditionSql);
@@ -758,12 +758,14 @@ public class CommonsDialectImpl implements IDialect {
     }
 
 
-    protected void buildWhereSql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, List<QueryTable> queryTables) {
+    protected void buildWhereSql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, List<QueryTable> queryTables, boolean allowNoCondition) {
         QueryCondition whereQueryCondition = CPI.getWhereQueryCondition(queryWrapper);
         if (whereQueryCondition != null) {
             String whereSql = whereQueryCondition.toSql(queryTables, this);
             if (StringUtil.isNotBlank(whereSql)) {
                 sqlBuilder.append(" WHERE ").append(whereSql);
+            } else if (!allowNoCondition) {
+                throw new IllegalArgumentException("Not allowed DELETE a table without where condition.");
             }
         }
     }
