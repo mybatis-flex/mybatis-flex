@@ -83,6 +83,7 @@ public class AccountSqlTester {
         QueryWrapper query = new QueryWrapper()
                 .select(ACCOUNT.ID)
                 .from(ACCOUNT)
+                .orderBy(ACCOUNT.ID.desc())
                 .union(select(ARTICLE.ID).from(ARTICLE))
                 .unionAll(select(ARTICLE.ID).from(ARTICLE));
 

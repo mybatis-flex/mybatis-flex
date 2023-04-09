@@ -347,6 +347,25 @@ ON tb_account.id = a.id
 WHERE tb_account.age >=  ? 
 ```
 
+## union, union all
+
+```java
+QueryWrapper query = new QueryWrapper()
+    .select(ACCOUNT.ID)
+    .from(ACCOUNT)
+    .orderBy(ACCOUNT.ID.desc())
+    .union(select(ARTICLE.ID).from(ARTICLE))
+    .unionAll(select(ARTICLE.ID).from(ARTICLE));
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+(SELECT id FROM tb_account ORDER BY id DESC) 
+UNION (SELECT id FROM tb_article) 
+UNION ALL (SELECT id FROM tb_article)
+```
+
 
 ## limit... offset
 

@@ -102,7 +102,7 @@ export default defineConfig({
             "script",
             {},
             `
-        if (location.protocol !== 'https:') {
+        if (location.protocol !== 'https:' && location.hostname != 'localhost') {
             location.href = 'https://' + location.hostname + location.pathname + location.search;
         }
         `
