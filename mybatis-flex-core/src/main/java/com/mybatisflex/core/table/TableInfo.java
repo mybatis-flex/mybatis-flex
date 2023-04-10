@@ -345,10 +345,12 @@ public class TableInfo {
                 if (!includePrimary && ArrayUtil.contains(primaryKeys, column)) {
                     continue;
                 }
-                Object value = getPropertyValue(metaObject, property);
-                if (ignoreNulls && value == null) {
-                    continue;
-                }
+
+                // ModifyAttrsRecord 忽略 ignoreNulls 的设置
+                // Object value = getPropertyValue(metaObject, property);
+                // if (ignoreNulls && value == null) {
+                //     continue;
+                // }
                 columns.add(column);
             }
         }
@@ -368,6 +370,7 @@ public class TableInfo {
                 if (ignoreNulls && value == null) {
                     continue;
                 }
+
                 columns.add(column);
             }
 
