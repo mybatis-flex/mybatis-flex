@@ -30,7 +30,6 @@ public class KeyGeneratorFactory {
          * {@link com.mybatisflex.annotation.Id}
          */
         register("uuid", new UUIDKeyGenerator());
-        register("flex", new FlexIDKeyGenerator());
         register("flexId", new FlexIDKeyGenerator());
     }
 

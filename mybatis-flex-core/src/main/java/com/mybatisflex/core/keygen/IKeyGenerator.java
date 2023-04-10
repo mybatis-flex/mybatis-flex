@@ -17,6 +17,6 @@ package com.mybatisflex.core.keygen;
 
 public interface IKeyGenerator {
 
-    Object generate(Object entity,String keyColumn);
+    Object generate(Object entity, String keyColumn);
 
 }

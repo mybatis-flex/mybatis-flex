@@ -21,7 +21,7 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.table.IdInfo;
 import com.mybatisflex.core.table.TableInfo;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.util.ConvertUtil;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -70,56 +70,11 @@ public class CustomKeyGenerator implements KeyGenerator {
         Object generateId = keyGenerator.generate(entity, idInfo.getColumn());
         try {
             Invoker setInvoker = tableInfo.getReflector().getSetInvoker(idInfo.getProperty());
-            Object id = convert(generateId, setInvoker.getType());
+            Object id = ConvertUtil.convert(generateId, setInvoker.getType());
             setInvoker.invoke(entity, new Object[]{id});
         } catch (Exception e) {
             throw FlexExceptions.wrap(e);
         }
-    }
-
-
-    public Object convert(Object value, Class<?> targetClass) {
-        if (value == null || (value.getClass() == String.class && StringUtil.isBlank((String) value)
-                && targetClass != String.class)) {
-            return null;
-        }
-        if (value.getClass().isAssignableFrom(targetClass)) {
-            return value;
-        }
-        if (targetClass == String.class) {
-            return value.toString();
-        } else if (targetClass == Long.class || targetClass == long.class) {
-            if (value instanceof Number) {
-                return ((Number) value).longValue();
-            }
-            return Long.parseLong(value.toString());
-        } else if (targetClass == java.math.BigInteger.class) {
-            return new java.math.BigInteger(value.toString());
-        } else if (targetClass == java.math.BigDecimal.class) {
-            return new java.math.BigDecimal(value.toString());
-        } else if (targetClass == Integer.class || targetClass == int.class) {
-            if (value instanceof Number) {
-                return ((Number) value).intValue();
-            }
-            return Integer.parseInt(value.toString());
-        } else if (targetClass == Double.class || targetClass == double.class) {
-            if (value instanceof Number) {
-                return ((Number) value).doubleValue();
-            }
-            return Double.parseDouble(value.toString());
-        } else if (targetClass == Float.class || targetClass == float.class) {
-            if (value instanceof Number) {
-                return ((Number) value).floatValue();
-            }
-            return Float.parseFloat(value.toString());
-        } else if (targetClass == Short.class || targetClass == short.class) {
-            if (value instanceof Number) {
-                return ((Number) value).shortValue();
-            }
-            return Short.parseShort(value.toString());
-        }
-
-        throw FlexExceptions.wrap("\"%s\" can not be parsed for primary key.", value);
     }
 
 
