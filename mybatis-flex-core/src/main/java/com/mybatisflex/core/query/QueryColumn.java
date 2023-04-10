@@ -172,10 +172,9 @@ public class QueryColumn implements Serializable {
     /**
      * IS NULL
      *
-     * @param name
      * @return
      */
-    public QueryCondition isNull(String name) {
+    public QueryCondition isNull() {
         return QueryCondition.create(this, QueryCondition.LOGIC_IS_NULL, null);
     }
 
@@ -183,10 +182,9 @@ public class QueryColumn implements Serializable {
     /**
      * IS NOT NULL
      *
-     * @param name
      * @return
      */
-    public QueryCondition isNotNull(String name) {
+    public QueryCondition isNotNull() {
         return QueryCondition.create(this, QueryCondition.LOGIC_IS_NOT_NULL, null);
     }
 
