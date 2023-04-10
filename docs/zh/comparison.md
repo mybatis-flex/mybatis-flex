@@ -15,6 +15,7 @@ MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来
 | 分页查询无 SQL 解析设计（更轻量，及更高性能） | ✅ | ❌ | ✅ |
 | 多表查询： from 多张表 | ✅ | ❌ | ❌ |
 | 多表查询： left join、inner join 等等 | ✅ | ❌ | ✅ |
+| 多表查询： union，union all | ✅ | ❌ | ✅ |
 | 单主键配置 | ✅ | ✅ | ✅ |
 | 多种 id 生成策略 | ✅ | ✅ | ✅ |
 | 支持多主键、复合主键 | ✅ | ❌ | ❌ |
@@ -31,10 +32,10 @@ MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来
 | 字典回显 | ✅ |  ✔️ **（收费）** | ❌ |
 | Db + Row | ✅ | ❌ | ❌ |
 | Entity 监听 | ✅ | ❌ | ❌ |
-| 多数据源支持 | ✅ | ✅ | ❌ |
+| 多数据源支持 | ✅ | 借助其他框架或收费，不支持非Spring项目 | ❌ |
 | 多租户 | ✅ | ✅ | ❌ |
 
-> 以上内容来自第三方相关产品的官方文档或第三方平台，若有错误，欢迎指正。
+> 以上内容来自第三方相关产品的官方文档或第三方平台，若有错误，欢迎纠正。
 
 
 
@@ -173,7 +174,7 @@ AccountQuery query = new AccountQuery()
     )
     .end();
 ```
-> 缺点：许多 `.end()` 方法调用，容易忘记出错（或者是我写错了？欢迎指正）。
+> 缺点：许多 `.end()` 方法调用，容易忘记出错（或者写错了？欢迎纠正）。
 
 
 ## 多表查询 1
@@ -244,7 +245,7 @@ QueryWrapper query = new QueryWrapper()
 ````java
 // 不支持~~~~
 ````
->PS：也有可能是我自己不知道如何支持，而非 Fluent-MyBatis 原因，有知道的同学可以给下示例代码。
+>PS：也有可能是笔者自己不知道如何支持，而非 Fluent-MyBatis 原因，有知道的同学可以给下示例代码。
 
 
 ## 部分字段更新
@@ -274,10 +275,10 @@ account.setBirthday(null);
 accountMapper.update(account);
 ```
 
-**Mybatis-Plus** 代码如下：
+**Mybatis-Plus** 代码如下（或可使用 Mybatis-Plus 的 `LambdaUpdateWrapper`，但性能没有 `UpdateWrapper` 好）：
 
 ```java 
-UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
 updateWrapper.eq("id", 100);
 updateWrapper.set("user_name", "michael");
 updateWrapper.set("age", 18);
