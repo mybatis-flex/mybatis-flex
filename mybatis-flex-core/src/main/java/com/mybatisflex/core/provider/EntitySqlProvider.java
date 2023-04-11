@@ -65,7 +65,7 @@ public class EntitySqlProvider {
         tableInfo.initLogicDeleteValueIfNecessary(entity);
 
         //执行 onInsert 监听器
-        tableInfo.invokeOnInsert(entity);
+        tableInfo.invokeOnInsertListener(entity);
 
         Object[] values = tableInfo.buildInsertSqlArgs(entity);
         ProviderUtil.setSqlArgs(params, values);
@@ -96,7 +96,7 @@ public class EntitySqlProvider {
             tableInfo.initLogicDeleteValueIfNecessary(entity);
 
             //执行 onInsert 监听器
-            tableInfo.invokeOnInsert(entity);
+            tableInfo.invokeOnInsertListener(entity);
         }
 
 
@@ -200,7 +200,7 @@ public class EntitySqlProvider {
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
         //执行 onUpdate 监听器
-        tableInfo.invokeUpUpdate(entity);
+        tableInfo.invokeOnUpdateListener(entity);
 
         Object[] updateValues = tableInfo.buildUpdateSqlArgs(entity, ignoreNulls, false);
         Object[] primaryValues = tableInfo.buildPkSqlArgs(entity);

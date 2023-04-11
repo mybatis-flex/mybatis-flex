@@ -15,7 +15,6 @@
  */
 package com.mybatisflex.core.table;
 
-import com.mybatisflex.annotation.SetListener;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.property.PropertyTokenizer;
 import org.apache.ibatis.reflection.wrapper.BeanWrapper;
@@ -45,20 +44,17 @@ public class EntityWrapperFactory implements ObjectWrapperFactory {
     static class FlexBeanWrapper extends BeanWrapper {
 
         private Object entity;
-        private SetListener onSetListener;
+        private TableInfo tableInfo;
 
         public FlexBeanWrapper(MetaObject metaObject, Object object) {
             super(metaObject, object);
             this.entity = object;
-            this.onSetListener = TableInfoFactory.getByEntityClass(object.getClass()).getOnSetListener();
+            this.tableInfo = TableInfoFactory.getByEntityClass(object.getClass());
         }
 
         @Override
         public void set(PropertyTokenizer prop, Object value) {
-            Object v = value;
-            if (onSetListener != null) {
-                v = onSetListener.onSet(entity, prop.getName(), value);
-            }
+            Object v = tableInfo.invokeOnSetListener(entity, prop.getName(), value);
             super.set(prop, v);
         }
     }

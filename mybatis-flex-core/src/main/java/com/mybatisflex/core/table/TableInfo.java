@@ -660,15 +660,22 @@ public class TableInfo {
     }
 
 
-    public void invokeOnInsert(Object entity) {
+    public void invokeOnInsertListener(Object entity) {
         if (onInsertListener != null) {
             onInsertListener.onInsert(entity);
         }
     }
 
-    public void invokeUpUpdate(Object entity) {
+    public void invokeOnUpdateListener(Object entity) {
         if (onUpdateListener != null) {
             onUpdateListener.onUpdate(entity);
         }
+    }
+
+    public Object invokeOnSetListener(Object entity, String property, Object value) {
+        if (onSetListener != null) {
+            return onSetListener.onSet(entity, property, value);
+        }
+        return value;
     }
 }
