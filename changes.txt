@@ -1,3 +1,13 @@
+mybatis-flex v1.1.0 20230412:
+新增：Entity 的 onSet、onUpdate、onInsert 添加全局监听器的配置
+优化：移除 QueryColumn.isNull 和 isNotNull 的参数
+优化：重构 CustomKeyGenerator 的部分代码
+修复：UpdateEntity 工具类在某些场景下出错的问题
+修复：审计消息 AuditMessage 在 entity 配置 typeHandler 时，获取的参数不正确的问题
+文档：添加 entity 全局监听器的相关文档
+
+
+
 mybatis-flex v1.0.9 20230410:
 新增：新增 多租户 使用的相关模块
 新增：BaseMapper 添加 deleteByCondition 和 updateByCondition 方法
