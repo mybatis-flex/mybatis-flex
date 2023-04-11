@@ -15,11 +15,15 @@
  */
 package com.mybatisflex.core;
 
+import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.annotation.SetListener;
+import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.annotation.KeyType;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -45,6 +49,11 @@ public class FlexGlobalConfig {
      * 使用当前全局配置
      */
     private KeyConfig keyConfig;
+
+
+    private Map<Class<?>, SetListener> entitySetListeners = new ConcurrentHashMap<>();
+    private Map<Class<?>, UpdateListener> entityUpdateListeners = new ConcurrentHashMap<>();
+    private Map<Class<?>, InsertListener> entityInsertListeners = new ConcurrentHashMap<>();
 
 
     public DbType getDbType() {
@@ -77,6 +86,73 @@ public class FlexGlobalConfig {
 
     public void setKeyConfig(KeyConfig keyConfig) {
         this.keyConfig = keyConfig;
+    }
+
+    public Map<Class<?>, SetListener> getEntitySetListeners() {
+        return entitySetListeners;
+    }
+
+    public void setEntitySetListeners(Map<Class<?>, SetListener> entitySetListeners) {
+        this.entitySetListeners = entitySetListeners;
+    }
+
+    public Map<Class<?>, UpdateListener> getEntityUpdateListeners() {
+        return entityUpdateListeners;
+    }
+
+    public void setEntityUpdateListeners(Map<Class<?>, UpdateListener> entityUpdateListeners) {
+        this.entityUpdateListeners = entityUpdateListeners;
+    }
+
+    public Map<Class<?>, InsertListener> getEntityInsertListeners() {
+        return entityInsertListeners;
+    }
+
+    public void setEntityInsertListeners(Map<Class<?>, InsertListener> entityInsertListeners) {
+        this.entityInsertListeners = entityInsertListeners;
+    }
+
+
+    public void registerEntityListener(SetListener listener, Class<?>... classes) {
+        for (Class<?> aClass : classes) {
+            entitySetListeners.put(aClass, listener);
+        }
+    }
+
+    public void registerEntityListener(UpdateListener listener, Class<?>... classes) {
+        for (Class<?> aClass : classes) {
+            entityUpdateListeners.put(aClass, listener);
+        }
+    }
+
+    public void registerEntityListener(InsertListener listener, Class<?>... classes) {
+        for (Class<?> aClass : classes) {
+            entityInsertListeners.put(aClass, listener);
+        }
+    }
+
+
+    public SetListener getSetListener(Class<?> entityClass){
+        return entitySetListeners.get(entityClass);
+    }
+
+
+    public UpdateListener getUpdateListener(Class<?> entityClass){
+        return entityUpdateListeners.get(entityClass);
+    }
+
+
+    public InsertListener getInsertListener(Class<?> entityClass){
+        return entityInsertListeners.get(entityClass);
+    }
+
+
+    public static ConcurrentHashMap<String, FlexGlobalConfig> getGlobalConfigs() {
+        return globalConfigs;
+    }
+
+    public static void setGlobalConfigs(ConcurrentHashMap<String, FlexGlobalConfig> globalConfigs) {
+        FlexGlobalConfig.globalConfigs = globalConfigs;
     }
 
     /**
@@ -128,7 +204,7 @@ public class FlexGlobalConfig {
     public static FlexGlobalConfig getConfig(Configuration configuration) {
         return globalConfigs.get(configuration.getEnvironment().getId());
     }
-    
+
     public static FlexGlobalConfig getConfig(String environmentId) {
         return globalConfigs.get(environmentId);
     }

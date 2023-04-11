@@ -20,6 +20,7 @@ import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
@@ -663,19 +664,39 @@ public class TableInfo {
     public void invokeOnInsertListener(Object entity) {
         if (onInsertListener != null) {
             onInsertListener.onInsert(entity);
+            return;
+        }
+
+        InsertListener globalInsertListener = FlexGlobalConfig.getDefaultConfig().getInsertListener(entityClass);
+        if (globalInsertListener != null) {
+            globalInsertListener.onInsert(entity);
         }
     }
+
 
     public void invokeOnUpdateListener(Object entity) {
         if (onUpdateListener != null) {
             onUpdateListener.onUpdate(entity);
+            return;
+        }
+
+        UpdateListener globalUpdateListener = FlexGlobalConfig.getDefaultConfig().getUpdateListener(entityClass);
+        if (globalUpdateListener != null) {
+            globalUpdateListener.onUpdate(entity);
         }
     }
+
 
     public Object invokeOnSetListener(Object entity, String property, Object value) {
         if (onSetListener != null) {
             return onSetListener.onSet(entity, property, value);
         }
+
+        SetListener globalSetListener = FlexGlobalConfig.getDefaultConfig().getSetListener(entityClass);
+        if (globalSetListener != null) {
+            return globalSetListener.onSet(entity, property, value);
+        }
+
         return value;
     }
 }
