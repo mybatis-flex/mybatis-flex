@@ -149,3 +149,27 @@ public class MySetListener implements SetListener {
 ```
 
 > 注意：若 entity 的属性配置了 `typeHandler`，`typeHandler` 的执行顺序高于 `SetListener`。
+
+## 全局设置
+
+除了通过 `@Table` 注解去单独为某一个 Entity 设置 `onInsert`、`onUpdate`、`onSet` 监听以外，我们还可以通过全局的方式去配置，
+方法如下：
+
+```java
+MyInsertListener insertListener = new MyInsertLister();
+MyUpdateListener updateListener = new MyUpdateListener();
+MySetListener setListener = new MySetListener();
+
+FlexGlobalConfig config = FlexGlobalConfig.getDefaultConfig();
+
+//为 Entity1 和 Entity2 注册 insertListner
+config.registerInsertListener(insertListener, Entity1.class, Entity2.class);
+
+
+//为 Entity1 和 Entity2 注册 updateListener
+config.registerUpdateListener(updateListener, Entity1.class, Entity2.class);
+
+
+//为 Entity1 和 Entity2 注册 setListener
+config.registerSetListener(setListener, Entity1.class, Entity2.class);
+```
