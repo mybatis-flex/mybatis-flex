@@ -36,7 +36,9 @@ public class FlexGlobalConfig {
      */
     private DbType dbType = DbType.MYSQL;
 
-
+    /**
+     * Mybatis 配置
+     */
     private Configuration configuration;
 
     /**
@@ -50,7 +52,9 @@ public class FlexGlobalConfig {
      */
     private KeyConfig keyConfig;
 
-
+    /**
+     * entity 的监听器
+     */
     private Map<Class<?>, SetListener> entitySetListeners = new ConcurrentHashMap<>();
     private Map<Class<?>, UpdateListener> entityUpdateListeners = new ConcurrentHashMap<>();
     private Map<Class<?>, InsertListener> entityInsertListeners = new ConcurrentHashMap<>();
@@ -112,37 +116,35 @@ public class FlexGlobalConfig {
         this.entityInsertListeners = entityInsertListeners;
     }
 
-
-    public void registerEntityListener(SetListener listener, Class<?>... classes) {
+    public void registerSetListener(SetListener listener, Class<?>... classes) {
         for (Class<?> aClass : classes) {
             entitySetListeners.put(aClass, listener);
         }
     }
 
-    public void registerEntityListener(UpdateListener listener, Class<?>... classes) {
+    public void registerUpdateListener(UpdateListener listener, Class<?>... classes) {
         for (Class<?> aClass : classes) {
             entityUpdateListeners.put(aClass, listener);
         }
     }
 
-    public void registerEntityListener(InsertListener listener, Class<?>... classes) {
+    public void registerInsertListener(InsertListener listener, Class<?>... classes) {
         for (Class<?> aClass : classes) {
             entityInsertListeners.put(aClass, listener);
         }
     }
 
-
-    public SetListener getSetListener(Class<?> entityClass){
+    public SetListener getSetListener(Class<?> entityClass) {
         return entitySetListeners.get(entityClass);
     }
 
 
-    public UpdateListener getUpdateListener(Class<?> entityClass){
+    public UpdateListener getUpdateListener(Class<?> entityClass) {
         return entityUpdateListeners.get(entityClass);
     }
 
 
-    public InsertListener getInsertListener(Class<?> entityClass){
+    public InsertListener getInsertListener(Class<?> entityClass) {
         return entityInsertListeners.get(entityClass);
     }
 
@@ -190,15 +192,11 @@ public class FlexGlobalConfig {
 
 
     /////static factory methods/////
-    private static ConcurrentHashMap<String, FlexGlobalConfig> globalConfigs = new ConcurrentHashMap();
-    private static FlexGlobalConfig defaultConfig;
+    private static ConcurrentHashMap<String, FlexGlobalConfig> globalConfigs = new ConcurrentHashMap<>();
+    private static FlexGlobalConfig defaultConfig = new FlexGlobalConfig();
 
     public static FlexGlobalConfig getDefaultConfig() {
         return defaultConfig;
-    }
-
-    public static void setDefaultConfig(FlexGlobalConfig config) {
-        defaultConfig = config;
     }
 
     public static FlexGlobalConfig getConfig(Configuration configuration) {
@@ -209,10 +207,22 @@ public class FlexGlobalConfig {
         return globalConfigs.get(environmentId);
     }
 
-    public static void setConfig(String id, FlexGlobalConfig config) {
-        if (getDefaultConfig() == null) {
-            setDefaultConfig(config);
+    public static synchronized void setConfig(String id, FlexGlobalConfig config) {
+        //first setConfig，copy the config to default
+        if (globalConfigs.isEmpty()) {
+
+            defaultConfig.setSqlSessionFactory(config.sqlSessionFactory);
+            defaultConfig.setDbType(config.dbType);
+            defaultConfig.setConfiguration(config.configuration);
+
+            if (defaultConfig.getKeyConfig() == null
+                    && config.keyConfig != null) {
+                defaultConfig.setKeyConfig(config.keyConfig);
+            }
+
+            config = defaultConfig;
         }
+
         globalConfigs.put(id, config);
     }
 
