@@ -15,8 +15,13 @@
  */
 package com.mybatisflex.core.audit;
 
+import com.mybatisflex.core.mybatis.TypeHandlerObject;
+
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.lang.reflect.Proxy;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,11 +125,29 @@ public class AuditMessage implements Serializable {
                 for (int i = 0; i < Array.getLength(object); i++) {
                     addParams(Array.get(object, i));
                 }
+            } else if (object instanceof TypeHandlerObject) {
+                try {
+                    ((TypeHandlerObject) object).setParameter(createPreparedStatement(), 0);
+                } catch (SQLException e) {
+                    //ignore
+                }
             } else {
                 queryParams.add(object);
             }
         }
     }
+
+    private PreparedStatement createPreparedStatement() {
+        return (PreparedStatement) Proxy.newProxyInstance(
+                AuditMessage.class.getClassLoader(),
+                new Class[]{PreparedStatement.class}, (proxy, method, args) -> {
+                    if (args != null && args.length == 2){
+                        addParams(args[1]);
+                    }
+                    return null;
+                });
+    }
+
 
     public long getQueryTime() {
         return queryTime;
