@@ -200,7 +200,7 @@ public class FlexGlobalConfig {
     }
 
     public static FlexGlobalConfig getConfig(Configuration configuration) {
-        return globalConfigs.get(configuration.getEnvironment().getId());
+        return getConfig(configuration.getEnvironment().getId());
     }
 
     public static FlexGlobalConfig getConfig(String environmentId) {
