@@ -122,35 +122,35 @@ public class MybatisKeyGeneratorUtil {
     /**
      * 获取主键的 keyType，优先通过 @id 获取，获取不到通过全局配置获取
      */
-    public static KeyType getKeyType(IdInfo idInfo, FlexGlobalConfig.KeyConfig keyConfig) {
+    public static KeyType getKeyType(IdInfo idInfo, FlexGlobalConfig.KeyConfig globalKeyConfig) {
         KeyType keyType = idInfo.getKeyType();
         if (keyType != KeyType.None) {
             return keyType;
         }
 
-        if (keyConfig != null) {
-            return keyConfig.getKeyType();
+        if (globalKeyConfig != null) {
+            return globalKeyConfig.getKeyType();
         }
 
         return keyType;
     }
 
 
-    public static String getKeyValue(IdInfo idInfo, FlexGlobalConfig.KeyConfig keyConfig) {
+    public static String getKeyValue(IdInfo idInfo, FlexGlobalConfig.KeyConfig globalKeyConfig) {
         String value = idInfo.getValue();
-        if (StringUtil.isBlank(value)) {
-            value = keyConfig.getValue();
+        if (StringUtil.isBlank(value) && globalKeyConfig != null) {
+            value = globalKeyConfig.getValue();
         }
         return value;
     }
 
 
-    public static boolean isKeyBefore(IdInfo idInfo, FlexGlobalConfig.KeyConfig keyConfig) {
+    public static boolean isKeyBefore(IdInfo idInfo, FlexGlobalConfig.KeyConfig globalKeyConfig) {
         Boolean before = idInfo.getBefore();
-        if (before == null) {
-            return keyConfig.isBefore();
+        if (before == null && globalKeyConfig != null) {
+            return globalKeyConfig.isBefore();
         } else {
-            return before;
+            return before == null || before;
         }
     }
 
