@@ -62,8 +62,8 @@ public class AuditManager {
     }
 
 
-    public static void setMessageReporter(MessageReporter messageReporter){
-        MessageCollector newMessageCollector = new ScheduledMessageCollector(10,messageReporter);
+    public static void setMessageReporter(MessageReporter messageReporter) {
+        MessageCollector newMessageCollector = new ScheduledMessageCollector(10, messageReporter);
         setMessageCollector(newMessageCollector);
     }
 
@@ -75,7 +75,7 @@ public class AuditManager {
     }
 
     private static void releaseScheduledMessageCollector(MessageCollector messageCollector) {
-        if (messageCollector instanceof ScheduledMessageCollector){
+        if (messageCollector instanceof ScheduledMessageCollector) {
             ((ScheduledMessageCollector) messageCollector).release();
         }
     }
@@ -87,7 +87,13 @@ public class AuditManager {
         }
         auditMessage.setQueryTime(clock.getTick());
         try {
-            return supplier.execute();
+            T result = supplier.execute();
+            if (result instanceof Collection) {
+                auditMessage.setQueryCount(((Collection) result).size());
+            } else if (result != null) {
+                auditMessage.setQueryCount(1);
+            }
+            return result;
         } finally {
             auditMessage.setElapsedTime(clock.getTick() - auditMessage.getQueryTime());
             auditMessage.setQuery(boundSql.getSql());

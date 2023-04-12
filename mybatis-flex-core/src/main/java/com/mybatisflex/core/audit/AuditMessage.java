@@ -32,6 +32,7 @@ public class AuditMessage implements Serializable {
     private String platform;
     private String module;
     private String url;
+    private String bizId; //自定义业务ID
 
     private String user;
     private String userIp;
@@ -39,6 +40,7 @@ public class AuditMessage implements Serializable {
 
     private String query;
     private List<Object> queryParams;
+    private int queryCount;
 
     private long queryTime;     // Sql 执行的当前时间，单位毫秒
     private long elapsedTime;   // Sql 执行消耗的时间，单位毫秒
@@ -68,6 +70,14 @@ public class AuditMessage implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getBizId() {
+        return bizId;
+    }
+
+    public void setBizId(String bizId) {
+        this.bizId = bizId;
     }
 
     public String getUser() {
@@ -148,6 +158,13 @@ public class AuditMessage implements Serializable {
                 });
     }
 
+    public int getQueryCount() {
+        return queryCount;
+    }
+
+    public void setQueryCount(int queryCount) {
+        this.queryCount = queryCount;
+    }
 
     public long getQueryTime() {
         return queryTime;
@@ -182,17 +199,20 @@ public class AuditMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "{" +
+        return "AuditMessage{" +
                 "platform='" + platform + '\'' +
                 ", module='" + module + '\'' +
                 ", url='" + url + '\'' +
+                ", bizId='" + bizId + '\'' +
                 ", user='" + user + '\'' +
                 ", userIp='" + userIp + '\'' +
                 ", hostIp='" + hostIp + '\'' +
                 ", query='" + query + '\'' +
                 ", queryParams=" + queryParams +
+                ", queryCount=" + queryCount +
                 ", queryTime=" + queryTime +
                 ", elapsedTime=" + elapsedTime +
+                ", metas=" + metas +
                 '}';
     }
 }
