@@ -422,7 +422,7 @@ public interface BaseMapper<T> {
         int offset = page.getPageSize() * (page.getPageNumber() - 1);
         queryWrapper.limit(offset, page.getPageSize());
         List<T> rows = selectListByQuery(queryWrapper);
-        page.setList(rows);
+        page.setRecords(rows);
         return page;
     }
 }

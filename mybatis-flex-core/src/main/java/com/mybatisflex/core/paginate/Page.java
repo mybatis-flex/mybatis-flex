@@ -16,18 +16,21 @@
 package com.mybatisflex.core.paginate;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 public class Page<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final int INIT_VALUE = -1;
 
-    private List<T> list;                             // list result of this page
-    private int pageNumber = INIT_VALUE;              // page number
-    private int pageSize = INIT_VALUE;                // result amount of this page
-    private long totalPage = INIT_VALUE;              // total page
-    private long totalRow = INIT_VALUE;               // total row
+    private List<T> records = Collections.emptyList();
+    private int pageNumber = INIT_VALUE;
+    private int pageSize = INIT_VALUE;
+    private long totalPage = INIT_VALUE;
+    private long totalRow = INIT_VALUE;
 
     public static Page of(int pageNumber, int pageSize) {
         return new Page(pageNumber, pageSize);
@@ -53,8 +56,8 @@ public class Page<T> implements Serializable {
         this.totalPage = totalRow % pageSize == 0 ? (totalRow / pageSize) : (totalRow / pageSize + 1);
     }
 
-    public Page(List<T> list, int pageNumber, int pageSize, long totalRow) {
-        this.list = list;
+    public Page(List<T> records, int pageNumber, int pageSize, long totalRow) {
+        this.records = records;
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.totalRow = totalRow;
@@ -62,12 +65,12 @@ public class Page<T> implements Serializable {
     }
 
 
-    public List<T> getList() {
-        return list;
+    public List<T> getRecords() {
+        return records;
     }
 
-    public void setList(List<T> list) {
-        this.list = list;
+    public void setRecords(List<T> records) {
+        this.records = records;
     }
 
     public int getPageNumber() {
@@ -104,13 +107,23 @@ public class Page<T> implements Serializable {
         this.totalPage = totalRow % pageSize == 0 ? (totalRow / pageSize) : (totalRow / pageSize + 1);
     }
 
-    public boolean isFirstPage() {
-        return pageNumber == 1;
+    public <R> Page<R> map(Function<? super T, ? extends R> mapper) {
+        Page<R> newPage = new Page<>();
+        newPage.pageNumber = pageNumber;
+        newPage.pageSize = pageSize;
+        newPage.totalPage = totalPage;
+        newPage.totalRow = totalRow;
+
+        if (records != null) {
+            List<R> newRecords = new ArrayList<>(records.size());
+            for (T t : records) {
+                newRecords.add(mapper.apply(t));
+            }
+            newPage.records = newRecords;
+        }
+        return newPage;
     }
 
-    public boolean isLastPage() {
-        return pageNumber >= totalPage;
-    }
 
     @Override
     public String toString() {
@@ -119,7 +132,7 @@ public class Page<T> implements Serializable {
                 ", pageSize=" + pageSize +
                 ", totalPage=" + totalPage +
                 ", totalRow=" + totalRow +
-                ", list=" + list +
+                ", records=" + records +
                 '}';
     }
 }

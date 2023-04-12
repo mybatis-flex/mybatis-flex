@@ -367,8 +367,8 @@ public interface RowMapper {
         CPI.setGroupByColumns(queryWrapper, groupByColumns);
         int offset = page.getPageSize() * (page.getPageNumber() - 1);
         queryWrapper.limit(offset, page.getPageSize());
-        List<Row> rows = selectListByQuery(tableName, queryWrapper);
-        page.setList(rows);
+        List<Row> records = selectListByQuery(tableName, queryWrapper);
+        page.setRecords(records);
         return page;
     }
 
