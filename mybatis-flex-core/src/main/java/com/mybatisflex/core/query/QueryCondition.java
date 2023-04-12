@@ -122,15 +122,29 @@ public class QueryCondition implements Serializable {
     }
 
 
+    public QueryCondition and(String sql) {
+        return and(new StringQueryCondition(sql));
+    }
+
+    public QueryCondition and(String sql, Object... params) {
+        return and(new StringQueryCondition(sql, params));
+    }
+
     public QueryCondition and(QueryCondition nextCondition) {
         return new Brackets(this).and(nextCondition);
     }
 
+    public QueryCondition or(String sql) {
+        return or(new StringQueryCondition(sql));
+    }
+
+    public QueryCondition or(String sql, Object... params) {
+        return or(new StringQueryCondition(sql, params));
+    }
 
     public QueryCondition or(QueryCondition nextCondition) {
         return new Brackets(this).or(nextCondition);
     }
-
 
     protected void connect(QueryCondition nextCondition, SqlConnector connector) {
         if (this.next != null) {
