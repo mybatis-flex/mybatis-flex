@@ -18,6 +18,7 @@ package com.mybatisflex.core.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,13 +71,35 @@ public class ClassUtil {
 
     public static <T> T newInstance(Class<T> clazz) {
         try {
-            Constructor<T> constructor = clazz.getDeclaredConstructor();
-            return constructor.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            Constructor<?> defaultConstructor = null;
+            Constructor<?> otherConstructor = null;
 
-        return null;
+            Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
+            for (Constructor<?> constructor : declaredConstructors) {
+                if (constructor.getParameterCount() == 0) {
+                    defaultConstructor = constructor;
+                } else if (Modifier.isPublic(constructor.getModifiers())) {
+                    otherConstructor = constructor;
+                }
+            }
+            if (defaultConstructor != null) {
+                return (T) defaultConstructor.newInstance();
+            } else if (otherConstructor != null) {
+                Class<?>[] parameterTypes = otherConstructor.getParameterTypes();
+                Object[] parameters = new Object[parameterTypes.length];
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    if (parameterTypes[i].isPrimitive()) {
+                        parameters[i] = ConvertUtil.getPrimitiveDefaultValue(parameterTypes[i]);
+                    } else {
+                        parameters[i] = null;
+                    }
+                }
+                return (T) otherConstructor.newInstance(parameters);
+            }
+            throw new IllegalArgumentException("the class \"" + clazz.getName() + "\" has no constructor.");
+        } catch (Exception e) {
+            throw new RuntimeException("Can not newInstance class: " + clazz.getName());
+        }
     }
 
 
