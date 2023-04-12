@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.datasource;
 
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ConvertUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.reflection.Reflector;
@@ -57,8 +58,13 @@ public class DataSourceBuilder {
             dataSourceClassName = detectDataSourceClass();
         }
 
+
         if (StringUtil.isBlank(dataSourceClassName)) {
-            throw new IllegalArgumentException("Cannot find the dataSource type: " + type);
+            if (StringUtil.isBlank(type)) {
+                throw FlexExceptions.wrap("The dataSource type can not be null or blank.");
+            } else {
+                throw FlexExceptions.wrap("Cannot find the dataSource type: " + type);
+            }
         }
 
         try {

@@ -35,7 +35,7 @@ import java.util.Map;
  */
 @org.springframework.context.annotation.Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
-@ConditionalOnPropertyEmpty("spring.datasource.url")
+@ConditionalOnMybatisFlexDatasource()
 @EnableConfigurationProperties(MybatisFlexProperties.class)
 @AutoConfigureBefore({DataSourceAutoConfiguration.class})
 public class MultiDataSourceAutoConfiguration {

@@ -18,33 +18,42 @@ package com.mybatisflex.spring.boot;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.context.annotation.Conditional;
+import org.springframework.core.env.*;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Map;
+import java.util.Iterator;
 
 
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Conditional(ConditionalOnPropertyEmpty.OnPropertyNotEmptyCondition.class)
-public @interface ConditionalOnPropertyEmpty {
+@Conditional(ConditionalOnMybatisFlexDatasource.OnMybatisFlexDataSourceCondition.class)
+public @interface ConditionalOnMybatisFlexDatasource {
 
-    String value();
-
-    class OnPropertyNotEmptyCondition implements Condition {
+    class OnMybatisFlexDataSourceCondition implements Condition {
 
         @Override
         public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            Map<String, Object> attrs = metadata.getAnnotationAttributes(ConditionalOnPropertyEmpty.class.getName());
-            if (attrs == null) {
-                return false;
+            Environment env = context.getEnvironment();
+            if (env instanceof AbstractEnvironment) {
+                MutablePropertySources propertySources = ((AbstractEnvironment) env).getPropertySources();
+                Iterator<PropertySource<?>> it = propertySources.stream().iterator();
+                while (it.hasNext()) {
+                    PropertySource ps = it.next();
+                    if (ps instanceof MapPropertySource) {
+                        for (String propertyName : ((MapPropertySource) ps).getSource().keySet()) {
+                            if (propertyName.startsWith("mybatis-flex.datasource.")) {
+                                return true;
+                            }
+                        }
+                    }
+                }
             }
-            String propertyName = (String) attrs.get("value");
-            String val = context.getEnvironment().getProperty(propertyName);
-            return val == null || val.trim().length() == 0;
+            return false;
         }
     }
+
 }
