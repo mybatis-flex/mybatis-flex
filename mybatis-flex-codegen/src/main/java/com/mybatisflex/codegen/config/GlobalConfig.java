@@ -38,6 +38,15 @@ public class GlobalConfig {
     //是否生成 mapper 类
     private boolean mapperGenerateEnable = false;
 
+    //是否覆盖已经存在的 mapper
+    private boolean mapperOverwriteEnable = false;
+
+    //mapper 类的前缀
+    private String mapperClassPrefix;
+
+    //mapper 类的后缀
+    private String mapperClassSuffix = "Mapper";
+
     //mapper 的包名
     private String mapperPackage;
 
@@ -105,6 +114,33 @@ public class GlobalConfig {
 
     public void setMapperGenerateEnable(boolean mapperGenerateEnable) {
         this.mapperGenerateEnable = mapperGenerateEnable;
+    }
+
+    public boolean isMapperOverwriteEnable() {
+        return mapperOverwriteEnable;
+    }
+
+    public void setMapperOverwriteEnable(boolean mapperOverwriteEnable) {
+        this.mapperOverwriteEnable = mapperOverwriteEnable;
+    }
+
+    public String getMapperClassPrefix() {
+        if (StringUtil.isBlank(mapperClassPrefix)){
+            return "";
+        }
+        return mapperClassPrefix;
+    }
+
+    public void setMapperClassPrefix(String mapperClassPrefix) {
+        this.mapperClassPrefix = mapperClassPrefix;
+    }
+
+    public String getMapperClassSuffix() {
+        return mapperClassSuffix;
+    }
+
+    public void setMapperClassSuffix(String mapperClassSuffix) {
+        this.mapperClassSuffix = mapperClassSuffix;
     }
 
     public String getMapperPackage() {

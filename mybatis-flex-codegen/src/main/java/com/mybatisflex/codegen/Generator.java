@@ -75,13 +75,21 @@ public class Generator {
 
                 if (globalConfig.isMapperGenerateEnable()) {
                     String mapperPackagePath = globalConfig.getMapperPackage().replace(".", "/");
-                    File mapperJavaFile = new File(globalConfig.getSourceDir(), mapperPackagePath + "/" + table.buildEntityClassName() + "Mapper.java");
+
+
+                    File mapperJavaFile = new File(globalConfig.getSourceDir(), mapperPackagePath + "/" + globalConfig.getMapperClassPrefix()
+                            + table.buildEntityClassName() + globalConfig.getMapperClassSuffix() + ".java");
                     if (!mapperJavaFile.getParentFile().exists()) {
                         if (!mapperJavaFile.getParentFile().mkdirs()) {
                             throw new IllegalStateException("Can not mkdirs by dir: " + mapperJavaFile.getParentFile());
                         }
                     }
-                    templateEngine.generateMapper(globalConfig, table, mapperJavaFile);
+
+                    if (mapperJavaFile.exists() && !globalConfig.isMapperOverwriteEnable()) {
+                        //ignore
+                    } else {
+                        templateEngine.generateMapper(globalConfig, table, mapperJavaFile);
+                    }
                 }
             }
 

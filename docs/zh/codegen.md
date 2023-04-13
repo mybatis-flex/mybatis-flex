@@ -91,7 +91,7 @@ GlobalConfig 支持更多的配置如下：
 ```java
 
 public class GlobalConfig {
-
+    
     //代码生成目录
     private String sourceDir;
 
@@ -99,15 +99,24 @@ public class GlobalConfig {
     private String entityPackage;
 
     //entity 是否使用 Lombok
-    private Boolean entityWithLombok = false;
+    private boolean entityWithLombok = false;
 
     //是否生成 mapper 类
     private boolean mapperGenerateEnable = false;
 
+    //是否覆盖已经存在的 mapper
+    private boolean mapperOverwriteEnable = false;
+
+    //mapper 类的前缀
+    private String mapperClassPrefix;
+
+    //mapper 类的后缀
+    private String mapperClassSuffix = "Mapper";
+
     //mapper 的包名
     private String mapperPackage;
 
-    //数据库表前缀
+    //数据库表前缀，多个前缀用英文逗号（,） 隔开
     private String tablePrefix;
 
     //逻辑删除的默认字段名称
