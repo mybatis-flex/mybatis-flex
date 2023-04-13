@@ -30,7 +30,7 @@ public class AuditManager {
 
     private static boolean auditEnable = false;
     private static Clock clock = System::currentTimeMillis;
-    private static MessageCreator messageCreator = new DefaultMessageCreator();
+    private static MessageFactory MessageFactory = new DefaultMessageFactory();
     private static MessageCollector messageCollector = new ScheduledMessageCollector();
 
     public static boolean isAuditEnable() {
@@ -49,12 +49,12 @@ public class AuditManager {
         AuditManager.clock = clock;
     }
 
-    public static MessageCreator getMessageCreator() {
-        return messageCreator;
+    public static MessageFactory getMessageFactory() {
+        return MessageFactory;
     }
 
-    public static void setMessageCreator(MessageCreator messageCreator) {
-        AuditManager.messageCreator = messageCreator;
+    public static void setMessageFactory(MessageFactory MessageFactory) {
+        AuditManager.MessageFactory = MessageFactory;
     }
 
     public static MessageCollector getMessageCollector() {
@@ -81,7 +81,7 @@ public class AuditManager {
     }
 
     public static <T> T startAudit(AuditRunnable<T> supplier, BoundSql boundSql) throws SQLException {
-        AuditMessage auditMessage = messageCreator.create();
+        AuditMessage auditMessage = MessageFactory.create();
         if (auditMessage == null) {
             return supplier.execute();
         }

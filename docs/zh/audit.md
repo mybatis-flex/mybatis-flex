@@ -42,10 +42,10 @@ Mybaits-Flex 消息包含了如下内容：
 
 ## 自定义 SQL 审计内容
 
-Mybatis-Flex 内置了一个名为 `MessageCreator` 的接口，我们只需实现该接口，并为 `AuditManager` 配置新的 `MessageCreator` 即可，如下所示：
+Mybatis-Flex 内置了一个名为 `MessageFactory` 的接口，我们只需实现该接口，并为 `AuditManager` 配置新的 `MessageFactory` 即可，如下所示：
 
 ```java
-public class MyMessageCreator implements MessageCreator {
+public class MyMessageFactory implements MessageFactory {
     
     @Override
     public AuditMessage create() {
@@ -60,11 +60,11 @@ public class MyMessageCreator implements MessageCreator {
 }
 ```
 
-并为 `AuditManager` 配置新写的 `MyMessageCreator`：
+并为 `AuditManager` 配置新写的 `MyMessageFactory`：
 
 ```java
-MessageCreator creator = new MyMessageCreator();
-AuditManager.setMessageCreator(creator);
+MessageFactory creator = new MyMessageFactory();
+AuditManager.setMessageFactory(creator);
 ```
 
 
