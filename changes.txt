@@ -1,3 +1,24 @@
+mybatis-flex v1.1.1 20230414:
+新增：QueryCondition 的 and(string) 和 or(string) 方法
+新增：Page.map() 方法用于 Page 数据转换
+新增：SQL 审计新增数据返回行数和自定义业务ID的支持
+新增：Row 新增 Row.toObject() 方法，用于转换为 VO 对象
+新增：RowUtil.java 工具类，用于 Row List 数据转换
+新增：代码生成器添加配置 Mapper 前后缀配置的功能
+新增：代码生成器添加配置 entity 前后缀配置的功能
+优化：重构 MultiDataSourceAutoConfiguration.java
+优化：重命名 Page.list 为 Page.records
+优化：当配置了错误的数据库账号和密码，错误提示不友好的问题
+优化：重命名 "MessageCreator" 为 "MessageFactory"
+优化：重命名 RawValue.context 为 content
+修复：ClassUtil 无法实例化被 lombok @Data() 修饰的 entity 的问题
+修复：MybatisKeyGeneratorUtil.java 空指针的问题
+修复：Springboot3 NestedIOException 找不到的问题
+修复：QueryCondition 的值为 QueryColumn 或 RawValue 时错处的问题
+文档：新增 Mybatis-Flex 和其他框架性能对比的文档
+
+
+
 mybatis-flex v1.1.0 20230412:
 新增：Entity 的 onSet、onUpdate、onInsert 添加全局监听器的配置
 优化：移除 QueryColumn.isNull 和 isNotNull 的参数
