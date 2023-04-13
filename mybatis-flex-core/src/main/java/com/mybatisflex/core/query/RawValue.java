@@ -4,25 +4,25 @@ import java.io.Serializable;
 
 public class RawValue implements Serializable {
 
-    private String context;
+    private String content;
 
     public RawValue() {
     }
 
     public RawValue(String context) {
-        this.context = context;
+        this.content = context;
     }
 
-    public String getContext() {
-        return context;
+    public String getContent() {
+        return content;
     }
 
-    public void setContext(String context) {
-        this.context = context;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Override
     public String toString() {
-        return context;
+        return content;
     }
 }

@@ -175,7 +175,7 @@ public class QueryCondition implements Serializable {
             }
             //原生sql
             else if (value instanceof RawValue) {
-                sql.append(((RawValue) value).getContext());
+                sql.append(((RawValue) value).getContent());
             }
             //正常查询，构建问号
             else {
