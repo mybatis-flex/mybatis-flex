@@ -17,9 +17,10 @@ package com.mybatisflex.core.row;
 
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
 import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.table.TableInfo;
-import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.*;
+import com.mybatisflex.core.util.ArrayUtil;
+import com.mybatisflex.core.util.ConvertUtil;
+import com.mybatisflex.core.util.SqlUtil;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -275,14 +276,11 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     }
 
     public <T> T toEntity(Class<T> entityClass) {
-        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
-        return tableInfo.newInstanceByRow(this);
+        return RowUtil.toEntity(this, entityClass);
     }
 
     public <T> T toObject(Class<T> objectClass) {
-        Object instance = ClassUtil.newInstance(objectClass);
-        RowSetter.setObject(this, instance);
-        return (T) instance;
+        return RowUtil.toObject(this, objectClass);
     }
 
     public Map<String, Object> toCamelKeysMap() {

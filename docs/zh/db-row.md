@@ -37,24 +37,58 @@ Page<Row> rowPage = Db.paginate("tb_account",3,10,query);
 >
 > 具体参考： [Db.java](./mybatis-flex-core/src/main/java/com/mybatisflex/core/row/Db.java) 。
 
-## Row 转换为 Entity
+## Row.toEntity()
+
+`Row.toEntity(Entity.class)` 方法主要是用于可以把 Row 转换为 entity 实体类。通过这个方法，可以把 Entity 里的
+`@Column()` 配置的列名和 Row 里的 key 进行自动关联。
+
+代码示例：
 
 ```java
-Row row = Db.selectOneById("tb_account","id",1);
+Row row = Db.selectOneBySql("select * from ....");
 Account entity = row.toEntity(Account.class);
+```
+
+## Row.toObject()
+
+`Row.toObject(Other.class)` 和 `Row.toEntity(Entity.class)` 和相似。不一样的地方在于 `Row.toObject(Other.class)` 是通过去查找
+`Other.class` 的 `setter` 方法去匹配 Row 的 key 进行赋值的。
+
+例如 `Other.class` 的代码如下：
+
+```java
+public class Other {
+    private String id;
+    private String userName;
+    
+    //getter setter
+}
+```
+
+那么，当我们去通过 SQL 查询得到 Row 的时候，Row 里的 `key` 为 `userName`、`UserName`、`USERNAME`、`user_name`、`USER_NAME` 等
+都能自动适配到 `Other.userName` 属性。这个方法常用于把 Row 直接转换为 VO 的场景。
+
+> PS：我们可以通过调用 `RowUtil.registerMapping(clazz, columnSetterMapping)` 去让更多的 `字段` 名称和 `属性` 进行匹配。
+
+
+代码示例：
+
+```java
+Row row = Db.selectOneBySql("select * from ....");
+Other other = row.toObject(Other.class);
 ```
 
 ## Row 字段转化为驼峰风格
 
 ```java
-Row row = Db.selectOneById("tb_account","id",1);
+Row row = Db..selectOneBySql("select * from ....");
 Map result = row.toCamelKeysMap();
 ```
 
 ## Row 字段转换为下划线风格
 
 ```java
-Row row = Db.selectOneById("tb_account","id",1);
+Row row = Db..selectOneBySql("select * from ....");
 Map result = row.toUnderlineKeysMap();
 ```
 
@@ -92,3 +126,12 @@ row.set(ACCOUNT.USER_NAME,"Michael");
 Db.insert("tb_account",row);
 ```
 
+## RowUtil 工具类
+
+`RowUtil` 工具类是用于帮助用户快速的把 `Row` 或者 `List<Row>` 转换为 VO 的工具类。其提供的方法如下：
+
+- `RowUtil.toObject(row, objectClass)`
+- `RowUtil.toObjectList(rows, objectClass)`
+- `RowUtil.toEntity(row, entityClass)`
+- `RowUtil.toEntityList(rows, entityClass)`
+- `RowUtil.registerMapping(clazz, columnSetterMapping)` 用于注册数据库 `字段` 名称和 Class 属性的映射关系。
