@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "Mybatis-Flex"
   text: "一个优雅的 Mybatis 增强框架"
-  tagline: 更轻量、更灵活、更简单
+  tagline: 更轻量、更灵活、以及更高的性能。
   image:
     src: /assets/images/logo01.png
     alt: Mybatis-Flex
@@ -13,15 +13,15 @@ hero:
       text: 快速开始
       link: /zh/getting-started
     - theme: alt
-      text: Mybatis-Flex 是什么
-      link: /zh/what-is-mybatisflex
+      text: 和同类框架对比
+      link: /zh/comparison
 
 features:
   - title: 更轻量
-    details: Mybatis-Flex 框架基于 Mybatis 的 SqlProvider 进行实现，没有任何连拦截器，没有任何第三方依赖，没有任何 Sql Parse，因此也会有更高的性能。
+    details: Mybatis-Flex 除了 Mybatis 本身，再无任何第三方依赖，因此会带来更高的自主性、把控性和稳定性。在任何一个系统中，依赖越多，稳定性越差。
   - title: 更灵活
-    details: Mybatis-Flex 提供了非常灵活的 QueryWrapper，支持关联查询、多表查询、多主键、逻辑删除、乐观锁更新、数据填充、数据脱敏....
-  - title: 更简单
-    details: 完善的增删改查和分页查询，内置功能强劲的代码生成器，SQL 查询 IDE 自动提示...
+    details: Mybatis-Flex 提供了非常灵活的 QueryWrapper，支持关联查询、多表查询、多主键、逻辑删除、乐观锁更新、数据填充、数据脱敏、等等....
+  - title: 更高的性能
+    details: Mybatis-Flex 通过独特的架构，没有任何 Mybatis 拦截器、在 SQL 执行的过程中，没有任何的 Sql Parse，因此会带来指数级的性能增长。
 ---
 
