@@ -16,6 +16,7 @@
 package com.mybatisflex.core.dialect;
 
 
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.StringUtil;
 
 import javax.sql.DataSource;
@@ -40,7 +41,7 @@ public class DbTypeUtil {
             return parseDbType(jdbcUrl);
         }
 
-        throw new IllegalStateException("Cannot get dataSource jdbcUrl: " + dataSource.getClass().getName());
+        throw new IllegalStateException("Can not get dataSource jdbcUrl: " + dataSource.getClass().getName());
     }
 
     /**
@@ -50,7 +51,7 @@ public class DbTypeUtil {
      *
      * @return jdbc url 配置
      */
-    private static String getJdbcUrl(DataSource dataSource) {
+    public static String getJdbcUrl(DataSource dataSource) {
         String[] methodNames = new String[]{"getUrl", "getJdbcUrl"};
         for (String methodName : methodNames) {
             try {
@@ -66,17 +67,15 @@ public class DbTypeUtil {
             connection = dataSource.getConnection();
             return connection.getMetaData().getURL();
         } catch (Exception e) {
-            //ignore
+            throw FlexExceptions.wrap("Can not get the dataSource jdbcUrl", e);
         } finally {
             if (connection != null) {
                 try {
                     connection.close();
-                } catch (SQLException e) {
+                } catch (SQLException e) { //ignore
                 }
             }
         }
-
-        return null;
     }
 
 

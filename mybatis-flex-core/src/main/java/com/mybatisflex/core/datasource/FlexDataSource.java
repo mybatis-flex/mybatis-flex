@@ -102,6 +102,12 @@ public class FlexDataSource extends AbstractDataSource {
                 , new ConnectionHandler(connection, xid));
     }
 
+    /**
+     * 方便用于 {@link DbTypeUtil#getDbType(DataSource)}
+     */
+    public String getUrl(){
+        return DbTypeUtil.getJdbcUrl(defaultDataSource);
+    }
 
     @Override
     @SuppressWarnings("unchecked")
