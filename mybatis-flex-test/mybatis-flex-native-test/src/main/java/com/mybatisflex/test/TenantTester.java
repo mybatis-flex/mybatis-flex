@@ -59,6 +59,14 @@ public class TenantTester {
 
         TenantAccountMapper mapper = MybatisFlexBootstrap.getInstance().getMapper(TenantAccountMapper.class);
 
+//        mapper.selectListByQuery(QueryWrapper.create()
+//                .select(TENANT_ACCOUNT.ALL_COLUMNS)
+//                .from(TENANT_ACCOUNT.as("a"), TENANT_ACCOUNT1.as("b"))
+//                .where(TENANT_ACCOUNT.ID.eq(TENANT_ACCOUNT1.ID))
+//                .and(TENANT_ACCOUNT.ID.eq(1))
+//        );
+
+
         //SELECT * FROM `tb_account` WHERE `tenant_id` =  1
         List<TenantAccount> tenantAccounts = mapper.selectAll();
         System.out.println(tenantAccounts);

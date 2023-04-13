@@ -49,30 +49,37 @@ class WrapperUtil {
         if (condition == null) {
             return;
         }
+
         Object value = condition.getValue();
-        if (value != null) {
-            if (value.getClass().isArray()) {
-                Object[] values = (Object[]) value;
-                for (Object object : values) {
-                    if (object != null && (object.getClass().isArray()
-                            || object.getClass() == int[].class
-                            || object.getClass() == long[].class
-                            || object.getClass() == short[].class
-                            || object.getClass() == float[].class
-                            || object.getClass() == double[].class)) {
-                        for (int i = 0; i < Array.getLength(object); i++) {
-                            paras.add(Array.get(object, i));
-                        }
-                    } else {
-                        paras.add(object);
+        if (value == null
+                || value instanceof QueryColumn
+                || value instanceof RawValue) {
+            getValues(condition.next, paras);
+            return;
+        }
+
+
+        if (value.getClass().isArray()) {
+            Object[] values = (Object[]) value;
+            for (Object object : values) {
+                if (object != null && (object.getClass().isArray()
+                        || object.getClass() == int[].class
+                        || object.getClass() == long[].class
+                        || object.getClass() == short[].class
+                        || object.getClass() == float[].class
+                        || object.getClass() == double[].class)) {
+                    for (int i = 0; i < Array.getLength(object); i++) {
+                        paras.add(Array.get(object, i));
                     }
+                } else {
+                    paras.add(object);
                 }
-            } else if (value instanceof QueryWrapper) {
-                Object[] valueArray = ((QueryWrapper) value).getValueArray();
-                paras.addAll(Arrays.asList(valueArray));
-            } else {
-                paras.add(value);
             }
+        } else if (value instanceof QueryWrapper) {
+            Object[] valueArray = ((QueryWrapper) value).getValueArray();
+            paras.addAll(Arrays.asList(valueArray));
+        } else {
+            paras.add(value);
         }
 
         getValues(condition.next, paras);
