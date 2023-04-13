@@ -16,13 +16,11 @@
 package com.mybatisflex.core.util;
 
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * 类实例创建者创建者
@@ -162,6 +160,34 @@ public class ClassUtil {
         }
 
         doGetFields(cl.getSuperclass(), fields);
+    }
+
+    public static List<Method> getAllMethods(Class<?> cl) {
+        List<Method> methods = new ArrayList<>();
+        doGetMethods(cl, methods, null);
+        return methods;
+    }
+
+    public static List<Method> getAllMethods(Class<?> cl, Predicate<Method> tester) {
+        List<Method> methods = new ArrayList<>();
+        doGetMethods(cl, methods, tester);
+        return methods;
+    }
+
+
+    private static void doGetMethods(Class<?> cl, List<Method> methods, Predicate<Method> tester) {
+        if (cl == null || cl == Object.class) {
+            return;
+        }
+
+        Method[] declaredMethods = cl.getDeclaredMethods();
+        for (Method method : declaredMethods) {
+            if (tester == null || tester.test(method)) {
+                methods.add(method);
+            }
+        }
+
+        doGetMethods(cl.getSuperclass(), methods, tester);
     }
 
 }
