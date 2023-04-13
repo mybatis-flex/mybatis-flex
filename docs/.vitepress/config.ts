@@ -32,7 +32,8 @@ export default defineConfig({
                     {text: '快速开始', link: '/zh/getting-started'},
                     {text: 'Maven 依赖', link: '/zh/maven'},
                     {text: '和 Spring 整合', link: '/zh/mybatis-flex-with-spring'},
-                    {text: '和同类框架对比', link: '/zh/comparison'},
+                    {text: '和同类框架「功能」对比', link: '/zh/comparison'},
+                    {text: '和同类框架「性能」对比', link: '/zh/benchmark'},
                     {text: 'QQ 交流群', link: '/zh/qq-group'},
                 ]
             },

@@ -1,11 +1,16 @@
-# Mybatis-Flex 和同类框架对比
+# Mybatis-Flex 和同类框架「功能」对比
+
+MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来源其官网、git 或者 网络文章，若有错误欢迎纠正。
+
+- MyBatis-Plus：老牌的 MyBatis 增强框架，开源于 2016 年。
+- Fluent-Mybatis：阿里云开发的 Mybatis 增强框架（来至于阿里云·云效产品团队）
+
+本文只阐述了「功能」方面的对比，「性能」对比请参考 [这里](./benchmark.md)。
+
+> 纠正联系方式：加入 Mybatis-Flex QQ 交流群：532992631，然后联系群主。
 
 ## 功能对比
 
-MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来源其官网、git 或者 网络文章，若有错误欢迎指正。
-
-- MyBatis-Plus：老牌的 MyBatis 增强框架
-- Fluent-Mybatis：阿里云开发的 Mybatis 增强框架（来至于阿里云·云效产品团队）
 
 | 功能或特点 | MyBatis-Flex     | MyBatis-Plus    | Fluent-Mybatis     |
 | -------- | -------- | -------- | -------- |
