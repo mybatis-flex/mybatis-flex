@@ -43,9 +43,13 @@ public class GeneratorTest {
 
         //设置 entity 的包名
         globalConfig.setEntityPackage("com.test.entity");
+        globalConfig.setEntityClassPrefix("My");
+        globalConfig.setEntityClassSuffix("Entity");
 
         //是否生成 mapper 类，默认为 false
         globalConfig.setMapperGenerateEnable(true);
+        globalConfig.setMapperClassPrefix("Flex");
+        globalConfig.setMapperClassSuffix("Dao");
 
         //设置 mapper 类的包名
         globalConfig.setMapperPackage("com.test.mapper");

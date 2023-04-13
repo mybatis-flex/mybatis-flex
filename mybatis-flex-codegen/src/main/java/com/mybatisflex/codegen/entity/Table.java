@@ -163,7 +163,28 @@ public class Table {
                 }
             }
         }
-        return StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(entityJavaFileName));
+        return globalConfig.getEntityClassPrefix()
+                + StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(entityJavaFileName))
+                + globalConfig.getEntityClassSuffix();
+    }
+
+
+    public String buildMapperClassName() {
+        String entityJavaFileName = name;
+        String tablePrefix = globalConfig.getTablePrefix();
+        if (tablePrefix != null) {
+            String[] tablePrefixes = tablePrefix.split(",");
+            for (String prefix : tablePrefixes) {
+                String trimPrefix = prefix.trim();
+                if (trimPrefix.length() > 0 && name.startsWith(trimPrefix)) {
+                    entityJavaFileName = name.substring(trimPrefix.length());
+                    break;
+                }
+            }
+        }
+        return globalConfig.getMapperClassPrefix()
+                + StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(entityJavaFileName))
+                + globalConfig.getMapperClassSuffix();
     }
 
     /**

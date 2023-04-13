@@ -64,7 +64,7 @@ public class Generator {
 
                 String entityPackagePath = globalConfig.getEntityPackage().replace(".", "/");
                 File entityJavaFile = new File(globalConfig.getSourceDir(), entityPackagePath + "/" +
-                        globalConfig.getEntityClassPrefix() + table.buildEntityClassName() + globalConfig.getEntityClassSuffix() + ".java");
+                        table.buildEntityClassName() + ".java");
                 if (!entityJavaFile.getParentFile().exists()) {
                     if (!entityJavaFile.getParentFile().mkdirs()) {
                         throw new IllegalStateException("Can not mkdirs by dir: " + entityJavaFile.getParentFile());
@@ -78,8 +78,8 @@ public class Generator {
                     String mapperPackagePath = globalConfig.getMapperPackage().replace(".", "/");
 
 
-                    File mapperJavaFile = new File(globalConfig.getSourceDir(), mapperPackagePath + "/" + globalConfig.getMapperClassPrefix()
-                            + table.buildEntityClassName() + globalConfig.getMapperClassSuffix() + ".java");
+                    File mapperJavaFile = new File(globalConfig.getSourceDir(), mapperPackagePath + "/" +
+                            table.buildMapperClassName() + ".java");
                     if (!mapperJavaFile.getParentFile().exists()) {
                         if (!mapperJavaFile.getParentFile().mkdirs()) {
                             throw new IllegalStateException("Can not mkdirs by dir: " + mapperJavaFile.getParentFile());

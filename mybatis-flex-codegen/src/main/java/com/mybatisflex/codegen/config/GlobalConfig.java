@@ -33,10 +33,10 @@ public class GlobalConfig {
     private String entityPackage;
 
     //mapper 类的前缀
-    private String entityClassPrefix = "";
+    private String entityClassPrefix;
 
     //mapper 类的后缀
-    private String entityClassSuffix = "";
+    private String entityClassSuffix;
 
     //entity 是否使用 Lombok
     private boolean entityWithLombok = false;
@@ -107,6 +107,9 @@ public class GlobalConfig {
     }
 
     public String getEntityClassPrefix() {
+        if (StringUtil.isBlank(entityClassPrefix)) {
+            return "";
+        }
         return entityClassPrefix;
     }
 
@@ -115,6 +118,9 @@ public class GlobalConfig {
     }
 
     public String getEntityClassSuffix() {
+        if (StringUtil.isBlank(entityClassSuffix)) {
+            return "";
+        }
         return entityClassSuffix;
     }
 
@@ -147,7 +153,7 @@ public class GlobalConfig {
     }
 
     public String getMapperClassPrefix() {
-        if (StringUtil.isBlank(mapperClassPrefix)){
+        if (StringUtil.isBlank(mapperClassPrefix)) {
             return "";
         }
         return mapperClassPrefix;
