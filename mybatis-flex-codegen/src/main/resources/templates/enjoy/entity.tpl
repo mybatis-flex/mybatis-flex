@@ -6,7 +6,7 @@ import #(importClass);
 
 
 #(table.buildTableAnnotation())
-public class #(table.buildEntityClassName()) {
+public class #(globalConfig.entityClassPrefix ??)#(table.buildEntityClassName())#(globalConfig.entityClassSuffix ??) {
 
 #for(column: table.columns)    #(column.buildAnnotations())
     private #(column.propertySimpleType) #(column.property);

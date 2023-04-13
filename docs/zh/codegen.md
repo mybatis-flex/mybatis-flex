@@ -91,12 +91,18 @@ GlobalConfig 支持更多的配置如下：
 ```java
 
 public class GlobalConfig {
-    
+
     //代码生成目录
     private String sourceDir;
 
     //entity 的包名
     private String entityPackage;
+
+    //mapper 类的前缀
+    private String entityClassPrefix = "";
+
+    //mapper 类的后缀
+    private String entityClassSuffix = "";
 
     //entity 是否使用 Lombok
     private boolean entityWithLombok = false;

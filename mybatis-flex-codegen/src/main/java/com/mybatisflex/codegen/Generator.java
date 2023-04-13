@@ -63,7 +63,8 @@ public class Generator {
             for (Table table : tables) {
 
                 String entityPackagePath = globalConfig.getEntityPackage().replace(".", "/");
-                File entityJavaFile = new File(globalConfig.getSourceDir(), entityPackagePath + "/" + table.buildEntityClassName() + ".java");
+                File entityJavaFile = new File(globalConfig.getSourceDir(), entityPackagePath + "/" +
+                        globalConfig.getEntityClassPrefix() + table.buildEntityClassName() + globalConfig.getEntityClassSuffix() + ".java");
                 if (!entityJavaFile.getParentFile().exists()) {
                     if (!entityJavaFile.getParentFile().mkdirs()) {
                         throw new IllegalStateException("Can not mkdirs by dir: " + entityJavaFile.getParentFile());
