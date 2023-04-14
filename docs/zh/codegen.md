@@ -99,10 +99,16 @@ public class GlobalConfig {
     private String entityPackage;
 
     //entity 类的前缀
-    private String entityClassPrefix = "";
+    private String entityClassPrefix;
 
     //entity 类的后缀
-    private String entityClassSuffix = "";
+    private String entityClassSuffix;
+
+    //entity 类的父类，可以自定义一些 BaseEntity 类
+    private Class<?> entitySupperClass;
+
+    //entity 默认实现的接口
+    private Class<?>[] entityInterfaces = {Serializable.class};
 
     //entity 是否使用 Lombok
     private boolean entityWithLombok = false;
