@@ -24,8 +24,10 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
+import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.UnionWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.tenant.TenantManager;
 import com.mybatisflex.core.util.*;
@@ -504,6 +506,14 @@ public class TableInfo {
                 queryWrapper.and(QueryCondition.create(tableName, tenantIdColumn, QueryCondition.LOGIC_EQUALS, tenantIdArgs[0]));
             } else {
                 queryWrapper.and(QueryCondition.create(tableName, tenantIdColumn, QueryCondition.LOGIC_IN, tenantIdArgs));
+            }
+        }
+
+        //union
+        List<UnionWrapper> unions = CPI.getUnions(queryWrapper);
+        if (CollectionUtil.isNotEmpty(unions)) {
+            for (UnionWrapper union : unions) {
+                appendConditions(entity, union.getQueryWrapper());
             }
         }
 
