@@ -8,7 +8,9 @@
 
 ## 常见问题 
 
-**问题1：** 使用 Druid 数据源无法启动的问题，主要是因为在数据源的配置中，未添加 `type` 字段的配置：
+**问题1： 使用 Druid 数据源无法启动**
+
+原因是在数据源的配置中，未添加 `type` 字段的配置：
 
 ```yaml 3
 spring:
@@ -23,4 +25,30 @@ spring:
 
 > 若使用多数据源，或者把数据源配置到 `mybatis-flex.datasource` 下，使用 mybatis-flex 的数据源发现机制，
 > 使用 druid 也可以不用配置 type，更多文档参考：[多数据源章节](./multi-datasource.md)。
+
+**问题2：整合 Springboot 3 出现 ClassNotFoundException： NestedIOException 的错误** 
+
+需要排除 flex 中的 mybatis-spring 的依赖，主动添加最新版本的 mybatis-spring 依赖。
+
+
+```xml 6,7,8,9
+<dependency>
+    <groupId>com.mybatis-flex</groupId>
+    <artifactId>mybatis-flex-spring-boot-starter</artifactId>
+    <version>${mybatis-flex.version}</version>
+    <exclusions>
+        <exclusion>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+
+<!-- 添加已适配 springboot 3 的 mybatis-spring 依赖-->
+<dependency>
+    <groupId>org.mybatis</groupId>
+    <artifactId>mybatis-spring</artifactId>
+    <version>3.0.1</version>
+</dependency>
+```
 
