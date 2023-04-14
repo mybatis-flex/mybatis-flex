@@ -74,7 +74,7 @@ account.setId(100);
 account.setUserName(null);
 account.setAge(10);
 
-accountMapper.update(account,false);
+accountMapper.update(account);
 ```
 
 以上的示例中，会把 id (主键)为 100 这条数据中的 user_name 字段更新为 null，age 字段更新为 10，其他字段不会被更新。也就是说，通过 UpdateEntity 创建的对象，只会更新调用了 setter 方法的字段，若不调用 setter 方法，不管这个对象里的属性的值是什么，都不会更新到数据库。

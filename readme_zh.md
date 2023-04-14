@@ -438,11 +438,8 @@ Page<Row> rowPage=Db.paginate("tb_account",3,10,query);
 相比市面上的其他框架，这部分的功能应该也算是 MyBatis-Flex 的亮点之一。在 BaseMapper 中，Mybatis-Flex 提供了如下的方法：
 
 ```java
-update(T entity,boolean ignoreNulls)
+update(T entity)
 ```
-
-- 第一个参数是 entity 的对象。
-- 第二个参数是是否忽略 null 值。
 
 有些场景下，我们可能希望只更新 几个 字段，而其中个别字段需要更新为 null。此时需要用到 `UpdateEntity` 工具类，以下是示例代码：
 
@@ -452,7 +449,7 @@ account.setId(100);
 account.setUserName(null);
 account.setSex(1);
 
-accountMapper.update(account,false);
+accountMapper.update(account);
 ```
 
 以上的示例中，会把 id 为 100 这条数据中的 user_name 字段更新为 null，sex 字段更新为 1，其他字段不会被更新。也就是说，通过 `UpdateEntity`
