@@ -27,6 +27,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.*;
@@ -100,14 +101,14 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
     private Filer filer;
 //    private Elements elementUtils;
-//    private Types typeUtils;
+    private Types typeUtils;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         this.filer = processingEnvironment.getFiler();
 //        this.elementUtils = processingEnvironment.getElementUtils();
-//        this.typeUtils = processingEnvironment.getTypeUtils();
+        this.typeUtils = processingEnvironment.getTypeUtils();
     }
 
     @Override
@@ -155,45 +156,10 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 List<String> defaultColumns = new ArrayList<>();
 
                 TypeElement classElement = (TypeElement) entityClassElement;
-                for (Element fieldElement : classElement.getEnclosedElements()) {
-
-                    //all fields
-                    if (ElementKind.FIELD == fieldElement.getKind()) {
-
-                        TypeMirror typeMirror = fieldElement.asType();
-
-                        Column column = fieldElement.getAnnotation(Column.class);
-                        if (column != null && column.ignore()) {
-                            continue;
-                        }
-
-                        //获取 typeHandlerClass 的名称，通过 column.typeHandler() 获取会抛出异常：MirroredTypeException:
-                        //参考 https://stackoverflow.com/questions/7687829/java-6-annotation-processing-getting-a-class-from-an-annotation
-                        final String[] typeHandlerClass = {""};
-                        List<? extends AnnotationMirror> annotationMirrors = fieldElement.getAnnotationMirrors();
-                        for (AnnotationMirror annotationMirror : annotationMirrors) {
-                            annotationMirror.getElementValues().forEach((BiConsumer<ExecutableElement, AnnotationValue>) (executableElement, annotationValue) -> {
-                                if (executableElement.getSimpleName().equals("typeHandler")) {
-                                    typeHandlerClass[0] = annotationValue.toString();
-                                }
-                            });
-                        }
-
-                        //未配置 typeHandler 的情况下，只支持基本数据类型，不支持比如 list set 或者自定义的类等
-                        if ((column == null || typeHandlerClass[0].equals(UnknownTypeHandler.class.getName()))
-                                && !defaultSupportColumnTypes.contains(typeMirror.toString())) {
-                            continue;
-                        }
-
-
-                        String columnName = column != null && column.value().trim().length() > 0 ? column.value() : camelToUnderline(fieldElement.toString());
-                        propertyAndColumns.put(fieldElement.toString(), columnName);
-
-                        if (column == null || (!column.isLarge() && !column.isLogicDelete())) {
-                            defaultColumns.add(columnName);
-                        }
-                    }
-                }
+                do {
+                    fillPropertyAndColumns(propertyAndColumns, defaultColumns, classElement);
+                    classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
+                }while (classElement!= null && "java.lang.Object".equals(classElement.toString()));
 
                 String entityClassName = entityClassElement.getSimpleName().toString();
                 tablesContent.append(buildTablesClass(entityClassName, tableName, propertyAndColumns, defaultColumns));
@@ -215,6 +181,49 @@ public class QueryEntityProcessor extends AbstractProcessor {
         }
 
         return false;
+    }
+
+
+
+    private void fillPropertyAndColumns(Map<String, String> propertyAndColumns, List<String> defaultColumns, TypeElement classElement) {
+        for (Element fieldElement : classElement.getEnclosedElements()) {
+
+            //all fields
+            if (ElementKind.FIELD == fieldElement.getKind()) {
+
+                TypeMirror typeMirror = fieldElement.asType();
+
+                Column column = fieldElement.getAnnotation(Column.class);
+                if (column != null && column.ignore()) {
+                    continue;
+                }
+
+                //获取 typeHandlerClass 的名称，通过 column.typeHandler() 获取会抛出异常：MirroredTypeException:
+                //参考 https://stackoverflow.com/questions/7687829/java-6-annotation-processing-getting-a-class-from-an-annotation
+                final String[] typeHandlerClass = {""};
+                List<? extends AnnotationMirror> annotationMirrors = fieldElement.getAnnotationMirrors();
+                for (AnnotationMirror annotationMirror : annotationMirrors) {
+                    annotationMirror.getElementValues().forEach((BiConsumer<ExecutableElement, AnnotationValue>) (executableElement, annotationValue) -> {
+                        if (executableElement.getSimpleName().equals("typeHandler")) {
+                            typeHandlerClass[0] = annotationValue.toString();
+                        }
+                    });
+                }
+
+                //未配置 typeHandler 的情况下，只支持基本数据类型，不支持比如 list set 或者自定义的类等
+                if ((column == null || typeHandlerClass[0].equals(UnknownTypeHandler.class.getName()))
+                        && !defaultSupportColumnTypes.contains(typeMirror.toString())) {
+                    continue;
+                }
+
+                String columnName = column != null && column.value().trim().length() > 0 ? column.value() : camelToUnderline(fieldElement.toString());
+                propertyAndColumns.put(fieldElement.toString(), columnName);
+
+                if (column == null || (!column.isLarge() && !column.isLogicDelete())) {
+                    defaultColumns.add(columnName);
+                }
+            }
+        }
     }
 
 

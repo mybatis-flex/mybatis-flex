@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Table(value = "tb_account",dataSource = "ds2",onSet = AccountOnSetListener.class)
-public class Account {
+public class Account extends BaseAccount{
 
     @Id(keyType = KeyType.Auto)
     private Long id;
