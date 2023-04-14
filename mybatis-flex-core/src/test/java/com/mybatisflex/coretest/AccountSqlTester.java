@@ -301,7 +301,7 @@ public class AccountSqlTester {
     @Test
     public void testDeleteSql() {
         IDialect dialect = new CommonsDialectImpl();
-        TableInfo tableInfo = TableInfoFactory.ofEntityClass(Account.class);
+        TableInfo tableInfo = TableInfoFactory.getByEntityClass(Account.class);
         String sql = dialect.forDeleteEntityById(tableInfo);
         System.out.println(sql);
     }

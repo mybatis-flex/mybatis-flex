@@ -63,7 +63,7 @@ public class RowUtil {
 
 
     public static <T> T toEntity(Row row, Class<T> entityClass) {
-        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
+        TableInfo tableInfo = TableInfoFactory.getByEntityClass(entityClass);
         return tableInfo.newInstanceByRow(row);
     }
 
@@ -72,7 +72,7 @@ public class RowUtil {
         if (rows == null || rows.isEmpty()) {
             return Collections.emptyList();
         } else {
-            TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
+            TableInfo tableInfo = TableInfoFactory.getByEntityClass(entityClass);
             List<T> entityList = new ArrayList<>();
             for (Row row : rows) {
                 T entity = tableInfo.newInstanceByRow(row);

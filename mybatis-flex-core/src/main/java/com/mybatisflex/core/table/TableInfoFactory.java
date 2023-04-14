@@ -67,14 +67,14 @@ public class TableInfoFactory {
     public static TableInfo ofMapperClass(Class<?> mapperClass) {
         return MapUtil.computeIfAbsent(tableInfoMap, mapperClass, key -> {
             Class<?> entityClass = getEntityClass(mapperClass);
-//            return entityClass != null ? ofEntityClass(entityClass) : null;
-            return entityClass != null ? createTableInfo(entityClass) : null;
+            if (entityClass == null){
+                return null;
+            }
+
+            TableInfo tableInfo = createTableInfo(entityClass);
+            tableInfoMap.put(entityClass,tableInfo);
+            return tableInfo;
         });
-    }
-
-
-    public static TableInfo ofEntityClass(Class<?> entityClass) {
-        return MapUtil.computeIfAbsent(tableInfoMap, entityClass, key -> createTableInfo(entityClass));
     }
 
 
@@ -98,6 +98,9 @@ public class TableInfoFactory {
 
 
     private static TableInfo createTableInfo(Class<?> entityClass) {
+
+
+
         TableInfo tableInfo = new TableInfo();
         tableInfo.setEntityClass(entityClass);
         tableInfo.setReflector(new Reflector(entityClass));
