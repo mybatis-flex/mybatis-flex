@@ -1,4 +1,4 @@
-mybatis-flex v1.1.1 20230414:
+mybatis-flex v1.1.2 20230414:
 新增：QueryCondition 的 and(string) 和 or(string) 方法
 新增：Page.map() 方法用于 Page 数据转换
 新增：SQL 审计新增数据返回行数和自定义业务ID的支持
@@ -15,7 +15,9 @@ mybatis-flex v1.1.1 20230414:
 修复：MybatisKeyGeneratorUtil.java 空指针的问题
 修复：Springboot3 NestedIOException 找不到的问题
 修复：QueryCondition 的值为 QueryColumn 或 RawValue 时错处的问题
+修复：在某些场景下可能出现 Recursive update 的问题
 文档：新增 Mybatis-Flex 和其他框架性能对比的文档
+文档：添加整合 Springboot3 可能出现的问题帮助
 
 
 
