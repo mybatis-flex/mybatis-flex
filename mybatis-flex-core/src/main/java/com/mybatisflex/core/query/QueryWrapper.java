@@ -352,7 +352,14 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     Object[] getValueArray() {
         Object[] whereValues = WrapperUtil.getValues(whereQueryCondition);
         Object[] havingValues = WrapperUtil.getValues(havingQueryCondition);
-        return ArrayUtil.concat(whereValues, havingValues);
+        Object[] values = ArrayUtil.concat(whereValues, havingValues);
+        if (CollectionUtil.isNotEmpty(unions)) {
+            for (UnionWrapper union : unions) {
+                QueryWrapper queryWrapper = union.getQueryWrapper();
+                values = ArrayUtil.concat(values, queryWrapper.getValueArray());
+            }
+        }
+        return values;
     }
 
 

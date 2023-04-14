@@ -18,6 +18,7 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.tenant.TenantFactory;
 import com.mybatisflex.core.tenant.TenantManager;
 import com.mybatisflex.mapper.TenantAccountMapper;
@@ -25,8 +26,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-import java.util.List;
 
+import static com.mybatisflex.test.table.Tables.ACCOUNT;
 import static com.mybatisflex.test.table.Tables.TENANT_ACCOUNT;
 
 public class TenantTester {
@@ -59,38 +60,42 @@ public class TenantTester {
 
         TenantAccountMapper mapper = MybatisFlexBootstrap.getInstance().getMapper(TenantAccountMapper.class);
 
-//        mapper.selectListByQuery(QueryWrapper.create()
-//                .select(TENANT_ACCOUNT.ALL_COLUMNS)
-//                .from(TENANT_ACCOUNT.as("a"), TENANT_ACCOUNT1.as("b"))
-//                .where(TENANT_ACCOUNT.ID.eq(TENANT_ACCOUNT1.ID))
-//                .and(TENANT_ACCOUNT.ID.eq(1))
-//        );
+        mapper.selectListByQuery(QueryWrapper.create()
+                .select(TENANT_ACCOUNT.ALL_COLUMNS)
+                .from(TENANT_ACCOUNT.as("a"), ACCOUNT.as("b"))
+                .where(TENANT_ACCOUNT.ID.eq(ACCOUNT.ID))
+                .and(TENANT_ACCOUNT.ID.eq(1))
+                .unionAll(QueryWrapper.create()
+                        .select(TENANT_ACCOUNT.ALL_COLUMNS).from(TENANT_ACCOUNT)
+                        .where(TENANT_ACCOUNT.ID.eq(2))
+                )
+        );
 
-
-        //SELECT * FROM `tb_account` WHERE `tenant_id` =  1
-        List<TenantAccount> tenantAccounts = mapper.selectAll();
-        System.out.println(tenantAccounts);
-
-        //SELECT * FROM `tb_account` WHERE `id` = 1 AND `tenant_id` IN (1)
-        TenantAccount tenantAccount1 = mapper.selectOneById(1);
-        System.out.println(tenantAccount1);
-
-        //SELECT * FROM `tb_account` WHERE `id` = 2 AND `tenant_id` IN (1)
-        TenantAccount tenantAccount2 = mapper.selectOneById(2);
-        System.out.println(tenantAccount2);
-
-        //DELETE FROM `tb_account` WHERE `id` >= 100 AND `tenant_id` =  1
-        mapper.deleteByCondition(TENANT_ACCOUNT.ID.ge(100));
-
-        // UPDATE `tb_account` SET `age` = 10 WHERE `id` >=  100  AND `tenant_id` =  1
-        TenantAccount updateAccount = new TenantAccount();
-        updateAccount.setAge(10);
-        mapper.updateByCondition(updateAccount,TENANT_ACCOUNT.ID.ge(100));
-
-        //SELECT * FROM `tb_account` WHERE `id` >=  100  AND `tenant_id` =  1  LIMIT 1
-        mapper.selectOneByCondition(TENANT_ACCOUNT.ID.ge(100));
-
-        //SELECT * FROM `tb_account` WHERE `id` >=  100  AND `tenant_id` =  1  LIMIT 10
-        mapper.selectListByCondition(TENANT_ACCOUNT.ID.ge(100),10);
+//
+//        //SELECT * FROM `tb_account` WHERE `tenant_id` =  1
+//        List<TenantAccount> tenantAccounts = mapper.selectAll();
+//        System.out.println(tenantAccounts);
+//
+//        //SELECT * FROM `tb_account` WHERE `id` = 1 AND `tenant_id` IN (1)
+//        TenantAccount tenantAccount1 = mapper.selectOneById(1);
+//        System.out.println(tenantAccount1);
+//
+//        //SELECT * FROM `tb_account` WHERE `id` = 2 AND `tenant_id` IN (1)
+//        TenantAccount tenantAccount2 = mapper.selectOneById(2);
+//        System.out.println(tenantAccount2);
+//
+//        //DELETE FROM `tb_account` WHERE `id` >= 100 AND `tenant_id` =  1
+//        mapper.deleteByCondition(TENANT_ACCOUNT.ID.ge(100));
+//
+//        // UPDATE `tb_account` SET `age` = 10 WHERE `id` >=  100  AND `tenant_id` =  1
+//        TenantAccount updateAccount = new TenantAccount();
+//        updateAccount.setAge(10);
+//        mapper.updateByCondition(updateAccount,TENANT_ACCOUNT.ID.ge(100));
+//
+//        //SELECT * FROM `tb_account` WHERE `id` >=  100  AND `tenant_id` =  1  LIMIT 1
+//        mapper.selectOneByCondition(TENANT_ACCOUNT.ID.ge(100));
+//
+//        //SELECT * FROM `tb_account` WHERE `id` >=  100  AND `tenant_id` =  1  LIMIT 10
+//        mapper.selectListByCondition(TENANT_ACCOUNT.ID.ge(100),10);
     }
 }
