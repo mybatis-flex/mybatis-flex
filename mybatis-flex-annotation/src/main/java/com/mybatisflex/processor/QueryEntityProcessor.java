@@ -100,7 +100,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
     private static final String allColumnsTemplate = "        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{@allColumns};\n\n";
 
     private Filer filer;
-//    private Elements elementUtils;
+    //    private Elements elementUtils;
     private Types typeUtils;
 
     @Override
@@ -159,7 +159,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 do {
                     fillPropertyAndColumns(propertyAndColumns, defaultColumns, classElement);
                     classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
-                }while (classElement!= null && "java.lang.Object".equals(classElement.toString()));
+                } while (classElement != null);
 
                 String entityClassName = entityClassElement.getSimpleName().toString();
                 tablesContent.append(buildTablesClass(entityClassName, tableName, propertyAndColumns, defaultColumns));
@@ -182,7 +182,6 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
         return false;
     }
-
 
 
     private void fillPropertyAndColumns(Map<String, String> propertyAndColumns, List<String> defaultColumns, TypeElement classElement) {
