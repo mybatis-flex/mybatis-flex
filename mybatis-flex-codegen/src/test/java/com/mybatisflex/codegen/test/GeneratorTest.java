@@ -38,6 +38,8 @@ public class GeneratorTest {
 //        globalConfig.setTablePrefix("tb_");
 //        globalConfig.setEntityWithLombok(true);
 
+        globalConfig.setEntitySupperClass(BaseEntity.class);
+
         //设置只生成哪些表
         globalConfig.addGenerateTable("tb_account", "account_session");
 

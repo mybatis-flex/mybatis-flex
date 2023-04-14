@@ -129,6 +129,16 @@ public class Table {
             imports.add("lombok.NoArgsConstructor");
         }
 
+        if (globalConfig.getEntitySupperClass() != null) {
+            imports.add(globalConfig.getEntitySupperClass().getName());
+        }
+
+        if (globalConfig.getEntityInterfaces() != null) {
+            for (Class<?> entityInterface : globalConfig.getEntityInterfaces()) {
+                imports.add(entityInterface.getName());
+            }
+        }
+
         if (tableConfig != null) {
             if (tableConfig.getInsertListenerClass() != null) {
                 imports.add(tableConfig.getInsertListenerClass().getName());
@@ -166,6 +176,24 @@ public class Table {
         return globalConfig.getEntityClassPrefix()
                 + StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(entityJavaFileName))
                 + globalConfig.getEntityClassSuffix();
+    }
+
+    public String buildExtends() {
+        if (globalConfig.getEntitySupperClass() != null) {
+            return " extends " + globalConfig.getEntitySupperClass().getSimpleName();
+        } else {
+            return "";
+        }
+    }
+
+    public String buildImplements() {
+        Class<?>[] entityInterfaces = globalConfig.getEntityInterfaces();
+        if (entityInterfaces != null && entityInterfaces.length > 0) {
+            return " implements " + StringUtil.join(", ", Arrays.stream(entityInterfaces)
+                    .map(Class::getSimpleName).collect(Collectors.toList()));
+        } else {
+            return "";
+        }
     }
 
 

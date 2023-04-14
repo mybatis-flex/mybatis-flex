@@ -19,6 +19,7 @@ import com.mybatisflex.codegen.template.EnjoyTemplate;
 import com.mybatisflex.codegen.template.ITemplate;
 import com.mybatisflex.core.util.StringUtil;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -37,6 +38,12 @@ public class GlobalConfig {
 
     //entity 类的后缀
     private String entityClassSuffix;
+
+    //entity 类的父类，可以自定义一些 BaseEntity 类
+    private Class<?> entitySupperClass;
+
+    //entity 默认实现的接口
+    private Class<?>[] entityInterfaces = {Serializable.class};
 
     //entity 是否使用 Lombok
     private boolean entityWithLombok = false;
@@ -126,6 +133,22 @@ public class GlobalConfig {
 
     public void setEntityClassSuffix(String entityClassSuffix) {
         this.entityClassSuffix = entityClassSuffix;
+    }
+
+    public Class<?> getEntitySupperClass() {
+        return entitySupperClass;
+    }
+
+    public void setEntitySupperClass(Class<?> entitySupperClass) {
+        this.entitySupperClass = entitySupperClass;
+    }
+
+    public Class<?>[] getEntityInterfaces() {
+        return entityInterfaces;
+    }
+
+    public void setEntityInterfaces(Class<?>[] entityInterfaces) {
+        this.entityInterfaces = entityInterfaces;
     }
 
     public boolean isEntityWithLombok() {
