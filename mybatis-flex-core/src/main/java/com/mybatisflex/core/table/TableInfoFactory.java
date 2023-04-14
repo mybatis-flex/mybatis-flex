@@ -63,6 +63,7 @@ public class TableInfoFactory {
 
     private static final Map<Class<?>, TableInfo> mapperTableInfoMap = new ConcurrentHashMap<>();
     private static final Map<Class<?>, TableInfo> entityTableMap = new ConcurrentHashMap<>();
+    private static final Map<String, TableInfo> tableInfoMap = new ConcurrentHashMap<>();
 
 
     public static TableInfo ofMapperClass(Class<?> mapperClass) {
@@ -78,8 +79,18 @@ public class TableInfoFactory {
 
 
     public static TableInfo ofEntityClass(Class<?> entityClass) {
-        return MapUtil.computeIfAbsent(entityTableMap, entityClass, key -> createTableInfo(entityClass));
+        return MapUtil.computeIfAbsent(entityTableMap, entityClass, aClass -> {
+            TableInfo tableInfo = createTableInfo(entityClass);
+            tableInfoMap.put(tableInfo.getTableName(), tableInfo);
+            return tableInfo;
+        });
     }
+
+
+    public static TableInfo ofTableName(String tableName){
+        return tableInfoMap.get(tableName);
+    }
+
 
 
     private static Class<?> getEntityClass(Class<?> mapperClass) {

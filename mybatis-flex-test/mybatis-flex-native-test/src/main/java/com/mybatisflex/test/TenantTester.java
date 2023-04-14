@@ -27,6 +27,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 
+import static com.mybatisflex.core.query.QueryMethods.select;
 import static com.mybatisflex.test.table.Tables.ACCOUNT;
 import static com.mybatisflex.test.table.Tables.TENANT_ACCOUNT;
 
@@ -62,11 +63,10 @@ public class TenantTester {
 
         mapper.selectListByQuery(QueryWrapper.create()
                 .select(TENANT_ACCOUNT.ALL_COLUMNS)
-                .from(TENANT_ACCOUNT.as("a"), ACCOUNT.as("b"))
+                .from(TENANT_ACCOUNT.as("c"), ACCOUNT.as("b"))
                 .where(TENANT_ACCOUNT.ID.eq(ACCOUNT.ID))
                 .and(TENANT_ACCOUNT.ID.eq(1))
-                .unionAll(QueryWrapper.create()
-                        .select(TENANT_ACCOUNT.ALL_COLUMNS).from(TENANT_ACCOUNT)
+                .unionAll(select(TENANT_ACCOUNT.ALL_COLUMNS).from(TENANT_ACCOUNT)
                         .where(TENANT_ACCOUNT.ID.eq(2))
                 )
         );
