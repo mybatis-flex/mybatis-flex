@@ -1,4 +1,13 @@
-mybatis-flex v1.1.2 20230414:
+mybatis-flex v1.1.3 20230414:
+新增：代码生成器生成的 entity 可以支持配置父类和实现的接口
+修复：在某些场景下出现 Recursive update 错误的问题
+修复：Entity 继承父类，但是 APT 生成的代码没有父类字段的问题
+修复：QueryWrapper unionAll 报错的问题
+修复：修复多租户的场景下 union 的子查询不添加租户 ID 的问题
+
+
+
+mybatis-flex v1.1.2 20230413:
 新增：QueryCondition 的 and(string) 和 or(string) 方法
 新增：Page.map() 方法用于 Page 数据转换
 新增：SQL 审计新增数据返回行数和自定义业务ID的支持
