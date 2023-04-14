@@ -98,10 +98,10 @@ public class GlobalConfig {
     //entity 的包名
     private String entityPackage;
 
-    //mapper 类的前缀
+    //entity 类的前缀
     private String entityClassPrefix = "";
 
-    //mapper 类的后缀
+    //entity 类的后缀
     private String entityClassSuffix = "";
 
     //entity 是否使用 Lombok
