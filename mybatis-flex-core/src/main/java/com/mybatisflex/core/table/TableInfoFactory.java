@@ -61,25 +61,24 @@ public class TableInfoFactory {
     );
 
 
-    private static Map<Class<?>, TableInfo> tableInfoMap = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, TableInfo> mapperTableInfoMap = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, TableInfo> entityTableMap = new ConcurrentHashMap<>();
 
 
     public static TableInfo ofMapperClass(Class<?> mapperClass) {
-        return MapUtil.computeIfAbsent(tableInfoMap, mapperClass, key -> {
+        return MapUtil.computeIfAbsent(mapperTableInfoMap, mapperClass, key -> {
             Class<?> entityClass = getEntityClass(mapperClass);
             if (entityClass == null){
                 return null;
             }
-
-            TableInfo tableInfo = createTableInfo(entityClass);
-            tableInfoMap.put(entityClass,tableInfo);
-            return tableInfo;
+            return ofEntityClass(entityClass);
         });
     }
 
 
-    public static TableInfo getByEntityClass(Class<?> entityClass) {
-        return tableInfoMap.get(entityClass);
+
+    public static TableInfo ofEntityClass(Class<?> entityClass) {
+        return MapUtil.computeIfAbsent(entityTableMap, entityClass, key -> createTableInfo(entityClass));
     }
 
 
@@ -98,8 +97,6 @@ public class TableInfoFactory {
 
 
     private static TableInfo createTableInfo(Class<?> entityClass) {
-
-
 
         TableInfo tableInfo = new TableInfo();
         tableInfo.setEntityClass(entityClass);

@@ -33,7 +33,7 @@ public class EntityWrapperFactory implements ObjectWrapperFactory {
                 Collection.class.isAssignableFrom(objectClass)) {
             return false;
         }
-        return TableInfoFactory.getByEntityClass(objectClass) != null;
+        return TableInfoFactory.ofEntityClass(objectClass) != null;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class EntityWrapperFactory implements ObjectWrapperFactory {
         public FlexBeanWrapper(MetaObject metaObject, Object object) {
             super(metaObject, object);
             this.entity = object;
-            this.tableInfo = TableInfoFactory.getByEntityClass(object.getClass());
+            this.tableInfo = TableInfoFactory.ofEntityClass(object.getClass());
         }
 
         @Override
