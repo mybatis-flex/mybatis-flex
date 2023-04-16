@@ -150,7 +150,8 @@ public class EntitySqlProvider {
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
-        ProviderUtil.setSqlArgs(params, primaryValues);
+        Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
+        ProviderUtil.setSqlArgs(params, ArrayUtil.concat(primaryValues,tenantIdArgs));
 
         return DialectFactory.getDialect().forDeleteEntityBatchByIds(tableInfo, primaryValues);
     }

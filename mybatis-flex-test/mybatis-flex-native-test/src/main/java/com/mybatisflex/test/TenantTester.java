@@ -18,7 +18,6 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
-import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.tenant.TenantFactory;
 import com.mybatisflex.core.tenant.TenantManager;
 import com.mybatisflex.mapper.TenantAccountMapper;
@@ -26,10 +25,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-
-import static com.mybatisflex.core.query.QueryMethods.select;
-import static com.mybatisflex.test.table.Tables.ACCOUNT;
-import static com.mybatisflex.test.table.Tables.TENANT_ACCOUNT;
 
 public class TenantTester {
 
@@ -61,15 +56,17 @@ public class TenantTester {
 
         TenantAccountMapper mapper = MybatisFlexBootstrap.getInstance().getMapper(TenantAccountMapper.class);
 
-        mapper.selectListByQuery(QueryWrapper.create()
-                .select(TENANT_ACCOUNT.ALL_COLUMNS)
-                .from(TENANT_ACCOUNT.as("c"), ACCOUNT.as("b"))
-                .where(TENANT_ACCOUNT.ID.eq(ACCOUNT.ID))
-                .and(TENANT_ACCOUNT.ID.eq(1))
-                .unionAll(select(TENANT_ACCOUNT.ALL_COLUMNS).from(TENANT_ACCOUNT)
-                        .where(TENANT_ACCOUNT.ID.eq(2))
-                )
-        );
+//        mapper.selectListByQuery(QueryWrapper.create()
+//                .select(TENANT_ACCOUNT.ALL_COLUMNS)
+//                .from(TENANT_ACCOUNT.as("c"), ACCOUNT.as("b"))
+//                .where(TENANT_ACCOUNT.ID.eq(ACCOUNT.ID))
+//                .and(TENANT_ACCOUNT.ID.eq(1))
+//                .unionAll(select(TENANT_ACCOUNT.ALL_COLUMNS).from(TENANT_ACCOUNT)
+//                        .where(TENANT_ACCOUNT.ID.eq(2))
+//                )
+//        );
+
+//         mapper.deleteBatchByIds(Arrays.asList(1, 2));
 
 //
 //        //SELECT * FROM `tb_account` WHERE `tenant_id` =  1
