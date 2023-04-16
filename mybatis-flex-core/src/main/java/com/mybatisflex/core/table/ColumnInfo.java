@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.table;
 
+import com.mybatisflex.core.handler.CompositeEnumTypeHandler;
 import com.mybatisflex.core.mask.MaskTypeHandler;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.type.JdbcType;
@@ -49,7 +50,6 @@ public class ColumnInfo {
 
 
     protected String maskType;
-
 
 
     public String getColumn() {
@@ -87,12 +87,16 @@ public class ColumnInfo {
     public TypeHandler buildTypeHandler() {
 
         //优先使用自定义的 typeHandler
-        if (typeHandler != null){
+        if (typeHandler != null) {
             return typeHandler;
         }
+        //枚举
+        else if (propertyType.isEnum()) {
+            typeHandler = new CompositeEnumTypeHandler(propertyType);
+        }
         //若用户未定义 typeHandler，而配置了数据脱敏，则使用脱敏的 handler 处理
-        else if (StringUtil.isNotBlank(maskType)){
-            typeHandler =  new MaskTypeHandler(maskType);
+        else if (StringUtil.isNotBlank(maskType)) {
+            typeHandler = new MaskTypeHandler(maskType);
         }
 
         return typeHandler;

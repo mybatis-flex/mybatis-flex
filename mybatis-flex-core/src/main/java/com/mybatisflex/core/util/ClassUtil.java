@@ -144,22 +144,29 @@ public class ClassUtil {
 
     public static List<Field> getAllFields(Class<?> cl) {
         List<Field> fields = new ArrayList<>();
-        doGetFields(cl, fields);
+        doGetFields(cl, fields, null);
         return fields;
     }
 
+    public static List<Field> getAllFields(Class<?> cl, Predicate<Field> predicate) {
+        List<Field> fields = new ArrayList<>();
+        doGetFields(cl, fields, predicate);
+        return fields;
+    }
 
-    private static void doGetFields(Class<?> cl, List<Field> fields) {
+    private static void doGetFields(Class<?> cl, List<Field> fields, Predicate<Field> predicate) {
         if (cl == null || cl == Object.class) {
             return;
         }
 
         Field[] declaredFields = cl.getDeclaredFields();
         for (Field declaredField : declaredFields) {
-            fields.add(declaredField);
+            if (predicate == null || predicate.test(declaredField)) {
+                fields.add(declaredField);
+            }
         }
 
-        doGetFields(cl.getSuperclass(), fields);
+        doGetFields(cl.getSuperclass(), fields, predicate);
     }
 
     public static List<Method> getAllMethods(Class<?> cl) {
@@ -168,26 +175,26 @@ public class ClassUtil {
         return methods;
     }
 
-    public static List<Method> getAllMethods(Class<?> cl, Predicate<Method> tester) {
+    public static List<Method> getAllMethods(Class<?> cl, Predicate<Method> predicate) {
         List<Method> methods = new ArrayList<>();
-        doGetMethods(cl, methods, tester);
+        doGetMethods(cl, methods, predicate);
         return methods;
     }
 
 
-    private static void doGetMethods(Class<?> cl, List<Method> methods, Predicate<Method> tester) {
+    private static void doGetMethods(Class<?> cl, List<Method> methods, Predicate<Method> predicate) {
         if (cl == null || cl == Object.class) {
             return;
         }
 
         Method[] declaredMethods = cl.getDeclaredMethods();
         for (Method method : declaredMethods) {
-            if (tester == null || tester.test(method)) {
+            if (predicate == null || predicate.test(method)) {
                 methods.add(method);
             }
         }
 
-        doGetMethods(cl.getSuperclass(), methods, tester);
+        doGetMethods(cl.getSuperclass(), methods, predicate);
     }
 
 }

@@ -173,6 +173,7 @@ public class TableInfoFactory {
 
             //未配置 typeHandler 的情况下，只支持基本数据类型，不支持比如 list set 或者自定义的类等
             if ((column == null || column.typeHandler() == UnknownTypeHandler.class)
+                    && !field.getType().isEnum()
                     && !defaultSupportColumnTypes.contains(field.getType())) {
                 continue;
             }
