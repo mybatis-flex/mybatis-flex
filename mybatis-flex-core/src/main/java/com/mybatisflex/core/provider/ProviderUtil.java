@@ -41,7 +41,8 @@ class ProviderUtil {
     }
 
     public static String getTableName(Map params) {
-        return params.get(FlexConsts.TABLE_NAME).toString().trim();
+        Object tableNameObj = params.get(FlexConsts.TABLE_NAME);
+        return tableNameObj != null ? tableNameObj.toString().trim() : null;
     }
 
     public static String[] getPrimaryKeys(Map params) {
@@ -82,7 +83,7 @@ class ProviderUtil {
         return (List<Row>) params.get(FlexConsts.ROWS);
     }
 
-    public static TableInfo getTableInfo(ProviderContext context){
+    public static TableInfo getTableInfo(ProviderContext context) {
         return TableInfoFactory.ofMapperClass(context.getMapperType());
     }
 
@@ -95,7 +96,7 @@ class ProviderUtil {
         return (List<Object>) params.get(FlexConsts.ENTITIES);
     }
 
-    public static boolean isIgnoreNulls(Map params){
+    public static boolean isIgnoreNulls(Map params) {
         return params.containsKey(FlexConsts.IGNORE_NULLS) && (boolean) params.get(FlexConsts.IGNORE_NULLS);
     }
 
