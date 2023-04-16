@@ -5,8 +5,8 @@
 逻辑删除指的是在删除数据的时候，并非真正的去删除，而是将表中列所对应的状态字段（status）做修改操作，
 实际上并未删除目标数据。
 
-我们可以在做表的字段设计的时候，用一个列表标识该数据的 "删除状态"，在 mybatis-flex 中，正常状态的值为 0， 已删除
-的值为 1。
+我们可以进行表的字段设计时，用一个列标识该数据的 "删除状态"，在 mybatis-flex 中，正常状态的值为 0， 已删除
+的值为 1（可以通过设置 FlexGlobalConfig 来修改这个值）。
 
 ## Mybatis-Flex 逻辑删除示例
 
@@ -53,3 +53,20 @@ SELECT * FROM tb_account where id = ? and is_delete = 0
 - selectListBy**
 - selectCountBy**
 - paginate
+
+## 逻辑删除的默认值配置
+
+在某些场景下，我们可能希望数据库存入的逻辑删除中的值并非 0 和 1，比如可能是 true 和 false 等，那么，我们可以通过配置 `FlexGlobalConfig`
+来修改这个默认值。
+
+如下代码所示：
+
+```java
+FlexGlobalConfig globalConfig = FlexGlobalConfig.getDefaultConfig();
+
+//设置数据库正常时的值
+globalConfig.setNormalValueOfLogicDelete("...");
+
+//设置数据已被删除时的值
+globalConfig.setDeletedValueOfLogicDelete("...");
+```
