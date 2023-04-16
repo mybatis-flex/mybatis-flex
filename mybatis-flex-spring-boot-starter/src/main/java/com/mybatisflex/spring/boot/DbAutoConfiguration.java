@@ -17,10 +17,13 @@ package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.row.Db;
+import com.mybatisflex.spring.FlexTransactionManager;
 import com.mybatisflex.spring.SpringRowSessionManager;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +31,7 @@ import java.util.logging.Logger;
 @ConditionalOnClass(Db.class)
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter({MybatisFlexAutoConfiguration.class})
-public class DbAutoConfiguration {
+public class DbAutoConfiguration implements TransactionManagementConfigurer {
 
     public DbAutoConfiguration() {
         FlexGlobalConfig defaultConfig = FlexGlobalConfig.getDefaultConfig();
@@ -39,4 +42,13 @@ public class DbAutoConfiguration {
             Db.invoker().setRowSessionManager(new SpringRowSessionManager());
         }
     }
+
+
+    @Override
+    public TransactionManager annotationDrivenTransactionManager() {
+        return new FlexTransactionManager();
+    }
+
+
+
 }

@@ -19,9 +19,11 @@ import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.mapper.AccountMapper;
 import com.mybatisflex.test.model.Account;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mybatisflex.test.service.AccountService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,8 +31,12 @@ import java.util.stream.Collectors;
 @RestController
 public class AccountController {
 
-    @Autowired
+    @Resource
     AccountMapper accountMapper;
+
+
+    @Resource
+    AccountService accountService;
 
 
     @PostMapping("/account/add")
@@ -41,9 +47,33 @@ public class AccountController {
 
 
     @GetMapping("/account/{id}")
-    Account selectOne(@PathVariable("id") Long id) {
+    @Transactional
+    public Account selectOne(@PathVariable("id") Long id) {
+
+        Account account = new Account();
+        account.setId(1L);
+        account.setUserName("heihei");
+        accountMapper.update(account);
+
+
+        accountService.update2();
+
+//        update2();
+
+
         return accountMapper.selectOneById(id);
     }
+
+
+//
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
+//    @GetMapping("/account/uuu")
+//    public void update2(){
+//        Account account = new Account();
+//        account.setId(2L);
+//        account.setUserName("haha");
+//        accountMapper.update(account);
+//    }
 
 
     @GetMapping("/selectListByIds/{id}")

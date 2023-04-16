@@ -124,20 +124,20 @@ public class TransactionalManager {
     }
 
     private static Boolean execNewTransactional(Supplier<Boolean> supplier) {
-        String xid = TransactionalManager.startTransactional();
+        String xid = startTransactional();
         Boolean success = false;
         boolean rollbacked = false;
         try {
             success = supplier.get();
         } catch (Exception e) {
             rollbacked = true;
-            TransactionalManager.rollback(xid);
+            rollback(xid);
             throw new TransactionException(e.getMessage(), e);
         } finally {
             if (success != null && success) {
-                TransactionalManager.commit(xid);
+                commit(xid);
             } else if (!rollbacked) {
-                TransactionalManager.rollback(xid);
+                rollback(xid);
             }
         }
         return success;
