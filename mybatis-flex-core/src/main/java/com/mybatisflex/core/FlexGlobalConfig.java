@@ -60,6 +60,13 @@ public class FlexGlobalConfig {
     private Map<Class<?>, InsertListener> entityInsertListeners = new ConcurrentHashMap<>();
 
 
+    /**
+     * 逻辑删除的相关配置
+     */
+    private Object normalValueOfLogicDelete = FlexConsts.LOGIC_DELETE_NORMAL;
+    private Object deletedValueOfLogicDelete = FlexConsts.LOGIC_DELETE_DELETED;
+
+
     public DbType getDbType() {
         return dbType;
     }
@@ -149,6 +156,22 @@ public class FlexGlobalConfig {
     }
 
 
+    public Object getNormalValueOfLogicDelete() {
+        return normalValueOfLogicDelete;
+    }
+
+    public void setNormalValueOfLogicDelete(Object normalValueOfLogicDelete) {
+        this.normalValueOfLogicDelete = normalValueOfLogicDelete;
+    }
+
+    public Object getDeletedValueOfLogicDelete() {
+        return deletedValueOfLogicDelete;
+    }
+
+    public void setDeletedValueOfLogicDelete(Object deletedValueOfLogicDelete) {
+        this.deletedValueOfLogicDelete = deletedValueOfLogicDelete;
+    }
+
     public static ConcurrentHashMap<String, FlexGlobalConfig> getGlobalConfigs() {
         return globalConfigs;
     }
@@ -156,6 +179,7 @@ public class FlexGlobalConfig {
     public static void setGlobalConfigs(ConcurrentHashMap<String, FlexGlobalConfig> globalConfigs) {
         FlexGlobalConfig.globalConfigs = globalConfigs;
     }
+
 
     /**
      * 对应的是 注解 {@link com.mybatisflex.annotation.Id} 的配置

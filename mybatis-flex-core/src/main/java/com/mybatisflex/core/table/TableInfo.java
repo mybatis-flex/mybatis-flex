@@ -493,7 +493,9 @@ public class TableInfo {
 
         //逻辑删除条件，已删除的数据不能被修改
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            queryWrapper.and(QueryCondition.create(tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS, FlexConsts.LOGIC_DELETE_NORMAL));
+//            queryWrapper.and(QueryCondition.create(tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS, FlexConsts.LOGIC_DELETE_NORMAL));
+            queryWrapper.and(QueryCondition.create(tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS
+                    , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
         }
 
         //多租户

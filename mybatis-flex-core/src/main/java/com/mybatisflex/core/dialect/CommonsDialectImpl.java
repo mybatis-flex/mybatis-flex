@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.core.dialect;
 
-import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
@@ -440,7 +440,7 @@ public class CommonsDialectImpl implements IDialect {
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
         sql.append("UPDATE ").append(wrap(tableInfo.getTableName())).append(" SET ");
-        sql.append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_DELETED);
+        sql.append(wrap(logicDeleteColumn)).append(" = ").append(wrap(getLogicDeletedValue()));
         sql.append(" WHERE ");
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
@@ -449,7 +449,7 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(primaryKeys[i])).append(" = ?");
         }
 
-        sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
+        sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(wrap(getLogicNormalValue()));
 
         //租户ID
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
@@ -458,6 +458,9 @@ public class CommonsDialectImpl implements IDialect {
 
         return sql.toString();
     }
+
+
+
 
     @Override
     public String forDeleteEntityBatchByIds(TableInfo tableInfo, Object[] primaryValues) {
@@ -479,7 +482,7 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE ");
         sql.append(wrap(tableInfo.getTableName()));
-        sql.append(" SET ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_DELETED);
+        sql.append(" SET ").append(wrap(logicDeleteColumn)).append(" = ").append(wrap(getLogicDeletedValue()));
         sql.append(" WHERE ");
         sql.append("(");
 
@@ -511,7 +514,7 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        sql.append(") AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
+        sql.append(") AND ").append(wrap(logicDeleteColumn)).append(" = ").append(wrap(getLogicNormalValue()));
 
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
             sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" IN ").append(buildQuestion(tenantIdArgs.length, true));
@@ -539,7 +542,7 @@ public class CommonsDialectImpl implements IDialect {
         //ignore selectColumns
         StringBuilder sqlBuilder = new StringBuilder("UPDATE ");
         sqlBuilder.append(wrap(tableInfo.getTableName()));
-        sqlBuilder.append(" SET ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_DELETED);
+        sqlBuilder.append(" SET ").append(wrap(logicDeleteColumn)).append(" = ").append(wrap(getLogicDeletedValue()));
 
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
@@ -594,7 +597,7 @@ public class CommonsDialectImpl implements IDialect {
         //逻辑删除条件，已删除的数据不能被修改
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
+            sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(wrap(getLogicNormalValue()));
         }
 
 
@@ -676,7 +679,7 @@ public class CommonsDialectImpl implements IDialect {
         //逻辑删除的情况下，需要添加逻辑删除的条件
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
+            sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(wrap(getLogicNormalValue()));
         }
 
         //多租户
@@ -734,7 +737,7 @@ public class CommonsDialectImpl implements IDialect {
 
 
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(FlexConsts.LOGIC_DELETE_NORMAL);
+            sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(wrap(getLogicNormalValue()));
         }
 
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
@@ -834,5 +837,14 @@ public class CommonsDialectImpl implements IDialect {
         return withBrackets ? "(" + sb + ")" : sb.toString();
     }
 
+
+    protected String getLogicNormalValue() {
+        return FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete().toString();
+    }
+
+
+    protected String getLogicDeletedValue(){
+        return FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete().toString();
+    }
 
 }
