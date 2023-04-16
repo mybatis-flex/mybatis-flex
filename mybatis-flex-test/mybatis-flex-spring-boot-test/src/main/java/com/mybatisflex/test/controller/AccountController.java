@@ -50,16 +50,19 @@ public class AccountController {
     @Transactional
     public Account selectOne(@PathVariable("id") Long id) {
 
-        Account account = new Account();
-        account.setId(1L);
-        account.setUserName("heihei");
-        accountMapper.update(account);
+//        Account account = new Account();
+//        account.setId(1L);
+//        account.setUserName("heihei");
+//        accountMapper.update(account);
+//
+//
+//        accountService.update2();
 
+        Account account1 = accountMapper.selectOneById(1L);
+        Account account2 = accountMapper.selectOneById(2L);
 
-        accountService.update2();
-
-//        update2();
-
+        System.out.println("selectOne >>>>  " + account1);
+        System.out.println("selectOne >>>>  " + account2);
 
         return accountMapper.selectOneById(id);
     }

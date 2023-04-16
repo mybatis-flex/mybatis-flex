@@ -20,12 +20,16 @@ import com.mybatisflex.core.keygen.MultiEntityKeyGenerator;
 import com.mybatisflex.core.keygen.MultiRowKeyGenerator;
 import com.mybatisflex.core.keygen.MybatisKeyGeneratorUtil;
 import com.mybatisflex.core.keygen.RowKeyGenerator;
+import com.mybatisflex.core.mybatis.executor.FlexBatchExecutor;
+import com.mybatisflex.core.mybatis.executor.FlexReuseExecutor;
+import com.mybatisflex.core.mybatis.executor.FlexSimpleExecutor;
 import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.EntityWrapperFactory;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
+import org.apache.ibatis.executor.CachingExecutor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
@@ -36,10 +40,8 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
-import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.*;
+import org.apache.ibatis.transaction.Transaction;
 
 import java.lang.reflect.Proxy;
 import java.util.Map;
@@ -97,6 +99,29 @@ public class FlexConfiguration extends Configuration {
         StatementHandler statementHandler = new FlexStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
         statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
         return statementHandler;
+    }
+
+
+    /**
+     * 替换为 Flex 的 Executor，主要用于重建 CacheKey
+     * 默认情况下，Mybatis 的 CacheKey 构建是必须有 ParameterMapping，而 Flex 的 select 是不带有 ParameterMapping 的
+     */
+    @Override
+    public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
+        executorType = executorType == null ? defaultExecutorType : executorType;
+        Executor executor;
+        if (ExecutorType.BATCH == executorType) {
+            executor = new FlexBatchExecutor(this, transaction);
+        } else if (ExecutorType.REUSE == executorType) {
+            executor = new FlexReuseExecutor(this, transaction);
+        } else {
+            executor = new FlexSimpleExecutor(this, transaction);
+        }
+        if (cacheEnabled) {
+            executor = new CachingExecutor(executor);
+        }
+        executor = (Executor) interceptorChain.pluginAll(executor);
+        return executor;
     }
 
 
