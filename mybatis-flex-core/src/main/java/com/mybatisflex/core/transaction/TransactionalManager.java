@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  * 事务管理器
@@ -56,6 +57,90 @@ public class TransactionalManager {
             }
         }
         connMap.put(ds, connection);
+    }
+
+
+    public static Boolean exec(Supplier<Boolean> supplier, Propagation propagation) {
+        //上一级事务的id，支持事务嵌套
+        String currentXID = TransactionContext.getXID();
+        try {
+            switch (propagation) {
+                //若存在当前事务，则加入当前事务，若不存在当前事务，则创建新的事务
+                case REQUIRED:
+                    if (currentXID != null) {
+                        return supplier.get();
+                    } else {
+                        return execNewTransactional(supplier);
+                    }
+
+
+                    //若存在当前事务，则加入当前事务，若不存在当前事务，则已非事务的方式运行
+                case SUPPORTS:
+                    return supplier.get();
+
+
+                //若存在当前事务，则加入当前事务，若不存在当前事务，则已非事务的方式运行
+                case MANDATORY:
+                    if (currentXID != null) {
+                        return supplier.get();
+                    } else {
+                        throw new TransactionException("No existing transaction found for transaction marked with propagation 'mandatory'");
+                    }
+
+
+                    //始终以新事物的方式运行，若存在当前事务，则暂停（挂起）当前事务。
+                case REQUIRES_NEW:
+                    return execNewTransactional(supplier);
+
+
+                //以非事物的方式运行，若存在当前事务，则暂停（挂起）当前事务。
+                case NOT_SUPPORTED:
+                    if (currentXID != null) {
+                        TransactionContext.release();
+                    }
+                    return supplier.get();
+
+
+                //以非事物的方式运行，若存在当前事务，则抛出异常。
+                case NEVER:
+                    if (currentXID != null) {
+                        throw new TransactionException("Existing transaction found for transaction marked with propagation 'never'");
+                    }
+                    return supplier.get();
+
+
+                //暂时不支持这种事务传递方式
+                //default 为 nested 方式
+                default:
+                    throw new TransactionException("Transaction manager does not allow nested transactions");
+
+            }
+        } finally {
+            //恢复上一级事务
+            if (currentXID != null) {
+                TransactionContext.hold(currentXID);
+            }
+        }
+    }
+
+    private static Boolean execNewTransactional(Supplier<Boolean> supplier) {
+        String xid = TransactionalManager.startTransactional();
+        Boolean success = false;
+        boolean rollbacked = false;
+        try {
+            success = supplier.get();
+        } catch (Exception e) {
+            rollbacked = true;
+            TransactionalManager.rollback(xid);
+            throw new TransactionException(e.getMessage(), e);
+        } finally {
+            if (success != null && success) {
+                TransactionalManager.commit(xid);
+            } else if (!rollbacked) {
+                TransactionalManager.rollback(xid);
+            }
+        }
+        return success;
     }
 
 

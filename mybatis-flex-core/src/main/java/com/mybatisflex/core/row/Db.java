@@ -22,7 +22,7 @@ import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.transaction.TransactionContext;
+import com.mybatisflex.core.transaction.Propagation;
 import com.mybatisflex.core.transaction.TransactionalManager;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.util.MapUtil;
@@ -563,31 +563,12 @@ public class Db {
      * @param supplier
      */
     public static boolean tx(Supplier<Boolean> supplier) {
-        //上一级事务的id，支持事务嵌套
-        String higherXID = TransactionContext.getXID();
-        try {
-            String xid = TransactionalManager.startTransactional();
-            Boolean success = false;
-            boolean rollbacked = false;
-            try {
-                success = supplier.get();
-            } catch (Exception e) {
-                rollbacked = true;
-                TransactionalManager.rollback(xid);
-                e.printStackTrace();
-            } finally {
-                if (success != null && success) {
-                    TransactionalManager.commit(xid);
-                } else if (!rollbacked) {
-                    TransactionalManager.rollback(xid);
-                }
-            }
-            return success != null && success;
-        } finally {
-            //恢复上一级事务
-            if (higherXID != null) {
-                TransactionContext.hold(higherXID);
-            }
-        }
+        return tx(supplier, Propagation.REQUIRED);
+    }
+
+
+    public static boolean tx(Supplier<Boolean> supplier, Propagation propagation) {
+        Boolean result = TransactionalManager.exec(supplier, propagation);
+        return result != null && result;
     }
 }
