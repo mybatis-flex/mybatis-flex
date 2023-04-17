@@ -1,6 +1,42 @@
 # 事务管理
 
-MyBatis-Flex 提供了一个名为 `Db.tx()` 的方法<Badge type="tip" text="^1.0.6" />，用于进行事务管理，以下是示例代码：
+MyBatis-Flex 提供了一个名为 `Db.tx()` 的方法<Badge type="tip" text="^1.0.6" />，用于进行事务管理，若使用 Spring 框架的场景下，也可使用 `@Transactional` 注解进行事务管理。
+
+`Db.tx()` 方法定义如下：
+
+```java
+boolean tx(Supplier<Boolean> supplier);
+boolean tx(Supplier<Boolean> supplier, Propagation propagation);
+```
+- **supplier**：要执行的内容（代码）
+- **propagation**：事务传播属性
+
+事务传播属性 `propagation` 是一个枚举类，其枚举内容如下：
+
+```java
+//若存在当前事务，则加入当前事务，若不存在当前事务，则创建新的事务
+REQUIRED(0),
+
+//若存在当前事务，则加入当前事务，若不存在当前事务，则已非事务的方式运行
+SUPPORTS(1),
+
+//若存在当前事务，则加入当前事务，若不存在当前事务，则抛出异常
+MANDATORY(2),
+
+//始终以新事物的方式运行，若存在当前事务，则暂停（挂起）当前事务。
+REQUIRES_NEW(3),
+
+//以非事物的方式运行，若存在当前事务，则暂停（挂起）当前事务。
+NOT_SUPPORTED(4),
+
+//以非事物的方式运行，若存在当前事务，则抛出异常。
+NEVER(5),
+
+//暂时不支持
+NESTED(6),
+```
+
+`Db.tx()` 代码示例：
 
 ```java
 Db.tx(() -> {
@@ -33,7 +69,11 @@ Db.tx(() -> {
 });
 ```
 
-支持无限极嵌套，嵌套事务之间不会相互影响。
+支持无限极嵌套，默认情况下，嵌套事务直接的关系是：`REQUIRED`（若存在当前事务，则加入当前事务，若不存在当前事务，则创建新的事务）。
+
+## @Transactional 
+
+Mybatis-Flex 已支持 Spring 框架的 `@Transactional`，在使用 Spring 的情况下，可以使用 `@Transactional` 进行事务管理。
 
 ## 特征
 
