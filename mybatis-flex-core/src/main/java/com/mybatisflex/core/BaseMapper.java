@@ -22,6 +22,8 @@ import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ObjectUtil;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.builder.annotation.ProviderContext;
@@ -54,6 +56,23 @@ public interface BaseMapper<T> {
      */
     @InsertProvider(type = EntitySqlProvider.class, method = FlexConsts.METHOD_INSERT_BATCH)
     int insertBatch(@Param(FlexConsts.ENTITIES) List<T> entities);
+
+
+    /**
+     * 新增 或者 更新，若主键有值，则更新，若没有主键值，则插入
+     *
+     * @param entity 实体类
+     * @return 返回影响的行数
+     */
+    default int insertOrUpdate(T entity) {
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
+        Object[] pkArgs = tableInfo.buildPkSqlArgs(entity);
+        if (pkArgs.length == 0 || pkArgs[0] == null) {
+            return insert(entity);
+        } else {
+            return update(entity);
+        }
+    }
 
     /**
      * 根据 id 删除数据
