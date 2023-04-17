@@ -1,8 +1,8 @@
 package #(globalConfig.mapperPackage);
 
-import com.mybatisflex.core.BaseMapper;
+import #(table.buildMapperImport());
 import #(globalConfig.entityPackage).#(table.buildEntityClassName());
 
-public interface #(table.buildMapperClassName()) extends BaseMapper<#(table.buildEntityClassName())> {
+public interface #(table.buildMapperClassName()) extends #(table.buildMapperName())<#(table.buildEntityClassName())> {
 
 }

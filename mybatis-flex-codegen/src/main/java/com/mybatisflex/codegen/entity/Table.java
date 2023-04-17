@@ -253,6 +253,14 @@ public class Table {
         return tableAnnotation.append(")").toString();
     }
 
+    public String buildMapperImport(){
+        return globalConfig.getMapperSupperClass().getName();
+    }
+
+    public String buildMapperName(){
+        return globalConfig.getMapperSupperClass().getSimpleName();
+    }
+
 
     @Override
     public String toString() {

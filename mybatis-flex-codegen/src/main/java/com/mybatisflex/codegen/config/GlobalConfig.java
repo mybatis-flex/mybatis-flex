@@ -17,6 +17,7 @@ package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.codegen.template.EnjoyTemplate;
 import com.mybatisflex.codegen.template.ITemplate;
+import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.io.Serializable;
@@ -62,6 +63,9 @@ public class GlobalConfig {
 
     //mapper 的包名
     private String mapperPackage;
+
+    //自定义 mapper 的父类
+    private Class<?> mapperSupperClass = BaseMapper.class;
 
     //数据库表前缀，多个前缀用英文逗号（,） 隔开
     private String tablePrefix;
@@ -203,6 +207,14 @@ public class GlobalConfig {
 
     public void setMapperPackage(String mapperPackage) {
         this.mapperPackage = mapperPackage;
+    }
+
+    public Class<?> getMapperSupperClass() {
+        return mapperSupperClass;
+    }
+
+    public void setMapperSupperClass(Class<?> mapperSupperClass) {
+        this.mapperSupperClass = mapperSupperClass;
     }
 
     public String getTablePrefix() {

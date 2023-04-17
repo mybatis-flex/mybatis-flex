@@ -55,6 +55,7 @@ public class GeneratorTest {
 
         //设置 mapper 类的包名
         globalConfig.setMapperPackage("com.test.mapper");
+        globalConfig.setMapperSupperClass(MyBaseMapper.class);
 
 
         TableConfig tableConfig = new TableConfig();
