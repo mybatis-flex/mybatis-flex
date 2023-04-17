@@ -128,6 +128,9 @@ public class GlobalConfig {
     //mapper 的包名
     private String mapperPackage;
 
+    //自定义 mapper 的父类
+    private Class<?> mapperSupperClass = BaseMapper.class;
+
     //数据库表前缀，多个前缀用英文逗号（,） 隔开
     private String tablePrefix;
 

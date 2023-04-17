@@ -433,3 +433,22 @@ SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 ![](../assets/images/build_idea.png)
 
 > 更多关于 APT 的配置，请进入 [APT 配置章节](./apt) 了解。
+
+## 特别注意事项!!!
+在 QueryWrapper 的条件构建中，如果传入 null 值，则自动忽略该条件，这有许多的好处，不需要额外的通过 `when()` 方法判断。但是也带来一些额外的知识记忆点，
+因此，正对这一点需要特别注意一下。
+
+例如：
+
+```java
+String userName = null;
+Integer id = null;
+QueryWrapper query1 = QueryWrapper.create()
+    .where(ACCOUNT.AGE.ge(18))
+    .and(ACCOUNT.USER_NAME.like(userName))
+    .and(ACCOUNT.ID.ge(id));
+
+QueryWrapper query2 = QueryWrapper.create()
+    .where(ACCOUNT.AGE.ge(18));
+```
+在以上的 `query1` 和 `query2` 中，它们构建出来的 SQL 条件是完全一致的，因为 Mybatis-Flex 会自动忽略 null 值的条件。
