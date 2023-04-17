@@ -16,13 +16,17 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
-import com.mybatisflex.core.query.QueryWrapper;
-import org.apache.ibatis.logging.stdout.StdOutImpl;
+import com.mybatisflex.core.audit.AuditManager;
+import com.mybatisflex.core.audit.ConsoleMessageCollector;
+import com.mybatisflex.core.audit.MessageCollector;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 import java.util.List;
+
+import static com.mybatisflex.core.query.QueryMethods.select;
+import static com.mybatisflex.test.table.Tables.ACCOUNT;
 
 public class EntityTestStarter {
 
@@ -35,10 +39,15 @@ public class EntityTestStarter {
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
                 .setDataSource(dataSource)
-                .setLogImpl(StdOutImpl.class)
                 .addMapper(AccountMapper.class)
                 .start();
 
+        //开启审计功能
+        AuditManager.setAuditEnable(true);
+
+//设置 SQL 审计收集器
+        MessageCollector collector = new ConsoleMessageCollector();
+        AuditManager.setMessageCollector(collector);
 
 //        //查询 ID 为 1 的数据
 //        Account account = bootstrap.execute(AccountMapper.class, accountMapper ->
@@ -46,14 +55,29 @@ public class EntityTestStarter {
 //        System.out.println(account);
 
         AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
-        Account account = accountMapper.selectOneById(1);
+//        Account account = accountMapper.selectOneById(1);
 
 
-        List<Account> accounts = accountMapper.selectAll();
+
+//        QueryWrapper query = QueryWrapper.create().where(SYS_CONFIG.TYPE.eq(type).when(StrChecker.isNotBlank(type)))
+//                .and(SYS_CONFIG.NAME.like(word).when(StrChecker.isNotBlank(word))
+//                        .or(SYS_CONFIG.CODE.like(word).when(StrChecker.isNotBlank(word)))
+//                        .or(SYS_CONFIG.VALUE.like(word).when(StrChecker.isNotBlank(word)))
+//                        .or(SYS_CONFIG.TYPE.like(word).when(StrChecker.isNotBlank(word)))
+//                );
+
+        List<Account> accounts = accountMapper.selectListByQuery(
+                select().where(ACCOUNT.AGE.ge(18).when(false))
+                        .and(ACCOUNT.USER_NAME.like("aaaa").when(false)
+                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+                        )
+        );
         System.out.println(accounts);
 //
-        long l = accountMapper.selectCountByQuery(QueryWrapper.create());
-        System.out.println("count: "+ l);
+//        long l = accountMapper.selectCountByQuery(QueryWrapper.create());
+//        System.out.println("count: "+ l);
 
 //        System.out.println(account);
 //

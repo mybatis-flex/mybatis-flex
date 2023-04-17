@@ -33,6 +33,9 @@ public class Account extends BaseAccount implements Serializable {
 
     private TypeEnum typeEnum;
 
+//    @Column(isLogicDelete = true)
+//    private boolean deleteFlag;
+
 
     public Long getId() {
         return id;
@@ -80,6 +83,30 @@ public class Account extends BaseAccount implements Serializable {
         }
         options.put(key, value);
     }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
+
+    public TypeEnum getTypeEnum() {
+        return typeEnum;
+    }
+
+    public void setTypeEnum(TypeEnum typeEnum) {
+        this.typeEnum = typeEnum;
+    }
+
+//    public boolean isDeleteFlag() {
+//        return deleteFlag;
+//    }
+//
+//    public void setDeleteFlag(boolean deleteFlag) {
+//        this.deleteFlag = deleteFlag;
+//    }
 
     @Override
     public String toString() {

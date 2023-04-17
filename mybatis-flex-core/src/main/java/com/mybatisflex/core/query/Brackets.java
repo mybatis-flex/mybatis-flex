@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
 
@@ -58,11 +59,17 @@ public class Brackets extends QueryCondition {
         StringBuilder sql = new StringBuilder();
         if (checkEffective()) {
             String childSql = childCondition.toSql(queryTables, dialect);
-            QueryCondition effectiveBefore = getEffectiveBefore();
-            if (effectiveBefore != null) {
-                childSql = effectiveBefore.connector + "(" + childSql + ")";
+            if (StringUtil.isNotBlank(childSql)) {
+                QueryCondition effectiveBefore = getEffectiveBefore();
+                if (effectiveBefore != null) {
+                    childSql = effectiveBefore.connector + "(" + childSql + ")";
+                }
+                sql.append(childSql);
+            } else {
+                //all child conditions is not effective
+                //fixed gitee #I6W89G
+                this.effective = false;
             }
-            sql.append(childSql);
         }
 
         if (this.next != null) {
