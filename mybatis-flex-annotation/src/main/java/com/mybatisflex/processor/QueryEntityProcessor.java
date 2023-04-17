@@ -168,7 +168,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
 
                 //是否开启 mapper 生成功能
-                if ("true".equalsIgnoreCase(mappersGenerateEnable)) {
+                if ("true".equalsIgnoreCase(mappersGenerateEnable) && table.mappersGenerateEnable() == true) {
                     String realMapperPackage = genMappersPackage == null || genMappersPackage.trim().length() == 0
                             ? guessMapperPackage(entityClassElement.toString()) : genMappersPackage;
                     genMapperClass(genPath, realMapperPackage, entityClassElement.toString());
