@@ -6,7 +6,7 @@ MyBatis-Flex 内置了 SQL 打印分析的功能，其是使用 SQL 审计模块
 
 ```java
 //开启审计功能
-AuditManager.setEnable(true);
+AuditManager.setAuditEnable(true);
 
 //设置 SQL 审计收集器
 MessageCollector collector = new ConsoleMessageCollector();
