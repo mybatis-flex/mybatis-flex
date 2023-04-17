@@ -24,9 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class AccountController {
@@ -50,16 +48,20 @@ public class AccountController {
     @Transactional
     public Account selectOne(@PathVariable("id") Long id) {
 
-//        Account account = new Account();
-//        account.setId(1L);
-//        account.setUserName("heihei");
-//        accountMapper.update(account);
-//
-//
-//        accountService.update2();
+        Account account = new Account();
+        account.setId(1L);
+        account.setUserName("heihei");
+        accountMapper.update(account);
+
 
         Account account1 = accountMapper.selectOneById(1L);
         Account account2 = accountMapper.selectOneById(2L);
+
+        accountService.update2();
+
+        if (true) {
+            throw new IllegalStateException("aaa");
+        }
 
         System.out.println("selectOne >>>>  " + account1);
         System.out.println("selectOne >>>>  " + account2);
@@ -68,21 +70,10 @@ public class AccountController {
     }
 
 
-//
-//    @Transactional(propagation = Propagation.REQUIRES_NEW)
-//    @GetMapping("/account/uuu")
-//    public void update2(){
-//        Account account = new Account();
-//        account.setId(2L);
-//        account.setUserName("haha");
-//        accountMapper.update(account);
-//    }
 
-
-    @GetMapping("/selectListByIds/{id}")
-    List<Account> selectListByIds(@PathVariable("id") String id) {
-        List<Long> ids = Arrays.stream(id.split(",")).mapToLong(Long::parseLong).boxed().collect(Collectors.toList());
-        return accountMapper.selectListByIds(ids);
+    @GetMapping("/all")
+    List<Account> all() {
+        return accountMapper.selectAll();
     }
 
 

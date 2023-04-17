@@ -55,13 +55,13 @@ delete from tb_account where id >= 100;
 `BaseMapper` 的接口提供了 update、updateByMap、updateByQuery 方法，用于更新数据；
 
 - **update(entity)**：根据主键更新到 entity 到数据库，要求主键值不能为空，否则会抛出异常。同时，数据为 null 的字段 **不会** 更新到数据库。 
-- **update(entity, ignoreNulls)**：根据主键更新到 entity 到数据库，要求主键值不能为空。ignoreNulls 为是否忽略 null 字段，如果为 true，所有 null 字段都会更新到数据库。
+- **update(entity, ignoreNulls)**：根据主键更新到 entity 到数据库，要求主键值不能为空。ignoreNulls 为是否忽略 null 字段，如果为 false，所有 null 字段都会更新到数据库。
 - **updateByMap(entity, map)**：根据 `map<字段名，值>` 组成的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）, entity 的 null 属性，会自动被忽略。
 - **updateByCondition(entity, condition)**：根据 condition 构建的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）, entity 的 null 属性，会自动被忽略。
-- **updateByCondition(entity, ignoreNulls, condition)**：ignoreNulls 是否忽略 null 值，默认为 true
+- **updateByCondition(entity, ignoreNulls, condition)**：ignoreNulls 是否忽略 null 值，默认为 true，如果为 false，所有 null 字段都会更新到数据库。
 - **updateByQuery(entity, queryWrapper)**：根据 queryWrapper 组成的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）, entity 的 null 属性，会自动被忽略。
 - **updateByQuery(entity, ignoreNulls, queryWrapper)**：据 queryWrapper 组成的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）。 ignoreNulls 用于是否忽略 entity 的 null 属性
-， 若 ignoreNulls 为 true，entity 的所有 null 属性都会被更新到数据库。
+， 若 ignoreNulls 为 false，entity 的所有 null 属性都会被更新到数据库。
 
 
 ## 部分字段更新
