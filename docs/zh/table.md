@@ -20,14 +20,14 @@ public @interface Table {
     String schema() default "";
 
     /**
-     * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源
-     */
-    String dataSource() default "";
-
-    /**
      * 默认为 驼峰属性 转换为 下划线字段
      */
     boolean camelToUnderline() default true;
+
+    /**
+     * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源
+     */
+    String dataSource() default "";
 
     /**
      * 监听 entity 的 insert 行为
@@ -43,6 +43,11 @@ public @interface Table {
      * 监听 entity 的查询数据的 set 行为，用户主动 set 不会触发
      */
     Class<? extends SetListener> onSet() default NoneListener.class;
+
+    /**
+     * 在某些场景下，我们需要手动编写 Mapper，可以通过这个注解来关闭 APT 的 Mapper 生成
+     */
+    boolean mapperGenerateEnable() default true;
 }
 ```
 

@@ -53,11 +53,25 @@ processor.tablesClassName = your-class-name
 processor.mappersPackage = com.your-package
 ```
 
+## 自定义 Mapper 的父类
+
+默认情况下，生成的所有 Mapper 是都继承 `com.mybatisflex.core.BaseMapper` 接口，但是在某些场景下（比如：新增更多的通用方法等），用户可以自定义自己的
+`BaseMapper`，然后通过 APT 配置生成。
+
+```properties
+processor.baseMapperClass=com.domain.mapper.MyBaseMapper
+```
+
+
 ## APT 关闭 Mapper 生成
+
+在某些情况下，我们可能需要手写 Mapper，不需要 APT 生成，可以通过如下配置关闭 APT 的生成功能。
 
 ```properties
 processor.mappersGenerateEnable = false
 ```
+
+以上的配置，会关闭整个项目的 APT 生成，若我们只想关闭某一个 Entity 的 APT 生成，那么可以通过配置注解 `@Table(mapperGenerateEnable = false)` 进行关闭。
 
 ## 开发工具无法导入生成的代码？
 
