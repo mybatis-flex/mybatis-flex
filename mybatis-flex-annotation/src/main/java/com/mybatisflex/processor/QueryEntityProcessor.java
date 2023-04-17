@@ -373,7 +373,13 @@ public class QueryEntityProcessor extends AbstractProcessor {
         }
     }
 
-
+    /**
+     *
+     * @param genBasePath 生成路径
+     * @param genPackageName 包名
+     * @param entityClass 实体类名
+     * @param baseMapperClass 自定义Mapper的父类全路径和类名 com.xx.mapper.BaseMapper，可通过mybatis-flex.properties 的属性processor.baseMapperClass配置， 默认为 com.mybatisflex.core.BaseMapper
+     */
     private void genMapperClass(String genBasePath, String genPackageName, String entityClass, String baseMapperClass) {
         String entityName = entityClass.substring(entityClass.lastIndexOf(".") + 1);
         String baseMapperClzName = baseMapperClass.substring(baseMapperClass.lastIndexOf(".") + 1);
