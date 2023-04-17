@@ -1,3 +1,17 @@
+mybatis-flex v1.1.4 20230417:
+新增：添加逻辑删除的自定义内容配置功能
+新增：Entity 添加枚举属性的支持
+新增：BaseMapper 新增 insertOrUpdate() 方法
+新增：事务添加 Propagation 参数配置的支持
+新增：为 Spring 适配 @Transactional 注解的支持
+修复：租户模式下，deleteBatchByIds 报错的问题
+修复：ProviderUtil NPE 的问题
+修复：APT 和 TableInfo 构建多出静态变量的问题
+文档：完善逻辑删除的相关文档
+文档：修改 ignoreNulls 描述错误的问题
+
+
+
 mybatis-flex v1.1.3 20230414:
 新增：代码生成器生成的 entity 可以支持配置父类和实现的接口
 修复：在某些场景下出现 Recursive update 错误的问题
