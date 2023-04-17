@@ -58,8 +58,7 @@ public @interface Table {
     Class<? extends SetListener> onSet() default NoneListener.class;
 
     /**
-     * 控制是否自动生成Mapper,根据mybatis-flex.properties的processor.mappersGenerateEnable和@Table的mappersGenerateEnable，mybatis-flex.properties 配置为true,@Table的mappersGenerateEnable才生效，
-     * 否则自行编写Mapper
+     * 在某些场景下，我们需要手动编写 Mapper，可以通过这个注解来关闭 APT 的 Mapper 生成
      */
-    boolean  mappersGenerateEnable() default true;
+    boolean mapperGenerateEnable() default true;
 }
