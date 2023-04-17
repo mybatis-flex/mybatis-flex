@@ -58,7 +58,6 @@ public class EntityTestStarter {
 //        Account account = accountMapper.selectOneById(1);
 
 
-
 //        QueryWrapper query = QueryWrapper.create().where(SYS_CONFIG.TYPE.eq(type).when(StrChecker.isNotBlank(type)))
 //                .and(SYS_CONFIG.NAME.like(word).when(StrChecker.isNotBlank(word))
 //                        .or(SYS_CONFIG.CODE.like(word).when(StrChecker.isNotBlank(word)))
@@ -66,13 +65,19 @@ public class EntityTestStarter {
 //                        .or(SYS_CONFIG.TYPE.like(word).when(StrChecker.isNotBlank(word)))
 //                );
 
+//        List<Account> accounts = accountMapper.selectListByQuery(
+//                select().where(ACCOUNT.AGE.ge(18).when(false))
+//                        .and(ACCOUNT.USER_NAME.like("aaaa").when(false)
+//                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+//                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+//                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+//                        )
+//        );
+
         List<Account> accounts = accountMapper.selectListByQuery(
-                select().where(ACCOUNT.AGE.ge(18).when(false))
-                        .and(ACCOUNT.USER_NAME.like("aaaa").when(false)
-                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
-                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
-                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
-                        )
+                select().where(ACCOUNT.AGE.ge(18))
+                        .and(ACCOUNT.USER_NAME.like(null))
+                        .and(ACCOUNT.ID.ge(null))
         );
         System.out.println(accounts);
 //

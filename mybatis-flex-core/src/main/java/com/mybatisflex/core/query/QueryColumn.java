@@ -96,9 +96,11 @@ public class QueryColumn implements Serializable {
      * equals
      *
      * @param value
-     * @return
      */
     public QueryCondition eq(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, QueryCondition.LOGIC_EQUALS, value);
     }
 
@@ -107,24 +109,35 @@ public class QueryColumn implements Serializable {
      * not equals !=
      *
      * @param value
-     * @return
      */
     public QueryCondition ne(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, QueryCondition.LOGIC_NOT_EQUALS, value);
     }
 
 
     public QueryCondition like(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, "%" + value + "%");
     }
 
 
     public QueryCondition likeLeft(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, "%" + value);
     }
 
 
     public QueryCondition likeRight(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, value + "%");
     }
 
@@ -132,9 +145,11 @@ public class QueryColumn implements Serializable {
      * 大于 greater than
      *
      * @param value
-     * @return
      */
     public QueryCondition gt(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, QueryCondition.LOGIC_GT, value);
     }
 
@@ -142,9 +157,11 @@ public class QueryColumn implements Serializable {
      * 大于等于 greater or equal
      *
      * @param value
-     * @return
      */
     public QueryCondition ge(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, QueryCondition.LOGIC_GE, value);
     }
 
@@ -152,9 +169,11 @@ public class QueryColumn implements Serializable {
      * 小于 less than
      *
      * @param value
-     * @return
      */
     public QueryCondition lt(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, QueryCondition.LOGIC_LT, value);
     }
 
@@ -162,9 +181,11 @@ public class QueryColumn implements Serializable {
      * 小于等于 less or equal
      *
      * @param value
-     * @return
      */
     public QueryCondition le(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, QueryCondition.LOGIC_LE, value);
     }
 
@@ -197,7 +218,7 @@ public class QueryColumn implements Serializable {
      */
     public QueryCondition in(Object... arrays) {
         //忽略 QueryWrapper.in("name", null) 的情况
-        if (arrays != null && arrays.length == 1 && arrays[0] == null) {
+        if (arrays == null || arrays.length == 0  || (arrays.length == 1 && arrays[0] == null)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, QueryCondition.LOGIC_IN, arrays);
@@ -235,7 +256,7 @@ public class QueryColumn implements Serializable {
      */
     public QueryCondition notIn(Object... arrays) {
         //忽略 QueryWrapper.notIn("name", null) 的情况
-        if (arrays != null && arrays.length == 1 && arrays[0] == null) {
+        if (arrays == null || arrays.length == 0  || (arrays.length == 1 && arrays[0] == null)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, QueryCondition.LOGIC_NOT_IN, arrays);
@@ -288,8 +309,7 @@ public class QueryColumn implements Serializable {
 
     ////order by ////
     public QueryOrderBy asc() {
-        QueryOrderBy queryOrderBy = new QueryOrderBy(this);
-        return queryOrderBy;
+        return new QueryOrderBy(this);
     }
 
 
