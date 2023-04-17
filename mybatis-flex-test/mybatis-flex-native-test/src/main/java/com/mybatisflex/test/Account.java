@@ -4,12 +4,15 @@ import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.handler.Fastjson2TypeHandler;
 import com.mybatisflex.core.mask.Masks;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Table(value = "tb_account",dataSource = "ds2",onSet = AccountOnSetListener.class)
-public class Account extends BaseAccount{
+public class Account extends BaseAccount implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id(keyType = KeyType.Auto)
     private Long id;
@@ -26,6 +29,10 @@ public class Account extends BaseAccount{
 
     @Column(typeHandler = Fastjson2TypeHandler.class,isLarge = true)
     private Map<String, Object> options;
+
+
+    private TypeEnum typeEnum;
+
 
     public Long getId() {
         return id;

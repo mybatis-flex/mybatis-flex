@@ -31,6 +31,7 @@ import org.apache.ibatis.type.UnknownTypeHandler;
 import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -69,13 +70,12 @@ public class TableInfoFactory {
     public static TableInfo ofMapperClass(Class<?> mapperClass) {
         return MapUtil.computeIfAbsent(mapperTableInfoMap, mapperClass, key -> {
             Class<?> entityClass = getEntityClass(mapperClass);
-            if (entityClass == null){
+            if (entityClass == null) {
                 return null;
             }
             return ofEntityClass(entityClass);
         });
     }
-
 
 
     public static TableInfo ofEntityClass(Class<?> entityClass) {
@@ -87,10 +87,9 @@ public class TableInfoFactory {
     }
 
 
-    public static TableInfo ofTableName(String tableName){
+    public static TableInfo ofTableName(String tableName) {
         return tableInfoMap.get(tableName);
     }
-
 
 
     private static Class<?> getEntityClass(Class<?> mapperClass) {
@@ -121,19 +120,19 @@ public class TableInfoFactory {
             tableInfo.setSchema(table.schema());
             tableInfo.setCamelToUnderline(table.camelToUnderline());
 
-            if (table.onInsert() != NoneListener.class){
+            if (table.onInsert() != NoneListener.class) {
                 tableInfo.setOnInsertListener(ClassUtil.newInstance(table.onInsert()));
             }
 
-            if (table.onUpdate() != NoneListener.class){
+            if (table.onUpdate() != NoneListener.class) {
                 tableInfo.setOnUpdateListener(ClassUtil.newInstance(table.onUpdate()));
             }
 
-            if (table.onSet() != NoneListener.class){
+            if (table.onSet() != NoneListener.class) {
                 tableInfo.setOnSetListener(ClassUtil.newInstance(table.onSet()));
             }
 
-            if (StringUtil.isNotBlank(table.dataSource())){
+            if (StringUtil.isNotBlank(table.dataSource())) {
                 tableInfo.setDataSource(table.dataSource());
             }
         } else {
@@ -168,6 +167,12 @@ public class TableInfoFactory {
             Column column = field.getAnnotation(Column.class);
             if (column != null && column.ignore()) {
                 continue; // ignore
+            }
+
+
+            if (Modifier.isStatic(field.getModifiers())) {
+                //ignore static field
+                continue;
             }
 
 
@@ -224,7 +229,6 @@ public class TableInfoFactory {
             if (column != null && column.isLarge()) {
                 largeColumns.add(columnName);
             }
-
 
 
             Id id = field.getAnnotation(Id.class);

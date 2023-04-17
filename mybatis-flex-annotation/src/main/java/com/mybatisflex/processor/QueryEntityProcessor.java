@@ -26,6 +26,8 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
@@ -190,6 +192,12 @@ public class QueryEntityProcessor extends AbstractProcessor {
             //all fields
             if (ElementKind.FIELD == fieldElement.getKind()) {
 
+                Set<Modifier> modifiers = fieldElement.getModifiers();
+                if (modifiers.contains(Modifier.STATIC)) {
+                    //ignore static fields
+                    continue;
+                }
+
                 TypeMirror typeMirror = fieldElement.asType();
 
                 Column column = fieldElement.getAnnotation(Column.class);
@@ -209,9 +217,16 @@ public class QueryEntityProcessor extends AbstractProcessor {
                     });
                 }
 
+                TypeElement typeElement = null;
+                if (typeMirror.getKind() == TypeKind.DECLARED) {
+                    typeElement = (TypeElement) ((DeclaredType) typeMirror).asElement();
+                }
+
                 //未配置 typeHandler 的情况下，只支持基本数据类型，不支持比如 list set 或者自定义的类等
                 if ((column == null || typeHandlerClass[0].equals(UnknownTypeHandler.class.getName()))
-                        && !defaultSupportColumnTypes.contains(typeMirror.toString())) {
+                        && !defaultSupportColumnTypes.contains(typeMirror.toString())
+                        && (typeElement != null && ElementKind.ENUM != typeElement.getKind())
+                ) {
                     continue;
                 }
 
