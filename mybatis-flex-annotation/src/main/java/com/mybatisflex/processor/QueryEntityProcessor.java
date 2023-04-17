@@ -63,10 +63,10 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
     private static final String mapperTemplate = "package @package;\n" +
             "\n" +
-            "import com.mybatisflex.core.BaseMapper;\n" +
+            "import @baseMapperClass;\n" +
             "import @entityClass;\n" +
             "\n" +
-            "public interface @entityNameMapper extends BaseMapper<@entityName> {\n" +
+            "public interface @entityNameMapper extends @baseMapperClzName<@entityName> {\n" +
             "}\n";
 
 
@@ -126,6 +126,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
             }
             String genPath = props.getProperties().getProperty("processor.genPath", "");
             String genTablesPackage = props.getProperties().getProperty("processor.tablesPackage");
+            String baseMapperClass = props.getProperties().getProperty("processor.baseMapperClass","com.mybatisflex.core.BaseMapper");
             String mappersGenerateEnable = props.getProperties().getProperty("processor.mappersGenerateEnable", "true");
             String genMappersPackage = props.getProperties().getProperty("processor.mappersPackage");
             String className = props.getProperties().getProperty("processor.tablesClassName", "Tables");
@@ -171,7 +172,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 if ("true".equalsIgnoreCase(mappersGenerateEnable) && table.mappersGenerateEnable() == true) {
                     String realMapperPackage = genMappersPackage == null || genMappersPackage.trim().length() == 0
                             ? guessMapperPackage(entityClassElement.toString()) : genMappersPackage;
-                    genMapperClass(genPath, realMapperPackage, entityClassElement.toString());
+                    genMapperClass(genPath, realMapperPackage, entityClassElement.toString(),baseMapperClass);
                 }
             });
 
@@ -373,13 +374,15 @@ public class QueryEntityProcessor extends AbstractProcessor {
     }
 
 
-    private void genMapperClass(String genBasePath, String genPackageName, String entityClass) {
+    private void genMapperClass(String genBasePath, String genPackageName, String entityClass, String baseMapperClass) {
         String entityName = entityClass.substring(entityClass.lastIndexOf(".") + 1);
-
+        String baseMapperClzName = baseMapperClass.substring(baseMapperClass.lastIndexOf(".") + 1);
         String genContent = mapperTemplate
                 .replace("@package", genPackageName)
                 .replace("@entityClass", entityClass)
-                .replace("@entityName", entityName);
+                .replace("@entityName", entityName)
+                .replace("@baseMapperClass", baseMapperClass)
+                .replace("@baseMapperClzName", baseMapperClzName);
 
         String mapperClassName = entityName + "Mapper";
         Writer writer = null;
