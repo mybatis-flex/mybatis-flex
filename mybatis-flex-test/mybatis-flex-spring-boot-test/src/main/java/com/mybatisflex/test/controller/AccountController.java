@@ -17,6 +17,8 @@ package com.mybatisflex.test.controller;
 
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.row.Db;
+import com.mybatisflex.core.row.Row;
 import com.mybatisflex.test.mapper.AccountMapper;
 import com.mybatisflex.test.model.Account;
 import com.mybatisflex.test.service.AccountService;
@@ -48,23 +50,28 @@ public class AccountController {
     @Transactional
     public Account selectOne(@PathVariable("id") Long id) {
 
-        Account account = new Account();
-        account.setId(1L);
-        account.setUserName("heihei");
-        accountMapper.update(account);
+//        Account account = new Account();
+//        account.setId(1L);
+//        account.setUserName("heihei");
+//        accountMapper.update(account);
 
+        Row row1 = Db.selectOneById("tb_account", "id", 1);
+        System.out.println(">>>>>>> row1: " + row1);
 
-        Account account1 = accountMapper.selectOneById(1L);
-        Account account2 = accountMapper.selectOneById(2L);
+        Row row2 = Db.selectOneById("tb_account", "id", 2);
+        System.out.println(">>>>>>> row2: " + row2);
 
-        accountService.update2();
-
-        if (true) {
-            throw new IllegalStateException("aaa");
-        }
-
-        System.out.println("selectOne >>>>  " + account1);
-        System.out.println("selectOne >>>>  " + account2);
+//        Account account1 = accountMapper.selectOneById(1L);
+//        Account account2 = accountMapper.selectOneById(2L);
+//
+//        accountService.update2();
+//
+//        if (true) {
+//            throw new IllegalStateException("aaa");
+//        }
+//
+//        System.out.println("selectOne >>>>  " + account1);
+//        System.out.println("selectOne >>>>  " + account2);
 
         return accountMapper.selectOneById(id);
     }

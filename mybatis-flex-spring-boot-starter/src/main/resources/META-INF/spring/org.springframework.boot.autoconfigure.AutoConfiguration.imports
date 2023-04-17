@@ -1,4 +1,4 @@
-com.mybatisflex.spring.boot.DbAutoConfiguration
+com.mybatisflex.spring.boot.FlexTransactionAutoConfiguration
 com.mybatisflex.spring.boot.MultiDataSourceAutoConfiguration
 com.mybatisflex.spring.boot.MybatisFlexAutoConfiguration
 com.mybatisflex.spring.boot.MybatisLanguageDriverAutoConfiguration

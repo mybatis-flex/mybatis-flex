@@ -29,27 +29,15 @@ import java.util.function.Function;
 public class RowMapperInvoker {
 
     private final SqlSessionFactory sqlSessionFactory;
-    private RowSessionManager rowSessionManager = RowSessionManager.DEFAULT;
 
     public RowMapperInvoker(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
-    public RowSessionManager getRowSessionManager() {
-        return rowSessionManager;
-    }
-
-    public void setRowSessionManager(RowSessionManager rowSessionManager) {
-        this.rowSessionManager = rowSessionManager;
-    }
-
     private <R> R execute(Function<RowMapper, R> function) {
-        SqlSession sqlSession = rowSessionManager.getSqlSession(sqlSessionFactory);
-        try {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
             RowMapper mapper = sqlSession.getMapper(RowMapper.class);
             return function.apply(mapper);
-        } finally {
-            rowSessionManager.releaseSqlSession(sqlSession, sqlSessionFactory);
         }
     }
 
@@ -65,7 +53,7 @@ public class RowMapperInvoker {
 
     public int[] insertBatch(String tableName, Collection<Row> rows, int batchSize) {
         int[] results = new int[rows.size()];
-        SqlSession sqlSession = rowSessionManager.getSqlSession(sqlSessionFactory, ExecutorType.BATCH);
+        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH,true);
         try {
             RowMapper mapper = sqlSession.getMapper(RowMapper.class);
             int counter = 0;
@@ -85,7 +73,7 @@ public class RowMapperInvoker {
                 }
             }
         } finally {
-            rowSessionManager.releaseSqlSession(sqlSession, sqlSessionFactory);
+            sqlSession.close();
         }
         return results;
     }

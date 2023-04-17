@@ -39,6 +39,9 @@ public class DbTestStarter {
                 .setDataSource(dataSource)
                 .start();
 
+        Row row1 = Db.selectOneById("tb_account", "id", 1);
+        System.out.println(row1);
+
         //查询全部
         List<Row> rows = Db.selectAll("tb_account");
         System.out.println(rows);

@@ -15,9 +15,7 @@
  */
 package com.mybatisflex.test;
 
-import com.mybatisflex.core.row.Db;
 import com.mybatisflex.spring.FlexSqlSessionFactoryBean;
-import com.mybatisflex.spring.SpringRowSessionManager;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -56,15 +54,10 @@ public class AppConfig implements ApplicationListener<ContextRefreshedEvent> {
     @EventListener(classes = {ContextStartedEvent.class})
     public void handleContextStartedEvent() {
         System.out.println("handleContextStartedEvent listener invoked!");
-
-        // 为 Db 设置默认的 SqlSession
-        Db.invoker().setRowSessionManager(new SpringRowSessionManager());
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         System.out.println("onApplicationEvent");
-        // 为 Db 设置默认的 SqlSession
-        Db.invoker().setRowSessionManager(new SpringRowSessionManager());
     }
 }
