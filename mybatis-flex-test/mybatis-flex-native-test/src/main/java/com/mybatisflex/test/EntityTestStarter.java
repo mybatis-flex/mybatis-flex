@@ -23,10 +23,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-import java.util.List;
-
-import static com.mybatisflex.core.query.QueryMethods.select;
-import static com.mybatisflex.test.table.Tables.ACCOUNT;
 
 public class EntityTestStarter {
 
@@ -55,7 +51,13 @@ public class EntityTestStarter {
 //        System.out.println(account);
 
         AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
-//        Account account = accountMapper.selectOneById(1);
+        Account account = accountMapper.selectOneById(1);
+        System.out.println(account);
+
+        account.setSex(SexEnum.TYPE3);
+        accountMapper.update(account);
+        account = accountMapper.selectOneById(1);
+        System.out.println(account);
 
 
 //        QueryWrapper query = QueryWrapper.create().where(SYS_CONFIG.TYPE.eq(type).when(StrChecker.isNotBlank(type)))
@@ -74,12 +76,16 @@ public class EntityTestStarter {
 //                        )
 //        );
 
-        List<Account> accounts = accountMapper.selectListByQuery(
-                select().where(ACCOUNT.AGE.ge(18))
-                        .and(ACCOUNT.USER_NAME.like(null))
-                        .and(ACCOUNT.ID.ge(null))
-        );
-        System.out.println(accounts);
+
+//        Page<Account> paginate = accountMapper.paginate(1, 10, QueryWrapper.create());
+//        System.out.println(paginate);
+//
+//        List<Account> accounts = accountMapper.selectListByQuery(
+//                select().where(ACCOUNT.AGE.ge(18))
+//                        .and(ACCOUNT.USER_NAME.like(null))
+//                        .and(ACCOUNT.ID.ge(null))
+//        );
+//        System.out.println(accounts);
 //
 //        long l = accountMapper.selectCountByQuery(QueryWrapper.create());
 //        System.out.println("count: "+ l);

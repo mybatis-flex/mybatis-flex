@@ -46,7 +46,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
             return methodName.equals(fieldGetterName);
         });
 
-        enumPropertyType = field.getType();
+        enumPropertyType = ClassUtil.wrap(field.getType());
         enums = enumClass.getEnumConstants();
 
         if (allMethods.isEmpty()){
@@ -115,4 +115,5 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
         }
         return null;
     }
+
 }

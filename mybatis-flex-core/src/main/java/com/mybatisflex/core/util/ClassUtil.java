@@ -67,6 +67,34 @@ public class ClassUtil {
         return clazz;
     }
 
+
+    public static Class<?> wrap(Class<?> clazz) {
+        if (clazz == null || !clazz.isPrimitive()) {
+            return clazz;
+        }
+        if (clazz == Integer.TYPE) {
+            return Integer.class;
+        } else if (clazz == Long.TYPE) {
+            return Long.class;
+        } else if (clazz == Boolean.TYPE) {
+            return Boolean.class;
+        } else if (clazz == Float.TYPE) {
+            return Float.class;
+        } else if (clazz == Double.TYPE) {
+            return Double.class;
+        } else if (clazz == Short.TYPE) {
+            return Short.class;
+        } else if (clazz == Character.TYPE) {
+            return Character.class;
+        } else if (clazz == Byte.TYPE) {
+            return Byte.class;
+        } else if (clazz == Void.TYPE) {
+            return Void.class;
+        }
+        return clazz;
+    }
+
+
     public static <T> T newInstance(Class<T> clazz) {
         try {
             Constructor<?> defaultConstructor = null;

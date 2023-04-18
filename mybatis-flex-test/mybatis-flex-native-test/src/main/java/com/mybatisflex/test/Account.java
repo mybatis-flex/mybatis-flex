@@ -22,6 +22,8 @@ public class Account extends BaseAccount implements Serializable {
 
     private int age;
 
+    private SexEnum sex;
+
     private Date birthday;
 
     @Column("DEPT_ID_")
@@ -59,6 +61,14 @@ public class Account extends BaseAccount implements Serializable {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public SexEnum getSex() {
+        return sex;
+    }
+
+    public void setSex(SexEnum sex) {
+        this.sex = sex;
     }
 
     public Date getBirthday() {
@@ -108,14 +118,18 @@ public class Account extends BaseAccount implements Serializable {
 //        this.deleteFlag = deleteFlag;
 //    }
 
+
     @Override
     public String toString() {
         return "Account{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", age=" + age +
+                ", sex=" + sex +
                 ", birthday=" + birthday +
+                ", deptId='" + deptId + '\'' +
                 ", options=" + options +
+                ", typeEnum=" + typeEnum +
                 '}';
     }
 }
