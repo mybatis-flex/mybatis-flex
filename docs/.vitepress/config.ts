@@ -62,7 +62,7 @@ export default defineConfig({
                     {text: '事务管理', link: '/zh/tx'},
                     {text: '字段权限', link: '/zh/columns-permission'},
                     {text: '字段加密', link: '/zh/columns-encrypt'},
-                    {text: '字典回显', link: '/zh/columns-dict'},
+                    {text: '字典回写', link: '/zh/columns-dict'},
                     {text: '枚举属性', link: '/zh/enum-property'},
                     {text: '多租户', link: '/zh/multi-tenancy'},
                 ]
