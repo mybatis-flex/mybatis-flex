@@ -150,6 +150,7 @@ public class Column {
                 || columnConfig.getVersion() != null
                 || columnConfig.getJdbcType() != null
                 || columnConfig.getTypeHandler() != null
+                || columnConfig.getTenantId() != null
         ) {
             annotations.append("@Column(");
             boolean needComma = false;
@@ -185,6 +186,11 @@ public class Column {
             if (columnConfig.getTypeHandler() != null) {
                 addComma(annotations, needComma);
                 annotations.append("typeHandler=" + columnConfig.getTypeHandler().getSimpleName() + ".class");
+                needComma = true;
+            }
+            if (Boolean.TRUE.equals(columnConfig.getTenantId())) {
+                addComma(annotations, needComma);
+                annotations.append("tenantId=true");
             }
             annotations.append(")");
         }
@@ -194,7 +200,11 @@ public class Column {
             annotations.append("@ColumnMask(\"" + columnConfig.getMask() + "\")");
         }
 
-        return annotations.toString();
+        String result = annotations.toString();
+        if (!result.isEmpty()) {
+            result += "\n    ";
+        }
+        return result;
     }
 
     private void addComma(StringBuilder annotations, boolean needComma) {
@@ -242,6 +252,7 @@ public class Column {
                     || columnConfig.getVersion() != null
                     || columnConfig.getJdbcType() != null
                     || columnConfig.getTypeHandler() != null
+                    || Boolean.TRUE.equals(columnConfig.getTenantId())
             ) {
                 importClasses.add(com.mybatisflex.annotation.Column.class.getName());
             }
