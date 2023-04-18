@@ -21,6 +21,7 @@ import com.mybatisflex.core.dialect.IDialect;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class QueryCondition implements Serializable {
@@ -115,6 +116,10 @@ public class QueryCondition implements Serializable {
 
     public void when(Supplier<Boolean> fn) {
         this.effective = fn.get();
+    }
+    public <T> QueryCondition when(Predicate<T> fn){
+        this.effective = fn.test((T) value);
+        return this;
     }
 
     public boolean checkEffective() {
