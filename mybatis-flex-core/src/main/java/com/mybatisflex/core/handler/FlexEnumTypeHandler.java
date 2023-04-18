@@ -37,17 +37,22 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
     private Method getter;
 
     public FlexEnumTypeHandler(Class<E> enumClass) {
-
         List<Field> allFields = ClassUtil.getAllFields(enumClass, field -> field.getAnnotation(EnumValue.class) != null);
         Field field = allFields.get(0);
 
+        String fieldGetterName = "get"+ StringUtil.firstCharToUpperCase(field.getName());
         List<Method> allMethods = ClassUtil.getAllMethods(enumClass, method -> {
             String methodName = method.getName();
-            return methodName.equals("get" + StringUtil.firstCharToUpperCase(field.getName()));
+            return methodName.equals(fieldGetterName);
         });
 
         enumPropertyType = field.getType();
         enums = enumClass.getEnumConstants();
+
+        if (allMethods.isEmpty()){
+            throw new IllegalStateException("Can not find \"" + fieldGetterName+"()\" method in enum: " + enumClass.getName());
+        }
+
         getter = allMethods.get(0);
     }
 
