@@ -117,22 +117,22 @@ public class Column {
 
             boolean needComma = false;
             if (isAutoIncrement) {
-                annotations.append("keyType=KeyType.Auto");
+                annotations.append("keyType = KeyType.Auto");
                 needComma = true;
             } else if (columnConfig.getKeyType() != null) {
-                annotations.append("keyType=KeyType." + columnConfig.getKeyType().name());
+                annotations.append("keyType = KeyType." + columnConfig.getKeyType().name());
                 needComma = true;
             }
 
             if (columnConfig.getKeyValue() != null) {
                 addComma(annotations, needComma);
-                annotations.append("value=\"" + columnConfig.getKeyValue() + "\"");
+                annotations.append("value = \"" + columnConfig.getKeyValue() + "\"");
                 needComma = true;
             }
 
             if (columnConfig.getKeyBefore() != null) {
                 addComma(annotations, needComma);
-                annotations.append("before=" + columnConfig.getKeyBefore());
+                annotations.append("before = " + columnConfig.getKeyBefore());
             }
 
             if (annotations.length() == 4) {
@@ -155,42 +155,42 @@ public class Column {
             annotations.append("@Column(");
             boolean needComma = false;
             if (columnConfig.getOnInsertValue() != null) {
-                annotations.append("onInsertValue=\"" + columnConfig.getOnInsertValue() + "\"");
+                annotations.append("onInsertValue = \"" + columnConfig.getOnInsertValue() + "\"");
                 needComma = true;
             }
             if (columnConfig.getOnUpdateValue() != null) {
                 addComma(annotations, needComma);
-                annotations.append("onUpdateValue=\"" + columnConfig.getOnUpdateValue() + "\"");
+                annotations.append("onUpdateValue = \"" + columnConfig.getOnUpdateValue() + "\"");
                 needComma = true;
             }
             if (columnConfig.getLarge() != null) {
                 addComma(annotations, needComma);
-                annotations.append("isLarge=" + columnConfig.getLarge());
+                annotations.append("isLarge = " + columnConfig.getLarge());
                 needComma = true;
             }
             if (columnConfig.getLogicDelete() != null) {
                 addComma(annotations, needComma);
-                annotations.append("isLogicDelete=" + columnConfig.getLogicDelete());
+                annotations.append("isLogicDelete = " + columnConfig.getLogicDelete());
                 needComma = true;
             }
             if (columnConfig.getVersion() != null) {
                 addComma(annotations, needComma);
-                annotations.append("version=" + columnConfig.getVersion());
+                annotations.append("version = " + columnConfig.getVersion());
                 needComma = true;
             }
             if (columnConfig.getJdbcType() != null) {
                 addComma(annotations, needComma);
-                annotations.append("jdbcType=JdbcType." + columnConfig.getJdbcType().name());
+                annotations.append("jdbcType = JdbcType." + columnConfig.getJdbcType().name());
                 needComma = true;
             }
             if (columnConfig.getTypeHandler() != null) {
                 addComma(annotations, needComma);
-                annotations.append("typeHandler=" + columnConfig.getTypeHandler().getSimpleName() + ".class");
+                annotations.append("typeHandler = " + columnConfig.getTypeHandler().getSimpleName() + ".class");
                 needComma = true;
             }
             if (Boolean.TRUE.equals(columnConfig.getTenantId())) {
                 addComma(annotations, needComma);
-                annotations.append("tenantId=true");
+                annotations.append("tenantId = true");
             }
             annotations.append(")");
         }

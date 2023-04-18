@@ -249,15 +249,18 @@ public class Table {
             if (tableConfig.getSetListenerClass() != null) {
                 tableAnnotation.append(", onSet = " + tableConfig.getUpdateListenerClass().getSimpleName() + ".class");
             }
+            if (Boolean.FALSE.equals(tableConfig.getMapperGenerateEnable())) {
+                tableAnnotation.append(", mapperGenerateEnable = false");
+            }
         }
         return tableAnnotation.append(")").toString();
     }
 
-    public String buildMapperImport(){
+    public String buildMapperImport() {
         return globalConfig.getMapperSupperClass().getName();
     }
 
-    public String buildMapperName(){
+    public String buildMapperName() {
         return globalConfig.getMapperSupperClass().getSimpleName();
     }
 
