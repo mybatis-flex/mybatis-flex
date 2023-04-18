@@ -1,3 +1,22 @@
+mybatis-flex v1.1.5 20230418:
+新增：增加对 @Table 自动生成 Mapper 的控制属性 mapperGenerateEnable。感谢 @草语
+新增：QueryCondition 自动忽略 null 值的功能 #I6WCS9
+新增：增加 APT Mapper 自动生成时，可通过 mybatis-flex.properties 自定义父类的支持。感谢 @草语
+新增：代码生成添加自定义 BaseMapper 的支持
+优化：重构移除 RowSessionManager
+优化：重命名 DbAutoConfiguration 为 FlexTransactionAutoConfiguration
+优化：优化 FlexEnumTypeHandler 未找到 getter 方法时的错误提示
+优化：优化自定义逻辑删除内容可能存在错误的一些问题
+修复：在某些场景下，动态条件时，生成的 SQL 错误  #I6W89G
+修复：在某些情况下，枚举属性出现异常的问题 #I6WGSA
+文档：优化事务相关的文档
+文档：添加枚举属性的相关文档
+文档：修改 SQL 打印的文档错误
+文档：APT 添加关于关闭 mapper 生成的文档
+文档：queryWrapper 添加特别注意事项的内容
+
+
+
 mybatis-flex v1.1.4 20230417:
 新增：添加逻辑删除的自定义内容配置功能
 新增：Entity 添加枚举属性的支持
