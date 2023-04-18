@@ -7,9 +7,9 @@ import #(importClass);
 
 #(table.buildTableAnnotation())
 public class #(table.buildEntityClassName())#(table.buildExtends())#(table.buildImplements()) {
+#for(column: table.columns)
 
-#for(column: table.columns)    #(column.buildAnnotations())
-    private #(column.propertySimpleType) #(column.property);
+    #(column.buildAnnotations())private #(column.propertySimpleType) #(column.property);
 #end
 
     #if(!globalConfig.isEntityWithLombok())

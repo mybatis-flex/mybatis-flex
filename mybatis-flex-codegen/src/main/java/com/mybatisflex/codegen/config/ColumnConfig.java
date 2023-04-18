@@ -42,6 +42,8 @@ public class ColumnConfig implements Serializable {
     private String keyValue;
     private Boolean keyBefore;
 
+    private Boolean tenantId;
+
 
     public String getColumnName() {
         return columnName;
@@ -145,5 +147,13 @@ public class ColumnConfig implements Serializable {
 
     public void setKeyBefore(Boolean keyBefore) {
         this.keyBefore = keyBefore;
+    }
+
+    public Boolean getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Boolean tenantId) {
+        this.tenantId = tenantId;
     }
 }

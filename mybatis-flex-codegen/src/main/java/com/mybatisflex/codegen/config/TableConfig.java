@@ -48,6 +48,8 @@ public class TableConfig {
 
     private Map<String, ColumnConfig> columnConfigMap;
 
+    private Boolean mapperGenerateEnable = Boolean.TRUE;
+
 
     public String getTableName() {
         return tableName;
@@ -103,6 +105,14 @@ public class TableConfig {
 
     public void setColumnConfigMap(Map<String, ColumnConfig> columnConfigMap) {
         this.columnConfigMap = columnConfigMap;
+    }
+
+    public Boolean getMapperGenerateEnable() {
+        return mapperGenerateEnable;
+    }
+
+    public void setMapperGenerateEnable(Boolean mapperGenerateEnable) {
+        this.mapperGenerateEnable = mapperGenerateEnable;
     }
 
     public void addColumnConfig(ColumnConfig columnConfig) {
