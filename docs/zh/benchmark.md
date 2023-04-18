@@ -43,49 +43,49 @@ mapper.selectOne(queryWrapper);
 
 ```
 ---------------
->>>>>>>testFlexSelectOne:26
->>>>>>>testPlusSelectOneWithLambda:109
->>>>>>>testPlusSelectOne:119
+>>>>>>>testFlexSelectOne:134
+>>>>>>>testPlusSelectOneWithLambda:989
+>>>>>>>testPlusSelectOne:830
 ---------------
->>>>>>>testFlexSelectOne:19
->>>>>>>testPlusSelectOneWithLambda:104
->>>>>>>testPlusSelectOne:98
+>>>>>>>testFlexSelectOne:75
+>>>>>>>testPlusSelectOneWithLambda:732
+>>>>>>>testPlusSelectOne:795
 ---------------
->>>>>>>testFlexSelectOne:15
->>>>>>>testPlusSelectOneWithLambda:94
->>>>>>>testPlusSelectOne:95
+>>>>>>>testFlexSelectOne:65
+>>>>>>>testPlusSelectOneWithLambda:938
+>>>>>>>testPlusSelectOne:714
 ---------------
->>>>>>>testFlexSelectOne:16
->>>>>>>testPlusSelectOneWithLambda:90
->>>>>>>testPlusSelectOne:87
+>>>>>>>testFlexSelectOne:105
+>>>>>>>testPlusSelectOneWithLambda:740
+>>>>>>>testPlusSelectOne:669
 ---------------
->>>>>>>testFlexSelectOne:15
->>>>>>>testPlusSelectOneWithLambda:93
->>>>>>>testPlusSelectOne:55
+>>>>>>>testFlexSelectOne:57
+>>>>>>>testPlusSelectOneWithLambda:691
+>>>>>>>testPlusSelectOne:773
 ---------------
->>>>>>>testFlexSelectOne:10
->>>>>>>testPlusSelectOneWithLambda:60
->>>>>>>testPlusSelectOne:48
+>>>>>>>testFlexSelectOne:65
+>>>>>>>testPlusSelectOneWithLambda:693
+>>>>>>>testPlusSelectOne:695
 ---------------
->>>>>>>testFlexSelectOne:8
->>>>>>>testPlusSelectOneWithLambda:54
->>>>>>>testPlusSelectOne:51
+>>>>>>>testFlexSelectOne:56
+>>>>>>>testPlusSelectOneWithLambda:754
+>>>>>>>testPlusSelectOne:665
 ---------------
->>>>>>>testFlexSelectOne:8
->>>>>>>testPlusSelectOneWithLambda:57
->>>>>>>testPlusSelectOne:56
+>>>>>>>testFlexSelectOne:56
+>>>>>>>testPlusSelectOneWithLambda:714
+>>>>>>>testPlusSelectOne:717
 ---------------
->>>>>>>testFlexSelectOne:9
->>>>>>>testPlusSelectOneWithLambda:69
->>>>>>>testPlusSelectOne:55
+>>>>>>>testFlexSelectOne:57
+>>>>>>>testPlusSelectOneWithLambda:696
+>>>>>>>testPlusSelectOne:671
 ---------------
->>>>>>>testFlexSelectOne:7
->>>>>>>testPlusSelectOneWithLambda:56
->>>>>>>testPlusSelectOne:55
+>>>>>>>testFlexSelectOne:59
+>>>>>>>testPlusSelectOneWithLambda:739
+>>>>>>>testPlusSelectOne:659
 ```
 
 ::: tip 测试结论
-> Mybatis-Flex 的查询单条数据的速度，大概是 Mybatis-Plus 的 5 ~ 8 倍。
+> Mybatis-Flex 的查询单条数据的速度，大概是 Mybatis-Plus 的 5 ~ 10+ 倍。
 :::
 
 ## 测试列表(List)数据查询
@@ -117,49 +117,49 @@ mapper.selectList(queryWrapper);
 
 ```
 ---------------
->>>>>>>testFlexSelectTop10:12
->>>>>>>testPlusSelectTop10WithLambda:56
->>>>>>>testPlusSelectTop10:53
+>>>>>>>testFlexSelectTop10:90
+>>>>>>>testPlusSelectTop10WithLambda:743
+>>>>>>>testPlusSelectTop10:678
 ---------------
->>>>>>>testFlexSelectTop10:10
->>>>>>>testPlusSelectTop10WithLambda:57
->>>>>>>testPlusSelectTop10:56
+>>>>>>>testFlexSelectTop10:85
+>>>>>>>testPlusSelectTop10WithLambda:692
+>>>>>>>testPlusSelectTop10:684
 ---------------
->>>>>>>testFlexSelectTop10:9
->>>>>>>testPlusSelectTop10WithLambda:51
->>>>>>>testPlusSelectTop10:47
+>>>>>>>testFlexSelectTop10:84
+>>>>>>>testPlusSelectTop10WithLambda:692
+>>>>>>>testPlusSelectTop10:670
 ---------------
->>>>>>>testFlexSelectTop10:9
->>>>>>>testPlusSelectTop10WithLambda:50
->>>>>>>testPlusSelectTop10:48
+>>>>>>>testFlexSelectTop10:85
+>>>>>>>testPlusSelectTop10WithLambda:737
+>>>>>>>testPlusSelectTop10:667
 ---------------
->>>>>>>testFlexSelectTop10:8
->>>>>>>testPlusSelectTop10WithLambda:51
->>>>>>>testPlusSelectTop10:47
+>>>>>>>testFlexSelectTop10:85
+>>>>>>>testPlusSelectTop10WithLambda:691
+>>>>>>>testPlusSelectTop10:684
 ---------------
->>>>>>>testFlexSelectTop10:9
->>>>>>>testPlusSelectTop10WithLambda:50
->>>>>>>testPlusSelectTop10:47
+>>>>>>>testFlexSelectTop10:97
+>>>>>>>testPlusSelectTop10WithLambda:760
+>>>>>>>testPlusSelectTop10:666
 ---------------
->>>>>>>testFlexSelectTop10:8
->>>>>>>testPlusSelectTop10WithLambda:50
->>>>>>>testPlusSelectTop10:49
+>>>>>>>testFlexSelectTop10:80
+>>>>>>>testPlusSelectTop10WithLambda:673
+>>>>>>>testPlusSelectTop10:637
 ---------------
->>>>>>>testFlexSelectTop10:7
->>>>>>>testPlusSelectTop10WithLambda:50
->>>>>>>testPlusSelectTop10:47
+>>>>>>>testFlexSelectTop10:81
+>>>>>>>testPlusSelectTop10WithLambda:653
+>>>>>>>testPlusSelectTop10:639
 ---------------
->>>>>>>testFlexSelectTop10:6
->>>>>>>testPlusSelectTop10WithLambda:46
->>>>>>>testPlusSelectTop10:49
+>>>>>>>testFlexSelectTop10:82
+>>>>>>>testPlusSelectTop10WithLambda:659
+>>>>>>>testPlusSelectTop10:636
 ---------------
->>>>>>>testFlexSelectTop10:8
->>>>>>>testPlusSelectTop10WithLambda:48
->>>>>>>testPlusSelectTop10:77
+>>>>>>>testFlexSelectTop10:81
+>>>>>>>testPlusSelectTop10WithLambda:654
+>>>>>>>testPlusSelectTop10:656
 ```
 
 ::: tip 测试结论
-> Mybatis-Flex 的查询 10 条数据的速度，大概是 Mybatis-Plus 的 5 倍左右。
+> Mybatis-Flex 的查询 10 条数据的速度，大概是 Mybatis-Plus 的 5~10 倍左右。
 :::
 
 ## 分页查询
@@ -169,11 +169,8 @@ Mybatis-Flex 的代码如下：
 
 ```java
 QueryWrapper queryWrapper = new QueryWrapper()
-    .where(FLEX_ACCOUNT.ID.ge(100))
-    .or(FLEX_ACCOUNT.USER_NAME.like("admin"))
-    .or(FLEX_ACCOUNT.NICKNAME.eq("Michael"))
-    .or(FLEX_ACCOUNT.EMAIL.eq("michael@gmail.com"));
-mapper.paginate(page, pageSize, 10000, queryWrapper);
+    .where(FLEX_ACCOUNT.ID.ge(100));
+mapper.paginate(page, pageSize, 20000, queryWrapper);
 ```
 
 Mybatis-Plus 的代码如下：
@@ -181,13 +178,8 @@ Mybatis-Plus 的代码如下：
 ```java
 LambdaQueryWrapper<PlusAccount> queryWrapper = new LambdaQueryWrapper<>();
     queryWrapper.ge(PlusAccount::getId, 100);
-    queryWrapper.or();
-    queryWrapper.like(PlusAccount::getUserName, "admin");
-    queryWrapper.or();
-    queryWrapper.eq(PlusAccount::getNickname, "Michael");
-    queryWrapper.or();
     queryWrapper.eq(PlusAccount::getEmail, "michael@gmail.com");
-Page<PlusAccount> p = Page.of(page,pageSize,10000, false);
+Page<PlusAccount> p = Page.of(page, pageSize, 20000, false);
 mapper.selectPage(p, queryWrapper);
 ```
 
@@ -195,39 +187,39 @@ mapper.selectPage(p, queryWrapper);
 
 ```
 ---------------
->>>>>>>testFlexPaginate:63
->>>>>>>testPlusPaginate:181
+>>>>>>>testFlexPaginate:90
+>>>>>>>testPlusPaginate:671
 ---------------
->>>>>>>testFlexPaginate:47
->>>>>>>testPlusPaginate:197
+>>>>>>>testFlexPaginate:78
+>>>>>>>testPlusPaginate:643
 ---------------
->>>>>>>testFlexPaginate:37
->>>>>>>testPlusPaginate:115
+>>>>>>>testFlexPaginate:80
+>>>>>>>testPlusPaginate:638
 ---------------
->>>>>>>testFlexPaginate:31
->>>>>>>testPlusPaginate:113
+>>>>>>>testFlexPaginate:79
+>>>>>>>testPlusPaginate:613
 ---------------
->>>>>>>testFlexPaginate:29
->>>>>>>testPlusPaginate:103
+>>>>>>>testFlexPaginate:75
+>>>>>>>testPlusPaginate:627
 ---------------
->>>>>>>testFlexPaginate:27
->>>>>>>testPlusPaginate:111
+>>>>>>>testFlexPaginate:72
+>>>>>>>testPlusPaginate:606
 ---------------
->>>>>>>testFlexPaginate:24
->>>>>>>testPlusPaginate:102
+>>>>>>>testFlexPaginate:69
+>>>>>>>testPlusPaginate:585
 ---------------
->>>>>>>testFlexPaginate:23
->>>>>>>testPlusPaginate:102
+>>>>>>>testFlexPaginate:70
+>>>>>>>testPlusPaginate:589
 ---------------
->>>>>>>testFlexPaginate:23
->>>>>>>testPlusPaginate:104
+>>>>>>>testFlexPaginate:69
+>>>>>>>testPlusPaginate:586
 ---------------
->>>>>>>testFlexPaginate:21
->>>>>>>testPlusPaginate:101
+>>>>>>>testFlexPaginate:68
+>>>>>>>testPlusPaginate:585
 ```
 
 ::: tip 测试结论
-> Mybatis-Flex 的分页查询速度，大概是 Mybatis-Plus 的 3~5 倍。
+> Mybatis-Flex 的分页查询速度，大概是 Mybatis-Plus 的 5~10 倍左右。
 :::
 
 
@@ -281,39 +273,39 @@ mapper.update(plusAccount, lambdaUpdateWrapper);
 
 ```
 ---------------
->>>>>>>testFlexUpdate:11
->>>>>>>testPlusUpdate:61
+>>>>>>>testFlexUpdate:58
+>>>>>>>testPlusUpdate:524
 ---------------
->>>>>>>testFlexUpdate:10
->>>>>>>testPlusUpdate:49
+>>>>>>>testFlexUpdate:51
+>>>>>>>testPlusUpdate:503
 ---------------
->>>>>>>testFlexUpdate:6
->>>>>>>testPlusUpdate:39
+>>>>>>>testFlexUpdate:49
+>>>>>>>testPlusUpdate:490
 ---------------
->>>>>>>testFlexUpdate:5
->>>>>>>testPlusUpdate:40
+>>>>>>>testFlexUpdate:45
+>>>>>>>testPlusUpdate:472
 ---------------
->>>>>>>testFlexUpdate:5
->>>>>>>testPlusUpdate:36
+>>>>>>>testFlexUpdate:48
+>>>>>>>testPlusUpdate:470
 ---------------
->>>>>>>testFlexUpdate:5
->>>>>>>testPlusUpdate:34
+>>>>>>>testFlexUpdate:44
+>>>>>>>testPlusUpdate:460
 ---------------
->>>>>>>testFlexUpdate:6
->>>>>>>testPlusUpdate:33
+>>>>>>>testFlexUpdate:43
+>>>>>>>testPlusUpdate:459
 ---------------
->>>>>>>testFlexUpdate:4
->>>>>>>testPlusUpdate:32
+>>>>>>>testFlexUpdate:44
+>>>>>>>testPlusUpdate:461
 ---------------
->>>>>>>testFlexUpdate:4
->>>>>>>testPlusUpdate:34
+>>>>>>>testFlexUpdate:40
+>>>>>>>testPlusUpdate:444
 ---------------
->>>>>>>testFlexUpdate:5
->>>>>>>testPlusUpdate:32
+>>>>>>>testFlexUpdate:41
+>>>>>>>testPlusUpdate:444
 ```
 
 ::: tip 测试结论
-> Mybatis-Flex 的数据更新速度，大概是 Mybatis-Plus 的 5~10 倍。
+> Mybatis-Flex 的数据更新速度，大概是 Mybatis-Plus 的 5~10+ 倍。
 :::
 
 ## 更多的测试
