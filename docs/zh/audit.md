@@ -53,7 +53,7 @@ public class MyMessageFactory implements MessageFactory {
        
         // 在这里
         // 设置 message 的基础内容，包括 platform、module、url、user、userIp、hostIp 内容
-        // 剩下的 query、queryParams、queryTime、elapsedTime 为 mybatis-flex 设置
+        // 剩下的 query、queryParams、queryCount、queryTime、elapsedTime 为 mybatis-flex 设置
         
         return message;
     }
@@ -137,7 +137,7 @@ MyBatis-Flex 内置了两个 Collector，他们分别是：
 ```java
 MessageCollector collector = new ConsoleMessageCollector();
 AuditManager.setMessageCollector(collector);
-AuditManager.setEnable(true);
+AuditManager.setAuditEnable(true);
 ```
 通过以上代码，配置 `AuditManager` 的 `MessageCollector` 为 `ConsoleMessageCollector` 后，
 每次执行 sql 请求，控制台将输入内容如下：
