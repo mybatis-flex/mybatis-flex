@@ -72,5 +72,11 @@ public abstract class JdbcDialect implements IDialect {
     }
 
 
+    @Override
+    public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String[] types) throws SQLException {
+        return dbMeta.getTables(conn.getCatalog(), null, null, types);
+    }
+
+
     abstract String forBuildColumnsSql(String tableName);
 }

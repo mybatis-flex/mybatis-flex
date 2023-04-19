@@ -30,10 +30,13 @@ public interface IDialect {
         String forBuildColumnsSql(String tableName) {
             return "SELECT * FROM " + tableName + " WHERE 1 = 2";
         }
+    };
 
+
+    IDialect MYSQL = new JdbcDialect() {
         @Override
-        public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String[] types) throws SQLException {
-            return dbMeta.getTables(conn.getCatalog(), null, null, types);
+        String forBuildColumnsSql(String tableName) {
+            return "SELECT * FROM `" + tableName + "` WHERE 1 = 2";
         }
     };
 
