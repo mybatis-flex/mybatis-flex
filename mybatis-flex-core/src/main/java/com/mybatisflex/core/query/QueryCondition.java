@@ -118,7 +118,18 @@ public class QueryCondition implements Serializable {
         this.effective = fn.get();
     }
     public <T> QueryCondition when(Predicate<T> fn){
-        this.effective = fn.test((T) value);
+        Object val = this.value;
+        if (LOGIC_LIKE.equals(logic)) {
+            String valStr = (String) val;
+            if (valStr.startsWith("%")) {
+                valStr = valStr.substring(1);
+            }
+            if (valStr.endsWith("%")) {
+                valStr = valStr.substring(0, valStr.length() - 1);
+            }
+            val = valStr;
+        }
+        this.effective = fn.test((T) val);
         return this;
     }
 
