@@ -30,8 +30,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
-import javax.tools.JavaFileObject;
+import javax.tools.*;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -118,7 +117,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
         if (!roundEnv.processingOver()) {
 
-            MyBatisFlexProps props = new MyBatisFlexProps("mybatis-flex.properties");
+            MyBatisFlexProps props = new MyBatisFlexProps(filer);
 
             String enable = props.getProperties().getProperty("processor.enable", "");
             if ("false".equalsIgnoreCase(enable)) {
