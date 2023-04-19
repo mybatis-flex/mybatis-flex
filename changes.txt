@@ -1,3 +1,16 @@
+mybatis-flex v1.1.6 20230419:
+新增：QueryCondition 添加 when(Predicate) 方法，感谢 @落羽er
+新增：代码生成器 ColumnConfig 添加 tenantId 字段配置，用于代码生成时添加 @Column(tenantId=true) 注解，感谢 @pengpeng
+新增：代码生成器 TableConfig 添加 mapperGenerateEnable 配置，感谢 @pengpeng
+新增：代码生成器添加 IDialect.MYSQL 方言
+优化：FlexEnumTypeHandler.java 完善对 public field 的读取
+优化：代码生成器生成 java 文件时，打印生成目录
+修复：flex 和 lombok 以及 mapstruct 同时使用时，APT 配置文件不生效的问题。 #I6WTN6
+修复：使用 QueryMethods.count() 时出错的问题。#I6X2M6
+文档：修改 SQL 审计模块的文档错误，感谢 @lhzsdnu
+
+
+
 mybatis-flex v1.1.5 20230418:
 新增：增加对 @Table 自动生成 Mapper 的控制属性 mapperGenerateEnable。感谢 @草语
 新增：QueryCondition 自动忽略 null 值的功能 #I6WCS9
