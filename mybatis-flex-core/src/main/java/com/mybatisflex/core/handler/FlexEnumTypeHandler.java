@@ -24,6 +24,7 @@ import org.apache.ibatis.type.JdbcType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,13 +35,14 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
 
     private Class<?> enumPropertyType;
     private E[] enums;
+    private Field property;
     private Method getter;
 
     public FlexEnumTypeHandler(Class<E> enumClass) {
         List<Field> allFields = ClassUtil.getAllFields(enumClass, field -> field.getAnnotation(EnumValue.class) != null);
         Field field = allFields.get(0);
 
-        String fieldGetterName = "get"+ StringUtil.firstCharToUpperCase(field.getName());
+        String fieldGetterName = "get" + StringUtil.firstCharToUpperCase(field.getName());
         List<Method> allMethods = ClassUtil.getAllMethods(enumClass, method -> {
             String methodName = method.getName();
             return methodName.equals(fieldGetterName);
@@ -49,11 +51,16 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
         enumPropertyType = ClassUtil.wrap(field.getType());
         enums = enumClass.getEnumConstants();
 
-        if (allMethods.isEmpty()){
-            throw new IllegalStateException("Can not find \"" + fieldGetterName+"()\" method in enum: " + enumClass.getName());
+        if (allMethods.isEmpty()) {
+            if (Modifier.isPublic(field.getModifiers())) {
+                property = field;
+            } else {
+                throw new IllegalStateException("Can not find \"" + fieldGetterName + "()\" method in enum: " + enumClass.getName());
+            }
+        } else {
+            getter = allMethods.get(0);
         }
 
-        getter = allMethods.get(0);
     }
 
 
@@ -68,9 +75,11 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
     }
 
 
-    private Object getValue(Object object) {
+    private Object getValue(E object) {
         try {
-            return this.getter.invoke(object);
+            return getter != null
+                    ? getter.invoke(object)
+                    : property.get(object);
         } catch (Exception e) {
             throw FlexExceptions.wrap(e);
         }
