@@ -45,6 +45,7 @@ public class EnjoyTemplate implements ITemplate {
 
         FileOutputStream fileOutputStream = new FileOutputStream(entityJavaFile);
         engine.getTemplate("/templates/enjoy/entity.tpl").render(params, fileOutputStream);
+        System.out.println("Entity has been generated: " + entityJavaFile.getAbsolutePath());
     }
 
 
@@ -57,5 +58,6 @@ public class EnjoyTemplate implements ITemplate {
 
         FileOutputStream fileOutputStream = new FileOutputStream(mapperJavaFile);
         engine.getTemplate("/templates/enjoy/mapper.tpl").render(params, fileOutputStream);
+        System.out.println("Mapper has been generated: " + mapperJavaFile.getAbsolutePath());
     }
 }
