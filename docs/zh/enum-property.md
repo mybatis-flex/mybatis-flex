@@ -37,8 +37,14 @@ public enum TypeEnum {
         this.code = code;
         this.desc = desc;
     }
+    
+    //getter
 }
 ```
 
 通过注解 `@EnumValue` 为 `code` 属性标注后，当我们保存 Account 内容到数据库时，Mybatis-Flex 会自动使用 `code` 属性值进行保存，同时在读取数据库内容的时候，Mybatis-Flex 自动把数据库的值转换为
 `TypeEnum` 枚举。
+
+::: tip 注意事项
+> @EnumValue 注解标识的属性，要求必须是 public 修饰，或者有 get 方法。
+:::
