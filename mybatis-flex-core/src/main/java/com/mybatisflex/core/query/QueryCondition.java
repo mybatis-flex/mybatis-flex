@@ -115,11 +115,13 @@ public class QueryCondition implements Serializable {
     }
 
     public void when(Supplier<Boolean> fn) {
-        this.effective = fn.get();
+        Boolean effective = fn.get();
+        this.effective = (effective != null && effective);
     }
+
     public <T> QueryCondition when(Predicate<T> fn){
         Object val = this.value;
-        if (LOGIC_LIKE.equals(logic)) {
+        if (LOGIC_LIKE.equals(logic) && val instanceof String) {
             String valStr = (String) val;
             if (valStr.startsWith("%")) {
                 valStr = valStr.substring(1);
