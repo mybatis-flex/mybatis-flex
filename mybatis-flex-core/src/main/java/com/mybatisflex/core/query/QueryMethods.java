@@ -18,7 +18,7 @@ package com.mybatisflex.core.query;
 public class QueryMethods {
 
     public static FunctionQueryColumn count() {
-        return new FunctionQueryColumn("COUNT", "*");
+        return new FunctionQueryColumn("COUNT", new StringQueryColumn("*"));
     }
 
     public static FunctionQueryColumn count(String column) {

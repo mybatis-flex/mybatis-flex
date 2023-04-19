@@ -22,21 +22,11 @@ public class Account extends BaseAccount implements Serializable {
 
     private int age;
 
-    private SexEnum sex;
-
     private Date birthday;
-
-    @Column("DEPT_ID_")
-    private String deptId;
 
     @Column(typeHandler = Fastjson2TypeHandler.class,isLarge = true)
     private Map<String, Object> options;
 
-
-    private TypeEnum typeEnum;
-
-//    @Column(isLogicDelete = true)
-//    private boolean deleteFlag;
 
 
     public Long getId() {
@@ -63,14 +53,6 @@ public class Account extends BaseAccount implements Serializable {
         this.age = age;
     }
 
-    public SexEnum getSex() {
-        return sex;
-    }
-
-    public void setSex(SexEnum sex) {
-        this.sex = sex;
-    }
-
     public Date getBirthday() {
         return birthday;
     }
@@ -94,30 +76,6 @@ public class Account extends BaseAccount implements Serializable {
         options.put(key, value);
     }
 
-    public String getDeptId() {
-        return deptId;
-    }
-
-    public void setDeptId(String deptId) {
-        this.deptId = deptId;
-    }
-
-    public TypeEnum getTypeEnum() {
-        return typeEnum;
-    }
-
-    public void setTypeEnum(TypeEnum typeEnum) {
-        this.typeEnum = typeEnum;
-    }
-
-//    public boolean isDeleteFlag() {
-//        return deleteFlag;
-//    }
-//
-//    public void setDeleteFlag(boolean deleteFlag) {
-//        this.deleteFlag = deleteFlag;
-//    }
-
 
     @Override
     public String toString() {
@@ -125,11 +83,8 @@ public class Account extends BaseAccount implements Serializable {
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", age=" + age +
-                ", sex=" + sex +
                 ", birthday=" + birthday +
-                ", deptId='" + deptId + '\'' +
                 ", options=" + options +
-                ", typeEnum=" + typeEnum +
                 '}';
     }
 }
