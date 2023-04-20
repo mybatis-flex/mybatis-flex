@@ -11,6 +11,9 @@ spring:
     init:
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
+mybatis-flex:
+  mapper-locations:
+    - classpath*:/mapper/*.xml
 #mybatis-flex:
 #  datasource:
 #    ds1:

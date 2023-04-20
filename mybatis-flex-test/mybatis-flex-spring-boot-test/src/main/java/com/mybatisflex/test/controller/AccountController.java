@@ -20,6 +20,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.test.mapper.AccountMapper;
+import com.mybatisflex.test.mapper.MyAccountMapper;
 import com.mybatisflex.test.model.Account;
 import com.mybatisflex.test.service.AccountService;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,10 @@ public class AccountController {
 
 
     @Resource
+    MyAccountMapper myAccountMapper;
+
+
+    @Resource
     AccountService accountService;
 
 
@@ -43,6 +48,13 @@ public class AccountController {
     String add(@RequestBody Account account){
         accountMapper.insert(account);
         return "add ok!";
+    }
+
+
+
+    @GetMapping("/account/select/{name}")
+    Account selectName(@PathVariable("name") String name){
+        return myAccountMapper.selectByName(name);
     }
 
 

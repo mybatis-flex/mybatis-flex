@@ -585,6 +585,12 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
                 this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,
                 dataSource instanceof FlexDataSource ? dataSource : new FlexDataSource(FlexConsts.NAME, dataSource)));
 
+
+        // 需先构建 sqlSessionFactory，再去初始化 mapperLocations
+        // 因为 xmlMapperBuilder.parse() 用到 FlexGlobalConfig， FlexGlobalConfig 的初始化是在 sqlSessionFactory 的构建方法里进行的
+        // fixed gitee https://gitee.com/mybatis-flex/mybatis-flex/issues/I6X59V
+        SqlSessionFactory sqlSessionFactory = this.sqlSessionFactoryBuilder.build(targetConfiguration);
+
         if (this.mapperLocations != null) {
             if (this.mapperLocations.length == 0) {
                 LOGGER.warn(() -> "Property 'mapperLocations' was specified but matching resources are not found.");
@@ -609,7 +615,8 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
             LOGGER.debug(() -> "Property 'mapperLocations' was not specified.");
         }
 
-        return this.sqlSessionFactoryBuilder.build(targetConfiguration);
+
+        return sqlSessionFactory;
     }
 
     /**
