@@ -20,6 +20,7 @@ import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Cross Package Invoke
@@ -34,6 +35,9 @@ public class CPI {
         return queryWrapper.getValueArray();
     }
 
+    public static List<QueryWrapper> getChildSelect(QueryWrapper queryWrapper) {
+        return queryWrapper.getChildSelect();
+    }
 
     public static List<QueryTable> getQueryTables(QueryWrapper queryWrapper) {
         return queryWrapper.getQueryTables();
@@ -128,6 +132,23 @@ public class CPI {
 
     public static void setLimitRows(QueryWrapper queryWrapper, Integer limitRows) {
         queryWrapper.setLimitRows(limitRows);
+    }
+
+    public static Map<String, Object> getContext(QueryWrapper queryWrapper) {
+        return queryWrapper.getContext();
+    }
+
+    public static void setContext(QueryWrapper queryWrapper, Map<String, Object> context) {
+        queryWrapper.setContext(context);
+    }
+
+    public static void putContext(QueryWrapper queryWrapper, String key, Object value) {
+        queryWrapper.putContext(key, value);
+    }
+
+
+    public static <R> R getContext(QueryWrapper queryWrapper, String key) {
+        return queryWrapper.getContext(key);
     }
 
 

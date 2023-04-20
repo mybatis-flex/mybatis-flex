@@ -482,6 +482,13 @@ public class TableInfo {
 
     public void appendConditions(Object entity, QueryWrapper queryWrapper) {
 
+        Object appendConditions = CPI.getContext(queryWrapper, "appendConditions");
+        if (Boolean.TRUE.equals(appendConditions)) {
+            return;
+        } else {
+            CPI.putContext(queryWrapper, "appendConditions", Boolean.TRUE);
+        }
+
         //添加乐观锁条件，只有在 update 的时候进行处理
         if (StringUtil.isNotBlank(versionColumn) && entity != null) {
             Object versionValue = buildColumnSqlArg(entity, versionColumn);
@@ -493,7 +500,6 @@ public class TableInfo {
 
         //逻辑删除条件，已删除的数据不能被修改
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-//            queryWrapper.and(QueryCondition.create(tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS, FlexConsts.LOGIC_DELETE_NORMAL));
             queryWrapper.and(QueryCondition.create(tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS
                     , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
         }
@@ -505,6 +511,20 @@ public class TableInfo {
                 queryWrapper.and(QueryCondition.create(tableName, tenantIdColumn, QueryCondition.LOGIC_EQUALS, tenantIdArgs[0]));
             } else {
                 queryWrapper.and(QueryCondition.create(tableName, tenantIdColumn, QueryCondition.LOGIC_IN, tenantIdArgs));
+            }
+        }
+
+        //子查询
+        List<QueryWrapper> childSelects = CPI.getChildSelect(queryWrapper);
+        if (CollectionUtil.isNotEmpty(childSelects)) {
+            for (QueryWrapper childQueryWrapper : childSelects) {
+                List<QueryTable> queryTables = CPI.getQueryTables(childQueryWrapper);
+                for (QueryTable queryTable : queryTables) {
+                    TableInfo tableInfo = TableInfoFactory.ofTableName(queryTable.getName());
+                    if (tableInfo != null) {
+                        tableInfo.appendConditions(entity, childQueryWrapper);
+                    }
+                }
             }
         }
 

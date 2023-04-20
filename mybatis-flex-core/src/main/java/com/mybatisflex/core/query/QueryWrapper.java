@@ -23,6 +23,7 @@ import com.mybatisflex.core.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
@@ -360,6 +361,19 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             }
         }
         return values;
+    }
+
+
+    List<QueryWrapper> getChildSelect() {
+        List<QueryWrapper> childQueryWrappers = new ArrayList<>();
+
+        List<QueryWrapper> whereChildQuery= WrapperUtil.getChildSelect(whereQueryCondition);
+        List<QueryWrapper> havingChildQuery = WrapperUtil.getChildSelect(havingQueryCondition);
+
+        childQueryWrappers.addAll(whereChildQuery);
+        childQueryWrappers.addAll(havingChildQuery);
+
+        return childQueryWrappers;
     }
 
 

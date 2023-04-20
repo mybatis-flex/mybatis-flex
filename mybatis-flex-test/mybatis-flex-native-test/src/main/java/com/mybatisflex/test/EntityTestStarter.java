@@ -26,9 +26,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 
-import java.util.List;
-
-import static com.mybatisflex.core.query.QueryMethods.count;
+import static com.mybatisflex.core.query.QueryMethods.select;
 import static com.mybatisflex.test.table.Tables.ACCOUNT;
 
 public class EntityTestStarter {
@@ -55,12 +53,16 @@ public class EntityTestStarter {
 
         AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
 
-        QueryWrapper wrapper = QueryWrapper.create().select(ACCOUNT.DEFAULT_COLUMNS).select(count()).from(ACCOUNT)
-                .groupBy(ACCOUNT.ID);
-        List<Account> accounts = accountMapper.selectListByQuery(wrapper);
+//        QueryWrapper wrapper = QueryWrapper.create().select(ACCOUNT.DEFAULT_COLUMNS).select(count()).from(ACCOUNT)
+//                .groupBy(ACCOUNT.ID);
+//        List<Account> accounts = accountMapper.selectListByQuery(wrapper);
 
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.where(ACCOUNT.ID.in(
+                select(ACCOUNT.ID).from(ACCOUNT)
+        ));
 
-        Page<Account> paginate = accountMapper.paginate(new Page<>(1,10), new QueryWrapper());
+        Page<Account> paginate = accountMapper.paginate(new Page<>(1,10),queryWrapper);
         System.out.println(paginate);
 
 

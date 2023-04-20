@@ -16,11 +16,10 @@
 package com.mybatisflex.core.query;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class BaseQueryWrapper<T> implements Serializable {
+
 
     protected List<QueryTable> queryTables;
     protected String datasource;
@@ -37,6 +36,8 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected Integer limitOffset;
     protected Integer limitRows;
+
+    protected Map<String, Object> context;
 
 
     protected T addSelectColumn(QueryColumn queryColumn) {
@@ -207,5 +208,24 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected void setLimitRows(Integer limitRows) {
         this.limitRows = limitRows;
+    }
+
+    protected Map<String, Object> getContext() {
+        return context;
+    }
+
+    protected void setContext(Map<String, Object> context) {
+        this.context = context;
+    }
+
+    protected void putContext(String key, Object value){
+        if (context == null){
+            context = new HashMap<>();
+        }
+        context.put(key,value);
+    }
+
+    protected <R> R getContext(String key){
+        return context == null ? null : (R) context.get(key);
     }
 }

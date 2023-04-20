@@ -420,12 +420,14 @@ public interface BaseMapper<T> {
      * @return page 数据
      */
     default Page<T> paginate(@Param("page") Page<T> page, @Param("query") QueryWrapper queryWrapper) {
-        List<QueryColumn> groupByColumns = CPI.getGroupByColumns(queryWrapper);
+
+        List<QueryColumn> groupByColumns = null;
 
         // 只有 totalRow 小于 0 的时候才会去查询总量
         // 这样方便用户做总数缓存，而非每次都要去查询总量
         // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
         if (page.getTotalRow() < 0) {
+            groupByColumns = CPI.getGroupByColumns(queryWrapper);
             //清除group by 去查询数据
             CPI.setGroupByColumns(queryWrapper, null);
             long count = selectCountByQuery(queryWrapper);
@@ -437,7 +439,10 @@ public interface BaseMapper<T> {
         }
 
         //恢复数量查询清除的 groupBy
-        CPI.setGroupByColumns(queryWrapper, groupByColumns);
+        if (groupByColumns != null) {
+            CPI.setGroupByColumns(queryWrapper, groupByColumns);
+        }
+
         int offset = page.getPageSize() * (page.getPageNumber() - 1);
         queryWrapper.limit(offset, page.getPageSize());
         List<T> rows = selectListByQuery(queryWrapper);

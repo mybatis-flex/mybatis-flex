@@ -5,5 +5,6 @@ CREATE TABLE IF NOT EXISTS `tb_account`
     `age`       Integer,
     `sex`       Integer,
     `birthday`  DATETIME,
-    `options`   VARCHAR(1024)
+    `options`   VARCHAR(1024),
+    `is_delete` Integer
 );

@@ -27,6 +27,8 @@ public class Account extends BaseAccount implements Serializable {
     @Column(typeHandler = Fastjson2TypeHandler.class,isLarge = true)
     private Map<String, Object> options;
 
+    @Column(isLogicDelete = true)
+    private Boolean isDelete;
 
 
     public Long getId() {
@@ -85,6 +87,7 @@ public class Account extends BaseAccount implements Serializable {
                 ", age=" + age +
                 ", birthday=" + birthday +
                 ", options=" + options +
+                ", isDelete=" + isDelete +
                 '}';
     }
 }

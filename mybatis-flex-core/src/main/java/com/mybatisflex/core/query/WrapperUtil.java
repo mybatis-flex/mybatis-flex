@@ -20,8 +20,9 @@ import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 class WrapperUtil {
@@ -33,12 +34,42 @@ class WrapperUtil {
 
     static final Object[] NULL_PARA_ARRAY = new Object[0];
 
+    static List<QueryWrapper> getChildSelect(QueryCondition condition) {
+        List<QueryWrapper> list = null;
+        while (condition != null) {
+            if (condition.checkEffective()) {
+                Object value = condition.getValue();
+                if (value instanceof QueryWrapper) {
+                    if (list == null) {
+                        list = new ArrayList<>();
+                    }
+                    list.add((QueryWrapper) value);
+                    list.addAll(((QueryWrapper) value).getChildSelect());
+                } else if (value != null && value.getClass().isArray()) {
+                    for (int i = 0; i < Array.getLength(value); i++) {
+                        Object arrayValue = Array.get(value, i);
+                        if (arrayValue instanceof QueryWrapper) {
+                            if (list == null) {
+                                list = new ArrayList<>();
+                            }
+                            list.add((QueryWrapper) arrayValue);
+                            list.addAll(((QueryWrapper) arrayValue).getChildSelect());
+                        }
+                    }
+                }
+            }
+            condition = condition.next;
+        }
+        return list == null ? Collections.emptyList() : list;
+    }
+
+
     static Object[] getValues(QueryCondition condition) {
         if (condition == null) {
             return NULL_PARA_ARRAY;
         }
 
-        List<Object> paras = new LinkedList<>();
+        List<Object> paras = new ArrayList<>();
         getValues(condition, paras);
 
         return paras.isEmpty() ? NULL_PARA_ARRAY : paras.toArray();
@@ -57,7 +88,6 @@ class WrapperUtil {
             getValues(condition.next, paras);
             return;
         }
-
 
         if (value.getClass().isArray()) {
             Object[] values = (Object[]) value;
@@ -119,5 +149,6 @@ class WrapperUtil {
         }
         return queryTable;
     }
+
 
 }
