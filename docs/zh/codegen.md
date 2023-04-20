@@ -185,6 +185,9 @@ public class TableConfig {
 
 
     private Class<? extends UpdateListener> updateListenerClass;
+
+    // 是否启用ATP生成Mapper
+    private Boolean mapperGenerateEnable = Boolean.TRUE;
 }
 ```
 
@@ -211,6 +214,9 @@ public class ColumnConfig implements Serializable {
     private KeyType keyType;
     private String keyValue;
     private Boolean keyBefore;
+    
+    // 是否是租户列
+    private Boolean tenantId;
 }
 ```
 

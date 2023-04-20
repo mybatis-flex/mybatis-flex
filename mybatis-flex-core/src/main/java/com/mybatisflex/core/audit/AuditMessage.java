@@ -16,16 +16,20 @@
 package com.mybatisflex.core.audit;
 
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
+import com.mybatisflex.core.util.DateUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Proxy;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 public class AuditMessage implements Serializable {
 
@@ -145,6 +149,38 @@ public class AuditMessage implements Serializable {
                 queryParams.add(object);
             }
         }
+    }
+
+    public String getFullSql() {
+        String sql = getQuery();
+        List<Object> params = getQueryParams();
+        if (params != null) {
+            for (Object value : params) {
+                // null
+                if (value == null) {
+                    sql = sql.replaceFirst("\\?", "null");
+                }
+                // number
+                else if (value instanceof Number || value instanceof Boolean) {
+                    sql = sql.replaceFirst("\\?", value.toString());
+                }
+                // other
+                else {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("'");
+                    if (value instanceof Date) {
+                        sb.append(DateUtil.toDateTimeString((Date) value));
+                    } else if (value instanceof LocalDateTime) {
+                        sb.append(DateUtil.toDateTimeString(DateUtil.toDate((LocalDateTime) value)));
+                    } else {
+                        sb.append(value);
+                    }
+                    sb.append("'");
+                    sql = sql.replaceFirst("\\?", Matcher.quoteReplacement(sb.toString()));
+                }
+            }
+        }
+        return sql;
     }
 
     private PreparedStatement createPreparedStatement() {
