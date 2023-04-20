@@ -479,14 +479,15 @@ public class TableInfo {
         return TenantManager.getTenantIds();
     }
 
+    private static final String APPEND_CONDITIONS_FLAG = "appendConditions";
 
     public void appendConditions(Object entity, QueryWrapper queryWrapper) {
 
-        Object appendConditions = CPI.getContext(queryWrapper, "appendConditions");
+        Object appendConditions = CPI.getContext(queryWrapper, APPEND_CONDITIONS_FLAG);
         if (Boolean.TRUE.equals(appendConditions)) {
             return;
         } else {
-            CPI.putContext(queryWrapper, "appendConditions", Boolean.TRUE);
+            CPI.putContext(queryWrapper, APPEND_CONDITIONS_FLAG, Boolean.TRUE);
         }
 
         //添加乐观锁条件，只有在 update 的时候进行处理

@@ -21,10 +21,7 @@ import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
@@ -365,12 +362,15 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
 
     List<QueryWrapper> getChildSelect() {
-        List<QueryWrapper> childQueryWrappers = new ArrayList<>();
 
         List<QueryWrapper> whereChildQuery= WrapperUtil.getChildSelect(whereQueryCondition);
         List<QueryWrapper> havingChildQuery = WrapperUtil.getChildSelect(havingQueryCondition);
 
-        childQueryWrappers.addAll(whereChildQuery);
+        if (whereChildQuery.isEmpty() && havingChildQuery.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        List<QueryWrapper> childQueryWrappers = new ArrayList<>(whereChildQuery);
         childQueryWrappers.addAll(havingChildQuery);
 
         return childQueryWrappers;

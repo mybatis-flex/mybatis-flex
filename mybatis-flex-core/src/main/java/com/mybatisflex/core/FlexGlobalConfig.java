@@ -161,6 +161,9 @@ public class FlexGlobalConfig {
     }
 
     public void setNormalValueOfLogicDelete(Object normalValueOfLogicDelete) {
+        if (normalValueOfLogicDelete == null){
+            throw new NullPointerException("normalValueOfLogicDelete can not be null.");
+        }
         this.normalValueOfLogicDelete = normalValueOfLogicDelete;
     }
 
@@ -169,6 +172,9 @@ public class FlexGlobalConfig {
     }
 
     public void setDeletedValueOfLogicDelete(Object deletedValueOfLogicDelete) {
+        if (deletedValueOfLogicDelete == null){
+            throw new NullPointerException("deletedValueOfLogicDelete can not be null.");
+        }
         this.deletedValueOfLogicDelete = deletedValueOfLogicDelete;
     }
 
