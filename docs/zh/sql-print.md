@@ -47,6 +47,13 @@ public class MyBatisFlexConfiguration {
 }
 ```
 
+## 注意
+在执行以下语句之后执行的sql才会被打印。如果你发现你有些sql没有打印，则需要自行检查sql执行与以下语句执行的先后顺序。
+```
+AuditManager.setAuditEnable(true);
+AuditManager.setMessageCollector(collector);
+```
+
 ## p6spy 方案
 
 我们可以把数据源配置为 p6spy 数据源，使用 p6spy 的 SQL 输出功能进行 SQL 打印。更多文档参考 p6spy 官方文档：
