@@ -653,7 +653,13 @@ public class TableInfo {
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
         Object columnValue = getPropertyValue(metaObject, columnInfoMapping.get(versionColumn).property);
         if (columnValue == null) {
-            metaObject.setValue(columnInfoMapping.get(versionColumn).property, 0);
+            String name = columnInfoMapping.get(versionColumn).property;
+            Class<?> clazz = metaObject.getSetterType(name);
+            if (clazz.isAssignableFrom(Long.class)) {
+                metaObject.setValue(name, 0L);
+            } else if (clazz.isAssignableFrom(Integer.class)) {
+                metaObject.setValue(name, 0);
+            }
         }
     }
 
@@ -693,7 +699,13 @@ public class TableInfo {
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
         Object columnValue = getPropertyValue(metaObject, columnInfoMapping.get(logicDeleteColumn).property);
         if (columnValue == null) {
-            metaObject.setValue(columnInfoMapping.get(logicDeleteColumn).property, 0);
+            String name = columnInfoMapping.get(logicDeleteColumn).property;
+            Class<?> clazz = metaObject.getSetterType(name);
+            if (clazz.isAssignableFrom(Integer.class)) {
+                metaObject.setValue(name, 0);
+            } else if (clazz.isAssignableFrom(Boolean.class)) {
+                metaObject.setValue(name, false);
+            }
         }
     }
 
