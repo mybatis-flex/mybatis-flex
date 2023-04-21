@@ -12,8 +12,7 @@ Mybatis-Flex 支持的数据库类型，如下表格所示，我们还可以通�
 | db2 | DB2 数据库 |
 | hsql | HSQL 数据库 |
 | sqlite | SQLite 数据库 |
-| postgresql | HSQL 数据库 |
-| hsql | Postgre 数据库 |
+| postgresql | PostgreSQL 数据库 |
 | sqlserver2005 | SQLServer2005 数据库 |
 | sqlserver | SQLServer 数据库 |
 | dm | 达梦数据库 |
