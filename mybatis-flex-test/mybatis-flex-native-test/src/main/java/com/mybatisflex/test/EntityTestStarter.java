@@ -52,14 +52,26 @@ public class EntityTestStarter {
 //                .groupBy(ACCOUNT.ID);
 
 //        List<Account> accounts = accountMapper.selectListByQuery(wrapper);
-//
+
 //        QueryWrapper queryWrapper = new QueryWrapper();
 //        queryWrapper.where(ACCOUNT.ID.in(
-//                select(ACCOUNT.ID).from(ACCOUNT)
+//                    select(ACCOUNT.ID).from(ACCOUNT).where(ACCOUNT.ID.in(
+//                            select(ACCOUNT.ID).from(ACCOUNT)
+//                    )
+//                )
 //        ));
 //
-//        Page<Account> paginate = accountMapper.paginate(new Page<>(1,10),queryWrapper);
+//        Page<Account> paginate = accountMapper.paginate(1,10,queryWrapper);
 //        System.out.println(paginate);
+
+//        List<Account> accounts = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            Account account = new Account();
+//            account.setUserName("test" + i);
+//            accounts.add(account);
+//        }
+//
+//        accountMapper.insertBatch(accounts);
 
 
 //        Account account = accountMapper.selectOneById(1);

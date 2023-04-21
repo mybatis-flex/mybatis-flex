@@ -167,3 +167,21 @@ mybatis-flex:
 在数据源的配置中，`type` 可以配置为某个 DataSource 的类名，也可以配置为别名，别名支持有：`druid`、
 `hikari`、`hikaricp`、`bee`、`beecp`、`dbcp`、`dbcp2`。
 :::
+
+## 动态添加新的数据源
+
+在多租户等某些场景下，我们可能需要用到动态的添加新的数据源，此时可以通过如下的方式进行添加。
+
+```java
+FlexDataSource flexDataSource = (FlexDataSource) FlexGlobalConfig
+        .getDefaultConfig().getConfiguration()
+        .getEnvironment().getDataSource();
+
+//新的数据源
+HikariDataSource newDataSource = new HikariDataSource();
+
+flexDataSource.addDataSource("newKey", newDataSource);
+```
+
+> 需要注意的是：通过 FlexGlobalConfig 去获取 FlexDataSource 时，需等待应用完全启动成功后，才能正常获取 FlexDataSource，
+> 否则将会得到 null 值。

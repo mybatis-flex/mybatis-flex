@@ -34,6 +34,7 @@ export default defineConfig({
                     {text: '和同类框架「功能」对比', link: '/zh/comparison'},
                     {text: '和同类框架「性能」对比', link: '/zh/benchmark'},
                     {text: '和 Spring 整合 常见问题', link: '/zh/mybatis-flex-with-spring'},
+                    {text: '支持的数据库类型', link: '/zh/support-database'},
                     {text: 'QQ 交流群', link: '/zh/qq-group'},
                 ]
             },
