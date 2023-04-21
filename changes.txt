@@ -1,3 +1,13 @@
+mybatis-flex v1.1.7 20230421:
+优化：将 ConsoleMessageCollector 的 getFullSql 方法移入 AuditMessage，方便重用 感谢 @pengpeng
+修复：配置 mybatis-flex.mapper-locations 在某些场景下会出现 NPE 的问题 #I6X59V
+修复：子查询时，子 SQL 的逻辑删除字段未添加 #I6X4U8
+修复：启用乐观锁 和 逻辑删除时，在某些极端情况下会出现 argument type mismatch 异常的问题 感谢 @pengpeng
+文档：APT 添加和 Lombok、Mapstruct 整合的文档
+文档：完善补充 "打印SQL" 的相关文档
+
+
+
 mybatis-flex v1.1.6 20230419:
 新增：QueryCondition 添加 when(Predicate) 方法，感谢 @落羽er
 新增：代码生成器 ColumnConfig 添加 tenantId 字段配置，用于代码生成时添加 @Column(tenantId=true) 注解，感谢 @pengpeng
