@@ -630,7 +630,7 @@ public class TableInfo {
         columnInfoMapping.forEach((column, columnInfo) -> {
             if (index <= 0) {
                 for (String rowKey : rowKeys) {
-                    if (column.equals(rowKey)) {
+                    if (column.equalsIgnoreCase(rowKey)) {
                         Object rowValue = row.get(rowKey);
                         Object value = ConvertUtil.convert(rowValue, metaObject.getSetterType(columnInfo.property));
                         if (onSetListener != null) {
@@ -644,8 +644,8 @@ public class TableInfo {
                     String newColumn = i <= 0 ? column : column + "$" + i;
                     boolean fillValue = false;
                     for (String rowKey : rowKeys) {
-                        if (newColumn.equals(rowKey)) {
-                            Object rowValue = row.get(newColumn);
+                        if (newColumn.equalsIgnoreCase(rowKey)) {
+                            Object rowValue = row.get(rowKey);
                             Object value = ConvertUtil.convert(rowValue, metaObject.getSetterType(columnInfo.property));
                             if (onSetListener != null) {
                                 value = onSetListener.onSet(instance, columnInfo.property, value);

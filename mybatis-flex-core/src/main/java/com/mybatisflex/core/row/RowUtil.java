@@ -47,7 +47,7 @@ public class RowUtil {
             try {
                 if (index <= 0) {
                     for (String rowKey : rowKeys) {
-                        if (property.equals(rowKey)) {
+                        if (property.equalsIgnoreCase(rowKey)) {
                             Object rowValue = row.get(rowKey);
                             Object value = ConvertUtil.convert(rowValue, setter.getParameterTypes()[0]);
                             setter.invoke(instance, value);
@@ -58,7 +58,7 @@ public class RowUtil {
                         String newProperty = i <= 0 ? property : property + INDEX_SEPARATOR + i;
                         boolean fillValue = false;
                         for (String rowKey : rowKeys) {
-                            if (newProperty.equals(rowKey)) {
+                            if (newProperty.equalsIgnoreCase(rowKey)) {
                                 Object rowValue = row.get(rowKey);
                                 Object value = ConvertUtil.convert(rowValue, setter.getParameterTypes()[0]);
                                 setter.invoke(instance, value);
@@ -133,6 +133,48 @@ public class RowUtil {
     }
 
 
+
+    public static void printPretty(List<Row> rows) {
+        if (rows == null || rows.isEmpty()) {
+            return;
+        }
+
+        Row firstRow = rows.get(0);
+        List<Integer> lens = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        firstRow.keySet().forEach(s -> {
+            sb.append("|").append(s).append("    ");
+            lens.add(s.length() + 5);
+        });
+        sb.append("|\n");
+
+        rows.forEach(row -> {
+            int i = 0;
+            for (Object value : row.values()) {
+                sb.append(getColString(value, lens.get(i)));
+                i++;
+            }
+            sb.append("|\n");
+        });
+
+        System.out.println(sb);
+    }
+
+
+    private static String getColString(Object o, int len) {
+        String v = "|" + o;
+        while (v.length() < len) {
+            v += " ";
+        }
+
+        if (v.length() > len) {
+            v = v.substring(0, v.length() - 3) + "...";
+        }
+
+        return v;
+    }
+
+
     private static Map<String, Method> getSetterMethods(Class<?> aClass) {
         return MapUtil.computeIfAbsent(classGettersMapping, aClass, aClass1 -> {
             Map<String, Method> columnSetterMapping = new HashMap<>();
@@ -143,9 +185,9 @@ public class RowUtil {
             );
             for (Method setter : setters) {
                 String column = setter.getName().substring(3);
-                columnSetterMapping.put(column.toLowerCase(), setter);
-                columnSetterMapping.put(StringUtil.camelToUnderline(column).toLowerCase(), setter);
-                columnSetterMapping.put(StringUtil.underlineToCamel(column).toUpperCase(), setter);
+                columnSetterMapping.put(column, setter);
+                columnSetterMapping.put(StringUtil.camelToUnderline(column), setter);
+                columnSetterMapping.put(StringUtil.underlineToCamel(column), setter);
             }
             return columnSetterMapping;
         });

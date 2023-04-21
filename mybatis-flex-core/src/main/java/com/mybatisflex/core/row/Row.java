@@ -29,7 +29,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
+public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRecord {
 
     private static final Object[] NULL_ARGS = new Object[0];
 
@@ -367,6 +367,7 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     Object[] obtainAllModifyValues() {
         return ArrayUtil.concat(obtainModifyValues(), obtainsPrimaryValues());
     }
+
 
 
 }

@@ -8,3 +8,13 @@ CREATE TABLE IF NOT EXISTS `tb_account`
     `options`   VARCHAR(1024),
     `is_delete` Integer
 );
+
+
+CREATE TABLE IF NOT EXISTS `tb_article`
+(
+    `id`         INTEGER PRIMARY KEY auto_increment,
+    `account_id` Integer,
+    `title`      VARCHAR(100),
+    `content`    text,
+    `is_delete` Integer
+);
