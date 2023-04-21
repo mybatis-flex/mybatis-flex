@@ -21,47 +21,47 @@ public enum DbType {
     /**
      * MYSQL
      */
-    MYSQL("mysql", "MySql数据库"),
+    MYSQL("mysql", "MySql 数据库"),
     /**
      * MARIADB
      */
-    MARIADB("mariadb", "MariaDB数据库"),
+    MARIADB("mariadb", "MariaDB 数据库"),
     /**
      * ORACLE
      */
-    ORACLE("oracle", "Oracle11g及以下数据库"),
+    ORACLE("oracle", "Oracle11g 及以下数据库"),
     /**
      * oracle12c
      */
-    ORACLE_12C("oracle12c", "Oracle12c及以上数据库"),
+    ORACLE_12C("oracle12c", "Oracle12c 及以上数据库"),
     /**
      * DB2
      */
-    DB2("db2", "DB2数据库"),
+    DB2("db2", "DB2 数据库"),
     /**
      * H2
      */
-    H2("h2", "H2数据库"),
+    H2("h2", "H2 数据库"),
     /**
      * HSQL
      */
-    HSQL("hsql", "HSQL数据库"),
+    HSQL("hsql", "HSQL 数据库"),
     /**
      * SQLITE
      */
-    SQLITE("sqlite", "SQLite数据库"),
+    SQLITE("sqlite", "SQLite 数据库"),
     /**
      * POSTGRE
      */
-    POSTGRE_SQL("postgresql", "Postgre数据库"),
+    POSTGRE_SQL("postgresql", "PostgreSQL 数据库"),
     /**
-     * SQLSERVER2005
+     * SQLSERVER 2005
      */
-    SQL_SERVER2005("sqlserver2005", "SQLServer2005数据库"),
+    SQLSERVER_2005("sqlserver2005", "SQLServer2005 数据库"),
     /**
      * SQLSERVER
      */
-    SQL_SERVER("sqlserver", "SQLServer数据库"),
+    SQLSERVER("sqlserver", "SQLServer 数据库"),
     /**
      * DM
      */
@@ -69,7 +69,7 @@ public enum DbType {
     /**
      * xugu
      */
-    XU_GU("xugu", "虚谷数据库"),
+    XUGU("xugu", "虚谷数据库"),
     /**
      * Kingbase
      */
@@ -77,7 +77,7 @@ public enum DbType {
     /**
      * Phoenix
      */
-    PHOENIX("phoenix", "Phoenix HBase数据库"),
+    PHOENIX("phoenix", "Phoenix HBase 数据库"),
     /**
      * Gauss
      */
@@ -113,7 +113,7 @@ public enum DbType {
     /**
      * derby
      */
-    DERBY("derby", "derby 数据库"),
+    DERBY("derby", "Derby 数据库"),
     /**
      * HighGo
      */
@@ -121,24 +121,24 @@ public enum DbType {
     /**
      * CUBRID
      */
-    CUBRID("cubrid", "CUBRID数据库"),
+    CUBRID("cubrid", "CUBRID 数据库"),
 
     /**
      * GOLDILOCKS
      */
-    GOLDILOCKS("goldilocks", "GOLDILOCKS数据库"),
+    GOLDILOCKS("goldilocks", "GOLDILOCKS 数据库"),
     /**
      * CSIIDB
      */
-    CSIIDB("csiidb", "CSIIDB数据库"),
+    CSIIDB("csiidb", "CSIIDB 数据库"),
     /**
      * CSIIDB
      */
-    SAP_HANA("hana", "SAP_HANA数据库"),
+    SAP_HANA("hana", "SAP_HANA 数据库"),
     /**
      * Impala
      */
-    IMPALA("impala", "impala数据库"),
+    IMPALA("impala", "impala 数据库"),
     /**
      * Vertica
      */
@@ -150,19 +150,19 @@ public enum DbType {
     /**
      * redshift
      */
-    REDSHIFT("redshift", "亚马逊redshift数据库"),
+    REDSHIFT("redshift", "亚马逊 redshift 数据库"),
     /**
      * openGauss
      */
-    OPENGAUSS("openGauss", "华为 opengauss 数据库"),
+    OPENGAUSS("openGauss", "华为 openGauss 数据库"),
     /**
      * TDengine
      */
-    TDENGINE("TDengine", "TDengine数据库"),
+    TDENGINE("TDengine", "TDengine 数据库"),
     /**
      * Informix
      */
-    INFORMIX("informix", "Informix数据库"),
+    INFORMIX("informix", "Informix 数据库"),
     /**
      * uxdb
      */
@@ -170,7 +170,7 @@ public enum DbType {
     /**
      * greenplum
      */
-    GREENPLUM("greenplum", "greenplum数据库"),
+    GREENPLUM("greenplum", "greenplum 数据库"),
     /**
      * UNKNOWN DB
      */

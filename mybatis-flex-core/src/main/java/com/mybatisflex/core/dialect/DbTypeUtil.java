@@ -96,9 +96,9 @@ public class DbTypeUtil {
         } else if (jdbcUrl.contains(":oracle:")) {
             return DbType.ORACLE;
         } else if (jdbcUrl.contains(":sqlserver:") || jdbcUrl.contains(":microsoft:")) {
-            return DbType.SQL_SERVER2005;
+            return DbType.SQLSERVER_2005;
         } else if (jdbcUrl.contains(":sqlserver2012:")) {
-            return DbType.SQL_SERVER;
+            return DbType.SQLSERVER;
         } else if (jdbcUrl.contains(":postgresql:")) {
             return DbType.POSTGRE_SQL;
         } else if (jdbcUrl.contains(":hsqldb:")) {
@@ -112,7 +112,7 @@ public class DbTypeUtil {
         } else if (isMatchedRegex(":dm\\d*:", jdbcUrl)) {
             return DbType.DM;
         } else if (jdbcUrl.contains(":xugu:")) {
-            return DbType.XU_GU;
+            return DbType.XUGU;
         } else if (isMatchedRegex(":kingbase\\d*:", jdbcUrl)) {
             return DbType.KINGBASE_ES;
         } else if (jdbcUrl.contains(":phoenix:")) {

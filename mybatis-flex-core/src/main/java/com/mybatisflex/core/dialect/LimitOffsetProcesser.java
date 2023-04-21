@@ -52,7 +52,7 @@ public interface LimitOffsetProcesser {
 
     /**
      * derby 的处理器
-     * 适合  {@link DbType#DERBY,DbType#ORACLE_12C,DbType#SQL_SERVER,DbType#POSTGRE_SQL}
+     * 适合  {@link DbType#DERBY,DbType#ORACLE_12C,DbType#SQLSERVER ,DbType#POSTGRE_SQL}
      */
     LimitOffsetProcesser DERBY = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
@@ -67,7 +67,7 @@ public interface LimitOffsetProcesser {
 
     /**
      * db2 的处理器
-     * 适合  {@link DbType#DB2,DbType#SQL_SERVER2005}
+     * 适合  {@link DbType#DB2,DbType#SQLSERVER_2005}
      */
     LimitOffsetProcesser DB2 = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {

@@ -96,7 +96,7 @@ public class DialectFactory {
             case MARIADB:
             case GBASE:
             case OSCAR:
-            case XU_GU:
+            case XUGU:
             case CLICK_HOUSE:
             case OCEAN_BASE:
             case CUBRID:
@@ -124,9 +124,9 @@ public class DialectFactory {
             case ORACLE_12C:
             case FIREBIRD:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.DERBY);
-            case SQL_SERVER:
+            case SQLSERVER:
                 return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcesser.DERBY);
-            case SQL_SERVER2005:
+            case SQLSERVER_2005:
                 return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcesser.DB2);
             case INFORMIX:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.INFORMIX);
