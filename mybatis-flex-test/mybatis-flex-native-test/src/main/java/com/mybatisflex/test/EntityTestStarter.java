@@ -19,15 +19,10 @@ import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
-import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-
-import static com.mybatisflex.core.query.QueryMethods.select;
-import static com.mybatisflex.test.table.Tables.ACCOUNT;
 
 public class EntityTestStarter {
 
@@ -55,15 +50,16 @@ public class EntityTestStarter {
 
 //        QueryWrapper wrapper = QueryWrapper.create().select(ACCOUNT.DEFAULT_COLUMNS).select(count()).from(ACCOUNT)
 //                .groupBy(ACCOUNT.ID);
+
 //        List<Account> accounts = accountMapper.selectListByQuery(wrapper);
-
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.where(ACCOUNT.ID.in(
-                select(ACCOUNT.ID).from(ACCOUNT)
-        ));
-
-        Page<Account> paginate = accountMapper.paginate(new Page<>(1,10),queryWrapper);
-        System.out.println(paginate);
+//
+//        QueryWrapper queryWrapper = new QueryWrapper();
+//        queryWrapper.where(ACCOUNT.ID.in(
+//                select(ACCOUNT.ID).from(ACCOUNT)
+//        ));
+//
+//        Page<Account> paginate = accountMapper.paginate(new Page<>(1,10),queryWrapper);
+//        System.out.println(paginate);
 
 
 //        Account account = accountMapper.selectOneById(1);

@@ -70,4 +70,12 @@ public class FunctionQueryColumn extends QueryColumn {
         this.alias = alias;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "FunctionQueryColumn{" +
+                "fnName='" + fnName + '\'' +
+                ", column=" + column +
+                '}';
+    }
 }
