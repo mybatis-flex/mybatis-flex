@@ -38,22 +38,34 @@ class WrapperUtil {
         List<QueryWrapper> list = null;
         while (condition != null) {
             if (condition.checkEffective()) {
-                Object value = condition.getValue();
-                if (value instanceof QueryWrapper) {
-                    if (list == null) {
-                        list = new ArrayList<>();
+                if (condition instanceof Brackets) {
+                    List<QueryWrapper> childQueryWrapper = getChildSelect(((Brackets) condition).getChildCondition());
+                    if (!childQueryWrapper.isEmpty()) {
+                        if (list == null) {
+                            list = new ArrayList<>();
+                        }
+                        list.addAll(childQueryWrapper);
                     }
-                    list.add((QueryWrapper) value);
-                    list.addAll(((QueryWrapper) value).getChildSelect());
-                } else if (value != null && value.getClass().isArray()) {
-                    for (int i = 0; i < Array.getLength(value); i++) {
-                        Object arrayValue = Array.get(value, i);
-                        if (arrayValue instanceof QueryWrapper) {
-                            if (list == null) {
-                                list = new ArrayList<>();
+                }
+                // not Brackets
+                else {
+                    Object value = condition.getValue();
+                    if (value instanceof QueryWrapper) {
+                        if (list == null) {
+                            list = new ArrayList<>();
+                        }
+                        list.add((QueryWrapper) value);
+                        list.addAll(((QueryWrapper) value).getChildSelect());
+                    } else if (value != null && value.getClass().isArray()) {
+                        for (int i = 0; i < Array.getLength(value); i++) {
+                            Object arrayValue = Array.get(value, i);
+                            if (arrayValue instanceof QueryWrapper) {
+                                if (list == null) {
+                                    list = new ArrayList<>();
+                                }
+                                list.add((QueryWrapper) arrayValue);
+                                list.addAll(((QueryWrapper) arrayValue).getChildSelect());
                             }
-                            list.add((QueryWrapper) arrayValue);
-                            list.addAll(((QueryWrapper) arrayValue).getChildSelect());
                         }
                     }
                 }

@@ -54,6 +54,10 @@ public class Brackets extends QueryCondition {
         return checkEffective() ? WrapperUtil.getValues(childCondition) : null;
     }
 
+    public QueryCondition getChildCondition(){
+        return childCondition;
+    }
+
     @Override
     public String toSql(List<QueryTable> queryTables, IDialect dialect) {
         StringBuilder sql = new StringBuilder();

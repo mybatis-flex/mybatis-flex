@@ -64,6 +64,19 @@ public class EntityTestStarter {
 //        Page<Account> paginate = accountMapper.paginate(1,10,queryWrapper);
 //        System.out.println(paginate);
 
+
+
+//        QueryWrapper query = QueryWrapper.create()
+//                .where(ACCOUNT.ID.in(
+//                                select(ACCOUNT.ID).from(ACCOUNT)
+//                                        .where(ACCOUNT.ID.eq(1))
+//                        ).and("1 = 1")
+//                );
+//
+//        List<Account> accounts = accountMapper.selectListByQuery(query);
+//        System.out.println(accounts);
+
+
 //        List<Account> accounts = new ArrayList<>();
 //        for (int i = 0; i < 10; i++) {
 //            Account account = new Account();
