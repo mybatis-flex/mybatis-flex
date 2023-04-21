@@ -52,9 +52,15 @@ public class AccountController {
 
 
 
-    @GetMapping("/account/select/{name}")
+    @GetMapping("/account/byName/{name}")
     Account selectName(@PathVariable("name") String name){
         return myAccountMapper.selectByName(name);
+    }
+
+
+    @GetMapping("/account/byId/{id}")
+    Account selectId(@PathVariable("id") Object id){
+        return myAccountMapper.selectById(id);
     }
 
 
