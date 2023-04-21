@@ -70,19 +70,26 @@ public class HelloWorld {
         //获取 mapper
         AccountMapper mapper = MybatisFlexBootstrap.getInstance()
                 .getMapper(AccountMapper.class);
-
+        
         //示例1：查询 id=1 的数据
         Account account = mapper.selectOneById(1);
         
-        //示例2：者使用 Db + Row 查询
+        
+        //示例2：根据 QueryWrapper 查询 id >= 100 的数据列表
+        QueryWrapper query = QueryWrapper.create()
+                .where(ACCOUNT.ID.ge(100));
+        List<Account> accounts = mapper.selectListByQuery(query);
+        
+        
+        //示例3：者使用 Db + Row 查询
         String sql = "select * from tb_account where age > ?";
         List<Row> rows = Db.selectListBySql(sql, 18);
     }
 }
 ```
 
-> 以上的示例中， `AccountMapper.class` 为 Mybatis-Flex 通过 APT 自动生成，无需手动编码。
-> 也可以关闭自动生成功能，手动编写 AccountMapper，更多查看 [APT 文档](./apt)。
+> 以上的示例中， `AccountMapper.class` 和 `ACCOUNT` 为 Mybatis-Flex 通过 APT 自动生成，无需手动编码。
+> 我们也可以关闭 mapper 的自动生成功能，手动编写 AccountMapper，更多查看 [APT 文档](./apt)。
 
 
 ## 更多示例
