@@ -623,19 +623,44 @@ public class TableInfo {
      *
      * @return entity
      */
-    public <T> T newInstanceByRow(Row row) {
+    public <T> T newInstanceByRow(Row row, int index) {
         Object instance = ClassUtil.newInstance(entityClass);
         MetaObject metaObject = EntityMetaObject.forObject(instance, reflectorFactory);
-        for (String column : row.keySet()) {
-            ColumnInfo columnInfo = columnInfoMapping.get(column);
-            if (columnInfo != null && metaObject.hasSetter(columnInfo.property)) {
-                Object value = ConvertUtil.convert(row.get(column), metaObject.getSetterType(columnInfo.property));
-                if (onSetListener != null) {
-                    value = onSetListener.onSet(instance, columnInfo.property, value);
+        Set<String> rowKeys = row.keySet();
+        columnInfoMapping.forEach((column, columnInfo) -> {
+            if (index <= 0) {
+                for (String rowKey : rowKeys) {
+                    if (column.equals(rowKey)) {
+                        Object rowValue = row.get(rowKey);
+                        Object value = ConvertUtil.convert(rowValue, metaObject.getSetterType(columnInfo.property));
+                        if (onSetListener != null) {
+                            value = onSetListener.onSet(instance, columnInfo.property, value);
+                        }
+                        metaObject.setValue(columnInfo.property, value);
+                    }
                 }
-                metaObject.setValue(columnInfo.property, value);
+            } else {
+                for (int i = index; i >= 0; i--) {
+                    String newColumn = i <= 0 ? column : column + "$" + i;
+                    boolean fillValue = false;
+                    for (String rowKey : rowKeys) {
+                        if (newColumn.equals(rowKey)) {
+                            Object rowValue = row.get(newColumn);
+                            Object value = ConvertUtil.convert(rowValue, metaObject.getSetterType(columnInfo.property));
+                            if (onSetListener != null) {
+                                value = onSetListener.onSet(instance, columnInfo.property, value);
+                            }
+                            metaObject.setValue(columnInfo.property, value);
+                            fillValue = true;
+                            break;
+                        }
+                    }
+                    if (fillValue) {
+                        break;
+                    }
+                }
             }
-        }
+        });
         return (T) instance;
     }
 
@@ -697,9 +722,9 @@ public class TableInfo {
         if (columnValue == null) {
             String name = columnInfoMapping.get(logicDeleteColumn).property;
             Class<?> clazz = metaObject.getSetterType(name);
-            if (Number.class.isAssignableFrom(clazz)){
+            if (Number.class.isAssignableFrom(clazz)) {
                 metaObject.setValue(name, ConvertUtil.convert(0L, clazz));
-            }else if (clazz == Boolean.class){
+            } else if (clazz == Boolean.class) {
                 metaObject.setValue(name, false);
             }
         }

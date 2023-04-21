@@ -29,17 +29,47 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RowUtil {
 
+    static final String INDEX_SEPARATOR = "$";
+
     private static final Map<Class<?>, Map<String, Method>> classGettersMapping = new ConcurrentHashMap<>();
 
+
     public static <T> T toObject(Row row, Class<T> objectClass) {
+        return toObject(row, objectClass, 0);
+    }
+
+
+    public static <T> T toObject(Row row, Class<T> objectClass, int index) {
         T instance = ClassUtil.newInstance(objectClass);
         Map<String, Method> setterMethods = getSetterMethods(objectClass);
-        row.forEach((column, columnValue) -> {
-            Method setter = setterMethods.get(column.toLowerCase());
+        Set<String> rowKeys = row.keySet();
+        setterMethods.forEach((property, setter) -> {
             try {
-                if (setter != null) {
-                    Object value = ConvertUtil.convert(columnValue, setter.getParameterTypes()[0]);
-                    setter.invoke(instance, value);
+                if (index <= 0) {
+                    for (String rowKey : rowKeys) {
+                        if (property.equals(rowKey)) {
+                            Object rowValue = row.get(rowKey);
+                            Object value = ConvertUtil.convert(rowValue, setter.getParameterTypes()[0]);
+                            setter.invoke(instance, value);
+                        }
+                    }
+                } else {
+                    for (int i = index; i >= 0; i--) {
+                        String newProperty = i <= 0 ? property : property + INDEX_SEPARATOR + i;
+                        boolean fillValue = false;
+                        for (String rowKey : rowKeys) {
+                            if (newProperty.equals(rowKey)) {
+                                Object rowValue = row.get(rowKey);
+                                Object value = ConvertUtil.convert(rowValue, setter.getParameterTypes()[0]);
+                                setter.invoke(instance, value);
+                                fillValue = true;
+                                break;
+                            }
+                        }
+                        if (fillValue) {
+                            break;
+                        }
+                    }
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Can not invoke method: " + setter);
@@ -50,12 +80,17 @@ public class RowUtil {
 
 
     public static <T> List<T> toObjectList(List<Row> rows, Class<T> objectClass) {
+        return toObjectList(rows, objectClass, 0);
+    }
+
+
+    public static <T> List<T> toObjectList(List<Row> rows, Class<T> objectClass, int index) {
         if (rows == null || rows.isEmpty()) {
             return Collections.emptyList();
         } else {
             List<T> objectList = new ArrayList<>();
             for (Row row : rows) {
-                objectList.add(toObject(row, objectClass));
+                objectList.add(toObject(row, objectClass, index));
             }
             return objectList;
         }
@@ -63,19 +98,29 @@ public class RowUtil {
 
 
     public static <T> T toEntity(Row row, Class<T> entityClass) {
+        return toEntity(row, entityClass, 0);
+    }
+
+
+    public static <T> T toEntity(Row row, Class<T> entityClass, int index) {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
-        return tableInfo.newInstanceByRow(row);
+        return tableInfo.newInstanceByRow(row, index);
     }
 
 
     public static <T> List<T> toEntityList(List<Row> rows, Class<T> entityClass) {
+        return toEntityList(rows, entityClass, 0);
+    }
+
+
+    public static <T> List<T> toEntityList(List<Row> rows, Class<T> entityClass, int index) {
         if (rows == null || rows.isEmpty()) {
             return Collections.emptyList();
         } else {
             TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
             List<T> entityList = new ArrayList<>();
             for (Row row : rows) {
-                T entity = tableInfo.newInstanceByRow(row);
+                T entity = tableInfo.newInstanceByRow(row, index);
                 entityList.add(entity);
             }
             return entityList;

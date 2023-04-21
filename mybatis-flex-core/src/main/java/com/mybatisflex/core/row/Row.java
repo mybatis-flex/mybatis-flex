@@ -106,7 +106,8 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
 
         SqlUtil.keepColumnSafely(column);
 
-        put(column, value);
+        //覆盖 put
+        super.put(column, value);
 
         boolean isPrimaryKey = false;
         if (this.primaryKeys != null) {
@@ -133,6 +134,22 @@ public class Row extends HashMap<String, Object> implements ModifyAttrsRecord {
     public Object get(String key, Object defaultValue) {
         Object result = super.get(key);
         return result != null ? result : defaultValue;
+    }
+
+
+    @Override
+    public Object put(String key, Object value) {
+        if (!containsKey(key)) {
+            return super.put(key, value);
+        } else {
+            for (int i = 1; i < 100; i++) {
+                String newKey = key + RowUtil.INDEX_SEPARATOR + 1;
+                if (!containsKey(newKey)) {
+                    return super.put(newKey, value);
+                }
+            }
+        }
+        return super.put(key, value);
     }
 
 
