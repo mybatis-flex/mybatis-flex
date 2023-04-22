@@ -4,7 +4,7 @@ package #(globalConfig.entityPackage);
 import #(importClass);
 #end
 
-
+#(table.buildRemarks())
 #(table.buildTableAnnotation())
 public class #(table.buildEntityClassName())#(table.buildExtends())#(table.buildImplements()) {
 #for(column: table.columns)

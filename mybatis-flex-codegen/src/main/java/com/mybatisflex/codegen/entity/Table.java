@@ -154,6 +154,16 @@ public class Table {
         return imports.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
     }
 
+    public String buildRemarks(){
+        if (StringUtil.isBlank(remarks)){
+            return "";
+        }else {
+            StringBuilder sb = new StringBuilder("/**\n")
+                    .append(" * ").append(remarks).append("\n")
+                    .append(" */");
+            return sb.toString();
+        }
+    }
 
     /**
      * 构建 entity 的 Class 名称
