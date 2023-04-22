@@ -133,6 +133,10 @@ public class RowUtil {
     }
 
 
+    public static void printPretty(Row row) {
+        printPretty(Collections.singletonList(row));
+    }
+
 
     public static void printPretty(List<Row> rows) {
         if (rows == null || rows.isEmpty()) {
@@ -140,18 +144,19 @@ public class RowUtil {
         }
 
         Row firstRow = rows.get(0);
-        List<Integer> lens = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
+        List<Integer> textConsoleLengthList = new ArrayList<>();
+        StringBuilder sb = new StringBuilder("\nTotal Count: " +rows.size()+"\n");
         firstRow.keySet().forEach(s -> {
-            sb.append("|").append(s).append("    ");
-            lens.add(s.length() + 5);
+            String sa = "|" + s + "     ";
+            sb.append(sa);
+            textConsoleLengthList.add(calcTextConsoleLength(sa));
         });
         sb.append("|\n");
 
         rows.forEach(row -> {
             int i = 0;
             for (Object value : row.values()) {
-                sb.append(getColString(value, lens.get(i)));
+                sb.append(getColString(value, textConsoleLengthList.get(i)));
                 i++;
             }
             sb.append("|\n");
@@ -163,15 +168,37 @@ public class RowUtil {
 
     private static String getColString(Object o, int len) {
         String v = "|" + o;
-        while (v.length() < len) {
+        while (calcTextConsoleLength(v) < len) {
             v += " ";
         }
 
-        if (v.length() > len) {
-            v = v.substring(0, v.length() - 3) + "...";
+        while (calcTextConsoleLength(v) > len) {
+            v = v.substring(0, v.length() - 5) + "... ";
         }
-
         return v;
+    }
+
+
+    private static int calcTextConsoleLength(String s) {
+        int result = 0;
+        char[] chars = s.toCharArray();
+        for (char c : chars) {
+            if (isCJK(c)) {
+                result += 3;
+            } else {
+                result += 2;
+            }
+        }
+        return result % 2 != 0 ? result + 1 : result;
+    }
+
+
+    private static boolean isCJK(char c) {
+        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+        return ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
+                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS
+                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION;
     }
 
 
