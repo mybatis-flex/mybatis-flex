@@ -32,6 +32,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FlexGlobalConfig {
 
     /**
+     * 启动是否打印 banner 和 版本好
+     */
+    private boolean printBanner = true;
+
+    /**
      * 默认使用 Mysql 数据库类型
      */
     private DbType dbType = DbType.MYSQL;
@@ -66,6 +71,13 @@ public class FlexGlobalConfig {
     private Object normalValueOfLogicDelete = FlexConsts.LOGIC_DELETE_NORMAL;
     private Object deletedValueOfLogicDelete = FlexConsts.LOGIC_DELETE_DELETED;
 
+    public boolean isPrintBanner() {
+        return printBanner;
+    }
+
+    public void setPrintBanner(boolean printBanner) {
+        this.printBanner = printBanner;
+    }
 
     public DbType getDbType() {
         return dbType;

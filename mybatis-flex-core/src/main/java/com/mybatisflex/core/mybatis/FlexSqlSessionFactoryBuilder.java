@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.mybatis;
 
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DbTypeUtil;
@@ -63,9 +64,24 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
         //设置全局配置的 sessionFactory 和 dbType
         initGlobalConfig(configuration, sessionFactory, dbType);
 
+        printBanner();
+
         return sessionFactory;
     }
 
+
+    private void printBanner() {
+        if (!FlexGlobalConfig.getDefaultConfig().isPrintBanner()) {
+            return;
+        }
+        String banner = "  __  __       _           _   _       _____ _           \n" +
+                " |  \\/  |_   _| |__   __ _| |_(_)___  |  ___| | _____  __\n" +
+                " | |\\/| | | | | '_ \\ / _` | __| / __| | |_  | |/ _ \\ \\/ /\n" +
+                " | |  | | |_| | |_) | (_| | |_| \\__ \\ |  _| | |  __/>  < \n" +
+                " |_|  |_|\\__, |_.__/ \\__,_|\\__|_|___/ |_|   |_|\\___/_/\\_\\\n" +
+                "         |___/ v" + FlexConsts.VERSION + " https://mybatis-flex.com";
+        System.out.println(banner);
+    }
 
     /**
      * 设置全局配置
@@ -82,7 +98,6 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
         String environmentId = config.getEnvironment().getId();
         FlexGlobalConfig.setConfig(environmentId, flexGlobalConfig);
     }
-
 
 
 }

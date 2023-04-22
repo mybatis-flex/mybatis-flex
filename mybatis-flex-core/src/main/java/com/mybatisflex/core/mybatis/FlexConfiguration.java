@@ -62,6 +62,7 @@ public class FlexConfiguration extends Configuration {
         initDefaultMappers();
     }
 
+
     /**
      * 设置 mybatis-flex 默认的 Mapper
      * 当前只有 RowMapper {@link RowMapper}
