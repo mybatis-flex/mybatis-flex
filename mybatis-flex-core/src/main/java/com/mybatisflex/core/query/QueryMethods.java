@@ -70,12 +70,12 @@ public class QueryMethods {
         return new StringQueryColumn(column);
     }
 
-    public static QueryCondition exist(QueryWrapper queryWrapper) {
-        return new OperatorSelectCondition(" EXIST ", queryWrapper);
+    public static QueryCondition exists(QueryWrapper queryWrapper) {
+        return new OperatorSelectCondition(" EXISTS ", queryWrapper);
     }
 
-    public static QueryCondition notExist(QueryWrapper queryWrapper) {
-        return new OperatorSelectCondition(" NOT EXIST ", queryWrapper);
+    public static QueryCondition notExists(QueryWrapper queryWrapper) {
+        return new OperatorSelectCondition(" NOT EXISTS ", queryWrapper);
     }
 
     public static QueryCondition not(QueryCondition childCondition) {

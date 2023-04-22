@@ -22,8 +22,8 @@ import java.util.List;
 
 /**
  * 操作类型的操作
- * 示例1：and exist (select 1 from ... where ....)
- * 示例2：and not exist (select ... from ... where ....)
+ * 示例1：and EXISTS (select 1 from ... where ....)
+ * 示例2：and not EXISTS (select ... from ... where ....)
  */
 public class OperatorSelectCondition extends QueryCondition {
     //操作符，例如 exist, not exist

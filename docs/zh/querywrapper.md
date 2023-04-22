@@ -207,7 +207,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ```sql
 SELECT * FROM tb_account
 WHERE id >=  ?
-AND EXIST (
+AND EXISTS (
     SELECT 1 FROM tb_article WHERE id >=  ?
 )
 ```

@@ -177,7 +177,7 @@ public class AccountSqlTester {
                 .from(ACCOUNT)
                 .where(ACCOUNT.ID.ge(100))
                 .and(
-                        exist(
+                        exists(
                                 selectOne().from(ARTICLE).as("a").where(ARTICLE.ID.ge(100))
                         )
                 );
@@ -365,7 +365,7 @@ public class AccountSqlTester {
                 .and(ACCOUNT.USER_NAME.like("michael"))
                 .and(ARTICLE.ID.in(select(ARTICLE.ID).from("aaa")))
                 .and(
-                        notExist(
+                        notExists(
                                 selectOne().from("aaa").where(ARTICLE.ID.ge(333))
                         )
                 )
