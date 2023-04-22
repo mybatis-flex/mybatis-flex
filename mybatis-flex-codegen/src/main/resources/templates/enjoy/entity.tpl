@@ -9,6 +9,7 @@ import #(importClass);
 public class #(table.buildEntityClassName())#(table.buildExtends())#(table.buildImplements()) {
 #for(column: table.columns)
 
+    #(column.buildRemarks())
     #(column.buildAnnotations())private #(column.propertySimpleType) #(column.property);
 #end
 

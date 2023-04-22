@@ -103,6 +103,19 @@ public class Column {
         return "set" + StringUtil.firstCharToUpperCase(property);
     }
 
+
+    public String buildRemarks(){
+        if (StringUtil.isBlank(remarks)){
+            return "";
+        }else {
+            StringBuilder sb = new StringBuilder("/**\n")
+                    .append("     * ").append(remarks).append("\n")
+                    .append("     */");
+            return sb.toString();
+        }
+    }
+
+
     public String buildPropertyName() {
         String entityJavaFileName = name;
         return StringUtil.firstCharToLowerCase(StringUtil.underlineToCamel(entityJavaFileName));

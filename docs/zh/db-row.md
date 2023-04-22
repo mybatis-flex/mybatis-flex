@@ -49,6 +49,9 @@ Row row = Db.selectOneBySql("select * from ....");
 Account entity = row.toEntity(Account.class);
 ```
 
+需要注意的是，当我们进行 join 关联查询时，返回的结果如果出现重复字段，Row 会自动添加上 字段序号。
+
+
 ## Row.toObject()
 
 `Row.toObject(Other.class)` 和 `Row.toEntity(Entity.class)` 和相似。不一样的地方在于 `Row.toObject(Other.class)` 是通过去查找

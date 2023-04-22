@@ -80,6 +80,7 @@ public class Generator {
 
                     File mapperJavaFile = new File(globalConfig.getSourceDir(), mapperPackagePath + "/" +
                             table.buildMapperClassName() + ".java");
+
                     if (!mapperJavaFile.getParentFile().exists()) {
                         if (!mapperJavaFile.getParentFile().mkdirs()) {
                             throw new IllegalStateException("Can not mkdirs by dir: " + mapperJavaFile.getParentFile());
