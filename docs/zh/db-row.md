@@ -51,6 +51,68 @@ Account entity = row.toEntity(Account.class);
 
 需要注意的是，当我们进行 join 关联查询时，返回的结果如果出现重复字段，Row 会自动添加上 字段序号。
 
+例如：
+
+```sql
+CREATE TABLE IF NOT EXISTS `tb_account`
+(
+    `id`        INTEGER PRIMARY KEY auto_increment,
+    `user_name` VARCHAR(100),
+    `age`       Integer,
+    `is_delete` Integer
+);
+
+
+CREATE TABLE IF NOT EXISTS `tb_article`
+(
+    `id`         INTEGER PRIMARY KEY auto_increment,
+    `account_id` Integer,
+    `title`      VARCHAR(100),
+    `content`    text,
+    `is_delete` Integer
+);
+
+INSERT INTO tb_account
+VALUES (1, '张三' ,18, 0),
+       (2, '王麻子叔叔' ,19, 0);
+
+
+INSERT INTO tb_article
+VALUES (1, 1,'标题1', '内容1',0),
+       (2, 2,'标题2', '内容2',0);
+```
+在以上的数据中，我们通过如下的 left join 查询文章和用户表：
+
+```java
+QueryWrapper query = new QueryWrapper();
+query.select().from(ACCOUNT).leftJoin(ARTICLE)
+        .on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
+
+List<Row> rows = Db.selectListByQuery(query);
+```
+
+返回的 Row 集合如下：
+```
+|ID    |USER_NAME    |AGE    |IS_DELETE    |ID$1    |ACCOUNT_ID    |TITLE      |CONTENT    |IS_DELETE$1    |
+|1     |张三          |18     |0            |1       |1             |标题1      |内容1       |0              |
+|2     |王麻子叔叔     |19     |0            |2       |2             |标题2      |内容2       |0              |
+```
+
+前面 4 列属于 `Account` 的数据，后面 5 列属于 `Article` 的数据。在后面的 `Article` 表中，有 `id`、`is_delete` 和 Account 的表的列名重复。
+此时，重复的列名会自动添加上 `$序号` ，而非数据库返回的真正列名。
+
+因此，我们进行 toEntity 数据转换的时候，需要添加上序号，例如：
+
+```java
+List<Account> accounts = RowUtil.toEntityList(rows, Account.class);
+System.out.println(accounts);
+
+//添加上序号 1
+List<Article> articles = RowUtil.toEntityList(rows, Article.class, 1);
+System.out.println(articles);
+```
+
+
 
 ## Row.toObject()
 
@@ -80,6 +142,8 @@ public class Other {
 Row row = Db.selectOneBySql("select * from ....");
 Other other = row.toObject(Other.class);
 ```
+
+在以上代码中，如果出现了 `left join` 等情况下，需要添加上序号。
 
 ## Row 字段转化为驼峰风格
 

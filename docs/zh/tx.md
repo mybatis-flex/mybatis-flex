@@ -75,6 +75,8 @@ Db.tx(() -> {
 
 Mybatis-Flex 已支持 Spring 框架的 `@Transactional`，在使用 Spring 的情况下，可以使用 `@Transactional` 进行事务管理。
 
+同理，使用 Spring 的 `TransactionTemplate` 进行事务管理也是没问题的。
+
 ## 特征
 
 - 1、支持嵌套事务
