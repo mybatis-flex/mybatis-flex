@@ -40,10 +40,35 @@ public interface BaseMapper<T> {
      *
      * @param entity 实体类
      * @return 返回影响的行数
+     */
+    default int insert(T entity){
+        return insert(entity,false);
+    }
+
+
+    /**
+     * 插入 entity 数据，但是忽略 null 的数据，只对有值的内容进行插入
+     * 这样的好处是数据库已经配置了一些默认值，这些默认值才会生效
+     *
+     * @param entity 实体类
+     * @return 返回影响的行数
+     */
+    default int insertSelective(T entity){
+        return insert(entity,true);
+    }
+
+
+
+    /**
+     * 插入 entity 数据
+     *
+     * @param entity 实体类
+     * @return 返回影响的行数
      * @see com.mybatisflex.core.provider.EntitySqlProvider#insert(Map, ProviderContext)
      */
     @InsertProvider(type = EntitySqlProvider.class, method = "insert")
-    int insert(@Param(FlexConsts.ENTITY) T entity);
+    int insert(@Param(FlexConsts.ENTITY) T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls);
+
 
 
     /**

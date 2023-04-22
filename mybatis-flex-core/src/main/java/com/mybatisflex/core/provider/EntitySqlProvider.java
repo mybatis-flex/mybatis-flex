@@ -53,6 +53,8 @@ public class EntitySqlProvider {
             throw FlexExceptions.wrap("entity can not be null.");
         }
 
+        boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
+
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
         //设置乐观锁版本字段的初始化数据
@@ -67,11 +69,12 @@ public class EntitySqlProvider {
         //执行 onInsert 监听器
         tableInfo.invokeOnInsertListener(entity);
 
-        Object[] values = tableInfo.buildInsertSqlArgs(entity);
+        Object[] values = tableInfo.buildInsertSqlArgs(entity, ignoreNulls);
         ProviderUtil.setSqlArgs(params, values);
 
-        return DialectFactory.getDialect().forInsertEntity(tableInfo, entity);
+        return DialectFactory.getDialect().forInsertEntity(tableInfo, entity, ignoreNulls);
     }
+
 
 
     /**
@@ -102,7 +105,7 @@ public class EntitySqlProvider {
 
         Object[] allValues = new Object[0];
         for (Object entity : entities) {
-            allValues = ArrayUtil.concat(allValues, tableInfo.buildInsertSqlArgs(entity));
+            allValues = ArrayUtil.concat(allValues, tableInfo.buildInsertSqlArgs(entity, false));
         }
 
         ProviderUtil.setSqlArgs(params, allValues);
@@ -151,7 +154,7 @@ public class EntitySqlProvider {
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
-        ProviderUtil.setSqlArgs(params, ArrayUtil.concat(primaryValues,tenantIdArgs));
+        ProviderUtil.setSqlArgs(params, ArrayUtil.concat(primaryValues, tenantIdArgs));
 
         return DialectFactory.getDialect().forDeleteEntityBatchByIds(tableInfo, primaryValues);
     }

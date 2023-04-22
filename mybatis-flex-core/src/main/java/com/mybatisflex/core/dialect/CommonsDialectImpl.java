@@ -365,11 +365,11 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     @Override
-    public String forInsertEntity(TableInfo tableInfo, Object entity) {
+    public String forInsertEntity(TableInfo tableInfo, Object entity, boolean ignoreNulls) {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ").append(wrap(tableInfo.getTableName()));
 
-        String[] insertColumns = tableInfo.obtainInsertColumns();
+        String[] insertColumns = tableInfo.obtainInsertColumns(entity, ignoreNulls);
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
 
         StringJoiner sqlFields = new StringJoiner(", ");
@@ -393,7 +393,7 @@ public class CommonsDialectImpl implements IDialect {
     public String forInsertEntityBatch(TableInfo tableInfo, List<Object> entities) {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ").append(wrap(tableInfo.getTableName()));
-        String[] insertColumns = tableInfo.obtainInsertColumns();
+        String[] insertColumns = tableInfo.obtainInsertColumns(null, false);
         String[] warpedInsertColumns = new String[insertColumns.length];
         for (int i = 0; i < insertColumns.length; i++) {
             warpedInsertColumns[i] = wrap(insertColumns[i]);

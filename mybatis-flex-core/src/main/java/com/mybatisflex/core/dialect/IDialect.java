@@ -59,7 +59,7 @@ public interface IDialect {
 
 
     //////for entity /////
-    String forInsertEntity(TableInfo tableInfo, Object entity);
+    String forInsertEntity(TableInfo tableInfo, Object entity, boolean ignoreNulls);
 
     String forInsertEntityBatch(TableInfo tableInfo, List<Object> entities);
 

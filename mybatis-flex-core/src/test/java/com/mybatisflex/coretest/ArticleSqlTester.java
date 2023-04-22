@@ -32,9 +32,23 @@ public class ArticleSqlTester {
 
         IDialect dialect = new CommonsDialectImpl();
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
-        String sql = dialect.forInsertEntity(tableInfo, article);
+        String sql = dialect.forInsertEntity(tableInfo, article, false);
         System.out.println(sql);
     }
+
+
+    @Test
+    public void testInsert1Sql() {
+        Article article = new Article();
+        article.setAccountId(1L);
+        article.setContent("aaa");
+
+        IDialect dialect = new CommonsDialectImpl();
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
+        String sql = dialect.forInsertEntity(tableInfo, article, true);
+        System.out.println(sql);
+    }
+
 
     @Test
     public void testInsertBatchSql() {
