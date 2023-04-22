@@ -112,6 +112,17 @@ processor.mappersGenerateEnable = false
 </plugin>
 ```
 
+## Gradle 编译配置
+
+当使用 Gradle 编译的情况下，需要添加 `annotationProcessor` 配置:
+
+```
+dependencies {
+    ...
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-annotation:1.1.7'
+}
+```
+
 ## 开发工具无法导入生成的代码？
 
 如下图所示，点击项目目录（注意是项目的根目录），右键 > Maven：
