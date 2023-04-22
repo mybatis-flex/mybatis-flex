@@ -1,3 +1,19 @@
+mybatis-flex v1.1.8 20230422:
+新增：添加 RowUtil.printPretty() 方法，用于调试
+新增：代码生成器生成代码默认添加注释的功能
+新增：添加 BaseEntity.insertSelective() 方法  #I6XS9Z
+修复：子查询时，逻辑删除字段的未添加逻辑删除字段 #I6X4U8
+修复：TransactionTemplate.execute 失效的问题 #I6XSHH
+修复："EXIST" 关键字错误的问题 #I6XTVB
+优化：Row 添加列序号的功能，数据库返回结果相同列不再覆盖
+文档：添加 使用 Mybatis 原生功能的相关文档
+文档：添加 支持的数据库类型 的相关文档
+文档：Db + Row 添加 left join 转换 entity 的文档
+文档：优化 快速开始 的相关文档
+文档：APT 文档添加关于 Gradle 构建的一些内容
+
+
+
 mybatis-flex v1.1.7 20230421:
 优化：将 ConsoleMessageCollector 的 getFullSql 方法移入 AuditMessage，方便重用 感谢 @pengpeng
 修复：配置 mybatis-flex.mapper-locations 在某些场景下会出现 NPE 的问题 #I6X59V

@@ -119,7 +119,7 @@ processor.mappersGenerateEnable = false
 ```
 dependencies {
     ...
-    annotationProcessor 'com.mybatis-flex:mybatis-flex-annotation:1.1.7'
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-annotation:1.1.8'
 }
 ```
 
