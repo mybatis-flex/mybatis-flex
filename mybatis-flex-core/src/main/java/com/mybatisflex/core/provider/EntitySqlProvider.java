@@ -315,6 +315,7 @@ public class EntitySqlProvider {
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
 
+        CPI.setSelectColumnsIfNecessary(queryWrapper, tableInfo.getDefaultQueryColumn());
         CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
 
         return DialectFactory.getDialect().forSelectListByQuery(queryWrapper);

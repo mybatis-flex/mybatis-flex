@@ -159,6 +159,8 @@ public class TableInfoFactory {
 
         //大字段列
         Set<String> largeColumns = new LinkedHashSet<>();
+        // 默认查询列
+        Set<String> defaultColumns = new LinkedHashSet<>();
 
 
         List<Field> entityFields = ClassUtil.getAllFields(entityClass);
@@ -230,6 +232,9 @@ public class TableInfoFactory {
                 largeColumns.add(columnName);
             }
 
+            if (column == null || (!column.isLarge() && !column.isLogicDelete())) {
+                defaultColumns.add(columnName);
+            }
 
             Id id = field.getAnnotation(Id.class);
             ColumnInfo columnInfo;
@@ -300,6 +305,9 @@ public class TableInfoFactory {
 
         if (!largeColumns.isEmpty()) {
             tableInfo.setLargeColumns(largeColumns.toArray(new String[0]));
+        }
+        if (!defaultColumns.isEmpty()) {
+            tableInfo.setDefaultColumns(defaultColumns.toArray(new String[0]));
         }
 
         tableInfo.setColumnInfoList(columnInfoList);

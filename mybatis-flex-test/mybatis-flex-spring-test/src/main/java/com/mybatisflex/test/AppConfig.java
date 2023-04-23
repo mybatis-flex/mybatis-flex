@@ -15,7 +15,9 @@
  */
 package com.mybatisflex.test;
 
+import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.spring.FlexSqlSessionFactoryBean;
+import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -48,6 +50,9 @@ public class AppConfig implements ApplicationListener<ContextRefreshedEvent> {
         // SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         SqlSessionFactoryBean factoryBean = new FlexSqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
+        FlexConfiguration configuration = new FlexConfiguration();
+        configuration.setLogImpl(StdOutImpl.class);
+        factoryBean.setConfiguration(configuration);
         return factoryBean.getObject();
     }
 
