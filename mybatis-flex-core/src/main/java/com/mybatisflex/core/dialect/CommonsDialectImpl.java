@@ -409,7 +409,7 @@ public class CommonsDialectImpl implements IDialect {
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
         for (int i = 0; i < entities.size(); i++) {
             StringJoiner stringJoiner = new StringJoiner(", ", "(", ")");
-            for (String insertColumn : warpedInsertColumns) {
+            for (String insertColumn : insertColumns) {
                 if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                     //直接读取 onInsert 配置的值，而不用 "?" 代替
                     stringJoiner.add(onInsertColumns.get(insertColumn));
