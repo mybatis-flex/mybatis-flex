@@ -38,6 +38,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TableInfo {
 
@@ -70,6 +71,9 @@ public class TableInfo {
 
     //主键字段
     private String[] primaryKeys = new String[0];
+
+    // 默认查询列
+    private String[] defaultColumns = new String[0];
 
     //在插入数据的时候，支持主动插入的主键字段
     //通过自定义生成器生成 或者 Sequence 在 before 生成的时候，是需要主动插入数据的
@@ -181,6 +185,14 @@ public class TableInfo {
 
     public void setLargeColumns(String[] largeColumns) {
         this.largeColumns = largeColumns;
+    }
+
+    public String[] getDefaultColumns() {
+        return defaultColumns;
+    }
+
+    public void setDefaultColumns(String[] defaultColumns) {
+        this.defaultColumns = defaultColumns;
     }
 
     public String[] getInsertPrimaryKeys() {
@@ -586,6 +598,12 @@ public class TableInfo {
             joiner.add(value.getColumn());
         }
         return joiner.toString();
+    }
+
+    public List<QueryColumn> getDefaultQueryColumn() {
+        return Arrays.stream(defaultColumns)
+                .map(name -> new QueryColumn(getTableName(), name))
+                .collect(Collectors.toList());
     }
 
     public ResultMap buildResultMap(Configuration configuration) {

@@ -63,6 +63,13 @@ public class CPI {
         queryWrapper.setSelectColumns(selectColumns);
     }
 
+    public static void setSelectColumnsIfNecessary(QueryWrapper queryWrapper, List<QueryColumn> selectColumns) {
+        if (CollectionUtil.isEmpty(queryWrapper.getSelectColumns())
+                && CollectionUtil.isNotEmpty(selectColumns)) {
+            queryWrapper.setSelectColumns(selectColumns);
+        }
+    }
+
     public static List<Join> getJoins(QueryWrapper queryWrapper) {
         return queryWrapper.getJoins();
     }

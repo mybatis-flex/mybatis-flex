@@ -272,21 +272,7 @@ public class CommonsDialectImpl implements IDialect {
 
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 
-        StringBuilder sqlBuilder = new StringBuilder("SELECT ");
-        if (selectColumns == null || selectColumns.isEmpty()) {
-            sqlBuilder.append("*");
-        } else {
-            int index = 0;
-
-            for (QueryColumn selectColumn : selectColumns) {
-                String selectColumnSql = CPI.toSelectSql(selectColumn, allTables, this);
-                sqlBuilder.append(selectColumnSql);
-                if (index != selectColumns.size() - 1) {
-                    sqlBuilder.append(", ");
-                }
-                index++;
-            }
-        }
+        StringBuilder sqlBuilder = buildSelectColumnSql(allTables, selectColumns);
         sqlBuilder.append(" FROM ").append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
@@ -310,6 +296,25 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         return sqlBuilder.toString();
+    }
+
+    private StringBuilder buildSelectColumnSql(List<QueryTable> queryTables, List<QueryColumn> selectColumns) {
+        StringBuilder sqlBuilder = new StringBuilder("SELECT ");
+        if (selectColumns == null || selectColumns.isEmpty()) {
+            sqlBuilder.append("*");
+        } else {
+            int index = 0;
+
+            for (QueryColumn selectColumn : selectColumns) {
+                String selectColumnSql = CPI.toSelectSql(selectColumn, queryTables, this);
+                sqlBuilder.append(selectColumnSql);
+                if (index != selectColumns.size() - 1) {
+                    sqlBuilder.append(", ");
+                }
+                index++;
+            }
+        }
+        return sqlBuilder;
     }
 
 
@@ -663,8 +668,8 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectOneEntityById(TableInfo tableInfo) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM ");
-        sql.append(wrap(tableInfo.getTableName()));
+        StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn());
+        sql.append(" FROM ").append(wrap(tableInfo.getTableName()));
         sql.append(" WHERE ");
         String[] pKeys = tableInfo.getPrimaryKeys();
         for (int i = 0; i < pKeys.length; i++) {
@@ -692,8 +697,8 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectEntityListByIds(TableInfo tableInfo, Object[] primaryValues) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM ");
-        sql.append(wrap(tableInfo.getTableName()));
+        StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn());
+        sql.append(" FROM ").append(wrap(tableInfo.getTableName()));
         sql.append(" WHERE ");
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
