@@ -19,10 +19,14 @@ import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
+import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
+import java.util.List;
+
+import static com.mybatisflex.test.table.Tables.ACCOUNT;
 
 public class EntityTestStarter {
 
@@ -48,10 +52,12 @@ public class EntityTestStarter {
 
         AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
 
-//        QueryWrapper wrapper = QueryWrapper.create().select(ACCOUNT.DEFAULT_COLUMNS).select(count()).from(ACCOUNT)
-//                .groupBy(ACCOUNT.ID);
+        QueryWrapper wrapper = QueryWrapper.create().select().from(ACCOUNT)
+                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
+                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
+                .groupBy(ACCOUNT.ID);
 
-//        List<Account> accounts = accountMapper.selectListByQuery(wrapper);
+        List<Account> accounts = accountMapper.selectListByQuery(wrapper);
 
 //        QueryWrapper queryWrapper = new QueryWrapper();
 //        queryWrapper.where(ACCOUNT.ID.in(

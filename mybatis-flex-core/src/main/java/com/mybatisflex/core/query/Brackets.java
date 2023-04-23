@@ -54,12 +54,15 @@ public class Brackets extends QueryCondition {
         return checkEffective() ? WrapperUtil.getValues(childCondition) : null;
     }
 
-    public QueryCondition getChildCondition(){
+    public QueryCondition getChildCondition() {
         return childCondition;
     }
 
     @Override
     public String toSql(List<QueryTable> queryTables, IDialect dialect) {
+
+        String sqlNext = next == null ? null : next.toSql(queryTables, dialect);
+
         StringBuilder sql = new StringBuilder();
         if (checkEffective()) {
             String childSql = childCondition.toSql(queryTables, dialect);
@@ -67,6 +70,8 @@ public class Brackets extends QueryCondition {
                 QueryCondition effectiveBefore = getEffectiveBefore();
                 if (effectiveBefore != null) {
                     childSql = effectiveBefore.connector + "(" + childSql + ")";
+                } else if (StringUtil.isNotBlank(sqlNext)) {
+                    childSql = "(" + childSql + ")";
                 }
                 sql.append(childSql);
             } else {
@@ -76,11 +81,7 @@ public class Brackets extends QueryCondition {
             }
         }
 
-        if (this.next != null) {
-            return sql + next.toSql(queryTables, dialect);
-        }
-
-        return sql.toString();
+        return sqlNext != null ? sql + sqlNext : sql.toString();
     }
 
 
