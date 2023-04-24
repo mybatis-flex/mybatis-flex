@@ -173,7 +173,7 @@ public class FlexGlobalConfig {
     }
 
     public void setNormalValueOfLogicDelete(Object normalValueOfLogicDelete) {
-        if (normalValueOfLogicDelete == null){
+        if (normalValueOfLogicDelete == null) {
             throw new NullPointerException("normalValueOfLogicDelete can not be null.");
         }
         this.normalValueOfLogicDelete = normalValueOfLogicDelete;
@@ -184,7 +184,7 @@ public class FlexGlobalConfig {
     }
 
     public void setDeletedValueOfLogicDelete(Object deletedValueOfLogicDelete) {
-        if (deletedValueOfLogicDelete == null){
+        if (deletedValueOfLogicDelete == null) {
             throw new NullPointerException("deletedValueOfLogicDelete can not be null.");
         }
         this.deletedValueOfLogicDelete = deletedValueOfLogicDelete;
@@ -241,6 +241,30 @@ public class FlexGlobalConfig {
         return defaultConfig;
     }
 
+    /**
+     * 指定默认全局配置（允许手动。在多源时，方便由注解指定默认源）
+     *
+     * <code><pre>
+     * @Configuration
+     * public class Config{
+     *     @Bean(value = "db1", typed = true) //默认
+     *     public DataSource db1(@Inject("${demo.db1}") HikariDataSource ds) {
+     *         return ds;
+     *     }
+     *
+     *     @Bean("db2")
+     *     public DataSource db1(@Inject("${demo.db2}") HikariDataSource ds) {
+     *         return ds;
+     *     }
+     * }
+     * </pre></code>
+     *
+     * @param config 全局配置
+     */
+    public static void setDefaultConfig(FlexGlobalConfig config) {
+        defaultConfig = config;
+    }
+
     public static FlexGlobalConfig getConfig(Configuration configuration) {
         return getConfig(configuration.getEnvironment().getId());
     }
@@ -249,9 +273,21 @@ public class FlexGlobalConfig {
         return globalConfigs.get(environmentId);
     }
 
+
     public static synchronized void setConfig(String id, FlexGlobalConfig config) {
+        setConfig(id, config, true);
+    }
+
+    /**
+     * 设置全局配置
+     *
+     * @param id          环境id
+     * @param config      全局配置
+     * @param autoDefault 自动指定默认全局配置（在多源时，方便由注解指定默认源）
+     */
+    public static synchronized void setConfig(String id, FlexGlobalConfig config, boolean autoDefault) {
         //first setConfig，copy the config to default
-        if (globalConfigs.isEmpty()) {
+        if (autoDefault && globalConfigs.isEmpty()) {
 
             defaultConfig.setSqlSessionFactory(config.sqlSessionFactory);
             defaultConfig.setDbType(config.dbType);
@@ -267,6 +303,4 @@ public class FlexGlobalConfig {
 
         globalConfigs.put(id, config);
     }
-
-
 }
