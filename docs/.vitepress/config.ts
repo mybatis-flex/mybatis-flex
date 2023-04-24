@@ -38,8 +38,8 @@ export default defineConfig({
                     {text: 'Maven 依赖', link: '/zh/maven'},
                     {text: '和同类框架「功能」对比', link: '/zh/comparison'},
                     {text: '和同类框架「性能」对比', link: '/zh/benchmark'},
-                    {text: '支持的数据库类型', link: '/zh/support-database'},
                     {text: '使用 Mybatis 原生功能', link: '/zh/use-mybatis-native'},
+                    {text: '支持的数据库类型', link: '/zh/support-database'},
                     {text: 'QQ 交流群', link: '/zh/qq-group'},
                 ]
             },
