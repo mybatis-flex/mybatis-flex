@@ -145,8 +145,9 @@ public class RowUtil {
 
         Row firstRow = rows.get(0);
         List<Integer> textConsoleLengthList = new ArrayList<>();
-        StringBuilder sb = new StringBuilder("\nTotal Count: " +rows.size()+"\n");
-        firstRow.keySet().forEach(s -> {
+        StringBuilder sb = new StringBuilder("\nTotal Count: " + rows.size() + "\n");
+        Set<String> keys = firstRow.keySet();
+        keys.forEach(s -> {
             String sa = "|" + s + "     ";
             sb.append(sa);
             textConsoleLengthList.add(calcTextConsoleLength(sa));
@@ -155,8 +156,8 @@ public class RowUtil {
 
         rows.forEach(row -> {
             int i = 0;
-            for (Object value : row.values()) {
-                sb.append(getColString(value, textConsoleLengthList.get(i)));
+            for (String key : keys) {
+                sb.append(getColString(row.get(key), textConsoleLengthList.get(i)));
                 i++;
             }
             sb.append("|\n");
