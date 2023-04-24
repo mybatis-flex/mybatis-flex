@@ -7,7 +7,7 @@
     <groupId>com.mybatis-flex</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.8</version>
+    <version>1.1.9</version>
 
     <name>mybatis-flex</name>
     <url>https://mybatis-flex.com</url>

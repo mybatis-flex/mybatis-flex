@@ -1,3 +1,19 @@
+mybatis-flex v1.1.9 20230424:
+新增：根据 id 查询数据时，返回默认字段而非全部字段；感谢 @wnp
+新增：APT 添加忽略 entity 后缀的配置支持
+修复：where 中第一个括号处理不正确的问题  #I6XXWR
+修复：批量插入且配置 onInsert 时，出现错误的问题
+修复：批量插入 row，且为 row 设置主键时，出错的问题 #I6Y8ZU
+修复：Oracle 在某些情况下出现 SQLSyntaxErrorException 错误的问题 #I6Y6MZ
+修复：RowUtil.printPretty 在某些情况下显示数据不正确的问题
+修复：APT 无法生成 @NotBlank 注解字段的问题
+优化：更新 apt 的 mappersGenerateEnable 默认值为 false
+文档：优化 APT 的相关文档
+文档：优化 快速开始 的相关文档
+文档：添加 column 全局配置的相关文档
+
+
+
 mybatis-flex v1.1.8 20230422:
 新增：添加 RowUtil.printPretty() 方法，用于调试
 新增：代码生成器生成代码默认添加注释的功能
