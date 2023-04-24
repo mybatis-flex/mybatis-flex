@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.core.dialect;
+package com.mybatisflex.core.dialect.impl;
 
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.dialect.KeywordWrap;
+import com.mybatisflex.core.dialect.LimitOffsetProcesser;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
@@ -88,8 +91,8 @@ public class CommonsDialectImpl implements IDialect {
         Row firstRow = rows.get(0);
         Set<String> attrs = firstRow.obtainModifyAttrs();
         int index = 0;
-        for (String attr : attrs) {
-            fields.append(wrap(attr));
+        for (String column : attrs) {
+            fields.append(wrap(column));
             if (index != attrs.size() - 1) {
                 fields.append(", ");
             }

@@ -1,6 +1,6 @@
 package com.mybatisflex.coretest;
 
-import com.mybatisflex.core.dialect.CommonsDialectImpl;
+import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;

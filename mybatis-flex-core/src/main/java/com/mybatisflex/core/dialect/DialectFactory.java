@@ -17,6 +17,7 @@ package com.mybatisflex.core.dialect;
 
 
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
 import com.mybatisflex.core.util.ObjectUtil;
 import org.apache.ibatis.util.MapUtil;
 

@@ -32,6 +32,8 @@ public class GeneratorTest {
         dataSource.setUsername("root");
         dataSource.setPassword("123456");
 
+//        JdbcTypeMapping.registerMapping(BigInteger.class, Long.class);
+//        JdbcTypeMapping.registerMapping(Integer.class, Long.class);
 
         GlobalConfig globalConfig = new GlobalConfig();
         globalConfig.setSourceDir(System.getProperty("user.dir") + "/src/test/java");
@@ -41,7 +43,7 @@ public class GeneratorTest {
         globalConfig.setEntitySupperClass(BaseEntity.class);
 
         //设置只生成哪些表
-        globalConfig.addGenerateTable("tb_account", "account_session");
+        globalConfig.addGenerateTable("account", "account_session");
 
         //设置 entity 的包名
         globalConfig.setEntityPackage("com.test.entity");
