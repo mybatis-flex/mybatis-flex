@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `tb_account`
 </dependency>
 ```
 
-**第 3 步：编写实体类**
+**第 3 步：编写实体类和 Mapper**
 
 > 这部分可以使用 Mybatis-Flex 的代码生成器来生成实体类哟，功能非常强大的。详情进入：[代码生成器章节](./codegen.md) 了解。
 
@@ -48,6 +48,15 @@ public class Account {
 ```
 - 使用 `@Table("tb_account")` 设置实体类与表名的映射关系
 - 使用 `@Id(keyType = KeyType.Auto)` 标识主键为自增
+
+Mapper
+```java
+public interface AccountMapper extends BaseMapper<Account> {
+    
+}
+```
+
+
 
 **第 4 步：通过 main 方法开始使用（无 Spring 的场景）**
 
@@ -88,8 +97,7 @@ public class HelloWorld {
 }
 ```
 
-> 以上的示例中， `AccountMapper.class` 和 `ACCOUNT` 为 Mybatis-Flex 通过 APT 自动生成，无需手动编码。
-> 我们也可以关闭 mapper 的自动生成功能，手动编写 AccountMapper，更多查看 [APT 文档](./apt)。
+> 以上的示例中， `ACCOUNT` 为 Mybatis-Flex 通过 APT 自动生成，无需手动编码。更多查看 [APT 文档](./apt)。
 
 
 ## 更多示例

@@ -6,13 +6,6 @@ Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 ![](../assets/images/build_idea.png)
 
 
-## 关闭 APT 功能
-
-在项目的 resources 目录下添加 `mybatis-flex.properties` 配置文件，配置内容如下：
-
-```properties
-processor.enable = false
-```
 
 
 ## APT 代码生成路径
@@ -42,6 +35,18 @@ processor.tablesPackage = com.your-package
 processor.tablesClassName = your-class-name
 ```
 
+
+## APT 开启 Mapper 生成
+
+从 v1.1.9 开始， APT 的 Mapper 功能是关闭的，若需要开启 Mapper 的自动生成功能，需要添加一下配置。
+
+```properties
+processor.mappersGenerateEnable = true
+```
+
+以上的配置，会关闭整个项目的 APT 生成，若我们只想关闭某一个 Entity 的 APT 生成，那么可以通过配置注解 `@Table(mapperGenerateEnable = false)` 进行关闭。
+
+
 ## APT 生成的 Mapper 包名
 
 默认情况下， APT 生成的 Mapper 类名为 "***Mapper"，而包名为 entity 的包添加上 ".mapper"，假设 Account.java
@@ -63,15 +68,6 @@ processor.baseMapperClass=com.domain.mapper.MyBaseMapper
 ```
 
 
-## APT 关闭 Mapper 生成
-
-在某些情况下，我们可能需要手写 Mapper，不需要 APT 生成，可以通过如下配置关闭 APT 的生成功能。
-
-```properties
-processor.mappersGenerateEnable = false
-```
-
-以上的配置，会关闭整个项目的 APT 生成，若我们只想关闭某一个 Entity 的 APT 生成，那么可以通过配置注解 `@Table(mapperGenerateEnable = false)` 进行关闭。
 
 ## 和 Lombok、Mapstruct 整合
 
