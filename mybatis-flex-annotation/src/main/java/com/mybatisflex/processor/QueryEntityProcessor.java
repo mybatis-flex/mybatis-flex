@@ -126,7 +126,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
             String genPath = props.getProperties().getProperty("processor.genPath", "");
             String genTablesPackage = props.getProperties().getProperty("processor.tablesPackage");
             String baseMapperClass = props.getProperties().getProperty("processor.baseMapperClass","com.mybatisflex.core.BaseMapper");
-            String mappersGenerateEnable = props.getProperties().getProperty("processor.mappersGenerateEnable", "true");
+            String mappersGenerateEnable = props.getProperties().getProperty("processor.mappersGenerateEnable", "false");
             String genMappersPackage = props.getProperties().getProperty("processor.mappersPackage");
             String className = props.getProperties().getProperty("processor.tablesClassName", "Tables");
 
