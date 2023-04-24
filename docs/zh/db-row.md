@@ -202,3 +202,23 @@ Db.insert("tb_account",row);
 - `RowUtil.toEntity(row, entityClass)`
 - `RowUtil.toEntityList(rows, entityClass)`
 - `RowUtil.registerMapping(clazz, columnSetterMapping)` 用于注册数据库 `字段` 名称和 Class 属性的映射关系。
+- `RowUtil.printPretty(rows)` 打印 `Row` 或者 `List<Row>` 数据到控制台，一般用户调试。
+
+
+`RowUtil.printPretty` 输入内容如下：
+```
+Total Count: 12
+|ID     |USER_NAME     |AGE     |SEX     |BIRTHDAY     |IS_DELETE     |
+|1      |张三           |18      |0       |2020-01-1... |0             |
+|2      |王麻子叔叔      |19      |1       |2021-03-2... |0             |
+|3      |zhang0        |18      |null    |2023-04-2... |null          |
+|4      |zhang1        |18      |null    |2023-04-2... |null          |
+|5      |zhang2        |18      |null    |2023-04-2... |null          |
+|6      |zhang3        |18      |null    |2023-04-2... |null          |
+|7      |zhang4        |18      |null    |2023-04-2... |null          |
+|8      |zhang5        |18      |null    |2023-04-2... |null          |
+|9      |zhang6        |18      |null    |2023-04-2... |null          |
+|10     |zhang7        |18      |null    |2023-04-2... |null          |
+|11     |zhang8        |18      |null    |2023-04-2... |null          |
+|12     |zhang9        |18      |null    |2023-04-2... |null          |
+```

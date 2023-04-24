@@ -270,3 +270,10 @@ mybatis-flex 内置的扩展 typeHandler 还有：
 - JacksonTypeHandler
 
 当然，我们也可以写一个自己的类，实现 `TypeHandler` 接口，然后通过 `@Column(typeHandler = YourHandler.class)` 注释给需要的字段。
+
+## 全局配置
+
+在某些场景下，我们的 entity 可能会有通用的字段以及配置，这种场景如果我们要为每个 entity 去设置，这会相对麻烦。
+在这种场景下，我们可以建立一个通用的 BaseEntity 类，然后让所有的 Entity 都继承是该类。
+
+Entity 一般是通过代码生成器生成的，我们通过 `GlobalConfig.entitySupperClass` 可以为代码生成器配置全局的 Entity 父类，更多关于代码生成器可以请访问 [这里](./codegen.md)。

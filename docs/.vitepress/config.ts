@@ -14,10 +14,14 @@ export default defineConfig({
         nav: [
             {text: '首页', link: '/'},
             {text: '帮助文档', link: '/zh/what-is-mybatisflex'},
-            {text: '更新日志', link: 'https://gitee.com/mybatis-flex/mybatis-flex/releases'},
-            {text: '示例代码', link: 'https://gitee.com/mybatis-flex/mybatis-flex-samples'},
             {
-                text: '源码', items: [
+                text: '周边', items: [
+                    {text: '示例代码', link: 'https://gitee.com/mybatis-flex/mybatis-flex-samples'},
+                    {text: '更新日志', link: 'https://gitee.com/mybatis-flex/mybatis-flex/releases'},
+                ]
+            },
+            {
+                text: '获取源码', items: [
                     {text: 'Gitee', link: 'https://gitee.com/mybatis-flex/mybatis-flex'},
                     {text: 'Github', link: 'https://github.com/mybatis-flex/mybatis-flex'}
                 ]

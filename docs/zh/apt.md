@@ -35,6 +35,14 @@ processor.tablesPackage = com.your-package
 processor.tablesClassName = your-class-name
 ```
 
+## APT 过滤 Entity 后缀
+在某些情况下，Entity 类可能会有某些通用的后缀，比如 `AccountModel` 或者 `AccountDto` 等，我们希望生成的代码，
+不包含 `Model` `Dto` 等后缀，可以添加如下的配置：
+
+```properties
+processor.entity.ignoreSuffixes = Model, Dto
+```
+
 
 ## APT 开启 Mapper 生成
 
