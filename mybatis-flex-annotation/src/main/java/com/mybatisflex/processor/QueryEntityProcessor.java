@@ -206,6 +206,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
             //all fields
             if (ElementKind.FIELD == fieldElement.getKind()) {
 
+
                 Set<Modifier> modifiers = fieldElement.getModifiers();
                 if (modifiers.contains(Modifier.STATIC)) {
                     //ignore static fields
@@ -218,6 +219,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 if (column != null && column.ignore()) {
                     continue;
                 }
+
 
                 //获取 typeHandlerClass 的名称，通过 column.typeHandler() 获取会抛出异常：MirroredTypeException:
                 //参考 https://stackoverflow.com/questions/7687829/java-6-annotation-processing-getting-a-class-from-an-annotation
@@ -236,13 +238,23 @@ public class QueryEntityProcessor extends AbstractProcessor {
                     typeElement = (TypeElement) ((DeclaredType) typeMirror).asElement();
                 }
 
+                String typeString = typeMirror.toString().trim();
+                if (typeString.startsWith("(") && typeString.endsWith(")")) {
+                    typeString = typeString.substring(1, typeString.length() - 1);
+                }
+                int lastIndexOf = typeString.lastIndexOf(":");
+                if (lastIndexOf > 0) {
+                    typeString = typeString.substring(lastIndexOf + 1).trim();
+                }
+
                 //未配置 typeHandler 的情况下，只支持基本数据类型，不支持比如 list set 或者自定义的类等
                 if ((column == null || typeHandlerClass[0].equals(UnknownTypeHandler.class.getName()))
-                        && !defaultSupportColumnTypes.contains(typeMirror.toString())
+                        && !defaultSupportColumnTypes.contains(typeString)
                         && (typeElement != null && ElementKind.ENUM != typeElement.getKind())
                 ) {
                     continue;
                 }
+
 
                 String columnName = column != null && column.value().trim().length() > 0 ? column.value() : camelToUnderline(fieldElement.toString());
                 propertyAndColumns.put(fieldElement.toString(), columnName);

@@ -4,6 +4,7 @@ import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.handler.Fastjson2TypeHandler;
 import com.mybatisflex.core.mask.Masks;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class Account extends BaseAccount implements Serializable {
 
     private int age;
 
+    @NotBlank
     private Date birthday;
 
     @Column(typeHandler = Fastjson2TypeHandler.class,isLarge = true)

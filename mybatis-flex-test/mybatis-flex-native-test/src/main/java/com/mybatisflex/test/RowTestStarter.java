@@ -27,7 +27,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.mybatisflex.test.table.Tables.ACCOUNT;
@@ -74,7 +73,7 @@ public class RowTestStarter {
             Row row = Row.ofKey(RowKey.ID_AUTO);
             row.set(ACCOUNT.USER_NAME,"zhang" + i);
             row.set(ACCOUNT.AGE,18);
-            row.set(ACCOUNT.BIRTHDAY,new Date());
+//            row.set(ACCOUNT.BIRTHDAY,new Date());
 
             rowList.add(row);
         }
