@@ -18,18 +18,19 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
-import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.row.RowKey;
 import com.mybatisflex.core.row.RowUtil;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.mybatisflex.test.table.Tables.ACCOUNT;
-import static com.mybatisflex.test.table.Tables.ARTICLE;
 
 public class RowTestStarter {
 
@@ -54,19 +55,38 @@ public class RowTestStarter {
 //        System.out.println(row);
 
 
-        QueryWrapper query = new QueryWrapper();
-        query.select().from(ACCOUNT).leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
-        List<Row> rows = Db.selectListByQuery(query);
-       RowUtil.printPretty(rows);
+//        QueryWrapper query = new QueryWrapper();
+//        query.select().from(ACCOUNT).leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
+//        List<Row> rows = Db.selectListByQuery(query);
+//       RowUtil.printPretty(rows);
+//
+//        System.out.println("--------");
+//
+//        List<Account> accounts = RowUtil.toEntityList(rows, Account.class,0);
+//        System.out.println(accounts);
+//
+//        List<Article> articles = RowUtil.toEntityList(rows, Article.class, 1);
+//        System.out.println(articles);
 
-        System.out.println("--------");
 
-        List<Account> accounts = RowUtil.toEntityList(rows, Account.class,0);
-        System.out.println(accounts);
+        List<Row> rowList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Row row = Row.ofKey(RowKey.ID_AUTO);
+            row.set(ACCOUNT.USER_NAME,"zhang" + i);
+            row.set(ACCOUNT.AGE,18);
+            row.set(ACCOUNT.BIRTHDAY,new Date());
 
-        List<Article> articles = RowUtil.toEntityList(rows, Article.class, 1);
-        System.out.println(articles);
+            rowList.add(row);
+        }
 
+        Db.insertBatch("tb_account",rowList);
+
+        for (Row row : rowList) {
+            System.out.println(">>>>>>>id: " + row.get("id"));
+        }
+
+        List<Row> rows1 = Db.selectAll("tb_account");
+        RowUtil.printPretty(rows1);
 
 //        //新增一条数据，自增
 //        Row newRow = Row.ofKey(RowKey.ID_AUTO) // id 自增
