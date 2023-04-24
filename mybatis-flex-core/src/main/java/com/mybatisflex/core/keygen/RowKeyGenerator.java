@@ -140,7 +140,7 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
      * @return true 需要生成
      */
     @Override
-    public boolean isNeedGeneratedKeys() {
+    public boolean hasGeneratedKeys() {
         return CollectionUtil.isNotEmpty(autoKeyGeneratorNames);
     }
 

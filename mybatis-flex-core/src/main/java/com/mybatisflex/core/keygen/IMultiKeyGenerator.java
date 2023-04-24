@@ -22,7 +22,7 @@ public interface IMultiKeyGenerator {
      *
      * @return true 需要生成主键
      */
-    boolean isNeedGeneratedKeys();
+    boolean hasGeneratedKeys();
 
     /**
      * 数据库主键的列名

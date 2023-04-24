@@ -59,7 +59,7 @@ public class RowMapperInvoker {
             int counter = 0;
             int resultsPos = 0;
             for (Row row : rows) {
-                if (++counter >= batchSize) {
+                if (++counter > batchSize) {
                     counter = 0;
                     List<BatchResult> batchResults = sqlSession.flushStatements();
                     for (BatchResult batchResult : batchResults) {
@@ -70,6 +70,16 @@ public class RowMapperInvoker {
                     }
                 } else {
                     mapper.insert(tableName, row);
+                }
+            }
+
+            if (counter != 0){
+                List<BatchResult> batchResults = sqlSession.flushStatements();
+                for (BatchResult batchResult : batchResults) {
+                    int[] updateCounts = batchResult.getUpdateCounts();
+                    for (int updateCount : updateCounts) {
+                        results[resultsPos++] = updateCount;
+                    }
                 }
             }
         } finally {

@@ -72,7 +72,7 @@ public class MultiPrimaryKeyGenerator implements KeyGenerator, IMultiKeyGenerato
      * @return true: need generated keys
      */
     @Override
-    public boolean isNeedGeneratedKeys() {
+    public boolean hasGeneratedKeys() {
         for (KeyGenerator keyGenerator : keyGenerators) {
             if (keyGenerator == Jdbc3KeyGenerator.INSTANCE) {
                 return true;

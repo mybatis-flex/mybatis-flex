@@ -66,7 +66,7 @@ public class RowJdbc3KeyGenerator implements KeyGenerator {
     }
 
     public void processBatch(MappedStatement ms, Statement stmt, Object parameter) {
-        final String[] keyProperties = new String[]{FlexConsts.ROW + "." + keyProperty};
+        String[] keyProperties = new String[]{FlexConsts.ROW + "." + keyProperty};
         try (ResultSet rs = stmt.getGeneratedKeys()) {
             final ResultSetMetaData rsmd = rs.getMetaData();
             final Configuration configuration = ms.getConfiguration();
