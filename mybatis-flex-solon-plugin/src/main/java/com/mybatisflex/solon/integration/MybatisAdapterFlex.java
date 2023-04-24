@@ -33,7 +33,7 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
             factoryBuilderPlus = bean;
         });
 
-        globalConfig.setSqlSessionFactory(getFactory());
+        initAfter(dsWrap);
     }
 
     protected MybatisAdapterFlex(BeanWrap dsWrap, Props dsProps) {
@@ -44,6 +44,16 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
         dsWrap.context().getBeanAsync(FlexSqlSessionFactoryBuilder.class, bean -> {
             factoryBuilderPlus = bean;
         });
+
+        initAfter(dsWrap);
+    }
+
+    protected void initAfter(BeanWrap dsWrap) {
+        globalConfig.setSqlSessionFactory(getFactory());
+
+        if (dsWrap.typed()) {
+            FlexGlobalConfig.setDefaultConfig(globalConfig);
+        }
     }
 
     @Override
@@ -53,8 +63,6 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
 
     @Override
     protected void initConfiguration(Environment environment) {
-
-
         //for configuration section
         config = new FlexConfiguration(environment);
 
@@ -74,7 +82,8 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
             Utils.injectProperties(globalConfig, globalProps);
         }
         globalConfig.setConfiguration(config);
-        FlexGlobalConfig.setConfig(environment.getId(), globalConfig);
+
+        FlexGlobalConfig.setConfig(environment.getId(), globalConfig, false);
     }
 
     /**
