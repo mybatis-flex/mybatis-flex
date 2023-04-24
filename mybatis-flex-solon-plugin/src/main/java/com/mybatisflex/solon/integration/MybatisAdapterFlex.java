@@ -32,6 +32,8 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
         dsWrap.context().getBeanAsync(FlexSqlSessionFactoryBuilder.class, bean -> {
             factoryBuilderPlus = bean;
         });
+
+        globalConfig.setSqlSessionFactory(getFactory());
     }
 
     protected MybatisAdapterFlex(BeanWrap dsWrap, Props dsProps) {
