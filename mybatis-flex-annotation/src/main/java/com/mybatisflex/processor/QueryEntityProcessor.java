@@ -125,13 +125,15 @@ public class QueryEntityProcessor extends AbstractProcessor {
             }
             String genPath = props.getProperties().getProperty("processor.genPath", "");
             String genTablesPackage = props.getProperties().getProperty("processor.tablesPackage");
-            String baseMapperClass = props.getProperties().getProperty("processor.baseMapperClass","com.mybatisflex.core.BaseMapper");
+            String baseMapperClass = props.getProperties().getProperty("processor.baseMapperClass", "com.mybatisflex.core.BaseMapper");
             String mappersGenerateEnable = props.getProperties().getProperty("processor.mappersGenerateEnable", "false");
             String genMappersPackage = props.getProperties().getProperty("processor.mappersPackage");
             String className = props.getProperties().getProperty("processor.tablesClassName", "Tables");
-            String entityNameReplaceEnabled = props.getProperties().getProperty("processor.entityName.replace.enabled", "false");
-            String entityNameReplaceRegex = props.getProperties().getProperty("processor.entityName.replace.regex", "");
-            String entityNameReplaceReplacement = props.getProperties().getProperty("processor.entityName.replace.replacement", "");
+
+
+            String[] entityIgnoreSuffixes = props.getProperties().getProperty("processor.entity.ignoreSuffixes", "").split(",");
+//            String entityNameReplaceRegex = props.getProperties().getProperty("processor.entityName.replace.regex", "");
+//            String entityNameReplaceReplacement = props.getProperties().getProperty("processor.entityName.replace.replacement", "");
 
             StringBuilder guessPackage = new StringBuilder();
 
@@ -166,21 +168,24 @@ public class QueryEntityProcessor extends AbstractProcessor {
                     classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
                 } while (classElement != null);
 
-                String entityClassName = entityClassElement.getSimpleName().toString();
 
-                String entityName = entityClassName;
-                if("true".equals(entityNameReplaceEnabled)){
-                    entityName = entityName.replace(entityNameReplaceRegex, entityNameReplaceReplacement);
+                String entitySimpleName = entityClassElement.getSimpleName().toString();
+                if (entityIgnoreSuffixes.length > 0) {
+                    for (String entityIgnoreSuffix : entityIgnoreSuffixes) {
+                        if (entitySimpleName.endsWith(entityIgnoreSuffix.trim())) {
+                            entitySimpleName = entitySimpleName.substring(0, entitySimpleName.length() - entityIgnoreSuffix.length());
+                            break;
+                        }
+                    }
                 }
 
-                tablesContent.append(buildTablesClass(entityName, tableName, propertyAndColumns, defaultColumns));
-
+                tablesContent.append(buildTablesClass(entitySimpleName, tableName, propertyAndColumns, defaultColumns));
 
                 //是否开启 mapper 生成功能
                 if ("true".equalsIgnoreCase(mappersGenerateEnable) && table.mapperGenerateEnable()) {
                     String realMapperPackage = genMappersPackage == null || genMappersPackage.trim().length() == 0
                             ? guessMapperPackage(entityClassElement.toString()) : genMappersPackage;
-                    genMapperClass(genPath, realMapperPackage, entityClassElement.toString(),baseMapperClass, entityName);
+                    genMapperClass(genPath, realMapperPackage, entityClassElement.toString(), baseMapperClass, entitySimpleName);
                 }
             });
 
@@ -382,10 +387,9 @@ public class QueryEntityProcessor extends AbstractProcessor {
     }
 
     /**
-     *
-     * @param genBasePath 生成路径
-     * @param genPackageName 包名
-     * @param entityClass 实体类名
+     * @param genBasePath     生成路径
+     * @param genPackageName  包名
+     * @param entityClass     实体类名
      * @param baseMapperClass 自定义Mapper的父类全路径和类名 com.xx.mapper.BaseMapper，可通过mybatis-flex.properties 的属性processor.baseMapperClass配置， 默认为 com.mybatisflex.core.BaseMapper
      */
     private void genMapperClass(String genBasePath, String genPackageName, String entityClass, String baseMapperClass, String entityName) {
