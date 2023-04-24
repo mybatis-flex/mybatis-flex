@@ -82,6 +82,26 @@ public interface BaseMapper<T> {
     @InsertProvider(type = EntitySqlProvider.class, method = FlexConsts.METHOD_INSERT_BATCH)
     int insertBatch(@Param(FlexConsts.ENTITIES) List<T> entities);
 
+    /**
+     * 批量插入 entity 数据,按size切分
+     *
+     * @param entities 插入的数据列表
+     * @param size     切分大小
+     * @return 影响行数
+     */
+    default int insertBatch(List<T> entities, int size) {
+        if (size <= 0) {
+            size = 1000;//默认1000
+        }
+        int sum = 0;
+        int entitiesSize = entities.size();
+        int maxIndex = entitiesSize / size + (entitiesSize % size == 0 ? 0 : 1);
+        for (int i = 0; i < maxIndex; i++) {
+            List<T> list = entities.subList(i * size, Math.min(i * size + size, entitiesSize));
+            sum += insertBatch(list);
+        }
+        return sum;
+    }
 
     /**
      * 新增 或者 更新，若主键有值，则更新，若没有主键值，则插入
