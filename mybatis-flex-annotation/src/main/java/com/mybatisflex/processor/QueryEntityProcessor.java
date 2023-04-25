@@ -123,6 +123,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
             if ("false".equalsIgnoreCase(enable)) {
                 return true;
             }
+            
             String genPath = props.getProperties().getProperty("processor.genPath", "");
             String genTablesPackage = props.getProperties().getProperty("processor.tablesPackage");
             String baseMapperClass = props.getProperties().getProperty("processor.baseMapperClass", "com.mybatisflex.core.BaseMapper");
@@ -130,10 +131,11 @@ public class QueryEntityProcessor extends AbstractProcessor {
             String genMappersPackage = props.getProperties().getProperty("processor.mappersPackage");
             String className = props.getProperties().getProperty("processor.tablesClassName", "Tables");
 
+            //upperCase, lowerCase, upperCamelCase, lowerCamelCase
+            String tablesNameStyle = props.getProperties().getProperty("processor.tablesNameStyle", "upperCase");
 
             String[] entityIgnoreSuffixes = props.getProperties().getProperty("processor.entity.ignoreSuffixes", "").split(",");
-//            String entityNameReplaceRegex = props.getProperties().getProperty("processor.entityName.replace.regex", "");
-//            String entityNameReplaceReplacement = props.getProperties().getProperty("processor.entityName.replace.replacement", "");
+
 
             StringBuilder guessPackage = new StringBuilder();
 
@@ -179,7 +181,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
                     }
                 }
 
-                tablesContent.append(buildTablesClass(entitySimpleName, tableName, propertyAndColumns, defaultColumns));
+                tablesContent.append(buildTablesClass(entitySimpleName, tableName, propertyAndColumns, defaultColumns, tablesNameStyle));
 
                 //是否开启 mapper 生成功能
                 if ("true".equalsIgnoreCase(mappersGenerateEnable) && table.mapperGenerateEnable()) {
@@ -281,12 +283,29 @@ public class QueryEntityProcessor extends AbstractProcessor {
     }
 
 
-    private String buildTablesClass(String entityClass, String tableName, Map<String, String> propertyAndColumns, List<String> defaultColumns) {
+    //upperCase, lowerCase, upperCamelCase, lowerCamelCase
+    private static String buildName(String name, String style) {
+        if ("upperCase".equalsIgnoreCase(style)) {
+            return camelToUnderline(name).toUpperCase();
+        } else if ("lowerCase".equalsIgnoreCase(style)) {
+            return camelToUnderline(name).toLowerCase();
+        } else if ("upperCamelCase".equalsIgnoreCase(style)) {
+            return firstCharToUpperCase(name);
+        }
+        //lowerCamelCase
+        else {
+            return firstCharToLowerCase(name);
+        }
+    }
+
+
+    private String buildTablesClass(String entityClass, String tableName, Map<String, String> propertyAndColumns
+            , List<String> defaultColumns, String tablesNameStyle) {
 
         // tableDefTemplate = "    public static final @entityClassTableDef @tableField = new @entityClassTableDef(\"@tableName\");\n";
 
         String tableDef = tableDefTemplate.replace("@entityClass", entityClass)
-                .replace("@tableField", camelToUnderline(entityClass).toUpperCase())
+                .replace("@tableField", buildName(entityClass, tablesNameStyle))
                 .replace("@tableName", tableName);
 
 
@@ -294,24 +313,27 @@ public class QueryEntityProcessor extends AbstractProcessor {
         StringBuilder queryColumns = new StringBuilder();
         propertyAndColumns.forEach((property, column) ->
                 queryColumns.append(columnsTemplate
-                        .replace("@property", camelToUnderline(property).toUpperCase())
+                        .replace("@property", buildName(property, tablesNameStyle))
                         .replace("@columnName", column)
                 ));
 
 
 //        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{@allColumns};
         StringJoiner allColumns = new StringJoiner(", ");
-        propertyAndColumns.forEach((property, column) -> allColumns.add(camelToUnderline(property).toUpperCase()));
-        String allColumnsString = allColumnsTemplate.replace("@allColumns", allColumns.toString());
+        propertyAndColumns.forEach((property, column) -> allColumns.add(buildName(property, tablesNameStyle)));
+
+        String allColumnsString = allColumnsTemplate.replace("@allColumns", allColumns.toString())
+                .replace("ALL_COLUMNS", buildName("allColumns", tablesNameStyle));
 
 
         StringJoiner defaultColumnStringJoiner = new StringJoiner(", ");
         propertyAndColumns.forEach((property, column) -> {
             if (defaultColumns.contains(column)) {
-                defaultColumnStringJoiner.add(camelToUnderline(property).toUpperCase());
+                defaultColumnStringJoiner.add(buildName(property, tablesNameStyle));
             }
         });
-        String defaultColumnsString = defaultColumnsTemplate.replace("@allColumns", defaultColumnStringJoiner.toString());
+        String defaultColumnsString = defaultColumnsTemplate.replace("@allColumns", defaultColumnStringJoiner.toString())
+                .replace("DEFAULT_COLUMNS", buildName("defaultColumns", tablesNameStyle));
 
 
 //        classTemplate = "\n" +
@@ -489,6 +511,16 @@ public class QueryEntityProcessor extends AbstractProcessor {
             return new String(arr);
         }
         return str;
+    }
+
+    public static String firstCharToUpperCase(String string) {
+        char firstChar = string.charAt(0);
+        if (firstChar >= 'a' && firstChar <= 'z') {
+            char[] arr = string.toCharArray();
+            arr[0] -= ('a' - 'A');
+            return new String(arr);
+        }
+        return string;
     }
 
 
