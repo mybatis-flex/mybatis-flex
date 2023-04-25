@@ -75,7 +75,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
             "import com.mybatisflex.core.table.TableDef;\n" +
             "\n" +
             "// Auto generate by mybatis-flex, do not modify it.\n" +
-            "public class Tables {\n" +
+            "public class @tablesClassName {\n" +
             "@classesInfo" +
             "}\n";
 
@@ -123,7 +123,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
             if ("false".equalsIgnoreCase(enable)) {
                 return true;
             }
-            
+
             String genPath = props.getProperties().getProperty("processor.genPath", "");
             String genTablesPackage = props.getProperties().getProperty("processor.tablesPackage");
             String baseMapperClass = props.getProperties().getProperty("processor.baseMapperClass", "com.mybatisflex.core.BaseMapper");
@@ -358,7 +358,8 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
     private void genTablesClass(String genBasePath, String genPackageName, String className, String classContent) {
         String genContent = classTableTemplate.replace("@package", genPackageName)
-                .replace("@classesInfo", classContent);
+                .replace("@classesInfo", classContent)
+                .replace("@tablesClassName", className);
 
         Writer writer = null;
         try {
