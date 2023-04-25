@@ -430,7 +430,7 @@ SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 会自动根据 Entity 类定义的字段生成 "ACCOUNT" 类以及 Entity 对应的 Mapper 类， 通过开发工具构建项目（如下图），
 或者执行 maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
 
-![](../assets/images/build_idea.png)
+![](../../assets/images/build_idea.png)
 
 > 更多关于 APT 的配置，请进入 [APT 配置章节](./apt) 了解。
 

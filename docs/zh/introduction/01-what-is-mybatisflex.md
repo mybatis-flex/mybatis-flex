@@ -23,22 +23,22 @@ QueryWrapper<Badge type="tip" text="^亮点" /> 帮助我们极大的减少了 S
 ## 一些评价
 
 
-![](../assets/images/comments/01.png)
+![](../../assets/images/comments/01.png)
 
 ---
 
-![](../assets/images/comments/02.png)
+![](../../assets/images/comments/02.png)
 
 ---
 
-![](../assets/images/comments/03.png)
+![](../../assets/images/comments/03.png)
 
 --- 
 
-![](../assets/images/comments/04.png)
+![](../../assets/images/comments/04.png)
 
 --- 
 
-![](../assets/images/comments/05.png)
+![](../../assets/images/comments/05.png)
 
 

@@ -47,4 +47,4 @@ public class Account {
 }
 ```
 
-更多的 `onSet` 还可以参考 [这里](./table.md)。
+更多的 `onSet` 还可以参考 [这里](./01-table.md)。
