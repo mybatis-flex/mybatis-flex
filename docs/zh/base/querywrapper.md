@@ -3,7 +3,7 @@
 强有力工具，也是 Mybatis-Flex 的亮点和特色。
 
 ::: tip 提示
->QueryWrapper 可以被序列化通过 RPC 进行传输，因此，在微服务项目中，我们可以在客户端（网关、Controller 层等）构造出 QueryWrapper，传给
+QueryWrapper 可以被序列化通过 RPC 进行传输，因此，在微服务项目中，我们可以在客户端（网关、Controller 层等）构造出 QueryWrapper，传给
 Provider 层进行查询返回数据。
 :::
 

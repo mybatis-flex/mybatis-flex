@@ -13,7 +13,7 @@ export default defineConfig({
         // logo: '/assets/images/logo01.png',
         nav: [
             {text: '首页', link: '/'},
-            {text: '帮助文档', link: '/zh/what-is-mybatisflex'},
+            {text: '帮助文档', link: '/zh/intro/what-is-mybatisflex'},
             {text: '常见问题', link: '/zh/faq'},
             {
                 text: '周边', items: [
@@ -33,14 +33,14 @@ export default defineConfig({
             {
                 text: '简介',
                 items: [
-                    {text: 'Mybatis-Flex 是什么', link: '/zh/introduction/what-is-mybatisflex'},
-                    {text: '快速开始', link: '/zh/introduction/getting-started'},
-                    {text: 'Maven 依赖', link: '/zh/introduction/maven'},
-                    {text: '和同类框架「功能」对比', link: '/zh/introduction/comparison'},
-                    {text: '和同类框架「性能」对比', link: '/zh/introduction/benchmark'},
-                    {text: '使用 Mybatis 原生功能', link: '/zh/introduction/use-mybatis-native'},
-                    {text: '支持的数据库类型', link: '/zh/introduction/support-database'},
-                    {text: 'QQ 交流群', link: '/zh/introduction/qq-group'},
+                    {text: 'Mybatis-Flex 是什么', link: '/zh/intro/what-is-mybatisflex'},
+                    {text: '快速开始', link: '/zh/intro/getting-started'},
+                    {text: 'Maven 依赖', link: '/zh/intro/maven'},
+                    {text: '和同类框架「功能」对比', link: '/zh/intro/comparison'},
+                    {text: '和同类框架「性能」对比', link: '/zh/intro/benchmark'},
+                    {text: '使用 Mybatis 原生功能', link: '/zh/intro/use-mybatis-native'},
+                    {text: '支持的数据库类型', link: '/zh/intro/support-database'},
+                    {text: 'QQ 交流群', link: '/zh/intro/qq-group'},
                 ]
             },
             {

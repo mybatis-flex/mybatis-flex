@@ -83,7 +83,7 @@ public interface BaseMapper<T> {
     int insertBatch(@Param(FlexConsts.ENTITIES) List<T> entities);
 
     /**
-     * 批量插入 entity 数据,按size切分
+     * 批量插入 entity 数据，按 size 切分
      *
      * @param entities 插入的数据列表
      * @param size     切分大小

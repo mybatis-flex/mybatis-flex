@@ -11,6 +11,7 @@ Mybatis-Flex 内置了一个名为 `BaseMapper` 的接口，它实现了基本�
 - **insert**： 新增 1 条数据
 - **insertSelective**： 新增 1 条数据，忽略 null 值的字段
 - **insertBatch**： 新增多条数据
+- **insertBatch(entities, int size)**： 批量插入 entity 数据，按 size 切分
 
 
 ## 删除数据

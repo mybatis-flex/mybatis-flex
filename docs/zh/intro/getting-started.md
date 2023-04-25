@@ -41,7 +41,7 @@ ext {
 dependencies {
     implementation("com.mybatis-flex:mybatis-flex-core:${mybatis_flex_version}")
     // 启用APT
-		annotationProcessor("com.mybatis-flex:mybatis-flex-annotation:${mybatis_flex_version}")
+    annotationProcessor("com.mybatis-flex:mybatis-flex-annotation:${mybatis_flex_version}")
 }
 ```
 
@@ -65,7 +65,7 @@ public class Account {
 - 使用 `@Table("tb_account")` 设置实体类与表名的映射关系
 - 使用 `@Id(keyType = KeyType.Auto)` 标识主键为自增
 
-Mapper
+Mapper 接口继承 BaseMapper 接口：
 ```java
 public interface AccountMapper extends BaseMapper<Account> {
     
@@ -76,9 +76,8 @@ public interface AccountMapper extends BaseMapper<Account> {
 
 Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时，会自动生成辅助操作类。
 
-maven中 `mvn clean package`
-
-gradle中 `gradlew classes`
+- Maven 编译： `mvn clean package`
+- Gradle 编译： `gradlew classes`
 
 
 
@@ -86,7 +85,7 @@ gradle中 `gradlew classes`
 
 
 
-**第 5 步：通过 main 方法开始使用（无 Spring 的场景）**
+**第 5 步：通过 main 方法开始使用 Mybatis-Flex（无 Spring 的场景）**
 
 ```java
 public class HelloWorld {

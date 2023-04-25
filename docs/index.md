@@ -11,10 +11,10 @@ hero:
   actions:
     - theme: brand
       text: 快速开始
-      link: /zh/getting-started
+      link: /zh/intro/getting-started
     - theme: alt
       text: 和同类框架对比
-      link: /zh/comparison
+      link: /zh/intro/comparison
 
 features:
   - title: 更轻量
