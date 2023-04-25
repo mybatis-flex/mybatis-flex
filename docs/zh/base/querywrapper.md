@@ -196,7 +196,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
     .from(ACCOUNT)
     .where(ACCOUNT.ID.ge(100))
     .and(
-        exist(  // or notExist(...)
+        exists(  // or notExists(...)
             selectOne().from(ARTICLE).where(ARTICLE.ID.ge(100))
         )
     );
