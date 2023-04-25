@@ -779,7 +779,15 @@ public class TableInfo {
             return;
         }
 
-        InsertListener globalInsertListener = FlexGlobalConfig.getDefaultConfig().getInsertListener(entityClass);
+
+        InsertListener globalInsertListener = null;
+        Class<?> registerClass = entityClass;
+
+        while (globalInsertListener == null && registerClass != Object.class && registerClass != null) {
+            globalInsertListener = FlexGlobalConfig.getDefaultConfig().getInsertListener(registerClass);
+            registerClass = registerClass.getSuperclass();
+        }
+
         if (globalInsertListener != null) {
             globalInsertListener.onInsert(entity);
         }
@@ -792,7 +800,14 @@ public class TableInfo {
             return;
         }
 
-        UpdateListener globalUpdateListener = FlexGlobalConfig.getDefaultConfig().getUpdateListener(entityClass);
+        UpdateListener globalUpdateListener = null;
+        Class<?> registerClass = entityClass;
+
+        while (globalUpdateListener == null && registerClass != Object.class && registerClass != null) {
+            globalUpdateListener = FlexGlobalConfig.getDefaultConfig().getUpdateListener(registerClass);
+            registerClass = registerClass.getSuperclass();
+        }
+
         if (globalUpdateListener != null) {
             globalUpdateListener.onUpdate(entity);
         }
@@ -804,7 +819,14 @@ public class TableInfo {
             return onSetListener.onSet(entity, property, value);
         }
 
-        SetListener globalSetListener = FlexGlobalConfig.getDefaultConfig().getSetListener(entityClass);
+        SetListener globalSetListener = null;
+        Class<?> registerClass = entityClass;
+
+        while (globalSetListener == null && registerClass != Object.class && registerClass != null) {
+            globalSetListener = FlexGlobalConfig.getDefaultConfig().getSetListener(registerClass);
+            registerClass = registerClass.getSuperclass();
+        }
+
         if (globalSetListener != null) {
             return globalSetListener.onSet(entity, property, value);
         }
