@@ -35,6 +35,42 @@ processor.tablesPackage = com.your-package
 processor.tablesClassName = your-class-name
 ```
 
+## 自定义 Tables 的字段风格
+
+默认情况下，APT 生成的 Tables 生成的默认内容如下：
+
+```java
+public class Tables {
+
+    public static final UserTableDef USER = new UserTableDef("sys_user");
+
+    public static class UserTableDef extends TableDef {
+
+        public QueryColumn ID = new QueryColumn(this, "id");
+        public QueryColumn USER_NAME = new QueryColumn(this, "user_name");
+
+        public UserTableDef(String tableName) {
+            super(tableName);
+        }
+    }
+}
+```
+
+在生成的内容中，`USER`、`ID`、`USER_NAME` 等都是 **"大写 + 下划线"** 的风格，修改风格需要添加入配置：
+
+```properties
+#upperCase, lowerCase, upperCamelCase, lowerCamelCase
+processor.tablesNameStyle=upperCase
+```
+风格支持 4 中配置，默认（未配置时）为 upperCase，支持的配置分别为：
+
+- upperCase：大写 + 下划线，例如：USER_NAME
+- lowerCase：小写 + 下划线，例如：user_name
+- upperCamelCase：首字母大写的驼峰命名，例如：UserName
+- lowerCamelCase：首字母小写的驼峰命名，例如：userName
+
+
+
 ## APT 过滤 Entity 后缀
 在某些情况下，Entity 类可能会有某些通用的后缀，比如 `AccountModel` 或者 `AccountDto` 等，我们希望生成的代码，
 不包含 `Model` `Dto` 等后缀，可以添加如下的配置：
