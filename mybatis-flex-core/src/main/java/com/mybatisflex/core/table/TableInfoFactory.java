@@ -232,7 +232,7 @@ public class TableInfoFactory {
                 largeColumns.add(columnName);
             }
 
-            if (column == null || (!column.isLarge() && !column.isLogicDelete())) {
+            if (column == null || !column.isLarge()) {
                 defaultColumns.add(columnName);
             }
 

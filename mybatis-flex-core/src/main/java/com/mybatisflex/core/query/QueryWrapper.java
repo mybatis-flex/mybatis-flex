@@ -348,25 +348,47 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * 在构建 sql 的时候，需要保证 where 在 having 的前面
      */
     Object[] getValueArray() {
+        List<Object> joinValues = null;
+        List<Join> joins = getJoins();
+        if (CollectionUtil.isNotEmpty(joins)) {
+            for (Join join : joins) {
+                QueryCondition onCondition = join.getOnCondition();
+                Object[] values = WrapperUtil.getValues(onCondition);
+                if (values.length > 0) {
+                    if (joinValues == null) {
+                        joinValues = new ArrayList<>();
+                    }
+                    joinValues.addAll(Arrays.asList(values));
+                }
+            }
+        }
+
         Object[] whereValues = WrapperUtil.getValues(whereQueryCondition);
         Object[] havingValues = WrapperUtil.getValues(havingQueryCondition);
+
         Object[] values = ArrayUtil.concat(whereValues, havingValues);
+
         if (CollectionUtil.isNotEmpty(unions)) {
             for (UnionWrapper union : unions) {
                 QueryWrapper queryWrapper = union.getQueryWrapper();
                 values = ArrayUtil.concat(values, queryWrapper.getValueArray());
             }
         }
-        return values;
+
+        if (joinValues != null) {
+            return ArrayUtil.concat(joinValues.toArray(), values);
+        } else {
+            return values;
+        }
     }
 
 
     List<QueryWrapper> getChildSelect() {
 
-        List<QueryWrapper> whereChildQuery= WrapperUtil.getChildSelect(whereQueryCondition);
+        List<QueryWrapper> whereChildQuery = WrapperUtil.getChildSelect(whereQueryCondition);
         List<QueryWrapper> havingChildQuery = WrapperUtil.getChildSelect(havingQueryCondition);
 
-        if (whereChildQuery.isEmpty() && havingChildQuery.isEmpty()){
+        if (whereChildQuery.isEmpty() && havingChildQuery.isEmpty()) {
             return Collections.emptyList();
         }
 

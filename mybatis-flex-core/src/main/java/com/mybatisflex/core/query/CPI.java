@@ -65,7 +65,9 @@ public class CPI {
 
     public static void setSelectColumnsIfNecessary(QueryWrapper queryWrapper, List<QueryColumn> selectColumns) {
         if (CollectionUtil.isEmpty(queryWrapper.getSelectColumns())
-                && CollectionUtil.isNotEmpty(selectColumns)) {
+                && CollectionUtil.isNotEmpty(selectColumns)
+                && CollectionUtil.isEmpty(CPI.getJoinTables(queryWrapper))
+        ) {
             queryWrapper.setSelectColumns(selectColumns);
         }
     }

@@ -65,6 +65,9 @@ public class Join implements Serializable {
         this.on = condition;
     }
 
+    QueryCondition getOnCondition(){
+        return on;
+    }
 
     public boolean checkEffective() {
         return effective;

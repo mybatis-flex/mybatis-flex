@@ -27,6 +27,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static com.mybatisflex.test.table.Tables.ACCOUNT;
+import static com.mybatisflex.test.table.Tables.ARTICLE;
 
 public class EntityTestStarter {
 
@@ -52,12 +53,21 @@ public class EntityTestStarter {
 
         AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
 
+//        QueryWrapper wrapper = QueryWrapper.create().select().from(ACCOUNT)
+//                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
+//                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
+//                .groupBy(ACCOUNT.ID);
+//
+//        List<Account> accounts = accountMapper.selectListByQuery(wrapper);
+
+
         QueryWrapper wrapper = QueryWrapper.create().select().from(ACCOUNT)
-                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
-                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
-                .groupBy(ACCOUNT.ID);
+                .leftJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID).and(ACCOUNT.ID.ge(100)))
+                .and(ACCOUNT.ID.ge(100));
 
         List<Account> accounts = accountMapper.selectListByQuery(wrapper);
+        System.out.println(accounts);
+
 
 //        QueryWrapper queryWrapper = new QueryWrapper();
 //        queryWrapper.where(ACCOUNT.ID.in(
