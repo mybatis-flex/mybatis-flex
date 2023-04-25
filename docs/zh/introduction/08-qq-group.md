@@ -2,4 +2,4 @@
 
 群号： 532992631
 
-![](../assets/images/qq_group.png)
+![](../../assets/images/qq_group.png)
