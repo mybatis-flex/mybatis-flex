@@ -88,7 +88,7 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
 
     /**
      * 获取全局配置
-     * */
+     */
     public FlexGlobalConfig getGlobalConfig() {
         return globalConfig;
     }

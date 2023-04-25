@@ -241,27 +241,10 @@ public class FlexGlobalConfig {
         return defaultConfig;
     }
 
-    /**
-     * 指定默认全局配置（允许手动。在多源时，方便由注解指定默认源）
-     *
-     * <code><pre>
-     * @Configuration
-     * public class Config{
-     *     @Bean(value = "db1", typed = true) //默认
-     *     public DataSource db1(@Inject("${demo.db1}") HikariDataSource ds) {
-     *         return ds;
-     *     }
-     *
-     *     @Bean("db2")
-     *     public DataSource db1(@Inject("${demo.db2}") HikariDataSource ds) {
-     *         return ds;
-     *     }
-     * }
-     * </pre></code>
-     *
-     * @param config 全局配置
-     */
     public static void setDefaultConfig(FlexGlobalConfig config) {
+        if (config == null) {
+            throw new NullPointerException("config must not be null.");
+        }
         defaultConfig = config;
     }
 
@@ -273,7 +256,6 @@ public class FlexGlobalConfig {
         return globalConfigs.get(environmentId);
     }
 
-
     public static synchronized void setConfig(String id, FlexGlobalConfig config) {
         setConfig(id, config, true);
     }
@@ -281,13 +263,13 @@ public class FlexGlobalConfig {
     /**
      * 设置全局配置
      *
-     * @param id          环境id
-     * @param config      全局配置
-     * @param autoDefault 自动指定默认全局配置（在多源时，方便由注解指定默认源）
+     * @param id            环境id
+     * @param config        全局配置
+     * @param copyToDefault 自动指定默认全局配置（在多源时，方便由注解指定默认源）
      */
-    public static synchronized void setConfig(String id, FlexGlobalConfig config, boolean autoDefault) {
+    public static synchronized void setConfig(String id, FlexGlobalConfig config, boolean copyToDefault) {
         //first setConfig，copy the config to default
-        if (autoDefault && globalConfigs.isEmpty()) {
+        if (copyToDefault && globalConfigs.isEmpty()) {
 
             defaultConfig.setSqlSessionFactory(config.sqlSessionFactory);
             defaultConfig.setDbType(config.dbType);
