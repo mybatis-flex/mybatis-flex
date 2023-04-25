@@ -21,6 +21,11 @@ import org.apache.ibatis.type.UnknownTypeHandler;
 
 import java.lang.annotation.*;
 
+/**
+ * 数据库表中的列信息注解
+ *
+ * @author 开源海哥
+ */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
@@ -47,7 +52,7 @@ public @interface Column {
     String onUpdateValue() default "";
 
     /**
-     * 是否是大字段，大字段 APT 不会生成到 ALL_COLUMNS 里
+     * 是否是大字段，大字段 APT 不会生成到 DEFAULT_COLUMNS 里
      */
     boolean isLarge() default false;
 

@@ -82,7 +82,7 @@ public class Codegen {
 注意：由于 MyBatis-Flex 的 APT 功能会自动帮我们生成了 Mapper 的 Java 类，如果我们在代码生成器中选择生成 Mapper，
 则建议把 APT 的 Mapper 生成功能给关闭掉，否则系统中会存在两份一样功能的 Mapper。
 
-关闭 APT 的 Mapper 类文件生成，请参考：[APT 设置章节](./apt.md)
+关闭 APT 的 Mapper 类文件生成，请参考：[APT 设置章节](../others/apt.md)
 
 ## 全局配置 GlobalConfig 
 

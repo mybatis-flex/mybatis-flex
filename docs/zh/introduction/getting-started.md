@@ -19,7 +19,9 @@ CREATE TABLE IF NOT EXISTS `tb_account`
 );
 ```
 
-**第 2 步：创建 java 项目，并添加 Maven 依赖**
+**第 2 步：创建 java 项目，并添加 Maven/Gradle 依赖**
+
+Maven示例：
 
 ```xml
 <dependency>
@@ -29,9 +31,23 @@ CREATE TABLE IF NOT EXISTS `tb_account`
 </dependency>
 ```
 
+Gradle示例：
+
+```groovy
+// file: build.gradle
+ext {
+    mybatis_flex_version = '1.1.9'
+}
+dependencies {
+    implementation("com.mybatis-flex:mybatis-flex-core:${mybatis_flex_version}")
+    // 启用APT
+		annotationProcessor("com.mybatis-flex:mybatis-flex-annotation:${mybatis_flex_version}")
+}
+```
+
 **第 3 步：编写实体类和 Mapper**
 
-> 这部分可以使用 Mybatis-Flex 的代码生成器来生成实体类哟，功能非常强大的。详情进入：[代码生成器章节](./codegen.md) 了解。
+> 这部分可以使用 Mybatis-Flex 的代码生成器来生成实体类哟，功能非常强大的。详情进入：[代码生成器章节](../others/codegen.md) 了解。
 
 ```java
 @Table("tb_account")
@@ -56,9 +72,21 @@ public interface AccountMapper extends BaseMapper<Account> {
 }
 ```
 
+**第4步：编译项目自动生成辅助类**
+
+Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时，会自动生成辅助操作类。
+
+maven中 `mvn clean package`
+
+gradle中 `gradlew classes`
 
 
-**第 4 步：通过 main 方法开始使用（无 Spring 的场景）**
+
+更多信息请参考：[APT 设置章节](../others/apt.md)
+
+
+
+**第 5 步：通过 main 方法开始使用（无 Spring 的场景）**
 
 ```java
 public class HelloWorld {

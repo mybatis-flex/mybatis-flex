@@ -390,7 +390,7 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 ![](./docs/assets/images/build_idea.png)
 
-> 更多关于 Mybatis-Flex APT 的配置，请点击 [这里](./docs/zh/apt.md)。
+> 更多关于 Mybatis-Flex APT 的配置，请点击 [这里](./docs/zh/others/apt.md)。
 
 ## Db + Row 工具类
 
@@ -431,7 +431,7 @@ Page<Row> rowPage=Db.paginate("tb_account",3,10,query);
 >
 > 具体参考： [Db.java](./mybatis-flex-core/src/main/java/com/mybatisflex/core/row/Db.java) 。
 >
-> 更多关于 Row 插入时的**主键生成机制**、以及Db 的**事务管理**等，请点击 [这里](./docs/zh/db_row.md) 。
+> 更多关于 Row 插入时的**主键生成机制**、以及Db 的**事务管理**等，请点击 [这里](./docs/zh/core/db-row.md) 。
 
 ## Entity 部分字段更新
 
@@ -575,7 +575,7 @@ public class Account {
 }
 ```
 
-> 更多关于主键的配置，请点击 [这里](./docs/zh/id.md)
+> 更多关于主键的配置，请点击 [这里](./docs/zh/core/id.md)
 
 ## 更多文档
 

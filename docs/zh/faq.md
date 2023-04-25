@@ -3,7 +3,7 @@
 ## 示例中的 AccountMapper 和 "ACCOUNT" 在哪里，报错了。
 
 Mybatis-Flex 使用了 APT 技术，这两个类是自动生成的。
-参考：[Mybatis-Flex APT 配置 - Mybatis-Flex 官方网站](./apt.md)
+参考：[Mybatis-Flex APT 配置 - Mybatis-Flex 官方网站](./others/apt.md)
 
 
 
@@ -76,5 +76,5 @@ spring:
 的主动发现机制。若使用 `hikariCP` 数据源，则可以不配置 `type` 内容。
 
 > 若使用多数据源，或者把数据源配置到 `mybatis-flex.datasource` 下，使用 mybatis-flex 的数据源发现机制，
-> 使用 druid 也可以不用配置 type，更多文档参考：[多数据源章节](./multi-datasource.md)。
+> 使用 druid 也可以不用配置 type，更多文档参考：[多数据源章节](./core/multi-datasource.md)。
 
