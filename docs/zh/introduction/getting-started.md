@@ -47,7 +47,7 @@ dependencies {
 
 **第 3 步：编写实体类和 Mapper**
 
-> 这部分可以使用 Mybatis-Flex 的代码生成器来生成实体类哟，功能非常强大的。详情进入：[代码生成器章节](../others/01-codegen.md) 了解。
+> 这部分可以使用 Mybatis-Flex 的代码生成器来生成实体类哟，功能非常强大的。详情进入：[代码生成器章节](../others/codegen.md) 了解。
 
 ```java
 @Table("tb_account")
@@ -82,7 +82,7 @@ gradle中 `gradlew classes`
 
 
 
-更多信息请参考：[APT 设置章节](*../others/02-apt.md*)
+更多信息请参考：[APT 设置章节](../others/apt.md)
 
 
 
