@@ -5,7 +5,7 @@
     <parent>
         <artifactId>mybatis-flex-test</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.1.9</version>
+        <version>1.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,13 +20,13 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-core</artifactId>
-            <version>1.1.9</version>
+            <version>1.2.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-spring</artifactId>
-            <version>1.1.9</version>
+            <version>1.2.0</version>
         </dependency>
 
         <dependency>
