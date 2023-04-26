@@ -57,7 +57,7 @@ public class MybatisKeyGeneratorUtil {
         FlexGlobalConfig.KeyConfig globalKeyConfig = FlexGlobalConfig.getConfig(ms.getConfiguration()).getKeyConfig();
         KeyType keyType = getKeyType(idInfo, globalKeyConfig);
 
-        if (keyType == KeyType.None) {
+        if (keyType == null || keyType == KeyType.None) {
             return NoKeyGenerator.INSTANCE;
         }
 
@@ -74,7 +74,7 @@ public class MybatisKeyGeneratorUtil {
         //通过序列生成的注解
         String sequence = getKeyValue(idInfo, globalKeyConfig);
         if (StringUtil.isBlank(sequence)) {
-            throw FlexExceptions.wrap("please config @Id(value=\"...\") for field: %s in class: %s"
+            throw FlexExceptions.wrap("Please config sequence by @Id(value=\"...\") for field: %s in class: %s"
                     , idInfo.getProperty()
                     , tableInfo.getEntityClass().getName());
         }
