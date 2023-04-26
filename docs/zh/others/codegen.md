@@ -9,7 +9,7 @@
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-codegen</artifactId>
-    <version>1.1.9</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 

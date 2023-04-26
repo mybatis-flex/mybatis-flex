@@ -1,3 +1,18 @@
+mybatis-flex v1.2.0 20230426:
+新增：FlexGlobalConfig.setDefaultConfig 方法，使其扩展更加灵活，用于适配 solon
+新增：BaseMapper.insertBatch(entities,size) 方法，自定义分批插入；感谢 @庄佳彬
+新增：Entity 的监听器可以配置为父类 BaseEntity 的支持
+新增：Apt 添加自定义 字段名命名风格 的支持 #I6YGRG
+修复：processor.tablesClassName 配置不起作用的问题；感谢 @玩具猫
+修复：left join 关联查询 on 有第二个条件赋值错误的问题； #I6YT2R
+修复：审计日志中赋值异常的问题 #I6Z1R8
+修复：修复 createIdKeyGenerator 对 keyType.None 判断错误的问题
+优化：修改 @Table 注解，删除其 @Inherited
+文档：重构文档结构、使之更加清晰；感谢 @snow
+文档：同步新版本 apt 功能文档
+
+
+
 mybatis-flex v1.1.9 20230424:
 新增：根据 id 查询数据时，返回默认字段而非全部字段；感谢 @wnp
 新增：APT 添加忽略 entity 后缀的配置支持
