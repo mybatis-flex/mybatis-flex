@@ -15,14 +15,21 @@
  */
 package com.mybatisflex.test;
 
+import com.mybatisflex.core.audit.AuditManager;
+import com.mybatisflex.core.audit.ConsoleMessageCollector;
+import com.mybatisflex.core.audit.MessageCollector;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 @SpringBootApplication
+@Configuration
 @MapperScan("com.mybatisflex.test.mapper")
-public class SampleApplication implements CommandLineRunner {
+public class SampleApplication implements CommandLineRunner, ApplicationListener<ContextRefreshedEvent> {
 
 
 //    @Resource
@@ -39,5 +46,19 @@ public class SampleApplication implements CommandLineRunner {
         SpringApplication.run(SampleApplication.class, args);
     }
 
+
+
+
+
+        @Override
+        public void onApplicationEvent(ContextRefreshedEvent event) {
+            System.out.println("onApplicationEvent");
+            //开启审计功能
+            AuditManager.setAuditEnable(true);
+
+//设置 SQL 审计收集器
+            MessageCollector collector = new ConsoleMessageCollector();
+            AuditManager.setMessageCollector(collector);
+        }
 
 }

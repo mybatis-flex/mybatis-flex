@@ -17,10 +17,16 @@ package com.mybatisflex.core.audit;
 
 import com.mybatisflex.core.FlexConsts;
 import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.mapping.ParameterMode;
+import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.ParamNameResolver;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.type.TypeHandlerRegistry;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -80,7 +86,7 @@ public class AuditManager {
         }
     }
 
-    public static <T> T startAudit(AuditRunnable<T> supplier, BoundSql boundSql) throws SQLException {
+    public static <T> T startAudit(AuditRunnable<T> supplier, BoundSql boundSql, Configuration configuration) throws SQLException {
         AuditMessage auditMessage = MessageFactory.create();
         if (auditMessage == null) {
             return supplier.execute();
@@ -99,11 +105,11 @@ public class AuditManager {
             auditMessage.setQuery(boundSql.getSql());
             Object parameter = boundSql.getParameterObject();
 
-
             /** parameter 的组装请查看 getNamedParams 方法
              * @see ParamNameResolver#getNamedParams(Object[])
              */
             if (parameter instanceof Map) {
+                TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
                 if (((Map<?, ?>) parameter).containsKey(FlexConsts.SQL_ARGS)) {
                     auditMessage.addParams(((Map<?, ?>) parameter).get(FlexConsts.SQL_ARGS));
                 } else if (((Map<?, ?>) parameter).containsKey("collection")) {
@@ -112,9 +118,20 @@ public class AuditManager {
                 } else if (((Map<?, ?>) parameter).containsKey("array")) {
                     auditMessage.addParams(((Map<?, ?>) parameter).get("array"));
                 } else {
-                    for (int i = 1; i <= 100; i++) {
-                        if (((Map<?, ?>) parameter).containsKey(ParamNameResolver.GENERIC_NAME_PREFIX + i)) {
-                            auditMessage.addParams(((Map<?, ?>) parameter).get(ParamNameResolver.GENERIC_NAME_PREFIX + i));
+                    List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+                    for (ParameterMapping parameterMapping : parameterMappings) {
+                        if (parameterMapping.getMode() != ParameterMode.OUT) {
+                            Object value;
+                            String propertyName = parameterMapping.getProperty();
+                            if (boundSql.hasAdditionalParameter(propertyName)) {
+                                value = boundSql.getAdditionalParameter(propertyName);
+                            } else if (typeHandlerRegistry.hasTypeHandler(parameter.getClass())) {
+                                value = parameter;
+                            } else {
+                                MetaObject metaObject = configuration.newMetaObject(parameter);
+                                value = metaObject.getValue(propertyName);
+                            }
+                            auditMessage.addParams(value);
                         }
                     }
                 }

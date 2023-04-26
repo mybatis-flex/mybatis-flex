@@ -25,6 +25,7 @@ import org.apache.ibatis.executor.statement.SimpleStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
@@ -44,9 +45,10 @@ public class FlexStatementHandler implements StatementHandler {
     private final StatementHandler delegate;
     private final BoundSql boundSql;
     private final boolean auditEnable = AuditManager.isAuditEnable();
+    private final Configuration configuration;
 
     public FlexStatementHandler(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
-
+        configuration = ms.getConfiguration();
         switch (ms.getStatementType()) {
             case STATEMENT:
                 delegate = new SimpleStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
@@ -82,7 +84,7 @@ public class FlexStatementHandler implements StatementHandler {
             AuditManager.startAudit(() -> {
                 delegate.batch(statement);
                 return null;
-            }, boundSql);
+            }, boundSql, configuration);
         } else {
             delegate.batch(statement);
         }
@@ -90,19 +92,19 @@ public class FlexStatementHandler implements StatementHandler {
 
     @Override
     public int update(Statement statement) throws SQLException {
-        return auditEnable ? AuditManager.startAudit(() -> delegate.update(statement), boundSql)
+        return auditEnable ? AuditManager.startAudit(() -> delegate.update(statement), boundSql,configuration)
                 : delegate.update(statement);
     }
 
     @Override
     public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
-        return auditEnable ? AuditManager.startAudit(() -> delegate.query(statement, resultHandler), boundSql)
+        return auditEnable ? AuditManager.startAudit(() -> delegate.query(statement, resultHandler), boundSql, configuration)
                 : delegate.query(statement, resultHandler);
     }
 
     @Override
     public <E> Cursor<E> queryCursor(Statement statement) throws SQLException {
-        return auditEnable ? AuditManager.startAudit(() -> delegate.queryCursor(statement), boundSql)
+        return auditEnable ? AuditManager.startAudit(() -> delegate.queryCursor(statement), boundSql, configuration)
                 : delegate.queryCursor(statement);
     }
 

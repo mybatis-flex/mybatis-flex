@@ -15,12 +15,6 @@
  */
 package com.mybatisflex.core.audit;
 
-import com.mybatisflex.core.util.DateUtil;
-
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
 
 public class ConsoleMessageCollector implements MessageCollector {
 

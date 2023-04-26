@@ -9,6 +9,6 @@ public interface MyAccountMapper extends AccountMapper {
 
     Account selectByName(@Param("name") String name);
 
-    @Select("select * from tb_account where id = #{id}")
+    @Select("select * from tb_account where id = #{id} and id =#{id}")
     Account selectById(@Param("id") Object id);
 }
