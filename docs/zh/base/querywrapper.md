@@ -432,7 +432,7 @@ SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 
 ![](../../assets/images/build_idea.png)
 
-> 更多关于 APT 的配置，请进入 [APT 配置章节](./apt) 了解。
+> 更多关于 APT 的配置，请进入 [APT 配置章节](../others/apt.md) 了解。
 
 ## 特别注意事项!!!
 在 QueryWrapper 的条件构建中，如果传入 null 值，则自动忽略该条件，这有许多的好处，不需要额外的通过 `when()` 方法判断。但是也带来一些额外的知识记忆点，

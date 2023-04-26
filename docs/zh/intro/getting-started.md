@@ -124,7 +124,7 @@ public class HelloWorld {
 }
 ```
 
-> 以上的示例中， `ACCOUNT` 为 Mybatis-Flex 通过 APT 自动生成，无需手动编码。更多查看 [APT 文档](./apt)。
+> 以上的示例中， `ACCOUNT` 为 Mybatis-Flex 通过 APT 自动生成，无需手动编码。更多查看 [APT 文档](../others/apt.md)。
 
 
 ## 更多示例
