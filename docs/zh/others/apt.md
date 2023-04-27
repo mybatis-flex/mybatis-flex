@@ -5,6 +5,25 @@ Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 
 ![](../../assets/images/build_idea.png)
 
+>  从1.1.9版本开始，APT默认不生成 Mapper 类文件。如需开启，参考下方配置选项。
+
+## 配置文件和选项
+
+要对Mybatis-Flex 的APT细节选项进行配置，你需要在`resources`目录下创建名为`mybatis-flex.properties`的文件。
+
+支持的配置选项如下：
+
+| 属性名                          | 含义                     | 约束                                                     | 默认值                               |
+| ------------------------------- | ------------------------ | -------------------------------------------------------- | ------------------------------------ |
+| processor.enable                | 全局启用apt开关          | true/false                                               | true                                 |
+| processor.mappersGenerateEnable | 开启 Mapper 自动生成     | true/false                                               | false                                |
+| processor.genPath               | APT 代码生成路径         | 合法的绝对或相对路径                                     | target/generated-sources/annotations |
+| processor.tablesPackage         | Tables 类名              | 合法的包名                                               | ${entityPackage}.table               |
+| processor.tablesClassName       | Tables 类名              | 合法的类名                                               | Tables                               |
+| processor.baseMapperClass       | 自定义 Mapper 的父类     | 全路径类名                                               | com.mybatisflex.core.BaseMapper      |
+| processor.mappersPackage        | 自定义 Mapper 生成的包名 | 合法的包名                                               | ${entityPackage}.mapper              |
+| processor.tablesNameStyle       | 生成辅助类的字段风格     | upperCase, lowerCase<br />upperCamelCase, lowerCamelCase | upperCase                            |
+| processor.entity.ignoreSuffixes | 过滤 Entity 后缀         | string                                                   | -                                    |
 
 
 
@@ -144,7 +163,7 @@ processor.baseMapperClass=com.domain.mapper.MyBaseMapper
             </path>
             <path>
                 <groupId>com.mybatis-flex</groupId>
-                <artifactId>mybatis-flex-annotation</artifactId>
+                <artifactId>mybatis-flex-processor</artifactId>
                 <version>${mybatis-flex.version}</version>
             </path>
         </annotationProcessorPaths>
@@ -159,7 +178,7 @@ processor.baseMapperClass=com.domain.mapper.MyBaseMapper
 ```
 dependencies {
     ...
-    annotationProcessor 'com.mybatis-flex:mybatis-flex-annotation:1.2.0'
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.2.0'
 }
 ```
 
@@ -171,5 +190,4 @@ dependencies {
 - 2、 再点击 `Reload project`。
 
 ![](../../assets/images/apt_idea.png)
-
 
