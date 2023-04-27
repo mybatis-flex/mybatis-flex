@@ -47,6 +47,7 @@
         <module>mybatis-flex-spring-boot-starter</module>
         <module>mybatis-flex-solon-plugin</module>
         <module>mybatis-flex-test</module>
+        <module>mybatis-flex-processor</module>
     </modules>
 
     <properties>
