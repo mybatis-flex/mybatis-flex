@@ -29,7 +29,17 @@ Maven示例：
     <artifactId>mybatis-flex-core</artifactId>
     <version>1.2.0</version>
 </dependency>
+<dependency>
+    <groupId>com.mybatis-flex</groupId>
+    <artifactId>mybatis-flex-processor</artifactId>
+    <version>1.2.0</version>
+    <scope>provided</scope>
+</dependency>
 ```
+
+> 如果配置了annotationProcessorPaths，此处可以省略mybatis-flex-processor的依赖
+>
+> 参考：[APT 设置章节](../others/apt.md)
 
 Gradle示例：
 
