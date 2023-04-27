@@ -306,13 +306,12 @@ public class TableInfo {
      * @return 字段列表
      */
     public String[] obtainInsertColumns(Object entity, boolean ignoreNulls) {
-        String[] defaultInsertColumns = ArrayUtil.concat(insertPrimaryKeys, columns);
         if (!ignoreNulls) {
-            return defaultInsertColumns;
+            return ArrayUtil.concat(insertPrimaryKeys, columns);
         } else {
             MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
             List<String> retColumns = new ArrayList<>();
-            for (String insertColumn : defaultInsertColumns) {
+            for (String insertColumn : columns) {
                 if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                     retColumns.add(insertColumn);
                 } else {
@@ -323,7 +322,7 @@ public class TableInfo {
                     retColumns.add(insertColumn);
                 }
             }
-            return retColumns.toArray(new String[0]);
+            return ArrayUtil.concat(insertPrimaryKeys, retColumns.toArray(new String[0]));
         }
     }
 

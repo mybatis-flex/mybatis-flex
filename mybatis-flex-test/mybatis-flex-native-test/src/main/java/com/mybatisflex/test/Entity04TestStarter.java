@@ -58,6 +58,13 @@ public class Entity04TestStarter {
         mapper.update(entity04);
 
 
+        Entity04 entity05 = new Entity04();
+//        entity05.setId("1");
+        entity05.setAge(200);
+
+        mapper.insertSelective(entity05);
+
+
         List<Entity04> entity04s = mapper.selectAll();
         System.out.println(entity04s);
 
