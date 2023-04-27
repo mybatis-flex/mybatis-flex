@@ -307,7 +307,6 @@ public class CommonsDialectImpl implements IDialect {
             sqlBuilder.append("*");
         } else {
             int index = 0;
-
             for (QueryColumn selectColumn : selectColumns) {
                 String selectColumnSql = CPI.toSelectSql(selectColumn, queryTables, this);
                 sqlBuilder.append(selectColumnSql);

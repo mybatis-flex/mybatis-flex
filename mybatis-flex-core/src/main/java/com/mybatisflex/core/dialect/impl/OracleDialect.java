@@ -17,6 +17,7 @@ package com.mybatisflex.core.dialect.impl;
 
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcesser;
+import com.mybatisflex.core.util.StringUtil;
 
 public class OracleDialect extends CommonsDialectImpl {
 
@@ -43,6 +44,9 @@ public class OracleDialect extends CommonsDialectImpl {
 
     @Override
     public String wrap(String keyword) {
-        return super.wrap(toUpperCase ? keyword.toUpperCase():keyword);
+        if (StringUtil.isNotBlank(keyword)) {
+            return super.wrap(toUpperCase ? keyword.toUpperCase() : keyword);
+        }
+        return "";
     }
 }
