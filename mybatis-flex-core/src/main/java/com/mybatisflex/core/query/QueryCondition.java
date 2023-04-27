@@ -17,6 +17,7 @@ package com.mybatisflex.core.query;
 
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.util.ClassUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -254,12 +255,7 @@ public class QueryCondition implements Serializable {
         Object[] values = (Object[]) value;
         int paramsCount = 0;
         for (Object object : values) {
-            if (object != null && (object.getClass().isArray()
-                    || object.getClass() == int[].class
-                    || object.getClass() == long[].class
-                    || object.getClass() == short[].class
-                    || object.getClass() == float[].class
-                    || object.getClass() == double[].class)) {
+            if (object != null && ClassUtil.isArray(object.getClass())) {
                 paramsCount += Array.getLength(object);
             } else {
                 paramsCount++;

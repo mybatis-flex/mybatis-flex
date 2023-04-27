@@ -16,6 +16,7 @@
 package com.mybatisflex.core.audit;
 
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
+import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.DateUtil;
 
 import java.io.Serializable;
@@ -129,13 +130,7 @@ public class AuditMessage implements Serializable {
             queryParams = new ArrayList<>();
         }
         for (Object object : objects) {
-            if (object != null && (object.getClass().isArray()
-                    || object.getClass() == int[].class
-                    || object.getClass() == long[].class
-                    || object.getClass() == short[].class
-                    || object.getClass() == float[].class
-                    || object.getClass() == double[].class)
-            ) {
+            if (object != null && ClassUtil.isArray(object.getClass())) {
                 for (int i = 0; i < Array.getLength(object); i++) {
                     addParams(Array.get(object, i));
                 }
@@ -187,7 +182,7 @@ public class AuditMessage implements Serializable {
         return (PreparedStatement) Proxy.newProxyInstance(
                 AuditMessage.class.getClassLoader(),
                 new Class[]{PreparedStatement.class}, (proxy, method, args) -> {
-                    if (args != null && args.length == 2){
+                    if (args != null && args.length == 2) {
                         addParams(args[1]);
                     }
                     return null;

@@ -95,6 +95,16 @@ public class ClassUtil {
     }
 
 
+    public static boolean isArray(Class<?> clazz) {
+        return clazz.isArray()
+                || clazz == int[].class
+                || clazz == long[].class
+                || clazz == short[].class
+                || clazz == float[].class
+                || clazz == double[].class;
+    }
+
+
     public static <T> T newInstance(Class<T> clazz) {
         try {
             Constructor<?> defaultConstructor = null;

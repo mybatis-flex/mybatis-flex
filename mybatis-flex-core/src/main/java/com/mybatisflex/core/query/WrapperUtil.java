@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 
+import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
@@ -104,12 +105,7 @@ class WrapperUtil {
         if (value.getClass().isArray()) {
             Object[] values = (Object[]) value;
             for (Object object : values) {
-                if (object != null && (object.getClass().isArray()
-                        || object.getClass() == int[].class
-                        || object.getClass() == long[].class
-                        || object.getClass() == short[].class
-                        || object.getClass() == float[].class
-                        || object.getClass() == double[].class)) {
+                if (object != null && ClassUtil.isArray(object.getClass())) {
                     for (int i = 0; i < Array.getLength(object); i++) {
                         paras.add(Array.get(object, i));
                     }
