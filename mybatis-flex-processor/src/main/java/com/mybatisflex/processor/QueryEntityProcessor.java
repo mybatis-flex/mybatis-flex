@@ -29,6 +29,7 @@ import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
@@ -102,14 +103,14 @@ public class QueryEntityProcessor extends AbstractProcessor {
     private static final String allColumnsTemplate = "        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{@allColumns};\n\n";
 
     private Filer filer;
-    //    private Elements elementUtils;
+    private Elements elementUtils;
     private Types typeUtils;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         this.filer = processingEnvironment.getFiler();
-//        this.elementUtils = processingEnvironment.getElementUtils();
+        this.elementUtils = processingEnvironment.getElementUtils();
         this.typeUtils = processingEnvironment.getTypeUtils();
     }
 
@@ -216,8 +217,6 @@ public class QueryEntityProcessor extends AbstractProcessor {
                     continue;
                 }
 
-                TypeMirror typeMirror = fieldElement.asType();
-
                 Column column = fieldElement.getAnnotation(Column.class);
                 if (column != null && column.ignore()) {
                     continue;
@@ -236,18 +235,17 @@ public class QueryEntityProcessor extends AbstractProcessor {
                     });
                 }
 
-                TypeElement typeElement = null;
-                if (typeMirror.getKind() == TypeKind.DECLARED) {
-                    typeElement = (TypeElement) ((DeclaredType) typeMirror).asElement();
+                TypeMirror typeMirror = fieldElement.asType();
+                Element element = typeUtils.asElement(typeMirror);
+                if (element != null) {
+                    typeMirror = element.asType();
                 }
 
                 String typeString = typeMirror.toString().trim();
-                if (typeString.startsWith("(") && typeString.endsWith(")")) {
-                    typeString = typeString.substring(1, typeString.length() - 1);
-                }
-                int lastIndexOf = typeString.lastIndexOf(":");
-                if (lastIndexOf > 0) {
-                    typeString = typeString.substring(lastIndexOf + 1).trim();
+
+                TypeElement typeElement = null;
+                if (typeMirror.getKind() == TypeKind.DECLARED) {
+                    typeElement = (TypeElement) ((DeclaredType) typeMirror).asElement();
                 }
 
                 //未配置 typeHandler 的情况下，只支持基本数据类型，不支持比如 list set 或者自定义的类等
