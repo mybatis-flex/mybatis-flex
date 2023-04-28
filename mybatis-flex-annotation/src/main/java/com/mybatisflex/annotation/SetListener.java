@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.annotation;
 
-public interface SetListener {
+public interface SetListener extends Listener {
 
     Object onSet(Object entity, String property, Object value);
 }

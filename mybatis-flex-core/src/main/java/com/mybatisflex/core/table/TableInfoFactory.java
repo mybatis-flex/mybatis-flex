@@ -42,6 +42,7 @@ import java.time.*;
 import java.time.chrono.JapaneseDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class TableInfoFactory {
 
@@ -120,16 +121,28 @@ public class TableInfoFactory {
             tableInfo.setSchema(table.schema());
             tableInfo.setCamelToUnderline(table.camelToUnderline());
 
-            if (table.onInsert() != NoneListener.class) {
-                tableInfo.setOnInsertListener(ClassUtil.newInstance(table.onInsert()));
+            if (table.onInsert().length > 0) {
+                List<InsertListener> insertListeners = Arrays.stream(table.onInsert())
+                        .filter(listener -> listener != NoneListener.class)
+                        .map(ClassUtil::newInstance)
+                        .collect(Collectors.toList());
+                tableInfo.setOnInsertListener(insertListeners);
             }
 
-            if (table.onUpdate() != NoneListener.class) {
-                tableInfo.setOnUpdateListener(ClassUtil.newInstance(table.onUpdate()));
+            if (table.onUpdate().length > 0) {
+                List<UpdateListener> updateListeners = Arrays.stream(table.onUpdate())
+                        .filter(listener -> listener != NoneListener.class)
+                        .map(ClassUtil::newInstance)
+                        .collect(Collectors.toList());
+                tableInfo.setOnUpdateListener(updateListeners);
             }
 
-            if (table.onSet() != NoneListener.class) {
-                tableInfo.setOnSetListener(ClassUtil.newInstance(table.onSet()));
+            if (table.onSet().length > 0) {
+                List<SetListener> setListeners = Arrays.stream(table.onSet())
+                        .filter(listener -> listener != NoneListener.class)
+                        .map(ClassUtil::newInstance)
+                        .collect(Collectors.toList());
+                tableInfo.setOnSetListener(setListeners);
             }
 
             if (StringUtil.isNotBlank(table.dataSource())) {

@@ -15,7 +15,10 @@
  */
 package com.mybatisflex.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
@@ -44,17 +47,17 @@ public @interface Table {
     /**
      * 监听 entity 的 insert 行为
      */
-    Class<? extends InsertListener> onInsert() default NoneListener.class;
+    Class<? extends InsertListener>[] onInsert() default {};
 
     /**
      * 监听 entity 的 update 行为
      */
-    Class<? extends UpdateListener> onUpdate() default NoneListener.class;
+    Class<? extends UpdateListener>[] onUpdate() default {};
 
     /**
      * 监听 entity 的查询数据的 set 行为，用户主动 set 不会触发
      */
-    Class<? extends SetListener> onSet() default NoneListener.class;
+    Class<? extends SetListener>[] onSet() default {};
 
     /**
      * 在某些场景下，我们需要手动编写 Mapper，可以通过这个注解来关闭 APT 的 Mapper 生成
