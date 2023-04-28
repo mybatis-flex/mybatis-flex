@@ -36,8 +36,10 @@ import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.util.MapUtil;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class TableInfo {
@@ -768,27 +770,47 @@ public class TableInfo {
     }
 
 
+    private static Map<Class<?>, List<InsertListener>> insertListenerCache = new ConcurrentHashMap<>();
+
     public void invokeOnInsertListener(Object entity) {
-        List<InsertListener> globalListeners = FlexGlobalConfig.getDefaultConfig().getSupportedInsertListener(entityClass);
-        List<InsertListener> allInsertListeners = CollectionUtil.merge(onInsertListeners, globalListeners);
-        Collections.sort(allInsertListeners);
-        allInsertListeners.forEach(insertListener -> insertListener.onInsert(entity));
+        List<InsertListener> listeners = MapUtil.computeIfAbsent(insertListenerCache, entityClass, aClass -> {
+            List<InsertListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
+                    .getSupportedInsertListener(entityClass, CollectionUtil.isNotEmpty(onInsertListeners));
+            List<InsertListener> allListeners = CollectionUtil.merge(onInsertListeners, globalListeners);
+            Collections.sort(allListeners);
+            return allListeners;
+        });
+        listeners.forEach(insertListener -> insertListener.onInsert(entity));
     }
 
+
+
+    private static Map<Class<?>, List<UpdateListener>> updateListenerCache = new ConcurrentHashMap<>();
 
     public void invokeOnUpdateListener(Object entity) {
-        List<UpdateListener> globalListeners = FlexGlobalConfig.getDefaultConfig().getSupportedUpdateListener(entityClass);
-        List<UpdateListener> allUpdateListeners = CollectionUtil.merge(onUpdateListeners, globalListeners);
-        Collections.sort(allUpdateListeners);
-        allUpdateListeners.forEach(insertListener -> insertListener.onUpdate(entity));
+        List<UpdateListener> listeners = MapUtil.computeIfAbsent(updateListenerCache, entityClass, aClass -> {
+            List<UpdateListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
+                    .getSupportedUpdateListener(entityClass, CollectionUtil.isNotEmpty(onUpdateListeners));
+            List<UpdateListener> allListeners = CollectionUtil.merge(onUpdateListeners, globalListeners);
+            Collections.sort(allListeners);
+            return allListeners;
+        });
+        listeners.forEach(insertListener -> insertListener.onUpdate(entity));
     }
 
 
+
+    private static Map<Class<?>, List<SetListener>> setListenerCache = new ConcurrentHashMap<>();
+
     public Object invokeOnSetListener(Object entity, String property, Object value) {
-        List<SetListener> globalListeners = FlexGlobalConfig.getDefaultConfig().getSupportedSetListener(entityClass);
-        List<SetListener> allSetListeners = CollectionUtil.merge(onSetListeners, globalListeners);
-        Collections.sort(allSetListeners);
-        for (SetListener setListener : allSetListeners) {
+        List<SetListener> listeners = MapUtil.computeIfAbsent(setListenerCache, entityClass, aClass -> {
+            List<SetListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
+                    .getSupportedSetListener(entityClass, CollectionUtil.isNotEmpty(onSetListeners));
+            List<SetListener> allListeners = CollectionUtil.merge(onSetListeners, globalListeners);
+            Collections.sort(allListeners);
+            return allListeners;
+        });
+        for (SetListener setListener : listeners) {
             value = setListener.onSet(entity, property, value);
         }
         return value;

@@ -23,9 +23,7 @@ import com.mybatisflex.core.dialect.DbType;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -166,14 +164,35 @@ public class FlexGlobalConfig {
      * @param entityClass 实体class
      * @return UpdateListener
      */
-    public List<SetListener> getSupportedSetListener(Class<?> entityClass) {
-        List<SetListener> list = new ArrayList<>();
-        for (Class<?> registerClass : entitySetListeners.keySet()) {
-            if (registerClass.isAssignableFrom(entityClass)) {
-                list.add(entitySetListeners.get(registerClass));
-            }
+    public List<SetListener> getSupportedSetListener(Class<?> entityClass, boolean interfaceOnly) {
+
+        Map<Class<?>, SetListener> map = new HashMap<>();
+        if (!interfaceOnly) {
+            doGetSupportedSetListener(entityClass, map);
         }
-        return list;
+
+        while (entityClass.getSuperclass() != null) {
+            Class<?>[] interfaces = entityClass.getInterfaces();
+            for (Class<?> interfaceClass : interfaces) {
+                doGetSupportedSetListener(interfaceClass, map);
+            }
+            entityClass = entityClass.getSuperclass();
+        }
+
+        return new ArrayList<>(map.values());
+    }
+
+
+    private void doGetSupportedSetListener(Class<?> childClass, Map<Class<?>, SetListener> listeners) {
+        SetListener setListener = null;
+        while (setListener == null && childClass != null) {
+            setListener = entitySetListeners.get(childClass);
+            childClass = childClass.getSuperclass();
+        }
+
+        if (setListener != null) {
+            listeners.put(childClass, setListener);
+        }
     }
 
 
@@ -188,14 +207,35 @@ public class FlexGlobalConfig {
      * @param entityClass 实体class
      * @return UpdateListener
      */
-    public List<UpdateListener> getSupportedUpdateListener(Class<?> entityClass) {
-        List<UpdateListener> list = new ArrayList<>();
-        for (Class<?> registerClass : entityUpdateListeners.keySet()) {
-            if (registerClass.isAssignableFrom(entityClass)) {
-                list.add(entityUpdateListeners.get(registerClass));
-            }
+    public List<UpdateListener> getSupportedUpdateListener(Class<?> entityClass, boolean interfaceOnly) {
+
+        Map<Class<?>, UpdateListener> map = new HashMap<>();
+        if (!interfaceOnly) {
+            doGetSupportedUpdateListener(entityClass, map);
         }
-        return list;
+
+        while (entityClass.getSuperclass() != null) {
+            Class<?>[] interfaces = entityClass.getInterfaces();
+            for (Class<?> interfaceClass : interfaces) {
+                doGetSupportedUpdateListener(interfaceClass, map);
+            }
+            entityClass = entityClass.getSuperclass();
+        }
+
+        return new ArrayList<>(map.values());
+    }
+
+
+    private void doGetSupportedUpdateListener(Class<?> childClass, Map<Class<?>, UpdateListener> listeners) {
+        UpdateListener updateListener = null;
+        while (updateListener == null && childClass != null) {
+            updateListener = entityUpdateListeners.get(childClass);
+            childClass = childClass.getSuperclass();
+        }
+
+        if (updateListener != null) {
+            listeners.put(childClass, updateListener);
+        }
     }
 
 
@@ -210,15 +250,37 @@ public class FlexGlobalConfig {
      * @param entityClass 实体class
      * @return InsertListener
      */
-    public List<InsertListener> getSupportedInsertListener(Class<?> entityClass) {
-        List<InsertListener> list = new ArrayList<>();
-        for (Class<?> registerClass : entityInsertListeners.keySet()) {
-            if (registerClass.isAssignableFrom(entityClass)) {
-                list.add(entityInsertListeners.get(registerClass));
-            }
+    public List<InsertListener> getSupportedInsertListener(Class<?> entityClass, boolean interfaceOnly) {
+
+        Map<Class<?>, InsertListener> map = new HashMap<>();
+        if (!interfaceOnly) {
+            doGetSupportedInsertListener(entityClass, map);
         }
-        return list;
+
+        while (entityClass.getSuperclass() != null) {
+            Class<?>[] interfaces = entityClass.getInterfaces();
+            for (Class<?> interfaceClass : interfaces) {
+                doGetSupportedInsertListener(interfaceClass, map);
+            }
+            entityClass = entityClass.getSuperclass();
+        }
+
+        return new ArrayList<>(map.values());
     }
+
+
+    private void doGetSupportedInsertListener(Class<?> childClass, Map<Class<?>, InsertListener> listeners) {
+        InsertListener insertListener = null;
+        while (insertListener == null && childClass != null) {
+            insertListener = entityInsertListeners.get(childClass);
+            childClass = childClass.getSuperclass();
+        }
+
+        if (insertListener != null) {
+            listeners.put(childClass, insertListener);
+        }
+    }
+
 
     public Object getNormalValueOfLogicDelete() {
         return normalValueOfLogicDelete;

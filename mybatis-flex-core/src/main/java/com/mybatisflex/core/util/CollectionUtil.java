@@ -47,7 +47,7 @@ public class CollectionUtil {
     public static <T> List<T> merge(List<T> list, List<T> other) {
         if (list == null && other == null) {
             return new ArrayList<>();
-        } else if (isEmpty(other)) {
+        } else if (isEmpty(other) && list != null) {
             return list;
         } else if (isEmpty(list)) {
             return other;

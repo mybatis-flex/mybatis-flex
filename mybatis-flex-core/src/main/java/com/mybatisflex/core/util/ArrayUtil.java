@@ -56,7 +56,7 @@ public class ArrayUtil {
     public static <T> T[] concat(T[] first, T[] second) {
         if (first == null && second == null) {
             throw new IllegalArgumentException("not allow first and second are null.");
-        } else if (isEmpty(first)) {
+        } else if (isEmpty(first) && second != null) {
             return second;
         } else if (isEmpty(second)) {
             return first;
