@@ -10,8 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Table(value = "tb_account",dataSource = "ds2",onSet = AccountOnSetListener.class)
-public class Account extends BaseAccount implements Serializable {
+@Table(value = "tb_account", dataSource = "ds2", onSet = AccountOnSetListener.class)
+public class Account extends BaseAccount implements Serializable, AgeAware {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,7 +26,7 @@ public class Account extends BaseAccount implements Serializable {
     @NotBlank
     private Date birthday;
 
-    @Column(typeHandler = Fastjson2TypeHandler.class,isLarge = true)
+    @Column(typeHandler = Fastjson2TypeHandler.class, isLarge = true)
     private Map<String, Object> options;
 
     @Column(isLogicDelete = true)
@@ -49,10 +49,12 @@ public class Account extends BaseAccount implements Serializable {
         this.userName = userName;
     }
 
+    @Override
     public int getAge() {
         return age;
     }
 
+    @Override
     public void setAge(int age) {
         this.age = age;
     }

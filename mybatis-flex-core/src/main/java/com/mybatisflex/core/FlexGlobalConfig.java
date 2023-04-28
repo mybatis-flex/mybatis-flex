@@ -16,10 +16,10 @@
 package com.mybatisflex.core;
 
 import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.dialect.DbType;
-import com.mybatisflex.annotation.KeyType;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -162,11 +162,42 @@ public class FlexGlobalConfig {
         return entityUpdateListeners.get(entityClass);
     }
 
+    /**
+     * 获取支持该 {@code entityClass} 的update监听器
+     * <p>当registerClass是entityClass的本身或其超类时，则视为支持</p>
+     *
+     * @param entityClass 实体class
+     * @return UpdateListener
+     */
+    public UpdateListener getSupportedUpdateListener(Class<?> entityClass) {
+        for (Class<?> registerClass : entityUpdateListeners.keySet()) {
+            if (registerClass.isAssignableFrom(entityClass)) {
+                return entityUpdateListeners.get(registerClass);
+            }
+        }
+        return null;
+    }
+
 
     public InsertListener getInsertListener(Class<?> entityClass) {
         return entityInsertListeners.get(entityClass);
     }
 
+    /**
+     * 获取支持该 {@code entityClass} 的insert监听器
+     * <p>当registerClass是entityClass的本身或其超类时，则视为支持</p>
+     *
+     * @param entityClass 实体class
+     * @return InsertListener
+     */
+    public InsertListener getSupportedInsertListener(Class<?> entityClass) {
+        for (Class<?> registerClass : entityInsertListeners.keySet()) {
+            if (registerClass.isAssignableFrom(entityClass)) {
+                return entityInsertListeners.get(registerClass);
+            }
+        }
+        return null;
+    }
 
     public Object getNormalValueOfLogicDelete() {
         return normalValueOfLogicDelete;

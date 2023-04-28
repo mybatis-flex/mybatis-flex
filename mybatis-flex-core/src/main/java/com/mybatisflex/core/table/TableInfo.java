@@ -778,15 +778,7 @@ public class TableInfo {
             return;
         }
 
-
-        InsertListener globalInsertListener = null;
-        Class<?> registerClass = entityClass;
-
-        while (globalInsertListener == null && registerClass != Object.class && registerClass != null) {
-            globalInsertListener = FlexGlobalConfig.getDefaultConfig().getInsertListener(registerClass);
-            registerClass = registerClass.getSuperclass();
-        }
-
+        InsertListener globalInsertListener = FlexGlobalConfig.getDefaultConfig().getSupportedInsertListener(entityClass);
         if (globalInsertListener != null) {
             globalInsertListener.onInsert(entity);
         }
@@ -799,14 +791,7 @@ public class TableInfo {
             return;
         }
 
-        UpdateListener globalUpdateListener = null;
-        Class<?> registerClass = entityClass;
-
-        while (globalUpdateListener == null && registerClass != Object.class && registerClass != null) {
-            globalUpdateListener = FlexGlobalConfig.getDefaultConfig().getUpdateListener(registerClass);
-            registerClass = registerClass.getSuperclass();
-        }
-
+        UpdateListener globalUpdateListener = FlexGlobalConfig.getDefaultConfig().getSupportedUpdateListener(entityClass);
         if (globalUpdateListener != null) {
             globalUpdateListener.onUpdate(entity);
         }
