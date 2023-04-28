@@ -20,4 +20,9 @@ public class AgeHandleListener implements InsertListener {
             }
         }
     }
+
+    @Override
+    public int order() {
+        return 10;
+    }
 }
