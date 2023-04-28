@@ -22,7 +22,7 @@ public class BaseQueryWrapper<T> implements Serializable {
 
 
     protected List<QueryTable> queryTables;
-    protected String datasource;
+    protected String dataSource;
 
     protected List<QueryColumn> selectColumns;
     protected List<Join> joins;
@@ -126,12 +126,12 @@ public class BaseQueryWrapper<T> implements Serializable {
         this.queryTables = queryTables;
     }
 
-    protected String getDatasource() {
-        return datasource;
+    protected String getDataSource() {
+        return dataSource;
     }
 
-    protected void setDatasource(String datasource) {
-        this.datasource = datasource;
+    protected void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
     }
 
     protected List<QueryColumn> getSelectColumns() {

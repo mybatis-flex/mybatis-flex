@@ -47,12 +47,12 @@ public class CPI {
         queryWrapper.setQueryTables(queryTables);
     }
 
-    public static String getDatasource(QueryWrapper queryWrapper) {
-        return queryWrapper.getDatasource();
+    public static String getDataSource(QueryWrapper queryWrapper) {
+        return queryWrapper.getDataSource();
     }
 
-    public static void setDatasource(QueryWrapper queryWrapper, String datasource) {
-        queryWrapper.setDatasource(datasource);
+    public static void setDataSource(QueryWrapper queryWrapper, String datasource) {
+        queryWrapper.setDataSource(datasource);
     }
 
     public static List<QueryColumn> getSelectColumns(QueryWrapper queryWrapper) {

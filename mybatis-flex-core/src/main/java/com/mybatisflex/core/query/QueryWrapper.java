@@ -339,7 +339,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper datasource(String datasource) {
-        setDatasource(datasource);
+        setDataSource(datasource);
         return this;
     }
 

@@ -129,7 +129,7 @@ public class TransactionalManager {
         boolean rollbacked = false;
         try {
             success = supplier.get();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             rollbacked = true;
             rollback(xid);
             throw new TransactionException(e.getMessage(), e);

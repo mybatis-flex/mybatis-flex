@@ -66,7 +66,7 @@ class HelloWorld {
         dataSource.setPassword("password");
 
         MybatisFlexBootstrap.getInstance()
-                .setDatasource(dataSource)
+                .setDataSource(dataSource)
                 .addMapper(AccountMapper.class)
                 .start();
 
