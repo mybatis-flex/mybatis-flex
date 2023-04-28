@@ -16,13 +16,15 @@
 package com.mybatisflex.core;
 
 import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.dialect.DbType;
-import com.mybatisflex.annotation.KeyType;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -157,9 +159,43 @@ public class FlexGlobalConfig {
         return entitySetListeners.get(entityClass);
     }
 
+    /**
+     * 获取支持该 {@code entityClass} 的set监听器
+     * <p>当registerClass是entityClass的本身或其超类时，则视为支持</p>
+     *
+     * @param entityClass 实体class
+     * @return UpdateListener
+     */
+    public List<SetListener> getSupportedSetListener(Class<?> entityClass) {
+        List<SetListener> list = new ArrayList<>();
+        for (Class<?> registerClass : entitySetListeners.keySet()) {
+            if (registerClass.isAssignableFrom(entityClass)) {
+                list.add(entitySetListeners.get(registerClass));
+            }
+        }
+        return list;
+    }
+
 
     public UpdateListener getUpdateListener(Class<?> entityClass) {
         return entityUpdateListeners.get(entityClass);
+    }
+
+    /**
+     * 获取支持该 {@code entityClass} 的update监听器
+     * <p>当registerClass是entityClass的本身或其超类时，则视为支持</p>
+     *
+     * @param entityClass 实体class
+     * @return UpdateListener
+     */
+    public List<UpdateListener> getSupportedUpdateListener(Class<?> entityClass) {
+        List<UpdateListener> list = new ArrayList<>();
+        for (Class<?> registerClass : entityUpdateListeners.keySet()) {
+            if (registerClass.isAssignableFrom(entityClass)) {
+                list.add(entityUpdateListeners.get(registerClass));
+            }
+        }
+        return list;
     }
 
 
@@ -167,6 +203,22 @@ public class FlexGlobalConfig {
         return entityInsertListeners.get(entityClass);
     }
 
+    /**
+     * 获取支持该 {@code entityClass} 的insert监听器
+     * <p>当registerClass是entityClass的本身或其超类时，则视为支持</p>
+     *
+     * @param entityClass 实体class
+     * @return InsertListener
+     */
+    public List<InsertListener> getSupportedInsertListener(Class<?> entityClass) {
+        List<InsertListener> list = new ArrayList<>();
+        for (Class<?> registerClass : entityInsertListeners.keySet()) {
+            if (registerClass.isAssignableFrom(entityClass)) {
+                list.add(entityInsertListeners.get(registerClass));
+            }
+        }
+        return list;
+    }
 
     public Object getNormalValueOfLogicDelete() {
         return normalValueOfLogicDelete;

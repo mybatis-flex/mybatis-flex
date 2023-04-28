@@ -15,6 +15,6 @@
  */
 package com.mybatisflex.annotation;
 
-public interface InsertListener {
+public interface InsertListener extends Listener{
     void onInsert(Object entity);
 }

@@ -86,9 +86,9 @@ public class TableInfo {
     private Map<String, ColumnInfo> columnInfoMapping = new HashMap<>();
     private Map<String, String> propertyColumnMapping = new HashMap<>();
 
-    private InsertListener onInsertListener;
-    private UpdateListener onUpdateListener;
-    private SetListener onSetListener;
+    private List<InsertListener> onInsertListener;
+    private List<UpdateListener> onUpdateListener;
+    private List<SetListener> onSetListener;
 
 
     private final ReflectorFactory reflectorFactory = new BaseReflectorFactory() {
@@ -233,27 +233,27 @@ public class TableInfo {
     }
 
 
-    public InsertListener getOnInsertListener() {
+    public List<InsertListener> getOnInsertListener() {
         return onInsertListener;
     }
 
-    public void setOnInsertListener(InsertListener onInsertListener) {
+    public void setOnInsertListener(List<InsertListener> onInsertListener) {
         this.onInsertListener = onInsertListener;
     }
 
-    public UpdateListener getOnUpdateListener() {
+    public List<UpdateListener> getOnUpdateListener() {
         return onUpdateListener;
     }
 
-    public void setOnUpdateListener(UpdateListener onUpdateListener) {
+    public void setOnUpdateListener(List<UpdateListener> onUpdateListener) {
         this.onUpdateListener = onUpdateListener;
     }
 
-    public SetListener getOnSetListener() {
+    public List<SetListener> getOnSetListener() {
         return onSetListener;
     }
 
-    public void setOnSetListener(SetListener onSetListener) {
+    public void setOnSetListener(List<SetListener> onSetListener) {
         this.onSetListener = onSetListener;
     }
 
@@ -675,7 +675,7 @@ public class TableInfo {
                         Object rowValue = row.get(rowKey);
                         Object value = ConvertUtil.convert(rowValue, metaObject.getSetterType(columnInfo.property));
                         if (onSetListener != null) {
-                            value = onSetListener.onSet(instance, columnInfo.property, value);
+                            value = invokeOnSetListener(instance, columnInfo.getProperty(), value);
                         }
                         metaObject.setValue(columnInfo.property, value);
                     }
@@ -689,7 +689,7 @@ public class TableInfo {
                             Object rowValue = row.get(rowKey);
                             Object value = ConvertUtil.convert(rowValue, metaObject.getSetterType(columnInfo.property));
                             if (onSetListener != null) {
-                                value = onSetListener.onSet(instance, columnInfo.property, value);
+                                value = invokeOnSetListener(instance, columnInfo.getProperty(), value);
                             }
                             metaObject.setValue(columnInfo.property, value);
                             fillValue = true;
@@ -773,63 +773,49 @@ public class TableInfo {
 
 
     public void invokeOnInsertListener(Object entity) {
-        if (onInsertListener != null) {
-            onInsertListener.onInsert(entity);
-            return;
+        List<InsertListener> list = onInsertListener;
+        if (list == null) {
+            list = new ArrayList<>();
         }
-
-
-        InsertListener globalInsertListener = null;
-        Class<?> registerClass = entityClass;
-
-        while (globalInsertListener == null && registerClass != Object.class && registerClass != null) {
-            globalInsertListener = FlexGlobalConfig.getDefaultConfig().getInsertListener(registerClass);
-            registerClass = registerClass.getSuperclass();
+        // 全局监听器
+        List<InsertListener> globalListeners = FlexGlobalConfig.getDefaultConfig().getSupportedInsertListener(entityClass);
+        if (globalListeners != null) {
+            list.addAll(globalListeners);
         }
-
-        if (globalInsertListener != null) {
-            globalInsertListener.onInsert(entity);
-        }
+        Collections.sort(list);
+        list.forEach(insertListener -> insertListener.onInsert(entity));
     }
 
 
     public void invokeOnUpdateListener(Object entity) {
-        if (onUpdateListener != null) {
-            onUpdateListener.onUpdate(entity);
-            return;
+        List<UpdateListener> list = onUpdateListener;
+        if (list == null) {
+            list = new ArrayList<>();
         }
-
-        UpdateListener globalUpdateListener = null;
-        Class<?> registerClass = entityClass;
-
-        while (globalUpdateListener == null && registerClass != Object.class && registerClass != null) {
-            globalUpdateListener = FlexGlobalConfig.getDefaultConfig().getUpdateListener(registerClass);
-            registerClass = registerClass.getSuperclass();
+        // 全局监听器
+        List<UpdateListener> globalListeners = FlexGlobalConfig.getDefaultConfig().getSupportedUpdateListener(entityClass);
+        if (globalListeners != null) {
+            list.addAll(globalListeners);
         }
-
-        if (globalUpdateListener != null) {
-            globalUpdateListener.onUpdate(entity);
-        }
+        Collections.sort(list);
+        list.forEach(insertListener -> insertListener.onUpdate(entity));
     }
 
 
     public Object invokeOnSetListener(Object entity, String property, Object value) {
-        if (onSetListener != null) {
-            return onSetListener.onSet(entity, property, value);
+        List<SetListener> list = onSetListener;
+        if (list == null) {
+            list = new ArrayList<>();
         }
-
-        SetListener globalSetListener = null;
-        Class<?> registerClass = entityClass;
-
-        while (globalSetListener == null && registerClass != Object.class && registerClass != null) {
-            globalSetListener = FlexGlobalConfig.getDefaultConfig().getSetListener(registerClass);
-            registerClass = registerClass.getSuperclass();
+        // 全局监听器
+        List<SetListener> globalListeners = FlexGlobalConfig.getDefaultConfig().getSupportedSetListener(entityClass);
+        if (globalListeners != null) {
+            list.addAll(globalListeners);
         }
-
-        if (globalSetListener != null) {
-            return globalSetListener.onSet(entity, property, value);
+        Collections.sort(list);
+        for (SetListener setListener : list) {
+            value = setListener.onSet(entity, property, value);
         }
-
         return value;
     }
 }
