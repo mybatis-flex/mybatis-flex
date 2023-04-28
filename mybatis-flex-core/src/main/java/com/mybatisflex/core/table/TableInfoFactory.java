@@ -126,7 +126,7 @@ public class TableInfoFactory {
                         .filter(listener -> listener != NoneListener.class)
                         .map(ClassUtil::newInstance)
                         .collect(Collectors.toList());
-                tableInfo.setOnInsertListener(insertListeners);
+                tableInfo.setOnInsertListeners(insertListeners);
             }
 
             if (table.onUpdate().length > 0) {
@@ -134,7 +134,7 @@ public class TableInfoFactory {
                         .filter(listener -> listener != NoneListener.class)
                         .map(ClassUtil::newInstance)
                         .collect(Collectors.toList());
-                tableInfo.setOnUpdateListener(updateListeners);
+                tableInfo.setOnUpdateListeners(updateListeners);
             }
 
             if (table.onSet().length > 0) {
@@ -142,7 +142,7 @@ public class TableInfoFactory {
                         .filter(listener -> listener != NoneListener.class)
                         .map(ClassUtil::newInstance)
                         .collect(Collectors.toList());
-                tableInfo.setOnSetListener(setListeners);
+                tableInfo.setOnSetListeners(setListeners);
             }
 
             if (StringUtil.isNotBlank(table.dataSource())) {
