@@ -17,16 +17,15 @@ package com.mybatisflex.core.dialect.impl;
 
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcesser;
+import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class OracleDialect extends CommonsDialectImpl {
 
     private boolean caseSensitive;
-    private final List<String> keywords = Arrays.asList(
+    private final Set<String> keywords = CollectionUtil.newHashSet(
             "ACCESS", "ADD", "ALL", "ALTER",
             "AND", "ANY", "ARRAYLEN", "AS",
             "ASC", "AUDIT", "BETWEEN", "BY",

@@ -39,6 +39,8 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected Map<String, Object> context;
 
+//    protected boolean ignoreBlankStrings = false;
+
 
     protected T addSelectColumn(QueryColumn queryColumn) {
         if (selectColumns == null) {
