@@ -19,34 +19,63 @@ import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcesser;
 import com.mybatisflex.core.util.StringUtil;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
 public class OracleDialect extends CommonsDialectImpl {
 
-    private boolean toUpperCase = true;
-
-    public OracleDialect() {
-    }
+    private boolean caseSensitive;
+    private final List<String> keywords = Arrays.asList(
+            "ACCESS", "ADD", "ALL", "ALTER",
+            "AND", "ANY", "ARRAYLEN", "AS",
+            "ASC", "AUDIT", "BETWEEN", "BY",
+            "CHAR", "CHECK", "CLUSTER", "COLUMN",
+            "COMMENT", "COMPRESS", "CONNECT", "CREATE",
+            "CURRENT", "DATE", "DECIMAL", "DEFAULT",
+            "DELETE", "DESC", "DISTINCT", "DROP",
+            "ELSE", "EXCLUSIVE", "EXISTS", "FILE",
+            "FLOAT", "FOR", "FROM", "GRANT",
+            "GROUP", "HAVING", "IDENTIFIED", "IMMEDIATE",
+            "IN", "INCREMENT", "INDEX", "INITIAL",
+            "INSERT", "INTEGER", "INTERSECT", "INTO",
+            "IS", "LEVEL", "LIKE", "LOCK",
+            "LONG", "MAXEXTENTS", "MINUS", "MODE",
+            "MODIFY", "NOAUDIT", "NOCOMPRESS", "NOT",
+            "NOTFOUND", "NOWAIT", "NULL", "NUMBER",
+            "OF", "OFFLINE", "ON", "ONLINE",
+            "OPTION", "OR", "ORDER", "PCTFREE",
+            "PRIOR", "PRIVILEGES", "PUBLIC", "RAW",
+            "RENAME", "RESOURCE", "REVOKE", "ROW",
+            "ROWID", "ROWLABEL", "ROWNUM", "ROWS",
+            "START", "SELECT", "SESSION", "SET",
+            "SHARE", "SIZE", "SMALLINT", "SQLBUF",
+            "SUCCESSFUL", "SYNONYM", "SYSDATE", "TABLE",
+            "THEN", "TO", "TRIGGER", "UID",
+            "UNION", "UNIQUE", "UPDATE", "USER",
+            "VALIDATE", "VALUES", "VARCHAR", "VARCHAR2"
+    );
 
     public OracleDialect(LimitOffsetProcesser limitOffsetProcesser) {
-        super(limitOffsetProcesser);
+        super(KeywordWrap.NONE, limitOffsetProcesser);
     }
 
-    public OracleDialect(KeywordWrap keywordWrap, LimitOffsetProcesser limitOffsetProcesser) {
-        super(keywordWrap, limitOffsetProcesser);
+    public boolean isCaseSensitive() {
+        return caseSensitive;
     }
 
-    public boolean isToUpperCase() {
-        return toUpperCase;
-    }
-
-    public void setToUpperCase(boolean toUpperCase) {
-        this.toUpperCase = toUpperCase;
+    public void setCaseSensitive(boolean caseSensitive) {
+        this.caseSensitive = caseSensitive;
     }
 
     @Override
     public String wrap(String keyword) {
-        if (StringUtil.isNotBlank(keyword)) {
-            return super.wrap(toUpperCase ? keyword.toUpperCase() : keyword);
+        if (StringUtil.isBlank(keyword)) {
+            return "";
         }
-        return "";
+        if (caseSensitive || keywords.contains(keyword.toUpperCase(Locale.ENGLISH))) {
+            return "\"" + keyword + "\"";
+        }
+        return keyword;
     }
 }

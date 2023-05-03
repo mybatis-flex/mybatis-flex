@@ -106,7 +106,7 @@ public class DialectFactory {
             case CSIIDB:
                 return new CommonsDialectImpl(KeywordWrap.BACKQUOTE, LimitOffsetProcesser.MYSQL);
             case ORACLE:
-                return new OracleDialect(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.ORACLE);
+                return new OracleDialect(LimitOffsetProcesser.ORACLE);
             case DM:
             case GAUSS:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.ORACLE);
@@ -125,7 +125,7 @@ public class DialectFactory {
             case UXDB:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.POSTGRESQL);
             case ORACLE_12C:
-                return new OracleDialect(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.DERBY);
+                return new OracleDialect(LimitOffsetProcesser.DERBY);
             case FIREBIRD:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.DERBY);
             case SQLSERVER:
