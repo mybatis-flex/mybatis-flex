@@ -94,16 +94,17 @@ public class TableInfoFactory {
 
 
     private static Class<?> getEntityClass(Class<?> mapperClass) {
+        if (mapperClass == null) {
+            throw new NullPointerException("mapperClass can not be null.");
+        }
         Type[] genericInterfaces = mapperClass.getGenericInterfaces();
         if (genericInterfaces.length == 1) {
             Type type = genericInterfaces[0];
             if (type instanceof ParameterizedType) {
                 return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
-            } else {
-                return getEntityClass((Class<?>) type);
             }
         }
-        return null;
+        return getEntityClass(mapperClass.getSuperclass());
     }
 
 
