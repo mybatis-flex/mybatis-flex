@@ -759,13 +759,11 @@ public class TableInfo {
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
         Object columnValue = getPropertyValue(metaObject, columnInfoMapping.get(logicDeleteColumn).property);
         if (columnValue == null) {
-            String name = columnInfoMapping.get(logicDeleteColumn).property;
-            Class<?> clazz = metaObject.getSetterType(name);
-            if (Number.class.isAssignableFrom(clazz)) {
-                metaObject.setValue(name, ConvertUtil.convert(0L, clazz));
-            } else if (clazz == Boolean.class) {
-                metaObject.setValue(name, false);
-            }
+            String property = columnInfoMapping.get(logicDeleteColumn).property;
+            Class<?> setterType = metaObject.getSetterType(property);
+
+            Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
+            metaObject.setValue(property, ConvertUtil.convert(normalValueOfLogicDelete, setterType));
         }
     }
 
@@ -784,7 +782,6 @@ public class TableInfo {
     }
 
 
-
     private static Map<Class<?>, List<UpdateListener>> updateListenerCache = new ConcurrentHashMap<>();
 
     public void invokeOnUpdateListener(Object entity) {
@@ -797,7 +794,6 @@ public class TableInfo {
         });
         listeners.forEach(insertListener -> insertListener.onUpdate(entity));
     }
-
 
 
     private static Map<Class<?>, List<SetListener>> setListenerCache = new ConcurrentHashMap<>();
