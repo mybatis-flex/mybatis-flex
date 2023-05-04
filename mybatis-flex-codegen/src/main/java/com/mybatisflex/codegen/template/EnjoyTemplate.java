@@ -48,6 +48,18 @@ public class EnjoyTemplate implements ITemplate {
         System.out.println("Entity has been generated: " + entityJavaFile.getAbsolutePath());
     }
 
+    @Override
+    public void generateTableDef(GlobalConfig globalConfig, Table table, File entityJavaFile) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        params.put("globalConfig", globalConfig);
+        params.put("table", table);
+
+
+        FileOutputStream fileOutputStream = new FileOutputStream(entityJavaFile);
+        engine.getTemplate("/templates/enjoy/tableDef.tpl").render(params, fileOutputStream);
+        System.out.println("TableDef has been generated: " + entityJavaFile.getAbsolutePath());
+    }
+
 
     @Override
     public void generateMapper(GlobalConfig globalConfig, Table table, File mapperJavaFile) throws Exception {

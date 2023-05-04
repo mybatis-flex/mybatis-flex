@@ -188,6 +188,29 @@ public class Table {
                 + globalConfig.getEntityClassSuffix();
     }
 
+    /**
+     * 构建 tableDef 的 Class 名称
+     *
+     * @return className
+     */
+    public String buildTableDefClassName() {
+        String tableDefJavaFileName = name;
+        String tablePrefix = globalConfig.getTablePrefix();
+        if (tablePrefix != null) {
+            String[] tablePrefixes = tablePrefix.split(",");
+            for (String prefix : tablePrefixes) {
+                String trimPrefix = prefix.trim();
+                if (trimPrefix.length() > 0 && name.startsWith(trimPrefix)) {
+                    tableDefJavaFileName = name.substring(trimPrefix.length());
+                    break;
+                }
+            }
+        }
+        return globalConfig.getTableDefClassPrefix()
+                + StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(tableDefJavaFileName))
+                + globalConfig.getTableDefClassSuffix();
+    }
+
     public String buildExtends() {
         if (globalConfig.getEntitySupperClass() != null) {
             return " extends " + globalConfig.getEntitySupperClass().getSimpleName();

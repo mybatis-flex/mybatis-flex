@@ -24,5 +24,7 @@ public interface ITemplate {
 
     void generateEntity(GlobalConfig globalConfig, Table table, File entityJavaFile) throws Exception ;
 
+    void generateTableDef(GlobalConfig globalConfig, Table table, File tableDefJavaFile) throws Exception ;
+
     void generateMapper(GlobalConfig globalConfig, Table table, File mapperJavaFile) throws Exception ;
 }
