@@ -24,7 +24,7 @@
 
 ## 开始
 
-- [快速开始](https://mybatis-flex.com/zh/getting-started.html)
+- [快速开始](https://mybatis-flex.com/zh/intro/getting-started.html)
 - 示例 1：[Mybatis-Flex 原生（非 Spring）](./mybatis-flex-test/mybatis-flex-native-test)
 - 示例 2：[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
 - 示例 3：[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
