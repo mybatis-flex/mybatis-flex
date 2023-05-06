@@ -1,3 +1,22 @@
+mybatis-flex v1.2.1 20230506:
+新增：代码生成器添加 tableDef 的生成功能；感谢 @笨小孩
+优化：Mapper 配置所对应的 XML 文件 增加默认值；感谢 @lhzsdnu
+优化：拆分APT模块, 优化APT配置说明；感谢 @snow
+优化：添加  ClassUtil.isArray  方法用于重构
+优化：重命名 UpdateEntity.wrap 为 UpdateEntity.of #I6Z7HK
+优化：重构 OracleDialect 默认不加双引号；感谢 @MyronLi
+优化：重构代码生成器模块，新增 IGenerator 接口
+修复：Oracle 下查询报错的问题 #I6Z7K4
+修复：insertSelective 报错的问题 #12
+修复：全局监听器父类注册是接口时无法触发监听器 #17
+修复：因 @NotBlank(message = "xxx") 到 QueryColumn 无法生成的问题 #I6ZPD1
+修复：不支持自己扩展 mapper 的问题 #I6ZTS3
+修复：Db + Row 工具的使用枚举映射异常问题 #I6ZW2G
+修复：批量新增逻辑删除字段有问题 #I6ZX5N
+修复：left join (select ...) 子查询参数解析错误 #I709S1
+
+
+
 mybatis-flex v1.2.0 20230426:
 新增：FlexGlobalConfig.setDefaultConfig 方法，使其扩展更加灵活，用于适配 solon
 新增：BaseMapper.insertBatch(entities,size) 方法，自定义分批插入；感谢 @庄佳彬
