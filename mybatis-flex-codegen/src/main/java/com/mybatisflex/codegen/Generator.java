@@ -73,6 +73,16 @@ public class Generator {
 
                 templateEngine.generateEntity(globalConfig, table, entityJavaFile);
 
+                String tableDefPackagePath = globalConfig.getTableDefPackage().replace(".", "/");
+                File tableDefJavaFile = new File(globalConfig.getSourceDir(), tableDefPackagePath + "/" +
+                        table.buildTableDefClassName() + ".java");
+                if (!tableDefJavaFile.getParentFile().exists()) {
+                    if (!tableDefJavaFile.getParentFile().mkdirs()) {
+                        throw new IllegalStateException("Can not mkdirs by dir: " + tableDefJavaFile.getParentFile());
+                    }
+                }
+                templateEngine.generateTableDef(globalConfig, table, tableDefJavaFile);
+
 
                 if (globalConfig.isMapperGenerateEnable()) {
                     String mapperPackagePath = globalConfig.getMapperPackage().replace(".", "/");

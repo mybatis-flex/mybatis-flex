@@ -49,6 +49,15 @@ public class GlobalConfig {
     //entity 是否使用 Lombok
     private boolean entityWithLombok = false;
 
+    //tableDef 的包名
+    private String tableDefPackage;
+
+    //tableDef 类的前缀
+    private String tableDefClassPrefix;
+
+    //tableDef 类的后缀
+    private String tableDefClassSuffix;
+
     //是否生成 mapper 类
     private boolean mapperGenerateEnable = false;
 
@@ -161,6 +170,30 @@ public class GlobalConfig {
 
     public void setEntityWithLombok(boolean entityWithLombok) {
         this.entityWithLombok = entityWithLombok;
+    }
+
+    public String getTableDefPackage() {
+        return tableDefPackage;
+    }
+
+    public void setTableDefPackage(String tableDefPackage) {
+        this.tableDefPackage = tableDefPackage;
+    }
+
+    public String getTableDefClassPrefix() {
+        return tableDefClassPrefix;
+    }
+
+    public void setTableDefClassPrefix(String tableDefClassPrefix) {
+        this.tableDefClassPrefix = tableDefClassPrefix;
+    }
+
+    public String getTableDefClassSuffix() {
+        return tableDefClassSuffix;
+    }
+
+    public void setTableDefClassSuffix(String tableDefClassSuffix) {
+        this.tableDefClassSuffix = tableDefClassSuffix;
     }
 
     public boolean isMapperGenerateEnable() {
