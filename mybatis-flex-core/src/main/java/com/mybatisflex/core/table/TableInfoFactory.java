@@ -101,7 +101,8 @@ public class TableInfoFactory {
         if (genericInterfaces.length == 1) {
             Type type = genericInterfaces[0];
             if (type instanceof ParameterizedType) {
-                return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
+                Type actualTypeArgument = ((ParameterizedType) type).getActualTypeArguments()[0];
+                return actualTypeArgument instanceof Class ? (Class<?>) actualTypeArgument : null;
             } else if (type instanceof Class) {
                 return getEntityClass((Class<?>) type);
             }
