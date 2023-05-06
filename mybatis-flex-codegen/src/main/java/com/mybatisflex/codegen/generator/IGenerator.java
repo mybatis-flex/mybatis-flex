@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.codegen.template;
+package com.mybatisflex.codegen.generator;
 
-import java.io.File;
-import java.util.Map;
+import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.entity.Table;
 
-public interface ITemplate {
-
-    void generate(Map<String, Object> params, String templateFilePath, File generateFile);
-
+public interface IGenerator {
+     void generate(Table table, GlobalConfig globalConfig);
 }

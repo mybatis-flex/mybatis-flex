@@ -49,6 +49,8 @@ public class GlobalConfig {
     //entity 是否使用 Lombok
     private boolean entityWithLombok = false;
 
+    private boolean tableDefGenerateEnable = false;
+
     //tableDef 的包名
     private String tableDefPackage;
 
@@ -112,7 +114,7 @@ public class GlobalConfig {
     }
 
     public void setSourceDir(String sourceDir) {
-        this.sourceDir = sourceDir;
+        this.sourceDir = StringUtil.trimOrNull(sourceDir);
     }
 
     public String getEntityPackage() {
@@ -123,7 +125,7 @@ public class GlobalConfig {
     }
 
     public void setEntityPackage(String entityPackage) {
-        this.entityPackage = entityPackage.trim();
+        this.entityPackage = StringUtil.trimOrNull(entityPackage);
     }
 
     public String getEntityClassPrefix() {
@@ -134,7 +136,7 @@ public class GlobalConfig {
     }
 
     public void setEntityClassPrefix(String entityClassPrefix) {
-        this.entityClassPrefix = entityClassPrefix;
+        this.entityClassPrefix = StringUtil.trimOrNull(entityClassPrefix);
     }
 
     public String getEntityClassSuffix() {
@@ -145,7 +147,7 @@ public class GlobalConfig {
     }
 
     public void setEntityClassSuffix(String entityClassSuffix) {
-        this.entityClassSuffix = entityClassSuffix;
+        this.entityClassSuffix = StringUtil.trimOrNull(entityClassSuffix);
     }
 
     public Class<?> getEntitySupperClass() {
@@ -172,12 +174,23 @@ public class GlobalConfig {
         this.entityWithLombok = entityWithLombok;
     }
 
+    public boolean isTableDefGenerateEnable() {
+        return tableDefGenerateEnable;
+    }
+
+    public void setTableDefGenerateEnable(boolean tableDefGenerateEnable) {
+        this.tableDefGenerateEnable = tableDefGenerateEnable;
+    }
+
     public String getTableDefPackage() {
+        if (StringUtil.isBlank(tableDefPackage) && StringUtil.isNotBlank(entityPackage)) {
+            return entityPackage + ".tables";
+        }
         return tableDefPackage;
     }
 
     public void setTableDefPackage(String tableDefPackage) {
-        this.tableDefPackage = tableDefPackage;
+        this.tableDefPackage = StringUtil.trimOrNull(tableDefPackage);
     }
 
     public String getTableDefClassPrefix() {
@@ -185,7 +198,7 @@ public class GlobalConfig {
     }
 
     public void setTableDefClassPrefix(String tableDefClassPrefix) {
-        this.tableDefClassPrefix = tableDefClassPrefix;
+        this.tableDefClassPrefix = StringUtil.trimOrNull(tableDefClassPrefix);
     }
 
     public String getTableDefClassSuffix() {
@@ -193,7 +206,7 @@ public class GlobalConfig {
     }
 
     public void setTableDefClassSuffix(String tableDefClassSuffix) {
-        this.tableDefClassSuffix = tableDefClassSuffix;
+        this.tableDefClassSuffix = StringUtil.trimOrNull(tableDefClassSuffix);
     }
 
     public boolean isMapperGenerateEnable() {
@@ -220,7 +233,7 @@ public class GlobalConfig {
     }
 
     public void setMapperClassPrefix(String mapperClassPrefix) {
-        this.mapperClassPrefix = mapperClassPrefix;
+        this.mapperClassPrefix = StringUtil.trimOrNull(mapperClassPrefix);
     }
 
     public String getMapperClassSuffix() {
@@ -228,7 +241,7 @@ public class GlobalConfig {
     }
 
     public void setMapperClassSuffix(String mapperClassSuffix) {
-        this.mapperClassSuffix = mapperClassSuffix;
+        this.mapperClassSuffix = StringUtil.trimOrNull(mapperClassSuffix);
     }
 
     public String getMapperPackage() {
@@ -239,7 +252,7 @@ public class GlobalConfig {
     }
 
     public void setMapperPackage(String mapperPackage) {
-        this.mapperPackage = mapperPackage;
+        this.mapperPackage = StringUtil.trimOrNull(mapperPackage);
     }
 
     public Class<?> getMapperSupperClass() {
@@ -255,7 +268,7 @@ public class GlobalConfig {
     }
 
     public void setTablePrefix(String tablePrefix) {
-        this.tablePrefix = tablePrefix;
+        this.tablePrefix = StringUtil.trimOrNull(tablePrefix);
     }
 
     public String getLogicDeleteColumn() {
@@ -263,7 +276,7 @@ public class GlobalConfig {
     }
 
     public void setLogicDeleteColumn(String logicDeleteColumn) {
-        this.logicDeleteColumn = logicDeleteColumn;
+        this.logicDeleteColumn = StringUtil.trimOrNull(logicDeleteColumn);
     }
 
     public String getVersionColumn() {
@@ -271,7 +284,7 @@ public class GlobalConfig {
     }
 
     public void setVersionColumn(String versionColumn) {
-        this.versionColumn = versionColumn;
+        this.versionColumn = StringUtil.trimOrNull(versionColumn);
     }
 
     public Map<String, TableConfig> getTableConfigMap() {

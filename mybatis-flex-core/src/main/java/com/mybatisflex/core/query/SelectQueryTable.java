@@ -41,6 +41,11 @@ public class SelectQueryTable extends QueryTable {
     }
 
     @Override
+    Object[] getValueArray() {
+        return queryWrapper.getValueArray();
+    }
+
+    @Override
     public String toSql(IDialect dialect) {
         String sql = dialect.buildSelectSql(queryWrapper);
         if (StringUtil.isNotBlank(alias)) {

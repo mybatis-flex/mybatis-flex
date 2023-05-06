@@ -18,15 +18,16 @@ package com.mybatisflex.codegen;
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.dialect.IDialect;
 import com.mybatisflex.codegen.entity.Table;
-import com.mybatisflex.codegen.template.ITemplate;
+import com.mybatisflex.codegen.generator.GeneratorFactory;
+import com.mybatisflex.codegen.generator.IGenerator;
 
 import javax.sql.DataSource;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Generator {
@@ -59,52 +60,12 @@ public class Generator {
 
             List<Table> tables = buildTables();
 
-            ITemplate templateEngine = globalConfig.getTemplateEngine();
             for (Table table : tables) {
-
-                String entityPackagePath = globalConfig.getEntityPackage().replace(".", "/");
-                File entityJavaFile = new File(globalConfig.getSourceDir(), entityPackagePath + "/" +
-                        table.buildEntityClassName() + ".java");
-                if (!entityJavaFile.getParentFile().exists()) {
-                    if (!entityJavaFile.getParentFile().mkdirs()) {
-                        throw new IllegalStateException("Can not mkdirs by dir: " + entityJavaFile.getParentFile());
-                    }
-                }
-
-                templateEngine.generateEntity(globalConfig, table, entityJavaFile);
-
-                String tableDefPackagePath = globalConfig.getTableDefPackage().replace(".", "/");
-                File tableDefJavaFile = new File(globalConfig.getSourceDir(), tableDefPackagePath + "/" +
-                        table.buildTableDefClassName() + ".java");
-                if (!tableDefJavaFile.getParentFile().exists()) {
-                    if (!tableDefJavaFile.getParentFile().mkdirs()) {
-                        throw new IllegalStateException("Can not mkdirs by dir: " + tableDefJavaFile.getParentFile());
-                    }
-                }
-                templateEngine.generateTableDef(globalConfig, table, tableDefJavaFile);
-
-
-                if (globalConfig.isMapperGenerateEnable()) {
-                    String mapperPackagePath = globalConfig.getMapperPackage().replace(".", "/");
-
-
-                    File mapperJavaFile = new File(globalConfig.getSourceDir(), mapperPackagePath + "/" +
-                            table.buildMapperClassName() + ".java");
-
-                    if (!mapperJavaFile.getParentFile().exists()) {
-                        if (!mapperJavaFile.getParentFile().mkdirs()) {
-                            throw new IllegalStateException("Can not mkdirs by dir: " + mapperJavaFile.getParentFile());
-                        }
-                    }
-
-                    if (mapperJavaFile.exists() && !globalConfig.isMapperOverwriteEnable()) {
-                        //ignore
-                    } else {
-                        templateEngine.generateMapper(globalConfig, table, mapperJavaFile);
-                    }
+                Collection<IGenerator> generators = GeneratorFactory.getGenerators();
+                for (IGenerator generator : generators) {
+                    generator.generate(table, globalConfig);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

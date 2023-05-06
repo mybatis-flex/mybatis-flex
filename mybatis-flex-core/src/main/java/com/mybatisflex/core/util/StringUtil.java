@@ -190,6 +190,11 @@ public class StringUtil {
     }
 
 
+    public static String trimOrNull(String string) {
+        return string != null ? string.trim() : null;
+    }
+
+
     /**
      * 正则匹配
      *
