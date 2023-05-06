@@ -94,8 +94,8 @@ public class TableInfoFactory {
 
 
     private static Class<?> getEntityClass(Class<?> mapperClass) {
-        if (mapperClass == null) {
-            throw new NullPointerException("mapperClass can not be null.");
+        if (mapperClass == null || mapperClass == Object.class) {
+            return null;
         }
         Type[] genericInterfaces = mapperClass.getGenericInterfaces();
         if (genericInterfaces.length == 1) {
