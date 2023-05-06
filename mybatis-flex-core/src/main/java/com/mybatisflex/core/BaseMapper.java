@@ -177,7 +177,7 @@ public interface BaseMapper<T> {
 
 
     /**
-     * 根据主键来更新数据，若数据为 null，也会更新到数据库
+     * 根据主键来更新数据，若 entity 属性数据为 null，该属性不会新到数据库
      *
      * @param entity 数据内容，必须包含有主键
      * @return 返回影响的行数
