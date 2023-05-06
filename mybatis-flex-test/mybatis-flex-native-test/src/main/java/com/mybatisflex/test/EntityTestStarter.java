@@ -27,7 +27,6 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static com.mybatisflex.test.table.Tables.ACCOUNT;
-import static com.mybatisflex.test.table.Tables.ARTICLE;
 
 public class EntityTestStarter {
 
@@ -41,6 +40,7 @@ public class EntityTestStarter {
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
                 .setDataSource(dataSource)
                 .addMapper(AccountMapper.class)
+                .addMapper(MyAccountMapper.class)
                 .start();
 
         //开启审计功能
@@ -52,6 +52,9 @@ public class EntityTestStarter {
 
 
         AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
+        MyAccountMapper myAccountMapper = bootstrap.getMapper(MyAccountMapper.class);
+
+        List<Account> accounts1 = myAccountMapper.selectAll();
 
 //        QueryWrapper wrapper = QueryWrapper.create().select().from(ACCOUNT)
 //                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
@@ -62,8 +65,8 @@ public class EntityTestStarter {
 
 
         QueryWrapper wrapper = QueryWrapper.create().select().from(ACCOUNT)
-                .leftJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID).and(ACCOUNT.ID.ge(100)))
-                .and(ACCOUNT.ID.ge(100));
+//                .leftJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID).and(ACCOUNT.ID.ge(100)))
+                .and(ACCOUNT.ID.ge(100).when(false));
 
         List<Account> accounts = accountMapper.selectListByQuery(wrapper);
         System.out.println(accounts);
