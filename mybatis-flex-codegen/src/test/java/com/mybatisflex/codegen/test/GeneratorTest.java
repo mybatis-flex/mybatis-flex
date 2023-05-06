@@ -20,15 +20,16 @@ import com.mybatisflex.codegen.config.ColumnConfig;
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.config.TableConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Test;
 
 public class GeneratorTest {
 
 
-//    @Test
+   @Test
     public void testGenerator() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/jbootadmin?characterEncoding=utf-8");
+        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/hh-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true");
         dataSource.setUsername("root");
         dataSource.setPassword("123456");
 
@@ -49,6 +50,11 @@ public class GeneratorTest {
         globalConfig.setEntityPackage("com.test.entity");
         globalConfig.setEntityClassPrefix("My");
         globalConfig.setEntityClassSuffix("Entity");
+
+        //设置 entity 的包名
+        globalConfig.setTableDefPackage("com.test.entity.tables");
+        globalConfig.setTableDefClassPrefix("My");
+        globalConfig.setTableDefClassSuffix("TableDef");
 
         //是否生成 mapper 类，默认为 false
         globalConfig.setMapperGenerateEnable(true);

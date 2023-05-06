@@ -20,7 +20,13 @@ import com.mybatisflex.codegen.config.TableConfig;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Comparator;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Table {
@@ -186,6 +192,29 @@ public class Table {
         return globalConfig.getEntityClassPrefix()
                 + StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(entityJavaFileName))
                 + globalConfig.getEntityClassSuffix();
+    }
+
+    /**
+     * 构建 tableDef 的 Class 名称
+     *
+     * @return className
+     */
+    public String buildTableDefClassName() {
+        String tableDefJavaFileName = name;
+        String tablePrefix = globalConfig.getTablePrefix();
+        if (tablePrefix != null) {
+            String[] tablePrefixes = tablePrefix.split(",");
+            for (String prefix : tablePrefixes) {
+                String trimPrefix = prefix.trim();
+                if (trimPrefix.length() > 0 && name.startsWith(trimPrefix)) {
+                    tableDefJavaFileName = name.substring(trimPrefix.length());
+                    break;
+                }
+            }
+        }
+        return globalConfig.getTableDefClassPrefix()
+                + StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(tableDefJavaFileName))
+                + globalConfig.getTableDefClassSuffix();
     }
 
     public String buildExtends() {
