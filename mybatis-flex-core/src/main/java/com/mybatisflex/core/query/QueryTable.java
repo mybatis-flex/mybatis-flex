@@ -58,6 +58,9 @@ public class QueryTable implements Serializable {
         return table != null && Objects.equals(name, table.name);
     }
 
+    Object[] getValueArray() {
+        return WrapperUtil.NULL_PARA_ARRAY;
+    }
 
     public String toSql(IDialect dialect) {
         return dialect.wrap(name) + WrapperUtil.buildAsAlias(dialect.wrap(alias));

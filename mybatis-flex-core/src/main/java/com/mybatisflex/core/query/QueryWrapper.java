@@ -348,10 +348,33 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * 在构建 sql 的时候，需要保证 where 在 having 的前面
      */
     Object[] getValueArray() {
+
+        //select 子查询的参数：select * from (select ....)
+        List<Object> tableValues = null;
+        List<QueryTable> queryTables = getQueryTables();
+        for (QueryTable queryTable : queryTables) {
+            Object[] tableValueArray = queryTable.getValueArray();
+            if (tableValueArray.length > 0) {
+                if (tableValues == null) {
+                    tableValues = new ArrayList<>();
+                }
+                tableValues.addAll(Arrays.asList(tableValueArray));
+            }
+        }
+
+        //join 子查询的参数：left join (select ...)
         List<Object> joinValues = null;
         List<Join> joins = getJoins();
         if (CollectionUtil.isNotEmpty(joins)) {
             for (Join join : joins) {
+                QueryTable joinTable = join.getQueryTable();
+                Object[] valueArray = joinTable.getValueArray();
+                if (valueArray.length > 0) {
+                    if (joinValues == null) {
+                        joinValues = new ArrayList<>();
+                    }
+                    joinValues.addAll(Arrays.asList(valueArray));
+                }
                 QueryCondition onCondition = join.getOnCondition();
                 Object[] values = WrapperUtil.getValues(onCondition);
                 if (values.length > 0) {
@@ -363,23 +386,27 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             }
         }
 
+        //where 参数
         Object[] whereValues = WrapperUtil.getValues(whereQueryCondition);
+
+        //having 参数
         Object[] havingValues = WrapperUtil.getValues(havingQueryCondition);
 
-        Object[] values = ArrayUtil.concat(whereValues, havingValues);
+        Object[] paramValues = ArrayUtil.concat(whereValues, havingValues);
 
+        //unions 参数
         if (CollectionUtil.isNotEmpty(unions)) {
             for (UnionWrapper union : unions) {
                 QueryWrapper queryWrapper = union.getQueryWrapper();
-                values = ArrayUtil.concat(values, queryWrapper.getValueArray());
+                paramValues = ArrayUtil.concat(paramValues, queryWrapper.getValueArray());
             }
         }
 
-        if (joinValues != null) {
-            return ArrayUtil.concat(joinValues.toArray(), values);
-        } else {
-            return values;
-        }
+        Object[] returnValues = tableValues == null ? WrapperUtil.NULL_PARA_ARRAY : tableValues.toArray();
+        returnValues = joinValues != null ? ArrayUtil.concat(returnValues, joinValues.toArray()) : returnValues;
+        returnValues = ArrayUtil.concat(returnValues, paramValues);
+
+        return returnValues;
     }
 
 
