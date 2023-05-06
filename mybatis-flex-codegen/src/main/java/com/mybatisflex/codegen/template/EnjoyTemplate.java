@@ -16,13 +16,10 @@
 package com.mybatisflex.codegen.template;
 
 import com.jfinal.template.Engine;
-import com.mybatisflex.codegen.config.GlobalConfig;
-import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 public class EnjoyTemplate implements ITemplate {
@@ -37,39 +34,15 @@ public class EnjoyTemplate implements ITemplate {
     }
 
     @Override
-    public void generateEntity(GlobalConfig globalConfig, Table table, File entityJavaFile) throws Exception {
-        Map<String, Object> params = new HashMap<>();
-        params.put("globalConfig", globalConfig);
-        params.put("table", table);
+    public void generate(Map<String, Object> params, String templateFilePath, File generateFile) {
+        if (!generateFile.getParentFile().exists() && !generateFile.getParentFile().mkdirs()){
+            throw new IllegalStateException("Can not mkdirs by dir: " + generateFile.getParentFile());
+        }
 
-
-        FileOutputStream fileOutputStream = new FileOutputStream(entityJavaFile);
-        engine.getTemplate("/templates/enjoy/entity.tpl").render(params, fileOutputStream);
-        System.out.println("Entity has been generated: " + entityJavaFile.getAbsolutePath());
-    }
-
-    @Override
-    public void generateTableDef(GlobalConfig globalConfig, Table table, File entityJavaFile) throws Exception {
-        Map<String, Object> params = new HashMap<>();
-        params.put("globalConfig", globalConfig);
-        params.put("table", table);
-
-
-        FileOutputStream fileOutputStream = new FileOutputStream(entityJavaFile);
-        engine.getTemplate("/templates/enjoy/tableDef.tpl").render(params, fileOutputStream);
-        System.out.println("TableDef has been generated: " + entityJavaFile.getAbsolutePath());
-    }
-
-
-    @Override
-    public void generateMapper(GlobalConfig globalConfig, Table table, File mapperJavaFile) throws Exception {
-        Map<String, Object> params = new HashMap<>();
-        params.put("globalConfig", globalConfig);
-        params.put("table", table);
-
-
-        FileOutputStream fileOutputStream = new FileOutputStream(mapperJavaFile);
-        engine.getTemplate("/templates/enjoy/mapper.tpl").render(params, fileOutputStream);
-        System.out.println("Mapper has been generated: " + mapperJavaFile.getAbsolutePath());
+        try(FileOutputStream  fileOutputStream = new FileOutputStream(generateFile)) {
+            engine.getTemplate(templateFilePath).render(params, fileOutputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
