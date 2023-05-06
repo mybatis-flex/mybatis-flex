@@ -6,9 +6,19 @@ export default defineConfig({
     title: "Mybatis-Flex",
     titleTemplate: ':title - Mybatis-Flex 官方网站',
     description: "一个优雅的 Mybatis 增强框架",
+    lastUpdated: true,
+
     // logo: '/assets/images/logo02.png',
 
     themeConfig: {
+        search: {
+            provider: 'local'
+        },
+        editLink: {
+            // pattern: 'https://github.com/mybatis-flex/mybatis-flex/edit/main/docs/:path'
+            pattern: 'https://gitee.com/mybatis-flex/mybatis-flex/edit/main/docs/:path',
+            text: '编辑当前页面'
+        },
         // https://vitepress.dev/reference/default-theme-config
         // logo: '/assets/images/logo01.png',
         nav: [

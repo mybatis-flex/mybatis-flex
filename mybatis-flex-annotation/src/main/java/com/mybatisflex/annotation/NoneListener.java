@@ -28,6 +28,6 @@ public final class NoneListener implements InsertListener, UpdateListener, SetLi
 
     @Override
     public Object onSet(Object entity, String property, Object value) {
-        return null;
+        return value;
     }
 }
