@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Table(value = "tb_account", dataSource = "ds2", onSet = AccountOnSetListener.class)
-public class Account extends BaseAccount implements Serializable, AgeAware {
+public class Account extends BaseEntity implements Serializable, AgeAware {
 
     private static final long serialVersionUID = 1L;
 

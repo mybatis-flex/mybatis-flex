@@ -71,9 +71,9 @@ public class MultiDataSourceTester {
         System.out.println("tx: " + success);
         DataSourceKey.clear();
 
-        AccountMapper mapper = MybatisFlexBootstrap.getInstance().getMapper(AccountMapper.class);
-        List<Account> accounts = mapper.selectAll();
-        System.out.println(accounts);
+//        AccountMapper mapper = MybatisFlexBootstrap.getInstance().getMapper(AccountMapper.class);
+//        List<Account> accounts = mapper.selectAll();
+//        System.out.println(accounts);
 
     }
 }

@@ -52,9 +52,9 @@ public class EntityTestStarter {
 
 
         AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
-        MyAccountMapper myAccountMapper = bootstrap.getMapper(MyAccountMapper.class);
+//        MyAccountMapper myAccountMapper = bootstrap.getMapper(MyAccountMapper.class);
 
-        List<Account> accounts1 = myAccountMapper.selectAll();
+//        List<Account> accounts1 = myAccountMapper.selectAll();
 
 //        QueryWrapper wrapper = QueryWrapper.create().select().from(ACCOUNT)
 //                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
