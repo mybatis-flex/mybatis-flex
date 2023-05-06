@@ -1,11 +1,13 @@
 mybatis-flex v1.2.1 20230506:
 新增：代码生成器添加 tableDef 的生成功能；感谢 @笨小孩
+新增：增指定批次批量删除的方法，防止请求时间过长异常；感谢 @笨小孩
 优化：Mapper 配置所对应的 XML 文件 增加默认值；感谢 @lhzsdnu
 优化：拆分APT模块, 优化APT配置说明；感谢 @snow
 优化：添加  ClassUtil.isArray  方法用于重构
 优化：重命名 UpdateEntity.wrap 为 UpdateEntity.of #I6Z7HK
 优化：重构 OracleDialect 默认不加双引号；感谢 @MyronLi
 优化：重构代码生成器模块，新增 IGenerator 接口
+优化：修改 BaseMapper 的一些注释错误
 修复：Oracle 下查询报错的问题 #I6Z7K4
 修复：insertSelective 报错的问题 #12
 修复：全局监听器父类注册是接口时无法触发监听器 #17
