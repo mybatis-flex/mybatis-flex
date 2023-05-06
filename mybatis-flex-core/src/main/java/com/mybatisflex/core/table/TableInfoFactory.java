@@ -89,7 +89,7 @@ public class TableInfoFactory {
 
 
     public static TableInfo ofTableName(String tableName) {
-        return tableInfoMap.get(tableName);
+        return StringUtil.isNotBlank(tableName) ? tableInfoMap.get(tableName) : null;
     }
 
 

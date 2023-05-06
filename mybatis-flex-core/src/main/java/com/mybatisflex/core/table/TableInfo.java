@@ -527,6 +527,25 @@ public class TableInfo {
             CPI.putContext(queryWrapper, APPEND_CONDITIONS_FLAG, Boolean.TRUE);
         }
 
+        //select * from (select ... from ) 中的子查询处理
+        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        if (queryTables != null && !queryTables.isEmpty()) {
+            for (QueryTable queryTable : queryTables) {
+                if (queryTable instanceof SelectQueryTable) {
+                    QueryWrapper selectQueryWrapper = ((SelectQueryTable) queryTable).getQueryWrapper();
+                    List<QueryTable> selectQueryTables = CPI.getQueryTables(selectQueryWrapper);
+                    if (selectQueryTables != null && !selectQueryTables.isEmpty()) {
+                        for (QueryTable selectQueryTable : selectQueryTables) {
+                            TableInfo tableInfo = TableInfoFactory.ofTableName(selectQueryTable.getName());
+                            if (tableInfo != null) {
+                                tableInfo.appendConditions(entity, selectQueryWrapper);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         //添加乐观锁条件，只有在 update 的时候进行处理
         if (StringUtil.isNotBlank(versionColumn) && entity != null) {
             Object versionValue = buildColumnSqlArg(entity, versionColumn);
@@ -536,7 +555,7 @@ public class TableInfo {
             queryWrapper.and(QueryCondition.create(tableName, versionColumn, QueryCondition.LOGIC_EQUALS, versionValue));
         }
 
-        //逻辑删除条件，已删除的数据不能被修改
+        //逻辑删除
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
             queryWrapper.and(QueryCondition.create(tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS
                     , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
@@ -556,8 +575,8 @@ public class TableInfo {
         List<QueryWrapper> childSelects = CPI.getChildSelect(queryWrapper);
         if (CollectionUtil.isNotEmpty(childSelects)) {
             for (QueryWrapper childQueryWrapper : childSelects) {
-                List<QueryTable> queryTables = CPI.getQueryTables(childQueryWrapper);
-                for (QueryTable queryTable : queryTables) {
+                List<QueryTable> childQueryTables = CPI.getQueryTables(childQueryWrapper);
+                for (QueryTable queryTable : childQueryTables) {
                     TableInfo tableInfo = TableInfoFactory.ofTableName(queryTable.getName());
                     if (tableInfo != null) {
                         tableInfo.appendConditions(entity, childQueryWrapper);
@@ -571,8 +590,8 @@ public class TableInfo {
         if (CollectionUtil.isNotEmpty(unions)) {
             for (UnionWrapper union : unions) {
                 QueryWrapper unionQueryWrapper = union.getQueryWrapper();
-                List<QueryTable> queryTables = CPI.getQueryTables(unionQueryWrapper);
-                for (QueryTable queryTable : queryTables) {
+                List<QueryTable> unionQueryTables = CPI.getQueryTables(unionQueryWrapper);
+                for (QueryTable queryTable : unionQueryTables) {
                     TableInfo tableInfo = TableInfoFactory.ofTableName(queryTable.getName());
                     if (tableInfo != null) {
                         tableInfo.appendConditions(entity, unionQueryWrapper);
