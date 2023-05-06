@@ -352,13 +352,15 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         //select 子查询的参数：select * from (select ....)
         List<Object> tableValues = null;
         List<QueryTable> queryTables = getQueryTables();
-        for (QueryTable queryTable : queryTables) {
-            Object[] tableValueArray = queryTable.getValueArray();
-            if (tableValueArray.length > 0) {
-                if (tableValues == null) {
-                    tableValues = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(queryTables)) {
+            for (QueryTable queryTable : queryTables) {
+                Object[] tableValueArray = queryTable.getValueArray();
+                if (tableValueArray.length > 0) {
+                    if (tableValues == null) {
+                        tableValues = new ArrayList<>();
+                    }
+                    tableValues.addAll(Arrays.asList(tableValueArray));
                 }
-                tableValues.addAll(Arrays.asList(tableValueArray));
             }
         }
 
