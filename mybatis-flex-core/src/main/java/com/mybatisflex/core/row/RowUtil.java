@@ -31,8 +31,7 @@ public class RowUtil {
 
     static final String INDEX_SEPARATOR = "$";
 
-    private static final Map<Class<?>, Map<String, Method>> classGettersMapping = new ConcurrentHashMap<>();
-
+    private static final Map<Class<?>, Map<String, Method>> classSettersCache = new ConcurrentHashMap<>();
 
     public static <T> T toObject(Row row, Class<T> objectClass) {
         return toObject(row, objectClass, 0);
@@ -41,15 +40,15 @@ public class RowUtil {
 
     public static <T> T toObject(Row row, Class<T> objectClass, int index) {
         T instance = ClassUtil.newInstance(objectClass);
-        Map<String, Method> setterMethods = getSetterMethods(objectClass);
+        Map<String, Method> classSetters = getSetterMethods(objectClass);
         Set<String> rowKeys = row.keySet();
-        setterMethods.forEach((property, setter) -> {
+        classSetters.forEach((property, setter) -> {
             try {
                 if (index <= 0) {
                     for (String rowKey : rowKeys) {
                         if (property.equalsIgnoreCase(rowKey)) {
                             Object rowValue = row.get(rowKey);
-                            Object value = ConvertUtil.convert(rowValue, setter.getParameterTypes()[0]);
+                            Object value = ConvertUtil.convert(rowValue, setter.getParameterTypes()[0], true);
                             setter.invoke(instance, value);
                         }
                     }
@@ -60,7 +59,7 @@ public class RowUtil {
                         for (String rowKey : rowKeys) {
                             if (newProperty.equalsIgnoreCase(rowKey)) {
                                 Object rowValue = row.get(rowKey);
-                                Object value = ConvertUtil.convert(rowValue, setter.getParameterTypes()[0]);
+                                Object value = ConvertUtil.convert(rowValue, setter.getParameterTypes()[0], true);
                                 setter.invoke(instance, value);
                                 fillValue = true;
                                 break;
@@ -129,7 +128,7 @@ public class RowUtil {
 
 
     public static void registerMapping(Class<?> clazz, Map<String, Method> columnSetterMapping) {
-        classGettersMapping.put(clazz, columnSetterMapping);
+        classSettersCache.put(clazz, columnSetterMapping);
     }
 
 
@@ -204,7 +203,7 @@ public class RowUtil {
 
 
     private static Map<String, Method> getSetterMethods(Class<?> aClass) {
-        return MapUtil.computeIfAbsent(classGettersMapping, aClass, aClass1 -> {
+        return MapUtil.computeIfAbsent(classSettersCache, aClass, aClass1 -> {
             Map<String, Method> columnSetterMapping = new HashMap<>();
             List<Method> setters = ClassUtil.getAllMethods(aClass1,
                     method -> method.getName().startsWith("set")

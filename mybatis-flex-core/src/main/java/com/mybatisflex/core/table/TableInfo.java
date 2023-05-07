@@ -38,6 +38,9 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.util.MapUtil;
 
+import java.lang.reflect.Proxy;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -693,10 +696,7 @@ public class TableInfo {
             if (index <= 0) {
                 for (String rowKey : rowKeys) {
                     if (column.equalsIgnoreCase(rowKey)) {
-                        Object rowValue = row.get(rowKey);
-                        Object value = ConvertUtil.convert(rowValue, metaObject.getSetterType(columnInfo.property));
-                        value = invokeOnSetListener(instance, columnInfo.getProperty(), value);
-                        metaObject.setValue(columnInfo.property, value);
+                        setInstancePropertyValue(row, instance, metaObject, columnInfo, rowKey);
                     }
                 }
             } else {
@@ -705,10 +705,7 @@ public class TableInfo {
                     boolean fillValue = false;
                     for (String rowKey : rowKeys) {
                         if (newColumn.equalsIgnoreCase(rowKey)) {
-                            Object rowValue = row.get(rowKey);
-                            Object value = ConvertUtil.convert(rowValue, metaObject.getSetterType(columnInfo.property));
-                            value = invokeOnSetListener(instance, columnInfo.getProperty(), value);
-                            metaObject.setValue(columnInfo.property, value);
+                            setInstancePropertyValue(row, instance, metaObject, columnInfo, rowKey);
                             fillValue = true;
                             break;
                         }
@@ -720,6 +717,31 @@ public class TableInfo {
             }
         });
         return (T) instance;
+    }
+
+
+    private void setInstancePropertyValue(Row row, Object instance, MetaObject metaObject, ColumnInfo columnInfo, String rowKey) {
+        Object rowValue = row.get(rowKey);
+        TypeHandler<?> typeHandler = columnInfo.buildTypeHandler();
+        if (typeHandler != null) {
+            try {
+                //通过 typeHandler 转换数据
+                rowValue = typeHandler.getResult(getResultSet(rowValue), 0);
+            } catch (SQLException e) {
+                //ignore
+            }
+        }
+        if (rowValue != null && !metaObject.getSetterType(columnInfo.property).isAssignableFrom(rowValue.getClass())) {
+            rowValue = ConvertUtil.convert(rowValue, metaObject.getSetterType(columnInfo.property), true);
+        }
+        rowValue = invokeOnSetListener(instance, columnInfo.getProperty(), rowValue);
+        metaObject.setValue(columnInfo.property, rowValue);
+    }
+
+
+    private ResultSet getResultSet(Object value) {
+        return (ResultSet) Proxy.newProxyInstance(TableInfo.class.getClassLoader(),
+                new Class[]{ResultSet.class}, (proxy, method, args) -> value);
     }
 
 

@@ -34,6 +34,10 @@ public class ConvertUtil {
 
 
     public static Object convert(Object value, Class targetClass) {
+        return convert(value, targetClass, false);
+    }
+
+    public static Object convert(Object value, Class targetClass, boolean ignoreConvertError) {
         if (value == null && targetClass.isPrimitive()) {
             return getPrimitiveDefaultValue(targetClass);
         }
@@ -134,8 +138,11 @@ public class ConvertUtil {
             }
         }
 
-
-        throw new IllegalArgumentException("\"" + targetClass.getName() + "\" can not be parsed.");
+        if (ignoreConvertError) {
+            return null;
+        } else {
+            throw new IllegalArgumentException("Can not convert \"" + value + "\" to type\"" + targetClass.getName() + "\".");
+        }
     }
 
 
