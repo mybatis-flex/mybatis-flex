@@ -310,12 +310,32 @@ public interface IService<T> {
     // ===== 数量查询操作 =====
 
     /**
+     * 根据查询条件判断数据是否存在。
+     *
+     * @param query 查询条件
+     * @return {@code true} 数据存在，{@code false} 数据不存在。
+     */
+    default boolean exists(QueryWrapper query) {
+        return retBool(count(query));
+    }
+
+    /**
+     * 根据查询条件判断数据是否存在。
+     *
+     * @param query 查询条件
+     * @return {@code true} 数据存在，{@code false} 数据不存在。
+     */
+    default boolean exists(QueryCondition query) {
+        return retBool(count(query));
+    }
+
+    /**
      * 查询所有数据数量。
      *
      * @return 所有数据数量
      */
-    default Long count() {
-        return getBaseMapper().selectCountByQuery(query());
+    default long count() {
+        return getBaseMapper().selectCountByQuery(QueryWrapper.create());
     }
 
     /**
@@ -324,7 +344,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return 数据数量
      */
-    default Long count(QueryWrapper query) {
+    default long count(QueryWrapper query) {
         return getBaseMapper().selectCountByQuery(query);
     }
 
@@ -334,7 +354,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return 数据数量
      */
-    default Long count(QueryCondition query) {
+    default long count(QueryCondition query) {
         return getBaseMapper().selectCountByCondition(query);
     }
 
@@ -347,7 +367,7 @@ public interface IService<T> {
      * @return 分页对象
      */
     default Page<T> page(Page<T> page) {
-        return getBaseMapper().paginate(page, query());
+        return getBaseMapper().paginate(page, QueryWrapper.create());
     }
 
     /**
@@ -369,16 +389,7 @@ public interface IService<T> {
      * @return 分页对象
      */
     default Page<T> page(Page<T> page, QueryCondition query) {
-        return getBaseMapper().paginate(page, query().where(query));
-    }
-
-    /**
-     * 查询包装器。
-     *
-     * @return 查询包装器
-     */
-    default QueryWrapper query() {
-        return new QueryWrapper();
+        return getBaseMapper().paginate(page, QueryWrapper.create().where(query));
     }
 
 }
