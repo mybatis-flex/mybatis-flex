@@ -56,20 +56,20 @@ public class EntityTestStarter {
 
 //        List<Account> accounts1 = myAccountMapper.selectAll();
 
-//        QueryWrapper wrapper = QueryWrapper.create().select().from(ACCOUNT)
-//                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
-//                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
-//                .groupBy(ACCOUNT.ID);
-//
-//        List<Account> accounts = accountMapper.selectListByQuery(wrapper);
-
-
         QueryWrapper wrapper = QueryWrapper.create().select().from(ACCOUNT)
-//                .leftJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID).and(ACCOUNT.ID.ge(100)))
-                .and(ACCOUNT.ID.ge(100).when(false));
+                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
+                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
+                .groupBy(ACCOUNT.ID);
 
         List<Account> accounts = accountMapper.selectListByQuery(wrapper);
         System.out.println(accounts);
+
+        QueryWrapper wrapper1 = QueryWrapper.create().select().from(ACCOUNT)
+//                .leftJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID).and(ACCOUNT.ID.ge(100)))
+                .and(ACCOUNT.ID.ge(100).when(false).and(ACCOUNT.ID.ge(100).when(false)));
+
+        List<Account> accounts1 = accountMapper.selectListByQuery(wrapper1);
+        System.out.println(accounts1);
 
 
 //        QueryWrapper queryWrapper = new QueryWrapper();

@@ -59,6 +59,22 @@ public class Brackets extends QueryCondition {
     }
 
     @Override
+    public boolean checkEffective() {
+        boolean effective = super.checkEffective();
+        if (!effective) {
+            return false;
+        }
+        QueryCondition condition = this.childCondition;
+        while (condition != null) {
+            if (condition.checkEffective()) {
+                return true;
+            }
+            condition = condition.next;
+        }
+        return false;
+    }
+
+    @Override
     public String toSql(List<QueryTable> queryTables, IDialect dialect) {
 
         String sqlNext = next == null ? null : next.toSql(queryTables, dialect);
