@@ -62,4 +62,25 @@ public class SqlUtil {
     }
 
 
+    /**
+     * 根据数据库响应结果判断数据库操作是否成功。
+     *
+     * @param result 数据库操作返回影响条数
+     * @return {@code true} 操作成功，{@code false} 操作失败。
+     */
+    public static boolean retBool(int result) {
+        return result >= 1;
+    }
+
+    /**
+     * 根据数据库响应结果判断数据库操作是否成功。
+     *
+     * @param result 数据库操作返回影响条数
+     * @return {@code true} 操作成功，{@code false} 操作失败。
+     */
+    public static boolean retBool(long result) {
+        return result >= 1L;
+    }
+
+
 }
