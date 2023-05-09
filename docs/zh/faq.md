@@ -78,3 +78,7 @@ spring:
 > 若使用多数据源，或者把数据源配置到 `mybatis-flex.datasource` 下，使用 mybatis-flex 的数据源发现机制，
 > 使用 druid 也可以不用配置 type，更多文档参考：[多数据源章节](./core/multi-datasource.md)。
 
+## 与 PageHelper 集成出现错误
+
+在社区中，一些老的项目在使用到了开源项目 PageHelper，用于解决 xml 的分页问题，在和 Mybatis-flex 整合使用中，出现了一些错误，
+这是许多热心的同学给出的解决方案：https://gitee.com/mybatis-flex/mybatis-flex/issues/I71AUE
