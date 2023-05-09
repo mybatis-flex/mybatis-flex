@@ -275,5 +275,52 @@ public class EnjoyTemplate implements ITemplate {
         engine.getTemplate("/templates/enjoy/mapper.tpl").render(params, fileOutputStream);
     }
 }
+```
 
+## 添加其他产物的生成
+
+在 Mybatis-Flex 的代码生成器中，支持如下 3 种类型的的产物生成
+
+- 1、Entity 实体类
+- 2、Mapper 类（默认关闭）
+- 3、TableDef 表定义辅助类（默认关闭）
+
+这 3 种产物，都是通过实现 `IGenerator` 来实现的，比如 Entity 实体类的代码如下：
+
+```java
+public class EntityGenerator implements IGenerator {
+
+    private String templatePath = "/templates/enjoy/entity.tpl";
+
+    @Override
+    public void generate(Table table, GlobalConfig globalConfig) {
+
+        String entityPackagePath = globalConfig.getEntityPackage().replace(".", "/");
+        File entityJavaFile = new File(globalConfig.getSourceDir(), entityPackagePath + "/" +
+                table.buildEntityClassName() + ".java");
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("table", table);
+        params.put("globalConfig", globalConfig);
+
+        globalConfig.getTemplateEngine().generate(params, templatePath, entityJavaFile);
+    }
+}
+```
+
+如果我们想生成其他产物，比如 `Service`、`Controller` 或者 `html` 等，可以通过编写自己的类，来实现 IGenerator 接口，例如：
+
+```java
+public class HtmlGenerator implements IGenerator {
+
+    @Override
+    public void generate(Table table, GlobalConfig globalConfig) {
+        //在这里生成 html 代码
+    }
+}
+```
+最后，通过 `GeneratorFactory` 来注册 `HtmlGenerator` 即可：
+
+```java
+GeneratorFactory.registerGenerator("html",new HtmlGenerator());
 ```
