@@ -35,6 +35,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.type.TypeHandler;
 import org.mybatis.logging.Logger;
 import org.mybatis.logging.LoggerFactory;
@@ -581,14 +582,17 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
             }
         }
 
+        // 事务由 flex 管理了，无需使用 SpringManagedTransactionFactory，否则会造成在同一个事物下，无法切换数据源的问题
+        // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I70QWU
         targetConfiguration.setEnvironment(new Environment(this.environment,
-                this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,
+//                this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,
+                this.transactionFactory == null ? new JdbcTransactionFactory() : this.transactionFactory,
                 dataSource instanceof FlexDataSource ? dataSource : new FlexDataSource(FlexConsts.NAME, dataSource)));
 
 
         // 需先构建 sqlSessionFactory，再去初始化 mapperLocations
         // 因为 xmlMapperBuilder.parse() 用到 FlexGlobalConfig， FlexGlobalConfig 的初始化是在 sqlSessionFactory 的构建方法里进行的
-        // fixed gitee https://gitee.com/mybatis-flex/mybatis-flex/issues/I6X59V
+        // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I6X59V
         SqlSessionFactory sqlSessionFactory = this.sqlSessionFactoryBuilder.build(targetConfiguration);
 
         if (this.mapperLocations != null) {
