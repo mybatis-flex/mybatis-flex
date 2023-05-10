@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.core.tenant;
 
+import java.util.function.Supplier;
+
 public class TenantManager {
 
     private static ThreadLocal<Boolean> ignoreFlags = new ThreadLocal<>();
@@ -27,6 +29,18 @@ public class TenantManager {
 
     public static void setTenantFactory(TenantFactory tenantFactory) {
         TenantManager.tenantFactory = tenantFactory;
+    }
+
+    /**
+     * 忽略 tenant 条件
+     */
+    public static <T> T withoutTenantCondition(Supplier<T> supplier) {
+        try {
+            ignoreTenantCondition();
+            return supplier.get();
+        } finally {
+            restoreTenantCondition();
+        }
     }
 
 

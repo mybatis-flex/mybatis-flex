@@ -111,16 +111,42 @@ DELETE FROM tb_article where id = ? and tenant_id in (?, ?, ?)
 
 ### 忽略租户条件
 
-在某些场景下，在增删改查等操作，我们可能需要忽略租户条件，此时可以使用如下代码：
+在某些场景下，在增删改查等操作，我们可能需要忽略租户条件，
+此时可以使用TenantManager的`withoutTenantCondition`、`ignoreTenantCondition`、`restoreTenantCondition`三个方法。
+
+推荐使用`withoutTenantCondition`方法，该方法使用了模版方法设计模式，保障忽略 tenant 条件并执行相关逻辑后自动恢复 tenant 条件。
+
+`withoutTenantCondition`方法实现如下：
+```java
+public static <T> T withoutTenantCondition(Supplier<T> supplier) {
+    try {
+        ignoreTenantCondition();
+        return supplier.get();
+    } finally {
+        restoreTenantCondition();
+    }
+}
+```
+使用方法：
+```java
+TenantAccountMapper mapper = ...;
+List<TenantAccount> tenantAccounts = TenantManager.withoutTenantCondition(mapper::selectAll);
+System.out.println(tenantAccounts);
+```
+
+`ignoreTenantCondition`和`restoreTenantCondition`方法需配套使用，推荐使用`try{...}finally{...}`模式，如下例所示。
+使用这两个方法可以自主控制忽略 tenant 条件和恢复 tenant 条件的时机。
+当忽略 tenant 条件和恢复 tenant 条件无法放在同一个方法中时，可以使用这两个方法。
+此时需要仔细处理代码分支及异常，以防止忽略 tenant 条件后未恢复 tenant 条件，导致数据异常。
 
 ```java
 try {
-    TenantManager.ignoreTenantCondition()
+    TenantManager.ignoreTenantCondition();
     
     //此处操作的数据不会带有 tenant_id 的条件
-    accountMapper.selectListByQuery(...)
+    accountMapper.selectListByQuery(...);
 } finally {
-    TenantManager.restoreTenantCondition()
+    TenantManager.restoreTenantCondition();
 }
 ```
 
