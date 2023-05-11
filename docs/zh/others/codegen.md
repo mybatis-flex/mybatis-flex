@@ -113,6 +113,17 @@ public class GlobalConfig {
     //entity 是否使用 Lombok
     private boolean entityWithLombok = false;
 
+    private boolean tableDefGenerateEnable = false;
+
+    //tableDef 的包名
+    private String tableDefPackage;
+
+    //tableDef 类的前缀
+    private String tableDefClassPrefix;
+
+    //tableDef 类的后缀
+    private String tableDefClassSuffix;
+
     //是否生成 mapper 类
     private boolean mapperGenerateEnable = false;
 
@@ -157,6 +168,9 @@ public class GlobalConfig {
 
     //使用哪个模板引擎来生成代码
     protected ITemplate templateEngine;
+
+    //其他自定义配置
+    private Map<String, Object> others;
 
 }
 ```
