@@ -59,4 +59,15 @@ public  class TenantAccount{
     public void setTenantId(Long tenantId) {
         this.tenantId = tenantId;
     }
+
+    @Override
+    public String toString() {
+        return "TenantAccount{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", age=" + age +
+                ", birthday=" + birthday +
+                ", tenantId=" + tenantId +
+                '}';
+    }
 }

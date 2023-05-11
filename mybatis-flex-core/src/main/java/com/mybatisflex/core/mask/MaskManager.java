@@ -17,6 +17,7 @@ package com.mybatisflex.core.mask;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * 数据脱敏工厂类
@@ -55,6 +56,18 @@ public class MaskManager {
 
 
     private static ThreadLocal<Boolean> skipFlags = new ThreadLocal<>();
+
+    /**
+     * 跳过脱敏处理
+     */
+    public static <T> T withoutMask(Supplier<T> supplier) {
+        try {
+            skipMask();
+            return supplier.get();
+        } finally {
+            restoreMask();
+        }
+    }
 
     /**
      * 跳过脱敏处理
