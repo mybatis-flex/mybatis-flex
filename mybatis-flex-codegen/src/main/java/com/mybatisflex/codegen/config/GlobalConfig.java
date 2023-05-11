@@ -105,6 +105,9 @@ public class GlobalConfig {
     //使用哪个模板引擎来生成代码
     protected ITemplate templateEngine;
 
+    //其他自定义配置
+    private Map<String, Object> others;
+
 
     public String getSourceDir() {
         if (sourceDir == null || sourceDir.trim().length() == 0) {
@@ -441,5 +444,20 @@ public class GlobalConfig {
 
     public void setTemplateEngine(ITemplate templateEngine) {
         this.templateEngine = templateEngine;
+    }
+
+    public Map<String, Object> getOthers() {
+        return others;
+    }
+
+    public void setOthers(Map<String, Object> others) {
+        this.others = others;
+    }
+
+    public void addConfig(String key, Object value) {
+        if (others == null) {
+            others = new HashMap<>();
+        }
+        others.put(key, value);
     }
 }
