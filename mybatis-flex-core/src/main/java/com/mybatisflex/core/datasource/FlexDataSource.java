@@ -21,6 +21,8 @@ import com.mybatisflex.core.transaction.TransactionContext;
 import com.mybatisflex.core.transaction.TransactionalManager;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.StringUtil;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;
@@ -33,6 +35,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class FlexDataSource extends AbstractDataSource {
+
+    private static final Log log = LogFactory.getLog(FlexDataSource.class);
 
     private final Map<String, DataSource> dataSourceMap = new HashMap<>();
     private final Map<String, DbType> dbTypeHashMap = new HashMap<>();
@@ -96,6 +100,30 @@ public class FlexDataSource extends AbstractDataSource {
         }
     }
 
+     static void closeAutoCommit(Connection connection){
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                log.debug("Error set AutoCommit to false.  Cause: " + e);
+            }
+        }
+    }
+
+     static void resetAutoCommit(Connection connection){
+        try {
+            if (!connection.getAutoCommit()){
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            if (log.isDebugEnabled()) {
+                log.debug("Error resetting autocommit to true "
+                        + "before closing the connection.  Cause: " + e);
+            }
+        }
+    }
+
+
     public Connection proxy(Connection connection, String xid) {
         return (Connection) Proxy.newProxyInstance(FlexDataSource.class.getClassLoader()
                 , new Class[]{Connection.class}
@@ -139,11 +167,14 @@ public class FlexDataSource extends AbstractDataSource {
     }
 
     private static class ConnectionHandler implements InvocationHandler {
-        private static final String[] proxyMethods = new String[]{"commit", "rollback", "close",};
+        private static final String[] proxyMethods = new String[]{"commit", "rollback", "close","setAutoCommit"};
         private final Connection original;
         private final String xid;
 
         public ConnectionHandler(Connection original, String xid) {
+
+            closeAutoCommit(original);
+
             this.original = original;
             this.xid = xid;
         }
@@ -152,8 +183,15 @@ public class FlexDataSource extends AbstractDataSource {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (ArrayUtil.contains(proxyMethods, method.getName())
                     && isTransactional()) {
-                return null;  //do nothing
+                //do nothing
+                return null;
             }
+
+            //setAutoCommit: true
+            if ("close".equalsIgnoreCase(method.getName())){
+                resetAutoCommit(original);
+            }
+
             return method.invoke(original, args);
         }
 

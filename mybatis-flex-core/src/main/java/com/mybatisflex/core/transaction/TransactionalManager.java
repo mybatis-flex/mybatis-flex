@@ -49,13 +49,6 @@ public class TransactionalManager {
             return;
         }
 
-        try {
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            if (log.isDebugEnabled()) {
-                log.debug("Error set AutoCommit to false.  Cause: " + e);
-            }
-        }
         connMap.put(ds, connection);
     }
 
