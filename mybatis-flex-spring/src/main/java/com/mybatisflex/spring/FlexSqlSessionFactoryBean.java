@@ -582,7 +582,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
             }
         }
 
-        // 事务由 flex 管理了，无需使用 SpringManagedTransactionFactory，否则会造成在同一个事物下，无法切换数据源的问题
+        // 事务由 flex 管理了，无需使用 SpringManagedTransactionFactory，否则会造成在同一个事务下，无法切换数据源的问题
         // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I70QWU
         targetConfiguration.setEnvironment(new Environment(this.environment,
 //                this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,

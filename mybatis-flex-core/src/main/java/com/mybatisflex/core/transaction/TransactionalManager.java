@@ -81,12 +81,12 @@ public class TransactionalManager {
                     }
 
 
-                    //始终以新事物的方式运行，若存在当前事务，则暂停（挂起）当前事务。
+                    //始终以新事务的方式运行，若存在当前事务，则暂停（挂起）当前事务。
                 case REQUIRES_NEW:
                     return execNewTransactional(supplier);
 
 
-                //以非事物的方式运行，若存在当前事务，则暂停（挂起）当前事务。
+                //以非事务的方式运行，若存在当前事务，则暂停（挂起）当前事务。
                 case NOT_SUPPORTED:
                     if (currentXID != null) {
                         TransactionContext.release();
@@ -94,7 +94,7 @@ public class TransactionalManager {
                     return supplier.get();
 
 
-                //以非事物的方式运行，若存在当前事务，则抛出异常。
+                //以非事务的方式运行，若存在当前事务，则抛出异常。
                 case NEVER:
                     if (currentXID != null) {
                         throw new TransactionException("Existing transaction found for transaction marked with propagation 'never'");
