@@ -196,7 +196,7 @@ mybatis-flex v1.0.9 20230410:
 修复：@Table(onSet) 配置在某些场景无法使用的问题
 修复：Postgresql 的 limit offset 方言出错的问题
 修复：多数据源的场景下，通过 @Table(dataSource) 配置无效的问题
-优化：修改错别字 processor 为 processor
+优化：修改错别字 processer 为 processor
 优化：优化 DbAutoConfiguration 未正确配置数据源时的错误信息
 优化：Row 添加 getString()/getInt() 等等相关方法
 优化：代码生成器通过 SqlServer 生成出错的问题
@@ -273,7 +273,7 @@ mybatis-flex v1.0.4 20230326:
 
 mybatis-flex v1.0.3 20230321:
 新增：APT 自动生成 Mapper 代码的功能，无需在手动编写
-新增：APT 新增 "processor.mappersGenerateEnable" 配置，用于开启是否自动生成 Mapper 类
+新增：APT 新增 "processer.mappersGenerateEnable" 配置，用于开启是否自动生成 Mapper 类
 修复：condition.when(flag) 的 value 值有返回的问题
 文档：添加 where 动态条件文档示例，同步 APT 的文档
 
