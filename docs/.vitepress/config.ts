@@ -3,9 +3,9 @@ import {defineConfig} from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
     lang: 'zh-CN',
-    title: "Mybatis-Flex",
-    titleTemplate: ':title - Mybatis-Flex 官方网站',
-    description: "一个优雅的 Mybatis 增强框架",
+    title: "MyBatis-Flex",
+    titleTemplate: ':title - MyBatis-Flex 官方网站',
+    description: "一个优雅的 MyBatis 增强框架",
     lastUpdated: true,
 
     // logo: '/assets/images/logo02.png',
@@ -24,17 +24,19 @@ export default defineConfig({
         nav: [
             {text: '首页', link: '/'},
             {text: '帮助文档', link: '/zh/intro/what-is-mybatisflex'},
-            {text: '常见问题', link: '/zh/faq'},
-            {
-                text: '周边', items: [
-                    {text: '示例代码', link: 'https://gitee.com/mybatis-flex/mybatis-flex-samples'},
-                    {text: '更新日志', link: 'https://gitee.com/mybatis-flex/mybatis-flex/releases'},
-                ]
-            },
+            {text: '🔥常见问题', link: '/zh/faq'},
+            // {
+            //     text: '周边', items: [
+            //         {text: '示例代码', link: 'https://gitee.com/mybatis-flex/mybatis-flex-samples'},
+            //         {text: '更新日志', link: 'https://gitee.com/mybatis-flex/mybatis-flex/releases'},
+            //     ]
+            // },
             {
                 text: '获取源码', items: [
                     {text: 'Gitee', link: 'https://gitee.com/mybatis-flex/mybatis-flex'},
-                    {text: 'Github', link: 'https://github.com/mybatis-flex/mybatis-flex'}
+                    {text: 'Github', link: 'https://github.com/mybatis-flex/mybatis-flex'},
+                    {text: '示例代码', link: 'https://gitee.com/mybatis-flex/mybatis-flex-samples'},
+                    {text: '性能测试代码', link: 'https://gitee.com/mybatis-flex/mybatis-benchmark'},
                 ]
             },
         ],
@@ -43,7 +45,7 @@ export default defineConfig({
             {
                 text: '简介',
                 items: [
-                    {text: 'Mybatis-Flex 是什么', link: '/zh/intro/what-is-mybatisflex'},
+                    {text: 'MyBatis-Flex 是什么', link: '/zh/intro/what-is-mybatisflex'},
                     {text: '快速开始', link: '/zh/intro/getting-started'},
                     {text: 'Maven 依赖', link: '/zh/intro/maven'},
                     {text: '和同类框架「功能」对比', link: '/zh/intro/comparison'},

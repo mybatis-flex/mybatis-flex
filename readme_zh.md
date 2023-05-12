@@ -1,7 +1,7 @@
 ![](./docs/assets/images/logo.png)
 
 
-# Mybatis-Flex： 更灵活、更轻量、更好用
+# MyBatis-Flex： 更灵活、更轻量、更好用
 
 
 ## 特征

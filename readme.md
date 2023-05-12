@@ -1,10 +1,10 @@
 ![](./docs/assets/images/logo_en.png)
 
-# Mybatis-Flex is an elegant Mybatis Enhancement Framework.
+# MyBatis-Flex is an elegant Mybatis Enhancement Framework.
 
 ## Features
 
-- 1、Mybatis-Flex is very lightweight, and it only depends on Mybatis and no other third-party dependencies
+- 1、MyBatis-Flex is very lightweight, and it only depends on Mybatis and no other third-party dependencies
 - 2、Basic CRUD operator and paging query of Entity class
 - 3、Row mapping support, you can add, delete, modify and query the database without entity classes
 - 4、Support multiple databases, and expand through dialects flexibly.
