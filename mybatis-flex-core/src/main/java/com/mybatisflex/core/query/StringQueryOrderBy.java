@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class StringQueryOrderBy extends QueryOrderBy {
 
-    private String orderBy;
+    private final String orderBy;
 
     public StringQueryOrderBy(String orderBy) {
         SqlUtil.keepOrderBySqlSafely(orderBy);

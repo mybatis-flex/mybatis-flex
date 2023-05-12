@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class MultiRowKeyGenerator implements KeyGenerator {
 
-    private KeyGenerator keyGenerator;
+    private final KeyGenerator keyGenerator;
 
     public MultiRowKeyGenerator(KeyGenerator keyGenerator) {
         this.keyGenerator = keyGenerator;

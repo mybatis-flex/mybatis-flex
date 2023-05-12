@@ -35,12 +35,12 @@ public class DialectFactory {
      * 比如，在 mybatis-flex 实现的方言中有 bug 或者 有自己的独立实现，可以添加自己的方言实现到
      * 此 map 中，用于覆盖系统的方言实现
      */
-    private static Map<DbType, IDialect> dialectMap = new EnumMap<>(DbType.class);
+    private static final Map<DbType, IDialect> dialectMap = new EnumMap<>(DbType.class);
 
     /**
      * 通过设置当前线程的数据库类型，以达到在代码执行时随时切换方言的功能
      */
-    private static ThreadLocal<DbType> dbTypeThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<DbType> dbTypeThreadLocal = new ThreadLocal<>();
 
 
     /**
@@ -104,12 +104,12 @@ public class DialectFactory {
             case CUBRID:
             case GOLDILOCKS:
             case CSIIDB:
-                return new CommonsDialectImpl(KeywordWrap.BACKQUOTE, LimitOffsetProcesser.MYSQL);
+                return new CommonsDialectImpl(KeywordWrap.BACKQUOTE, LimitOffsetProcessor.MYSQL);
             case ORACLE:
-                return new OracleDialect(LimitOffsetProcesser.ORACLE);
+                return new OracleDialect(LimitOffsetProcessor.ORACLE);
             case DM:
             case GAUSS:
-                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.ORACLE);
+                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.ORACLE);
             case POSTGRE_SQL:
             case SQLITE:
             case HSQL:
@@ -123,21 +123,21 @@ public class DialectFactory {
             case OPENGAUSS:
             case TDENGINE:
             case UXDB:
-                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.POSTGRESQL);
+                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.POSTGRESQL);
             case ORACLE_12C:
-                return new OracleDialect(LimitOffsetProcesser.DERBY);
+                return new OracleDialect(LimitOffsetProcessor.DERBY);
             case FIREBIRD:
-                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.DERBY);
+                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.DERBY);
             case SQLSERVER:
-                return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcesser.DERBY);
+                return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.DERBY);
             case SQLSERVER_2005:
-                return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcesser.DB2);
+                return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.DB2);
             case INFORMIX:
-                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.INFORMIX);
+                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.INFORMIX);
             case DB2:
-                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.DB2);
+                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.DB2);
             case SYBASE:
-                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.SYBASE);
+                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.SYBASE);
             default:
                 return new CommonsDialectImpl();
         }

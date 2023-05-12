@@ -43,8 +43,8 @@ public class EntityWrapperFactory implements ObjectWrapperFactory {
 
     static class FlexBeanWrapper extends BeanWrapper {
 
-        private Object entity;
-        private TableInfo tableInfo;
+        private final Object entity;
+        private final TableInfo tableInfo;
 
         public FlexBeanWrapper(MetaObject metaObject, Object object) {
             super(metaObject, object);

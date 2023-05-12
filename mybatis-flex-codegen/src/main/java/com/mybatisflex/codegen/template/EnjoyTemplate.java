@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class EnjoyTemplate implements ITemplate {
 
-    private Engine engine;
+    private final Engine engine;
 
     public EnjoyTemplate() {
         engine = Engine.create("mybatis-flex", engine -> {

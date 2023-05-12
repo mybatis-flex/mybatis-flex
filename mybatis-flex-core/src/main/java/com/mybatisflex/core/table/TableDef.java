@@ -21,7 +21,7 @@ import java.io.Serializable;
 
 public class TableDef implements Serializable {
 
-    private String tableName;
+    private final String tableName;
 
     public TableDef(String tableName) {
         this.tableName = tableName;

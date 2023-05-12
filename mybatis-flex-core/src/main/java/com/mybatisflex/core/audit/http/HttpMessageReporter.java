@@ -22,9 +22,9 @@ import java.util.List;
 
 public class HttpMessageReporter implements MessageReporter {
 
-    private String endpoint;
-    private String secretKey;
-    private JSONFormatter jsonFormatter;
+    private final String endpoint;
+    private final String secretKey;
+    private final JSONFormatter jsonFormatter;
 
     public HttpMessageReporter(String endpoint, String secretKey, JSONFormatter jsonFormatter) {
         this.endpoint = endpoint;

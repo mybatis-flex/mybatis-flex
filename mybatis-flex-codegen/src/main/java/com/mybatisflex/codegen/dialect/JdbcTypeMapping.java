@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class JdbcTypeMapping {
 
-    private static Map<String, String> mapping = new HashMap<>();
+    private static final Map<String, String> mapping = new HashMap<>();
 
     static {
         registerMapping("[B", "byte[]");

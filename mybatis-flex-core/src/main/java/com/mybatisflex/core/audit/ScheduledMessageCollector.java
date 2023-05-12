@@ -28,12 +28,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class ScheduledMessageCollector implements MessageCollector, Runnable {
 
-    private long period;
-    private ScheduledExecutorService scheduler;
-    private MessageReporter messageSender;
+    private final long period;
+    private final ScheduledExecutorService scheduler;
+    private final MessageReporter messageSender;
 
-    private List<AuditMessage> messages = Collections.synchronizedList(new ArrayList<>());
-    private ReentrantReadWriteLock rrwLock = new ReentrantReadWriteLock();
+    private final List<AuditMessage> messages = Collections.synchronizedList(new ArrayList<>());
+    private final ReentrantReadWriteLock rrwLock = new ReentrantReadWriteLock();
 
     public ScheduledMessageCollector() {
         this(10, new ConsoleMessageReporter());

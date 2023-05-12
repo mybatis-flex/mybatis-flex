@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class ModifyAttrsRecordHandler implements MethodHandler {
 
-    private Set<String>  modifyAttrs = new LinkedHashSet<>();
+    private final Set<String>  modifyAttrs = new LinkedHashSet<>();
 
     public Set<String> getModifyAttrs() {
         return modifyAttrs;

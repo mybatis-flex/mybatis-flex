@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class DataSourceBuilder {
 
-    private static Map<String, String> dataSourceAlias = new HashMap<>();
+    private static final Map<String, String> dataSourceAlias = new HashMap<>();
 
     static {
         dataSourceAlias.put("druid", "com.alibaba.druid.pool.DruidDataSource");
@@ -39,7 +39,7 @@ public class DataSourceBuilder {
         dataSourceAlias.put("dbcp2", "org.apache.commons.dbcp2.BasicDataSource");
     }
 
-    private Map<String, String> dataSourceProperties;
+    private final Map<String, String> dataSourceProperties;
 
     public DataSourceBuilder(Map<String, String> dataSourceProperties) {
         this.dataSourceProperties = dataSourceProperties;
@@ -49,11 +49,7 @@ public class DataSourceBuilder {
         String dataSourceClassName = null;
         String type = dataSourceProperties.get("type");
         if (StringUtil.isNotBlank(type)) {
-            if (dataSourceAlias.containsKey(type)) {
-                dataSourceClassName = dataSourceAlias.get(type);
-            } else {
-                dataSourceClassName = type;
-            }
+            dataSourceClassName = dataSourceAlias.getOrDefault(type, type);
         } else {
             dataSourceClassName = detectDataSourceClass();
         }
