@@ -35,12 +35,12 @@ public class DialectFactory {
      * 比如，在 mybatis-flex 实现的方言中有 bug 或者 有自己的独立实现，可以添加自己的方言实现到
      * 此 map 中，用于覆盖系统的方言实现
      */
-    private static Map<DbType, IDialect> dialectMap = new EnumMap<>(DbType.class);
+    private static final Map<DbType, IDialect> dialectMap = new EnumMap<>(DbType.class);
 
     /**
      * 通过设置当前线程的数据库类型，以达到在代码执行时随时切换方言的功能
      */
-    private static ThreadLocal<DbType> dbTypeThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<DbType> dbTypeThreadLocal = new ThreadLocal<>();
 
 
     /**

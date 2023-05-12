@@ -30,7 +30,7 @@ public enum SqlConnector {
     ;
 
 
-    private String value;
+    private final String value;
 
     SqlConnector(String value) {
         this.value = value;

@@ -27,8 +27,8 @@ import java.util.List;
  */
 public class OperatorSelectCondition extends QueryCondition {
     //操作符，例如 exist, not exist
-    private String operator;
-    private QueryWrapper queryWrapper;
+    private final String operator;
+    private final QueryWrapper queryWrapper;
 
     public OperatorSelectCondition(String operator, QueryWrapper queryWrapper) {
         this.operator = operator;

@@ -29,7 +29,7 @@ import java.util.List;
 
 public class UpdateEntity {
 
-    private static ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
+    private static final ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
 
 
     public static <T> T of(Class<T> clazz) {

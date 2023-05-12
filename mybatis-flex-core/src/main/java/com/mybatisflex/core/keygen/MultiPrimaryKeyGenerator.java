@@ -31,10 +31,10 @@ import java.util.List;
  */
 public class MultiPrimaryKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
 
-    private List<KeyGenerator> keyGenerators;
+    private final List<KeyGenerator> keyGenerators;
 
     //所有自增字段的名称
-    private String[] autoGenKeyColumnNames;
+    private final String[] autoGenKeyColumnNames;
 
     public MultiPrimaryKeyGenerator(MappedStatement mappedStatement, TableInfo tableInfo, List<IdInfo> primaryKeyList) {
         this.keyGenerators = new ArrayList<>();

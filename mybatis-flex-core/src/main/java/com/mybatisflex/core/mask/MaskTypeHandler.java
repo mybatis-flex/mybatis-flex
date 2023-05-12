@@ -25,7 +25,7 @@ import java.sql.SQLException;
 
 public class MaskTypeHandler extends BaseTypeHandler<Object> {
 
-    private String maskType;
+    private final String maskType;
 
     public MaskTypeHandler(String maskType) {
         this.maskType = maskType;

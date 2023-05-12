@@ -30,6 +30,8 @@ public class MaskManager {
      */
     private static final Map<String, MaskProcessor> processorMap = new HashMap<>();
 
+    private static final ThreadLocal<Boolean> skipFlags = new ThreadLocal<>();
+
 
     static {
         registerMaskProcessor(Masks.MOBILE, Masks.MOBILE_PROCESSOR);
@@ -54,8 +56,6 @@ public class MaskManager {
         processorMap.put(type, processor);
     }
 
-
-    private static ThreadLocal<Boolean> skipFlags = new ThreadLocal<>();
 
     /**
      * 跳过脱敏处理
