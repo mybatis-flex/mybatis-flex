@@ -26,21 +26,23 @@ public class MaskManager {
 
 
     /**
-     * 脱敏处理器，type : processer
+     * 脱敏处理器，type : processor
      */
-    private static Map<String, MaskProcesser> processerMap = new HashMap<>();
+    private static final Map<String, MaskProcessor> processorMap = new HashMap<>();
+
+    private static final ThreadLocal<Boolean> skipFlags = new ThreadLocal<>();
 
 
     static {
-        registerMaskProcesser(Masks.MOBILE, Masks.MOBILE_PROCESSER);
-        registerMaskProcesser(Masks.FIXED_PHONE, Masks.FIXED_PHONE_PROCESSER);
-        registerMaskProcesser(Masks.ID_CARD_NUMBER, Masks.ID_CARD_NUMBER_PROCESSER);
-        registerMaskProcesser(Masks.CHINESE_NAME, Masks.CHINESE_NAME_PROCESSER);
-        registerMaskProcesser(Masks.ADDRESS, Masks.ADDRESS_PROCESSER);
-        registerMaskProcesser(Masks.EMAIL, Masks.EMAIL_PROCESSER);
-        registerMaskProcesser(Masks.PASSWORD, Masks.PASSWORD_PROCESSER);
-        registerMaskProcesser(Masks.CAR_LICENSE, Masks.CAR_LICENSE_PROCESSER);
-        registerMaskProcesser(Masks.BANK_CARD_NUMBER, Masks.BANK_CARD_PROCESSER);
+        registerMaskProcessor(Masks.MOBILE, Masks.MOBILE_PROCESSOR);
+        registerMaskProcessor(Masks.FIXED_PHONE, Masks.FIXED_PHONE_PROCESSOR);
+        registerMaskProcessor(Masks.ID_CARD_NUMBER, Masks.ID_CARD_NUMBER_PROCESSOR);
+        registerMaskProcessor(Masks.CHINESE_NAME, Masks.CHINESE_NAME_PROCESSOR);
+        registerMaskProcessor(Masks.ADDRESS, Masks.ADDRESS_PROCESSOR);
+        registerMaskProcessor(Masks.EMAIL, Masks.EMAIL_PROCESSOR);
+        registerMaskProcessor(Masks.PASSWORD, Masks.PASSWORD_PROCESSOR);
+        registerMaskProcessor(Masks.CAR_LICENSE, Masks.CAR_LICENSE_PROCESSOR);
+        registerMaskProcessor(Masks.BANK_CARD_NUMBER, Masks.BANK_CARD_PROCESSOR);
     }
 
 
@@ -48,14 +50,12 @@ public class MaskManager {
      * 注册处理器，用户可以注册新的脱敏处理器 或者 覆盖内置的处理器
      *
      * @param type      处理器类型
-     * @param processer 脱敏处理器
+     * @param processor 脱敏处理器
      */
-    public static void registerMaskProcesser(String type, MaskProcesser processer) {
-        processerMap.put(type, processer);
+    public static void registerMaskProcessor(String type, MaskProcessor processor) {
+        processorMap.put(type, processor);
     }
 
-
-    private static ThreadLocal<Boolean> skipFlags = new ThreadLocal<>();
 
     /**
      * 跳过脱敏处理
@@ -91,12 +91,12 @@ public class MaskManager {
             return data;
         }
 
-        MaskProcesser maskProcesser = processerMap.get(type);
-        if (maskProcesser == null) {
-            throw new IllegalStateException("Can not get mask processer for by type: " + type);
+        MaskProcessor maskProcessor = processorMap.get(type);
+        if (maskProcessor == null) {
+            throw new IllegalStateException("Can not get mask processor for by type: " + type);
         }
 
-        return maskProcesser.mask(data);
+        return maskProcessor.mask(data);
     }
 
 }

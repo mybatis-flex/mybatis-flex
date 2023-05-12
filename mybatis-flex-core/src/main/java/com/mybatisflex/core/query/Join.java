@@ -37,8 +37,8 @@ public class Join implements Serializable {
     static final String TYPE_CROSS = " CROSS JOIN ";
 
 
-    private String type;
-    private QueryTable queryTable;
+    private final String type;
+    private final QueryTable queryTable;
     private QueryCondition on;
     private boolean effective;
 

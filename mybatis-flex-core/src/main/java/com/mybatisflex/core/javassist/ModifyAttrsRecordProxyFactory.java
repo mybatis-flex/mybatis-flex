@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 public class ModifyAttrsRecordProxyFactory {
 
-    private static ModifyAttrsRecordProxyFactory instance = new ModifyAttrsRecordProxyFactory();
+    private static final ModifyAttrsRecordProxyFactory instance = new ModifyAttrsRecordProxyFactory();
 
     public static ModifyAttrsRecordProxyFactory getInstance(){
         return instance;

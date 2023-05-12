@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class Brackets extends QueryCondition {
 
-    private QueryCondition childCondition;
+    private final QueryCondition childCondition;
 
 
     public Brackets(QueryCondition childCondition) {

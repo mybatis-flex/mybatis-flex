@@ -26,8 +26,8 @@ import java.util.List;
  */
 public class OperatorQueryCondition extends QueryCondition {
     
-    private String operator;
-    private QueryCondition child;
+    private final String operator;
+    private final QueryCondition child;
 
     public OperatorQueryCondition(String operator, QueryCondition child) {
         this.operator = operator;

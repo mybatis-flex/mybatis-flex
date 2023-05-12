@@ -40,9 +40,9 @@ import java.util.Map;
  * 为 row 的主键生成器
  */
 public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
-    private static KeyGenerator[] NO_KEY_GENERATORS = new KeyGenerator[0];
+    private static final KeyGenerator[] NO_KEY_GENERATORS = new KeyGenerator[0];
 
-    private MappedStatement ms;
+    private final MappedStatement ms;
     private KeyGenerator[] keyGenerators;
     private List<String> autoKeyGeneratorNames;
 
