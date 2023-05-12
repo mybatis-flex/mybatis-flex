@@ -18,7 +18,7 @@ package com.mybatisflex.core.dialect.impl;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
-import com.mybatisflex.core.dialect.LimitOffsetProcesser;
+import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
@@ -40,18 +40,18 @@ import java.util.StringJoiner;
 public class CommonsDialectImpl implements IDialect {
 
     protected KeywordWrap keywordWrap = KeywordWrap.BACKQUOTE;
-    private LimitOffsetProcesser limitOffsetProcesser = LimitOffsetProcesser.MYSQL;
+    private LimitOffsetProcessor limitOffsetProcessor = LimitOffsetProcessor.MYSQL;
 
     public CommonsDialectImpl() {
     }
 
-    public CommonsDialectImpl(LimitOffsetProcesser limitOffsetProcesser) {
-        this.limitOffsetProcesser = limitOffsetProcesser;
+    public CommonsDialectImpl(LimitOffsetProcessor limitOffsetProcessor) {
+        this.limitOffsetProcessor = limitOffsetProcessor;
     }
 
-    public CommonsDialectImpl(KeywordWrap keywordWrap, LimitOffsetProcesser limitOffsetProcesser) {
+    public CommonsDialectImpl(KeywordWrap keywordWrap, LimitOffsetProcessor limitOffsetProcessor) {
         this.keywordWrap = keywordWrap;
-        this.limitOffsetProcesser = limitOffsetProcesser;
+        this.limitOffsetProcessor = limitOffsetProcessor;
     }
 
     @Override
@@ -827,7 +827,7 @@ public class CommonsDialectImpl implements IDialect {
      * 构建 limit 和 offset 的参数
      */
     protected StringBuilder buildLimitOffsetSql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, Integer limitRows, Integer limitOffset) {
-        return limitOffsetProcesser.process(sqlBuilder, queryWrapper, limitRows, limitOffset);
+        return limitOffsetProcessor.process(sqlBuilder, queryWrapper, limitRows, limitOffset);
     }
 
 
