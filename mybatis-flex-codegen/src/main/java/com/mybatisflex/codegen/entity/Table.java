@@ -118,7 +118,8 @@ public class Table {
 
     public List<String> buildImports() {
         Set<String> imports = new HashSet<>();
-        imports.add(com.mybatisflex.annotation.Table.class.getName());
+//        imports.add(com.mybatisflex.annotation.Table.class.getName());
+        imports.add("com.mybatisflex.annotation.Table");
         for (Column column : columns) {
             imports.addAll(column.getImportClasses());
         }
