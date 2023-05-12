@@ -20,13 +20,13 @@ import com.mybatisflex.core.query.QueryWrapper;
 /**
  * limit 和 offset 参数的处理器
  */
-public interface LimitOffsetProcesser {
+public interface LimitOffsetProcessor {
 
     /**
      * MySql 的处理器
      * 适合 {@link DbType#MYSQL,DbType#MARIADB,DbType#H2,DbType#CLICK_HOUSE,DbType#XCloud}
      */
-    LimitOffsetProcesser MYSQL = (sql, queryWrapper, limitRows, limitOffset) -> {
+    LimitOffsetProcessor MYSQL = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             sql.append(" LIMIT ").append(limitOffset).append(", ").append(limitRows);
         } else if (limitRows != null) {
@@ -41,7 +41,7 @@ public interface LimitOffsetProcesser {
      * 适合  {@link DbType#SAP_HANA,DbType#IMPALA,DbType#HIGH_GO,DbType#VERTICA,DbType#REDSHIFT}
      * 适合  {@link DbType#OPENGAUSS,DbType#TDENGINE,DbType#UXDB}
      */
-    LimitOffsetProcesser POSTGRESQL = (sql, queryWrapper, limitRows, limitOffset) -> {
+    LimitOffsetProcessor POSTGRESQL = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             sql.append(" LIMIT ").append(limitRows).append(" OFFSET ").append(limitOffset);
         } else if (limitRows != null) {
@@ -54,7 +54,7 @@ public interface LimitOffsetProcesser {
      * derby 的处理器
      * 适合  {@link DbType#DERBY,DbType#ORACLE_12C,DbType#SQLSERVER ,DbType#POSTGRE_SQL}
      */
-    LimitOffsetProcesser DERBY = (sql, queryWrapper, limitRows, limitOffset) -> {
+    LimitOffsetProcessor DERBY = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             // OFFSET ** ROWS FETCH NEXT ** ROWS ONLY")
             sql.append(" OFFSET ").append(limitOffset).append("  ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
@@ -69,7 +69,7 @@ public interface LimitOffsetProcesser {
      * db2 的处理器
      * 适合  {@link DbType#DB2,DbType#SQLSERVER_2005}
      */
-    LimitOffsetProcesser DB2 = (sql, queryWrapper, limitRows, limitOffset) -> {
+    LimitOffsetProcessor DB2 = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             // OFFSET ** ROWS FETCH NEXT ** ROWS ONLY")
             sql.append(" OFFSET ").append(limitOffset).append("  ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
@@ -85,7 +85,7 @@ public interface LimitOffsetProcesser {
      * 适合  {@link DbType#INFORMIX}
      * 文档 {@link <a href="https://www.ibm.com/docs/en/informix-servers/14.10?topic=clause-restricting-return-values-skip-limit-first-options">https://www.ibm.com/docs/en/informix-servers/14.10?topic=clause-restricting-return-values-skip-limit-first-options</a>}
      */
-    LimitOffsetProcesser INFORMIX = (sql, queryWrapper, limitRows, limitOffset) -> {
+    LimitOffsetProcessor INFORMIX = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             // SELECT SKIP 2 FIRST 1 * FROM
             sql.insert(6, " SKIP " + limitOffset + " FIRST " + limitRows);
@@ -99,7 +99,7 @@ public interface LimitOffsetProcesser {
      * Firebird 的处理器
      * 适合  {@link DbType#FIREBIRD}
      */
-    LimitOffsetProcesser FIREBIRD = (sql, queryWrapper, limitRows, limitOffset) -> {
+    LimitOffsetProcessor FIREBIRD = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             // ROWS 2 TO 3
             sql.append(" ROWS ").append(limitOffset).append(" TO ").append(limitOffset + limitRows);
@@ -113,7 +113,7 @@ public interface LimitOffsetProcesser {
      * Oracle11g及以下数据库的处理器
      * 适合  {@link DbType#ORACLE,DbType#DM,DbType#GAUSS}
      */
-    LimitOffsetProcesser ORACLE = (sql, queryWrapper, limitRows, limitOffset) -> {
+    LimitOffsetProcessor ORACLE = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null) {
             if (limitOffset == null) {
                 limitOffset = 0;
@@ -130,7 +130,7 @@ public interface LimitOffsetProcesser {
      * Sybase 处理器
      * 适合  {@link DbType#SYBASE}
      */
-    LimitOffsetProcesser SYBASE = (sql, queryWrapper, limitRows, limitOffset) -> {
+    LimitOffsetProcessor SYBASE = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             //SELECT TOP 1 START AT 3 * FROM
             sql.insert(6, " TOP " + limitRows + " START AT " + (limitOffset + 1));
