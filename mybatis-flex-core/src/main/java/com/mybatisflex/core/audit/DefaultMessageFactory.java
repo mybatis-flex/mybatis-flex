@@ -25,8 +25,8 @@ import java.util.Enumeration;
  */
 public class DefaultMessageFactory implements MessageFactory {
 
-    private String platform = "mybatis-flex";
-    private String hostIp = getHostIp();
+    private final String platform = "mybatis-flex";
+    private final String hostIp = getHostIp();
 
 
     @Override
