@@ -16,6 +16,7 @@
 package com.mybatisflex.core.keygen;
 
 import com.mybatisflex.core.keygen.impl.FlexIDKeyGenerator;
+import com.mybatisflex.core.keygen.impl.SnowFlakeIDKeyGenerator;
 import com.mybatisflex.core.keygen.impl.UUIDKeyGenerator;
 
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class KeyGeneratorFactory {
          */
         register("uuid", new UUIDKeyGenerator());
         register("flexId", new FlexIDKeyGenerator());
+        register("snowFlakeId", new SnowFlakeIDKeyGenerator());
     }
 
 
