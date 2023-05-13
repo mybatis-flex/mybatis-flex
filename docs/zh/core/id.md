@@ -94,6 +94,27 @@ public class Account {
 ```
 当我们保存数据的时候，Account 的 id 主键为自增，而 otherId 主键则通过 uuid 生成。
 
+## 内置主键生成器
+
+MyBatis-Flex 内置了三种主键生成器：
+
+- **UUIDKeyGenerator**：生成 UUID 作为数据库主键。
+- **FlexIDKeyGenerator**：独创的 FlexID 算法生成数据库主键（了解更多信息请参阅[源码](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/keygen/impl/FlexIDKeyGenerator.java)）；
+- **SnowFlakeIDKeyGenerator**：通过雪花算法生成数据库主键。
+
+这些主键生成器无需注册，直接使用即可：
+
+```java
+@Table("tb_account")
+public class Account {
+
+    @Id(keyType=KeyType.Generator, value="flexId")
+    private Long id;
+    
+    //getter setter
+}
+```
+
 ## 自定义主键生成器
 
 第 1 步：编写一个类，实现 `IKeyGenerator` 接口，例如：
