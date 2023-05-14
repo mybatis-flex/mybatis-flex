@@ -102,7 +102,7 @@ public class QueryCondition implements Serializable {
         if (value != null && value.getClass().isEnum()) {
             EnumWrapper enumWrapper = new EnumWrapper(value.getClass());
             if (enumWrapper.hasEnumValueAnnotation()) {
-                value = enumWrapper.getValue((Enum) value);
+                value = enumWrapper.getEnumValue((Enum) value);
             }
         }
         this.value = value;

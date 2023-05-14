@@ -35,7 +35,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, E parameter, JdbcType jdbcType) throws SQLException {
-        Object value = enumWrapper.getValue(parameter);
+        Object value = enumWrapper.getEnumValue(parameter);
         if (jdbcType == null) {
             ps.setObject(i, value);
         } else {
@@ -49,7 +49,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
         if (null == value && rs.wasNull()) {
             return null;
         }
-        return enumWrapper.getEnum(value);
+        return enumWrapper.toEnum(value);
     }
 
 
@@ -59,7 +59,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
         if (null == value && rs.wasNull()) {
             return null;
         }
-        return enumWrapper.getEnum(value);
+        return enumWrapper.toEnum(value);
     }
 
 
@@ -69,7 +69,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
         if (null == value && cs.wasNull()) {
             return null;
         }
-        return enumWrapper.getEnum(value);
+        return enumWrapper.toEnum(value);
     }
 
 

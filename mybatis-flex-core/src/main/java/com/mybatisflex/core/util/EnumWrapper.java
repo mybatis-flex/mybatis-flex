@@ -66,7 +66,7 @@ public class EnumWrapper<E extends Enum<E>> {
     }
 
 
-    public Object getValue(E object) {
+    public Object getEnumValue(E object) {
         try {
             return getter != null
                     ? getter.invoke(object)
@@ -77,9 +77,9 @@ public class EnumWrapper<E extends Enum<E>> {
     }
 
 
-    public E getEnum(Object value) {
+    public E toEnum(Object value) {
         for (E e : enums) {
-            if (value.equals(getValue(e))) {
+            if (value.equals(getEnumValue(e))) {
                 return e;
             }
         }
