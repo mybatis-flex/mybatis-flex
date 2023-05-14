@@ -43,7 +43,7 @@ import java.util.Map.Entry;
  */
 public class RowJdbc3KeyGenerator implements KeyGenerator {
 
-    private String keyProperty;
+    private final String keyProperty;
 
 
     private static final String SECOND_GENERIC_PARAM_NAME = ParamNameResolver.GENERIC_NAME_PREFIX + "2";

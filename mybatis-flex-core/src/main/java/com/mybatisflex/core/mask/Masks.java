@@ -86,7 +86,7 @@ public class Masks {
      * 手机号脱敏处理器
      * 保留前三后四，中间的为星号  "*"
      */
-    static MaskProcesser MOBILE_PROCESSER = data -> {
+    static MaskProcessor MOBILE_PROCESSOR = data -> {
         if (data instanceof String && ((String) data).startsWith("1") && ((String) data).length() == 11) {
             return mask((String) data, 3, 4, 4);
         }
@@ -98,7 +98,7 @@ public class Masks {
      * 固定电话脱敏
      * 保留前三后四，中间的为星号  "*"
      */
-    static MaskProcesser FIXED_PHONE_PROCESSER = data -> {
+    static MaskProcessor FIXED_PHONE_PROCESSOR = data -> {
         if (data instanceof String && ((String) data).length() > 5) {
             return mask((String) data, 3, 2, ((String) data).length() - 5);
         }
@@ -110,7 +110,7 @@ public class Masks {
      * 身份证号脱敏处理器
      * 身份证号的保留前三后四，中间的数为星号  "*"
      */
-    static MaskProcesser ID_CARD_NUMBER_PROCESSER = data -> {
+    static MaskProcessor ID_CARD_NUMBER_PROCESSOR = data -> {
         if (data instanceof String && ((String) data).length() >= 15) {
             return mask((String) data, 3, 4, ((String) data).length() - 7);
         }
@@ -121,7 +121,7 @@ public class Masks {
     /**
      * 姓名脱敏
      */
-    static MaskProcesser CHINESE_NAME_PROCESSER = data -> {
+    static MaskProcessor CHINESE_NAME_PROCESSOR = data -> {
         if (data instanceof String) {
             String name = (String) data;
             if (name.length() == 2) {
@@ -141,7 +141,7 @@ public class Masks {
     /**
      * 地址脱敏
      */
-    static MaskProcesser ADDRESS_PROCESSER = data -> {
+    static MaskProcessor ADDRESS_PROCESSOR = data -> {
         if (data instanceof String) {
             String address = (String) data;
             if (address.length() > 6) {
@@ -157,7 +157,7 @@ public class Masks {
     /**
      * email 脱敏
      */
-    static MaskProcesser EMAIL_PROCESSER = data -> {
+    static MaskProcessor EMAIL_PROCESSOR = data -> {
         if (data instanceof String && ((String) data).contains("@")) {
             String fullEmail = (String) data;
             int indexOf = fullEmail.lastIndexOf("@");
@@ -180,7 +180,7 @@ public class Masks {
     /**
      * 密码 脱敏
      */
-    static MaskProcesser PASSWORD_PROCESSER = data -> {
+    static MaskProcessor PASSWORD_PROCESSOR = data -> {
         if (data instanceof String ) {
             return mask((String) data, 0, 0, ((String) data).length()) ;
         }
@@ -191,7 +191,7 @@ public class Masks {
     /**
      * 车牌号 脱敏
      */
-    static MaskProcesser CAR_LICENSE_PROCESSER = data -> {
+    static MaskProcessor CAR_LICENSE_PROCESSOR = data -> {
         if (data instanceof String) {
             return mask((String) data, 3, 1, ((String) data).length() - 4);
         }
@@ -202,7 +202,7 @@ public class Masks {
     /**
      * 银行卡号 脱敏
      */
-    static MaskProcesser BANK_CARD_PROCESSER = data -> {
+    static MaskProcessor BANK_CARD_PROCESSOR = data -> {
         if (data instanceof String && ((String) data).length() >= 8) {
             return mask((String) data, 4, 4, 4);
         }

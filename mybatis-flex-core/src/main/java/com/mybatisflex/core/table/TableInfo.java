@@ -88,8 +88,8 @@ public class TableInfo {
     private List<IdInfo> primaryKeyList;
 
     //column 和 java 属性的称的关系映射
-    private Map<String, ColumnInfo> columnInfoMapping = new HashMap<>();
-    private Map<String, String> propertyColumnMapping = new HashMap<>();
+    private final Map<String, ColumnInfo> columnInfoMapping = new HashMap<>();
+    private final Map<String, String> propertyColumnMapping = new HashMap<>();
 
     private List<InsertListener> onInsertListeners;
     private List<UpdateListener> onUpdateListeners;
@@ -809,7 +809,7 @@ public class TableInfo {
     }
 
 
-    private static Map<Class<?>, List<InsertListener>> insertListenerCache = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, List<InsertListener>> insertListenerCache = new ConcurrentHashMap<>();
 
     public void invokeOnInsertListener(Object entity) {
         List<InsertListener> listeners = MapUtil.computeIfAbsent(insertListenerCache, entityClass, aClass -> {
@@ -823,7 +823,7 @@ public class TableInfo {
     }
 
 
-    private static Map<Class<?>, List<UpdateListener>> updateListenerCache = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, List<UpdateListener>> updateListenerCache = new ConcurrentHashMap<>();
 
     public void invokeOnUpdateListener(Object entity) {
         List<UpdateListener> listeners = MapUtil.computeIfAbsent(updateListenerCache, entityClass, aClass -> {
@@ -837,7 +837,7 @@ public class TableInfo {
     }
 
 
-    private static Map<Class<?>, List<SetListener>> setListenerCache = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, List<SetListener>> setListenerCache = new ConcurrentHashMap<>();
 
     public Object invokeOnSetListener(Object entity, String property, Object value) {
         List<SetListener> listeners = MapUtil.computeIfAbsent(setListenerCache, entityClass, aClass -> {

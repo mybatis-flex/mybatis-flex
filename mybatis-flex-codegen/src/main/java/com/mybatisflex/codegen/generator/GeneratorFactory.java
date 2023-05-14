@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class GeneratorFactory {
 
-    private static Map<String, IGenerator> generators = new HashMap<>();
+    private static final Map<String, IGenerator> generators = new HashMap<>();
 
     static {
         registerGenerator("entity", new EntityGenerator());

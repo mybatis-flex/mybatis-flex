@@ -21,8 +21,8 @@ package com.mybatisflex.core.query;
  */
 public class Joiner<M> {
 
-    private M queryWrapper;
-    private Join join;
+    private final M queryWrapper;
+    private final Join join;
 
     public Joiner(M queryWrapper, Join join) {
         this.queryWrapper = queryWrapper;

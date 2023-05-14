@@ -42,7 +42,7 @@ public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRec
     }
 
 
-    private Set<String> modifyAttrs = new LinkedHashSet<>();
+    private final Set<String> modifyAttrs = new LinkedHashSet<>();
 
     @Override
     public Set<String> getModifyAttrs() {

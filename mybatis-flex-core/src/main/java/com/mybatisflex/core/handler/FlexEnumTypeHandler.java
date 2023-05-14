@@ -33,8 +33,8 @@ import java.util.List;
 
 public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
 
-    private Class<?> enumPropertyType;
-    private E[] enums;
+    private final Class<?> enumPropertyType;
+    private final E[] enums;
     private Field property;
     private Method getter;
 

@@ -40,7 +40,7 @@ import java.util.Map;
 @AutoConfigureBefore({DataSourceAutoConfiguration.class})
 public class MultiDataSourceAutoConfiguration {
 
-    private Map<String, Map<String, String>> dataSourceProperties;
+    private final Map<String, Map<String, String>> dataSourceProperties;
 
 
     public MultiDataSourceAutoConfiguration(MybatisFlexProperties properties) {

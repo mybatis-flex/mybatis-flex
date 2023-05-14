@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 public class DataSourceKey {
 
-    private static ThreadLocal<String> keyThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<String> keyThreadLocal = new ThreadLocal<>();
 
     public static void use(String dataSourceKey) {
         keyThreadLocal.set(dataSourceKey);

@@ -53,20 +53,14 @@ public abstract class JdbcDialect implements IDialect {
     }
 
 
-    private Map<String, String> buildColumnRemarks(Table table, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
+    private Map<String, String> buildColumnRemarks(Table table, DatabaseMetaData dbMeta, Connection conn) {
         Map<String, String> columnRemarks = new HashMap<>();
-        ResultSet colRs = null;
-        try {
-            colRs = dbMeta.getColumns(conn.getCatalog(), null, table.getName(), null);
+        try (ResultSet colRs = dbMeta.getColumns(conn.getCatalog(), null, table.getName(), null)) {
             while (colRs.next()) {
                 columnRemarks.put(colRs.getString("COLUMN_NAME"), colRs.getString("REMARKS"));
             }
         } catch (Exception e) {
             System.err.println("无法获取字段的备注内容：" + e.getMessage());
-        } finally {
-            if (colRs != null) {
-                colRs.close();
-            }
         }
         return columnRemarks;
     }

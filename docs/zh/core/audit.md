@@ -24,19 +24,19 @@ Mybaits-Flex 消息包含了如下内容：
 
 - **platform**：平台，或者是运行的应用
 - **module**：应用模块
-- **url**：执行这个 Sql 涉及的 URL 地址
-- **user**：执行这个 Sql 涉及的 平台用户
-- **userIp**：执行这个 sql 的平台用户 IP 地址
-- **hostIp**：执行这个 sql 的服务器 IP 地址
-- **query**：sql 内容
-- **queryParams**：sql 参数
-- **queryTime**：sql 执行的时间
-- **elapsedTime**：sql 执行消耗的时间
+- **url**：执行这个 SQL 涉及的 URL 地址
+- **user**：执行这个 SQL 涉及的 平台用户
+- **userIp**：执行这个 SQL 的平台用户 IP 地址
+- **hostIp**：执行这个 SQL 的服务器 IP 地址
+- **query**：SQL 内容
+- **queryParams**：SQL 参数
+- **queryTime**：SQL 执行的时间点（当前时间）
+- **elapsedTime**：SQL 执行的消耗时间（毫秒）
 - **metas**：其他扩展元信息
 
 ::: tip 提示
-> 通过以上的消息内容可知：每个 SQL 的执行，都包含了：哪个访问用户、哪个 IP 地址访问，访问的是哪个 URL 地址，这个 SQL 的参数是什么，执行的时间是什么，执行
-> 花费了多少时间等等。这样，通过 Mybatis-flex 的 SQL 审计功能，我们能全盘了解到每个 SQL 的执行情况。
+通过以上的消息内容可知：每个 SQL 的执行，都包含了：哪个访问用户、哪个 IP 地址访问，访问的是哪个 URL 地址，这个 SQL 的参数是什么，执行的时间是什么，执行 
+花费了多少时间等等。这样，通过 Mybatis-flex 的 SQL 审计功能，我们能全盘了解到每个 SQL 的执行情况。
 :::
 
 

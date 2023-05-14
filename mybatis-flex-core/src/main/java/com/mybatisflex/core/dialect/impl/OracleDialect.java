@@ -16,7 +16,7 @@
 package com.mybatisflex.core.dialect.impl;
 
 import com.mybatisflex.core.dialect.KeywordWrap;
-import com.mybatisflex.core.dialect.LimitOffsetProcesser;
+import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
@@ -55,8 +55,8 @@ public class OracleDialect extends CommonsDialectImpl {
             "VALIDATE", "VALUES", "VARCHAR", "VARCHAR2"
     );
 
-    public OracleDialect(LimitOffsetProcesser limitOffsetProcesser) {
-        super(KeywordWrap.NONE, limitOffsetProcesser);
+    public OracleDialect(LimitOffsetProcessor limitOffsetProcessor) {
+        super(KeywordWrap.NONE, limitOffsetProcessor);
     }
 
     public boolean isCaseSensitive() {

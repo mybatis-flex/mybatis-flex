@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class MultiEntityKeyGenerator implements KeyGenerator {
 
-    private KeyGenerator keyGenerator;
+    private final KeyGenerator keyGenerator;
 
     public MultiEntityKeyGenerator(KeyGenerator keyGenerator) {
         this.keyGenerator = keyGenerator;

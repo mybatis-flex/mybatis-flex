@@ -3,7 +3,7 @@ package com.mybatisflex.coretest;
 import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
-import com.mybatisflex.core.dialect.LimitOffsetProcesser;
+import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
@@ -49,7 +49,7 @@ public class AccountSqlTester {
                 .from(ACCOUNT.as("a"), ARTICLE.as("b"))
                 .where(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
 
-        IDialect dialect = new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcesser.MYSQL);
+        IDialect dialect = new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.MYSQL);
         String sql = dialect.forSelectListByQuery(query);
         System.out.println(sql);
     }
@@ -321,28 +321,28 @@ public class AccountSqlTester {
         String sql1 = dialect1.buildSelectSql(queryWrapper);
         System.out.println(sql1);
 
-        IDialect dialect2 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.ORACLE);
+        IDialect dialect2 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.ORACLE);
         String sql2 = dialect2.buildSelectSql(queryWrapper);
         System.out.println(sql2);
 
-        IDialect dialect3 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.DB2);
+        IDialect dialect3 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.DB2);
         String sql3 = dialect3.buildSelectSql(queryWrapper);
         System.out.println(sql3);
 
-        IDialect dialect4 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.POSTGRESQL);
+        IDialect dialect4 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.POSTGRESQL);
         String sql4 = dialect4.buildSelectSql(queryWrapper);
         System.out.println(sql4);
 
-        IDialect dialect5 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.INFORMIX);
+        IDialect dialect5 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.INFORMIX);
         String sql5 = dialect5.buildSelectSql(queryWrapper);
         System.out.println(sql5);
 
-        IDialect dialect6 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.SYBASE);
+        IDialect dialect6 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.SYBASE);
         String sql6 = dialect6.buildSelectSql(queryWrapper);
         System.out.println(sql6);
 
 
-        IDialect dialect7 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcesser.FIREBIRD);
+        IDialect dialect7 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.FIREBIRD);
         String sql7 = dialect7.buildSelectSql(queryWrapper);
         System.out.println(sql7);
     }

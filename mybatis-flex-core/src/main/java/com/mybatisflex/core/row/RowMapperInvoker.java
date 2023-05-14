@@ -53,8 +53,7 @@ public class RowMapperInvoker {
 
     public int[] insertBatch(String tableName, Collection<Row> rows, int batchSize) {
         int[] results = new int[rows.size()];
-        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH,true);
-        try {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, true)) {
             RowMapper mapper = sqlSession.getMapper(RowMapper.class);
             int counter = 0;
             int resultsPos = 0;
@@ -73,7 +72,7 @@ public class RowMapperInvoker {
                 }
             }
 
-            if (counter != 0){
+            if (counter != 0) {
                 List<BatchResult> batchResults = sqlSession.flushStatements();
                 for (BatchResult batchResult : batchResults) {
                     int[] updateCounts = batchResult.getUpdateCounts();
@@ -82,8 +81,6 @@ public class RowMapperInvoker {
                     }
                 }
             }
-        } finally {
-            sqlSession.close();
         }
         return results;
     }

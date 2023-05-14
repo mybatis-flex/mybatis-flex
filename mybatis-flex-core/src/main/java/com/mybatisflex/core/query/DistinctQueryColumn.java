@@ -23,7 +23,7 @@ import java.util.List;
 
 public class DistinctQueryColumn extends QueryColumn {
 
-    private List<QueryColumn> queryColumns;
+    private final List<QueryColumn> queryColumns;
 
     public DistinctQueryColumn(QueryColumn... queryColumns) {
         this.queryColumns = CollectionUtil.newArrayList(queryColumns);
