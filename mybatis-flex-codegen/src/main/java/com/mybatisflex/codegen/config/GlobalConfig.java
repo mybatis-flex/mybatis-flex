@@ -60,7 +60,7 @@ public class GlobalConfig {
     private String tableDefClassPrefix;
 
     //tableDef 类的后缀
-    private String tableDefClassSuffix;
+    private String tableDefClassSuffix = "Def";
 
     //是否生成 mapper 类
     private boolean mapperGenerateEnable = false;
@@ -235,6 +235,9 @@ public class GlobalConfig {
     }
 
     public String getTableDefClassPrefix() {
+        if (StringUtil.isBlank(tableDefClassPrefix)) {
+            return "";
+        }
         return tableDefClassPrefix;
     }
 
