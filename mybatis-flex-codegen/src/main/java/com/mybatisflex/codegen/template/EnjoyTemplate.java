@@ -16,6 +16,7 @@
 package com.mybatisflex.codegen.template;
 
 import com.jfinal.template.Engine;
+import com.jfinal.template.expr.ast.FieldGetters;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.io.File;
@@ -31,6 +32,8 @@ public class EnjoyTemplate implements ITemplate {
             engine.setToClassPathSourceFactory();
             engine.addSharedMethod(StringUtil.class);
         });
+        // 以下配置将支持 user.girl 表达式去调用 user 对象的 boolean isGirl() 方法
+        Engine.addFieldGetterToFirst(new FieldGetters.IsMethodFieldGetter());
     }
 
     @Override
