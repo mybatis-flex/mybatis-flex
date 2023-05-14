@@ -19,6 +19,8 @@ import com.mybatisflex.codegen.template.EnjoyTemplate;
 import com.mybatisflex.codegen.template.ITemplate;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.spring.service.IService;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -77,6 +79,42 @@ public class GlobalConfig {
 
     //自定义 mapper 的父类
     private Class<?> mapperSupperClass = BaseMapper.class;
+
+    //是否生成 service 类
+    private boolean serviceGenerateEnable = false;
+
+    //是否覆盖已经存在的 service
+    private boolean serviceOverwriteEnable = false;
+
+    //service 类的前缀
+    private String serviceClassPrefix;
+
+    //service 类的后缀
+    private String serviceClassSuffix = "Service";
+
+    //service 的包名
+    private String servicePackage;
+
+    //自定义 service 的父类
+    private Class<?> serviceSupperClass = IService.class;
+
+    //是否生成 serviceImpl 类
+    private boolean serviceImplGenerateEnable = false;
+
+    //是否覆盖已经存在的 serviceImpl
+    private boolean serviceImplOverwriteEnable = false;
+
+    //serviceImpl 类的前缀
+    private String serviceImplClassPrefix;
+
+    //serviceImpl 类的后缀
+    private String serviceImplClassSuffix = "ServiceImpl";
+
+    //serviceImpl 的包名
+    private String serviceImplPackage;
+
+    //自定义 serviceImpl 的父类
+    private Class<?> serviceImplSupperClass = ServiceImpl.class;
 
     //数据库表前缀，多个前缀用英文逗号（,） 隔开
     private String tablePrefix;
@@ -264,6 +302,114 @@ public class GlobalConfig {
 
     public void setMapperSupperClass(Class<?> mapperSupperClass) {
         this.mapperSupperClass = mapperSupperClass;
+    }
+
+    public boolean isServiceGenerateEnable() {
+        return serviceGenerateEnable;
+    }
+
+    public void setServiceGenerateEnable(boolean serviceGenerateEnable) {
+        this.serviceGenerateEnable = serviceGenerateEnable;
+    }
+
+    public boolean isServiceOverwriteEnable() {
+        return serviceOverwriteEnable;
+    }
+
+    public void setServiceOverwriteEnable(boolean serviceOverwriteEnable) {
+        this.serviceOverwriteEnable = serviceOverwriteEnable;
+    }
+
+    public String getServiceClassPrefix() {
+        if (StringUtil.isBlank(serviceClassPrefix)) {
+            return "";
+        }
+        return serviceClassPrefix;
+    }
+
+    public void setServiceClassPrefix(String serviceClassPrefix) {
+        this.serviceClassPrefix = StringUtil.trimOrNull(serviceClassPrefix);
+    }
+
+    public String getServiceClassSuffix() {
+        return serviceClassSuffix;
+    }
+
+    public void setServiceClassSuffix(String serviceClassSuffix) {
+        this.serviceClassSuffix = StringUtil.trimOrNull(serviceClassSuffix);
+    }
+
+    public String getServicePackage() {
+        if (StringUtil.isBlank(servicePackage)) {
+            throw new IllegalStateException("servicePackage can not be null or blank in GlobalConfig.");
+        }
+        return servicePackage;
+    }
+
+    public void setServicePackage(String servicePackage) {
+        this.servicePackage = StringUtil.trimOrNull(servicePackage);
+    }
+
+    public Class<?> getServiceSupperClass() {
+        return serviceSupperClass;
+    }
+
+    public void setServiceSupperClass(Class<?> serviceSupperClass) {
+        this.serviceSupperClass = serviceSupperClass;
+    }
+
+    public boolean isServiceImplGenerateEnable() {
+        return serviceImplGenerateEnable;
+    }
+
+    public void setServiceImplGenerateEnable(boolean serviceImplGenerateEnable) {
+        this.serviceImplGenerateEnable = serviceImplGenerateEnable;
+    }
+
+    public boolean isServiceImplOverwriteEnable() {
+        return serviceImplOverwriteEnable;
+    }
+
+    public void setServiceImplOverwriteEnable(boolean serviceImplOverwriteEnable) {
+        this.serviceImplOverwriteEnable = serviceImplOverwriteEnable;
+    }
+
+    public String getServiceImplClassPrefix() {
+        if (StringUtil.isBlank(serviceImplClassPrefix)) {
+            return "";
+        }
+        return serviceImplClassPrefix;
+    }
+
+    public void setServiceImplClassPrefix(String serviceImplClassPrefix) {
+        this.serviceImplClassPrefix = StringUtil.trimOrNull(serviceImplClassPrefix);
+    }
+
+    public String getServiceImplClassSuffix() {
+        return serviceImplClassSuffix;
+    }
+
+    public void setServiceImplClassSuffix(String serviceImplClassSuffix) {
+        this.serviceImplClassSuffix = StringUtil.trimOrNull(serviceImplClassSuffix);
+    }
+
+    public String getServiceImplPackage() {
+        if (StringUtil.isBlank(serviceImplPackage)) {
+            throw new IllegalStateException("serviceImplPackage can not be null or blank in GlobalConfig.");
+        }
+        return serviceImplPackage;
+    }
+
+    public void setServiceImplPackage(String serviceImplPackage) {
+        this.serviceImplPackage = StringUtil.trimOrNull(serviceImplPackage);
+    }
+
+    public Class<?> getServiceImplSupperClass() {
+        return serviceImplSupperClass;
+    }
+
+    public void setServiceImplSupperClass(Class<?> serviceImplSupperClass) {
+        this.serviceImplSupperClass = serviceImplSupperClass;
     }
 
     public String getTablePrefix() {
