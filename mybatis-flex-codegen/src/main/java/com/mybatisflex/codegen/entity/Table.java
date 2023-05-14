@@ -165,7 +165,7 @@ public class Table {
         }
     }
 
-    private String getEntityJavaFileName() {
+    public String getEntityJavaFileName() {
         String entityJavaFileName = name;
         String tablePrefix = globalConfig.getTablePrefix();
         if (tablePrefix != null) {
@@ -245,6 +245,13 @@ public class Table {
                 + globalConfig.getServiceImplClassSuffix();
     }
 
+    public String buildControllerClassName() {
+        String entityJavaFileName = getEntityJavaFileName();
+        return globalConfig.getControllerClassPrefix()
+                + entityJavaFileName
+                + globalConfig.getControllerClassSuffix();
+    }
+
     /**
      * 构建 @Table(...) 注解
      */
@@ -308,6 +315,10 @@ public class Table {
 
     public String buildServiceImplName() {
         return globalConfig.getServiceImplSupperClass().getSimpleName();
+    }
+
+    public String buildControllerName() {
+        return globalConfig.getControllerSupperClass().getSimpleName();
     }
 
 

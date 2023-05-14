@@ -33,6 +33,9 @@ public class GlobalConfig {
     //代码生成目录
     private String sourceDir;
 
+    //根包名
+    private String basePackage = "com.mybatisflex";
+
     //entity 的包名
     private String entityPackage;
 
@@ -116,6 +119,27 @@ public class GlobalConfig {
     //自定义 serviceImpl 的父类
     private Class<?> serviceImplSupperClass = ServiceImpl.class;
 
+    //是否生成 controller 类
+    private boolean controllerGenerateEnable = false;
+
+    //是否覆盖已经存在的 controller
+    private boolean controllerOverwriteEnable = false;
+
+    //controller 类的前缀
+    private String controllerClassPrefix;
+
+    //controller 类的后缀
+    private String controllerClassSuffix = "Controller";
+
+    //controller 的包名
+    private String controllerPackage;
+
+    //自定义 controller 的父类
+    private Class<?> controllerSupperClass;
+
+    //rest 风格的 Controller
+    private boolean restStyleController = true;
+
     //数据库表前缀，多个前缀用英文逗号（,） 隔开
     private String tablePrefix;
 
@@ -158,9 +182,17 @@ public class GlobalConfig {
         this.sourceDir = StringUtil.trimOrNull(sourceDir);
     }
 
+    public String getBasePackage() {
+        return basePackage;
+    }
+
+    public void setBasePackage(String basePackage) {
+        this.basePackage = StringUtil.trimOrNull(basePackage);
+    }
+
     public String getEntityPackage() {
         if (StringUtil.isBlank(entityPackage)) {
-            throw new IllegalStateException("entityPackage can not be null or blank in GlobalConfig.");
+            entityPackage = basePackage + ".entity";
         }
         return entityPackage;
     }
@@ -224,8 +256,8 @@ public class GlobalConfig {
     }
 
     public String getTableDefPackage() {
-        if (StringUtil.isBlank(tableDefPackage) && StringUtil.isNotBlank(entityPackage)) {
-            return entityPackage + ".tables";
+        if (StringUtil.isBlank(tableDefPackage)) {
+            return getEntityPackage() + ".tables";
         }
         return tableDefPackage;
     }
@@ -290,7 +322,7 @@ public class GlobalConfig {
 
     public String getMapperPackage() {
         if (StringUtil.isBlank(mapperPackage)) {
-            throw new IllegalStateException("mapperPackage can not be null or blank in GlobalConfig.");
+            mapperPackage = basePackage + ".mapper";
         }
         return mapperPackage;
     }
@@ -344,7 +376,7 @@ public class GlobalConfig {
 
     public String getServicePackage() {
         if (StringUtil.isBlank(servicePackage)) {
-            throw new IllegalStateException("servicePackage can not be null or blank in GlobalConfig.");
+            servicePackage = basePackage + ".service";
         }
         return servicePackage;
     }
@@ -398,7 +430,7 @@ public class GlobalConfig {
 
     public String getServiceImplPackage() {
         if (StringUtil.isBlank(serviceImplPackage)) {
-            throw new IllegalStateException("serviceImplPackage can not be null or blank in GlobalConfig.");
+            serviceImplPackage = basePackage + ".service.impl";
         }
         return serviceImplPackage;
     }
@@ -413,6 +445,68 @@ public class GlobalConfig {
 
     public void setServiceImplSupperClass(Class<?> serviceImplSupperClass) {
         this.serviceImplSupperClass = serviceImplSupperClass;
+    }
+
+    public boolean isControllerGenerateEnable() {
+        return controllerGenerateEnable;
+    }
+
+    public void setControllerGenerateEnable(boolean controllerGenerateEnable) {
+        this.controllerGenerateEnable = controllerGenerateEnable;
+    }
+
+    public boolean isControllerOverwriteEnable() {
+        return controllerOverwriteEnable;
+    }
+
+    public void setControllerOverwriteEnable(boolean controllerOverwriteEnable) {
+        this.controllerOverwriteEnable = controllerOverwriteEnable;
+    }
+
+    public String getControllerClassPrefix() {
+        if (StringUtil.isBlank(controllerClassPrefix)) {
+            return "";
+        }
+        return controllerClassPrefix;
+    }
+
+    public void setControllerClassPrefix(String controllerClassPrefix) {
+        this.controllerClassPrefix = StringUtil.trimOrNull(controllerClassPrefix);
+    }
+
+    public String getControllerClassSuffix() {
+        return controllerClassSuffix;
+    }
+
+    public void setControllerClassSuffix(String controllerClassSuffix) {
+        this.controllerClassSuffix = StringUtil.trimOrNull(controllerClassSuffix);
+    }
+
+    public String getControllerPackage() {
+        if (StringUtil.isBlank(controllerPackage)) {
+            controllerPackage = basePackage + ".controller";
+        }
+        return controllerPackage;
+    }
+
+    public void setControllerPackage(String controllerPackage) {
+        this.controllerPackage = StringUtil.trimOrNull(controllerPackage);
+    }
+
+    public Class<?> getControllerSupperClass() {
+        return controllerSupperClass;
+    }
+
+    public void setControllerSupperClass(Class<?> controllerSupperClass) {
+        this.controllerSupperClass = controllerSupperClass;
+    }
+
+    public boolean isRestStyleController() {
+        return restStyleController;
+    }
+
+    public void setRestStyleController(boolean restStyleController) {
+        this.restStyleController = restStyleController;
     }
 
     public String getTablePrefix() {

@@ -30,6 +30,7 @@ public class GeneratorFactory {
         registerGenerator("mapper", new MapperGenerator());
         registerGenerator("service", new ServiceGenerator());
         registerGenerator("serviceImpl", new ServiceImplGenerator());
+        registerGenerator("controller", new ControllerGenerator());
         registerGenerator("tableDef", new TableDefGenerator());
     }
 
