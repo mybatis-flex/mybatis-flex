@@ -22,20 +22,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * 由 Mybatis-Flex 提供的顶级增强 Service 接口的默认实现类。
  *
+ * @param <T> 实体类（Entity）类型
+ * @param <M> 映射类（Mapper）类型
  * @author 王帅
  * @since 2023-05-01
- * @param <M> 映射类（Mapper）类型
- * @param <T> 实体类（Entity）类型
  */
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
+public class ServiceImpl<T, M extends BaseMapper<T>> implements IService<T> {
 
     @Autowired
-    protected M baseMapper;
+    protected M mapper;
 
     @Override
-    public BaseMapper<T> getBaseMapper() {
-        return baseMapper;
+    public BaseMapper<T> getMapper() {
+        return mapper;
     }
 
 }
