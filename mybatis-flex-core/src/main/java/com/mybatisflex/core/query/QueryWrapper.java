@@ -315,8 +315,14 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper orderBy(String... orderBys) {
+        if(orderBys == null || orderBys.length == 0){
+            //ignore
+            return this;
+        }
         for (String queryOrderBy : orderBys) {
-            addOrderBy(new StringQueryOrderBy(queryOrderBy));
+            if (StringUtil.isNotBlank(queryOrderBy)) {
+                addOrderBy(new StringQueryOrderBy(queryOrderBy));
+            }
         }
         return this;
     }
