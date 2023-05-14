@@ -4,6 +4,35 @@ MyBatis-Flex 提供了一个名为 `IService` 的接口，及其默认实现类 
 
 > `IService` 接口只是提供了简单且常用的 “增删改查” 方法，更多细节以及复杂的业务，还是需要使用 `BaseMapper` 进行处理。
 
+::: tip 注意
+`IService` 目前只在 Spring 扩展包中提供使用。
+:::
+
+## 示例代码
+
+接口：
+
+```java
+public interface IAccountService extends IService{
+    //你的自定义方法
+    Account customMethod();
+}
+```
+
+实现类：
+
+```java
+@Component
+public class AccountServiceImpl implements IAccountService
+        extends ServiceImpl<Account, AccountMapper>{
+    
+    @Override
+    public Account customMethod(){
+       return getMapper().selectOneByQuery("...");
+    }
+}
+```
+
 ## 保存数据
 
 `IService` 的接口提供了 save、saveOrUpdate、saveBatch 方法，用于保存数据：
