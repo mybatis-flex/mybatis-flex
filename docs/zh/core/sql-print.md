@@ -14,7 +14,7 @@ AuditManager.setMessageCollector(collector);
 ```
 
 通过以上代码，配置 `AuditManager` 的 `MessageCollector` 为 `ConsoleMessageCollector` 后，
-每次执行 sql 请求，控制台将输入内容如下：
+每次执行 SQL 请求，控制台将输入内容如下：
 
 ```
 Flex exec sql taked 2 ms >>>  SELECT * FROM `tb_account` WHERE `id` = 1
@@ -23,7 +23,7 @@ Flex exec sql taked 3 ms >>>  INSERT INTO `tb_account`(`user_name`, `age`, `birt
 
 控制台输出了完整的 SQL，以及 SQL 执行消耗时间，方便我们在开发的时候，对慢 SQL 进行排查和快速定位。
 
-或者在spring工程里，将sql打印到日志中，可以通过配置日志级别控制是否输出sql，通过配置日志Appender控制sql输出目的地。
+或者在 Spring 工程里，将 SQL 打印到日志中，可以通过配置日志级别控制是否输出 SQL ，通过配置日志 Appender 控制 SQL 输出目的地。
 ```java
 import com.mybatisflex.core.audit.AuditManager;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ public class MyBatisFlexConfiguration {
 ```
 
 ## 注意
-在执行以下语句之后执行的sql才会被打印。如果你发现你有些sql没有打印，则需要自行检查sql执行与以下语句执行的先后顺序。
+在执行以下语句之后执行的 SQL 才会被打印。如果你发现你有些 SQL 没有打印，则需要自行检查 SQL 执行与以下语句执行的先后顺序。
 ```
 AuditManager.setAuditEnable(true);
 AuditManager.setMessageCollector(collector);
