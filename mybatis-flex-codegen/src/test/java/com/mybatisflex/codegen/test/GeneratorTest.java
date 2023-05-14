@@ -20,26 +20,27 @@ import com.mybatisflex.codegen.config.ColumnConfig;
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.config.TableConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Test;
 
 public class GeneratorTest {
 
 
-//   @Test
+    //   @Test
     public void testGenerator() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
-       dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/jbootadmin?characterEncoding=utf-8");
-//        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/hh-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true");
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/jbootadmin?characterEncoding=utf-8");
+        //        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/hh-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true");
         dataSource.setUsername("root");
         dataSource.setPassword("123456");
 
-//        JdbcTypeMapping.registerMapping(BigInteger.class, Long.class);
-//        JdbcTypeMapping.registerMapping(Integer.class, Long.class);
+        //        JdbcTypeMapping.registerMapping(BigInteger.class, Long.class);
+        //        JdbcTypeMapping.registerMapping(Integer.class, Long.class);
 
         GlobalConfig globalConfig = new GlobalConfig();
         globalConfig.setSourceDir(System.getProperty("user.dir") + "/src/test/java");
-//        globalConfig.setTablePrefix("tb_");
-//        globalConfig.setEntityWithLombok(true);
+        //        globalConfig.setTablePrefix("tb_");
+        //        globalConfig.setEntityWithLombok(true);
 
         globalConfig.setEntitySupperClass(BaseEntity.class);
 
@@ -87,4 +88,43 @@ public class GeneratorTest {
         //开始生成代码
         generator.generate();
     }
+
+    @Test
+    public void testCodeGen() {
+        // 配置数据源
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
+        dataSource.setUsername("root");
+        dataSource.setPassword("12345678");
+
+        GlobalConfig globalConfig = new GlobalConfig();
+        globalConfig.setSourceDir(System.getProperty("user.dir") + "/src/test/java");
+        globalConfig.setTablePrefix("sys_");
+        globalConfig.setBasePackage("com.test");
+        globalConfig.setEntityWithLombok(true);
+
+        globalConfig.setEntitySupperClass(BaseEntity.class);
+
+        // 设置只生成哪些表
+        globalConfig.addGenerateTable("sys_user");
+
+        // 设置 entity 的包名
+        globalConfig.setTableDefGenerateEnable(true);
+
+        // 是否生成 mapper 类，默认为 false
+        globalConfig.setMapperGenerateEnable(true);
+        // 是否生成 service 类，默认为 false
+        globalConfig.setServiceGenerateEnable(true);
+        // 是否生成 serviceImpl 类，默认为 false
+        globalConfig.setServiceImplGenerateEnable(true);
+        // 是否生成 controller 类，默认为 false
+        globalConfig.setControllerGenerateEnable(true);
+
+        // 通过 datasource 和 globalConfig 创建代码生成器
+        Generator generator = new Generator(dataSource, globalConfig);
+
+        // 开始生成代码
+        generator.generate();
+    }
+
 }
