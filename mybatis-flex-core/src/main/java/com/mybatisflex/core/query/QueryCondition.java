@@ -18,6 +18,7 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.ClassUtil;
+import com.mybatisflex.core.util.EnumWrapper;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -98,6 +99,12 @@ public class QueryCondition implements Serializable {
     }
 
     public void setValue(Object value) {
+        if (value != null && value.getClass().isEnum()) {
+            EnumWrapper enumWrapper = new EnumWrapper(value.getClass());
+            if (enumWrapper.hasEnumValueAnnotation()) {
+                value = enumWrapper.getValue((Enum) value);
+            }
+        }
         this.value = value;
     }
 
@@ -120,7 +127,7 @@ public class QueryCondition implements Serializable {
         this.effective = (effective != null && effective);
     }
 
-    public <T> QueryCondition when(Predicate<T> fn){
+    public <T> QueryCondition when(Predicate<T> fn) {
         Object val = this.value;
         if (LOGIC_LIKE.equals(logic) && val instanceof String) {
             String valStr = (String) val;
