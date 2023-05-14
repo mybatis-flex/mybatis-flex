@@ -15,11 +15,11 @@
  */
 package com.mybatisflex.codegen.generator;
 
-import com.mybatisflex.codegen.generator.impl.EntityGenerator;
-import com.mybatisflex.codegen.generator.impl.MapperGenerator;
-import com.mybatisflex.codegen.generator.impl.TableDefGenerator;
+import com.mybatisflex.codegen.generator.impl.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GeneratorFactory {
 
@@ -28,6 +28,9 @@ public class GeneratorFactory {
     static {
         registerGenerator("entity", new EntityGenerator());
         registerGenerator("mapper", new MapperGenerator());
+        registerGenerator("service", new ServiceGenerator());
+        registerGenerator("serviceImpl", new ServiceImplGenerator());
+        registerGenerator("controller", new ControllerGenerator());
         registerGenerator("tableDef", new TableDefGenerator());
     }
 

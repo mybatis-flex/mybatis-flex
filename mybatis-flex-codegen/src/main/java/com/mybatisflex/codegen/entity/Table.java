@@ -20,13 +20,7 @@ import com.mybatisflex.codegen.config.TableConfig;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Comparator;
-import java.util.Arrays;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Table {
@@ -172,12 +166,7 @@ public class Table {
         }
     }
 
-    /**
-     * 构建 entity 的 Class 名称
-     *
-     * @return className
-     */
-    public String buildEntityClassName() {
+    public String getEntityJavaFileName() {
         String entityJavaFileName = name;
         String tablePrefix = globalConfig.getTablePrefix();
         if (tablePrefix != null) {
@@ -190,8 +179,18 @@ public class Table {
                 }
             }
         }
+        return StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(entityJavaFileName));
+    }
+
+    /**
+     * 构建 entity 的 Class 名称
+     *
+     * @return className
+     */
+    public String buildEntityClassName() {
+        String entityJavaFileName = getEntityJavaFileName();
         return globalConfig.getEntityClassPrefix()
-                + StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(entityJavaFileName))
+                + entityJavaFileName
                 + globalConfig.getEntityClassSuffix();
     }
 
@@ -201,20 +200,9 @@ public class Table {
      * @return className
      */
     public String buildTableDefClassName() {
-        String tableDefJavaFileName = name;
-        String tablePrefix = globalConfig.getTablePrefix();
-        if (tablePrefix != null) {
-            String[] tablePrefixes = tablePrefix.split(",");
-            for (String prefix : tablePrefixes) {
-                String trimPrefix = prefix.trim();
-                if (trimPrefix.length() > 0 && name.startsWith(trimPrefix)) {
-                    tableDefJavaFileName = name.substring(trimPrefix.length());
-                    break;
-                }
-            }
-        }
+        String tableDefJavaFileName = getEntityJavaFileName();
         return globalConfig.getTableDefClassPrefix()
-                + StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(tableDefJavaFileName))
+                + tableDefJavaFileName
                 + globalConfig.getTableDefClassSuffix();
     }
 
@@ -238,21 +226,31 @@ public class Table {
 
 
     public String buildMapperClassName() {
-        String entityJavaFileName = name;
-        String tablePrefix = globalConfig.getTablePrefix();
-        if (tablePrefix != null) {
-            String[] tablePrefixes = tablePrefix.split(",");
-            for (String prefix : tablePrefixes) {
-                String trimPrefix = prefix.trim();
-                if (trimPrefix.length() > 0 && name.startsWith(trimPrefix)) {
-                    entityJavaFileName = name.substring(trimPrefix.length());
-                    break;
-                }
-            }
-        }
+        String entityJavaFileName = getEntityJavaFileName();
         return globalConfig.getMapperClassPrefix()
-                + StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(entityJavaFileName))
+                + entityJavaFileName
                 + globalConfig.getMapperClassSuffix();
+    }
+
+    public String buildServiceClassName() {
+        String entityJavaFileName = getEntityJavaFileName();
+        return globalConfig.getServiceClassPrefix()
+                + entityJavaFileName
+                + globalConfig.getServiceClassSuffix();
+    }
+
+    public String buildServiceImplClassName() {
+        String entityJavaFileName = getEntityJavaFileName();
+        return globalConfig.getServiceImplClassPrefix()
+                + entityJavaFileName
+                + globalConfig.getServiceImplClassSuffix();
+    }
+
+    public String buildControllerClassName() {
+        String entityJavaFileName = getEntityJavaFileName();
+        return globalConfig.getControllerClassPrefix()
+                + entityJavaFileName
+                + globalConfig.getControllerClassSuffix();
     }
 
     /**
@@ -300,8 +298,28 @@ public class Table {
         return globalConfig.getMapperSupperClass().getName();
     }
 
+    public String buildServiceImport() {
+        return globalConfig.getServiceSupperClass().getName();
+    }
+
+    public String buildServiceImplImport() {
+        return globalConfig.getServiceImplSupperClass().getName();
+    }
+
     public String buildMapperName() {
         return globalConfig.getMapperSupperClass().getSimpleName();
+    }
+
+    public String buildServiceName() {
+        return globalConfig.getServiceSupperClass().getSimpleName();
+    }
+
+    public String buildServiceImplName() {
+        return globalConfig.getServiceImplSupperClass().getSimpleName();
+    }
+
+    public String buildControllerName() {
+        return globalConfig.getControllerSupperClass().getSimpleName();
     }
 
 

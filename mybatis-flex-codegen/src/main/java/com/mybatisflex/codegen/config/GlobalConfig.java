@@ -19,6 +19,8 @@ import com.mybatisflex.codegen.template.EnjoyTemplate;
 import com.mybatisflex.codegen.template.ITemplate;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.spring.service.IService;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -30,6 +32,9 @@ public class GlobalConfig {
 
     //代码生成目录
     private String sourceDir;
+
+    //根包名
+    private String basePackage = "com.mybatisflex";
 
     //entity 的包名
     private String entityPackage;
@@ -58,7 +63,7 @@ public class GlobalConfig {
     private String tableDefClassPrefix;
 
     //tableDef 类的后缀
-    private String tableDefClassSuffix;
+    private String tableDefClassSuffix = "Def";
 
     //是否生成 mapper 类
     private boolean mapperGenerateEnable = false;
@@ -77,6 +82,63 @@ public class GlobalConfig {
 
     //自定义 mapper 的父类
     private Class<?> mapperSupperClass = BaseMapper.class;
+
+    //是否生成 service 类
+    private boolean serviceGenerateEnable = false;
+
+    //是否覆盖已经存在的 service
+    private boolean serviceOverwriteEnable = false;
+
+    //service 类的前缀
+    private String serviceClassPrefix;
+
+    //service 类的后缀
+    private String serviceClassSuffix = "Service";
+
+    //service 的包名
+    private String servicePackage;
+
+    //自定义 service 的父类
+    private Class<?> serviceSupperClass = IService.class;
+
+    //是否生成 serviceImpl 类
+    private boolean serviceImplGenerateEnable = false;
+
+    //是否覆盖已经存在的 serviceImpl
+    private boolean serviceImplOverwriteEnable = false;
+
+    //serviceImpl 类的前缀
+    private String serviceImplClassPrefix;
+
+    //serviceImpl 类的后缀
+    private String serviceImplClassSuffix = "ServiceImpl";
+
+    //serviceImpl 的包名
+    private String serviceImplPackage;
+
+    //自定义 serviceImpl 的父类
+    private Class<?> serviceImplSupperClass = ServiceImpl.class;
+
+    //是否生成 controller 类
+    private boolean controllerGenerateEnable = false;
+
+    //是否覆盖已经存在的 controller
+    private boolean controllerOverwriteEnable = false;
+
+    //controller 类的前缀
+    private String controllerClassPrefix;
+
+    //controller 类的后缀
+    private String controllerClassSuffix = "Controller";
+
+    //controller 的包名
+    private String controllerPackage;
+
+    //自定义 controller 的父类
+    private Class<?> controllerSupperClass;
+
+    //rest 风格的 Controller
+    private boolean restStyleController = true;
 
     //数据库表前缀，多个前缀用英文逗号（,） 隔开
     private String tablePrefix;
@@ -120,9 +182,17 @@ public class GlobalConfig {
         this.sourceDir = StringUtil.trimOrNull(sourceDir);
     }
 
+    public String getBasePackage() {
+        return basePackage;
+    }
+
+    public void setBasePackage(String basePackage) {
+        this.basePackage = StringUtil.trimOrNull(basePackage);
+    }
+
     public String getEntityPackage() {
         if (StringUtil.isBlank(entityPackage)) {
-            throw new IllegalStateException("entityPackage can not be null or blank in GlobalConfig.");
+            entityPackage = basePackage + ".entity";
         }
         return entityPackage;
     }
@@ -186,8 +256,8 @@ public class GlobalConfig {
     }
 
     public String getTableDefPackage() {
-        if (StringUtil.isBlank(tableDefPackage) && StringUtil.isNotBlank(entityPackage)) {
-            return entityPackage + ".tables";
+        if (StringUtil.isBlank(tableDefPackage)) {
+            return getEntityPackage() + ".tables";
         }
         return tableDefPackage;
     }
@@ -197,6 +267,9 @@ public class GlobalConfig {
     }
 
     public String getTableDefClassPrefix() {
+        if (StringUtil.isBlank(tableDefClassPrefix)) {
+            return "";
+        }
         return tableDefClassPrefix;
     }
 
@@ -249,7 +322,7 @@ public class GlobalConfig {
 
     public String getMapperPackage() {
         if (StringUtil.isBlank(mapperPackage)) {
-            throw new IllegalStateException("mapperPackage can not be null or blank in GlobalConfig.");
+            mapperPackage = basePackage + ".mapper";
         }
         return mapperPackage;
     }
@@ -264,6 +337,176 @@ public class GlobalConfig {
 
     public void setMapperSupperClass(Class<?> mapperSupperClass) {
         this.mapperSupperClass = mapperSupperClass;
+    }
+
+    public boolean isServiceGenerateEnable() {
+        return serviceGenerateEnable;
+    }
+
+    public void setServiceGenerateEnable(boolean serviceGenerateEnable) {
+        this.serviceGenerateEnable = serviceGenerateEnable;
+    }
+
+    public boolean isServiceOverwriteEnable() {
+        return serviceOverwriteEnable;
+    }
+
+    public void setServiceOverwriteEnable(boolean serviceOverwriteEnable) {
+        this.serviceOverwriteEnable = serviceOverwriteEnable;
+    }
+
+    public String getServiceClassPrefix() {
+        if (StringUtil.isBlank(serviceClassPrefix)) {
+            return "";
+        }
+        return serviceClassPrefix;
+    }
+
+    public void setServiceClassPrefix(String serviceClassPrefix) {
+        this.serviceClassPrefix = StringUtil.trimOrNull(serviceClassPrefix);
+    }
+
+    public String getServiceClassSuffix() {
+        return serviceClassSuffix;
+    }
+
+    public void setServiceClassSuffix(String serviceClassSuffix) {
+        this.serviceClassSuffix = StringUtil.trimOrNull(serviceClassSuffix);
+    }
+
+    public String getServicePackage() {
+        if (StringUtil.isBlank(servicePackage)) {
+            servicePackage = basePackage + ".service";
+        }
+        return servicePackage;
+    }
+
+    public void setServicePackage(String servicePackage) {
+        this.servicePackage = StringUtil.trimOrNull(servicePackage);
+    }
+
+    public Class<?> getServiceSupperClass() {
+        return serviceSupperClass;
+    }
+
+    public void setServiceSupperClass(Class<?> serviceSupperClass) {
+        this.serviceSupperClass = serviceSupperClass;
+    }
+
+    public boolean isServiceImplGenerateEnable() {
+        return serviceImplGenerateEnable;
+    }
+
+    public void setServiceImplGenerateEnable(boolean serviceImplGenerateEnable) {
+        this.serviceImplGenerateEnable = serviceImplGenerateEnable;
+    }
+
+    public boolean isServiceImplOverwriteEnable() {
+        return serviceImplOverwriteEnable;
+    }
+
+    public void setServiceImplOverwriteEnable(boolean serviceImplOverwriteEnable) {
+        this.serviceImplOverwriteEnable = serviceImplOverwriteEnable;
+    }
+
+    public String getServiceImplClassPrefix() {
+        if (StringUtil.isBlank(serviceImplClassPrefix)) {
+            return "";
+        }
+        return serviceImplClassPrefix;
+    }
+
+    public void setServiceImplClassPrefix(String serviceImplClassPrefix) {
+        this.serviceImplClassPrefix = StringUtil.trimOrNull(serviceImplClassPrefix);
+    }
+
+    public String getServiceImplClassSuffix() {
+        return serviceImplClassSuffix;
+    }
+
+    public void setServiceImplClassSuffix(String serviceImplClassSuffix) {
+        this.serviceImplClassSuffix = StringUtil.trimOrNull(serviceImplClassSuffix);
+    }
+
+    public String getServiceImplPackage() {
+        if (StringUtil.isBlank(serviceImplPackage)) {
+            serviceImplPackage = basePackage + ".service.impl";
+        }
+        return serviceImplPackage;
+    }
+
+    public void setServiceImplPackage(String serviceImplPackage) {
+        this.serviceImplPackage = StringUtil.trimOrNull(serviceImplPackage);
+    }
+
+    public Class<?> getServiceImplSupperClass() {
+        return serviceImplSupperClass;
+    }
+
+    public void setServiceImplSupperClass(Class<?> serviceImplSupperClass) {
+        this.serviceImplSupperClass = serviceImplSupperClass;
+    }
+
+    public boolean isControllerGenerateEnable() {
+        return controllerGenerateEnable;
+    }
+
+    public void setControllerGenerateEnable(boolean controllerGenerateEnable) {
+        this.controllerGenerateEnable = controllerGenerateEnable;
+    }
+
+    public boolean isControllerOverwriteEnable() {
+        return controllerOverwriteEnable;
+    }
+
+    public void setControllerOverwriteEnable(boolean controllerOverwriteEnable) {
+        this.controllerOverwriteEnable = controllerOverwriteEnable;
+    }
+
+    public String getControllerClassPrefix() {
+        if (StringUtil.isBlank(controllerClassPrefix)) {
+            return "";
+        }
+        return controllerClassPrefix;
+    }
+
+    public void setControllerClassPrefix(String controllerClassPrefix) {
+        this.controllerClassPrefix = StringUtil.trimOrNull(controllerClassPrefix);
+    }
+
+    public String getControllerClassSuffix() {
+        return controllerClassSuffix;
+    }
+
+    public void setControllerClassSuffix(String controllerClassSuffix) {
+        this.controllerClassSuffix = StringUtil.trimOrNull(controllerClassSuffix);
+    }
+
+    public String getControllerPackage() {
+        if (StringUtil.isBlank(controllerPackage)) {
+            controllerPackage = basePackage + ".controller";
+        }
+        return controllerPackage;
+    }
+
+    public void setControllerPackage(String controllerPackage) {
+        this.controllerPackage = StringUtil.trimOrNull(controllerPackage);
+    }
+
+    public Class<?> getControllerSupperClass() {
+        return controllerSupperClass;
+    }
+
+    public void setControllerSupperClass(Class<?> controllerSupperClass) {
+        this.controllerSupperClass = controllerSupperClass;
+    }
+
+    public boolean isRestStyleController() {
+        return restStyleController;
+    }
+
+    public void setRestStyleController(boolean restStyleController) {
+        this.restStyleController = restStyleController;
     }
 
     public String getTablePrefix() {

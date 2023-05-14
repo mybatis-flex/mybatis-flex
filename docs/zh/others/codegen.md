@@ -95,6 +95,9 @@ public class GlobalConfig {
     //代码生成目录
     private String sourceDir;
 
+    //根包名
+    private String basePackage = "com.mybatisflex";
+
     //entity 的包名
     private String entityPackage;
 
@@ -122,7 +125,7 @@ public class GlobalConfig {
     private String tableDefClassPrefix;
 
     //tableDef 类的后缀
-    private String tableDefClassSuffix;
+    private String tableDefClassSuffix = "Def";
 
     //是否生成 mapper 类
     private boolean mapperGenerateEnable = false;
@@ -141,6 +144,63 @@ public class GlobalConfig {
 
     //自定义 mapper 的父类
     private Class<?> mapperSupperClass = BaseMapper.class;
+
+    //是否生成 service 类
+    private boolean serviceGenerateEnable = false;
+
+    //是否覆盖已经存在的 service
+    private boolean serviceOverwriteEnable = false;
+
+    //service 类的前缀
+    private String serviceClassPrefix;
+
+    //service 类的后缀
+    private String serviceClassSuffix = "Service";
+
+    //service 的包名
+    private String servicePackage;
+
+    //自定义 service 的父类
+    private Class<?> serviceSupperClass = IService.class;
+
+    //是否生成 serviceImpl 类
+    private boolean serviceImplGenerateEnable = false;
+
+    //是否覆盖已经存在的 serviceImpl
+    private boolean serviceImplOverwriteEnable = false;
+
+    //serviceImpl 类的前缀
+    private String serviceImplClassPrefix;
+
+    //serviceImpl 类的后缀
+    private String serviceImplClassSuffix = "ServiceImpl";
+
+    //serviceImpl 的包名
+    private String serviceImplPackage;
+
+    //自定义 serviceImpl 的父类
+    private Class<?> serviceImplSupperClass = ServiceImpl.class;
+
+    //是否生成 controller 类
+    private boolean controllerGenerateEnable = false;
+
+    //是否覆盖已经存在的 controller
+    private boolean controllerOverwriteEnable = false;
+
+    //controller 类的前缀
+    private String controllerClassPrefix;
+
+    //controller 类的后缀
+    private String controllerClassSuffix = "Controller";
+
+    //controller 的包名
+    private String controllerPackage;
+
+    //自定义 controller 的父类
+    private Class<?> controllerSupperClass;
+
+    //rest 风格的 Controller
+    private boolean restStyleController = true;
 
     //数据库表前缀，多个前缀用英文逗号（,） 隔开
     private String tablePrefix;
@@ -258,6 +318,7 @@ public class EnjoyTemplate implements ITemplate {
             engine.setToClassPathSourceFactory();
             engine.addSharedMethod(StringUtil.class);
         });
+        Engine.addFieldGetterToFirst(new FieldGetters.IsMethodFieldGetter());
     }
 
     /**
@@ -293,13 +354,16 @@ public class EnjoyTemplate implements ITemplate {
 
 ## 添加其他产物的生成
 
-在 Mybatis-Flex 的代码生成器中，支持如下 3 种类型的的产物生成
+在 Mybatis-Flex 的代码生成器中，支持如下 6 种类型的的产物生成
 
 - 1、Entity 实体类
 - 2、Mapper 类（默认关闭）
 - 3、TableDef 表定义辅助类（默认关闭）
+- 4、Service 类（默认关闭）
+- 5、ServiceImpl 类（默认关闭）
+- 6、Controller 类（默认关闭）
 
-这 3 种产物，都是通过实现 `IGenerator` 来实现的，比如 Entity 实体类的代码如下：
+这 6 种产物，都是通过实现 `IGenerator` 来实现的，比如 Entity 实体类的代码如下：
 
 ```java
 public class EntityGenerator implements IGenerator {
@@ -322,7 +386,7 @@ public class EntityGenerator implements IGenerator {
 }
 ```
 
-如果我们想生成其他产物，比如 `Service`、`Controller` 或者 `html` 等，可以通过编写自己的类，来实现 IGenerator 接口，例如：
+如果我们想生成其他产物，比如 `html` ，可以通过编写自己的类，来实现 IGenerator 接口，例如：
 
 ```java
 public class HtmlGenerator implements IGenerator {
