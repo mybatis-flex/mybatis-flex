@@ -43,14 +43,9 @@ public interface IDialect {
 
     String forSelectOneById(String tableName, String[] primaryKeys, Object[] primaryValues);
 
-    String forSelectListByQuery(QueryWrapper queryWrapper);
-
-    String forSelectCountByQuery(QueryWrapper queryWrapper);
-
+    String forSelectByQuery(QueryWrapper queryWrapper);
 
     String buildSelectSql(QueryWrapper queryWrapper);
-
-    String buildSelectCountSql(QueryWrapper queryWrapper);
 
     String buildDeleteSql(QueryWrapper queryWrapper);
 

@@ -255,15 +255,10 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     @Override
-    public String forSelectListByQuery(QueryWrapper queryWrapper) {
+    public String forSelectByQuery(QueryWrapper queryWrapper) {
         return buildSelectSql(queryWrapper);
     }
 
-
-    @Override
-    public String forSelectCountByQuery(QueryWrapper queryWrapper) {
-        return buildSelectCountSql(queryWrapper);
-    }
 
 
     ////////////build query sql///////
@@ -319,29 +314,6 @@ public class CommonsDialectImpl implements IDialect {
         return sqlBuilder;
     }
 
-
-    @Override
-    public String buildSelectCountSql(QueryWrapper queryWrapper) {
-        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
-        List<QueryTable> joinTables = CPI.getJoinTables(queryWrapper);
-        List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
-
-        //ignore selectColumns
-        StringBuilder sqlBuilder = new StringBuilder("SELECT COUNT(*) FROM ");
-        sqlBuilder.append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
-
-
-        buildJoinSql(sqlBuilder, queryWrapper, allTables);
-        buildWhereSql(sqlBuilder, queryWrapper, allTables, true);
-        buildGroupBySql(sqlBuilder, queryWrapper, allTables);
-        buildHavingSql(sqlBuilder, queryWrapper, allTables);
-
-        // ignore orderBy and limit
-        // buildOrderBySql(sqlBuilder, queryWrapper);
-        // buildLimitSql(sqlBuilder, queryWrapper);
-
-        return sqlBuilder.toString();
-    }
 
     @Override
     public String buildDeleteSql(QueryWrapper queryWrapper) {

@@ -248,7 +248,7 @@ public class RowSqlProvider {
         ProviderUtil.setSqlArgs(params, valueArray);
 
 
-        return DialectFactory.getDialect().forSelectListByQuery(queryWrapper);
+        return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
     }
 
     /**
@@ -258,7 +258,7 @@ public class RowSqlProvider {
      * @return sql
      * @see RowMapper#selectCountByQuery(String, QueryWrapper)
      */
-    public static String selectCountByQuery(Map params) {
+    public static String selectObjectByQuery(Map params) {
         String tableName = ProviderUtil.getTableName(params);
 
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
@@ -267,7 +267,7 @@ public class RowSqlProvider {
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
 
-        return DialectFactory.getDialect().forSelectCountByQuery(queryWrapper);
+        return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
     }
 
 

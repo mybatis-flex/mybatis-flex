@@ -318,7 +318,7 @@ public class EntitySqlProvider {
         CPI.setSelectColumnsIfNecessary(queryWrapper, tableInfo.getDefaultQueryColumn());
         CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
 
-        return DialectFactory.getDialect().forSelectListByQuery(queryWrapper);
+        return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
     }
 
     /**
@@ -327,9 +327,9 @@ public class EntitySqlProvider {
      * @param params
      * @param context
      * @return sql
-     * @see com.mybatisflex.core.BaseMapper#selectCountByQuery(QueryWrapper)
+     * @see com.mybatisflex.core.BaseMapper#selectObjectByQuery(QueryWrapper)
      */
-    public static String selectCountByQuery(Map params, ProviderContext context) {
+    public static String selectObjectByQuery(Map params, ProviderContext context) {
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
         if (queryWrapper == null) {
             throw FlexExceptions.wrap("queryWrapper can not be null.");
@@ -342,7 +342,7 @@ public class EntitySqlProvider {
         ProviderUtil.setSqlArgs(params, values);
 
         CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
-        return DialectFactory.getDialect().forSelectCountByQuery(queryWrapper);
+        return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
     }
 
 

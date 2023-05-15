@@ -20,7 +20,7 @@ public class ArticleSqlTester {
                 .from(ARTICLE);
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(query);
+        String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
     }
 

@@ -154,6 +154,14 @@ public class RowMapperInvoker {
         return execute(mapper -> mapper.selectAll(tableName));
     }
 
+    public Object selectObjectByQuery(String tableName, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.selectObjectByQuery(tableName, queryWrapper));
+    }
+
+    public List<Object> selectObjectListByQuery(String tableName, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.selectObjectListByQuery(tableName, queryWrapper));
+    }
+
     public Object selectObject(String sql, Object... args) {
         return execute(mapper -> mapper.selectObject(sql, args));
     }

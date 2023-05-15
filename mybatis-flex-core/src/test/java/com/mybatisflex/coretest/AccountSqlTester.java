@@ -26,7 +26,7 @@ public class AccountSqlTester {
                 .from(ACCOUNT);
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(query);
+        String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
     }
 
@@ -37,7 +37,7 @@ public class AccountSqlTester {
                 .from(ACCOUNT);
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(query);
+        String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
     }
 
@@ -50,7 +50,7 @@ public class AccountSqlTester {
                 .where(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
 
         IDialect dialect = new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.MYSQL);
-        String sql = dialect.forSelectListByQuery(query);
+        String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
     }
 
@@ -61,7 +61,7 @@ public class AccountSqlTester {
                 .from(ACCOUNT);
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(query);
+        String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
     }
 
@@ -73,7 +73,7 @@ public class AccountSqlTester {
                 .from(ACCOUNT);
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(query);
+        String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
     }
 
@@ -88,21 +88,7 @@ public class AccountSqlTester {
                 .unionAll(select(ARTICLE.ID).from(ARTICLE));
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(query);
-        System.out.println(sql);
-    }
-
-
-    @Test
-    public void testSelectCountSql() {
-        QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.ge(100))
-                .and(ACCOUNT.USER_NAME.like("michael"));
-
-        IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectCountByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
     }
 
@@ -116,7 +102,7 @@ public class AccountSqlTester {
                 .and(ACCOUNT.USER_NAME.like("michael"));
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
 
@@ -129,7 +115,7 @@ public class AccountSqlTester {
                 .and(column("aaa").in("michael", "aaa"));
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
 
@@ -144,7 +130,7 @@ public class AccountSqlTester {
                 .and(ACCOUNT.USER_NAME.like("michael"));
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
@@ -162,7 +148,7 @@ public class AccountSqlTester {
                 .and(ACCOUNT.USER_NAME.like("michael"));
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
@@ -183,7 +169,7 @@ public class AccountSqlTester {
                 );
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
 
@@ -198,7 +184,7 @@ public class AccountSqlTester {
                 .or(ACCOUNT.AGE.in(18, 19, 20).or(ACCOUNT.USER_NAME.like("michael")));
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
 
@@ -212,7 +198,7 @@ public class AccountSqlTester {
                 ));
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
 
@@ -224,7 +210,7 @@ public class AccountSqlTester {
                 .groupBy(ACCOUNT.USER_NAME);
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
 
@@ -237,7 +223,7 @@ public class AccountSqlTester {
                 .having(ACCOUNT.AGE.between(18, 25));
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
 
@@ -250,7 +236,7 @@ public class AccountSqlTester {
                 .where(ACCOUNT.AGE.ge(10));
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
 
@@ -265,7 +251,7 @@ public class AccountSqlTester {
                 .where(ACCOUNT.AGE.ge(10));
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
 
@@ -282,7 +268,7 @@ public class AccountSqlTester {
                 .where(ACCOUNT.AGE.ge(10));
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
 
@@ -294,7 +280,7 @@ public class AccountSqlTester {
                 .orderBy(ACCOUNT.AGE.asc(), ACCOUNT.USER_NAME.desc().nullsLast());
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(queryWrapper);
+        String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
 
@@ -374,7 +360,7 @@ public class AccountSqlTester {
                 .orderBy(ACCOUNT.ID.desc())
                 .limit(10, 10);
 
-        String mysqlSql = new CommonsDialectImpl().forSelectListByQuery(queryWrapper);
+        String mysqlSql = new CommonsDialectImpl().forSelectByQuery(queryWrapper);
         System.out.println(">>>>> mysql: \n" + mysqlSql);
         System.out.println(">>>>> mysql: \n" + Arrays.toString(CPI.getValueArray(queryWrapper)));
 

@@ -432,6 +432,27 @@ public class Db {
 
 
     /**
+     * 根据 queryWrapper 查询内容，数据返回的应该只有 1 行 1 列
+     * @param tableName 表名
+     * @param queryWrapper query 封装
+     * @return 数据内容
+     */
+    public static Object selectObject(String tableName, QueryWrapper queryWrapper) {
+        return invoker().selectObjectByQuery(tableName, queryWrapper);
+    }
+
+
+    /**
+     * 根据 queryWrapper 查询内容，数据返回的应该只有 1 行 1 列
+     * @param queryWrapper query 封装
+     * @return 数据内容
+     */
+    public static Object selectObject(QueryWrapper queryWrapper) {
+        return invoker().selectObjectByQuery(null, queryWrapper);
+    }
+
+
+    /**
      * 查询某列内容，数据返回应该有 多行 1 列
      *
      * @param sql  sql 内容
@@ -439,6 +460,27 @@ public class Db {
      */
     public static List<Object> selectObjectList(String sql, Object... args) {
         return invoker().selectObjectList(sql, args);
+    }
+
+
+    /**
+     * 根据 queryWrapper 查询内容，数据返回的应该只有 1 行 1 列
+     * @param tableName 表名
+     * @param queryWrapper query 封装
+     * @return 数据内容
+     */
+    public static Object selectObjectList(String tableName, QueryWrapper queryWrapper) {
+        return invoker().selectObjectListByQuery(tableName, queryWrapper);
+    }
+
+
+    /**
+     * 根据 queryWrapper 查询内容，数据返回的应该只有 1 行 1 列
+     * @param queryWrapper query 封装
+     * @return 数据内容
+     */
+    public static Object selectObjectList(QueryWrapper queryWrapper) {
+        return invoker().selectObjectListByQuery(null, queryWrapper);
     }
 
 
@@ -485,7 +527,7 @@ public class Db {
     public static long selectCountByQuery(QueryWrapper queryWrapper) {
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
         if (queryTables == null || queryTables.isEmpty()) {
-            throw FlexExceptions.wrap("table must not be null or empty in Db.selectCountByQuery");
+            throw FlexExceptions.wrap("Query tables must not be null or empty in Db.selectCountByQuery");
         }
         return invoker().selectCountByQuery(null, queryWrapper);
     }

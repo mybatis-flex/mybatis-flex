@@ -18,17 +18,22 @@ package com.mybatisflex.core.row;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.provider.EntitySqlProvider;
 import com.mybatisflex.core.provider.RowSqlProvider;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static com.mybatisflex.core.query.QueryMethods.count;
 
 
 public interface RowMapper {
@@ -92,7 +97,7 @@ public interface RowMapper {
      * @param row       id 和 值的数据，可以通过 {@link Row#ofKey(String, Object)} 来创建
      * @return 执行影响的行数
      */
-    default int deleteById(@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROW) Row row) {
+    default int deleteById(String tableName, Row row) {
         return deleteById(tableName, StringUtil.join(",", row.obtainsPrimaryKeyStrings()), row.obtainsPrimaryValues());
     }
 
@@ -278,7 +283,7 @@ public interface RowMapper {
      * @param tableName 表名
      * @return row 列表
      */
-    default List<Row> selectAll(@Param(FlexConsts.TABLE_NAME) String tableName) {
+    default List<Row> selectAll(String tableName) {
         return selectListByQuery(tableName, QueryWrapper.create());
     }
 
@@ -325,15 +330,56 @@ public interface RowMapper {
 
 
     /**
-     * 根据 queryWrapper 来查询数量
+     * 根据 queryWrapper 1 条数据
+     * queryWrapper 执行的结果应该只有 1 列，例如 QueryWrapper.create().select(ACCOUNT.id).where...
      *
      * @param tableName    表名
      * @param queryWrapper queryWrapper
-     * @return 数量
-     * @see RowSqlProvider#selectCountByQuery(Map)
+     * @return 数据
      */
-    @SelectProvider(value = RowSqlProvider.class, method = "selectCountByQuery")
-    long selectCountByQuery(@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+    default Object selectObjectByQuery(String tableName, QueryWrapper queryWrapper) {
+        queryWrapper.limit(1);
+        List<Object> objects = selectObjectListByQuery(tableName, queryWrapper);
+        if (objects == null || objects.isEmpty()) {
+            return null;
+        }
+        return objects.get(0);
+    }
+
+
+    /**
+     * 根据 queryWrapper 来查询数据列表
+     * queryWrapper 执行的结果应该只有 1 列，例如 QueryWrapper.create().select(ACCOUNT.id).where...
+     *
+     * @param queryWrapper 查询包装器
+     * @return 数据列表
+     * @see RowSqlProvider#selectObjectByQuery(Map)
+     */
+    @SelectProvider(type = EntitySqlProvider.class, method = "selectObjectByQuery")
+    List<Object> selectObjectListByQuery(@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+
+
+    /**
+     * 查询数据量
+     *
+     * @param tableName    表名
+     * @param queryWrapper 查询包装器
+     * @return 数据量
+     */
+    default long selectCountByQuery(String tableName, QueryWrapper queryWrapper) {
+        List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
+        if (CollectionUtil.isEmpty(selectColumns)) {
+            queryWrapper.select(count());
+        }
+        Object object = selectObjectByQuery(tableName, queryWrapper);
+        if (object == null) {
+            return 0;
+        } else if (object instanceof Number) {
+            return ((Number) object).longValue();
+        } else {
+            throw FlexExceptions.wrap("selectCountByQuery error, Can not get number value for queryWrapper: %s", queryWrapper);
+        }
+    }
 
 
     /**
@@ -347,6 +393,7 @@ public interface RowMapper {
     default Page<Row> paginate(String tableName, Page<Row> page, QueryWrapper queryWrapper) {
 
         List<QueryColumn> groupByColumns = CPI.getGroupByColumns(queryWrapper);
+        List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 
         // 只有 totalRow 小于 0 的时候才会去查询总量
         // 这样方便用户做总数缓存，而非每次都要去查询总量
@@ -355,6 +402,8 @@ public interface RowMapper {
 
             //清除group by 去查询数据
             CPI.setGroupByColumns(queryWrapper, null);
+            CPI.setSelectColumns(queryWrapper, Arrays.asList(count()));
+
             long count = selectCountByQuery(tableName, queryWrapper);
             page.setTotalRow(count);
         }
@@ -365,6 +414,10 @@ public interface RowMapper {
 
         //恢复数量查询清除的 groupBy
         CPI.setGroupByColumns(queryWrapper, groupByColumns);
+
+        //重置 selectColumns
+        CPI.setSelectColumns(queryWrapper, selectColumns);
+
         int offset = page.getPageSize() * (page.getPageNumber() - 1);
         queryWrapper.limit(offset, page.getPageSize());
         List<Row> records = selectListByQuery(tableName, queryWrapper);
