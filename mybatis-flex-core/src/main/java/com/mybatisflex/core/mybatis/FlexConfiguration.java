@@ -42,12 +42,15 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.Transaction;
+import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.Proxy;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FlexConfiguration extends Configuration {
 
+    private static Map<Class<?>,MappedStatement> dynamicMappedStatementCache = new ConcurrentHashMap<>();
 
     public FlexConfiguration(Environment environment) {
         super(environment);
@@ -133,7 +136,9 @@ public class FlexConfiguration extends Configuration {
         //动态 resultsMap
         if (id.endsWith(FlexConsts.METHOD_SELECT_LIST_BY_QUERY_AS)) {
             Class<?> asType = MappedStatementTypes.getCurrentType();
-            ms = replaceResultMap(ms, TableInfoFactory.ofEntityClass(asType));
+            return MapUtil.computeIfAbsent(dynamicMappedStatementCache, asType,
+                    aClass -> replaceResultMap(ms, TableInfoFactory.ofEntityClass(asType))
+            );
         }
 
         return ms;
