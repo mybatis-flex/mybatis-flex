@@ -16,6 +16,8 @@
 package com.mybatisflex.codegen.generator.impl;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.PackageConfig;
+import com.mybatisflex.codegen.config.StrategyConfig;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
 
@@ -23,6 +25,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * TableDef 生成器。
+ *
+ * @author Michael Yang
+ * @author 王帅
+ */
 public class TableDefGenerator implements IGenerator {
 
     private String templatePath = "/templates/enjoy/tableDef.tpl";
@@ -41,15 +49,24 @@ public class TableDefGenerator implements IGenerator {
             return;
         }
 
-        String tableDefPackagePath = globalConfig.getTableDefPackage().replace(".", "/");
-        File tableDefJavaFile = new File(globalConfig.getSourceDir(), tableDefPackagePath + "/" +
+        PackageConfig packageConfig = globalConfig.getPackageConfig();
+        StrategyConfig strategyConfig = globalConfig.getStrategyConfig();
+
+        String tableDefPackagePath = packageConfig.getTableDefPackage().replace(".", "/");
+        File tableDefJavaFile = new File(packageConfig.getSourceDir(), tableDefPackagePath + "/" +
                 table.buildTableDefClassName() + ".java");
 
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("table", table);
-        params.put("globalConfig", globalConfig);
+        if (tableDefJavaFile.exists() && !strategyConfig.isOverwriteEnable()) {
+            return;
+        }
 
-        globalConfig.getTemplateEngine().generate(params, templatePath, tableDefJavaFile);
+
+        Map<String, Object> params = new HashMap<>(3);
+        params.put("table", table);
+        params.put("packageConfig", packageConfig);
+        params.put("tableDefConfig", globalConfig.getTableDefConfig());
+
+        strategyConfig.getTemplateEngine().generate(params, templatePath, tableDefJavaFile);
     }
 }

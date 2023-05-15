@@ -1,23 +1,23 @@
-package #(globalConfig.controllerPackage);
+package #(packageConfig.controllerPackage);
 
 import org.springframework.web.bind.annotation.RequestMapping;
-#if(globalConfig.restStyleController)
+#if(controllerConfig.restStyle)
 import org.springframework.web.bind.annotation.RestController;
 #else
 import org.springframework.stereotype.Controller;
 #end
-#if(globalConfig.controllerSupperClass)
-import #(table.buildControllerImport())
+#if(controllerConfig.supperClass)
+import #(controllerConfig.buildSuperClassImport())
 #end
 
-#if(globalConfig.restStyleController)
+#if(controllerConfig.restStyle)
 @RestController
 #else
 @Controller
 #end
 @RequestMapping("/#(table.getEntityJavaFileName())")
-#if(globalConfig.controllerSupperClass)
-public class #(table.table.buildControllerClassName()) extends #(table.buildControllerName()) {
+#if(controllerConfig.supperClass)
+public class #(table.buildControllerClassName()) extends #(controllerConfig.buildSuperClassName()) {
 
 }
 #else

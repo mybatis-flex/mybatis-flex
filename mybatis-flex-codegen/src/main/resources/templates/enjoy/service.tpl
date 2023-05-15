@@ -1,8 +1,8 @@
-package #(globalConfig.servicePackage);
+package #(packageConfig.servicePackage);
 
-import #(table.buildServiceImport());
-import #(globalConfig.entityPackage).#(table.buildEntityClassName());
+import #(serviceConfig.buildSuperClassImport());
+import #(packageConfig.entityPackage).#(table.buildEntityClassName());
 
-public interface #(table.buildServiceClassName()) extends #(table.buildServiceName())<#(table.buildEntityClassName())> {
+public interface #(table.buildServiceClassName()) extends #(serviceConfig.buildSuperClassName())<#(table.buildEntityClassName())> {
 
 }

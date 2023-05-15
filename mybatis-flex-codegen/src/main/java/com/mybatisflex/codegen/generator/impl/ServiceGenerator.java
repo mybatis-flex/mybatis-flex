@@ -16,6 +16,8 @@
 package com.mybatisflex.codegen.generator.impl;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.PackageConfig;
+import com.mybatisflex.codegen.config.StrategyConfig;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
 
@@ -29,7 +31,6 @@ import java.util.Map;
  * @author 王帅
  * @since 2023-05-14
  */
-@SuppressWarnings("unused")
 public class ServiceGenerator implements IGenerator {
 
     private String templatePath = "/templates/enjoy/service.tpl";
@@ -47,21 +48,25 @@ public class ServiceGenerator implements IGenerator {
         if (!globalConfig.isServiceGenerateEnable()) {
             return;
         }
+
+        PackageConfig packageConfig = globalConfig.getPackageConfig();
+        StrategyConfig strategyConfig = globalConfig.getStrategyConfig();
         
-        String servicePackagePath = globalConfig.getServicePackage().replace(".", "/");
-        File serviceJavaFile = new File(globalConfig.getSourceDir(), servicePackagePath + "/" +
+        String servicePackagePath = packageConfig.getServicePackage().replace(".", "/");
+        File serviceJavaFile = new File(packageConfig.getSourceDir(), servicePackagePath + "/" +
                 table.buildServiceClassName() + ".java");
 
 
-        if (serviceJavaFile.exists() && !globalConfig.isServiceOverwriteEnable()) {
+        if (serviceJavaFile.exists() && !strategyConfig.isOverwriteEnable()) {
             return;
         }
 
 
-        Map<String, Object> params = new HashMap<>(2);
+        Map<String, Object> params = new HashMap<>(3);
         params.put("table", table);
-        params.put("globalConfig", globalConfig);
+        params.put("packageConfig", packageConfig);
+        params.put("serviceConfig", globalConfig.getServiceConfig());
 
-        globalConfig.getTemplateEngine().generate(params, templatePath, serviceJavaFile);
+        strategyConfig.getTemplateEngine().generate(params, templatePath, serviceJavaFile);
     }
 }

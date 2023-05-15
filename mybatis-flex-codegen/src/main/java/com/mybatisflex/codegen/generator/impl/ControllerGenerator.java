@@ -16,6 +16,8 @@
 package com.mybatisflex.codegen.generator.impl;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.PackageConfig;
+import com.mybatisflex.codegen.config.StrategyConfig;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
 
@@ -29,7 +31,6 @@ import java.util.Map;
  * @author 王帅
  * @since 2023-05-14
  */
-@SuppressWarnings("unused")
 public class ControllerGenerator implements IGenerator {
 
     private String templatePath = "/templates/enjoy/controller.tpl";
@@ -47,21 +48,25 @@ public class ControllerGenerator implements IGenerator {
         if (!globalConfig.isControllerGenerateEnable()) {
             return;
         }
+
+        PackageConfig packageConfig = globalConfig.getPackageConfig();
+        StrategyConfig strategyConfig = globalConfig.getStrategyConfig();
         
-        String controllerPackagePath = globalConfig.getControllerPackage().replace(".", "/");
-        File controllerJavaFile = new File(globalConfig.getSourceDir(), controllerPackagePath + "/" +
+        String controllerPackagePath = packageConfig.getControllerPackage().replace(".", "/");
+        File controllerJavaFile = new File(packageConfig.getSourceDir(), controllerPackagePath + "/" +
                 table.buildControllerClassName() + ".java");
 
 
-        if (controllerJavaFile.exists() && !globalConfig.isControllerOverwriteEnable()) {
+        if (controllerJavaFile.exists() && strategyConfig.isOverwriteEnable()) {
             return;
         }
 
 
-        Map<String, Object> params = new HashMap<>(2);
+        Map<String, Object> params = new HashMap<>(3);
         params.put("table", table);
-        params.put("globalConfig", globalConfig);
+        params.put("packageConfig", packageConfig);
+        params.put("controllerConfig", globalConfig.getControllerConfig());
 
-        globalConfig.getTemplateEngine().generate(params, templatePath, controllerJavaFile);
+        strategyConfig.getTemplateEngine().generate(params, templatePath, controllerJavaFile);
     }
 }

@@ -1,4 +1,4 @@
-package #(globalConfig.entityPackage).tables;
+package #(packageConfig.tableDefPackage);
 
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.table.TableDef;

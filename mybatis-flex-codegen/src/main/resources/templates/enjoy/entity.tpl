@@ -1,4 +1,4 @@
-package #(globalConfig.entityPackage);
+package #(packageConfig.entityPackage);
 
 #for(importClass:table.buildImports())
 import #(importClass);
@@ -13,7 +13,7 @@ public class #(table.buildEntityClassName())#(table.buildExtends())#(table.build
     #(column.buildAnnotations())private #(column.propertySimpleType) #(column.property);
 #end
 
-    #if(!globalConfig.isEntityWithLombok())
+    #if(!entityConfig.isWithLombok())
     #for(column: table.columns)
     public #(column.propertySimpleType) #(column.getterMethod())() {
         return #(column.property);

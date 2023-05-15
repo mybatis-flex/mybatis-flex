@@ -16,6 +16,8 @@
 package com.mybatisflex.codegen.generator.impl;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.PackageConfig;
+import com.mybatisflex.codegen.config.StrategyConfig;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
 
@@ -29,7 +31,6 @@ import java.util.Map;
  * @author 王帅
  * @since 2023-05-14
  */
-@SuppressWarnings("unused")
 public class ServiceImplGenerator implements IGenerator {
 
     private String templatePath = "/templates/enjoy/serviceImpl.tpl";
@@ -47,21 +48,25 @@ public class ServiceImplGenerator implements IGenerator {
         if (!globalConfig.isServiceImplGenerateEnable()) {
             return;
         }
+
+        PackageConfig packageConfig = globalConfig.getPackageConfig();
+        StrategyConfig strategyConfig = globalConfig.getStrategyConfig();
         
-        String serviceImplPackagePath = globalConfig.getServiceImplPackage().replace(".", "/");
-        File serviceImplJavaFile = new File(globalConfig.getSourceDir(), serviceImplPackagePath + "/" +
+        String serviceImplPackagePath = packageConfig.getServiceImplPackage().replace(".", "/");
+        File serviceImplJavaFile = new File(packageConfig.getSourceDir(), serviceImplPackagePath + "/" +
                 table.buildServiceImplClassName() + ".java");
 
 
-        if (serviceImplJavaFile.exists() && !globalConfig.isServiceImplOverwriteEnable()) {
+        if (serviceImplJavaFile.exists() && !strategyConfig.isOverwriteEnable()) {
             return;
         }
 
 
-        Map<String, Object> params = new HashMap<>(2);
+        Map<String, Object> params = new HashMap<>(3);
         params.put("table", table);
-        params.put("globalConfig", globalConfig);
+        params.put("packageConfig", packageConfig);
+        params.put("serviceImplConfig", globalConfig.getServiceImplConfig());
 
-        globalConfig.getTemplateEngine().generate(params, templatePath, serviceImplJavaFile);
+        strategyConfig.getTemplateEngine().generate(params, templatePath, serviceImplJavaFile);
     }
 }

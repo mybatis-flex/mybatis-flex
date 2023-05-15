@@ -16,6 +16,8 @@
 package com.mybatisflex.codegen.generator.impl;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.PackageConfig;
+import com.mybatisflex.codegen.config.StrategyConfig;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
 
@@ -23,6 +25,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Mapper 生成器。
+ *
+ * @author Michael Yang
+ * @author 王帅
+ */
 public class MapperGenerator implements IGenerator {
 
     private String templatePath = "/templates/enjoy/mapper.tpl";
@@ -40,21 +48,25 @@ public class MapperGenerator implements IGenerator {
         if (!globalConfig.isMapperGenerateEnable()) {
             return;
         }
+
+        PackageConfig packageConfig = globalConfig.getPackageConfig();
+        StrategyConfig strategyConfig = globalConfig.getStrategyConfig();
         
-        String mapperPackagePath = globalConfig.getMapperPackage().replace(".", "/");
-        File mapperJavaFile = new File(globalConfig.getSourceDir(), mapperPackagePath + "/" +
+        String mapperPackagePath = packageConfig.getMapperPackage().replace(".", "/");
+        File mapperJavaFile = new File(packageConfig.getSourceDir(), mapperPackagePath + "/" +
                 table.buildMapperClassName() + ".java");
 
 
-        if (mapperJavaFile.exists() && !globalConfig.isMapperOverwriteEnable()) {
-            return;//ignore
+        if (mapperJavaFile.exists() && !strategyConfig.isOverwriteEnable()) {
+            return;
         }
 
 
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>(3);
         params.put("table", table);
-        params.put("globalConfig", globalConfig);
+        params.put("packageConfig", packageConfig);
+        params.put("mapperConfig", globalConfig.getMapperConfig());
 
-        globalConfig.getTemplateEngine().generate(params, templatePath, mapperJavaFile);
+        strategyConfig.getTemplateEngine().generate(params, templatePath, mapperJavaFile);
     }
 }

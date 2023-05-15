@@ -16,6 +16,8 @@
 package com.mybatisflex.codegen.generator.impl;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.PackageConfig;
+import com.mybatisflex.codegen.config.StrategyConfig;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
 
@@ -23,6 +25,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Entity 生成器。
+ *
+ * @author Michael Yang
+ * @author 王帅
+ */
 public class EntityGenerator implements IGenerator {
 
     private String templatePath = "/templates/enjoy/entity.tpl";
@@ -37,14 +45,28 @@ public class EntityGenerator implements IGenerator {
     @Override
     public void generate(Table table, GlobalConfig globalConfig) {
 
-        String entityPackagePath = globalConfig.getEntityPackage().replace(".", "/");
-        File entityJavaFile = new File(globalConfig.getSourceDir(), entityPackagePath + "/" +
+        if (!globalConfig.isEntityGenerateEnable()) {
+            return;
+        }
+
+        PackageConfig packageConfig = globalConfig.getPackageConfig();
+        StrategyConfig strategyConfig = globalConfig.getStrategyConfig();
+
+        String entityPackagePath = packageConfig.getEntityPackage().replace(".", "/");
+        File entityJavaFile = new File(packageConfig.getSourceDir(), entityPackagePath + "/" +
                 table.buildEntityClassName() + ".java");
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("table", table);
-        params.put("globalConfig", globalConfig);
 
-        globalConfig.getTemplateEngine().generate(params, templatePath, entityJavaFile);
+        if (entityJavaFile.exists() && !strategyConfig.isOverwriteEnable()) {
+            return;
+        }
+
+
+        Map<String, Object> params = new HashMap<>(3);
+        params.put("table", table);
+        params.put("packageConfig", packageConfig);
+        params.put("entityConfig", globalConfig.getEntityConfig());
+
+        strategyConfig.getTemplateEngine().generate(params, templatePath, entityJavaFile);
     }
 }

@@ -1,8 +1,8 @@
-package #(globalConfig.mapperPackage);
+package #(packageConfig.mapperPackage);
 
-import #(table.buildMapperImport());
-import #(globalConfig.entityPackage).#(table.buildEntityClassName());
+import #(mapperConfig.buildSuperClassImport());
+import #(packageConfig.entityPackage).#(table.buildEntityClassName());
 
-public interface #(table.buildMapperClassName()) extends #(table.buildMapperName())<#(table.buildEntityClassName())> {
+public interface #(table.buildMapperClassName()) extends #(mapperConfig.buildSuperClassName())<#(table.buildEntityClassName())> {
 
 }
