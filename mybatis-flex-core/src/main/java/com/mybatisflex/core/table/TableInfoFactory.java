@@ -117,7 +117,6 @@ public class TableInfoFactory {
         tableInfo.setEntityClass(entityClass);
         tableInfo.setReflector(new Reflector(entityClass));
 
-
         //初始化表名
         Table table = entityClass.getAnnotation(Table.class);
         if (table != null) {

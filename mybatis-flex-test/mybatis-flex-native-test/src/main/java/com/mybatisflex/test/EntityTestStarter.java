@@ -28,6 +28,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static com.mybatisflex.test.table.Tables.ACCOUNT;
+import static com.mybatisflex.test.table.Tables.ARTICLE;
 
 public class EntityTestStarter {
 
@@ -80,6 +81,16 @@ public class EntityTestStarter {
 
         Object object = accountMapper.selectObjectByQuery(wrapper2);
         System.out.println(object);
+
+        QueryWrapper asWrapper = QueryWrapper.create()
+                .select(ARTICLE.ALL_COLUMNS)
+                .select(ACCOUNT.USER_NAME,ACCOUNT.AGE,ACCOUNT.BIRTHDAY)
+                .from(ARTICLE)
+                .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+                .where(ACCOUNT.ID.ge(0));
+
+        List<ArticleDTO> articleDTOS = accountMapper.selectListByQueryAs(asWrapper, ArticleDTO.class);
+        System.out.println(articleDTOS);
 
 
 //        QueryWrapper queryWrapper = new QueryWrapper();

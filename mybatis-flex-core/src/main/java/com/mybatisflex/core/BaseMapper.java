@@ -323,6 +323,19 @@ public interface BaseMapper<T> {
         return (entities == null || entities.isEmpty()) ? null : entities.get(0);
     }
 
+
+    /**
+     * 根据 queryWrapper 构建的条件来查询 1 条数据
+     *
+     * @param queryWrapper query 条件
+     * @param asType       接收类型
+     * @return 数据内容
+     */
+    default <R> R selectOneByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
+        List<R> entities = selectListByQueryAs(queryWrapper.limit(1), asType);
+        return (entities == null || entities.isEmpty()) ? null : entities.get(0);
+    }
+
     /**
      * 根据多个主键来查询多条数据
      *
@@ -389,6 +402,17 @@ public interface BaseMapper<T> {
     @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
     List<T> selectListByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
+
+    /**
+     * 根据 query 来构建条件查询数据列表，要求返回的数据为 asType
+     * 这种场景一般用在 left join 时，有多出了 entity 本身的字段内容，可以转换为 dto、vo 等场景时
+     *
+     * @param queryWrapper 查询条件
+     * @param asType       接收数据类型
+     * @return 数据列表
+     */
+    @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
+    <R> List<R> selectListByQueryAs(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper, Class<R> asType);
 
     /**
      * 查询全部数据
@@ -545,10 +569,44 @@ public interface BaseMapper<T> {
      * @return page 数据
      */
     default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper) {
-
         List<QueryColumn> groupByColumns = CPI.getGroupByColumns(queryWrapper);
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 
+        // 只有 totalRow 小于 0 的时候才会去查询总量
+        // 这样方便用户做总数缓存，而非每次都要去查询总量
+        // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
+        if (page.getTotalRow() < 0) {
+
+            //清除group by 去查询数据
+            CPI.setGroupByColumns(queryWrapper, null);
+            CPI.setSelectColumns(queryWrapper, Arrays.asList(count()));
+
+            long count = selectCountByQuery(queryWrapper);
+            page.setTotalRow(count);
+        }
+
+        if (page.getTotalRow() == 0 || page.getPageNumber() > page.getTotalPage()) {
+            return page;
+        }
+
+
+        //恢复数量查询清除的 groupBy
+        CPI.setGroupByColumns(queryWrapper, groupByColumns);
+
+        //重置 selectColumns
+        CPI.setSelectColumns(queryWrapper, selectColumns);
+
+        int offset = page.getPageSize() * (page.getPageNumber() - 1);
+        queryWrapper.limit(offset, page.getPageSize());
+        List<T> rows = selectListByQuery(queryWrapper);
+        page.setRecords(rows);
+        return page;
+    }
+
+
+    default <R> Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
+        List<QueryColumn> groupByColumns = CPI.getGroupByColumns(queryWrapper);
+        List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 
         // 只有 totalRow 小于 0 的时候才会去查询总量
         // 这样方便用户做总数缓存，而非每次都要去查询总量
@@ -575,8 +633,8 @@ public interface BaseMapper<T> {
 
         int offset = page.getPageSize() * (page.getPageNumber() - 1);
         queryWrapper.limit(offset, page.getPageSize());
-        List<T> rows = selectListByQuery(queryWrapper);
-        page.setRecords(rows);
+        List<R> records = selectListByQueryAs(queryWrapper, asType);
+        page.setRecords(records);
         return page;
     }
 }

@@ -127,6 +127,20 @@ public class FlexConfiguration extends Configuration {
 
 
     @Override
+    public MappedStatement getMappedStatement(String id) {
+        MappedStatement ms = super.getMappedStatement(id);
+
+        //动态 resultsMap
+        if (id.endsWith(FlexConsts.METHOD_SELECT_LIST_BY_QUERY_AS)) {
+            Class<?> asType = MappedStatementTypes.getCurrentType();
+            ms = replaceResultMap(ms, TableInfoFactory.ofEntityClass(asType));
+        }
+
+        return ms;
+    }
+
+
+    @Override
     public void addMappedStatement(MappedStatement ms) {
         //替换 RowMapper.insert 的主键生成器
         //替换 RowMapper.insertBatchWithFirstRowColumns 的主键生成器
@@ -141,7 +155,7 @@ public class FlexConfiguration extends Configuration {
         //entity select
         else if (StringUtil.endsWithAny(ms.getId(), "selectOneById", "selectListByIds"
                 , "selectListByQuery")) {
-            ms = replaceResultMap(ms);
+            ms = replaceResultMap(ms, getTableInfo(ms));
         }
 
         super.addMappedStatement(ms);
@@ -151,9 +165,8 @@ public class FlexConfiguration extends Configuration {
     /**
      * 替换 entity 查询的 ResultMap
      */
-    private MappedStatement replaceResultMap(MappedStatement ms) {
+    private MappedStatement replaceResultMap(MappedStatement ms, TableInfo tableInfo) {
 
-        TableInfo tableInfo = getTableInfo(ms);
         if (tableInfo == null) {
             return ms;
         }
