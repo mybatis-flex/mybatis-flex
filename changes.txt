@@ -1,3 +1,27 @@
+mybatis-flex v1.2.4 20230515:
+新增：Db.updateBatch() 方法，用于批量修改或者插入等场景
+新增：通过雪花算法生成数据库主键，内置雪花算法，感谢 @王帅
+新增：QueryCondition 可以直接传入枚举变量，自动读取 @EnumValue
+新增：代码生成器添加 Service、ServiceImpl、Controller 的生成功能，感谢 @王帅
+新增：Db 和 BaseMapper 添加 selectObject 和 selectObjectList 等方法
+新增：BaseMapper 添加 selectOneByQueryAs 等方法，方便在 left join 等场景直接转换为 dto vo 等;
+优化：不变属性添加 final 关键字，感谢 @庄佳彬
+优化：修改拼写错误，processer->processor， 感谢 @庄佳彬
+优化：Page.of() 方法
+优化：为 IService.java 添加常用的方法
+优化：修改 SqlUtil.retBool 为 SqlUtil.toBool
+修复：orderBy 参数里传入 null 或者 空值，就会抛出异常的问题 #23
+文档：优化 mybatis-flex.com 的目录结构
+文档：新增内置主键生成器说明文档，感谢 @王帅
+文档：修正数据脱敏中的一些描述错误
+文档：IService 文档添加代码示例
+文档：优化 "部分字段更新" 的相关文档
+文档：更新代码生成器的相关文档，感谢 @王帅
+文档：添加关于 BaseMapper 进行关联查询的相关文档
+文档：添加在 Spring 的场景下使用 @Transactional 注解的注意事项
+
+
+
 mybatis-flex v1.2.3 20230511:
 新增：MaskManager 添加 withoutMask 模板方法，感谢 @pengpeng
 新增：TenantManager 添加 withoutTenantCondition 模板方法，感谢 @pengpeng
