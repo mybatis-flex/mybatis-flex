@@ -73,9 +73,11 @@ Db.tx(() -> {
 
 ## @Transactional 
 
-Mybatis-Flex 已支持 Spring 框架的 `@Transactional`，在使用 Spring 的情况下，可以使用 `@Transactional` 进行事务管理。
-
+Mybatis-Flex 已支持 Spring 框架的 `@Transactional`，在使用 SpringBoot 的情况下，可以直接使用 `@Transactional` 进行事务管理。 
 同理，使用 Spring 的 `TransactionTemplate` 进行事务管理也是没问题的。
+
+> 注意：若项目未使用 SpringBoot，只用到了 Spring，需要参考 MyBatis-Flex 的 [FlexTransactionAutoConfiguration](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-spring-boot-starter/src/main/java/com/mybatisflex/spring/boot/FlexTransactionAutoConfiguration.java)
+> 进行事务配置，才能正常使用 `@Transactional` 注解。
 
 ## 特征
 
