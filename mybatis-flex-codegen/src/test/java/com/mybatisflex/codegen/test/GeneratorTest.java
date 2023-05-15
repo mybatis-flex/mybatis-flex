@@ -38,40 +38,36 @@ public class GeneratorTest {
         //        JdbcTypeMapping.registerMapping(Integer.class, Long.class);
 
         GlobalConfig globalConfig = new GlobalConfig();
-        globalConfig.setSourceDir(System.getProperty("user.dir") + "/src/test/java");
-        //        globalConfig.setTablePrefix("tb_");
-        //        globalConfig.setEntityWithLombok(true);
 
-        globalConfig.setEntitySupperClass(BaseEntity.class);
+        //设置生成文件目录和根包
+        globalConfig.getPackageConfig()
+                .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
+                .setBasePackage("com.test");
 
         //设置只生成哪些表
-        globalConfig.addGenerateTable("account", "account_session");
+        globalConfig.getStrategyConfig()
+                .addGenerateTable("account", "account_session");
 
-        //设置 entity 的包名
-        globalConfig.setEntityPackage("com.test.entity");
-        globalConfig.setEntityClassPrefix("My");
-        globalConfig.setEntityClassSuffix("Entity");
+        //设置生成 entity
+        globalConfig.enableEntity()
+                .setWithLombok(true)
+                .setClassPrefix("My")
+                .setClassSuffix("Entity")
+                .setSupperClass(BaseEntity.class);
 
-        //设置 entity 的包名
-        globalConfig.setTableDefGenerateEnable(true);
-        globalConfig.setTableDefPackage("com.test.entity.tables");
-        globalConfig.setTableDefClassPrefix("My");
-        globalConfig.setTableDefClassSuffix("TableDef");
+        //设置生成 tableDef
+        globalConfig.enableTableDef();
 
-        //是否生成 mapper 类，默认为 false
-        globalConfig.setMapperGenerateEnable(true);
-        globalConfig.setMapperClassPrefix("Flex");
-        globalConfig.setMapperClassSuffix("Dao");
-
-        //设置 mapper 类的包名
-        globalConfig.setMapperPackage("com.test.mapper");
-        globalConfig.setMapperSupperClass(MyBaseMapper.class);
-
+        //设置生成 mapper
+        globalConfig.enableMapper()
+                .setClassPrefix("Flex")
+                .setClassSuffix("Dao")
+                .setSupperClass(MyBaseMapper.class);
 
         TableConfig tableConfig = new TableConfig();
         tableConfig.setTableName("account");
         tableConfig.setUpdateListenerClass(MyUpdateListener.class);
-        globalConfig.addTableConfig(tableConfig);
+        globalConfig.getStrategyConfig().addTableConfig(tableConfig);
 
 
         //可以单独配置某个列
@@ -79,7 +75,7 @@ public class GeneratorTest {
         columnConfig.setColumnName("tenant_id");
         columnConfig.setLarge(true);
         columnConfig.setVersion(true);
-        globalConfig.addColumnConfig("account", columnConfig);
+        globalConfig.getStrategyConfig().addColumnConfig("account", columnConfig);
 
 
         //通过 datasource 和 globalConfig 创建代码生成器
@@ -91,39 +87,44 @@ public class GeneratorTest {
 
     @Test
     public void testCodeGen() {
-        // 配置数据源
+        //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
         dataSource.setUsername("root");
         dataSource.setPassword("12345678");
 
         GlobalConfig globalConfig = new GlobalConfig();
-        globalConfig.setSourceDir(System.getProperty("user.dir") + "/src/test/java");
-        globalConfig.setTablePrefix("sys_");
-        globalConfig.setBasePackage("com.test");
-        globalConfig.setEntityWithLombok(true);
 
-        globalConfig.setEntitySupperClass(BaseEntity.class);
+        //设置生成文件目录和根包
+        globalConfig.getPackageConfig()
+                .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
+                .setBasePackage("com.test");
 
-        // 设置只生成哪些表
-        globalConfig.addGenerateTable("sys_user");
+        //设置表前缀和只生成哪些表
+        globalConfig.getStrategyConfig()
+                .setTablePrefix("sys_")
+                .addGenerateTable("sys_user");
 
-        // 设置 entity 的包名
-        globalConfig.setTableDefGenerateEnable(true);
+        //配置生成 entity
+        globalConfig.enableEntity()
+                .setWithLombok(true)
+                .setSupperClass(BaseEntity.class);
 
-        // 是否生成 mapper 类，默认为 false
-        globalConfig.setMapperGenerateEnable(true);
-        // 是否生成 service 类，默认为 false
-        globalConfig.setServiceGenerateEnable(true);
-        // 是否生成 serviceImpl 类，默认为 false
-        globalConfig.setServiceImplGenerateEnable(true);
-        // 是否生成 controller 类，默认为 false
-        globalConfig.setControllerGenerateEnable(true);
+        //配置生成 mapper
+        globalConfig.enableMapper();
+        //配置生成 service
+        globalConfig.enableService();
+        //配置生成 serviceImpl
+        globalConfig.enableServiceImpl();
+        //配置生成 controller
+        globalConfig.enableController();
+        //配置生成 tableDef
+        globalConfig.enableTableDef();
 
-        // 通过 datasource 和 globalConfig 创建代码生成器
+        //通过 datasource 和 globalConfig 创建代码生成器
         Generator generator = new Generator(dataSource, globalConfig);
 
-        // 开始生成代码
+        //开始生成代码
         generator.generate();
     }
 

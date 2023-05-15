@@ -4,14 +4,13 @@ import com.mybatisflex.codegen.Generator;
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.dialect.IDialect;
 import com.zaxxer.hikari.HikariDataSource;
-import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.Statement;
 
 public class SqliteGeneratorTest {
 
-//    @Test
+    //    @Test
     public void testGenerator3() {
 
         //配置数据源
@@ -24,20 +23,21 @@ public class SqliteGeneratorTest {
 
 
         GlobalConfig globalConfig = new GlobalConfig();
-        globalConfig.setSourceDir(System.getProperty("user.dir") + "/src/test/java");
+
+        //配置生成文件目录与根包
+        globalConfig.getPackageConfig()
+                .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
+                .setBasePackage("com.test");
 
         //设置只生成哪些表
-        globalConfig.addGenerateTable("person");
+        globalConfig.getStrategyConfig()
+                .addGenerateTable("person");
 
-        //设置 entity 的包名
-        globalConfig.setEntityPackage("com.test.entity");
+        globalConfig.enableEntity()
+                .setWithLombok(true);
 
-        //是否生成 mapper 类，默认为 false
-        globalConfig.setMapperGenerateEnable(true);
-        globalConfig.setEntityWithLombok(true);
-
-        //设置 mapper 类的包名
-        globalConfig.setMapperPackage("com.test.mapper");
+        //设置生成 mapper 类
+        globalConfig.enableMapper();
 
 
         Generator generator = new Generator(dataSource, globalConfig, IDialect.SQLITE);
