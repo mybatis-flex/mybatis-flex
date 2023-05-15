@@ -77,7 +77,30 @@ List<ArticleDTO> results = mapper.selectListByQueryAs(query, ArticleDTO.class);
 System.out.println(results);
 ```
 
+**注意事项！**
 
+`selectOneByQueryAs`、`selectListByQueryAs` 、`paginateAs` 等方法中的 `asType` 参数类型，
+一样支持使用 `@Column`、`@ColumnMask` 以及 `@Table` 的 `onInsert`、`onUpdate`、`onSet` 配置。
+
+同时，要求 `asType` 中必须定义有属性来接收数据库返回的数据类型，因此，以下的使用示例是 **错误** 的：
+
+```java
+QueryWrapper query = QueryWrapper.create()
+        .select(ACCOUNT.id)
+        .from(ACCOUNT);
+
+List<Long> results = mapper.selectOneByQueryAs(query, Long.class);
+```
+以上的示例是 **错误** 的，原因是 `Long` 这个类型，并没有名称为 `id` 的属性。
+
+在以上的场景中，可以使用如下的方法（以下代码示例是正确的）：
+```java
+QueryWrapper query = QueryWrapper.create()
+        .select(ACCOUNT.id)
+        .from(ACCOUNT);
+
+List<Long> results = mapper.selectObjectListByQueryAs(query, Long.class);
+```
 
 ## 分页查询
 
