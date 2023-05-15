@@ -24,7 +24,7 @@ public interface IAccountService extends IService{
 ```java
 @Component
 public class AccountServiceImpl implements IAccountService
-        extends ServiceImpl<Account, AccountMapper>{
+        extends ServiceImpl<AccountMapper, Account>{
     
     @Override
     public Account customMethod(){
