@@ -24,6 +24,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class RowMapperInvoker {
@@ -50,39 +51,11 @@ public class RowMapperInvoker {
         return execute(mapper -> mapper.insertBySql(sql, args));
     }
 
-
-    public int[] insertBatch(String tableName, Collection<Row> rows, int batchSize) {
-        int[] results = new int[rows.size()];
-        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, true)) {
-            RowMapper mapper = sqlSession.getMapper(RowMapper.class);
-            int counter = 0;
-            int resultsPos = 0;
-            for (Row row : rows) {
-                if (++counter > batchSize) {
-                    counter = 0;
-                    List<BatchResult> batchResults = sqlSession.flushStatements();
-                    for (BatchResult batchResult : batchResults) {
-                        int[] updateCounts = batchResult.getUpdateCounts();
-                        for (int updateCount : updateCounts) {
-                            results[resultsPos++] = updateCount;
-                        }
-                    }
-                } else {
-                    mapper.insert(tableName, row);
-                }
-            }
-
-            if (counter != 0) {
-                List<BatchResult> batchResults = sqlSession.flushStatements();
-                for (BatchResult batchResult : batchResults) {
-                    int[] updateCounts = batchResult.getUpdateCounts();
-                    for (int updateCount : updateCounts) {
-                        results[resultsPos++] = updateCount;
-                    }
-                }
-            }
-        }
-        return results;
+    public int[] insertBatch(String tableName, List<Row> rows, int batchSize) {
+        return executeBatch(rows.size(), batchSize, (mapper, index) -> {
+            Row row = rows.get(index);
+            mapper.insert(tableName, row);
+        });
     }
 
     public int insertBatchWithFirstRowColumns(String tableName, List<Row> rows) {
@@ -112,6 +85,48 @@ public class RowMapperInvoker {
 
     public int updateBySql(String sql, Object... args) {
         return execute(mapper -> mapper.updateBySql(sql, args));
+    }
+
+    public int[] updateBatch(String sql, BatchArgsSetter batchArgsSetter) {
+        int batchSize = batchArgsSetter.getBatchSize();
+        return executeBatch(batchSize, batchSize,
+                (mapper, index) -> mapper.updateBySql(sql, batchArgsSetter.getSqlArgs(index))
+        );
+    }
+
+
+    public int[] executeBatch(int totalSize, int batchSize, BiConsumer<RowMapper, Integer> consumer) {
+        int[] results = new int[totalSize];
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, true)) {
+            RowMapper mapper = sqlSession.getMapper(RowMapper.class);
+            int counter = 0;
+            int resultsPos = 0;
+            for (int i = 0; i < batchSize; i++) {
+                if (++counter > batchSize) {
+                    counter = 0;
+                    List<BatchResult> batchResults = sqlSession.flushStatements();
+                    for (BatchResult batchResult : batchResults) {
+                        int[] updateCounts = batchResult.getUpdateCounts();
+                        for (int updateCount : updateCounts) {
+                            results[resultsPos++] = updateCount;
+                        }
+                    }
+                } else {
+                    consumer.accept(mapper, i);
+                }
+            }
+
+            if (counter != 0) {
+                List<BatchResult> batchResults = sqlSession.flushStatements();
+                for (BatchResult batchResult : batchResults) {
+                    int[] updateCounts = batchResult.getUpdateCounts();
+                    for (int updateCount : updateCounts) {
+                        results[resultsPos++] = updateCount;
+                    }
+                }
+            }
+        }
+        return results;
     }
 
     public int updateById(String tableName, Row row) {

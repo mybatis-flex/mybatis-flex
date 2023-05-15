@@ -86,7 +86,7 @@ public class Db {
      * @param tableName 表名
      * @param rows      数据
      */
-    public static int[] insertBatch(String tableName, Collection<Row> rows) {
+    public static int[] insertBatch(String tableName, List<Row> rows) {
         return insertBatch(tableName, rows, rows.size());
     }
 
@@ -97,12 +97,12 @@ public class Db {
      * @param rows      数据
      * @param batchSize 每次提交的数据量
      */
-    public static int[] insertBatch(String tableName, Collection<Row> rows, int batchSize) {
+    public static int[] insertBatch(String tableName, List<Row> rows, int batchSize) {
         return invoker().insertBatch(tableName, rows, batchSize);
     }
 
     /**
-     * 批量插入数据，根据第一条内容来构建插入的字段，效率比 {@link #insertBatch(String, Collection, int)} 高
+     * 批量插入数据，根据第一条内容来构建插入的字段，效率比 {@link #insertBatch(String, List, int)} 高
      *
      * @param tableName 表名
      * @param rows      数据
@@ -193,6 +193,17 @@ public class Db {
      */
     public static int updateBySql(String sql, Object... args) {
         return invoker().updateBySql(sql, args);
+    }
+
+
+    /**
+     *
+     * @param sql
+     * @param batchArgsSetter
+     * @return
+     */
+    public static int[] updateBatch(String sql, BatchArgsSetter batchArgsSetter){
+        return invoker().updateBatch(sql, batchArgsSetter);
     }
 
 
