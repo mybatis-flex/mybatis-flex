@@ -45,30 +45,29 @@ public class Codegen {
         //创建配置内容
         GlobalConfig globalConfig = new GlobalConfig();
 
-        //设置只生成哪些表
-        globalConfig.addGenerateTable("account", "account_session");
+        //设置根包
+        globalConfig.getPackageConfig()
+                .setBasePackage("com.test");
 
-        //设置 entity 的包名
-        globalConfig.setEntityPackage("com.test.entity");
+        //设置表前缀和只生成哪些表
+        globalConfig.getStrategyConfig()
+                .setTablePrefix("tb_")
+                .addGenerateTable("account", "account_session");
 
-        //设置表前缀
-        //globalConfig.setTablePrefix("tb_");
-        
-        //设置 entity 是否使用 Lombok
-        //globalConfig.setEntityWithLombok(true);
+        //设置生成 entity 并启用 Lombok
+        globalConfig.enableEntity()
+                .setWithLombok(true);
 
-        //是否生成 mapper 类，默认为 false
-        //globalConfig.setMapperGenerateEnable(true);
-
-        //设置 mapper 类的包名
-        globalConfig.setMapperPackage("com.test.mapper");
+        //设置生成 mapper
+        globalConfig.enableMapper();
 
         //可以单独配置某个列
         ColumnConfig columnConfig = new ColumnConfig();
         columnConfig.setColumnName("tenant_id");
         columnConfig.setLarge(true);
         columnConfig.setVersion(true);
-        globalConfig.addColumnConfig("account", columnConfig);
+        globalConfig.getStrategyConfig()
+                .addColumnConfig("account", columnConfig);
 
         //通过 datasource 和 globalConfig 创建代码生成器
         Generator generator = new Generator(dataSource, globalConfig);
@@ -84,158 +83,266 @@ public class Codegen {
 
 关闭 APT 的 Mapper 类文件生成，请参考：[APT 设置章节](../others/apt.md)
 
-## 全局配置 GlobalConfig 
+## 使用介绍
 
-GlobalConfig 支持更多的配置如下：
+在 Mybatis-Flex 的代码生成器中，支持如下 6 种类型的的产物生成：
+
+- Entity 实体类
+- Mapper 映射类
+- TableDef 表定义辅助类
+- Service 服务类
+- ServiceImpl 服务实现类
+- Controller 控制类
+
+启用或关闭某种类型产物的生成，代码如下：
+
+```java
+
+// 开启 Entity 的生成
+globalConfig.enableEntity();
+// 关闭 Entity 的生成
+globalConfig.disableEntity();
+
+```
+
+所有方法均支持链式调用配置，代码如下：
+
+```java
+
+// 设置生成 Entity 并启用 Lombok、设置父类
+globalConfig.enableEntity()
+        .setWithLombok(true)
+        .setSupperClass(BaseEntity.class);
+
+```
+
+## 全局配置 `GlobalConfig`
+
+GlobalConfig 全局配置项包含多个子配置项：
 
 ```java
 
 public class GlobalConfig {
 
-    //代码生成目录
+    private final PackageConfig packageConfig;
+    private final StrategyConfig strategyConfig;
+
+    private EntityConfig entityConfig;
+    private MapperConfig mapperConfig;
+    private ServiceConfig serviceConfig;
+    private ServiceImplConfig serviceImplConfig;
+    private ControllerConfig controllerConfig;
+    private TableDefConfig tableDefConfig;
+
+    private Map<String, Object> customConfig;
+    
+}
+
+```
+
+## 包配置 `PackageConfig`
+
+PackageConfig 支持的配置如下：
+
+```java
+
+public class PackageConfig {
+
+    //代码生成目录。
     private String sourceDir;
 
-    //根包名
+    //根包。
     private String basePackage = "com.mybatisflex";
 
-    //entity 的包名
+    //Entity 所在包。
     private String entityPackage;
 
-    //entity 类的前缀
-    private String entityClassPrefix;
-
-    //entity 类的后缀
-    private String entityClassSuffix;
-
-    //entity 类的父类，可以自定义一些 BaseEntity 类
-    private Class<?> entitySupperClass;
-
-    //entity 默认实现的接口
-    private Class<?>[] entityInterfaces = {Serializable.class};
-
-    //entity 是否使用 Lombok
-    private boolean entityWithLombok = false;
-
-    private boolean tableDefGenerateEnable = false;
-
-    //tableDef 的包名
-    private String tableDefPackage;
-
-    //tableDef 类的前缀
-    private String tableDefClassPrefix;
-
-    //tableDef 类的后缀
-    private String tableDefClassSuffix = "Def";
-
-    //是否生成 mapper 类
-    private boolean mapperGenerateEnable = false;
-
-    //是否覆盖已经存在的 mapper
-    private boolean mapperOverwriteEnable = false;
-
-    //mapper 类的前缀
-    private String mapperClassPrefix;
-
-    //mapper 类的后缀
-    private String mapperClassSuffix = "Mapper";
-
-    //mapper 的包名
+    //Mapper 所在包。
     private String mapperPackage;
 
-    //自定义 mapper 的父类
-    private Class<?> mapperSupperClass = BaseMapper.class;
-
-    //是否生成 service 类
-    private boolean serviceGenerateEnable = false;
-
-    //是否覆盖已经存在的 service
-    private boolean serviceOverwriteEnable = false;
-
-    //service 类的前缀
-    private String serviceClassPrefix;
-
-    //service 类的后缀
-    private String serviceClassSuffix = "Service";
-
-    //service 的包名
+    //Service 所在包。
     private String servicePackage;
 
-    //自定义 service 的父类
-    private Class<?> serviceSupperClass = IService.class;
-
-    //是否生成 serviceImpl 类
-    private boolean serviceImplGenerateEnable = false;
-
-    //是否覆盖已经存在的 serviceImpl
-    private boolean serviceImplOverwriteEnable = false;
-
-    //serviceImpl 类的前缀
-    private String serviceImplClassPrefix;
-
-    //serviceImpl 类的后缀
-    private String serviceImplClassSuffix = "ServiceImpl";
-
-    //serviceImpl 的包名
+    //ServiceImpl 所在包。
     private String serviceImplPackage;
 
-    //自定义 serviceImpl 的父类
-    private Class<?> serviceImplSupperClass = ServiceImpl.class;
-
-    //是否生成 controller 类
-    private boolean controllerGenerateEnable = false;
-
-    //是否覆盖已经存在的 controller
-    private boolean controllerOverwriteEnable = false;
-
-    //controller 类的前缀
-    private String controllerClassPrefix;
-
-    //controller 类的后缀
-    private String controllerClassSuffix = "Controller";
-
-    //controller 的包名
+    //Controller 所在包。
     private String controllerPackage;
 
-    //自定义 controller 的父类
-    private Class<?> controllerSupperClass;
-
-    //rest 风格的 Controller
-    private boolean restStyleController = true;
-
-    //数据库表前缀，多个前缀用英文逗号（,） 隔开
-    private String tablePrefix;
-
-    //逻辑删除的默认字段名称
-    private String logicDeleteColumn;
-
-    //乐观锁的字段名称
-    private String versionColumn;
-
-    //是否生成视图映射
-    private boolean generateForView = false;
-
-    //单独为某张表添加独立的配置
-    private Map<String, TableConfig> tableConfigMap;
-
-    //设置某个列的全局配置
-    private Map<String, ColumnConfig> defaultColumnConfigMap;
-
-    //生成那些表，白名单
-    private Set<String> generateTables;
-
-    //不生成那些表，黑名单
-    private Set<String> unGenerateTables;
-
-    //使用哪个模板引擎来生成代码
-    protected ITemplate templateEngine;
-
-    //其他自定义配置
-    private Map<String, Object> others;
+    //TableDef 所在包。
+    private String tableDefPackage;
 
 }
 ```
 
-## 表配置 TableConfig 
+## 策略配置 `StrategyConfig`
+
+StrategyConfig 支持的配置如下：
+
+```java
+
+public class StrategyConfig {
+
+    //数据库表前缀，多个前缀用英文逗号（,） 隔开。
+    private String tablePrefix;
+
+    //逻辑删除的默认字段名称。
+    private String logicDeleteColumn;
+
+    //乐观锁的字段名称。
+    private String versionColumn;
+
+    //是否生成视图映射。
+    private boolean generateForView;
+
+    //是否覆盖之前生成的文件。
+    private boolean overwriteEnable;
+
+    //单独为某张表添加独立的配置。
+    private Map<String, TableConfig> tableConfigMap;
+
+    //设置某个列的全局配置。
+    private Map<String, ColumnConfig> defaultColumnConfigMap;
+
+    //生成那些表，白名单。
+    private Set<String> generateTables;
+
+    //不生成那些表，黑名单。
+    private Set<String> unGenerateTables;
+
+    //使用哪个模板引擎来生成代码。
+    protected ITemplate templateEngine;
+
+}
+```
+
+## Entity 生成配置 `EntityConfig`
+
+EntityConfig 支持的配置如下：
+
+```java
+
+public class EntityConfig {
+
+    //Entity 类的前缀。
+    private String classPrefix = "";
+
+    //Entity 类的后缀。
+    private String classSuffix = "";
+
+    //Entity 类的父类，可以自定义一些 BaseEntity 类。
+    private Class<?> supperClass;
+
+    //Entity 默认实现的接口。
+    private Class<?>[] implInterfaces = {Serializable.class};
+
+    //Entity 是否使用 Lombok 注解。
+    private boolean withLombok;
+
+}
+```
+
+## Mapper 生成配置 `MapperConfig`
+
+MapperConfig 支持的配置如下：
+
+```java
+
+public class MapperConfig {
+
+    //Mapper 类的前缀。
+    private String classPrefix = "";
+
+    //Mapper 类的后缀。
+    private String classSuffix = "Mapper";
+
+    //自定义 Mapper 的父类。
+    private Class<?> supperClass = BaseMapper.class;
+
+}
+```
+
+## Service 生成配置 `ServiceConfig`
+
+ServiceConfig 支持的配置如下：
+
+```java
+
+public class ServiceConfig {
+
+    //Service 类的前缀。
+    private String classPrefix = "";
+
+    //Service 类的后缀。
+    private String classSuffix = "Service";
+
+    //自定义 Service 的父类。
+    private Class<?> supperClass = IService.class;
+
+}
+```
+
+## ServiceImpl 生成配置 `ServiceImplConfig`
+
+ServiceImplConfig 支持的配置如下：
+
+```java
+
+public class ServiceImplConfig {
+
+    //ServiceImpl 类的前缀。
+    private String classPrefix = "";
+
+    //ServiceImpl 类的后缀。
+    private String classSuffix = "ServiceImpl";
+
+    //自定义 ServiceImpl 的父类。
+    private Class<?> supperClass = ServiceImpl.class;
+
+}
+```
+
+## Controller 生成配置 `ControllerConfig`
+
+ControllerConfig 支持的配置如下：
+
+```java
+
+public class ControllerConfig {
+
+    //Controller 类的前缀。
+    private String classPrefix = "";
+
+    //Controller 类的后缀。
+    private String classSuffix = "Controller";
+
+    //自定义 Controller 的父类。
+    private Class<?> supperClass;
+
+    //生成 REST 风格的 Controller。
+    private boolean restStyle = true;
+
+}
+```
+
+## TableDef 生成配置 `TableDefConfig`
+
+TableDefConfig 支持的配置如下：
+
+```java
+
+public class TableDefConfig {
+
+    //TableDef 类的前缀。
+    private String classPrefix = "";
+
+    //TableDef 类的后缀。
+    private String classSuffix = "Def";
+
+}
+```
+
+## 表配置 `TableConfig`
 
 TableConfig 支持的配置如下：
 
@@ -265,7 +372,7 @@ public class TableConfig {
 }
 ```
 
-## 列配置 ColumnConfig
+## 列配置 `ColumnConfig`
 
 ColumnConfig 支持的配置如下：
 
@@ -354,16 +461,7 @@ public class EnjoyTemplate implements ITemplate {
 
 ## 添加其他产物的生成
 
-在 Mybatis-Flex 的代码生成器中，支持如下 6 种类型的的产物生成
-
-- 1、Entity 实体类
-- 2、Mapper 类（默认关闭）
-- 3、TableDef 表定义辅助类（默认关闭）
-- 4、Service 类（默认关闭）
-- 5、ServiceImpl 类（默认关闭）
-- 6、Controller 类（默认关闭）
-
-这 6 种产物，都是通过实现 `IGenerator` 来实现的，比如 Entity 实体类的代码如下：
+通过实现 `IGenerator` 来实现，比如 Entity 实体类的代码如下：
 
 ```java
 public class EntityGenerator implements IGenerator {
@@ -373,15 +471,29 @@ public class EntityGenerator implements IGenerator {
     @Override
     public void generate(Table table, GlobalConfig globalConfig) {
 
-        String entityPackagePath = globalConfig.getEntityPackage().replace(".", "/");
-        File entityJavaFile = new File(globalConfig.getSourceDir(), entityPackagePath + "/" +
+        if (!globalConfig.isEntityGenerateEnable()) {
+            return;
+        }
+
+        PackageConfig packageConfig = globalConfig.getPackageConfig();
+        StrategyConfig strategyConfig = globalConfig.getStrategyConfig();
+
+        String entityPackagePath = packageConfig.getEntityPackage().replace(".", "/");
+        File entityJavaFile = new File(packageConfig.getSourceDir(), entityPackagePath + "/" +
                 table.buildEntityClassName() + ".java");
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("table", table);
-        params.put("globalConfig", globalConfig);
 
-        globalConfig.getTemplateEngine().generate(params, templatePath, entityJavaFile);
+        if (entityJavaFile.exists() && !strategyConfig.isOverwriteEnable()) {
+            return;
+        }
+
+
+        Map<String, Object> params = new HashMap<>(3);
+        params.put("table", table);
+        params.put("packageConfig", packageConfig);
+        params.put("entityConfig", globalConfig.getEntityConfig());
+
+        strategyConfig.getTemplateEngine().generate(params, templatePath, entityJavaFile);
     }
 }
 ```
