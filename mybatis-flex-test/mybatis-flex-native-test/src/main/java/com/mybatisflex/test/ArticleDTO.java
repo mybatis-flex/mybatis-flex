@@ -12,7 +12,6 @@ public class ArticleDTO {
 
     private String content;
 
-
     private String userName;
 
     private int age;
