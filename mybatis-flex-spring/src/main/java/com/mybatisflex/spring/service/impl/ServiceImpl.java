@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @since 2023-05-01
  */
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-public class ServiceImpl<T, M extends BaseMapper<T>> implements IService<T> {
+public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 
     @Autowired
     protected M mapper;

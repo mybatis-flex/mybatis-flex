@@ -20,19 +20,19 @@ import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.SqlUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.*;
 
-import static com.mybatisflex.core.util.SqlUtil.retBool;
 
 /**
  * 由 Mybatis-Flex 提供的顶级增强 Service 接口。
  *
+ * @param <T> 实体类（Entity）类型
  * @author 王帅
  * @since 2023-05-01
- * @param <T> 实体类（Entity）类型
  */
 @SuppressWarnings("unused")
 public interface IService<T> {
@@ -55,7 +55,7 @@ public interface IService<T> {
      * {@code null} 字段的数据，使数据库配置的默认值生效。
      */
     default boolean save(T entity) {
-        return retBool(getMapper().insertSelective(entity));
+        return SqlUtil.toBool(getMapper().insertSelective(entity));
     }
 
     /**
@@ -66,7 +66,7 @@ public interface IService<T> {
      * @apiNote 如果实体类对象主键有值，则更新数据，若没有值，则保存数据。
      */
     default boolean saveOrUpdate(T entity) {
-        return retBool(getMapper().insertOrUpdate(entity));
+        return SqlUtil.toBool(getMapper().insertOrUpdate(entity));
     }
 
     /**
@@ -77,19 +77,19 @@ public interface IService<T> {
      */
     @Transactional(rollbackFor = Exception.class)
     default boolean saveBatch(Collection<T> entities) {
-        return retBool(getMapper().insertBatch(new ArrayList<>(entities)));
+        return SqlUtil.toBool(getMapper().insertBatch(new ArrayList<>(entities)));
     }
 
     /**
      * 批量保存实体类对象数据。
      *
      * @param entities 实体类对象
-     * @param size 每次保存切分的数量
+     * @param size     每次保存切分的数量
      * @return {@code true} 保存成功，{@code false} 保存失败。
      */
     @Transactional(rollbackFor = Exception.class)
     default boolean saveBatch(Collection<T> entities, int size) {
-        return retBool(getMapper().insertBatch(new ArrayList<>(entities), size));
+        return SqlUtil.toBool(getMapper().insertBatch(new ArrayList<>(entities), size));
     }
 
     // ===== 删除（删）操作 =====
@@ -101,7 +101,7 @@ public interface IService<T> {
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
     default boolean remove(QueryWrapper query) {
-        return retBool(getMapper().deleteByQuery(query));
+        return SqlUtil.toBool(getMapper().deleteByQuery(query));
     }
 
     /**
@@ -111,7 +111,7 @@ public interface IService<T> {
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
     default boolean remove(QueryCondition query) {
-        return retBool(getMapper().deleteByCondition(query));
+        return SqlUtil.toBool(getMapper().deleteByCondition(query));
     }
 
     /**
@@ -121,7 +121,7 @@ public interface IService<T> {
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
     default boolean removeById(Serializable id) {
-        return retBool(getMapper().deleteById(id));
+        return SqlUtil.toBool(getMapper().deleteById(id));
     }
 
     /**
@@ -135,7 +135,7 @@ public interface IService<T> {
         if (CollectionUtil.isEmpty(ids)) {
             return false;
         }
-        return retBool(getMapper().deleteBatchByIds(ids));
+        return SqlUtil.toBool(getMapper().deleteBatchByIds(ids));
     }
 
     /**
@@ -145,7 +145,7 @@ public interface IService<T> {
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
     default boolean removeByMap(Map<String, Object> query) {
-        return retBool(getMapper().deleteByMap(query));
+        return SqlUtil.toBool(getMapper().deleteByMap(query));
     }
 
     // ===== 更新（改）操作 =====
@@ -154,22 +154,22 @@ public interface IService<T> {
      * 根据查询条件更新数据。
      *
      * @param entity 实体类对象
-     * @param query 查询条件
+     * @param query  查询条件
      * @return {@code true} 更新成功，{@code false} 更新失败。
      */
     default boolean update(T entity, QueryWrapper query) {
-        return retBool(getMapper().updateByQuery(entity, query));
+        return SqlUtil.toBool(getMapper().updateByQuery(entity, query));
     }
 
     /**
      * 根据查询条件更新数据。
      *
      * @param entity 实体类对象
-     * @param query 查询条件
+     * @param query  查询条件
      * @return {@code true} 更新成功，{@code false} 更新失败。
      */
     default boolean update(T entity, QueryCondition query) {
-        return retBool(getMapper().updateByCondition(entity, query));
+        return SqlUtil.toBool(getMapper().updateByCondition(entity, query));
     }
 
     /**
@@ -179,18 +179,18 @@ public interface IService<T> {
      * @return {@code true} 更新成功，{@code false} 更新失败。
      */
     default boolean updateById(T entity) {
-        return retBool(getMapper().update(entity));
+        return SqlUtil.toBool(getMapper().update(entity));
     }
 
     /**
      * 根据 {@link Map} 构建查询条件更新数据。
      *
      * @param entity 实体类对象
-     * @param query 查询条件
+     * @param query  查询条件
      * @return {@code true} 更新成功，{@code false} 更新失败。
      */
     default boolean updateByMap(T entity, Map<String, Object> query) {
-        return retBool(getMapper().updateByMap(entity, query));
+        return SqlUtil.toBool(getMapper().updateByMap(entity, query));
     }
 
     // ===== 查询（查）操作 =====
@@ -226,6 +226,18 @@ public interface IService<T> {
         return getMapper().selectOneByQuery(query);
     }
 
+
+    /**
+     * 根据查询条件查询一条数据，并通过 asType 进行接收
+     *
+     * @param query  查询条件
+     * @param asType 接收的数据类型
+     * @return 查询结果数据
+     */
+    default <R> R getOneAs(QueryWrapper query, Class<R> asType) {
+        return getMapper().selectOneByQueryAs(query, asType);
+    }
+
     /**
      * 根据查询条件查询一条数据。
      *
@@ -235,6 +247,19 @@ public interface IService<T> {
      */
     default Optional<T> getOneOpt(QueryWrapper query) {
         return Optional.ofNullable(getOne(query));
+    }
+
+
+    /**
+     * 根据查询条件查询一条数据。
+     *
+     * @param query  查询条件
+     * @param asType 接收的数据类型
+     * @return 查询结果数据
+     * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
+     */
+    default <R> Optional<R> getOneOptAs(QueryWrapper query, Class<R> asType) {
+        return Optional.ofNullable(getOneAs(query, asType));
     }
 
     /**
@@ -278,6 +303,17 @@ public interface IService<T> {
     }
 
     /**
+     * 根据查询条件查询数据集合，并通过 asType 进行接收
+     *
+     * @param query  查询条件
+     * @param asType 接收的数据类型
+     * @return 数据集合
+     */
+    default <R> List<R> listAs(QueryWrapper query, Class<R> asType) {
+        return getMapper().selectListByQueryAs(query, asType);
+    }
+
+    /**
      * 根据查询条件查询数据集合。
      *
      * @param query 查询条件
@@ -316,7 +352,7 @@ public interface IService<T> {
      * @return {@code true} 数据存在，{@code false} 数据不存在。
      */
     default boolean exists(QueryWrapper query) {
-        return retBool(count(query));
+        return SqlUtil.toBool(count(query));
     }
 
     /**
@@ -326,7 +362,7 @@ public interface IService<T> {
      * @return {@code true} 数据存在，{@code false} 数据不存在。
      */
     default boolean exists(QueryCondition query) {
-        return retBool(count(query));
+        return SqlUtil.toBool(count(query));
     }
 
     /**
@@ -373,7 +409,7 @@ public interface IService<T> {
     /**
      * 根据查询条件分页查询数据。
      *
-     * @param page 分页对象
+     * @param page  分页对象
      * @param query 查询条件
      * @return 分页对象
      */
@@ -384,7 +420,7 @@ public interface IService<T> {
     /**
      * 根据查询条件分页查询数据。
      *
-     * @param page 分页对象
+     * @param page  分页对象
      * @param query 查询条件
      * @return 分页对象
      */

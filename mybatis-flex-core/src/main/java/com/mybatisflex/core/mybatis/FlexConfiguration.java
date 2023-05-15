@@ -50,7 +50,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FlexConfiguration extends Configuration {
 
-    private static Map<Class<?>,MappedStatement> dynamicMappedStatementCache = new ConcurrentHashMap<>();
+    private static Map<Class<?>, MappedStatement> dynamicMappedStatementCache = new ConcurrentHashMap<>();
 
     public FlexConfiguration(Environment environment) {
         super(environment);
