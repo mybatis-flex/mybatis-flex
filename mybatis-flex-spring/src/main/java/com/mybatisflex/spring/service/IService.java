@@ -107,11 +107,11 @@ public interface IService<T> {
     /**
      * 根据查询条件删除数据。
      *
-     * @param query 查询条件
+     * @param condition 查询条件
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
-    default boolean remove(QueryCondition query) {
-        return SqlUtil.toBool(getMapper().deleteByCondition(query));
+    default boolean remove(QueryCondition condition) {
+        return SqlUtil.toBool(getMapper().deleteByCondition(condition));
     }
 
     /**
@@ -164,12 +164,12 @@ public interface IService<T> {
     /**
      * 根据查询条件更新数据。
      *
-     * @param entity 实体类对象
-     * @param query  查询条件
+     * @param entity    实体类对象
+     * @param condition 查询条件
      * @return {@code true} 更新成功，{@code false} 更新失败。
      */
-    default boolean update(T entity, QueryCondition query) {
-        return SqlUtil.toBool(getMapper().updateByCondition(entity, query));
+    default boolean update(T entity, QueryCondition condition) {
+        return SqlUtil.toBool(getMapper().updateByCondition(entity, condition));
     }
 
     /**
@@ -265,22 +265,22 @@ public interface IService<T> {
     /**
      * 根据查询条件查询一条数据。
      *
-     * @param query 查询条件
+     * @param condition 查询条件
      * @return 查询结果数据
      */
-    default T getOne(QueryCondition query) {
-        return getMapper().selectOneByCondition(query);
+    default T getOne(QueryCondition condition) {
+        return getMapper().selectOneByCondition(condition);
     }
 
     /**
      * 根据查询条件查询一条数据。
      *
-     * @param query 查询条件
+     * @param condition 查询条件
      * @return 查询结果数据
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
-    default Optional<T> getOneOpt(QueryCondition query) {
-        return Optional.ofNullable(getOne(query));
+    default Optional<T> getOneOpt(QueryCondition condition) {
+        return Optional.ofNullable(getOne(condition));
     }
 
     /**
@@ -291,6 +291,27 @@ public interface IService<T> {
     default List<T> list() {
         return getMapper().selectAll();
     }
+
+    /**
+     * 根据查询条件查询数据集合。
+     *
+     * @param condition 查询条件
+     * @return 数据集合
+     */
+    default List<T> list(QueryCondition condition) {
+        return getMapper().selectListByCondition(condition);
+    }
+
+    /**
+     * 根据查询条件查询数据集合。
+     *
+     * @param condition 查询条件
+     * @return 数据集合
+     */
+    default List<T> list(QueryCondition condition, int count) {
+        return getMapper().selectListByCondition(condition, count);
+    }
+
 
     /**
      * 根据查询条件查询数据集合。
@@ -313,15 +334,6 @@ public interface IService<T> {
         return getMapper().selectListByQueryAs(query, asType);
     }
 
-    /**
-     * 根据查询条件查询数据集合。
-     *
-     * @param query 查询条件
-     * @return 数据集合
-     */
-    default List<T> list(QueryCondition query) {
-        return getMapper().selectListByCondition(query);
-    }
 
     /**
      * 根据数据主键查询数据集合。
@@ -358,11 +370,11 @@ public interface IService<T> {
     /**
      * 根据查询条件判断数据是否存在。
      *
-     * @param query 查询条件
+     * @param condition 查询条件
      * @return {@code true} 数据存在，{@code false} 数据不存在。
      */
-    default boolean exists(QueryCondition query) {
-        return SqlUtil.toBool(count(query));
+    default boolean exists(QueryCondition condition) {
+        return SqlUtil.toBool(count(condition));
     }
 
     /**
@@ -387,11 +399,11 @@ public interface IService<T> {
     /**
      * 根据查询条件查询数据数量。
      *
-     * @param query 查询条件
+     * @param condition 查询条件
      * @return 数据数量
      */
-    default long count(QueryCondition query) {
-        return getMapper().selectCountByCondition(query);
+    default long count(QueryCondition condition) {
+        return getMapper().selectCountByCondition(condition);
     }
 
     // ===== 分页查询操作 =====
@@ -420,12 +432,12 @@ public interface IService<T> {
     /**
      * 根据查询条件分页查询数据。
      *
-     * @param page  分页对象
-     * @param query 查询条件
+     * @param page      分页对象
+     * @param condition 查询条件
      * @return 分页对象
      */
-    default Page<T> page(Page<T> page, QueryCondition query) {
-        return getMapper().paginate(page, QueryWrapper.create().where(query));
+    default Page<T> page(Page<T> page, QueryCondition condition) {
+        return getMapper().paginate(page, QueryWrapper.create().where(condition));
     }
 
 }
