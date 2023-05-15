@@ -35,7 +35,7 @@ Page<Row> rowPage = Db.paginate("tb_account",3,10,query);
 
 > Db 工具类还提供了更多 增、删、改、查和分页查询等方法。
 >
-> 具体参考： [Db.java](./mybatis-flex-core/src/main/java/com/mybatisflex/core/row/Db.java) 。
+> 具体参考： [Db.java](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/row/Db.java) 。
 
 ## Row.toEntity()
 
