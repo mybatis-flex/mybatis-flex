@@ -19,6 +19,9 @@
 - **selectListByQueryAs(query, asType)**： 和 `selectListByQuery` 方法类似，但是在某些场景下，`query` 可能包含了 `left join` 等多表查询，返回的数据和 entity 字段不一致时，
   可以通过 `asType` 参数来指定接收的数据类型（通常是 dto、vo 等）。
 - **selectAll**：查询所有数据。
+- **selectObjectByQuery(query)**：查询只返回 1 列，并只有 1 条数据的场景。
+- **selectObjectListByQuery(query)**：查询只返回 1 列场景，比如 `QueryWrapper.create().select(ACCOINT.ID).from(...)`。
+- **selectObjectListByQueryAs(query, asType)**：对 `selectObjectListByQuery` 进行封装，并转换为特定的类型。
 - **selectCountByCondition**：根据 QueryWrapper 查询数据量。
 - **selectCountByQuery**：根据 QueryWrapper 查询数据量。
 

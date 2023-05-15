@@ -15,7 +15,7 @@ MyBatis-Flex 提供了一个名为 `IService` 的接口，及其默认实现类 
 ```java
 public interface IAccountService extends IService{
     //你的自定义方法
-    Account customMethod();
+    List<Account> customMethod();
 }
 ```
 
@@ -27,8 +27,9 @@ public class AccountServiceImpl implements IAccountService
         extends ServiceImpl<AccountMapper, Account>{
     
     @Override
-    public Account customMethod(){
-       return getMapper().selectOneByQuery("...");
+    public List<Account> customMethod(){
+       //返回 id >= 100 的数据
+       return list(ACCOUNT.ID.ge(100));
     }
 }
 ```

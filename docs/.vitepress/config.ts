@@ -60,8 +60,9 @@ export default defineConfig({
                 items: [
                     {text: '增删改', link: '/zh/base/add-delete-update'},
                     {text: '查询和分页', link: '/zh/base/query'},
-                    {text: 'IService', link: '/zh/base/service'},
                     {text: 'QueryWrapper', link: '/zh/base/querywrapper'},
+                    {text: 'Db + Row', link: '/zh/base/db-row'},
+                    {text: 'IService', link: '/zh/base/service'},
                 ]
             },
             {
@@ -70,7 +71,6 @@ export default defineConfig({
                     {text: '@Table 注解', link: '/zh/core/table'},
                     {text: '@Id 注解', link: '/zh/core/id'},
                     {text: '@Column 注解', link: '/zh/core/column'},
-                    {text: 'Db + Row', link: '/zh/core/db-row'},
                     {text: '逻辑删除', link: '/zh/core/logic-delete'},
                     {text: '乐观锁', link: '/zh/core/version'},
                     {text: '数据填充', link: '/zh/core/fill'},
