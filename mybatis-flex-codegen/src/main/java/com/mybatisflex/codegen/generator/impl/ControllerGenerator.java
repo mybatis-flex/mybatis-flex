@@ -18,6 +18,7 @@ package com.mybatisflex.codegen.generator.impl;
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.config.PackageConfig;
 import com.mybatisflex.codegen.config.StrategyConfig;
+import com.mybatisflex.codegen.constant.TemplateConst;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
 
@@ -33,9 +34,10 @@ import java.util.Map;
  */
 public class ControllerGenerator implements IGenerator {
 
-    private String templatePath = "/templates/enjoy/controller.tpl";
+    private final String templatePath;
 
     public ControllerGenerator() {
+        this(TemplateConst.CONTROLLER);
     }
 
     public ControllerGenerator(String templatePath) {
