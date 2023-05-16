@@ -52,7 +52,7 @@ public class BaseQueryWrapper<T> implements Serializable {
     }
 
 
-    protected T AddJoin(Join join) {
+    protected T addJoin(Join join) {
         if (joins == null) {
             joins = new LinkedList<>();
         }
