@@ -25,8 +25,8 @@ import java.util.Properties;
 
 class MyBatisFlexProps {
 
-    protected Properties properties = new Properties();
     private static final String DEFAULT_ENCODING = "UTF-8";
+    protected Properties properties = new Properties();
 
     public MyBatisFlexProps(Filer filer) {
         InputStream inputStream = null;
@@ -37,6 +37,8 @@ class MyBatisFlexProps {
             File propertiesFile = new File(propertiesFileObject.toUri());
             if (propertiesFile.exists()) {
                 inputStream = propertiesFileObject.openInputStream();
+            } else if (getClass().getClassLoader().getResource("mybatis-flex.properties") != null) {
+                inputStream = getClass().getClassLoader().getResourceAsStream("mybatis-flex.properties");
             } else {
                 File pomXmlFile = new File(propertiesFile.getParentFile().getParentFile().getParentFile(), "pom.xml");
                 if (pomXmlFile.exists()) {
