@@ -83,4 +83,12 @@ public class CollectionUtil {
         return new ArrayList<>(Arrays.asList(elements));
     }
 
+    public static <T> List<T> toList(Collection<T> collection) {
+        if (collection instanceof List) {
+            return (List<T>) collection;
+        } else {
+            return new ArrayList<>(collection);
+        }
+    }
+
 }

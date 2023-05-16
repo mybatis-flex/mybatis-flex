@@ -38,7 +38,7 @@ import static com.mybatisflex.core.query.QueryMethods.count;
 
 public interface RowMapper {
 
-    Integer DEFAULT_BATCH_SIZE = 1000;
+    int DEFAULT_BATCH_SIZE = 1000;
 
     //////insert //////
 
@@ -194,8 +194,14 @@ public interface RowMapper {
     int updateBatchById(@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROWS) List<Row> rows);
 
 
-    @UpdateProvider(value = RowSqlProvider.class, method = "updateBatchEntity")
-    int updateBatchEntity(@Param(FlexConsts.ENTITY) Object entities);
+    /**
+     * 更新 entity，主要用于进行批量更新的场景
+     * @param entity 实体类
+     * @see RowSqlProvider#updateEntity(Map)
+     * @see RowMapperInvoker#updateBatchEntity(Collection, int)
+     */
+    @UpdateProvider(value = RowSqlProvider.class, method = "updateEntity")
+    int updateEntity(@Param(FlexConsts.ENTITY) Object entity);
 
     ///////select /////
 

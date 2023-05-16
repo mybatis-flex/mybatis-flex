@@ -22,8 +22,6 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -51,13 +49,6 @@ public class RowMapperInvoker {
 
     public int insertBySql(String sql, Object... args) {
         return execute(mapper -> mapper.insertBySql(sql, args));
-    }
-
-    public int[] insertBatch(String tableName, List<Row> rows, int batchSize) {
-        return executeBatch(rows.size(), batchSize, (mapper, index) -> {
-            Row row = rows.get(index);
-            mapper.insert(tableName, row);
-        });
     }
 
     public int insertBatchWithFirstRowColumns(String tableName, List<Row> rows) {
@@ -89,18 +80,11 @@ public class RowMapperInvoker {
         return execute(mapper -> mapper.updateBySql(sql, args));
     }
 
-    public int[] updateBatch(String sql, BatchArgsSetter batchArgsSetter) {
-        int batchSize = batchArgsSetter.getBatchSize();
-        return executeBatch(batchSize, batchSize,
-                (mapper, index) -> mapper.updateBySql(sql, batchArgsSetter.getSqlArgs(index))
-        );
-    }
 
-
-    public int[] executeBatch(int totalSize, int batchSize, BiConsumer<RowMapper, Integer> consumer) {
+    public <M> int[] executeBatch(int totalSize, int batchSize, Class<M> mapperClass, BiConsumer<M, Integer> consumer) {
         int[] results = new int[totalSize];
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, true)) {
-            RowMapper mapper = sqlSession.getMapper(RowMapper.class);
+            M mapper = sqlSession.getMapper(mapperClass);
             int counter = 0;
             int resultsPos = 0;
             for (int i = 0; i < totalSize; i++) {
@@ -141,14 +125,6 @@ public class RowMapperInvoker {
 
     public int updateBatchById(String tableName, List<Row> rows) {
         return execute(mapper -> mapper.updateBatchById(tableName, rows));
-    }
-
-    public <T> int updateBatchEntity(Collection<T> entities, int size) {
-        final ArrayList<T> ts = new ArrayList<>(entities);
-        return Arrays.stream(executeBatch(ts.size(), size, (mapper, index) -> {
-            T entity = ts.get(index);
-            mapper.updateBatchEntity(entity);
-        })).sum();
     }
 
     public Row selectOneBySql(String sql, Object... args) {
