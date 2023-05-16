@@ -25,7 +25,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-import java.util.List;
 
 import static com.mybatisflex.test.table.Tables.ACCOUNT;
 import static com.mybatisflex.test.table.Tables.ARTICLE;
@@ -58,39 +57,42 @@ public class EntityTestStarter {
 
 //        List<Account> accounts1 = myAccountMapper.selectAll();
 
-        QueryWrapper wrapper = QueryWrapper.create().select().from(ACCOUNT)
-                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
-                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
-                .groupBy(ACCOUNT.ID);
-
-        List<Account> accounts = accountMapper.selectListByQuery(wrapper);
-        System.out.println(accounts);
-
-        QueryWrapper wrapper1 = QueryWrapper.create().select().from(ACCOUNT)
-//                .leftJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID).and(ACCOUNT.ID.ge(100)))
-                .and(ACCOUNT.ID.ge(100).when(false).and(ACCOUNT.ID.ge(100).when(false)));
-
-        Page<Account> accounts1 = accountMapper.paginate(Page.of(1,1),wrapper1);
-        System.out.println(accounts1);
-
-
-        QueryWrapper wrapper2 = QueryWrapper.create().select(ACCOUNT.ID).from(ACCOUNT);
-        List<Object> objects = accountMapper.selectObjectListByQuery(wrapper2);
-        System.out.println(objects);
-
-
-        Object object = accountMapper.selectObjectByQuery(wrapper2);
-        System.out.println(object);
-
+//        QueryWrapper wrapper = QueryWrapper.create().select().from(ACCOUNT)
+//                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
+//                .and(ACCOUNT.ID.ge(100).and(ACCOUNT.ID.ge(200)))
+//                .groupBy(ACCOUNT.ID);
+//
+//        List<Account> accounts = accountMapper.selectListByQuery(wrapper);
+//        System.out.println(accounts);
+//
+//        QueryWrapper wrapper1 = QueryWrapper.create().select().from(ACCOUNT)
+////                .leftJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID).and(ACCOUNT.ID.ge(100)))
+//                .and(ACCOUNT.ID.ge(100).when(false).and(ACCOUNT.ID.ge(100).when(false)));
+//
+//        Page<Account> accounts1 = accountMapper.paginate(Page.of(1,1),wrapper1);
+//        System.out.println(accounts1);
+//
+//
+//        QueryWrapper wrapper2 = QueryWrapper.create().select(ACCOUNT.ID).from(ACCOUNT);
+//        List<Object> objects = accountMapper.selectObjectListByQuery(wrapper2);
+//        System.out.println(objects);
+//
+//
+//        Object object = accountMapper.selectObjectByQuery(wrapper2);
+//        System.out.println(object);
+//
         QueryWrapper asWrapper = QueryWrapper.create()
                 .select(ARTICLE.ALL_COLUMNS)
                 .select(ACCOUNT.USER_NAME,ACCOUNT.AGE,ACCOUNT.BIRTHDAY)
                 .from(ARTICLE)
                 .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
                 .where(ACCOUNT.ID.ge(0));
+//
+//        List<ArticleDTO> articleDTOS = accountMapper.selectListByQueryAs(asWrapper, ArticleDTO.class);
+//        System.out.println(articleDTOS);
+        Page<ArticleDTO> paginate = accountMapper.paginateAs(Page.of(1, 1), asWrapper, ArticleDTO.class);
+        System.out.println(paginate);
 
-        List<ArticleDTO> articleDTOS = accountMapper.selectListByQueryAs(asWrapper, ArticleDTO.class);
-        System.out.println(articleDTOS);
 
 
 //        QueryWrapper queryWrapper = new QueryWrapper();

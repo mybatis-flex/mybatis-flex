@@ -19,15 +19,15 @@ public class MappedStatementTypes {
 
     private static ThreadLocal<Class<?>> currentTypeTL = new ThreadLocal<>();
 
-    static void setCurrentType(Class<?> type){
+    public static void setCurrentType(Class<?> type){
         currentTypeTL.set(type);
     }
 
-    static Class<?> getCurrentType(){
+    public static Class<?> getCurrentType(){
         return currentTypeTL.get();
     }
 
-    static void clear(){
+    public static void clear(){
         currentTypeTL.remove();
     }
 

@@ -16,6 +16,7 @@
 package com.mybatisflex.core;
 
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.mybatis.MappedStatementTypes;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.EntitySqlProvider;
 import com.mybatisflex.core.query.CPI;
@@ -615,7 +616,7 @@ public interface BaseMapper<T> {
 
             //清除group by 去查询数据
             CPI.setGroupByColumns(queryWrapper, null);
-            CPI.setSelectColumns(queryWrapper, Arrays.asList(count()));
+            CPI.setSelectColumns(queryWrapper, Collections.singletonList(count()));
 
             long count = selectCountByQuery(queryWrapper);
             page.setTotalRow(count);
@@ -633,8 +634,15 @@ public interface BaseMapper<T> {
 
         int offset = page.getPageSize() * (page.getPageNumber() - 1);
         queryWrapper.limit(offset, page.getPageSize());
-        List<R> records = selectListByQueryAs(queryWrapper, asType);
-        page.setRecords(records);
+        try {
+            // 调用内部方法，不走代理，需要主动设置 MappedStatementType
+            // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I73BP6
+            MappedStatementTypes.setCurrentType(asType);
+            List<R> records = selectListByQueryAs(queryWrapper, asType);
+            page.setRecords(records);
+        }finally {
+            MappedStatementTypes.clear();
+        }
         return page;
     }
 }
