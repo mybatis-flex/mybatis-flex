@@ -264,6 +264,28 @@ public class Db {
 
 
     /**
+     * 根据主键来批量更新数据
+     *
+     * @param entities 实体
+     * @param size     大小
+     * @return int
+     */
+    public static <T> int updateBatchEntity(Collection<T> entities, int size) {
+        return invoker().updateBatchEntity(entities, size);
+    }
+
+    /**
+     * 根据主键来批量更新数据
+     *
+     * @param entities 实体
+     * @return int
+     */
+    public static <T> int updateBatchEntity(Collection<T> entities) {
+        return invoker().updateBatchEntity(entities, RowMapper.DEFAULT_BATCH_SIZE);
+    }
+
+
+    /**
      * 根据 sql 来查询 1 条数据
      *
      * @param sql  sql 内容
