@@ -83,10 +83,10 @@ Mybatis-Flex 多主键就是在 Entity 类里有多个 `@Id` 注解标识而已�
 @Table("tb_account")
 public class Account {
 
-    @Id(keyType=KeyType.Auto)
+    @Id(keyType = KeyType.Auto)
     private Long id;
-    
-    @Id(keyType=KeyType.Generator, value="uuid")
+
+    @Id(keyType = KeyType.Generator, value = KeyGenerators.uuid)
     private String otherId;
 
     //getter setter
@@ -96,19 +96,19 @@ public class Account {
 
 ## 内置主键生成器
 
-MyBatis-Flex 内置了三种主键生成器：
+MyBatis-Flex 内置了三种主键生成器，他们的名称都定义在 `KeyGenerators` 类里：
 
-- **UUIDKeyGenerator**：生成 UUID 作为数据库主键。
-- **FlexIDKeyGenerator**：独创的 FlexID 算法生成数据库主键（了解更多信息请参阅[源码](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/keygen/impl/FlexIDKeyGenerator.java)）；
-- **SnowFlakeIDKeyGenerator**：通过雪花算法生成数据库主键。
+- **uuid**：通过 `UUIDKeyGenerator` 生成 UUID 作为数据库主键。
+- **flexId**：独创的 FlexID 算法生成数据库主键（了解更多信息请参阅[源码](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/keygen/impl/FlexIDKeyGenerator.java))。
+- **snowFlakeId**：通过雪花算法（`SnowFlakeIDKeyGenerator`）生成数据库主键。
 
-这些主键生成器无需注册，直接使用即可：
+这些主键生成器为 MyBatis-Flex 内置的，可直接使用：
 
-```java
+```java 4
 @Table("tb_account")
 public class Account {
 
-    @Id(keyType=KeyType.Generator, value="flexId")
+    @Id(keyType=KeyType.Generator, value=KeyGenerators.flexId)
     private Long id;
     
     //getter setter
@@ -183,7 +183,7 @@ FlexGlobalConfig.getDefaultConfig().setKeyConfig(keyConfig);
 @Table("tb_account")
 public class Account {
 
-    @Id()
+    @Id
     private Long id;
     
 }
