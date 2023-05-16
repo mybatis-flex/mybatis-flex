@@ -596,10 +596,9 @@ public interface BaseMapper<T> {
 
         //重置 selectColumns
         CPI.setSelectColumns(queryWrapper, selectColumns);
-        //分页pageSize，最大值限制
-        int pageSize = Math.min(page.getPageSize(), 10000);
-        int offset = pageSize * (page.getPageNumber() - 1);
-        queryWrapper.limit(offset, pageSize);
+
+        int offset = page.getPageSize() * (page.getPageNumber() - 1);
+        queryWrapper.limit(offset, page.getPageSize());
         List<T> rows = selectListByQuery(queryWrapper);
         page.setRecords(rows);
         return page;
