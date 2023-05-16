@@ -28,8 +28,8 @@ import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +37,8 @@ import static com.mybatisflex.core.query.QueryMethods.count;
 
 
 public interface RowMapper {
+
+    Integer DEFAULT_BATCH_SIZE = 1000;
 
     //////insert //////
 
@@ -190,6 +192,10 @@ public interface RowMapper {
      */
     @UpdateProvider(value = RowSqlProvider.class, method = "updateBatchById")
     int updateBatchById(@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROWS) List<Row> rows);
+
+
+    @UpdateProvider(value = RowSqlProvider.class, method = "updateBatchEntity")
+    int updateBatchEntity(@Param(FlexConsts.ENTITY) Object entities);
 
     ///////select /////
 
@@ -402,7 +408,7 @@ public interface RowMapper {
 
             //清除group by 去查询数据
             CPI.setGroupByColumns(queryWrapper, null);
-            CPI.setSelectColumns(queryWrapper, Arrays.asList(count()));
+            CPI.setSelectColumns(queryWrapper, Collections.singletonList(count()));
 
             long count = selectCountByQuery(tableName, queryWrapper);
             page.setTotalRow(count);
@@ -424,6 +430,5 @@ public interface RowMapper {
         page.setRecords(records);
         return page;
     }
-
 
 }

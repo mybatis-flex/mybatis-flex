@@ -22,6 +22,8 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -139,6 +141,14 @@ public class RowMapperInvoker {
 
     public int updateBatchById(String tableName, List<Row> rows) {
         return execute(mapper -> mapper.updateBatchById(tableName, rows));
+    }
+
+    public <T> int updateBatchEntity(Collection<T> entities, int size) {
+        final ArrayList<T> ts = new ArrayList<>(entities);
+        return Arrays.stream(executeBatch(ts.size(), size, (mapper, index) -> {
+            T entity = ts.get(index);
+            mapper.updateBatchEntity(entity);
+        })).sum();
     }
 
     public Row selectOneBySql(String sql, Object... args) {
