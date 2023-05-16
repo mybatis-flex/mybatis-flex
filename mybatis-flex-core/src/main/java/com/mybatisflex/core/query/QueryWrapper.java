@@ -267,13 +267,13 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     protected Joiner<QueryWrapper> joining(String type, String table, boolean condition) {
         Join join = new Join(type, table, condition);
         addJoinTable(join.getQueryTable());
-        return new Joiner<>(AddJoin(join), join);
+        return new Joiner<>(addJoin(join), join);
     }
 
     protected Joiner<QueryWrapper> joining(String type, QueryWrapper queryWrapper, boolean condition) {
         Join join = new Join(type, queryWrapper, condition);
         addJoinTable(join.getQueryTable());
-        return new Joiner<>(AddJoin(join), join);
+        return new Joiner<>(addJoin(join), join);
     }
 
 
