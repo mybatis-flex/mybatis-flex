@@ -16,8 +16,6 @@
 package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.spring.service.IService;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 /**
  * 生成 Service 的配置。
@@ -25,8 +23,7 @@ import lombok.experimental.Accessors;
  * @author 王帅
  * @since 2023-05-15
  */
-@Data
-@Accessors(chain = true)
+@SuppressWarnings("unused")
 public class ServiceConfig {
 
     /**
@@ -50,6 +47,33 @@ public class ServiceConfig {
 
     public String buildSuperClassName() {
         return supperClass.getSimpleName();
+    }
+
+    public String getClassPrefix() {
+        return classPrefix;
+    }
+
+    public ServiceConfig setClassPrefix(String classPrefix) {
+        this.classPrefix = classPrefix;
+        return this;
+    }
+
+    public String getClassSuffix() {
+        return classSuffix;
+    }
+
+    public ServiceConfig setClassSuffix(String classSuffix) {
+        this.classSuffix = classSuffix;
+        return this;
+    }
+
+    public Class<?> getSupperClass() {
+        return supperClass;
+    }
+
+    public ServiceConfig setSupperClass(Class<?> supperClass) {
+        this.supperClass = supperClass;
+        return this;
     }
 
 }

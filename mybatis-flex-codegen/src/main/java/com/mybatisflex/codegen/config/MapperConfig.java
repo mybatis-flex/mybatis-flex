@@ -16,8 +16,6 @@
 package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.core.BaseMapper;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 /**
  * 生成 Mapper 的配置。
@@ -25,8 +23,7 @@ import lombok.experimental.Accessors;
  * @author 王帅
  * @since 2023-05-15
  */
-@Data
-@Accessors(chain = true)
+@SuppressWarnings("unused")
 public class MapperConfig {
 
     /**
@@ -50,6 +47,33 @@ public class MapperConfig {
 
     public String buildSuperClassName() {
         return supperClass.getSimpleName();
+    }
+
+    public String getClassPrefix() {
+        return classPrefix;
+    }
+
+    public MapperConfig setClassPrefix(String classPrefix) {
+        this.classPrefix = classPrefix;
+        return this;
+    }
+
+    public String getClassSuffix() {
+        return classSuffix;
+    }
+
+    public MapperConfig setClassSuffix(String classSuffix) {
+        this.classSuffix = classSuffix;
+        return this;
+    }
+
+    public Class<?> getSupperClass() {
+        return supperClass;
+    }
+
+    public MapperConfig setSupperClass(Class<?> supperClass) {
+        this.supperClass = supperClass;
+        return this;
     }
 
 }

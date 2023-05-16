@@ -2,8 +2,6 @@ package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.codegen.template.EnjoyTemplate;
 import com.mybatisflex.codegen.template.ITemplate;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,8 +14,7 @@ import java.util.Set;
  * @author 王帅
  * @since 2023-05-14
  */
-@Data
-@Accessors(chain = true)
+@SuppressWarnings("unused")
 public class StrategyConfig {
 
     /**
@@ -168,6 +165,92 @@ public class StrategyConfig {
             templateEngine = new EnjoyTemplate();
         }
         return templateEngine;
+    }
+
+    public StrategyConfig setTemplateEngine(ITemplate templateEngine) {
+        this.templateEngine = templateEngine;
+        return this;
+    }
+
+    public String getTablePrefix() {
+        return tablePrefix;
+    }
+
+    public StrategyConfig setTablePrefix(String tablePrefix) {
+        this.tablePrefix = tablePrefix;
+        return this;
+    }
+
+    public String getLogicDeleteColumn() {
+        return logicDeleteColumn;
+    }
+
+    public StrategyConfig setLogicDeleteColumn(String logicDeleteColumn) {
+        this.logicDeleteColumn = logicDeleteColumn;
+        return this;
+    }
+
+    public String getVersionColumn() {
+        return versionColumn;
+    }
+
+    public StrategyConfig setVersionColumn(String versionColumn) {
+        this.versionColumn = versionColumn;
+        return this;
+    }
+
+    public boolean isGenerateForView() {
+        return generateForView;
+    }
+
+    public StrategyConfig setGenerateForView(boolean generateForView) {
+        this.generateForView = generateForView;
+        return this;
+    }
+
+    public boolean isOverwriteEnable() {
+        return overwriteEnable;
+    }
+
+    public StrategyConfig setOverwriteEnable(boolean overwriteEnable) {
+        this.overwriteEnable = overwriteEnable;
+        return this;
+    }
+
+    public Map<String, TableConfig> getTableConfigMap() {
+        return tableConfigMap;
+    }
+
+    public StrategyConfig setTableConfigMap(Map<String, TableConfig> tableConfigMap) {
+        this.tableConfigMap = tableConfigMap;
+        return this;
+    }
+
+    public Map<String, ColumnConfig> getColumnConfigMap() {
+        return columnConfigMap;
+    }
+
+    public StrategyConfig setColumnConfigMap(Map<String, ColumnConfig> columnConfigMap) {
+        this.columnConfigMap = columnConfigMap;
+        return this;
+    }
+
+    public Set<String> getGenerateTables() {
+        return generateTables;
+    }
+
+    public StrategyConfig setGenerateTables(Set<String> generateTables) {
+        this.generateTables = generateTables;
+        return this;
+    }
+
+    public Set<String> getUnGenerateTables() {
+        return unGenerateTables;
+    }
+
+    public StrategyConfig setUnGenerateTables(Set<String> unGenerateTables) {
+        this.unGenerateTables = unGenerateTables;
+        return this;
     }
 
 }

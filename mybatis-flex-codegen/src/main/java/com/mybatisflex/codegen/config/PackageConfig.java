@@ -1,8 +1,6 @@
 package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.core.util.StringUtil;
-import lombok.Data;
-import lombok.experimental.Accessors;
 
 /**
  * 生成软件包的配置。
@@ -10,8 +8,7 @@ import lombok.experimental.Accessors;
  * @author 王帅
  * @since 2023-05-15
  */
-@Data
-@Accessors(chain = true)
+@SuppressWarnings("unused")
 public class PackageConfig {
 
     /**
@@ -61,11 +58,30 @@ public class PackageConfig {
         return sourceDir;
     }
 
+    public PackageConfig setSourceDir(String sourceDir) {
+        this.sourceDir = sourceDir;
+        return this;
+    }
+
+    public String getBasePackage() {
+        return basePackage;
+    }
+
+    public PackageConfig setBasePackage(String basePackage) {
+        this.basePackage = basePackage;
+        return this;
+    }
+
     public String getEntityPackage() {
         if (StringUtil.isBlank(entityPackage)) {
             return basePackage.concat(".entity");
         }
         return entityPackage;
+    }
+
+    public PackageConfig setEntityPackage(String entityPackage) {
+        this.entityPackage = entityPackage;
+        return this;
     }
 
     public String getMapperPackage() {
@@ -75,11 +91,21 @@ public class PackageConfig {
         return mapperPackage;
     }
 
+    public PackageConfig setMapperPackage(String mapperPackage) {
+        this.mapperPackage = mapperPackage;
+        return this;
+    }
+
     public String getServicePackage() {
         if (StringUtil.isBlank(servicePackage)) {
             return basePackage.concat(".service");
         }
         return servicePackage;
+    }
+
+    public PackageConfig setServicePackage(String servicePackage) {
+        this.servicePackage = servicePackage;
+        return this;
     }
 
     public String getServiceImplPackage() {
@@ -89,6 +115,11 @@ public class PackageConfig {
         return serviceImplPackage;
     }
 
+    public PackageConfig setServiceImplPackage(String serviceImplPackage) {
+        this.serviceImplPackage = serviceImplPackage;
+        return this;
+    }
+
     public String getControllerPackage() {
         if (StringUtil.isBlank(controllerPackage)) {
             return basePackage.concat(".controller");
@@ -96,11 +127,21 @@ public class PackageConfig {
         return controllerPackage;
     }
 
+    public PackageConfig setControllerPackage(String controllerPackage) {
+        this.controllerPackage = controllerPackage;
+        return this;
+    }
+
     public String getTableDefPackage() {
         if (StringUtil.isBlank(tableDefPackage)) {
             return getEntityPackage().concat(".tables");
         }
         return tableDefPackage;
+    }
+
+    public PackageConfig setTableDefPackage(String tableDefPackage) {
+        this.tableDefPackage = tableDefPackage;
+        return this;
     }
 
 }

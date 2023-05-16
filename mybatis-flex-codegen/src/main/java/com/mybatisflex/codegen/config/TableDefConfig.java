@@ -15,17 +15,13 @@
  */
 package com.mybatisflex.codegen.config;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-
 /**
  * 生成 TableDef 的配置。
  *
  * @author 王帅
  * @since 2023-05-15
  */
-@Data
-@Accessors(chain = true)
+@SuppressWarnings("unused")
 public class TableDefConfig {
 
     /**
@@ -37,5 +33,23 @@ public class TableDefConfig {
      * TableDef 类的后缀。
      */
     private String classSuffix = "Def";
+
+    public String getClassPrefix() {
+        return classPrefix;
+    }
+
+    public TableDefConfig setClassPrefix(String classPrefix) {
+        this.classPrefix = classPrefix;
+        return this;
+    }
+
+    public String getClassSuffix() {
+        return classSuffix;
+    }
+
+    public TableDefConfig setClassSuffix(String classSuffix) {
+        this.classSuffix = classSuffix;
+        return this;
+    }
 
 }

@@ -15,9 +15,6 @@
  */
 package com.mybatisflex.codegen.config;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-
 import java.io.Serializable;
 
 /**
@@ -26,8 +23,7 @@ import java.io.Serializable;
  * @author 王帅
  * @since 2023-05-15
  */
-@Data
-@Accessors(chain = true)
+@SuppressWarnings("unused")
 public class EntityConfig {
 
     /**
@@ -54,5 +50,50 @@ public class EntityConfig {
      * Entity 是否使用 Lombok 注解。
      */
     private boolean withLombok;
+
+    public String getClassPrefix() {
+        return classPrefix;
+    }
+
+    public EntityConfig setClassPrefix(String classPrefix) {
+        this.classPrefix = classPrefix;
+        return this;
+    }
+
+    public String getClassSuffix() {
+        return classSuffix;
+    }
+
+    public EntityConfig setClassSuffix(String classSuffix) {
+        this.classSuffix = classSuffix;
+        return this;
+    }
+
+    public Class<?> getSupperClass() {
+        return supperClass;
+    }
+
+    public EntityConfig setSupperClass(Class<?> supperClass) {
+        this.supperClass = supperClass;
+        return this;
+    }
+
+    public Class<?>[] getImplInterfaces() {
+        return implInterfaces;
+    }
+
+    public EntityConfig setImplInterfaces(Class<?>[] implInterfaces) {
+        this.implInterfaces = implInterfaces;
+        return this;
+    }
+
+    public boolean isWithLombok() {
+        return withLombok;
+    }
+
+    public EntityConfig setWithLombok(boolean withLombok) {
+        this.withLombok = withLombok;
+        return this;
+    }
 
 }

@@ -15,17 +15,13 @@
  */
 package com.mybatisflex.codegen.config;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-
 /**
  * 生成 Controller 的配置。
  *
  * @author 王帅
  * @since 2023-05-15
  */
-@Data
-@Accessors(chain = true)
+@SuppressWarnings("unused")
 public class ControllerConfig {
 
     /**
@@ -54,6 +50,42 @@ public class ControllerConfig {
 
     public String buildSuperClassName() {
         return supperClass.getSimpleName();
+    }
+
+    public String getClassPrefix() {
+        return classPrefix;
+    }
+
+    public ControllerConfig setClassPrefix(String classPrefix) {
+        this.classPrefix = classPrefix;
+        return this;
+    }
+
+    public String getClassSuffix() {
+        return classSuffix;
+    }
+
+    public ControllerConfig setClassSuffix(String classSuffix) {
+        this.classSuffix = classSuffix;
+        return this;
+    }
+
+    public Class<?> getSupperClass() {
+        return supperClass;
+    }
+
+    public ControllerConfig setSupperClass(Class<?> supperClass) {
+        this.supperClass = supperClass;
+        return this;
+    }
+
+    public boolean isRestStyle() {
+        return restStyle;
+    }
+
+    public ControllerConfig setRestStyle(boolean restStyle) {
+        this.restStyle = restStyle;
+        return this;
     }
 
 }

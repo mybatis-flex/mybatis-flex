@@ -15,8 +15,6 @@
  */
 package com.mybatisflex.codegen.config;
 
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +24,6 @@ import java.util.Map;
  * @author 王帅
  * @since 2023-05-15
  */
-@Getter
 @SuppressWarnings("unused")
 public class GlobalConfig {
 
@@ -60,6 +57,14 @@ public class GlobalConfig {
     public GlobalConfig() {
         this.packageConfig = new PackageConfig();
         this.strategyConfig = new StrategyConfig();
+    }
+
+    public PackageConfig getPackageConfig() {
+        return packageConfig;
+    }
+
+    public StrategyConfig getStrategyConfig() {
+        return strategyConfig;
     }
 
     public EntityConfig getEntityConfig() {
@@ -156,6 +161,30 @@ public class GlobalConfig {
 
     public void disableTableDef() {
         tableDefGenerateEnable = false;
+    }
+
+    public boolean isEntityGenerateEnable() {
+        return entityGenerateEnable;
+    }
+
+    public boolean isMapperGenerateEnable() {
+        return mapperGenerateEnable;
+    }
+
+    public boolean isServiceGenerateEnable() {
+        return serviceGenerateEnable;
+    }
+
+    public boolean isServiceImplGenerateEnable() {
+        return serviceImplGenerateEnable;
+    }
+
+    public boolean isControllerGenerateEnable() {
+        return controllerGenerateEnable;
+    }
+
+    public boolean isTableDefGenerateEnable() {
+        return tableDefGenerateEnable;
     }
 
     public void addCustomConfig(String key, Object value) {
