@@ -18,7 +18,6 @@ package com.mybatisflex.core.row;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.provider.EntitySqlProvider;
 import com.mybatisflex.core.provider.RowSqlProvider;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryColumn;
@@ -198,7 +197,7 @@ public interface RowMapper {
      * 更新 entity，主要用于进行批量更新的场景
      * @param entity 实体类
      * @see RowSqlProvider#updateEntity(Map)
-     * @see RowMapperInvoker#updateBatchEntity(Collection, int)
+     * @see Db#updateBatchEntity(Collection, int)
      */
     @UpdateProvider(value = RowSqlProvider.class, method = "updateEntity")
     int updateEntity(@Param(FlexConsts.ENTITY) Object entity);
@@ -367,7 +366,7 @@ public interface RowMapper {
      * @return 数据列表
      * @see RowSqlProvider#selectObjectByQuery(Map)
      */
-    @SelectProvider(type = EntitySqlProvider.class, method = "selectObjectByQuery")
+    @SelectProvider(type = RowSqlProvider.class, method = "selectObjectByQuery")
     List<Object> selectObjectListByQuery(@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 

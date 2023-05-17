@@ -18,6 +18,8 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
+import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowKey;
@@ -47,6 +49,9 @@ public class RowTestStarter {
 
         AuditManager.setAuditEnable(true);
         AuditManager.setMessageCollector(new ConsoleMessageCollector());
+
+        Page<Row> rowPage = Db.paginate("tb_account", 1, 10, QueryWrapper.create());
+        System.out.println(rowPage);
 
 
         //查询 ID 为 1 的数据
