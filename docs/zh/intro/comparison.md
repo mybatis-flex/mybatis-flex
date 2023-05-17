@@ -49,8 +49,25 @@ MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来
 
 **MyBatis-Flex：**
 
+一般方式：
 ````java
-QueryCondition condition = EMPLOYEE.LAST_NAME.like("B")
+QueryWrapper query = QueryWrapper.create()
+        .where(EMPLOYEE.LAST_NAME.like(searchWord)) //条件为null时自动忽略
+        .and(EMPLOYEE.GENDER.eq(1))
+        .and(EMPLOYEE.AGE.gt(24));
+List<Employee> employees = employeeMapper.selectListByQuery(query);
+````
+更简单一点：
+````java
+QueryWrapper query = select()
+        .where(EMPLOYEE.LAST_NAME.like(searchWord))
+        .and(EMPLOYEE.GENDER.eq(1))
+        .and(EMPLOYEE.AGE.gt(24));
+List<Employee> employees = employeeMapper.selectListByQuery(query);
+````
+换一种方式：
+````java
+QueryCondition condition = EMPLOYEE.LAST_NAME.like(searchWord)
         .and(EMPLOYEE.GENDER.eq(1))
         .and(EMPLOYEE.AGE.gt(24));
 List<Employee> employees = employeeMapper.selectListByCondition(condition);
@@ -59,21 +76,19 @@ List<Employee> employees = employeeMapper.selectListByCondition(condition);
 **MyBatis-Plus：**
 
 ````java
-QueryWrapper<Employee> queryWrapper = new QueryWrapper<>();
-queryWrapper
-        .like("last_name","B")
-        .eq("gender",1)
-        .gt("age",24);
+QueryWrapper<Employee> queryWrapper = Wrappers.query()
+        .like(searchWord != null, "last_name", searchWord)
+        .eq("gender", 1)
+        .gt("age", 24);
 List<Employee> employees = employeeMapper.selectList(queryWrapper);
 ````
-或者 MyBatis-Plus 的另一种写法：
+或者 MyBatis-Plus 的lambda写法：
 
 ```java
-LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
-queryWrapper
-        .like(Employee::getUserName,"B")
-        .eq(Employee::getGender,1)
-        .gt(Employee::getAge,24);
+LambdaQueryWrapper<Employee> queryWrapper = Wrappers.<Employee>lambdaQuery()
+        .like(StringUtils.isNotEmpty(searchWord), Employee::getUserName,"B")
+        .eq(Employee::getGender, 1)
+        .gt(Employee::getAge, 24);
 List<Employee> employees = employeeMapper.selectList(queryWrapper);
 ```
 
@@ -82,7 +97,7 @@ List<Employee> employees = employeeMapper.selectList(queryWrapper);
 
 ````java
 EmployeeQuery query = new EmployeeQuery()
-    .where.lastName().like("B")
+    .where.lastName().like(searchWord, If::notNull)
     .and.gender().eq(1)
     .and.age().gt(24)
     .end();
@@ -96,7 +111,7 @@ List<Employee> employees = employeeMapper.listEntity(query);
 **MyBatis-Flex：**
 
 ````java
-QueryWrapper query = new QueryWrapper()
+QueryWrapper query = QueryWrapper.create()
     .select(
         ACCOUNT.ID,
         ACCOUNT.USER_NAME,
@@ -108,17 +123,16 @@ List<Employee> employees = employeeMapper.selectListByQuery(query);
 **MyBatis-Plus：**
 
 ````java
-QueryWrapper<Employee> queryWrapper = new QueryWrapper<>();
-queryWrapper
+QueryWrapper<Employee> queryWrapper = Wrappers.query()
     .select(
-        "id"
-        ,"user_name"
-        ,"max(birthday)"
-        ,"avg(birthday) as sex_avg"
+        "id",
+        "user_name",
+        "max(birthday)",
+        "avg(birthday) as sex_avg"
     );
 List<Employee> employees = employeeMapper.selectList(queryWrapper);
 ````
-> 缺点：字段硬编码，容易错处。无法使用 ide 的字段进行重构，无法使用 IDE 自动提示，发生错误不能及时发现。
+> 缺点：字段硬编码，容易拼错。无法使用 ide 的字段进行重构，无法使用 IDE 自动提示，发生错误不能及时发现。
 
 
 **Fluent-MyBatis：**
@@ -153,16 +167,21 @@ OR (age IN (18,19,20) AND user_name LIKE "%michael%" )
 QueryWrapper query = QueryWrapper.create()
     .where(ACCOUNT.ID.ge(100))
     .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
-    .or(ACCOUNT.AGE.in(18,19,20).and(ACCOUNT.USER_NAME.like("michael")));
+    .or(ACCOUNT.AGE.in(18, 19, 20).and(ACCOUNT.USER_NAME.like("michael")));
 ```
 
 **MyBatis-Plus：**
 
 ```java
-QueryWrapper<Employee> query = new QueryWrapper<>();
-queryWrapper.ge("id",100)
-        .and(i->i.eq("sex",1).or(x->x.eq("sex",2)))
-        .or(i->i.in("age",{18,19,20}).like("user_name","michael"));
+QueryWrapper<Employee> query = Wrappers.query()
+        .ge("id", 100)
+        .and(i -> i.eq("sex", 1).or(x -> x.eq("sex", 2)))
+        .or(i -> i.in("age", 18, 19, 20).like("user_name", "michael"));
+// or lambda
+LambdaQueryWrapper<Employee> query = Wrappers.<Employee>lambdaQuery()
+        .ge(Employee::getId, 100)
+        .and(i -> i.eq(Employee::getSex, 1).or(x -> x.eq(Employee::getSex, 2)))
+        .or(i -> i.in(Employee::getAge, 18, 19, 20).like(Employee::getUserName, "michael"));
 ```
 
 **Fluent-Mybatis：**
