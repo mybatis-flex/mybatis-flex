@@ -1,18 +1,19 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
+
 package com.mybatisflex.codegen.test;
 
 import com.mybatisflex.codegen.Generator;
@@ -98,22 +99,46 @@ public class GeneratorTest {
         GlobalConfig globalConfig = new GlobalConfig();
 
         //用户信息表，用于存放用户信息。 -> 用户信息
-        Function<String, String> format = (e) -> e.split("，")[0].replace("表", "");
+        Function<String, String> tableFormat = (e) -> e.split("，")[0].replace("表", "");
+        //包注释生成
+        Function<String, String> packageFormat = (e) -> {
+            String[] s = e.split("\\.");
+            switch (s[s.length - 1]) {
+                case "entity":
+                    return "实体类 软件包。";
+                case "mapper":
+                    return "映射层 软件包。";
+                case "service":
+                    return "服务层 软件包。";
+                case "impl":
+                    return "服务层实现 软件包。";
+                case "controller":
+                    return "控制层 软件包。";
+                default:
+                    return e;
+            }
+        };
+
 
         //设置注解生成配置
         globalConfig.getJavadocConfig()
                 .setAuthor("王帅")
-                .setTableCommentFormat(format);
+                .setTableCommentFormat(tableFormat)
+                .setPackageCommentFormat(packageFormat);
 
         //设置生成文件目录和根包
         globalConfig.getPackageConfig()
                 .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
+                .setMapperXmlPath(System.getProperty("user.dir") + "/src/test/java/resources/mapper")
                 .setBasePackage("com.test");
 
         //设置表前缀和只生成哪些表
         globalConfig.getStrategyConfig()
                 .setTablePrefix("sys_")
                 .addGenerateTable("sys_user");
+
+        globalConfig.getTemplateConfig()
+               .setEntity("D:\\Documents\\配置文件\\entity.tpl");
 
         //配置生成 entity
         globalConfig.enableEntity()
@@ -127,9 +152,13 @@ public class GeneratorTest {
         //配置生成 serviceImpl
         globalConfig.enableServiceImpl();
         //配置生成 controller
-        globalConfig.enableController();
+        //globalConfig.enableController();
         //配置生成 tableDef
-        globalConfig.enableTableDef();
+        //globalConfig.enableTableDef();
+        //配置生成 mapperXml
+        //globalConfig.enableMapperXml();
+        //配置生成 package-info.java
+        globalConfig.enablePackageInfo();
 
         //通过 datasource 和 globalConfig 创建代码生成器
         Generator generator = new Generator(dataSource, globalConfig);
