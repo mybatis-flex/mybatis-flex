@@ -36,6 +36,8 @@ public class ClassUtil {
             // javassist
             , "javassist.util.proxy.ProxyObject"
             , "org.apache.ibatis.javassist.util.proxy.ProxyObject");
+    private static final String ENHANCER_BY = "$$EnhancerBy";
+    private static final String JAVASSIST_BY = "_$$_";
 
     public static boolean isProxy(Class<?> clazz) {
         for (Class<?> cls : clazz.getInterfaces()) {
@@ -47,12 +49,9 @@ public class ClassUtil {
         return Proxy.isProxyClass(clazz);
     }
 
-    private static final String ENHANCER_BY = "$$EnhancerBy";
-    private static final String JAVASSIST_BY = "_$$_";
-
     public static <T> Class<T> getUsefulClass(Class<T> clazz) {
         if (isProxy(clazz)) {
-            return (Class<T>) clazz.getSuperclass();
+            return getJdkProxySuperClass(clazz);
         }
 
         //ControllerTest$ServiceTest$$EnhancerByGuice$$40471411#hello   -------> Guice
@@ -233,6 +232,11 @@ public class ClassUtil {
         }
 
         doGetMethods(cl.getSuperclass(), methods, predicate);
+    }
+
+    private static <T> Class<T> getJdkProxySuperClass(Class<T> clazz) {
+        final Class<?> proxyClass = Proxy.getProxyClass(clazz.getClassLoader(), clazz.getInterfaces());
+        return (Class<T>) proxyClass.getInterfaces()[0];
     }
 
 }
