@@ -21,7 +21,7 @@ public class AccountController {
     @GetMapping("/accounts")
     List<Account> selectList() {
         
-        //构造 QueryWrapper
+        //构造 QueryWrapper，也支持使用 QueryWrapper.create() 构造，效果相同
         QueryWrapper query = new QueryWrapper();
         query.where(ACCOUNT.ID.ge(100));
 
@@ -51,7 +51,7 @@ where id >= 100
 ## select *
 
 ```java
-QueryWrapper query=new QueryWrapper();
+QueryWrapper query = new QueryWrapper();
 query.select(ACCOUNT.ID, ACCOUNT.USER_NAME)
     .from(ACCOUNT)
 ```
