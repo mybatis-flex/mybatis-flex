@@ -1,3 +1,17 @@
+mybatis-flex v1.2.5 20230517:
+新增：Db.executeBatch 方法，用于批量操作
+新增：Db 工具类添加基于 Entity 的 updateBatch 方法，感谢 @黄沐鸿
+新增：KeyGenerators.java 方便进行主键生成策略配置
+新增：APT 的 mybatis-flex.properties 文件添加使用 ClassLoader 读取，方便读取 jar 的内容，感谢 @XiaoLin
+新增：QueryWrapper 新增 hash join 的支持
+新增：QueryWrapper 新增 sql hint 的支持
+优化：添加 configuration-processor，实现 yaml 配置自动提示，感谢 @tan90
+修复：v1.2.4 新增的 paginateAs 异常问题 #I73BP6
+修复：v1.2.4 版本造成的 Db.paginate 出错的问题
+文档：优化 id 主键生成器的相关文档
+
+
+
 mybatis-flex v1.2.4 20230515:
 新增：Db.updateBatch() 方法，用于批量修改或者插入等场景
 新增：通过雪花算法生成数据库主键，内置雪花算法，感谢 @王帅
