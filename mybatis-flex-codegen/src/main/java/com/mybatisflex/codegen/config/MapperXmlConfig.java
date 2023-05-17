@@ -34,6 +34,11 @@ public class MapperXmlConfig {
      */
     private String fileSuffix = "Mapper";
 
+    /**
+     * 是否覆盖之前生成的文件。
+     */
+    private boolean overwriteEnable;
+
     public String getFilePrefix() {
         return filePrefix;
     }
@@ -49,6 +54,15 @@ public class MapperXmlConfig {
 
     public MapperXmlConfig setFileSuffix(String fileSuffix) {
         this.fileSuffix = fileSuffix;
+        return this;
+    }
+
+    public boolean isOverwriteEnable() {
+        return overwriteEnable;
+    }
+
+    public MapperXmlConfig setOverwriteEnable(boolean overwriteEnable) {
+        this.overwriteEnable = overwriteEnable;
         return this;
     }
 

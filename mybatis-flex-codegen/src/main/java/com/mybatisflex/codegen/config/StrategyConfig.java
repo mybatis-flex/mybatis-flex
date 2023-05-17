@@ -16,9 +16,6 @@
 
 package com.mybatisflex.codegen.config;
 
-import com.mybatisflex.codegen.template.ITemplate;
-import com.mybatisflex.codegen.template.impl.EnjoyTemplate;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -32,11 +29,6 @@ import java.util.Set;
  */
 @SuppressWarnings("unused")
 public class StrategyConfig {
-
-    /**
-     * 使用哪个模板引擎来生成代码。
-     */
-    protected ITemplate templateEngine;
 
     /**
      * 数据库表前缀，多个前缀用英文逗号（,） 隔开。
@@ -57,11 +49,6 @@ public class StrategyConfig {
      * 是否生成视图映射。
      */
     private boolean generateForView;
-
-    /**
-     * 是否覆盖之前生成的文件。
-     */
-    private boolean overwriteEnable;
 
     /**
      * 单独为某张表添加独立的配置。
@@ -185,18 +172,6 @@ public class StrategyConfig {
         return false;
     }
 
-    public ITemplate getTemplateEngine() {
-        if (templateEngine == null) {
-            templateEngine = new EnjoyTemplate();
-        }
-        return templateEngine;
-    }
-
-    public StrategyConfig setTemplateEngine(ITemplate templateEngine) {
-        this.templateEngine = templateEngine;
-        return this;
-    }
-
     public String getTablePrefix() {
         return tablePrefix;
     }
@@ -230,15 +205,6 @@ public class StrategyConfig {
 
     public StrategyConfig setGenerateForView(boolean generateForView) {
         this.generateForView = generateForView;
-        return this;
-    }
-
-    public boolean isOverwriteEnable() {
-        return overwriteEnable;
-    }
-
-    public StrategyConfig setOverwriteEnable(boolean overwriteEnable) {
-        this.overwriteEnable = overwriteEnable;
         return this;
     }
 
