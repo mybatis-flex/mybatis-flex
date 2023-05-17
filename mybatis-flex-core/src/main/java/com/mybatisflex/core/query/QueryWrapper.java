@@ -248,6 +248,22 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return joining(Join.TYPE_CROSS, table, condition);
     }
 
+    public Joiner<QueryWrapper> join(String table) {
+        return joining(Join.TYPE_JOIN, table, true);
+    }
+
+    public Joiner<QueryWrapper> join(String table, boolean condition) {
+        return joining(Join.TYPE_JOIN, table, condition);
+    }
+
+    public Joiner<QueryWrapper> join(QueryWrapper table) {
+        return joining(Join.TYPE_JOIN, table, true);
+    }
+
+    public Joiner<QueryWrapper> join(QueryWrapper table, boolean condition) {
+        return joining(Join.TYPE_JOIN, table, condition);
+    }
+
     public QueryWrapper union(QueryWrapper unionQuery) {
         if (unions == null) {
             unions = new ArrayList<>();

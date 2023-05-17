@@ -30,6 +30,7 @@ public class Join implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    static final String TYPE_JOIN = " JOIN ";
     static final String TYPE_LEFT = " LEFT JOIN ";
     static final String TYPE_RIGHT = " RIGHT JOIN ";
     static final String TYPE_INNER = " INNER JOIN ";
