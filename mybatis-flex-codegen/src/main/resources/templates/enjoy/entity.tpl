@@ -4,7 +4,12 @@ package #(packageConfig.entityPackage);
 import #(importClass);
 #end
 
-#(table.buildRemarks())
+/**
+ * #(table.getRemarks()) 实体类。
+ *
+ * @author #(javadocConfig.getAuthor())
+ * @since #(javadocConfig.getSince())
+ */
 #(table.buildTableAnnotation())
 public class #(table.buildEntityClassName())#(table.buildExtends())#(table.buildImplements()) {
 #for(column: table.columns)

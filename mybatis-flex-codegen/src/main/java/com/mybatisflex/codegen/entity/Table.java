@@ -41,7 +41,7 @@ public class Table {
     }
 
     public String getRemarks() {
-        return remarks;
+        return globalConfig.getJavadocConfig().formatTableComment(remarks);
     }
 
     public void setRemarks(String remarks) {
@@ -154,17 +154,6 @@ public class Table {
         }
 
         return imports.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
-    }
-
-    public String buildRemarks(){
-        if (StringUtil.isBlank(remarks)){
-            return "";
-        }else {
-            StringBuilder sb = new StringBuilder("/**\n")
-                    .append(" * ").append(remarks).append("\n")
-                    .append(" */");
-            return sb.toString();
-        }
     }
 
     public String getEntityJavaFileName() {

@@ -21,38 +21,47 @@ public class StrategyConfig {
      * 使用哪个模板引擎来生成代码。
      */
     protected ITemplate templateEngine;
+
     /**
      * 数据库表前缀，多个前缀用英文逗号（,） 隔开。
      */
     private String tablePrefix;
+
     /**
      * 逻辑删除的默认字段名称。
      */
     private String logicDeleteColumn;
+
     /**
      * 乐观锁的字段名称。
      */
     private String versionColumn;
+
     /**
      * 是否生成视图映射。
      */
     private boolean generateForView;
+
     /**
      * 是否覆盖之前生成的文件。
      */
     private boolean overwriteEnable;
+
     /**
      * 单独为某张表添加独立的配置。
      */
     private Map<String, TableConfig> tableConfigMap;
+
     /**
      * 设置某个列的全局配置。
      */
     private Map<String, ColumnConfig> columnConfigMap;
+
     /**
      * 生成那些表，白名单。
      */
     private Set<String> generateTables;
+
     /**
      * 不生成那些表，黑名单。
      */

@@ -22,6 +22,8 @@ import com.mybatisflex.codegen.config.TableConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Test;
 
+import java.util.function.Function;
+
 public class GeneratorTest {
 
 
@@ -94,6 +96,14 @@ public class GeneratorTest {
         dataSource.setPassword("12345678");
 
         GlobalConfig globalConfig = new GlobalConfig();
+
+        //用户信息表，用于存放用户信息。 -> 用户信息
+        Function<String, String> format = (e) -> e.split("，")[0].replace("表", "");
+
+        //设置注解生成配置
+        globalConfig.getJavadocConfig()
+                .setAuthor("王帅")
+                .setTableRemarkFormat(format);
 
         //设置生成文件目录和根包
         globalConfig.getPackageConfig()

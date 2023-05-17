@@ -64,10 +64,11 @@ public class EntityGenerator implements IGenerator {
         }
 
 
-        Map<String, Object> params = new HashMap<>(3);
+        Map<String, Object> params = new HashMap<>(4);
         params.put("table", table);
         params.put("packageConfig", packageConfig);
         params.put("entityConfig", globalConfig.getEntityConfig());
+        params.put("javadocConfig", globalConfig.getJavadocConfig());
 
         strategyConfig.getTemplateEngine().generate(params, templatePath, entityJavaFile);
     }

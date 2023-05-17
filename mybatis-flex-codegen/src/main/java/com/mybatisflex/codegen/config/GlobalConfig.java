@@ -29,6 +29,7 @@ public class GlobalConfig {
 
     // === 必须配置 ===
 
+    private final JavadocConfig javadocConfig;
     private final PackageConfig packageConfig;
     private final StrategyConfig strategyConfig;
 
@@ -55,8 +56,13 @@ public class GlobalConfig {
     private boolean tableDefGenerateEnable;
 
     public GlobalConfig() {
+        this.javadocConfig = new JavadocConfig();
         this.packageConfig = new PackageConfig();
         this.strategyConfig = new StrategyConfig();
+    }
+
+    public JavadocConfig getJavadocConfig() {
+        return javadocConfig;
     }
 
     public PackageConfig getPackageConfig() {

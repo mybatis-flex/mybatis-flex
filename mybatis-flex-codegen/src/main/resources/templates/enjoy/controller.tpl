@@ -10,6 +10,12 @@ import org.springframework.stereotype.Controller;
 import #(controllerConfig.buildSuperClassImport())
 #end
 
+/**
+ * #(table.getRemarks()) 控制层。
+ *
+ * @author #(javadocConfig.getAuthor())
+ * @since #(javadocConfig.getSince())
+ */
 #if(controllerConfig.restStyle)
 @RestController
 #else
