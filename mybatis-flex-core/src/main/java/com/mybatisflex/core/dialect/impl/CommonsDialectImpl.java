@@ -60,6 +60,11 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     @Override
+    public String forHint(String hintString) {
+        return StringUtil.isNotBlank(hintString) ? "/*+ " + hintString + " */ " : "";
+    }
+
+    @Override
     public String forInsertRow(String tableName, Row row) {
         StringBuilder fields = new StringBuilder();
         StringBuilder questions = new StringBuilder();
@@ -260,7 +265,6 @@ public class CommonsDialectImpl implements IDialect {
     }
 
 
-
     ////////////build query sql///////
     @Override
     public String buildSelectSql(QueryWrapper queryWrapper) {
@@ -270,7 +274,7 @@ public class CommonsDialectImpl implements IDialect {
 
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 
-        StringBuilder sqlBuilder = buildSelectColumnSql(allTables, selectColumns);
+        StringBuilder sqlBuilder = buildSelectColumnSql(allTables, selectColumns, CPI.getHint(queryWrapper));
         sqlBuilder.append(" FROM ").append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
@@ -296,8 +300,9 @@ public class CommonsDialectImpl implements IDialect {
         return sqlBuilder.toString();
     }
 
-    private StringBuilder buildSelectColumnSql(List<QueryTable> queryTables, List<QueryColumn> selectColumns) {
+    private StringBuilder buildSelectColumnSql(List<QueryTable> queryTables, List<QueryColumn> selectColumns, String hint) {
         StringBuilder sqlBuilder = new StringBuilder("SELECT ");
+        sqlBuilder.append(forHint(hint));
         if (selectColumns == null || selectColumns.isEmpty()) {
             sqlBuilder.append("*");
         } else {
@@ -322,7 +327,7 @@ public class CommonsDialectImpl implements IDialect {
         List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
 
         //ignore selectColumns
-        StringBuilder sqlBuilder = new StringBuilder("DELETE FROM ");
+        StringBuilder sqlBuilder = new StringBuilder("DELETE " + forHint(CPI.getHint(queryWrapper)) + "FROM ");
         sqlBuilder.append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
@@ -517,7 +522,7 @@ public class CommonsDialectImpl implements IDialect {
         List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
 
         //ignore selectColumns
-        StringBuilder sqlBuilder = new StringBuilder("UPDATE ");
+        StringBuilder sqlBuilder = new StringBuilder("UPDATE ").append(forHint(CPI.getHint(queryWrapper)));
         sqlBuilder.append(wrap(tableInfo.getTableName()));
         sqlBuilder.append(" SET ").append(wrap(logicDeleteColumn)).append(" = ").append(getLogicDeletedValue());
 
@@ -607,7 +612,7 @@ public class CommonsDialectImpl implements IDialect {
 
         Set<String> modifyAttrs = tableInfo.obtainUpdateColumns(entity, ignoreNulls, true);
 
-        sql.append("UPDATE ").append(wrap(tableInfo.getTableName())).append(" SET ");
+        sql.append("UPDATE ").append(forHint(CPI.getHint(queryWrapper))).append(wrap(tableInfo.getTableName())).append(" SET ");
 
         StringJoiner stringJoiner = new StringJoiner(", ");
 
@@ -642,7 +647,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectOneEntityById(TableInfo tableInfo) {
-        StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn());
+        StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn(), null);
         sql.append(" FROM ").append(wrap(tableInfo.getTableName()));
         sql.append(" WHERE ");
         String[] pKeys = tableInfo.getPrimaryKeys();
@@ -671,7 +676,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectEntityListByIds(TableInfo tableInfo, Object[] primaryValues) {
-        StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn());
+        StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn(), null);
         sql.append(" FROM ").append(wrap(tableInfo.getTableName()));
         sql.append(" WHERE ");
         String[] primaryKeys = tableInfo.getPrimaryKeys();

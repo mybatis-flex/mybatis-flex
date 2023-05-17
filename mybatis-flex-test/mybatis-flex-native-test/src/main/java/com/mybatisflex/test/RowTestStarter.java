@@ -50,7 +50,7 @@ public class RowTestStarter {
         AuditManager.setAuditEnable(true);
         AuditManager.setMessageCollector(new ConsoleMessageCollector());
 
-        Page<Row> rowPage = Db.paginate("tb_account", 1, 10, QueryWrapper.create());
+        Page<Row> rowPage = Db.paginate("tb_account", 1, 10, QueryWrapper.create().hint("USE_MERGE"));
         System.out.println(rowPage);
 
 

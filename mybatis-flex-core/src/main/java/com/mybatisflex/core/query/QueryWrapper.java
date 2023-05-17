@@ -365,6 +365,11 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
+    public QueryWrapper hint(String hint) {
+        setHint(hint);
+        return this;
+    }
+
     /**
      * 获取 queryWrapper 的参数
      * 在构建 sql 的时候，需要保证 where 在 having 的前面

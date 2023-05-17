@@ -55,6 +55,14 @@ public class CPI {
         queryWrapper.setDataSource(datasource);
     }
 
+    public static String getHint(QueryWrapper queryWrapper) {
+        return queryWrapper.getHint();
+    }
+
+    public static void setHint(QueryWrapper queryWrapper, String hint) {
+        queryWrapper.setHint(hint);
+    }
+
     public static List<QueryColumn> getSelectColumns(QueryWrapper queryWrapper) {
         return queryWrapper.getSelectColumns();
     }

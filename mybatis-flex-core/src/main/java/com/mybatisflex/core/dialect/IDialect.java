@@ -25,6 +25,8 @@ public interface IDialect {
 
     String wrap(String keyword);
 
+    String forHint(String hintString);
+
     String forInsertRow(String tableName, Row row);
 
     String forInsertBatchWithFirstRowColumns(String tableName, List<Row> rows);

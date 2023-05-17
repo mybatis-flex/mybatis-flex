@@ -23,6 +23,7 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected List<QueryTable> queryTables;
     protected String dataSource;
+    protected String hint;
 
     protected List<QueryColumn> selectColumns;
     protected List<Join> joins;
@@ -134,6 +135,14 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected void setDataSource(String dataSource) {
         this.dataSource = dataSource;
+    }
+
+    protected String getHint() {
+        return hint;
+    }
+
+    protected void setHint(String hint) {
+        this.hint = hint;
     }
 
     protected List<QueryColumn> getSelectColumns() {
