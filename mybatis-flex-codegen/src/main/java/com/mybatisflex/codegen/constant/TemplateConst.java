@@ -14,6 +14,8 @@ public final class TemplateConst {
     public static final String SERVICE_IMPL = "/templates/enjoy/serviceImpl.tpl";
     public static final String CONTROLLER = "/templates/enjoy/controller.tpl";
     public static final String TABLE_DEF = "/templates/enjoy/tableDef.tpl";
+    public static final String MAPPER_XML = "/templates/enjoy/mapperXml.tpl";
+
     private TemplateConst() {
     }
 

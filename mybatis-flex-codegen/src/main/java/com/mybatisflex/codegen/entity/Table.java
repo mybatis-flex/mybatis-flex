@@ -198,6 +198,19 @@ public class Table {
                 + tableDefConfig.getClassSuffix();
     }
 
+    /**
+     * 构建 MapperXml 的文件名称
+     *
+     * @return fileName
+     */
+    public String buildMapperXmlFileName() {
+        String tableDefJavaFileName = getEntityJavaFileName();
+        MapperXmlConfig mapperXmlConfig = globalConfig.getMapperXmlConfig();
+        return mapperXmlConfig.getFilePrefix()
+                + tableDefJavaFileName
+                + mapperXmlConfig.getFileSuffix();
+    }
+
     public String buildExtends() {
         EntityConfig entityConfig = globalConfig.getEntityConfig();
         if (entityConfig.getSupperClass() != null) {

@@ -51,8 +51,13 @@ public class PackageConfig {
      */
     private String tableDefPackage;
 
+    /**
+     * MapperXml 文件所在位置。
+     */
+    private String mapperXmlPath;
+
     public String getSourceDir() {
-        if (sourceDir == null || StringUtil.isBlank(sourceDir)) {
+        if (StringUtil.isBlank(sourceDir)) {
             return System.getProperty("user.dir") + "/src/main/java";
         }
         return sourceDir;
@@ -141,6 +146,18 @@ public class PackageConfig {
 
     public PackageConfig setTableDefPackage(String tableDefPackage) {
         this.tableDefPackage = tableDefPackage;
+        return this;
+    }
+
+    public String getMapperXmlPath() {
+        if (StringUtil.isBlank(mapperXmlPath)) {
+            return getSourceDir().concat("/resources/mapper");
+        }
+        return mapperXmlPath;
+    }
+
+    public PackageConfig setMapperXmlPath(String mapperXmlPath) {
+        this.mapperXmlPath = mapperXmlPath;
         return this;
     }
 

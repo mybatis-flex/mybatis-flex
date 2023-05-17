@@ -32,6 +32,7 @@ public class GeneratorFactory {
         registerGenerator("serviceImpl", new ServiceImplGenerator());
         registerGenerator("controller", new ControllerGenerator());
         registerGenerator("tableDef", new TableDefGenerator());
+        registerGenerator("mapperXml", new MapperXmlGenerator());
     }
 
 

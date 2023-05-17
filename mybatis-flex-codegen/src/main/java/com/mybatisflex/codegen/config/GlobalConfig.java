@@ -41,6 +41,7 @@ public class GlobalConfig {
     private ServiceImplConfig serviceImplConfig;
     private ControllerConfig controllerConfig;
     private TableDefConfig tableDefConfig;
+    private MapperXmlConfig mapperXmlConfig;
 
     // === 其他配置 ===
 
@@ -54,6 +55,7 @@ public class GlobalConfig {
     private boolean serviceImplGenerateEnable;
     private boolean controllerGenerateEnable;
     private boolean tableDefGenerateEnable;
+    private boolean mapperXmlGenerateEnable;
 
     public GlobalConfig() {
         this.javadocConfig = new JavadocConfig();
@@ -115,6 +117,13 @@ public class GlobalConfig {
         return tableDefConfig;
     }
 
+    public MapperXmlConfig getMapperXmlConfig() {
+        if (mapperXmlConfig == null) {
+            mapperXmlConfig = new MapperXmlConfig();
+        }
+        return mapperXmlConfig;
+    }
+
     public EntityConfig enableEntity() {
         entityGenerateEnable = true;
         return getEntityConfig();
@@ -145,6 +154,11 @@ public class GlobalConfig {
         return getTableDefConfig();
     }
 
+    public MapperXmlConfig enableMapperXml() {
+        mapperXmlGenerateEnable = true;
+        return mapperXmlConfig;
+    }
+
     public void disableEntity() {
         entityGenerateEnable = false;
     }
@@ -169,6 +183,10 @@ public class GlobalConfig {
         tableDefGenerateEnable = false;
     }
 
+    public void disableMapperXml() {
+        mapperXmlGenerateEnable = false;
+    }
+
     public boolean isEntityGenerateEnable() {
         return entityGenerateEnable;
     }
@@ -191,6 +209,10 @@ public class GlobalConfig {
 
     public boolean isTableDefGenerateEnable() {
         return tableDefGenerateEnable;
+    }
+
+    public boolean isMapperXmlGenerateEnable() {
+        return mapperXmlGenerateEnable;
     }
 
     public void addCustomConfig(String key, Object value) {
