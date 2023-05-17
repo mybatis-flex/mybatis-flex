@@ -24,6 +24,8 @@ package com.mybatisflex.codegen.constant;
  */
 public final class TemplateConst {
 
+    public static final String PACKAGE_INFO = "/templates/enjoy/package-info.tpl";
+
     public static final String ENTITY = "/templates/enjoy/entity.tpl";
     public static final String MAPPER = "/templates/enjoy/mapper.tpl";
     public static final String SERVICE = "/templates/enjoy/service.tpl";
@@ -31,7 +33,6 @@ public final class TemplateConst {
     public static final String CONTROLLER = "/templates/enjoy/controller.tpl";
     public static final String TABLE_DEF = "/templates/enjoy/tableDef.tpl";
     public static final String MAPPER_XML = "/templates/enjoy/mapperXml.tpl";
-
     private TemplateConst() {
     }
 

@@ -45,6 +45,11 @@ public class JavadocConfig {
      */
     private Function<String, String> tableCommentFormat = Function.identity();
 
+    /**
+     * 包注释格式化。
+     */
+    private Function<String, String> packageCommentFormat = Function.identity();
+
     public String getAuthor() {
         return author;
     }
@@ -78,6 +83,19 @@ public class JavadocConfig {
 
     public JavadocConfig setTableCommentFormat(Function<String, String> tableCommentFormat) {
         this.tableCommentFormat = tableCommentFormat;
+        return this;
+    }
+
+    public String formatPackageComment(String packageName) {
+        return packageCommentFormat.apply(packageName);
+    }
+
+    public Function<String, String> getPackageCommentFormat() {
+        return packageCommentFormat;
+    }
+
+    public JavadocConfig setPackageCommentFormat(Function<String, String> packageCommentFormat) {
+        this.packageCommentFormat = packageCommentFormat;
         return this;
     }
 
