@@ -88,7 +88,8 @@ public class RowMapperInvoker {
             int counter = 0;
             int resultsPos = 0;
             for (int i = 0; i < totalSize; i++) {
-                if (++counter > batchSize) {
+                consumer.accept(mapper, i);
+                if (++counter == batchSize) {
                     counter = 0;
                     List<BatchResult> batchResults = sqlSession.flushStatements();
                     for (BatchResult batchResult : batchResults) {
@@ -97,9 +98,8 @@ public class RowMapperInvoker {
                             results[resultsPos++] = updateCount;
                         }
                     }
-                } else {
-                    consumer.accept(mapper, i);
                 }
+
             }
 
             if (counter != 0) {
