@@ -79,6 +79,7 @@ export default defineConfig({
                     {text: 'SQL 打印', link: '/zh/core/sql-print'},
                     {text: '多数据源', link: '/zh/core/multi-datasource'},
                     {text: '事务管理', link: '/zh/core/tx'},
+                    {text: '数据权限', link: '/zh/core/data-permission'},
                     {text: '字段权限', link: '/zh/core/columns-permission'},
                     {text: '字段加密', link: '/zh/core/columns-encrypt'},
                     {text: '字典回写', link: '/zh/core/columns-dict'},
