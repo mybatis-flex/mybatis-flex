@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class MapperGenerator implements IGenerator {
 
-    private final String templatePath;
+    private String templatePath;
 
     public MapperGenerator() {
         this(TemplateConst.MAPPER);
@@ -70,6 +70,15 @@ public class MapperGenerator implements IGenerator {
         params.put("mapperConfig", globalConfig.getMapperConfig());
         params.put("javadocConfig", globalConfig.getJavadocConfig());
 
-        strategyConfig.getTemplateEngine().generate(params, templatePath, mapperJavaFile);
+        globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, mapperJavaFile);
     }
+
+    public String getTemplatePath() {
+        return templatePath;
+    }
+
+    public void setTemplatePath(String templatePath) {
+        this.templatePath = templatePath;
+    }
+
 }

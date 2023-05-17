@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class ControllerGenerator implements IGenerator {
 
-    private final String templatePath;
+    private String templatePath;
 
     public ControllerGenerator() {
         this(TemplateConst.CONTROLLER);
@@ -70,6 +70,15 @@ public class ControllerGenerator implements IGenerator {
         params.put("javadocConfig", globalConfig.getJavadocConfig());
         params.put("controllerConfig", globalConfig.getControllerConfig());
 
-        strategyConfig.getTemplateEngine().generate(params, templatePath, controllerJavaFile);
+        globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, controllerJavaFile);
     }
+
+    public String getTemplatePath() {
+        return templatePath;
+    }
+
+    public void setTemplatePath(String templatePath) {
+        this.templatePath = templatePath;
+    }
+
 }

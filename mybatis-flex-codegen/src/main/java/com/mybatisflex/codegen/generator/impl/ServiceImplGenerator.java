@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class ServiceImplGenerator implements IGenerator {
 
-    private final String templatePath;
+    private String templatePath;
 
     public ServiceImplGenerator() {
         this(TemplateConst.SERVICE_IMPL);
@@ -70,6 +70,15 @@ public class ServiceImplGenerator implements IGenerator {
         params.put("javadocConfig", globalConfig.getJavadocConfig());
         params.put("serviceImplConfig", globalConfig.getServiceImplConfig());
 
-        strategyConfig.getTemplateEngine().generate(params, templatePath, serviceImplJavaFile);
+        globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, serviceImplJavaFile);
     }
+
+    public String getTemplatePath() {
+        return templatePath;
+    }
+
+    public void setTemplatePath(String templatePath) {
+        this.templatePath = templatePath;
+    }
+
 }

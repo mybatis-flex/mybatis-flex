@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class TableDefGenerator implements IGenerator {
 
-    private final String templatePath;
+    private String templatePath;
 
     public TableDefGenerator() {
         this(TemplateConst.TABLE_DEF);
@@ -70,6 +70,15 @@ public class TableDefGenerator implements IGenerator {
         params.put("javadocConfig", globalConfig.getJavadocConfig());
         params.put("tableDefConfig", globalConfig.getTableDefConfig());
 
-        strategyConfig.getTemplateEngine().generate(params, templatePath, tableDefJavaFile);
+        globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, tableDefJavaFile);
     }
+
+    public String getTemplatePath() {
+        return templatePath;
+    }
+
+    public void setTemplatePath(String templatePath) {
+        this.templatePath = templatePath;
+    }
+
 }

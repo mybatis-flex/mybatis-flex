@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class EntityGenerator implements IGenerator {
 
-    private final String templatePath;
+    private String templatePath;
 
     public EntityGenerator() {
         this(TemplateConst.ENTITY);
@@ -70,6 +70,15 @@ public class EntityGenerator implements IGenerator {
         params.put("entityConfig", globalConfig.getEntityConfig());
         params.put("javadocConfig", globalConfig.getJavadocConfig());
 
-        strategyConfig.getTemplateEngine().generate(params, templatePath, entityJavaFile);
+        globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, entityJavaFile);
     }
+
+    public String getTemplatePath() {
+        return templatePath;
+    }
+
+    public void setTemplatePath(String templatePath) {
+        this.templatePath = templatePath;
+    }
+
 }

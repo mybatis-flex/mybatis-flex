@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.codegen.template;
+package com.mybatisflex.codegen.template.impl;
 
 import com.jfinal.template.Engine;
 import com.jfinal.template.expr.ast.FieldGetters;
+import com.jfinal.template.source.ClassPathSource;
+import com.jfinal.template.source.FileSource;
+import com.jfinal.template.source.ISource;
+import com.jfinal.template.source.ISourceFactory;
+import com.mybatisflex.codegen.template.ITemplate;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.io.File;
@@ -29,8 +34,8 @@ public class EnjoyTemplate implements ITemplate {
 
     public EnjoyTemplate() {
         engine = Engine.create("mybatis-flex", engine -> {
-            engine.setToClassPathSourceFactory();
             engine.addSharedMethod(StringUtil.class);
+            engine.setSourceFactory(new FileAndClassPathSourceFactory());
         });
         // 以下配置将支持 user.girl 表达式去调用 user 对象的 boolean isGirl() 方法
         Engine.addFieldGetterToFirst(new FieldGetters.IsMethodFieldGetter());
@@ -48,4 +53,18 @@ public class EnjoyTemplate implements ITemplate {
             e.printStackTrace();
         }
     }
+
+    public static class FileAndClassPathSourceFactory implements ISourceFactory {
+
+        @Override
+        public ISource getSource(String baseTemplatePath, String fileName, String encoding) {
+            // 先从文件寻找资源，找不到再从类路径寻找资源
+            if (new File(fileName).exists()) {
+                return new FileSource(baseTemplatePath, fileName, encoding);
+            }
+            return new ClassPathSource(baseTemplatePath, fileName, encoding);
+        }
+
+    }
+
 }

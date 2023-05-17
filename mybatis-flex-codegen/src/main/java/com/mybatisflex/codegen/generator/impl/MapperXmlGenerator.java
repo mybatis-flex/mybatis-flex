@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class MapperXmlGenerator implements IGenerator {
 
-    private final String templatePath;
+    private String templatePath;
 
     public MapperXmlGenerator() {
         this(TemplateConst.MAPPER_XML);
@@ -67,6 +67,15 @@ public class MapperXmlGenerator implements IGenerator {
         params.put("table", table);
         params.put("packageConfig", packageConfig);
 
-        strategyConfig.getTemplateEngine().generate(params, templatePath, mapperXmlFile);
+        globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, mapperXmlFile);
     }
+
+    public String getTemplatePath() {
+        return templatePath;
+    }
+
+    public void setTemplatePath(String templatePath) {
+        this.templatePath = templatePath;
+    }
+
 }

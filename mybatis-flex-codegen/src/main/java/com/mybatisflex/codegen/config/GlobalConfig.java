@@ -32,6 +32,7 @@ public class GlobalConfig {
     private final JavadocConfig javadocConfig;
     private final PackageConfig packageConfig;
     private final StrategyConfig strategyConfig;
+    private final TemplateConfig templateConfig;
 
     // === 可选配置 ===
 
@@ -61,6 +62,7 @@ public class GlobalConfig {
         this.javadocConfig = new JavadocConfig();
         this.packageConfig = new PackageConfig();
         this.strategyConfig = new StrategyConfig();
+        this.templateConfig = new TemplateConfig();
     }
 
     public JavadocConfig getJavadocConfig() {
@@ -73,6 +75,10 @@ public class GlobalConfig {
 
     public StrategyConfig getStrategyConfig() {
         return strategyConfig;
+    }
+
+    public TemplateConfig getTemplateConfig() {
+        return templateConfig;
     }
 
     public EntityConfig getEntityConfig() {

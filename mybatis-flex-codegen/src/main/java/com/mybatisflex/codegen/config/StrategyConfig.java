@@ -1,7 +1,7 @@
 package com.mybatisflex.codegen.config;
 
-import com.mybatisflex.codegen.template.EnjoyTemplate;
 import com.mybatisflex.codegen.template.ITemplate;
+import com.mybatisflex.codegen.template.impl.EnjoyTemplate;
 
 import java.util.HashMap;
 import java.util.HashSet;

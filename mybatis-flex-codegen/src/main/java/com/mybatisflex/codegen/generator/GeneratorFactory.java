@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.codegen.generator;
 
+import com.mybatisflex.codegen.constant.GenTypeConst;
 import com.mybatisflex.codegen.generator.impl.*;
 
 import java.util.Collection;
@@ -26,13 +27,17 @@ public class GeneratorFactory {
     private static final Map<String, IGenerator> generators = new HashMap<>();
 
     static {
-        registerGenerator("entity", new EntityGenerator());
-        registerGenerator("mapper", new MapperGenerator());
-        registerGenerator("service", new ServiceGenerator());
-        registerGenerator("serviceImpl", new ServiceImplGenerator());
-        registerGenerator("controller", new ControllerGenerator());
-        registerGenerator("tableDef", new TableDefGenerator());
-        registerGenerator("mapperXml", new MapperXmlGenerator());
+        registerGenerator(GenTypeConst.ENTITY, new EntityGenerator());
+        registerGenerator(GenTypeConst.MAPPER, new MapperGenerator());
+        registerGenerator(GenTypeConst.SERVICE, new ServiceGenerator());
+        registerGenerator(GenTypeConst.SERVICE_IMPL, new ServiceImplGenerator());
+        registerGenerator(GenTypeConst.CONTROLLER, new ControllerGenerator());
+        registerGenerator(GenTypeConst.TABLE_DEF, new TableDefGenerator());
+        registerGenerator(GenTypeConst.MAPPER_XML, new MapperXmlGenerator());
+    }
+
+    public static IGenerator getGenerator(String genType) {
+        return generators.get(genType);
     }
 
 
