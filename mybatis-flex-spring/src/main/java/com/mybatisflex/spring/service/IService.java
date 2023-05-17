@@ -19,6 +19,9 @@ import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.row.Db;
+import com.mybatisflex.core.row.RowMapper;
+import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.SqlUtil;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,14 +40,14 @@ import java.util.*;
 @SuppressWarnings("unused")
 public interface IService<T> {
 
+    // ===== 保存（增）操作 =====
+
     /**
      * 获取对应实体类（Entity）的基础映射类（BaseMapper）。
      *
      * @return 基础映射类（BaseMapper）
      */
     BaseMapper<T> getMapper();
-
-    // ===== 保存（增）操作 =====
 
     /**
      * 保存实体类对象数据。
@@ -80,6 +83,8 @@ public interface IService<T> {
         return SqlUtil.toBool(getMapper().insertBatch(new ArrayList<>(entities)));
     }
 
+    // ===== 删除（删）操作 =====
+
     /**
      * 批量保存实体类对象数据。
      *
@@ -91,8 +96,6 @@ public interface IService<T> {
     default boolean saveBatch(Collection<T> entities, int size) {
         return SqlUtil.toBool(getMapper().insertBatch(new ArrayList<>(entities), size));
     }
-
-    // ===== 删除（删）操作 =====
 
     /**
      * 根据查询条件删除数据。
@@ -138,6 +141,8 @@ public interface IService<T> {
         return SqlUtil.toBool(getMapper().deleteBatchByIds(ids));
     }
 
+    // ===== 更新（改）操作 =====
+
     /**
      * 根据 {@link Map} 构建查询条件删除数据。
      *
@@ -147,8 +152,6 @@ public interface IService<T> {
     default boolean removeByMap(Map<String, Object> query) {
         return SqlUtil.toBool(getMapper().deleteByMap(query));
     }
-
-    // ===== 更新（改）操作 =====
 
     /**
      * 根据查询条件更新数据。
@@ -170,6 +173,34 @@ public interface IService<T> {
      */
     default boolean update(T entity, QueryCondition condition) {
         return SqlUtil.toBool(getMapper().updateByCondition(entity, condition));
+    }
+
+    /**
+     * 根据 id 批量更新数据
+     *
+     * @param entities 实体类对象集合
+     * @return boolean {@code true} 更新成功，{@code false} 更新失败。
+     */
+    default boolean updateBatch(Collection<T> entities) {
+        return updateBatch(entities, RowMapper.DEFAULT_BATCH_SIZE);
+    }
+
+    /**
+     * 根据 id 批量更新数据
+     *
+     * @param entities  实体类对象集合
+     * @param batchSize 每批次更新数量
+     * @return boolean {@code true} 更新成功，{@code false} 更新失败。
+     */
+    @SuppressWarnings("unchecked")
+    default boolean updateBatch(Collection<T> entities, int batchSize) {
+        return Db.tx(() -> {
+            final List<T> entityList = CollectionUtil.toList(entities);
+
+            // BaseMapper 是经过 Mybatis 动态代理处理过的对象，需要获取原始 BaseMapper 类型
+            final Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
+            return SqlUtil.toBool(Arrays.stream(Db.executeBatch(entityList.size(), batchSize, usefulClass, (mapper, index) -> mapper.update(entityList.get(index)))).sum());
+        });
     }
 
     /**
