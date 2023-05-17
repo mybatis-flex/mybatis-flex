@@ -647,7 +647,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectOneEntityById(TableInfo tableInfo) {
-        StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn(), null);
+        StringBuilder sql = buildSelectColumnSql(null, null, null);
         sql.append(" FROM ").append(wrap(tableInfo.getTableName()));
         sql.append(" WHERE ");
         String[] pKeys = tableInfo.getPrimaryKeys();
