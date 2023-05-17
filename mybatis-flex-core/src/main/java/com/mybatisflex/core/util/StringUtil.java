@@ -253,7 +253,6 @@ public class StringUtil {
      * @param objs
      * @param function
      * @param <T>
-     * @return
      */
     public static <T> String join(String delimiter, Collection<T> objs, Function<T, String> function) {
         if (CollectionUtil.isEmpty(objs)) {
