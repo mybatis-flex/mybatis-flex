@@ -4,7 +4,7 @@ import #(mapperConfig.buildSuperClassImport());
 import #(packageConfig.entityPackage).#(table.buildEntityClassName());
 
 /**
- * #(table.getRemarks()) 映射层。
+ * #(table.getComment()) 映射层。
  *
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())

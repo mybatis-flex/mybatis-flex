@@ -7,7 +7,7 @@ import #(packageConfig.servicePackage).#(table.buildServiceClassName());
 import org.springframework.stereotype.Service;
 
 /**
- * #(table.getRemarks()) 服务层实现。
+ * #(table.getComment()) 服务层实现。
  *
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())

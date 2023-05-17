@@ -5,7 +5,7 @@ import #(importClass);
 #end
 
 /**
- * #(table.getRemarks()) 实体类。
+ * #(table.getComment()) 实体类。
  *
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())
@@ -14,7 +14,7 @@ import #(importClass);
 public class #(table.buildEntityClassName())#(table.buildExtends())#(table.buildImplements()) {
 #for(column: table.columns)
 
-    #(column.buildRemarks())
+    #(column.buildComment())
     #(column.buildAnnotations())private #(column.propertySimpleType) #(column.property);
 #end
 

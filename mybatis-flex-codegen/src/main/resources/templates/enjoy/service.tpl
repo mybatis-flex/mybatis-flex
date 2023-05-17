@@ -4,7 +4,7 @@ import #(serviceConfig.buildSuperClassImport());
 import #(packageConfig.entityPackage).#(table.buildEntityClassName());
 
 /**
- * #(table.getRemarks()) 服务层。
+ * #(table.getComment()) 服务层。
  *
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())

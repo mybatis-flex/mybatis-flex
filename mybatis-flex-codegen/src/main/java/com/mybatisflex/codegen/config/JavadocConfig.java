@@ -27,7 +27,7 @@ public class JavadocConfig {
     /**
      * 表名格式化。
      */
-    private Function<String, String> tableRemarkFormat = Function.identity();
+    private Function<String, String> tableCommentFormat = Function.identity();
 
     public String getAuthor() {
         return author;
@@ -53,15 +53,15 @@ public class JavadocConfig {
     }
 
     public String formatTableComment(String comment) {
-        return tableRemarkFormat.apply(comment);
+        return tableCommentFormat.apply(comment);
     }
 
-    public Function<String, String> getTableRemarkFormat() {
-        return tableRemarkFormat;
+    public Function<String, String> getTableCommentFormat() {
+        return tableCommentFormat;
     }
 
-    public JavadocConfig setTableRemarkFormat(Function<String, String> tableRemarkFormat) {
-        this.tableRemarkFormat = tableRemarkFormat;
+    public JavadocConfig setTableCommentFormat(Function<String, String> tableCommentFormat) {
+        this.tableCommentFormat = tableCommentFormat;
         return this;
     }
 

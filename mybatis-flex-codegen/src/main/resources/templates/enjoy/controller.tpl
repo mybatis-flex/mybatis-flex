@@ -11,7 +11,7 @@ import #(controllerConfig.buildSuperClassImport())
 #end
 
 /**
- * #(table.getRemarks()) 控制层。
+ * #(table.getComment()) 控制层。
  *
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())

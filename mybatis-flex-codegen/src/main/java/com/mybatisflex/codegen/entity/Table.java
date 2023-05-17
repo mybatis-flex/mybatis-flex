@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class Table {
 
     private String name;
-    private String remarks;
+    private String comment;
     private Set<String> primaryKeys;
     private List<Column> columns = new ArrayList<>();
 
@@ -40,12 +40,12 @@ public class Table {
         this.name = name;
     }
 
-    public String getRemarks() {
-        return globalConfig.getJavadocConfig().formatTableComment(remarks);
+    public String getComment() {
+        return globalConfig.getJavadocConfig().formatTableComment(comment);
     }
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
 
@@ -295,7 +295,7 @@ public class Table {
     public String toString() {
         return "Table{" +
                 "name='" + name + '\'' +
-                ", remarks='" + remarks + '\'' +
+                ", remarks='" + comment + '\'' +
                 ", primaryKeys='" + primaryKeys + '\'' +
                 ", columns=" + columns +
                 '}';

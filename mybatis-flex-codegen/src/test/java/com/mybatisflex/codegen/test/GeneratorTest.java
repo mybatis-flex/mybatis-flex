@@ -103,7 +103,7 @@ public class GeneratorTest {
         //设置注解生成配置
         globalConfig.getJavadocConfig()
                 .setAuthor("王帅")
-                .setTableRemarkFormat(format);
+                .setTableCommentFormat(format);
 
         //设置生成文件目录和根包
         globalConfig.getPackageConfig()

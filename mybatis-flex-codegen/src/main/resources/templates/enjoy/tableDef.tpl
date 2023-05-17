@@ -4,7 +4,7 @@ import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.table.TableDef;
 
 /**
- * #(table.getRemarks()) 表定义层。
+ * #(table.getComment()) 表定义层。
  *
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())

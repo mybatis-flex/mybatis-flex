@@ -100,7 +100,7 @@ public class Generator {
                 table.setName(tableName);
 
                 String remarks = rs.getString("REMARKS");
-                table.setRemarks(remarks);
+                table.setComment(remarks);
 
 
                 buildPrimaryKey(table);
