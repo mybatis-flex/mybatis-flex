@@ -5,7 +5,7 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.2.5</version>
+        <version>1.2.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -59,7 +59,7 @@
                         <path>
                             <groupId>com.mybatis-flex</groupId>
                             <artifactId>mybatis-flex-processor</artifactId>
-                            <version>1.2.5</version>
+                            <version>1.2.6</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
