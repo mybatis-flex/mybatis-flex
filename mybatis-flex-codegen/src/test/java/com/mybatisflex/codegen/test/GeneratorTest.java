@@ -49,7 +49,7 @@ public class GeneratorTest {
 
         //设置只生成哪些表
         globalConfig.getStrategyConfig()
-                .addGenerateTable("account", "account_session");
+                .setGenerateTable("account", "account_session");
 
         //设置生成 entity
         globalConfig.enableEntity()
@@ -70,7 +70,7 @@ public class GeneratorTest {
         TableConfig tableConfig = new TableConfig();
         tableConfig.setTableName("account");
         tableConfig.setUpdateListenerClass(MyUpdateListener.class);
-        globalConfig.getStrategyConfig().addTableConfig(tableConfig);
+        globalConfig.getStrategyConfig().setTableConfig(tableConfig);
 
 
         //可以单独配置某个列
@@ -78,7 +78,7 @@ public class GeneratorTest {
         columnConfig.setColumnName("tenant_id");
         columnConfig.setLarge(true);
         columnConfig.setVersion(true);
-        globalConfig.getStrategyConfig().addColumnConfig("account", columnConfig);
+        globalConfig.getStrategyConfig().setColumnConfig("account", columnConfig);
 
 
         //通过 datasource 和 globalConfig 创建代码生成器
@@ -135,7 +135,7 @@ public class GeneratorTest {
         //设置表前缀和只生成哪些表
         globalConfig.getStrategyConfig()
                 .setTablePrefix("sys_")
-                .addGenerateTable("sys_user");
+                .setGenerateTable("sys_user");
 
         globalConfig.getTemplateConfig()
                .setEntity("D:\\Documents\\配置文件\\entity.tpl");
@@ -152,7 +152,7 @@ public class GeneratorTest {
         //配置生成 serviceImpl
         globalConfig.enableServiceImpl();
         //配置生成 controller
-        //globalConfig.enableController();
+        globalConfig.enableController();
         //配置生成 tableDef
         //globalConfig.enableTableDef();
         //配置生成 mapperXml
