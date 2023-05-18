@@ -18,6 +18,7 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.EnumWrapper;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Array;
@@ -82,14 +83,14 @@ class WrapperUtil {
             return NULL_PARA_ARRAY;
         }
 
-        List<Object> paras = new ArrayList<>();
-        getValues(condition, paras);
+        List<Object> params = new ArrayList<>();
+        getValues(condition, params);
 
-        return paras.isEmpty() ? NULL_PARA_ARRAY : paras.toArray();
+        return params.isEmpty() ? NULL_PARA_ARRAY : params.toArray();
     }
 
 
-    private static void getValues(QueryCondition condition, List<Object> paras) {
+    private static void getValues(QueryCondition condition, List<Object> params) {
         if (condition == null) {
             return;
         }
@@ -98,29 +99,35 @@ class WrapperUtil {
         if (value == null
                 || value instanceof QueryColumn
                 || value instanceof RawValue) {
-            getValues(condition.next, paras);
+            getValues(condition.next, params);
             return;
         }
 
-        if (value.getClass().isArray()) {
-            Object[] values = (Object[]) value;
-            for (Object object : values) {
-                if (object != null && ClassUtil.isArray(object.getClass())) {
-                    for (int i = 0; i < Array.getLength(object); i++) {
-                        paras.add(Array.get(object, i));
-                    }
-                } else {
-                    paras.add(object);
-                }
+        addParam(params, value);
+        getValues(condition.next, params);
+    }
+
+    private static void addParam(List<Object> paras, Object value) {
+        if (value == null) {
+            paras.add(null);
+        } else if (ClassUtil.isArray(value.getClass())) {
+            for (int i = 0; i < Array.getLength(value); i++) {
+                addParam(paras, Array.get(value, i));
             }
         } else if (value instanceof QueryWrapper) {
             Object[] valueArray = ((QueryWrapper) value).getValueArray();
             paras.addAll(Arrays.asList(valueArray));
+        } else if (value.getClass().isEnum()) {
+            EnumWrapper enumWrapper = new EnumWrapper(value.getClass());
+            if (enumWrapper.hasEnumValueAnnotation()) {
+                paras.add(enumWrapper.getEnumValue((Enum) value));
+            } else {
+                paras.add(value);
+            }
         } else {
             paras.add(value);
         }
 
-        getValues(condition.next, paras);
     }
 
 

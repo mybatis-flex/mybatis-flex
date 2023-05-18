@@ -25,7 +25,9 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
+import java.util.List;
 
+import static com.mybatisflex.core.query.QueryMethods.select;
 import static com.mybatisflex.test.table.Tables.ACCOUNT;
 import static com.mybatisflex.test.table.Tables.ARTICLE;
 
@@ -145,14 +147,15 @@ public class EntityTestStarter {
 //                        .or(SYS_CONFIG.TYPE.like(word).when(StrChecker.isNotBlank(word)))
 //                );
 
-//        List<Account> accounts = accountMapper.selectListByQuery(
-//                select().where(ACCOUNT.AGE.ge(18).when(false))
-//                        .and(ACCOUNT.USER_NAME.like("aaaa").when(false)
-//                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
-//                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
-//                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
-//                        )
-//        );
+        List<Account> accounts = accountMapper.selectListByQuery(
+                select().where(ACCOUNT.AGE.ge(18).when(false))
+                        .and(ACCOUNT.USER_NAME.like("aaaa").when(false)
+                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+                        )
+        );
+        System.out.println(accounts);
 
 
 //        Page<Account> paginate = accountMapper.paginate(1, 10, QueryWrapper.create());
