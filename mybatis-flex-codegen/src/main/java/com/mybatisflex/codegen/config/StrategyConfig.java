@@ -70,7 +70,7 @@ public class StrategyConfig {
      */
     private Set<String> unGenerateTables;
 
-    public void addTableConfig(TableConfig tableConfig) {
+    public void setTableConfig(TableConfig tableConfig) {
         if (tableConfigMap == null) {
             tableConfigMap = new HashMap<>();
         }
@@ -81,19 +81,19 @@ public class StrategyConfig {
         return tableConfigMap == null ? null : tableConfigMap.get(tableName);
     }
 
-    public void addColumnConfig(ColumnConfig columnConfig) {
+    public void setColumnConfig(ColumnConfig columnConfig) {
         if (columnConfigMap == null) {
             columnConfigMap = new HashMap<>();
         }
         columnConfigMap.put(columnConfig.getColumnName(), columnConfig);
     }
 
-    public void addColumnConfig(String tableName, ColumnConfig columnConfig) {
+    public void setColumnConfig(String tableName, ColumnConfig columnConfig) {
         TableConfig tableConfig = getTableConfig(tableName);
         if (tableConfig == null) {
             tableConfig = new TableConfig();
             tableConfig.setTableName(tableName);
-            addTableConfig(tableConfig);
+            setTableConfig(tableConfig);
         }
 
         tableConfig.addColumnConfig(columnConfig);
@@ -129,7 +129,7 @@ public class StrategyConfig {
         return columnConfig;
     }
 
-    public void addGenerateTable(String... tables) {
+    public void setGenerateTable(String... tables) {
         if (generateTables == null) {
             generateTables = new HashSet<>();
         }
@@ -141,7 +141,7 @@ public class StrategyConfig {
         }
     }
 
-    public void addUnGenerateTable(String... tables) {
+    public void setUnGenerateTable(String... tables) {
         if (unGenerateTables == null) {
             unGenerateTables = new HashSet<>();
         }

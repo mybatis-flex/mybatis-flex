@@ -234,7 +234,14 @@ public class GlobalConfig {
         return packageInfoGenerateEnable;
     }
 
-    public void addCustomConfig(String key, Object value) {
+    public Object getCustomConfig(String key) {
+        if (customConfig != null) {
+            return customConfig.get(key);
+        }
+        return null;
+    }
+
+    public void setCustomConfig(String key, Object value) {
         if (customConfig == null) {
             customConfig = new HashMap<>();
         }
