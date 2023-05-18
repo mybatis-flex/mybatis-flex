@@ -1,3 +1,13 @@
+mybatis-flex v1.2.6 20230518:
+新增：IService 添加 updateBatch 方法，感谢 @Saoforest
+优化：findById 默认返回 isLarge 的字段 #I73SJY
+优化：WrapperUtil.getValues() 并直接读取枚举内容
+修复：ClassUtil 修复无法正确读取 JDK 动态代理超类问题，感谢 @Saoforest
+修复：批量执行每一个批次会少 1 条数据的问题，感谢 @笨小孩
+文档：添加数据权限的相关文档
+
+
+
 mybatis-flex v1.2.5 20230517:
 新增：Db.executeBatch 方法，用于批量操作
 新增：Db 工具类添加基于 Entity 的 updateBatch 方法，感谢 @黄沐鸿
