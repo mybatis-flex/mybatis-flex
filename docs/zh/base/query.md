@@ -97,10 +97,10 @@ public class ArticleDTO {
 }
 ```
 
-那么， `QueryWrapper` 需要添加 as，修改如下：
+那么， `QueryWrapper` 需要添加 `as`，修改如下：
 
 ```java 3,4
-QueryWrapper asWrapper = QueryWrapper.create()
+QueryWrapper query = QueryWrapper.create()
     .select(ARTICLE.ALL_COLUMNS)
     .select(ACCOUNT.USER_NAME.as(ArticleDTO::getAuthorName)
             ,ACCOUNT.AGE.as(ArticleDTO::getAuthorAge)
@@ -109,6 +109,9 @@ QueryWrapper asWrapper = QueryWrapper.create()
     .from(ARTICLE)
     .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
     .where(ACCOUNT.ID.ge(0));
+
+List<ArticleDTO> results = mapper.selectListByQueryAs(query, ArticleDTO.class);
+System.out.println(results);    
 ```
 
 
