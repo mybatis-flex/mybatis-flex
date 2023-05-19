@@ -19,7 +19,7 @@ import com.mybatisflex.codegen.template.EnjoyTemplate;
 import com.mybatisflex.codegen.template.ITemplate;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.util.StringUtil;
-import com.mybatisflex.spring.service.IService;
+import com.mybatisflex.core.service.IService;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 
 import java.io.Serializable;

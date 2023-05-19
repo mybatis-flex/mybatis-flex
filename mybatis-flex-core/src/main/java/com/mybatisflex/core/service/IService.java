@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.spring.service;
+package com.mybatisflex.core.service;
 
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.paginate.Page;
@@ -24,7 +24,6 @@ import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.SqlUtil;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.*;
@@ -78,7 +77,6 @@ public interface IService<T> {
      * @param entities 实体类对象
      * @return {@code true} 保存成功，{@code false} 保存失败。
      */
-    @Transactional(rollbackFor = Exception.class)
     default boolean saveBatch(Collection<T> entities) {
         return SqlUtil.toBool(getMapper().insertBatch(new ArrayList<>(entities)));
     }
@@ -92,7 +90,6 @@ public interface IService<T> {
      * @param size     每次保存切分的数量
      * @return {@code true} 保存成功，{@code false} 保存失败。
      */
-    @Transactional(rollbackFor = Exception.class)
     default boolean saveBatch(Collection<T> entities, int size) {
         return SqlUtil.toBool(getMapper().insertBatch(new ArrayList<>(entities), size));
     }
@@ -133,7 +130,6 @@ public interface IService<T> {
      * @param ids 数据主键
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
-    @Transactional(rollbackFor = Exception.class)
     default boolean removeByIds(Collection<? extends Serializable> ids) {
         if (CollectionUtil.isEmpty(ids)) {
             return false;
