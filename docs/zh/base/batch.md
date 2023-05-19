@@ -30,7 +30,7 @@ insert into tb_account(id,nickname, .....) values
 
 ## `Db.executeBatch` 方法
 
-这个方法的示例代码如下：
+以下是使用 `Db.executeBatch` 进行批量插入的示例：
 
 ```java
 List<Account> accounts = ....
