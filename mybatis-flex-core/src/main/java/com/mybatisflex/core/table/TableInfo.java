@@ -640,6 +640,16 @@ public class TableInfo {
                     .typeHandler(columnInfo.buildTypeHandler())
                     .build();
             resultMappings.add(mapping);
+
+            //add property mapper for sql as ...
+            if (!Objects.equals(columnInfo.getColumn(), columnInfo.getProperty())) {
+                ResultMapping propertyMapping = new ResultMapping.Builder(configuration, columnInfo.getProperty(),
+                        columnInfo.getProperty(), columnInfo.getPropertyType())
+                        .jdbcType(columnInfo.getJdbcType())
+                        .typeHandler(columnInfo.buildTypeHandler())
+                        .build();
+                resultMappings.add(propertyMapping);
+            }
         }
 
         for (IdInfo idInfo : primaryKeyList) {

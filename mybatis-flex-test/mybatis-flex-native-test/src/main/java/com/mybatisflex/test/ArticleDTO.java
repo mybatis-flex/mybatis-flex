@@ -12,9 +12,9 @@ public class ArticleDTO {
 
     private String content;
 
-    private String userName;
+    private String authorName;
 
-    private int age;
+    private int authorAge;
 
     private Date birthday;
 
@@ -50,20 +50,21 @@ public class ArticleDTO {
         this.content = content;
     }
 
-    public String getUserName() {
-        return userName;
+
+    public String getAuthorName() {
+        return authorName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 
-    public int getAge() {
-        return age;
+    public int getAuthorAge() {
+        return authorAge;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setAuthorAge(int authorAge) {
+        this.authorAge = authorAge;
     }
 
     public Date getBirthday() {
@@ -81,8 +82,8 @@ public class ArticleDTO {
                 ", accountId=" + accountId +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", userName='" + userName + '\'' +
-                ", age=" + age +
+                ", authorName='" + authorName + '\'' +
+                ", authorAge=" + authorAge +
                 ", birthday=" + birthday +
                 '}';
     }

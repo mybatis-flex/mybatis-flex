@@ -80,6 +80,38 @@ List<ArticleDTO> results = mapper.selectListByQueryAs(query, ArticleDTO.class);
 System.out.println(results);
 ```
 
+假设 `ArticleDTO` 定义的属性和 SQL 查询的字段不一致时，例如：
+
+```java
+public class ArticleDTO {
+
+  private Long id;
+  private Long accountId;
+  private String title;
+  private String content;
+
+  //以下用户字段 和 用户表定义的列不一致，表定义的列为 user_name
+  private String authorName;
+  private int authorAge;
+  private Date birthday;
+}
+```
+
+那么， `QueryWrapper` 需要添加 as，修改如下：
+
+```java 3,4
+QueryWrapper asWrapper = QueryWrapper.create()
+    .select(ARTICLE.ALL_COLUMNS)
+    .select(ACCOUNT.USER_NAME.as(ArticleDTO::getAuthorName)
+            ,ACCOUNT.AGE.as(ArticleDTO::getAuthorAge)
+            ,ACCOUNT.BIRTHDAY
+    )
+    .from(ARTICLE)
+    .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+    .where(ACCOUNT.ID.ge(0));
+```
+
+
 **注意事项：**
 
 关联查询（`selectOneByQueryAs`、`selectListByQueryAs` 、`paginateAs` 等方法）中的 `asType` 参数类型（比如：`ArticleDTO`），

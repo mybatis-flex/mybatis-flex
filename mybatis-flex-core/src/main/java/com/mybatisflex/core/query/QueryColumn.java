@@ -18,6 +18,8 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.table.TableDef;
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
 import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
@@ -78,6 +80,10 @@ public class QueryColumn implements Serializable {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public <T> QueryColumn as(LambdaGetter<T> fn) {
+        return as(LambdaUtil.getFieldName(fn));
     }
 
     public QueryColumn as(String alias) {

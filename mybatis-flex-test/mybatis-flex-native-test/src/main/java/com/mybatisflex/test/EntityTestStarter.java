@@ -85,7 +85,10 @@ public class EntityTestStarter {
 //
         QueryWrapper asWrapper = QueryWrapper.create()
                 .select(ARTICLE.ALL_COLUMNS)
-                .select(ACCOUNT.USER_NAME,ACCOUNT.AGE,ACCOUNT.BIRTHDAY)
+                .select(ACCOUNT.USER_NAME.as(ArticleDTO::getAuthorName)
+                        ,ACCOUNT.AGE.as(ArticleDTO::getAuthorAge)
+                        ,ACCOUNT.BIRTHDAY
+                )
                 .from(ARTICLE)
                 .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
                 .where(ACCOUNT.ID.ge(0));
