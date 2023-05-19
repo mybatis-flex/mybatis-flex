@@ -2,11 +2,8 @@
 
 MyBatis-Flex 提供了一个名为 `IService` 的接口，及其默认实现类 `ServiceImpl` ，用于简化在 「Service」 层重复定义 「Mapper」 层的方法。
 
-> `IService` 接口只是提供了简单且常用的 “增删改查” 方法，更多细节以及复杂的业务，还是需要使用 `BaseMapper` 进行处理。
+> `IService` 接口只是提供了简单且常用的 “增删改查” 方法，更多细节以及复杂的业务，还是需要使用 `Mapper` 进行处理。
 
-::: tip 注意
-`IService` 目前只在 Spring 扩展包中提供使用。
-:::
 
 ## 示例代码
 
@@ -100,4 +97,4 @@ public class AccountServiceImpl implements IAccountService
 
 ## 其他方法
 
-- **getBaseMapper()**：获取对应的 `BaseMapper` 接口。
+- **getMapper()**：获取对应的 `BaseMapper` 接口。

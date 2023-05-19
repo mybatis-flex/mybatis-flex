@@ -49,28 +49,12 @@ MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来
 
 **MyBatis-Flex：**
 
-一般方式：
 ````java
 QueryWrapper query = QueryWrapper.create()
         .where(EMPLOYEE.LAST_NAME.like(searchWord)) //条件为null时自动忽略
         .and(EMPLOYEE.GENDER.eq(1))
         .and(EMPLOYEE.AGE.gt(24));
 List<Employee> employees = employeeMapper.selectListByQuery(query);
-````
-更简单一点：
-````java
-QueryWrapper query = select()
-        .where(EMPLOYEE.LAST_NAME.like(searchWord))
-        .and(EMPLOYEE.GENDER.eq(1))
-        .and(EMPLOYEE.AGE.gt(24));
-List<Employee> employees = employeeMapper.selectListByQuery(query);
-````
-换一种方式：
-````java
-QueryCondition condition = EMPLOYEE.LAST_NAME.like(searchWord)
-        .and(EMPLOYEE.GENDER.eq(1))
-        .and(EMPLOYEE.AGE.gt(24));
-List<Employee> employees = employeeMapper.selectListByCondition(condition);
 ````
 
 **MyBatis-Plus：**
@@ -82,7 +66,7 @@ QueryWrapper<Employee> queryWrapper = Wrappers.query()
         .gt("age", 24);
 List<Employee> employees = employeeMapper.selectList(queryWrapper);
 ````
-或者 MyBatis-Plus 的lambda写法：
+或者 MyBatis-Plus 的 lambda 写法：
 
 ```java
 LambdaQueryWrapper<Employee> queryWrapper = Wrappers.<Employee>lambdaQuery()
