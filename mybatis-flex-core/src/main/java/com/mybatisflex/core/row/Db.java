@@ -278,7 +278,7 @@ public class Db {
      * @param batchSize 批次大小
      * @return int
      */
-    public static <T> int updateBatchEntity(Collection<T> entities, int batchSize) {
+    public static <T> int updateEntitiesBatch(Collection<T> entities, int batchSize) {
         List<T> list = CollectionUtil.toList(entities);
         return Arrays.stream(executeBatch(list.size(), batchSize, RowMapper.class, (mapper, index) -> {
             T entity = list.get(index);
@@ -292,8 +292,8 @@ public class Db {
      * @param entities 实体
      * @return int 影响行数
      */
-    public static <T> int updateBatchEntity(Collection<T> entities) {
-        return updateBatchEntity(entities, RowMapper.DEFAULT_BATCH_SIZE);
+    public static <T> int updateEntitiesBatch(Collection<T> entities) {
+        return updateEntitiesBatch(entities, RowMapper.DEFAULT_BATCH_SIZE);
     }
 
 

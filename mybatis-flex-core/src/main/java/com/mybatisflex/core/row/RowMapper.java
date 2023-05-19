@@ -197,7 +197,7 @@ public interface RowMapper {
      * 更新 entity，主要用于进行批量更新的场景
      * @param entity 实体类
      * @see RowSqlProvider#updateEntity(Map)
-     * @see Db#updateBatchEntity(Collection, int)
+     * @see Db#updateEntitiesBatch(Collection, int)
      */
     @UpdateProvider(value = RowSqlProvider.class, method = "updateEntity")
     int updateEntity(@Param(FlexConsts.ENTITY) Object entity);

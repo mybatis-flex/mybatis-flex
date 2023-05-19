@@ -69,10 +69,10 @@ Db.updateBatch(sql, new BatchArgsSetter() {
 虽然这个方法叫 `updateBatch`，但一样可以执行 `insert`、`update` 等任何 SQL； 这个方法类似 Spring 的 `jdbcTemplate.batchUpdate()` 方法。
 
 
-## `Db.updateBatchEntity` 方法  
+## `Db.updateEntitiesBatch` 方法  
 这个方法用于批量根据 id 更新 entity，其是对 `Db.executeBatch` 的封装，使用代码如下：
 
 ```java
 List<Account> accounts = ....
-Db.updateBatchEntity(accounts, 1000);
+Db.updateEntitiesBatch(accounts, 1000);
 ```
