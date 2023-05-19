@@ -17,13 +17,18 @@ package com.mybatisflex.core.util;
 
 import com.mybatisflex.annotation.EnumValue;
 import com.mybatisflex.core.exception.FlexExceptions;
+import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EnumWrapper<E extends Enum<E>> {
+
+    private static final Map<Class, EnumWrapper> cache = new ConcurrentHashMap<>();
 
     private Class<?> enumClass;
 
@@ -32,6 +37,10 @@ public class EnumWrapper<E extends Enum<E>> {
     private Field property;
     private Method getter;
     private boolean hasEnumValueAnnotation = false;
+
+    public static <R extends Enum<R>> EnumWrapper<R> of(Class<?> enumClass) {
+        return MapUtil.computeIfAbsent(cache, enumClass, EnumWrapper::new);
+    }
 
     public EnumWrapper(Class<E> enumClass) {
         this.enumClass = enumClass;

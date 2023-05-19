@@ -118,7 +118,7 @@ class WrapperUtil {
             Object[] valueArray = ((QueryWrapper) value).getValueArray();
             paras.addAll(Arrays.asList(valueArray));
         } else if (value.getClass().isEnum()) {
-            EnumWrapper enumWrapper = new EnumWrapper(value.getClass());
+            EnumWrapper enumWrapper = EnumWrapper.of(value.getClass());
             if (enumWrapper.hasEnumValueAnnotation()) {
                 paras.add(enumWrapper.getEnumValue((Enum) value));
             } else {

@@ -29,7 +29,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
     private EnumWrapper<E> enumWrapper;
 
     public FlexEnumTypeHandler(Class<E> enumClass) {
-        enumWrapper = new EnumWrapper<>(enumClass);
+        enumWrapper = EnumWrapper.of(enumClass);
     }
 
 
@@ -71,7 +71,6 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
         }
         return enumWrapper.toEnum(value);
     }
-
 
 
 }
