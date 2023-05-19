@@ -822,7 +822,8 @@ public class CommonsDialectImpl implements IDialect {
 
     protected Object getLogicNormalValue() {
         Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
-        if (normalValueOfLogicDelete instanceof Number) {
+        if (normalValueOfLogicDelete instanceof Number
+                || normalValueOfLogicDelete instanceof Boolean) {
             return normalValueOfLogicDelete;
         }
         return "\"" + normalValueOfLogicDelete.toString() + "\"";
@@ -831,7 +832,8 @@ public class CommonsDialectImpl implements IDialect {
 
     protected Object getLogicDeletedValue() {
         Object deletedValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete();
-        if (deletedValueOfLogicDelete instanceof Number) {
+        if (deletedValueOfLogicDelete instanceof Number
+                || deletedValueOfLogicDelete instanceof Boolean) {
             return deletedValueOfLogicDelete;
         }
         return "\"" + deletedValueOfLogicDelete.toString() + "\"";
