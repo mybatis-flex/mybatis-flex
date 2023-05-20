@@ -1,3 +1,15 @@
+mybatis-flex v1.2.7 20230520:
+新增：添加 solon 关于 ServiceImpl 的实现
+新增：left join 等 join 查询添加 as(lambda) 的支持
+优化：优化 EnumWrapper.java 使之具有更高的性能
+优化：迁移 IService 到 core 目录
+优化：重命名 Db.updateBatchEntity 为 Db.updateEntitiesBatch
+修复：逻辑删除设置 bool 类型在 postgresql 下出错的问题
+文档：添加批量操作的相关文档说明
+文档：添加关联查询的相关文档
+
+
+
 mybatis-flex v1.2.6 20230518:
 新增：IService 添加 updateBatch 方法，感谢 @Saoforest
 优化：findById 默认返回 isLarge 的字段 #I73SJY
