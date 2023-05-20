@@ -17,13 +17,6 @@ package com.mybatisflex.core.paginate;
 
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.util.CollectionUtil;
-import net.sf.jsqlparser.expression.Alias;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.schema.Table;
-import net.sf.jsqlparser.statement.select.*;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
@@ -41,7 +34,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 /**
  * 分页拦截器。
@@ -55,10 +47,6 @@ import java.util.Optional;
 })
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class PaginateInterceptor implements Interceptor {
-
-    private static final List<SelectItem> COUNT_SELECT_ITEM = Collections.singletonList(
-            new SelectExpressionItem(new Column().withColumnName("COUNT(*)")).withAlias(new Alias("total"))
-    );
 
     /**
      * 拦截 Executor 的两个 query 方法，实现分页操作。<br>
@@ -203,7 +191,7 @@ public class PaginateInterceptor implements Interceptor {
      * 构建 count 查询的 {@link MappedStatement} 对象。
      */
     private MappedStatement buildCountMappedStatement(MappedStatement ms) {
-        String countId = ms.getId().concat("_COUNT");
+        String countId = ms.getId() + "_Count";
         MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), countId, ms.getSqlSource(), ms.getSqlCommandType());
         return builder.resource(ms.getResource())
                 .fetchSize(ms.getFetchSize())
@@ -220,133 +208,10 @@ public class PaginateInterceptor implements Interceptor {
     }
 
     /**
-     * 构建并优化 count 查询 SQL 语句。
-     */
-    private String getCountSqlStr(String originalSql) {
-        try {
-            Select select = (Select) CCJSqlParserUtil.parse(originalSql);
-            PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
-            GroupByElement groupBy = plainSelect.getGroupBy();
-
-            // 没有 group by 语句时，可以去掉 order by 语句
-            if (groupBy == null && canCleanOrderBy(plainSelect.getOrderByElements())) {
-                plainSelect.setOrderByElements(null);
-            }
-
-            // 如果 select 列中包含参数，则不继续处理
-            for (SelectItem item : plainSelect.getSelectItems()) {
-                if (item.toString().contains("?")) {
-                    return getSimpleCountSqlStr(select.toString());
-                }
-            }
-
-            Distinct distinct = plainSelect.getDistinct();
-
-            // 如果有 distinct、group by 语句，则不继续处理
-            if (distinct != null || groupBy != null) {
-                return getSimpleCountSqlStr(originalSql);
-            }
-
-            String whereStr = Optional.ofNullable(plainSelect.getWhere())
-                    .map(Expression::toString)
-                    .orElse("");
-
-            // 判断是否可以去除 join 语句
-            if (canCleanJoins(plainSelect.getJoins(), whereStr)) {
-                plainSelect.setJoins(null);
-            }
-
-            // 优化 count 查询 SQL 语句
-            plainSelect.setSelectItems(COUNT_SELECT_ITEM);
-
-            return select.toString();
-        } catch (Exception ignored) {
-            // 无法解析优化 SQL 时使用原 SQL 语句
-        }
-        return getSimpleCountSqlStr(originalSql);
-    }
-
-    /**
      * 构建 count 查询 SQL 语句。
      */
-    private String getSimpleCountSqlStr(String originalSql) {
+    private String getCountSqlStr(String originalSql) {
         return String.format("SELECT COUNT(*) FROM (%s) TOTAL", originalSql);
-    }
-
-    /**
-     * 能否去除 order by 语句，如果有 order by 语句，且 order by 语句中没有参数，
-     * 则可以去除 order by 语句。
-     */
-    public boolean canCleanOrderBy(List<OrderByElement> orderBy) {
-        // 没有 order by 子句
-        if (CollectionUtil.isEmpty(orderBy)) {
-            return false;
-        }
-        // order by 子句中有参数
-        for (OrderByElement orderByElement : orderBy) {
-            if (orderByElement.toString().contains("?")) {
-                return false;
-            }
-        }
-        // 可以去除 order by 子句
-        return true;
-    }
-
-    /**
-     * 能否去除 join 语句，如果全是 left join 语句，并且 on 语句没有用到参数，
-     * where 语句也没有用到 join 语句中的参数，则可以去除 join 语句。
-     */
-    public boolean canCleanJoins(List<Join> joins, String whereStr) {
-        // 没有 join 语句
-        if (CollectionUtil.isEmpty(joins)) {
-            return false;
-        }
-        for (Join join : joins) {
-            // 不是 left join 语句
-            if (!join.isLeft()) {
-                return false;
-            }
-
-            FromItem rightItem = join.getRightItem();
-
-            String aliasStr = "";
-
-            if (rightItem instanceof Table) {
-                // left join 后面是表
-                Table table = (Table) rightItem;
-                // 获取表的别名，用于判断是否在 where 语句中使用
-                aliasStr = Optional.ofNullable(table.getAlias())
-                        .map(Alias::getName)
-                        .orElse(table.getName());
-            } else if (rightItem instanceof SubSelect) {
-                // left join 后面是子查询
-                SubSelect subSelect = (SubSelect) rightItem;
-                // 子查询里包含参数
-                if (subSelect.toString().contains("?")) {
-                    return false;
-                }
-                // 获取子查询表的别名，用于判断是否在 where 语句中使用
-                aliasStr = subSelect.getAlias().getName();
-            }
-
-            // 忽略大小写
-            aliasStr = aliasStr.toLowerCase();
-            whereStr = whereStr.toLowerCase();
-
-            // where 语句中包含 join 表的字段
-            if (whereStr.contains(aliasStr)) {
-                return false;
-            }
-
-            // on 语句中有参数
-            for (Expression expression : join.getOnExpressions()) {
-                if (expression.toString().contains("?")) {
-                    return false;
-                }
-            }
-        }
-        // 可以去除 join 语句
-        return true;
     }
 
 }
