@@ -100,7 +100,8 @@ public class QueryEntityProcessor extends AbstractProcessor {
     private static final String columnsTemplate = "        public QueryColumn @property = new QueryColumn(this, \"@columnName\");\n";
 
     private static final String defaultColumnsTemplate = "\n        public QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{@allColumns};\n";
-    private static final String allColumnsTemplate = "        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{@allColumns};\n\n";
+//    private static final String allColumnsTemplate = "        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{@allColumns};\n\n";
+    private static final String allColumnsTemplate = "        public QueryColumn ALL_COLUMNS = new QueryColumn(this, \"*\");\n\n";
 
     private Filer filer;
     private Elements elementUtils;
@@ -321,8 +322,10 @@ public class QueryEntityProcessor extends AbstractProcessor {
         StringJoiner allColumns = new StringJoiner(", ");
         propertyAndColumns.forEach((property, column) -> allColumns.add(buildName(property, tablesNameStyle)));
 
-        String allColumnsString = allColumnsTemplate.replace("@allColumns", allColumns.toString())
-                .replace("ALL_COLUMNS", buildName("allColumns", tablesNameStyle));
+//        String allColumnsString = allColumnsTemplate.replace("@allColumns", allColumns.toString())
+//                .replace("ALL_COLUMNS", buildName("allColumns", tablesNameStyle));
+
+        String allColumnsString = allColumnsTemplate;
 
 
         StringJoiner defaultColumnStringJoiner = new StringJoiner(", ");
