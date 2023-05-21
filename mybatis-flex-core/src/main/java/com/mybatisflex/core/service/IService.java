@@ -91,7 +91,7 @@ public interface IService<T> {
      * @return {@code true} 保存成功，{@code false} 保存失败。
      */
     default boolean saveBatch(Collection<T> entities, int size) {
-        return SqlUtil.toBool(getMapper().insertBatch(new ArrayList<>(entities), size));
+        return SqlUtil.toBool(getMapper().insertBatch(CollectionUtil.toList(entities), size));
     }
 
     /**
