@@ -65,9 +65,12 @@ public class QueryMethods {
         return new DistinctQueryColumn(columns);
     }
 
-
     public static StringQueryColumn column(String column) {
         return new StringQueryColumn(column);
+    }
+
+    public static SelectQueryColumn column(QueryWrapper queryWrapper) {
+        return new SelectQueryColumn(queryWrapper);
     }
 
     public static QueryCondition exists(QueryWrapper queryWrapper) {
@@ -95,9 +98,16 @@ public class QueryMethods {
         return newWrapper().select(queryColumns);
     }
 
-
     public static QueryWrapper selectOne() {
         return select(column("1"));
+    }
+
+    public static QueryWrapper selectCount() {
+        return select(count());
+    }
+
+    public static QueryWrapper selectCountOne(String countP) {
+        return select(count("1"));
     }
 
     public static RawValue raw(String raw){
