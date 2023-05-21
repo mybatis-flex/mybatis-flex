@@ -19,18 +19,13 @@ import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.RowSqlProvider;
-import com.mybatisflex.core.query.CPI;
-import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.mybatisflex.core.query.QueryMethods.count;
 
@@ -195,6 +190,7 @@ public interface RowMapper {
 
     /**
      * 更新 entity，主要用于进行批量更新的场景
+     *
      * @param entity 实体类
      * @see RowSqlProvider#updateEntity(Map)
      * @see Db#updateEntitiesBatch(Collection, int)
@@ -382,7 +378,9 @@ public interface RowMapper {
         if (CollectionUtil.isEmpty(selectColumns)) {
             queryWrapper.select(count());
         }
-        Object object = selectObjectByQuery(tableName, queryWrapper);
+
+        List<Object> objects = selectObjectListByQuery(tableName, queryWrapper);
+        Object object = objects == null || objects.isEmpty() ? null : objects.get(0);
         if (object == null) {
             return 0;
         } else if (object instanceof Number) {
@@ -403,17 +401,48 @@ public interface RowMapper {
      */
     default Page<Row> paginate(String tableName, Page<Row> page, QueryWrapper queryWrapper) {
 
-        List<QueryColumn> groupByColumns = CPI.getGroupByColumns(queryWrapper);
+        CPI.setFromIfNecessary(queryWrapper, tableName);
+
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
+        List<Join> joins = CPI.getJoins(queryWrapper);
+        boolean removedJoins = true;
 
         // 只有 totalRow 小于 0 的时候才会去查询总量
         // 这样方便用户做总数缓存，而非每次都要去查询总量
         // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
         if (page.getTotalRow() < 0) {
 
-            //清除group by 去查询数据
-            CPI.setGroupByColumns(queryWrapper, null);
-            CPI.setSelectColumns(queryWrapper, Collections.singletonList(count()));
+            CPI.setSelectColumns(queryWrapper, Collections.singletonList(count().as("total")));
+
+            if (joins != null && !joins.isEmpty()) {
+                for (Join join : joins) {
+                    if (!Join.TYPE_LEFT.equals(CPI.getJoinType(join))) {
+                        removedJoins = false;
+                        break;
+                    }
+                }
+            } else {
+                removedJoins = false;
+            }
+
+            if (removedJoins) {
+                List<String> joinTables = new ArrayList<>();
+                joins.forEach(join -> {
+                    QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
+                    if (joinQueryTable != null && StringUtil.isNotBlank(joinQueryTable.getName())) {
+                        joinTables.add(joinQueryTable.getName());
+                    }
+                });
+
+                QueryCondition where = CPI.getWhereQueryCondition(queryWrapper);
+                if (CPI.containsTable(where, CollectionUtil.toArrayString(joinTables))) {
+                    removedJoins = false;
+                }
+            }
+
+            if (removedJoins) {
+                CPI.setJoins(queryWrapper, null);
+            }
 
             long count = selectCountByQuery(tableName, queryWrapper);
             page.setTotalRow(count);
@@ -423,17 +452,21 @@ public interface RowMapper {
             return page;
         }
 
-        //恢复数量查询清除的 groupBy
-        CPI.setGroupByColumns(queryWrapper, groupByColumns);
-
         //重置 selectColumns
         CPI.setSelectColumns(queryWrapper, selectColumns);
 
+        //重置 join
+        if (removedJoins) {
+            CPI.setJoins(queryWrapper, joins);
+        }
+
         int offset = page.getPageSize() * (page.getPageNumber() - 1);
         queryWrapper.limit(offset, page.getPageSize());
+
         List<Row> records = selectListByQuery(tableName, queryWrapper);
         page.setRecords(records);
         return page;
+
     }
 
 }

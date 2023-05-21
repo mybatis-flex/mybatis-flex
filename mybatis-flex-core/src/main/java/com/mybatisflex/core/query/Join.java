@@ -30,18 +30,18 @@ public class Join implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    static final String TYPE_JOIN = " JOIN ";
-    static final String TYPE_LEFT = " LEFT JOIN ";
-    static final String TYPE_RIGHT = " RIGHT JOIN ";
-    static final String TYPE_INNER = " INNER JOIN ";
-    static final String TYPE_FULL = " FULL JOIN ";
-    static final String TYPE_CROSS = " CROSS JOIN ";
+    public static final String TYPE_JOIN = " JOIN ";
+    public static final String TYPE_LEFT = " LEFT JOIN ";
+    public static final String TYPE_RIGHT = " RIGHT JOIN ";
+    public static final String TYPE_INNER = " INNER JOIN ";
+    public static final String TYPE_FULL = " FULL JOIN ";
+    public static final String TYPE_CROSS = " CROSS JOIN ";
 
 
-    private final String type;
-    private final QueryTable queryTable;
-    private QueryCondition on;
-    private boolean effective;
+    protected final String type;
+    protected final QueryTable queryTable;
+    protected QueryCondition on;
+    protected boolean effective;
 
     public Join(String type, String table, boolean when) {
         this.type = type;
@@ -54,7 +54,6 @@ public class Join implements Serializable {
         this.queryTable = new SelectQueryTable(queryWrapper);
         this.effective = when;
     }
-
 
 
     QueryTable getQueryTable() {

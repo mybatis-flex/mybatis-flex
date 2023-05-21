@@ -41,7 +41,7 @@ class WrapperUtil {
         while (condition != null) {
             if (condition.checkEffective()) {
                 if (condition instanceof Brackets) {
-                    List<QueryWrapper> childQueryWrapper = getChildSelect(((Brackets) condition).getChildCondition());
+                    List<QueryWrapper> childQueryWrapper = getChildSelect(((Brackets) condition).getChild());
                     if (!childQueryWrapper.isEmpty()) {
                         if (list == null) {
                             list = new ArrayList<>();

@@ -91,4 +91,16 @@ public class CollectionUtil {
         }
     }
 
+    public static String[] toArrayString(Collection<?> collection) {
+        if (isEmpty(collection)) {
+            return new String[0];
+        }
+        String[] results = new String[collection.size()];
+        int index = 0;
+        for (Object o : collection) {
+            results[index++] = String.valueOf(o);
+        }
+        return results;
+    }
+
 }

@@ -61,4 +61,9 @@ public class OperatorQueryCondition extends QueryCondition {
     public Object getValue() {
         return WrapperUtil.getValues(child);
     }
+
+    @Override
+    boolean containsTable(String... tables) {
+        return child.containsTable(tables);
+    }
 }

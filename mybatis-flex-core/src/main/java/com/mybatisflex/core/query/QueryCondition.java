@@ -264,6 +264,16 @@ public class QueryCondition implements Serializable {
         return paramsCount;
     }
 
+
+    boolean containsTable(String... tables){
+        for (String table : tables) {
+            if (column.table != null && table.equals(column.table.name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "QueryCondition{" +

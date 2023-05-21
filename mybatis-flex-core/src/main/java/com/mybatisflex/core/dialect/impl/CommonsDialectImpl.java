@@ -56,7 +56,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String wrap(String keyword) {
-        return keywordWrap.wrap(keyword);
+        return "*".equals(keyword) ? keyword : keywordWrap.wrap(keyword);
     }
 
     @Override

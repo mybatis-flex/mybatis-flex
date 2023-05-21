@@ -69,8 +69,8 @@ public class OracleDialect extends CommonsDialectImpl {
 
     @Override
     public String wrap(String keyword) {
-        if (StringUtil.isBlank(keyword)) {
-            return "";
+        if (StringUtil.isBlank(keyword) || "*".equals(keyword)) {
+            return keyword;
         }
         if (caseSensitive || keywords.contains(keyword.toUpperCase(Locale.ENGLISH))) {
             return "\"" + keyword + "\"";

@@ -25,11 +25,10 @@ import java.util.List;
  */
 public class Brackets extends QueryCondition {
 
-    private final QueryCondition childCondition;
-
+    private final QueryCondition child;
 
     public Brackets(QueryCondition childCondition) {
-        this.childCondition = childCondition;
+        this.child = childCondition;
     }
 
 
@@ -46,16 +45,16 @@ public class Brackets extends QueryCondition {
     }
 
     protected void connectToChild(QueryCondition nextCondition, SqlConnector connector) {
-        childCondition.connect(nextCondition, connector);
+        child.connect(nextCondition, connector);
     }
 
     @Override
     public Object getValue() {
-        return checkEffective() ? WrapperUtil.getValues(childCondition) : null;
+        return checkEffective() ? WrapperUtil.getValues(child) : null;
     }
 
-    public QueryCondition getChildCondition() {
-        return childCondition;
+    public QueryCondition getChild() {
+        return child;
     }
 
     @Override
@@ -64,7 +63,7 @@ public class Brackets extends QueryCondition {
         if (!effective) {
             return false;
         }
-        QueryCondition condition = this.childCondition;
+        QueryCondition condition = this.child;
         while (condition != null) {
             if (condition.checkEffective()) {
                 return true;
@@ -81,7 +80,7 @@ public class Brackets extends QueryCondition {
 
         StringBuilder sql = new StringBuilder();
         if (checkEffective()) {
-            String childSql = childCondition.toSql(queryTables, dialect);
+            String childSql = child.toSql(queryTables, dialect);
             if (StringUtil.isNotBlank(childSql)) {
                 QueryCondition effectiveBefore = getEffectiveBefore();
                 if (effectiveBefore != null) {
@@ -102,9 +101,14 @@ public class Brackets extends QueryCondition {
 
 
     @Override
+    boolean containsTable(String... tables) {
+        return child.containsTable(tables);
+    }
+
+    @Override
     public String toString() {
         return "Brackets{" +
-                "childCondition=" + childCondition +
+                "childCondition=" + child +
                 '}';
     }
 }
