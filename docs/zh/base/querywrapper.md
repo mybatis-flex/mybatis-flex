@@ -68,7 +68,7 @@ SELECT id, user_name FROM tb_account
 QueryWrapper query = new QueryWrapper()
     .select(
           ACCOUNT.ID.as("accountId")
-        , ACCOUNT.USER_NAME
+        , ACCOUNT.USER_NAME)
     .from(ACCOUNT.as("a"));
 ```
 
