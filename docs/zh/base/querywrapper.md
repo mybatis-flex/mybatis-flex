@@ -282,6 +282,23 @@ SELECT * FROM tb_account
 ORDER BY age ASC, user_name DESC NULLS LAST
 ```
 
+## hint
+
+```java
+QueryWrapper queryWrapper=QueryWrapper.create()
+    .select().hint("INDEX_DESC")
+    .from(ACCOUNT)
+    .orderBy(ACCOUNT.AGE.asc(), ACCOUNT.USER_NAME.desc().nullsLast());
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT /*+ INDEX_DESC */  * FROM tb_account
+ORDER BY age ASC, user_name DESC NULLS LAST
+```
+
+
 ## join（left join，inner join...）
 
 ```java
