@@ -404,6 +404,9 @@ public interface RowMapper {
         CPI.setFromIfNecessary(queryWrapper, tableName);
 
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
+
+        List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
+
         List<Join> joins = CPI.getJoins(queryWrapper);
         boolean removedJoins = true;
 
@@ -412,8 +415,15 @@ public interface RowMapper {
         // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
         if (page.getTotalRow() < 0) {
 
+            //移除 seelct
             CPI.setSelectColumns(queryWrapper, Collections.singletonList(count().as("total")));
 
+            //移除 OrderBy
+            if (CollectionUtil.isNotEmpty(orderBys)) {
+                CPI.setOrderBys(queryWrapper, null);
+            }
+
+            //移除 left join
             if (joins != null && !joins.isEmpty()) {
                 for (Join join : joins) {
                     if (!Join.TYPE_LEFT.equals(CPI.getJoinType(join))) {
@@ -454,6 +464,11 @@ public interface RowMapper {
 
         //重置 selectColumns
         CPI.setSelectColumns(queryWrapper, selectColumns);
+
+        //重置 orderBys
+        if (CollectionUtil.isNotEmpty(orderBys)) {
+            CPI.setOrderBys(queryWrapper, orderBys);
+        }
 
         //重置 join
         if (removedJoins) {

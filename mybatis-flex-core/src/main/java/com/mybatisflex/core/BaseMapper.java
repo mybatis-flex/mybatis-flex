@@ -575,16 +575,25 @@ public interface BaseMapper<T> {
 
     default <R> Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
+        List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
+
         List<Join> joins = CPI.getJoins(queryWrapper);
         boolean removedJoins = true;
-
         // 只有 totalRow 小于 0 的时候才会去查询总量
         // 这样方便用户做总数缓存，而非每次都要去查询总量
         // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
         if (page.getTotalRow() < 0) {
 
+            //移除 select
             CPI.setSelectColumns(queryWrapper, Collections.singletonList(count().as("total")));
 
+            //移除 OrderBy
+            if (CollectionUtil.isNotEmpty(orderBys)) {
+                CPI.setOrderBys(queryWrapper, null);
+            }
+
+
+            //移除 left join
             if (joins != null && !joins.isEmpty()) {
                 for (Join join : joins) {
                     if (!Join.TYPE_LEFT.equals(CPI.getJoinType(join))) {
@@ -615,6 +624,7 @@ public interface BaseMapper<T> {
                 CPI.setJoins(queryWrapper, null);
             }
 
+
             long count = selectCountByQuery(queryWrapper);
             page.setTotalRow(count);
         }
@@ -625,6 +635,11 @@ public interface BaseMapper<T> {
 
         //重置 selectColumns
         CPI.setSelectColumns(queryWrapper, selectColumns);
+
+        //重置 orderBys
+        if (CollectionUtil.isNotEmpty(orderBys)) {
+            CPI.setOrderBys(queryWrapper, orderBys);
+        }
 
         //重置 join
         if (removedJoins) {
