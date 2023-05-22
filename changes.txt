@@ -1,3 +1,14 @@
+mybatis-flex v1.2.8 20230522:
+新增：新增 select id,(select...) from 的支持
+优化：Solon 插件增加 RowMapperInvoker 注入和 FlexGlobalConfig 可事件扩展的支持，感谢 @西东
+优化：分页的 count 查询默认去掉 left join 和 order by 等
+优化：APT 的 ALL_COLUMNS 修改 table.*
+文档：添加 hint 的相关文档
+文档：优化 mybatis-flex-solon-plugin 的使用文档
+文档：优化 queryWrapper 的相关文档
+
+
+
 mybatis-flex v1.2.7 20230520:
 新增：添加 solon 关于 ServiceImpl 的实现
 新增：left join 等 join 查询添加 as(lambda) 的支持
