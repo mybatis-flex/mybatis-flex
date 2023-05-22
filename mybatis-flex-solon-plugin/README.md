@@ -27,6 +27,7 @@
 | FlexConfiguration     | 注入 FlexConfiguration，一般仅用于配置。例：`@Db("db1") FlexConfiguration db1Cfg` | 
 | FlexGlobalConfig     | 注入 FlexGlobalConfig，一般仅用于配置。例：`@Db("db1") FlexGlobalConfig db1Gc` | 
 | SqlSessionFactory     | 注入 SqlSessionFactory。例：`@Db("db1") SqlSessionFactory db1` （不推荐直接使用） | 
+| RowMapperInvoker | 注入 RowMapperInvoker。例：`@Db("db1") RowMapperInvoker rowMapper` |
 
 
 #### 3、数据源配置
@@ -57,9 +58,11 @@ mybatis.db1:
     configuration:  #扩展配置（要与 FlexConfiguration 类的属性一一对应）
         cacheEnabled: false
         mapUnderscoreToCamelCase: true
-    globalConfig:   #全局配置（要与 FlexGlobalConfig 类的属性一一对应）
-        banner: false
-        metaObjectHandler: "demo4035.dso.MetaObjectHandlerImpl"
+    globalConfig:   #全局配置（要与 FlexGlobalConfig 类的属性一一对应）//只是示例，别照抄
+        printBanner: false
+        keyConfig: 
+            keyType: "Generator"
+            value: "snowFlakeId"
 
 
 #
