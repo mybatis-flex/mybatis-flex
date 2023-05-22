@@ -266,6 +266,9 @@ public class QueryCondition implements Serializable {
 
 
     boolean containsTable(String... tables){
+        if (column == null){
+            return false;
+        }
         for (String table : tables) {
             if (column.table != null && table.equals(column.table.name)){
                 return true;
