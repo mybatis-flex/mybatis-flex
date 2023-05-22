@@ -37,6 +37,10 @@ public class SelectQueryColumn extends QueryColumn {
         return this;
     }
 
+    QueryWrapper getQueryWrapper() {
+        return queryWrapper;
+    }
+
     @Override
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String selectSql = dialect.forSelectByQuery(queryWrapper);

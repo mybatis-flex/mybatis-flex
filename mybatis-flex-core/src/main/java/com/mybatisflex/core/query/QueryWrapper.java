@@ -376,6 +376,23 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     Object[] getValueArray() {
 
+        List<Object> columnValues = null;
+        List<QueryColumn> selectColumns = getSelectColumns();
+        if (CollectionUtil.isNotEmpty(selectColumns)){
+            for (QueryColumn selectColumn : selectColumns) {
+                if (selectColumn instanceof SelectQueryColumn){
+                    QueryWrapper queryWrapper = ((SelectQueryColumn) selectColumn).getQueryWrapper();
+                    Object[] valueArray = queryWrapper.getValueArray();
+                    if (ArrayUtil.isNotEmpty(valueArray)){
+                        if (columnValues == null){
+                            columnValues = new ArrayList<>();
+                        }
+                        columnValues.addAll(Arrays.asList(valueArray));
+                    }
+                }
+            }
+        }
+
         //select 子查询的参数：select * from (select ....)
         List<Object> tableValues = null;
         List<QueryTable> queryTables = getQueryTables();
@@ -431,7 +448,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             }
         }
 
-        Object[] returnValues = tableValues == null ? WrapperUtil.NULL_PARA_ARRAY : tableValues.toArray();
+        Object[] returnValues = columnValues == null ? WrapperUtil.NULL_PARA_ARRAY : columnValues.toArray();
+        returnValues = tableValues != null ? ArrayUtil.concat(returnValues,tableValues.toArray()) : returnValues;
         returnValues = joinValues != null ? ArrayUtil.concat(returnValues, joinValues.toArray()) : returnValues;
         returnValues = ArrayUtil.concat(returnValues, paramValues);
 
