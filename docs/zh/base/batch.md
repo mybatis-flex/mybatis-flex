@@ -30,7 +30,7 @@ insert into tb_account(id,nickname, .....) values
 
 ## `Db.executeBatch` 方法
 
-以下是使用 `Db.executeBatch` 进行批量插入的示例：
+`Db.executeBatch` 可以用于进行批量的插入、修改和删除，以下是使用 `Db.executeBatch` 进行批量插入的示例：
 
 ```java
 List<Account> accounts = ....
@@ -39,7 +39,12 @@ Db.executeBatch(accounts.size(), 1000, AccountMapper.class, (mapper, index) -> {
         mapper.insert(account);
     });
 ```
-这个是通过 JDBC 的 `Statement.executeBatch()` 进行批量执行；这个在大批量数据执行的时候，效率要比 `BaseMapper.insertBatch` 高出许多；
+`Db.executeBatch` 是通过 JDBC 的 `Statement.executeBatch()` 进行批量执行；这个在大批量数据执行的时候，效率要比 `BaseMapper.insertBatch` 高出许多；
+
+::: tip 提示
+我看到有一些同学担心 `BaseMapper.insertBatch` 被误用，在 `IService` 中通过使用 `Db.executeBatch`  重写了 Service 的 `insertBatch` 方法，这也是没问题的。但还是需要明白，
+`BaseMapper.insertBatch` 和 `Db.executeBatch` 的底层实现差异，以及不同的使用场景。
+:::
 
 ## `Db.updateBatch` 方法 
 
@@ -66,7 +71,7 @@ Db.updateBatch(sql, new BatchArgsSetter() {
     });
 ```
 
-虽然这个方法叫 `updateBatch`，但一样可以执行 `insert`、`update` 等任何 SQL； 这个方法类似 Spring 的 `jdbcTemplate.batchUpdate()` 方法。
+虽然这个方法叫 `updateBatch`，但一样可以执行 `insert`、`delete`、`update` 等任何 SQL； 这个方法类似 Spring 的 `jdbcTemplate.batchUpdate()` 方法。
 
 
 ## `Db.updateEntitiesBatch` 方法  

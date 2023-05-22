@@ -58,7 +58,7 @@ export default defineConfig({
             {
                 text: '基础功能',
                 items: [
-                    {text: '增删改', link: '/zh/base/add-delete-update'},
+                    {text: '增、删、改', link: '/zh/base/add-delete-update'},
                     {text: '查询和分页', link: '/zh/base/query'},
                     {text: '批量操作', link: '/zh/base/batch'},
                     {text: 'QueryWrapper', link: '/zh/base/querywrapper'},

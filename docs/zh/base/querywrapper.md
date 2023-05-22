@@ -171,6 +171,23 @@ SELECT * FROM tb_account
 WHERE user_name LIKE  ? 
 ```
 
+## where 动态条件 3
+
+```java 1,5
+String name = null;
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select().from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100)) // when....
+    .and(ACCOUNT.USER_NAME.like(name).when(StringUtil::isNotBlank));
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT * FROM tb_account
+WHERE id >= ? 
+```
+
 ## where select
 ```java
 QueryWrapper queryWrapper = QueryWrapper.create()
