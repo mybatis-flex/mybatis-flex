@@ -17,6 +17,10 @@ package com.mybatisflex.core.dialect;
 
 import com.mybatisflex.core.util.StringUtil;
 
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Set;
+
 /**
  * 用于对数据库的关键字包装
  */
@@ -48,6 +52,16 @@ public class KeywordWrap {
     public final static KeywordWrap SQUARE_BRACKETS = new KeywordWrap("[", "]");
 
     /**
+     * 大小写敏感
+     */
+    private boolean caseSensitive = false;
+
+    /**
+     * 数据库关键字
+     */
+    private Set<String> keywords = Collections.emptySet();
+
+    /**
      * 前缀
      */
     private final String prefix;
@@ -59,12 +73,28 @@ public class KeywordWrap {
 
 
     public KeywordWrap(String prefix, String suffix) {
+        this(false, Collections.emptySet(), prefix, suffix);
+    }
+
+    public KeywordWrap(Set<String> keywords, String prefix, String suffix) {
+        this(false, keywords, prefix, suffix);
+    }
+
+    public KeywordWrap(boolean caseSensitive, Set<String> keywords, String prefix, String suffix) {
+        this.caseSensitive = caseSensitive;
+        this.keywords = keywords;
         this.prefix = prefix;
         this.suffix = suffix;
     }
 
     public String wrap(String keyword) {
-        return StringUtil.isBlank(keyword) ? "" : prefix + keyword + suffix;
+        if (StringUtil.isBlank(keyword) || "*".equals(keyword)) {
+            return keyword;
+        }
+        if (caseSensitive || keywords.isEmpty() || keywords.contains(keyword.toUpperCase(Locale.ENGLISH))) {
+            return prefix + keyword + suffix;
+        }
+        return keyword;
     }
 
 }

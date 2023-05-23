@@ -18,14 +18,12 @@ package com.mybatisflex.core.dialect.impl;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.util.CollectionUtil;
-import com.mybatisflex.core.util.StringUtil;
 
-import java.util.*;
+import java.util.Set;
 
 public class OracleDialect extends CommonsDialectImpl {
 
-    private boolean caseSensitive;
-    private final Set<String> keywords = CollectionUtil.newHashSet(
+    private static final Set<String> keywords = CollectionUtil.newHashSet(
             "ACCESS", "ADD", "ALL", "ALTER",
             "AND", "ANY", "ARRAYLEN", "AS",
             "ASC", "AUDIT", "BETWEEN", "BY",
@@ -55,26 +53,11 @@ public class OracleDialect extends CommonsDialectImpl {
             "VALIDATE", "VALUES", "VARCHAR", "VARCHAR2"
     );
 
+    public OracleDialect() {
+        this(LimitOffsetProcessor.ORACLE);
+    }
     public OracleDialect(LimitOffsetProcessor limitOffsetProcessor) {
-        super(KeywordWrap.NONE, limitOffsetProcessor);
+        super(new KeywordWrap(keywords,"\"","\""),limitOffsetProcessor);
     }
 
-    public boolean isCaseSensitive() {
-        return caseSensitive;
-    }
-
-    public void setCaseSensitive(boolean caseSensitive) {
-        this.caseSensitive = caseSensitive;
-    }
-
-    @Override
-    public String wrap(String keyword) {
-        if (StringUtil.isBlank(keyword) || "*".equals(keyword)) {
-            return keyword;
-        }
-        if (caseSensitive || keywords.contains(keyword.toUpperCase(Locale.ENGLISH))) {
-            return "\"" + keyword + "\"";
-        }
-        return keyword;
-    }
 }
