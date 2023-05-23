@@ -220,10 +220,10 @@ public class GlobalConfig {
     //设置某个列的全局配置
     private Map<String, ColumnConfig> defaultColumnConfigMap;
 
-    //生成那些表，白名单
+    //生成哪些表，白名单
     private Set<String> generateTables;
 
-    //不生成那些表，黑名单
+    //不生成哪些表，黑名单
     private Set<String> unGenerateTables;
 
     //使用哪个模板引擎来生成代码
