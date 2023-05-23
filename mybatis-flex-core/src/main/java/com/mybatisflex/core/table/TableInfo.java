@@ -530,21 +530,24 @@ public class TableInfo {
             CPI.putContext(queryWrapper, APPEND_CONDITIONS_FLAG, Boolean.TRUE);
         }
 
+        //select xxx.id,(select..) from xxx
+        List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
+        if (selectColumns != null && !selectColumns.isEmpty()) {
+            for (QueryColumn queryColumn : selectColumns) {
+                if (queryColumn instanceof SelectQueryColumn) {
+                    QueryWrapper selectColumnQueryWrapper = CPI.getQueryWrapper((SelectQueryColumn) queryColumn);
+                    doAppendConditions(entity, selectColumnQueryWrapper);
+                }
+            }
+        }
+
         //select * from (select ... from ) 中的子查询处理
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
         if (queryTables != null && !queryTables.isEmpty()) {
             for (QueryTable queryTable : queryTables) {
                 if (queryTable instanceof SelectQueryTable) {
                     QueryWrapper selectQueryWrapper = ((SelectQueryTable) queryTable).getQueryWrapper();
-                    List<QueryTable> selectQueryTables = CPI.getQueryTables(selectQueryWrapper);
-                    if (selectQueryTables != null && !selectQueryTables.isEmpty()) {
-                        for (QueryTable selectQueryTable : selectQueryTables) {
-                            TableInfo tableInfo = TableInfoFactory.ofTableName(selectQueryTable.getName());
-                            if (tableInfo != null) {
-                                tableInfo.appendConditions(entity, selectQueryWrapper);
-                            }
-                        }
-                    }
+                    doAppendConditions(entity, selectQueryWrapper);
                 }
             }
         }
@@ -578,13 +581,7 @@ public class TableInfo {
         List<QueryWrapper> childSelects = CPI.getChildSelect(queryWrapper);
         if (CollectionUtil.isNotEmpty(childSelects)) {
             for (QueryWrapper childQueryWrapper : childSelects) {
-                List<QueryTable> childQueryTables = CPI.getQueryTables(childQueryWrapper);
-                for (QueryTable queryTable : childQueryTables) {
-                    TableInfo tableInfo = TableInfoFactory.ofTableName(queryTable.getName());
-                    if (tableInfo != null) {
-                        tableInfo.appendConditions(entity, childQueryWrapper);
-                    }
-                }
+                doAppendConditions(entity, childQueryWrapper);
             }
         }
 
@@ -593,16 +590,22 @@ public class TableInfo {
         if (CollectionUtil.isNotEmpty(unions)) {
             for (UnionWrapper union : unions) {
                 QueryWrapper unionQueryWrapper = union.getQueryWrapper();
-                List<QueryTable> unionQueryTables = CPI.getQueryTables(unionQueryWrapper);
-                for (QueryTable queryTable : unionQueryTables) {
-                    TableInfo tableInfo = TableInfoFactory.ofTableName(queryTable.getName());
-                    if (tableInfo != null) {
-                        tableInfo.appendConditions(entity, unionQueryWrapper);
-                    }
+                doAppendConditions(entity, unionQueryWrapper);
+            }
+        }
+    }
+
+
+    private void doAppendConditions(Object entity, QueryWrapper queryWrapper) {
+        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        if (queryTables != null && !queryTables.isEmpty()) {
+            for (QueryTable queryTable : queryTables) {
+                TableInfo tableInfo = TableInfoFactory.ofTableName(queryTable.getName());
+                if (tableInfo != null) {
+                    tableInfo.appendConditions(entity, queryWrapper);
                 }
             }
         }
-
     }
 
 

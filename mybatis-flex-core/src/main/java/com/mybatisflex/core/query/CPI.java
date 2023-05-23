@@ -88,11 +88,11 @@ public class CPI {
         queryWrapper.setJoins(joins);
     }
 
-    public static String getJoinType(Join join){
+    public static String getJoinType(Join join) {
         return join.type;
     }
 
-    public static QueryTable getJoinQueryTable(Join join){
+    public static QueryTable getJoinQueryTable(Join join) {
         return join.getQueryTable();
     }
 
@@ -191,7 +191,11 @@ public class CPI {
         }
     }
 
-    public static boolean containsTable(QueryCondition condition,String ... tables){
+    public static boolean containsTable(QueryCondition condition, String... tables) {
         return condition != null && condition.containsTable(tables);
+    }
+
+    public static QueryWrapper getQueryWrapper(SelectQueryColumn selectQueryColumn) {
+        return selectQueryColumn.getQueryWrapper();
     }
 }
