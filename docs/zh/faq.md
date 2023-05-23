@@ -10,7 +10,6 @@ MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的。
 ## SpringBoot 项目，启动报错 Property 'sqlSessionFactory' or 'sqlSessionTempalte' are required
 
 如果当前依赖没有连接池相关依赖，则建议添加 HikariCP 依赖。
-如果已经添加了如 druid 依赖，则配置数据源类型 `spring.datasource.type=com.alibaba.druid.pool.DruidDataSource`。
 
 SpringBoot v2.x 添加 hikariCP 的内容如下：
 
@@ -31,6 +30,9 @@ SpringBoot v3.x 添加 hikariCP 的内容如下：
     <version>5.0.1</version>
 </dependency>
 ```
+
+> 如果使用的是 druid 数据库连接池，则需要添加数据源类型的配置 `spring.datasource.type=com.alibaba.druid.pool.DruidDataSource`。
+
 
 ## 整合 Springboot 3 出现 ClassNotFoundException： NestedIOException 的错误
 
