@@ -121,9 +121,10 @@ public class DialectFactory {
             case VERTICA:
             case REDSHIFT:
             case OPENGAUSS:
-            case TDENGINE:
             case UXDB:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.POSTGRESQL);
+            case TDENGINE:
+                return new CommonsDialectImpl(KeywordWrap.BACKQUOTE, LimitOffsetProcessor.POSTGRESQL);
             case ORACLE_12C:
                 return new OracleDialect(LimitOffsetProcessor.DERBY);
             case FIREBIRD:

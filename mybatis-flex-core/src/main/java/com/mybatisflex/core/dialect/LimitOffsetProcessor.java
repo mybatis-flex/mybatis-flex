@@ -59,7 +59,6 @@ public interface LimitOffsetProcessor {
             // OFFSET ** ROWS FETCH NEXT ** ROWS ONLY")
             sql.append(" OFFSET ").append(limitOffset).append("  ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
         } else if (limitRows != null) {
-            // FETCH FIRST 20 ROWS ONLY
             sql.append(" OFFSET 0 ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
         }
         return sql;
