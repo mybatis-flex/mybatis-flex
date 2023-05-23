@@ -57,7 +57,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
             Instant.class.getName(), LocalDate.class.getName(), LocalDateTime.class.getName(), LocalTime.class.getName(),
             OffsetDateTime.class.getName(), OffsetTime.class.getName(), ZonedDateTime.class.getName(),
             Year.class.getName(), Month.class.getName(), YearMonth.class.getName(), JapaneseDate.class.getName(),
-            byte[].class.getName(), Byte[].class.getName(),
+            byte[].class.getName(), Byte[].class.getName(), Byte.class.getName(),
             BigInteger.class.getName(), BigDecimal.class.getName(),
             char.class.getName(), String.class.getName(), Character.class.getName()
     );
@@ -100,7 +100,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
     private static final String columnsTemplate = "        public QueryColumn @property = new QueryColumn(this, \"@columnName\");\n";
 
     private static final String defaultColumnsTemplate = "\n        public QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{@allColumns};\n";
-//    private static final String allColumnsTemplate = "        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{@allColumns};\n\n";
+    //    private static final String allColumnsTemplate = "        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{@allColumns};\n\n";
     private static final String allColumnsTemplate = "        public QueryColumn ALL_COLUMNS = new QueryColumn(this, \"*\");\n\n";
 
     private Filer filer;

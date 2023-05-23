@@ -57,7 +57,7 @@ public class TableInfoFactory {
             Date.class, java.sql.Date.class, Time.class, Timestamp.class,
             Instant.class, LocalDate.class, LocalDateTime.class, LocalTime.class, OffsetDateTime.class, OffsetTime.class, ZonedDateTime.class,
             Year.class, Month.class, YearMonth.class, JapaneseDate.class,
-            byte[].class, Byte[].class,
+            byte[].class, Byte[].class, Byte.class,
             BigInteger.class, BigDecimal.class,
             char.class, String.class, Character.class
     );
