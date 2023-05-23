@@ -456,8 +456,7 @@ public class TableInfo {
                     continue;
                 }
 
-                Object value = getPropertyValue(metaObject, property);
-
+                Object value = buildColumnSqlArg(metaObject, column);
                 // ModifyAttrsRecord 忽略 ignoreNulls 的设置，
                 // 当使用 ModifyAttrsRecord 时，可以理解为要对字段进行 null 值进行更新，否则没必要使用 ModifyAttrsRecord
                 // if (ignoreNulls && value == null) {
@@ -673,9 +672,11 @@ public class TableInfo {
         ColumnInfo columnInfo = columnInfoMapping.get(column);
         Object value = getPropertyValue(metaObject, columnInfo.property);
 
-        TypeHandler typeHandler = columnInfo.buildTypeHandler();
-        if (value != null && typeHandler != null) {
-            return new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
+        if (value != null) {
+            TypeHandler typeHandler = columnInfo.buildTypeHandler();
+            if (typeHandler != null) {
+                return new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
+            }
         }
 
         return value;

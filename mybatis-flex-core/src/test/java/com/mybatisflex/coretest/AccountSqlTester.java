@@ -311,9 +311,9 @@ public class AccountSqlTester {
         String sql2 = dialect2.buildSelectSql(queryWrapper);
         System.out.println(sql2);
 
-        IDialect dialect3 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.DB2);
-        String sql3 = dialect3.buildSelectSql(queryWrapper);
-        System.out.println(sql3);
+//        IDialect dialect3 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.DB2);
+//        String sql3 = dialect3.buildSelectSql(queryWrapper);
+//        System.out.println(sql3);
 
         IDialect dialect4 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.POSTGRESQL);
         String sql4 = dialect4.buildSelectSql(queryWrapper);

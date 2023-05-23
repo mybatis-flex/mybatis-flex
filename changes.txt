@@ -1,3 +1,18 @@
+mybatis-flex v1.2.9 20230523:
+新增：字段添加对 Byte.class 类型的支持 #I76GNW
+修复："select * ,(select ...) from ..." 第二个 select 有参数时出错的问题
+修复：QueryCondition 在 left join 查询是出现 NPE 的问题
+修复：修改 QueryWrapper 添加 limit(1) 时，SQLServer 方言构建 SQL 出错的问题
+修复：修改 TDENGINE 方言出错的问题
+修复：baseMapper.selectOneByQueryAs() 查询出错的问题
+修复：当自定义 TypeHandler 时，通过 UpdateEntity 更新时，TypeHandler 无效的问题
+优化：重构 TableInfo.appendConditions() 代码
+优化：修改错别字 "那些" 为 "哪些"
+文档：更新 "Mybatis" 为 "MyBatis" #I72DWO
+文档：添加使用 druid-spring-boot-starter 出错到常见问题里
+
+
+
 mybatis-flex v1.2.8 20230522:
 新增：新增 select id,(select...) from 的支持
 优化：Solon 插件增加 RowMapperInvoker 注入和 FlexGlobalConfig 可事件扩展的支持，感谢 @西东
