@@ -417,7 +417,7 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .offset(20);
 ```
 
-MySql 下执行的代码如下：
+MySQL 下执行的代码如下：
 ```sql
 SELECT * FROM `tb_account` ORDER BY `id` DESC LIMIT 20, 10
 ```
