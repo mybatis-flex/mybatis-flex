@@ -331,8 +331,13 @@ public interface BaseMapper<T> {
      * @return 数据内容
      */
     default <R> R selectOneByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
-        List<R> entities = selectListByQueryAs(queryWrapper.limit(1), asType);
-        return (entities == null || entities.isEmpty()) ? null : entities.get(0);
+        try {
+            MappedStatementTypes.setCurrentType(asType);
+            List<R> entities = selectListByQueryAs(queryWrapper.limit(1), asType);
+            return (entities == null || entities.isEmpty()) ? null : entities.get(0);
+        } finally {
+            MappedStatementTypes.clear();
+        }
     }
 
     /**
