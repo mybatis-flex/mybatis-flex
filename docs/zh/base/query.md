@@ -1,8 +1,8 @@
-# Mybatis-Flex 的查询和分页
+# MyBatis-Flex 的查询和分页
 
 ## 基础查询
 
-在 Mybatis-Flex 的 `BaseMapper` 中，提供了如下的功能用于查询数据库的数据：
+在 MyBatis-Flex 的 `BaseMapper` 中，提供了如下的功能用于查询数据库的数据：
 
 - **selectOneById(id)**：根据主键 id 查询数据
 - **selectOneByMap(map)**：根据 `map<字段名，值>` 组成的条件查询 1 条数据，若命中多条数据，则只返回第一条数据。
@@ -142,7 +142,7 @@ List<Long> results = mapper.selectObjectListByQueryAs(query, Long.class);
 
 ## 分页查询
 
-在 Mybatis-Flex 的 BaseMapper 中，提供了如下的分页查询功能：
+在 MyBatis-Flex 的 BaseMapper 中，提供了如下的分页查询功能：
 
 ```java
 Page<T> paginate(int pageNumber, int pageSize, QueryWrapper queryWrapper);

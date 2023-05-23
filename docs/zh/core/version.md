@@ -1,4 +1,4 @@
-# Mybatis-Flex 乐观锁
+# MyBatis-Flex 乐观锁
 
 ## 使用场景
 
@@ -35,4 +35,4 @@ public class Account {
 需要注意的是：
 
 - 1、在同一张表中，只能有一个被 `@Column(version = true)` 修饰的字段。
-- 2、Account 在插入数据时，若 version 未设置值，那么会自动被 Mybatis-Flex 设置为 0。
+- 2、Account 在插入数据时，若 version 未设置值，那么会自动被 MyBatis-Flex 设置为 0。

@@ -1,17 +1,17 @@
-# Mybatis-Flex 和同类框架「功能」对比
+# MyBatis-Flex 和同类框架「功能」对比
 
-MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来源其官网、git 或者 网络文章，若有错误欢迎纠正。
+MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-MyBatis` 对比，内容来源其官网、git 或者 网络文章，若有错误欢迎纠正。
 
 - MyBatis-Plus：老牌的 MyBatis 增强框架，开源于 2016 年。
-- Fluent-Mybatis：阿里云开发的 Mybatis 增强框架（来自于阿里云·云效产品团队）
+- Fluent-MyBatis：阿里云开发的 MyBatis 增强框架（来自于阿里云·云效产品团队）
 
 > 本文只阐述了「功能」方面的对比，**「性能」** 对比请参考 [这里](./benchmark.md)。
-> 若发现对比中有错误，请加入 Mybatis-Flex QQ 交流群：532992631，然后联系群主纠正。
+> 若发现对比中有错误，请加入 MyBatis-Flex QQ 交流群：532992631，然后联系群主纠正。
 
 ## 功能对比
 
 
-| 功能或特点 | MyBatis-Flex     | MyBatis-Plus    | Fluent-Mybatis     |
+| 功能或特点 | MyBatis-Flex     | MyBatis-Plus    | Fluent-MyBatis     |
 | -------- | -------- | -------- | -------- |
 | 对 entity 的基本增删改查 | ✅ | ✅ | ✅ |
 | 分页查询 | ✅ | ✅ | ✅ |
@@ -24,7 +24,7 @@ MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来
 | 多种 id 生成策略 | ✅ | ✅ | ✅ |
 | 支持多主键、复合主键 | ✅ | ❌ | ❌ |
 | 字段的 typeHandler 配置 | ✅ | ✅ | ✅ |
-| 除了 Mybatis，无其他第三方依赖（更轻量） | ✅ | ❌ | ❌ |
+| 除了 MyBatis，无其他第三方依赖（更轻量） | ✅ | ❌ | ❌ |
 | QueryWrapper 是否支持在微服务项目下进行 RPC 传输 | ✅ | ❌ | 未知 |
 | 逻辑删除 | ✅ | ✅ | ✅ |
 | 乐观锁 | ✅ | ✅ | ✅ |
@@ -168,7 +168,7 @@ LambdaQueryWrapper<Employee> query = Wrappers.<Employee>lambdaQuery()
         .or(i -> i.in(Employee::getAge, 18, 19, 20).like(Employee::getUserName, "michael"));
 ```
 
-**Fluent-Mybatis：**
+**Fluent-MyBatis：**
 
 ```java
 AccountQuery query = new AccountQuery()
@@ -272,7 +272,7 @@ set user_name = "michael", age = 18, birthday = null
 where id = 100
 ```
 
-**Mybatis-Flex** 代码如下：
+**MyBatis-Flex** 代码如下：
 
 ```java
 Account account = UpdateEntity.of(Account.class);
@@ -284,7 +284,7 @@ account.setBirthday(null);
 accountMapper.update(account);
 ```
 
-**Mybatis-Plus** 代码如下（或可使用 Mybatis-Plus 的 `LambdaUpdateWrapper`，但性能没有 `UpdateWrapper` 好）：
+**MyBatis-Plus** 代码如下（或可使用 MyBatis-Plus 的 `LambdaUpdateWrapper`，但性能没有 `UpdateWrapper` 好）：
 
 ```java 
 UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
@@ -296,7 +296,7 @@ updateWrapper.set("birthday", null);
 accountMapper.update(null, updateWrapper);
 ```
 
-**Fluent-Mybatis** 代码如下：
+**Fluent-MyBatis** 代码如下：
 
 ```java 
 AccountUpdate update = new AccountUpdate()

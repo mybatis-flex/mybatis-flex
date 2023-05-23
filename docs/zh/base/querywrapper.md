@@ -1,6 +1,6 @@
 # 灵活的 QueryWrapper
 在 [增删改](./add-delete-update) 和 [查询和分页](./query) 章节中，我们随时能看到 QueryWrapper 的身影，QueryWrapper 是用于构造 Sql 的
-强有力工具，也是 Mybatis-Flex 的亮点和特色。
+强有力工具，也是 MyBatis-Flex 的亮点和特色。
 
 ::: tip 提示
 QueryWrapper 可以被序列化通过 RPC 进行传输，因此，在微服务项目中，我们可以在客户端（网关、Controller 层等）构造出 QueryWrapper，传给
@@ -404,7 +404,7 @@ UNION ALL (SELECT id FROM tb_article)
 ## limit... offset
 
 ::: tip 提示
-在 "limit... offset" 的示例中，Mybatis-Flex 能够自动识别当前数据库👍，并根据数据库的类型生成不同的 SQL，用户也可以很轻易的通过 DialectFactory 注册（新增或改写）自己的实现方言。
+在 "limit... offset" 的示例中，MyBatis-Flex 能够自动识别当前数据库👍，并根据数据库的类型生成不同的 SQL，用户也可以很轻易的通过 DialectFactory 注册（新增或改写）自己的实现方言。
 :::
 
 
@@ -460,7 +460,7 @@ SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 
 **疑问1：示例代码中的 QueryWrapper 所需要的 "ACCOUNT" 从哪里来的？**
 
-答：Mybatis-Flex 使用了 APT（Annotation Processing Tool）在项目编译的时候，
+答：MyBatis-Flex 使用了 APT（Annotation Processing Tool）在项目编译的时候，
 会自动根据 Entity 类定义的字段生成 "ACCOUNT" 类以及 Entity 对应的 Mapper 类， 通过开发工具构建项目（如下图），
 或者执行 maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
 
@@ -485,4 +485,4 @@ QueryWrapper query1 = QueryWrapper.create()
 QueryWrapper query2 = QueryWrapper.create()
     .where(ACCOUNT.AGE.ge(18));
 ```
-在以上的 `query1` 和 `query2` 中，它们构建出来的 SQL 条件是完全一致的，因为 Mybatis-Flex 会自动忽略 null 值的条件。
+在以上的 `query1` 和 `query2` 中，它们构建出来的 SQL 条件是完全一致的，因为 MyBatis-Flex 会自动忽略 null 值的条件。

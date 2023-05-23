@@ -1,6 +1,6 @@
 # @Id 主键的使用
 
-在 Entity 类中，Mybatis-Flex 是使用 `@Id` 注解来标识主键的，如下代码所示：
+在 Entity 类中，MyBatis-Flex 是使用 `@Id` 注解来标识主键的，如下代码所示：
 
 ```java 5
 @Table("tb_account")
@@ -77,7 +77,7 @@ public enum KeyType {
 
 ## 多主键、复合主键
 
-Mybatis-Flex 多主键就是在 Entity 类里有多个 `@Id` 注解标识而已，比如：
+MyBatis-Flex 多主键就是在 Entity 类里有多个 `@Id` 注解标识而已，比如：
 
 ```java
 @Table("tb_account")
@@ -166,7 +166,7 @@ public class Account {
 一般的项目中，通常是许多的 Entity 使用同一个数据库，同时使用一种主键生成方式，比如说都使用 自增，
 或者都使用通过序列（Sequence）生成，此时，我们是没有必要为每个 Entity 单独配置一样内容的。
 
-Mybatis-Flex 提供了一种全局配置的方式，代码如下：
+MyBatis-Flex 提供了一种全局配置的方式，代码如下：
 
 ```java
 FlexGlobalConfig.KeyConfig keyConfig = new FlexGlobalConfig.KeyConfig();

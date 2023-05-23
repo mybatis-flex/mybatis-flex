@@ -3,7 +3,7 @@
 数据填充指的是，当 Entity 数据被插入 或者 更新的时候，会为字段进行一些默认的数据设置。这个非常有用，比如说当某个 entity 被插入时候
 会设置一些数据插入的时间、数据插入的用户 id，多租户的场景下设置当前租户信息等等。
 
-Mybatis-Flex 提供了两种方式，帮助开发者进行数据填充。
+MyBatis-Flex 提供了两种方式，帮助开发者进行数据填充。
 
 - 1、通过 `@Table` 注解的 `onInsert` 和 `onUpdate` 配置进行操作。这部分可以参考 [@Table 注解章节](./table) 。
 - 2、通过 `@Column` 注解的 `onInsertValue` 和 `onUpdateValue` 配置进行操作。这部分可以参考 [@Column 注解章节](./column)。

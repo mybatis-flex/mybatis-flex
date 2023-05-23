@@ -1,8 +1,8 @@
-# Mybatis-Flex 的增删改功能
+# MyBatis-Flex 的增删改功能
 
-Mybatis-Flex 内置了一个名为 `BaseMapper` 的接口，它实现了基本的增删改查功能以及分页查询功能。
+MyBatis-Flex 内置了一个名为 `BaseMapper` 的接口，它实现了基本的增删改查功能以及分页查询功能。
 
-> Mybatis-Flex 的 **代码生成器** 生成的所有 Mapper 辅助类，都是继承 BaseMapper。
+> MyBatis-Flex 的 **代码生成器** 生成的所有 Mapper 辅助类，都是继承 BaseMapper。
 
 ## 新增数据
 
@@ -49,7 +49,7 @@ accountMapper.deleteByCondition(ACCOUNT.ID.ge(100));
 delete from tb_account where id >= 100;
 ```
 
->tip: QueryWrapper 非常灵活，也是 Mybatis-Flex 的特色之一，更多关于 QueryWrapper 的
+>tip: QueryWrapper 非常灵活，也是 MyBatis-Flex 的特色之一，更多关于 QueryWrapper 的
 > 请看 [QueryWrapper 章节](./querywrapper)。
 
 ## 更新数据

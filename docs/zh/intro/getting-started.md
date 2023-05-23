@@ -81,12 +81,12 @@ public interface AccountMapper extends BaseMapper<Account> {
 }
 ```
 
-> 这部分也可以使用 Mybatis-Flex 的代码生成器来生，功能非常强大的。详情进入：[代码生成器章节](../others/codegen.md) 了解。
+> 这部分也可以使用 MyBatis-Flex 的代码生成器来生，功能非常强大的。详情进入：[代码生成器章节](../others/codegen.md) 了解。
 
 
 **第4步：编译项目，自动生成查询辅助类**
 
-Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时，会自动生成辅助操作类。
+MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时，会自动生成辅助操作类。
 
 - Maven 编译： `mvn clean package`
 - Gradle 编译： `gradlew classes`
@@ -96,7 +96,7 @@ Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 
 
 
-**第 5 步：通过 main 方法开始使用 Mybatis-Flex（无 Spring 的场景）**
+**第 5 步：通过 main 方法开始使用 MyBatis-Flex（无 Spring 的场景）**
 
 ```java
 public class HelloWorld {
@@ -135,7 +135,7 @@ public class HelloWorld {
 }
 ```
 
-> 以上的示例中， `ACCOUNT` 为 Mybatis-Flex 通过 APT 自动生成，无需手动编码。更多查看 [APT 文档](../others/apt.md)。
+> 以上的示例中， `ACCOUNT` 为 MyBatis-Flex 通过 APT 自动生成，无需手动编码。更多查看 [APT 文档](../others/apt.md)。
 > 
 >若觉得 APT 使用不习惯，
 > 也可以使用代码生成器来生成。点击 [代码生成器文档](../others/codegen.md) 了解。
@@ -143,7 +143,7 @@ public class HelloWorld {
 
 ## 更多示例
 
-- 示例 1：[Mybatis-Flex 原生（非 Spring）](https://gitee.com/mybatis-flex/mybatis-flex-samples)
-- 示例 2：[Mybatis-Flex with Spring](https://gitee.com/mybatis-flex/mybatis-flex-samples)
-- 示例 3：[Mybatis-Flex with Spring boot](https://gitee.com/mybatis-flex/mybatis-flex-samples)
+- 示例 1：[MyBatis-Flex 原生（非 Spring）](https://gitee.com/mybatis-flex/mybatis-flex-samples)
+- 示例 2：[MyBatis-Flex with Spring](https://gitee.com/mybatis-flex/mybatis-flex-samples)
+- 示例 3：[MyBatis-Flex with Spring boot](https://gitee.com/mybatis-flex/mybatis-flex-samples)
 - 示例 4：[Db + Row](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-test/mybatis-flex-native-test/src/main/java/com/mybatisflex/test/DbTestStarter.java)

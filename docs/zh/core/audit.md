@@ -36,13 +36,13 @@ Mybaits-Flex 消息包含了如下内容：
 
 ::: tip 提示
 通过以上的消息内容可知：每个 SQL 的执行，都包含了：哪个访问用户、哪个 IP 地址访问，访问的是哪个 URL 地址，这个 SQL 的参数是什么，执行的时间是什么，执行 
-花费了多少时间等等。这样，通过 Mybatis-flex 的 SQL 审计功能，我们能全盘了解到每个 SQL 的执行情况。
+花费了多少时间等等。这样，通过 MyBatis-flex 的 SQL 审计功能，我们能全盘了解到每个 SQL 的执行情况。
 :::
 
 
 ## 自定义 SQL 审计内容
 
-Mybatis-Flex 内置了一个名为 `MessageFactory` 的接口，我们只需实现该接口，并为 `AuditManager` 配置新的 `MessageFactory` 即可，如下所示：
+MyBatis-Flex 内置了一个名为 `MessageFactory` 的接口，我们只需实现该接口，并为 `AuditManager` 配置新的 `MessageFactory` 即可，如下所示：
 
 ```java
 public class MyMessageFactory implements MessageFactory {

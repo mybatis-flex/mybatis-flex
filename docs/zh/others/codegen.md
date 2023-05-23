@@ -1,4 +1,4 @@
-# Mybatis-Flex 代码生成器
+# MyBatis-Flex 代码生成器
 
 在 mybatis-flex 的模块 `mybatis-flex-codegen` 中，提供了可以通过数据库表，生成 Entity 类和 Mapper 类的功能。当我们把数据库表设计完成
 后可以使用其快速生成 Entity 和 Mapper 的 java 类。
@@ -296,7 +296,7 @@ public class ColumnConfig implements Serializable {
 
 ## 自定义属性类型
 
-Mybatis-Flex 内置了一个名为：`JdbcTypeMapping` 的 java 类，我们可以用其配置映射 Jdbc 驱动的数据类型为自定义的
+MyBatis-Flex 内置了一个名为：`JdbcTypeMapping` 的 java 类，我们可以用其配置映射 Jdbc 驱动的数据类型为自定义的
 数据类型，在开始生成代码之前，可以先调用其进行配置，例如：
 
 ```java
@@ -354,7 +354,7 @@ public class EnjoyTemplate implements ITemplate {
 
 ## 添加其他产物的生成
 
-在 Mybatis-Flex 的代码生成器中，支持如下 6 种类型的的产物生成
+在 MyBatis-Flex 的代码生成器中，支持如下 6 种类型的的产物生成
 
 - 1、Entity 实体类
 - 2、Mapper 类（默认关闭）

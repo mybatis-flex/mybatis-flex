@@ -2,8 +2,8 @@
 
 ## 示例中的 AccountMapper 和 "ACCOUNT" 在哪里，报错了。
 
-Mybatis-Flex 使用了 APT 技术，这两个类是自动生成的。
-参考：[Mybatis-Flex APT 配置 - Mybatis-Flex 官方网站](./others/apt.md)
+MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的。
+参考：[MyBatis-Flex APT 配置 - MyBatis-Flex 官方网站](./others/apt.md)
 
 
 
@@ -80,5 +80,5 @@ spring:
 
 ## 与 PageHelper 集成出现错误
 
-在社区中，一些老的项目在使用到了开源项目 PageHelper，用于解决 xml 的分页问题，在和 Mybatis-flex 整合使用中，出现了一些错误，
+在社区中，一些老的项目在使用到了开源项目 PageHelper，用于解决 xml 的分页问题，在和 MyBatis-flex 整合使用中，出现了一些错误，
 这是许多热心的同学给出的解决方案：https://gitee.com/mybatis-flex/mybatis-flex/issues/I71AUE
