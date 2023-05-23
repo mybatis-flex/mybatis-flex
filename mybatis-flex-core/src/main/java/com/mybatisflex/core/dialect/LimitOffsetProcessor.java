@@ -60,25 +60,11 @@ public interface LimitOffsetProcessor {
             sql.append(" OFFSET ").append(limitOffset).append("  ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
         } else if (limitRows != null) {
             // FETCH FIRST 20 ROWS ONLY
-            sql.append(" FETCH FIRST ").append(limitRows).append(" ROWS ONLY");
+            sql.append(" OFFSET 0 ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
         }
         return sql;
     };
 
-    /**
-     * db2 的处理器
-     * 适合  {@link DbType#DB2,DbType#SQLSERVER_2005}
-     */
-    LimitOffsetProcessor DB2 = (sql, queryWrapper, limitRows, limitOffset) -> {
-        if (limitRows != null && limitOffset != null) {
-            // OFFSET ** ROWS FETCH NEXT ** ROWS ONLY")
-            sql.append(" OFFSET ").append(limitOffset).append("  ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
-        } else if (limitRows != null) {
-            // FETCH FIRST 20 ROWS ONLY
-            sql.append(" FETCH FIRST ").append(limitRows).append(" ROWS ONLY");
-        }
-        return sql;
-    };
 
     /**
      * Informix 的处理器
