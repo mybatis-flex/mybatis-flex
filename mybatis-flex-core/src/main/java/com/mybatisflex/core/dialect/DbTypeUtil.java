@@ -87,7 +87,7 @@ public class DbTypeUtil {
      * @param jdbcUrl jdbcURL
      * @return 返回数据库类型
      */
-    private static DbType parseDbType(String jdbcUrl) {
+    public static DbType parseDbType(String jdbcUrl) {
         jdbcUrl = jdbcUrl.toLowerCase();
         if (jdbcUrl.contains(":mysql:") || jdbcUrl.contains(":cobar:")) {
             return DbType.MYSQL;
