@@ -15,7 +15,12 @@
  */
 package com.mybatisflex.core.dialect;
 
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryOrderBy;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.CollectionUtil;
+
+import java.util.List;
 
 /**
  * limit 和 offset 参数的处理器
@@ -57,9 +62,28 @@ public interface LimitOffsetProcessor {
     LimitOffsetProcessor DERBY = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             // OFFSET ** ROWS FETCH NEXT ** ROWS ONLY")
-            sql.append(" OFFSET ").append(limitOffset).append("  ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
+            sql.append(" OFFSET ").append(limitOffset).append(" ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
         } else if (limitRows != null) {
             sql.append(" OFFSET 0 ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
+        }
+        return sql;
+    };
+
+    /**
+     * derby 的处理器
+     * 适合  {@link DbType#DERBY,DbType#ORACLE_12C,DbType#SQLSERVER ,DbType#POSTGRE_SQL}
+     */
+    LimitOffsetProcessor SQLSERVER = (sql, queryWrapper, limitRows, limitOffset) -> {
+        if (limitRows != null && limitOffset != null) {
+            // OFFSET ** ROWS FETCH NEXT ** ROWS ONLY")
+            sql.append(" OFFSET ").append(limitOffset).append(" ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
+        } else if (limitRows != null) {
+            List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
+            if (CollectionUtil.isNotEmpty(orderBys)) {
+                sql.append(" OFFSET 0 ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
+            } else {
+                sql.insert(6, " TOP " + limitRows);
+            }
         }
         return sql;
     };
