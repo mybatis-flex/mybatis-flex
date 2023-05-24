@@ -797,7 +797,9 @@ public class TableInfo {
         //默认使用第一个作为插入的租户ID
         Object tenantId = tenantIds[0];
         if (tenantId != null) {
-            metaObject.setValue(columnInfoMapping.get(tenantIdColumn).property, tenantId);
+            String property = columnInfoMapping.get(tenantIdColumn).property;
+            Class<?> setterType = metaObject.getSetterType(property);
+            metaObject.setValue(property, ConvertUtil.convert(tenantId, setterType));
         }
     }
 
@@ -816,7 +818,6 @@ public class TableInfo {
         if (columnValue == null) {
             String property = columnInfoMapping.get(logicDeleteColumn).property;
             Class<?> setterType = metaObject.getSetterType(property);
-
             Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
             metaObject.setValue(property, ConvertUtil.convert(normalValueOfLogicDelete, setterType));
         }
