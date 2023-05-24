@@ -110,7 +110,7 @@ public class HelloWorld {
 
         //配置数据源
         MybatisFlexBootstrap.getInstance()
-                .setDatasource(dataSource)
+                .setDataSource(dataSource)
                 .addMapper(AccountMapper.class)
                 .start();
 
