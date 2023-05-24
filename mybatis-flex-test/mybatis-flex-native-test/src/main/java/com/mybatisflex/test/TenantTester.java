@@ -28,8 +28,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import javax.sql.DataSource;
 
 import static com.mybatisflex.core.query.QueryMethods.select;
-import static com.mybatisflex.test.table.Tables.ACCOUNT;
-import static com.mybatisflex.test.table.Tables.TENANT_ACCOUNT;
+import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
+import static com.mybatisflex.test.table.TenantAccountTableDef.TENANT_ACCOUNT;
 
 public class TenantTester {
 

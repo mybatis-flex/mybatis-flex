@@ -83,10 +83,29 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
     private static final String tableDefTemplate = "\n\n    public static final @entityClassTableDef @tableField = new @entityClassTableDef(\"@tableName\");\n";
 
+    private static final String singleEntityClassTemplate = "package @package;\n" +
+            "\n" +
+            "import com.mybatisflex.core.query.QueryColumn;\n" +
+            "import com.mybatisflex.core.table.TableDef;\n" +
+            "\n" +
+            "// Auto generate by mybatis-flex, do not modify it.\n" +
+            "public class @entityClassTableDef extends TableDef {\n" +
+            "\n" +
+            "@selfDef" +
+            "@queryColumns" +
+            "@defaultColumns" +
+            "@allColumns" +
+            "\n" +
+            "    public @entityClassTableDef(String tableName) {\n" +
+            "        super(tableName);\n" +
+            "    }\n" +
+            "}\n";
 
-    private static final String classTemplate = "\n" +
+
+    private static final String allInTableEntityClassTemplate = "\n" +
             "    public static class @entityClassTableDef extends TableDef {\n" +
             "\n" +
+            "@selfDef" +
             "@queryColumns" +
             "@defaultColumns" +
             "@allColumns" +
@@ -100,8 +119,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
     private static final String columnsTemplate = "        public QueryColumn @property = new QueryColumn(this, \"@columnName\");\n";
 
     private static final String defaultColumnsTemplate = "\n        public QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{@allColumns};\n";
-    //    private static final String allColumnsTemplate = "        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{@allColumns};\n\n";
-    private static final String allColumnsTemplate = "        public QueryColumn ALL_COLUMNS = new QueryColumn(this, \"*\");\n\n";
+    private static final String allColumnsTemplate = "        public QueryColumn ALL_COLUMNS = new QueryColumn(this, \"*\");\n";
 
     private Filer filer;
     private Elements elementUtils;
@@ -132,6 +150,8 @@ public class QueryEntityProcessor extends AbstractProcessor {
             String baseMapperClass = props.getProperties().getProperty("processor.baseMapperClass", "com.mybatisflex.core.BaseMapper");
             String mappersGenerateEnable = props.getProperties().getProperty("processor.mappersGenerateEnable", "false");
             String genMappersPackage = props.getProperties().getProperty("processor.mappersPackage");
+
+            boolean allInTables = "true".equalsIgnoreCase(props.getProperties().getProperty("processor.allInTables", "false"));
             String className = props.getProperties().getProperty("processor.tablesClassName", "Tables");
 
             //upperCase, lowerCase, upperCamelCase, lowerCamelCase
@@ -141,7 +161,6 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
 
             StringBuilder guessPackage = new StringBuilder();
-
 
             StringBuilder tablesContent = new StringBuilder();
             roundEnv.getElementsAnnotatedWith(Table.class).forEach((Consumer<Element>) entityClassElement -> {
@@ -184,7 +203,16 @@ public class QueryEntityProcessor extends AbstractProcessor {
                     }
                 }
 
-                tablesContent.append(buildTablesClass(entitySimpleName, tableName, propertyAndColumns, defaultColumns, tablesNameStyle));
+                if (allInTables) {
+                    String content = buildTablesClass(entitySimpleName, tableName, propertyAndColumns, defaultColumns, tablesNameStyle, null, allInTables);
+                    tablesContent.append(content);
+                }
+                //每一个 entity 生成一个独立的文件
+                else {
+                    String realGenPackage = genTablesPackage == null || genTablesPackage.trim().length() == 0 ? guessPackage.toString() : genTablesPackage;
+                    String content = buildTablesClass(entitySimpleName, tableName, propertyAndColumns, defaultColumns, tablesNameStyle, realGenPackage, allInTables);
+                    genClass(genPath, realGenPackage, entitySimpleName + "TableDef", content);
+                }
 
                 //是否开启 mapper 生成功能
                 if ("true".equalsIgnoreCase(mappersGenerateEnable) && table.mapperGenerateEnable()) {
@@ -194,7 +222,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 }
             });
 
-            if (tablesContent.length() > 0) {
+            if (allInTables && tablesContent.length() > 0) {
                 String realGenPackage = genTablesPackage == null || genTablesPackage.trim().length() == 0 ? guessPackage.toString() : genTablesPackage;
                 genTablesClass(genPath, realGenPackage, className, tablesContent.toString());
             }
@@ -300,7 +328,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
 
     private String buildTablesClass(String entityClass, String tableName, Map<String, String> propertyAndColumns
-            , List<String> defaultColumns, String tablesNameStyle) {
+            , List<String> defaultColumns, String tablesNameStyle, String realGenPackage, boolean allInTables) {
 
         // tableDefTemplate = "    public static final @entityClassTableDef @tableField = new @entityClassTableDef(\"@tableName\");\n";
 
@@ -312,7 +340,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
         //columnsTemplate = "        public QueryColumn @property = new QueryColumn(this, \"@columnName\");\n";
         StringBuilder queryColumns = new StringBuilder();
         propertyAndColumns.forEach((property, column) ->
-                queryColumns.append(columnsTemplate
+                queryColumns.append(columnsTemplate.substring(allInTables ? 0 : 4) //移除 4 个空格
                         .replace("@property", buildName(property, tablesNameStyle))
                         .replace("@columnName", column)
                 ));
@@ -349,12 +377,24 @@ public class QueryEntityProcessor extends AbstractProcessor {
 //                "        }\n" +
 //                "    }\n";
 
-        String tableClass = classTemplate.replace("@entityClass", entityClass)
-                .replace("@queryColumns", queryColumns)
-                .replace("@defaultColumns", defaultColumnsString)
-                .replace("@allColumns", allColumnsString);
+        String tableClass;
+        if (allInTables) {
+            tableClass = allInTableEntityClassTemplate.replace("@entityClass", entityClass)
+                    .replace("@queryColumns", queryColumns)
+                    .replace("@defaultColumns", defaultColumnsString)
+                    .replace("@allColumns", allColumnsString);
+        } else {
+            tableClass = singleEntityClassTemplate
+                    .replace("@package", realGenPackage)
+                    .replace("@entityClass", entityClass)
+                    .replace("@selfDef", tableDef.replace("\n\n", "") + "\n")
+                    .replace("@queryColumns", queryColumns)
+                    .replace("@defaultColumns", "\n" + defaultColumnsString.substring(5)) //移除 "换行 + 4 个空格"
+                    .replace("@allColumns", allColumnsString.substring(4)); //移除 4 个空格
+        }
 
-        return tableDef + tableClass;
+
+        return allInTables ? tableDef + tableClass : tableClass;
     }
 
 
@@ -363,6 +403,11 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 .replace("@classesInfo", classContent)
                 .replace("@tablesClassName", className);
 
+        genClass(genBasePath, genPackageName, className, genContent);
+    }
+
+
+    private void genClass(String genBasePath, String genPackageName, String className, String genContent) {
         Writer writer = null;
         try {
             JavaFileObject sourceFile = filer.createSourceFile(genPackageName + "." + className);
@@ -370,8 +415,6 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 writer = sourceFile.openWriter();
                 writer.write(genContent);
                 writer.flush();
-
-//                printMessage(">>>>> mybatis-flex success generate tables class: \n" + sourceFile.toUri());
                 return;
             }
 
@@ -408,9 +451,6 @@ public class QueryEntityProcessor extends AbstractProcessor {
             writer = new PrintWriter(new FileOutputStream(genJavaFile));
             writer.write(genContent);
             writer.flush();
-
-//            printMessage(">>>>> mybatis-flex success generate tables class: \n" + genJavaFile.toURI());
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -440,64 +480,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 .replace("@baseMapperClzName", baseMapperClzName);
 
         String mapperClassName = entityName + "Mapper";
-        Writer writer = null;
-        try {
-            JavaFileObject sourceFile = filer.createSourceFile(genPackageName + "." + mapperClassName);
-            if (genBasePath == null || genBasePath.trim().length() == 0) {
-                writer = sourceFile.openWriter();
-                writer.write(genContent);
-                writer.flush();
-
-//                printMessage(">>>>> mybatis-flex success generate mapper class: \n" + sourceFile.toUri());
-                return;
-            }
-
-
-            String defaultGenPath = sourceFile.toUri().getPath();
-
-            //真实的生成代码的目录
-            String realPath;
-
-            //用户配置的路径为绝对路径
-            if (isAbsolutePath(genBasePath)) {
-                realPath = genBasePath;
-            }
-            //配置的是相对路径，那么则以项目根目录为相对路径
-            else {
-                String projectRootPath = getProjectRootPath(defaultGenPath);
-                realPath = new File(projectRootPath, genBasePath).getAbsolutePath();
-            }
-
-            //通过在 test/java 目录下执行编译生成的
-            boolean fromTestSource = isFromTestSource(defaultGenPath);
-            if (fromTestSource) {
-                realPath = new File(realPath, "src/test/java").getAbsolutePath();
-            } else {
-                realPath = new File(realPath, "src/main/java").getAbsolutePath();
-            }
-
-            File genJavaFile = new File(realPath, (genPackageName + "." + mapperClassName).replace(".", "/") + ".java");
-            if (!genJavaFile.getParentFile().exists() && !genJavaFile.getParentFile().mkdirs()) {
-                System.out.println(">>>>>ERROR: can not mkdirs by mybatis-flex processor for: " + genJavaFile.getParentFile());
-                return;
-            }
-
-            writer = new PrintWriter(new FileOutputStream(genJavaFile));
-            writer.write(genContent);
-            writer.flush();
-
-//            printMessage(">>>>> mybatis-flex success generate mapper class: \n" + genJavaFile.toURI());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException ignored) {
-                }
-            }
-        }
+        genClass(genBasePath, genPackageName, mapperClassName, genContent);
     }
 
 
@@ -595,8 +578,6 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
     /**
      * 当前 Maven 模块所在所在的目录
-     *
-     * @return
      */
     private String getModuleRootPath(String genFilePath) {
         File file = new File(genFilePath);

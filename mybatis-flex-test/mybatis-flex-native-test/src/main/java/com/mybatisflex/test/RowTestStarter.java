@@ -31,7 +31,7 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mybatisflex.test.table.Tables.ACCOUNT;
+import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 
 public class RowTestStarter {
 

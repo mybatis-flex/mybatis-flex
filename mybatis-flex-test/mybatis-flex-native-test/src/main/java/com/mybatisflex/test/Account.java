@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Table(value = "tb_account", dataSource = "ds2", onSet = AccountOnSetListener.class)
@@ -31,6 +32,8 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
 
     @Column(isLogicDelete = true)
     private Boolean isDelete;
+
+    private List<Article> articles;
 
 
     public Long getId() {
@@ -82,6 +85,21 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
         options.put(key, value);
     }
 
+    public Boolean getDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(Boolean delete) {
+        isDelete = delete;
+    }
+
+    public List<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.articles = articles;
+    }
 
     @Override
     public String toString() {
@@ -92,6 +110,7 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
                 ", birthday=" + birthday +
                 ", options=" + options +
                 ", isDelete=" + isDelete +
+                ", articles=" + articles +
                 '}';
     }
 }

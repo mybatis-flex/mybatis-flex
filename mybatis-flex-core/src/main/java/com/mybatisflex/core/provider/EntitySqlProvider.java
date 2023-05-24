@@ -18,16 +18,17 @@ package com.mybatisflex.core.provider;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EntitySqlProvider {
 
@@ -74,7 +75,6 @@ public class EntitySqlProvider {
 
         return DialectFactory.getDialect().forInsertEntity(tableInfo, entity, ignoreNulls);
     }
-
 
 
     /**
@@ -308,17 +308,39 @@ public class EntitySqlProvider {
         if (queryWrapper == null) {
             throw FlexExceptions.wrap("queryWrapper can not be null.");
         }
+        List<TableInfo> tableInfos = getTableInfos(context, queryWrapper);
+        for (TableInfo tableInfo : tableInfos) {
+            tableInfo.appendConditions(null, queryWrapper);
 
-        TableInfo tableInfo = ProviderUtil.getTableInfo(context);
-        tableInfo.appendConditions(null, queryWrapper);
+            Object[] values = CPI.getValueArray(queryWrapper);
+            ProviderUtil.setSqlArgs(params, values);
 
-        Object[] values = CPI.getValueArray(queryWrapper);
-        ProviderUtil.setSqlArgs(params, values);
-
-        CPI.setSelectColumnsIfNecessary(queryWrapper, tableInfo.getDefaultQueryColumn());
-        CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
+            CPI.setSelectColumnsIfNecessary(queryWrapper, tableInfo.getDefaultQueryColumn());
+            CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
+        }
 
         return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
+    }
+
+
+    private static List<TableInfo> getTableInfos(ProviderContext context, QueryWrapper queryWrapper) {
+        List<TableInfo> tableInfos;
+        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        if (CollectionUtil.isNotEmpty(queryTables)) {
+            tableInfos = new ArrayList<>();
+            for (QueryTable queryTable : queryTables) {
+                String tableName = queryTable.getName();
+                if (StringUtil.isNotBlank(tableName)) {
+                    TableInfo tableInfo = TableInfoFactory.ofTableName(tableName);
+                    if (tableInfo != null) {
+                        tableInfos.add(tableInfo);
+                    }
+                }
+            }
+        } else {
+            tableInfos = Collections.singletonList(ProviderUtil.getTableInfo(context));
+        }
+        return tableInfos;
     }
 
     /**
@@ -335,13 +357,17 @@ public class EntitySqlProvider {
             throw FlexExceptions.wrap("queryWrapper can not be null.");
         }
 
-        TableInfo tableInfo = ProviderUtil.getTableInfo(context);
-        tableInfo.appendConditions(null, queryWrapper);
+        List<TableInfo> tableInfos = getTableInfos(context, queryWrapper);
 
-        Object[] values = CPI.getValueArray(queryWrapper);
-        ProviderUtil.setSqlArgs(params, values);
+        for (TableInfo tableInfo : tableInfos) {
+            tableInfo.appendConditions(null, queryWrapper);
 
-        CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
+            Object[] values = CPI.getValueArray(queryWrapper);
+            ProviderUtil.setSqlArgs(params, values);
+
+            CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
+        }
+
         return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
     }
 

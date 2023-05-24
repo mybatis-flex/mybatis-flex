@@ -13,8 +13,8 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static com.mybatisflex.core.query.QueryMethods.*;
-import static com.mybatisflex.coretest.table.Tables.ACCOUNT;
-import static com.mybatisflex.coretest.table.Tables.ARTICLE;
+import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
+import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
 
 public class AccountSqlTester {
 

@@ -16,6 +16,8 @@
 package com.mybatisflex.core;
 
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.field.FieldQuery;
+import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.mybatis.MappedStatementTypes;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.EntitySqlProvider;
@@ -28,9 +30,12 @@ import com.mybatisflex.core.util.ObjectUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static com.mybatisflex.core.query.QueryMethods.count;
 
@@ -407,6 +412,59 @@ public interface BaseMapper<T> {
     List<T> selectListByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
+    default List<T> selectListByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper
+            , Consumer<FieldQueryBuilder<T>>... consumers) {
+
+        List<T> list = selectListByQuery(queryWrapper);
+        if (list == null || list.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        list.forEach(entity -> {
+            for (Consumer<FieldQueryBuilder<T>> consumer : consumers) {
+                FieldQueryBuilder<T> fieldQueryBuilder = new FieldQueryBuilder<>(entity);
+                consumer.accept(fieldQueryBuilder);
+                FieldQuery fieldQuery = fieldQueryBuilder.build();
+                QueryWrapper childQuery = fieldQuery.getQueryWrapper();
+                MetaObject entityMetaObject = SystemMetaObject.forObject(entity);
+                Class<?> setterType = entityMetaObject.getSetterType(fieldQuery.getField());
+
+                Class<?> mappingType = fieldQuery.getMappingType();
+                if (mappingType == null) {
+                    if (setterType.isAssignableFrom(Collection.class)) {
+                        throw new IllegalStateException("Mapping Type can not be null for query Many.");
+                    } else if (setterType.isArray()) {
+                        mappingType = setterType.getComponentType();
+                    } else {
+                        mappingType = setterType;
+                    }
+                }
+
+                Object value;
+                try {
+                    MappedStatementTypes.setCurrentType(mappingType);
+                    if (setterType.isAssignableFrom(List.class)) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                    } else if (setterType.isAssignableFrom(Set.class)) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                        value = new HashSet<>((Collection<?>) value);
+                    } else if (setterType.isArray()) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                        value = ((List<?>) value).toArray();
+                    } else {
+                        value = selectOneByQueryAs(childQuery, mappingType);
+                    }
+                } finally {
+                    MappedStatementTypes.clear();
+                }
+                entityMetaObject.setValue(fieldQuery.getField(), value);
+            }
+        });
+
+        return list;
+    }
+
+
     /**
      * 根据 query 来构建条件查询数据列表，要求返回的数据为 asType
      * 这种场景一般用在 left join 时，有多出了 entity 本身的字段内容，可以转换为 dto、vo 等场景时
@@ -417,6 +475,69 @@ public interface BaseMapper<T> {
      */
     @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
     <R> List<R> selectListByQueryAs(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper, Class<R> asType);
+
+
+    default <R> List<R> selectListByQueryAs(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper, Class<R> asType
+            , Consumer<FieldQueryBuilder<R>>... consumers) {
+        List<R> list;
+        try {
+            MappedStatementTypes.setCurrentType(asType);
+            list = selectListByQueryAs(queryWrapper, asType);
+        } finally {
+            MappedStatementTypes.clear();
+        }
+
+        if (list == null || list.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        list.forEach(entity -> {
+            for (Consumer<FieldQueryBuilder<R>> consumer : consumers) {
+                FieldQueryBuilder<R> fieldQueryBuilder = new FieldQueryBuilder<>(entity);
+                consumer.accept(fieldQueryBuilder);
+                FieldQuery fieldQuery = fieldQueryBuilder.build();
+                QueryWrapper childQuery = fieldQuery.getQueryWrapper();
+
+                MetaObject entityMetaObject = SystemMetaObject.forObject(entity);
+                Class<?> setterType = entityMetaObject.getSetterType(fieldQuery.getField());
+
+                Class<?> mappingType = fieldQuery.getMappingType();
+                if (mappingType == null) {
+                    if (setterType.isAssignableFrom(Collection.class)) {
+                        throw new IllegalStateException("Mapping Type can not be null for query Many.");
+                    } else if (setterType.isArray()) {
+                        mappingType = setterType.getComponentType();
+                    } else {
+                        mappingType = setterType;
+                    }
+                }
+
+                Object value;
+                try {
+                    MappedStatementTypes.setCurrentType(mappingType);
+                    if (setterType.isAssignableFrom(List.class)) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                    } else if (setterType.isAssignableFrom(Set.class)) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                        value = new HashSet<>((Collection<?>) value);
+                    } else if (setterType.isArray()) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                        value = ((List<?>) value).toArray();
+                    } else {
+                        value = selectOneByQueryAs(childQuery, mappingType);
+                    }
+                } finally {
+                    MappedStatementTypes.clear();
+                }
+
+
+                entityMetaObject.setValue(fieldQuery.getField(), value);
+            }
+        });
+
+        return list;
+    }
+
 
     /**
      * 查询全部数据

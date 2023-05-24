@@ -28,8 +28,8 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static com.mybatisflex.core.query.QueryMethods.select;
-import static com.mybatisflex.test.table.Tables.ACCOUNT;
-import static com.mybatisflex.test.table.Tables.ARTICLE;
+import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
+import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
 
 public class EntityTestStarter {
 
@@ -55,6 +55,17 @@ public class EntityTestStarter {
 
 
         AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
+
+        List<Account> accounts1 = accountMapper.selectListByQuery(QueryWrapper.create()
+                , accountFieldQueryBuilder -> accountFieldQueryBuilder
+                        .field(Account::getArticles)
+                        .type(Article.class)
+                        .queryWrapper(entity ->
+                                select().from(ARTICLE).where(ARTICLE.ACCOUNT_ID.eq(entity.getId()))
+                        )
+        );
+        System.out.println(accounts1);
+
 //        MyAccountMapper myAccountMapper = bootstrap.getMapper(MyAccountMapper.class);
 
 //        List<Account> accounts1 = myAccountMapper.selectAll();
@@ -86,8 +97,8 @@ public class EntityTestStarter {
         QueryWrapper asWrapper = QueryWrapper.create()
                 .select(ARTICLE.ALL_COLUMNS)
                 .select(ACCOUNT.USER_NAME.as(ArticleDTO::getAuthorName)
-                        ,ACCOUNT.AGE.as(ArticleDTO::getAuthorAge)
-                        ,ACCOUNT.BIRTHDAY
+                        , ACCOUNT.AGE.as(ArticleDTO::getAuthorAge)
+                        , ACCOUNT.BIRTHDAY
                 )
                 .from(ARTICLE)
                 .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
@@ -97,7 +108,6 @@ public class EntityTestStarter {
 //        System.out.println(articleDTOS);
         Page<ArticleDTO> paginate = accountMapper.paginateAs(Page.of(1, 1), asWrapper, ArticleDTO.class);
         System.out.println(paginate);
-
 
 
 //        QueryWrapper queryWrapper = new QueryWrapper();
@@ -110,7 +120,6 @@ public class EntityTestStarter {
 //
 //        Page<Account> paginate = accountMapper.paginate(1,10,queryWrapper);
 //        System.out.println(paginate);
-
 
 
 //        QueryWrapper query = QueryWrapper.create()
