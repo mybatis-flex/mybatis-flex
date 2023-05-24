@@ -229,7 +229,7 @@ public interface IService<T> {
      * @return 查询结果数据
      */
     default T getById(Serializable id) {
-        return getMapper().selectOneById(id);
+        return getByIdOpt(id).orElseThrow(() -> new NoSuchElementException("No value present"));
     }
 
     /**
@@ -240,7 +240,7 @@ public interface IService<T> {
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
     default Optional<T> getByIdOpt(Serializable id) {
-        return Optional.ofNullable(getById(id));
+        return Optional.ofNullable(getMapper().selectOneById(id));
     }
 
     /**
@@ -250,7 +250,7 @@ public interface IService<T> {
      * @return 查询结果数据
      */
     default T getOne(QueryWrapper query) {
-        return getMapper().selectOneByQuery(query);
+        return getOneOpt(query).orElseThrow(() -> new NoSuchElementException("No value present"));
     }
 
 
@@ -262,7 +262,7 @@ public interface IService<T> {
      * @return 查询结果数据
      */
     default <R> R getOneAs(QueryWrapper query, Class<R> asType) {
-        return getMapper().selectOneByQueryAs(query, asType);
+        return getOneOptAs(query, asType).orElseThrow(() -> new NoSuchElementException("No value present"));
     }
 
     /**
@@ -273,7 +273,7 @@ public interface IService<T> {
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
     default Optional<T> getOneOpt(QueryWrapper query) {
-        return Optional.ofNullable(getOne(query));
+        return Optional.ofNullable(getMapper().selectOneByQuery(query));
     }
 
 
@@ -286,7 +286,7 @@ public interface IService<T> {
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
     default <R> Optional<R> getOneOptAs(QueryWrapper query, Class<R> asType) {
-        return Optional.ofNullable(getOneAs(query, asType));
+        return Optional.ofNullable(getMapper().selectOneByQueryAs(query, asType));
     }
 
     /**
