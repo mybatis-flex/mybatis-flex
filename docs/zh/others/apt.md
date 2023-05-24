@@ -18,6 +18,7 @@ MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 | processor.enable                | 全局启用apt开关          | true/false                                               | true                                 |
 | processor.mappersGenerateEnable | 开启 Mapper 自动生成     | true/false                                               | false                                |
 | processor.genPath               | APT 代码生成路径         | 合法的绝对或相对路径                                     | target/generated-sources/annotations |
+| processor.allInTables           | 是否所有的类都生成在 Tables 类里 | true/false                                                | false              |
 | processor.tablesPackage         | Tables 类名              | 合法的包名                                               | ${entityPackage}.table               |
 | processor.tablesClassName       | Tables 类名              | 合法的类名                                               | Tables                               |
 | processor.baseMapperClass       | 自定义 Mapper 的父类     | 全路径类名                                               | com.mybatisflex.core.BaseMapper      |
