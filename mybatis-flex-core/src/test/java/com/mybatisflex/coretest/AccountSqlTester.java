@@ -306,6 +306,22 @@ public class AccountSqlTester {
         System.out.println(sql);
     }
 
+    @Test
+    public void testConvert() {
+        IDialect dialect = new CommonsDialectImpl();
+
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(ACCOUNT.ALL_COLUMNS, convert("NVARCHAR(30)", "GETDATE()", "126").as("result"))
+                .from(ACCOUNT)
+                .and(ACCOUNT.USER_NAME.like("michael"))
+                .and(convert("NVARCHAR(30)", "GETDATE()", "126").in(
+                        select(ACCOUNT.ID).from(ACCOUNT).where(ACCOUNT.ID.ge(100)))
+                );
+
+        String sql = dialect.forSelectByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
 
     @Test
     public void testLimitOffset() {

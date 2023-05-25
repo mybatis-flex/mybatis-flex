@@ -65,6 +65,11 @@ public class QueryMethods {
         return new DistinctQueryColumn(columns);
     }
 
+    //CONVERT ( data_type [ ( length ) ] , expression [ , style ] )
+    public static StringFunctionQueryColumn convert(String... params) {
+        return new StringFunctionQueryColumn("CONVERT", params);
+    }
+
     public static StringQueryColumn column(String column) {
         return new StringQueryColumn(column);
     }
@@ -85,7 +90,7 @@ public class QueryMethods {
         return new OperatorQueryCondition(" NOT ", childCondition);
     }
 
-    public static QueryCondition noCondition(){
+    public static QueryCondition noCondition() {
         return QueryCondition.createEmpty();
     }
 
@@ -110,7 +115,7 @@ public class QueryMethods {
         return select(count("1"));
     }
 
-    public static RawValue raw(String raw){
+    public static RawValue raw(String raw) {
         return new RawValue(raw);
     }
 
