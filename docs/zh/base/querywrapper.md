@@ -119,6 +119,68 @@ SELECT id, user_name, MAX(birthday), AVG(sex) AS sex_avg
 FROM tb_account
 ```
 
+## select case...when
+
+**示例 1：**
+
+```java
+QueryWrapper wrapper = QueryWrapper.create()
+        .select(ACCOUNT.ID
+            ,case_().when(ACCOUNT.ID.ge(2)).then("x2")
+            .when(ACCOUNT.ID.ge(1)).then("x1")
+            .else_("x100")
+            .end().as("xName")
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+ SELECT `id`, 
+        (CASE WHEN `id` >=  2  THEN 'x2' 
+            WHEN `id` >=  1  THEN 'x1' 
+            ELSE 'x100' 
+            END) AS `xName` 
+ FROM `tb_account`
+```
+
+SQL 执行的结果如下：
+
+```
+|id     |xName     |
+|1      |x1        |
+|2      |x2        |
+```
+
+
+**示例 2：**
+
+```java
+QueryWrapper queryWrapper = QueryWrapper.create()
+        .select(ACCOUNT.ALL_COLUMNS,
+        case_(ACCOUNT.ID)
+        .when(100).then(100)
+        .when(200).then(200)
+        .else_(300).end().as("result"))
+        .from(ACCOUNT)
+        .where(ACCOUNT.USER_NAME.like("michael"));
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT *, 
+       (CASE `id` 
+           WHEN 100 THEN 100 
+           WHEN 200 THEN 200 
+           ELSE 300 END) AS `result` 
+FROM `tb_account` WHERE `user_name` LIKE  ?
+```
+
+::: tip 提示
+在以上示例中，由于 `case` 和 `else` 属于 Java 关键字，无法使用其进行方法命名，因此会添加一个下划线小尾巴 `"_"` 变成 `case_` 和 `else_`，这是无奈之举。
+在以后的 QueryWrapper 构建中，遇到 java 关键字也会采用类型的解决方法。
+:::
+
 ## where
 
 ```java
@@ -300,6 +362,11 @@ ORDER BY age ASC, user_name DESC NULLS LAST
 ```
 
 ## hint
+
+Hint 是数据库厂商（比如 Oracle、MySQL、达梦等）提供的一种 SQL语法，它允许用户在 SQL 语句中插入相关的语法，从而影响 SQL 的执行方式。
+它是一种【非常规】的直接影响优化器、指定执行计划的 SQL 优化手段。
+
+
 
 ```java
 QueryWrapper queryWrapper=QueryWrapper.create()

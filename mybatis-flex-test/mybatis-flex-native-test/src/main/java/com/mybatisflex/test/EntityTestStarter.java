@@ -63,7 +63,8 @@ public class EntityTestStarter {
         QueryWrapper wrapper = QueryWrapper.create().select(ACCOUNT.ID
                 , case_().when(ACCOUNT.ID.ge(2)).then("x2")
                         .when(ACCOUNT.ID.ge(1)).then("x1")
-                        .else_("x100").end().as("xName")
+                        .else_("x100")
+                        .end().as("xName")
         ).from(ACCOUNT);
 
         List<Row> rowList = Db.selectListByQuery(wrapper);
