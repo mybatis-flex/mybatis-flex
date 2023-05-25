@@ -188,7 +188,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
                 TypeElement classElement = (TypeElement) entityClassElement;
                 do {
-                    fillPropertyAndColumns(propertyAndColumns, defaultColumns, classElement);
+                    fillPropertyAndColumns(propertyAndColumns, defaultColumns, classElement, (table == null || table.camelToUnderline()));
                     classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
                 } while (classElement != null);
 
@@ -233,7 +233,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
     }
 
 
-    private void fillPropertyAndColumns(Map<String, String> propertyAndColumns, List<String> defaultColumns, TypeElement classElement) {
+    private void fillPropertyAndColumns(Map<String, String> propertyAndColumns, List<String> defaultColumns, TypeElement classElement, boolean camelToUnderline) {
         for (Element fieldElement : classElement.getEnclosedElements()) {
 
             //all fields
@@ -286,7 +286,8 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 }
 
 
-                String columnName = column != null && column.value().trim().length() > 0 ? column.value() : camelToUnderline(fieldElement.toString());
+                String columnName = column != null && column.value().trim().length() > 0 ? column.value() :
+                        (camelToUnderline ? camelToUnderline(fieldElement.toString()) : fieldElement.toString());
                 propertyAndColumns.put(fieldElement.toString(), columnName);
 
                 if (column == null || (!column.isLarge() && !column.isLogicDelete())) {
