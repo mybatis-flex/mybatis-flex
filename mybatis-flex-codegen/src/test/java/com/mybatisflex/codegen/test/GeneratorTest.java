@@ -17,79 +17,17 @@
 package com.mybatisflex.codegen.test;
 
 import com.mybatisflex.codegen.Generator;
-import com.mybatisflex.codegen.config.ColumnConfig;
 import com.mybatisflex.codegen.config.GlobalConfig;
-import com.mybatisflex.codegen.config.TableConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Test;
 
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class GeneratorTest {
 
 
-    //   @Test
-    public void testGenerator() {
-        //配置数据源
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/jbootadmin?characterEncoding=utf-8");
-        //        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/hh-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowMultiQueries=true");
-        dataSource.setUsername("root");
-        dataSource.setPassword("123456");
-
-        //        JdbcTypeMapping.registerMapping(BigInteger.class, Long.class);
-        //        JdbcTypeMapping.registerMapping(Integer.class, Long.class);
-
-        GlobalConfig globalConfig = new GlobalConfig();
-
-        //设置生成文件目录和根包
-        globalConfig.getPackageConfig()
-                .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
-                .setBasePackage("com.test");
-
-        //设置只生成哪些表
-        globalConfig.getStrategyConfig()
-                .setGenerateTable("account", "account_session");
-
-        //设置生成 entity
-        globalConfig.enableEntity()
-                .setWithLombok(true)
-                .setClassPrefix("My")
-                .setClassSuffix("Entity")
-                .setSupperClass(BaseEntity.class);
-
-        //设置生成 tableDef
-        globalConfig.enableTableDef();
-
-        //设置生成 mapper
-        globalConfig.enableMapper()
-                .setClassPrefix("Flex")
-                .setClassSuffix("Dao")
-                .setSupperClass(MyBaseMapper.class);
-
-        TableConfig tableConfig = new TableConfig();
-        tableConfig.setTableName("account");
-        tableConfig.setUpdateListenerClass(MyUpdateListener.class);
-        globalConfig.getStrategyConfig().setTableConfig(tableConfig);
-
-
-        //可以单独配置某个列
-        ColumnConfig columnConfig = new ColumnConfig();
-        columnConfig.setColumnName("tenant_id");
-        columnConfig.setLarge(true);
-        columnConfig.setVersion(true);
-        globalConfig.getStrategyConfig().setColumnConfig("account", columnConfig);
-
-
-        //通过 datasource 和 globalConfig 创建代码生成器
-        Generator generator = new Generator(dataSource, globalConfig);
-
-        //开始生成代码
-        generator.generate();
-    }
-
-    @Test
-    public void testCodeGen() {
+    //@Test
+    public void testCodeGen1() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
@@ -99,32 +37,68 @@ public class GeneratorTest {
         GlobalConfig globalConfig = new GlobalConfig();
 
         //用户信息表，用于存放用户信息。 -> 用户信息
-        Function<String, String> tableFormat = (e) -> e.split("，")[0].replace("表", "");
-        //包注释生成
-        Function<String, String> packageFormat = (e) -> {
-            String[] s = e.split("\\.");
-            switch (s[s.length - 1]) {
-                case "entity":
-                    return "实体类 软件包。";
-                case "mapper":
-                    return "映射层 软件包。";
-                case "service":
-                    return "服务层 软件包。";
-                case "impl":
-                    return "服务层实现 软件包。";
-                case "controller":
-                    return "控制层 软件包。";
-                default:
-                    return e;
-            }
-        };
+        UnaryOperator<String> tableFormat = (e) -> e.split("，")[0].replace("表", "");
 
+        //设置注解生成配置
+        globalConfig.setAuthor("Michael Yang");
+        globalConfig.setTableCommentFormat(tableFormat);
+
+        //设置生成文件目录和根包
+        globalConfig.setSourceDir(System.getProperty("user.dir") + "/src/test/java");
+        globalConfig.setMapperXmlPath(System.getProperty("user.dir") + "/src/test/java/resources/mapper");
+        globalConfig.setBasePackage("com.test");
+
+        //设置表前缀和只生成哪些表
+        globalConfig.setTablePrefix("sys_");
+        globalConfig.setGenerateTable("sys_user");
+
+        //设置模板路径
+        globalConfig.setEntityTemplatePath("D:\\Documents\\配置文件\\entity.tpl");
+
+        //配置生成 entity
+        globalConfig.setEntityGenerateEnable(true);
+        globalConfig.setEntityWithLombok(true);
+        globalConfig.setEntitySupperClass(BaseEntity.class);
+
+        //配置生成 mapper
+        globalConfig.setMapperGenerateEnable(true);
+        //配置生成 service
+        globalConfig.setServiceGenerateEnable(true);
+        //配置生成 serviceImpl
+        globalConfig.setServiceImplGenerateEnable(true);
+        //配置生成 controller
+        globalConfig.setControllerGenerateEnable(true);
+        //配置生成 tableDef
+        globalConfig.setTableDefGenerateEnable(true);
+        //配置生成 mapperXml
+        globalConfig.setMapperXmlGenerateEnable(true);
+        //配置生成 package-info.java
+        globalConfig.setPackageInfoGenerateEnable(true);
+
+        //通过 datasource 和 globalConfig 创建代码生成器
+        Generator generator = new Generator(dataSource, globalConfig);
+
+        //开始生成代码
+        generator.generate();
+    }
+
+    @Test
+    public void testCodeGen2() {
+        //配置数据源
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
+        dataSource.setUsername("root");
+        dataSource.setPassword("12345678");
+
+        GlobalConfig globalConfig = new GlobalConfig();
+
+        //用户信息表，用于存放用户信息。 -> 用户信息
+        UnaryOperator<String> tableFormat = (e) -> e.split("，")[0].replace("表", "");
 
         //设置注解生成配置
         globalConfig.getJavadocConfig()
                 .setAuthor("王帅")
-                .setTableCommentFormat(tableFormat)
-                .setPackageCommentFormat(packageFormat);
+                .setTableCommentFormat(tableFormat);
 
         //设置生成文件目录和根包
         globalConfig.getPackageConfig()
@@ -137,11 +111,13 @@ public class GeneratorTest {
                 .setTablePrefix("sys_")
                 .setGenerateTable("sys_user");
 
+        //设置模板路径
         globalConfig.getTemplateConfig()
                .setEntity("D:\\Documents\\配置文件\\entity.tpl");
 
         //配置生成 entity
         globalConfig.enableEntity()
+                .setOverwriteEnable(true)
                 .setWithLombok(true)
                 .setSupperClass(BaseEntity.class);
 
@@ -154,9 +130,9 @@ public class GeneratorTest {
         //配置生成 controller
         globalConfig.enableController();
         //配置生成 tableDef
-        //globalConfig.enableTableDef();
+        globalConfig.enableTableDef();
         //配置生成 mapperXml
-        //globalConfig.enableMapperXml();
+        globalConfig.enableMapperXml();
         //配置生成 package-info.java
         globalConfig.enablePackageInfo();
 
