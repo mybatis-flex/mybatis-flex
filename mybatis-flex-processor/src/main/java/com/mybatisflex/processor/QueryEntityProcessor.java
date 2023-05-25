@@ -105,7 +105,6 @@ public class QueryEntityProcessor extends AbstractProcessor {
     private static final String allInTableEntityClassTemplate = "\n" +
             "    public static class @entityClassTableDef extends TableDef {\n" +
             "\n" +
-            "@selfDef" +
             "@queryColumns" +
             "@defaultColumns" +
             "@allColumns" +
