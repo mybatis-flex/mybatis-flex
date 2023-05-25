@@ -312,35 +312,14 @@ public class EntitySqlProvider {
         for (TableInfo tableInfo : tableInfos) {
             tableInfo.appendConditions(null, queryWrapper);
 
-            Object[] values = CPI.getValueArray(queryWrapper);
-            ProviderUtil.setSqlArgs(params, values);
-
             CPI.setSelectColumnsIfNecessary(queryWrapper, tableInfo.getDefaultQueryColumn());
             CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
         }
 
+        Object[] values = CPI.getValueArray(queryWrapper);
+        ProviderUtil.setSqlArgs(params, values);
+
         return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
-    }
-
-
-    private static List<TableInfo> getTableInfos(ProviderContext context, QueryWrapper queryWrapper) {
-        List<TableInfo> tableInfos;
-        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
-        if (CollectionUtil.isNotEmpty(queryTables)) {
-            tableInfos = new ArrayList<>();
-            for (QueryTable queryTable : queryTables) {
-                String tableName = queryTable.getName();
-                if (StringUtil.isNotBlank(tableName)) {
-                    TableInfo tableInfo = TableInfoFactory.ofTableName(tableName);
-                    if (tableInfo != null) {
-                        tableInfos.add(tableInfo);
-                    }
-                }
-            }
-        } else {
-            tableInfos = Collections.singletonList(ProviderUtil.getTableInfo(context));
-        }
-        return tableInfos;
     }
 
     /**
@@ -361,14 +340,38 @@ public class EntitySqlProvider {
 
         for (TableInfo tableInfo : tableInfos) {
             tableInfo.appendConditions(null, queryWrapper);
-
-            Object[] values = CPI.getValueArray(queryWrapper);
-            ProviderUtil.setSqlArgs(params, values);
-
             CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
         }
 
+        Object[] values = CPI.getValueArray(queryWrapper);
+        ProviderUtil.setSqlArgs(params, values);
+
         return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
+    }
+
+
+
+
+
+
+    private static List<TableInfo> getTableInfos(ProviderContext context, QueryWrapper queryWrapper) {
+        List<TableInfo> tableInfos;
+        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        if (CollectionUtil.isNotEmpty(queryTables)) {
+            tableInfos = new ArrayList<>();
+            for (QueryTable queryTable : queryTables) {
+                String tableName = queryTable.getName();
+                if (StringUtil.isNotBlank(tableName)) {
+                    TableInfo tableInfo = TableInfoFactory.ofTableName(tableName);
+                    if (tableInfo != null) {
+                        tableInfos.add(tableInfo);
+                    }
+                }
+            }
+        } else {
+            tableInfos = Collections.singletonList(ProviderUtil.getTableInfo(context));
+        }
+        return tableInfos;
     }
 
 
