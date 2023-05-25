@@ -1,706 +1,1270 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.codegen.config;
 
-import com.mybatisflex.codegen.template.EnjoyTemplate;
 import com.mybatisflex.codegen.template.ITemplate;
-import com.mybatisflex.core.BaseMapper;
-import com.mybatisflex.core.util.StringUtil;
-import com.mybatisflex.core.service.IService;
-import com.mybatisflex.spring.service.impl.ServiceImpl;
 
-import java.io.Serializable;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
+/**
+ * 代码生成全局配置类。
+ *
+ * @author Michael Yang
+ * @author 王帅
+ * @since 2023-05-15
+ */
+@SuppressWarnings("unused")
 public class GlobalConfig {
 
-    //代码生成目录
-    private String sourceDir;
+    // === 必须配置 ===
 
-    //根包名
-    private String basePackage = "com.mybatisflex";
+    private final JavadocConfig javadocConfig;
+    private final PackageConfig packageConfig;
+    private final StrategyConfig strategyConfig;
+    private final TemplateConfig templateConfig;
 
-    //entity 的包名
-    private String entityPackage;
+    // === 可选配置 ===
 
-    //entity 类的前缀
-    private String entityClassPrefix;
+    private EntityConfig entityConfig;
+    private MapperConfig mapperConfig;
+    private ServiceConfig serviceConfig;
+    private ServiceImplConfig serviceImplConfig;
+    private ControllerConfig controllerConfig;
+    private TableDefConfig tableDefConfig;
+    private MapperXmlConfig mapperXmlConfig;
 
-    //entity 类的后缀
-    private String entityClassSuffix;
+    // === 其他配置 ===
 
-    //entity 类的父类，可以自定义一些 BaseEntity 类
-    private Class<?> entitySupperClass;
+    private Map<String, Object> customConfig;
 
-    //entity 默认实现的接口
-    private Class<?>[] entityInterfaces = {Serializable.class};
+    // === 是否启用生成 ===
 
-    //entity 是否使用 Lombok
-    private boolean entityWithLombok = false;
+    private boolean entityGenerateEnable;
+    private boolean mapperGenerateEnable;
+    private boolean serviceGenerateEnable;
+    private boolean serviceImplGenerateEnable;
+    private boolean controllerGenerateEnable;
+    private boolean tableDefGenerateEnable;
+    private boolean mapperXmlGenerateEnable;
+    private boolean packageInfoGenerateEnable;
 
-    private boolean tableDefGenerateEnable = false;
+    public GlobalConfig() {
+        this.javadocConfig = new JavadocConfig();
+        this.packageConfig = new PackageConfig();
+        this.strategyConfig = new StrategyConfig();
+        this.templateConfig = new TemplateConfig();
+    }
 
-    //tableDef 的包名
-    private String tableDefPackage;
+    // === 分类配置 ===
 
-    //tableDef 类的前缀
-    private String tableDefClassPrefix;
+    public JavadocConfig getJavadocConfig() {
+        return javadocConfig;
+    }
 
-    //tableDef 类的后缀
-    private String tableDefClassSuffix = "Def";
+    public PackageConfig getPackageConfig() {
+        return packageConfig;
+    }
 
-    //是否生成 mapper 类
-    private boolean mapperGenerateEnable = false;
+    public StrategyConfig getStrategyConfig() {
+        return strategyConfig;
+    }
 
-    //是否覆盖已经存在的 mapper
-    private boolean mapperOverwriteEnable = false;
+    public TemplateConfig getTemplateConfig() {
+        return templateConfig;
+    }
 
-    //mapper 类的前缀
-    private String mapperClassPrefix;
+    public EntityConfig getEntityConfig() {
+        if (entityConfig == null) {
+            entityConfig = new EntityConfig();
+        }
+        return entityConfig;
+    }
 
-    //mapper 类的后缀
-    private String mapperClassSuffix = "Mapper";
+    public MapperConfig getMapperConfig() {
+        if (mapperConfig == null) {
+            mapperConfig = new MapperConfig();
+        }
+        return mapperConfig;
+    }
 
-    //mapper 的包名
-    private String mapperPackage;
+    public ServiceConfig getServiceConfig() {
+        if (serviceConfig == null) {
+            serviceConfig = new ServiceConfig();
+        }
+        return serviceConfig;
+    }
 
-    //自定义 mapper 的父类
-    private Class<?> mapperSupperClass = BaseMapper.class;
+    public ServiceImplConfig getServiceImplConfig() {
+        if (serviceImplConfig == null) {
+            serviceImplConfig = new ServiceImplConfig();
+        }
+        return serviceImplConfig;
+    }
 
-    //是否生成 service 类
-    private boolean serviceGenerateEnable = false;
+    public ControllerConfig getControllerConfig() {
+        if (controllerConfig == null) {
+            controllerConfig = new ControllerConfig();
+        }
+        return controllerConfig;
+    }
 
-    //是否覆盖已经存在的 service
-    private boolean serviceOverwriteEnable = false;
+    public TableDefConfig getTableDefConfig() {
+        if (tableDefConfig == null) {
+            tableDefConfig = new TableDefConfig();
+        }
+        return tableDefConfig;
+    }
 
-    //service 类的前缀
-    private String serviceClassPrefix;
+    public MapperXmlConfig getMapperXmlConfig() {
+        if (mapperXmlConfig == null) {
+            mapperXmlConfig = new MapperXmlConfig();
+        }
+        return mapperXmlConfig;
+    }
 
-    //service 类的后缀
-    private String serviceClassSuffix = "Service";
+    // === 启用配置 ===
 
-    //service 的包名
-    private String servicePackage;
+    public EntityConfig enableEntity() {
+        entityGenerateEnable = true;
+        return getEntityConfig();
+    }
 
-    //自定义 service 的父类
-    private Class<?> serviceSupperClass = IService.class;
+    public MapperConfig enableMapper() {
+        mapperGenerateEnable = true;
+        return getMapperConfig();
+    }
 
-    //是否生成 serviceImpl 类
-    private boolean serviceImplGenerateEnable = false;
+    public ServiceConfig enableService() {
+        serviceGenerateEnable = true;
+        return getServiceConfig();
+    }
 
-    //是否覆盖已经存在的 serviceImpl
-    private boolean serviceImplOverwriteEnable = false;
+    public ServiceImplConfig enableServiceImpl() {
+        serviceImplGenerateEnable = true;
+        return getServiceImplConfig();
+    }
 
-    //serviceImpl 类的前缀
-    private String serviceImplClassPrefix;
+    public ControllerConfig enableController() {
+        controllerGenerateEnable = true;
+        return getControllerConfig();
+    }
 
-    //serviceImpl 类的后缀
-    private String serviceImplClassSuffix = "ServiceImpl";
+    public TableDefConfig enableTableDef() {
+        tableDefGenerateEnable = true;
+        return getTableDefConfig();
+    }
 
-    //serviceImpl 的包名
-    private String serviceImplPackage;
+    public MapperXmlConfig enableMapperXml() {
+        mapperXmlGenerateEnable = true;
+        return getMapperXmlConfig();
+    }
 
-    //自定义 serviceImpl 的父类
-    private Class<?> serviceImplSupperClass = ServiceImpl.class;
+    public void enablePackageInfo() {
+        packageInfoGenerateEnable = true;
+    }
 
-    //是否生成 controller 类
-    private boolean controllerGenerateEnable = false;
+    // === 禁用配置 ===
 
-    //是否覆盖已经存在的 controller
-    private boolean controllerOverwriteEnable = false;
+    public void disableEntity() {
+        entityGenerateEnable = false;
+    }
 
-    //controller 类的前缀
-    private String controllerClassPrefix;
+    public void disableMapper() {
+        mapperGenerateEnable = false;
+    }
 
-    //controller 类的后缀
-    private String controllerClassSuffix = "Controller";
+    public void disableService() {
+        serviceGenerateEnable = false;
+    }
 
-    //controller 的包名
-    private String controllerPackage;
+    public void disableServiceImpl() {
+        serviceImplGenerateEnable = false;
+    }
 
-    //自定义 controller 的父类
-    private Class<?> controllerSupperClass;
+    public void disableController() {
+        controllerGenerateEnable = false;
+    }
 
-    //rest 风格的 Controller
-    private boolean restStyleController = true;
+    public void disableTableDef() {
+        tableDefGenerateEnable = false;
+    }
 
-    //数据库表前缀，多个前缀用英文逗号（,） 隔开
-    private String tablePrefix;
+    public void disableMapperXml() {
+        mapperXmlGenerateEnable = false;
+    }
 
-    //逻辑删除的默认字段名称
-    private String logicDeleteColumn;
+    public void disablePackageInfo() {
+        packageInfoGenerateEnable = false;
+    }
 
-    //乐观锁的字段名称
-    private String versionColumn;
+    // === 自定义配置 ===
 
-    //是否生成视图映射
-    private boolean generateForView = false;
+    public Object getCustomConfig(String key) {
+        if (customConfig != null) {
+            return customConfig.get(key);
+        }
+        return null;
+    }
 
-    //单独为某张表添加独立的配置
-    private Map<String, TableConfig> tableConfigMap;
+    public void setCustomConfig(String key, Object value) {
+        if (customConfig == null) {
+            customConfig = new HashMap<>();
+        }
+        customConfig.put(key, value);
+    }
 
-    //设置某个列的全局配置
-    private Map<String, ColumnConfig> defaultColumnConfigMap;
+    // === 分项配置 ===
 
-    //生成哪些表，白名单
-    private Set<String> generateTables;
+    /**
+     * @see JavadocConfig#getAuthor()
+     */
+    public String getAuthor() {
+        return getJavadocConfig().getAuthor();
+    }
 
-    //不生成哪些表，黑名单
-    private Set<String> unGenerateTables;
+    /**
+     * @see JavadocConfig#setAuthor(String)
+     */
+    public void setAuthor(String author) {
+        getJavadocConfig().setAuthor(author);
+    }
 
-    //使用哪个模板引擎来生成代码
-    protected ITemplate templateEngine;
+    /**
+     * @see JavadocConfig#getSince()
+     */
+    public String getSince() {
+        return getJavadocConfig().getSince();
+    }
 
-    //其他自定义配置
-    private Map<String, Object> others;
+    /**
+     * @see JavadocConfig#setSince(String)
+     */
+    public void setSince(String since) {
+        getJavadocConfig().setSince(since);
+    }
 
+    /**
+     * @see JavadocConfig#setSince(Supplier)
+     */
+    public void setSince(Supplier<String> since) {
+        getJavadocConfig().setSince(since);
+    }
 
+    /**
+     * @see JavadocConfig#getTableCommentFormat()
+     */
+    public Function<String, String> getTableCommentFormat() {
+        return getJavadocConfig().getTableCommentFormat();
+    }
+
+    /**
+     * @see JavadocConfig#setTableCommentFormat(UnaryOperator)
+     */
+    public void setTableCommentFormat(UnaryOperator<String> tableCommentFormat) {
+        getJavadocConfig().setTableCommentFormat(tableCommentFormat);
+    }
+
+    /**
+     * @see JavadocConfig#getEntityPackage()
+     */
+    public String getEntityPackageComment() {
+        return getJavadocConfig().getEntityPackage();
+    }
+
+    /**
+     * @see JavadocConfig#setEntityPackage(String)
+     */
+    public void setEntityPackageComment(String entityPackageComment) {
+        getJavadocConfig().setEntityPackage(entityPackageComment);
+    }
+
+    /**
+     * @see JavadocConfig#getMapperPackage()
+     */
+    public String getMapperPackageComment() {
+        return getJavadocConfig().getMapperPackage();
+    }
+
+    /**
+     * @see JavadocConfig#setMapperPackage(String)
+     */
+    public void setMapperPackageComment(String mapperPackageComment) {
+        getJavadocConfig().setMapperPackage(mapperPackageComment);
+    }
+
+    /**
+     * @see JavadocConfig#getServicePackage()
+     */
+    public String getServicePackageComment() {
+        return getJavadocConfig().getServicePackage();
+    }
+
+    /**
+     * @see JavadocConfig#setServicePackage(String)
+     */
+    public void setServicePackageComment(String servicePackageComment) {
+        getJavadocConfig().setServicePackage(servicePackageComment);
+    }
+
+    /**
+     * @see JavadocConfig#getServiceImplPackage()
+     */
+    public String getServiceImplPackageComment() {
+        return getJavadocConfig().getServiceImplPackage();
+    }
+
+    /**
+     * @see JavadocConfig#setServiceImplPackage(String)
+     */
+    public void setServiceImplPackageComment(String serviceImplPackageComment) {
+        getJavadocConfig().setServiceImplPackage(serviceImplPackageComment);
+    }
+
+    /**
+     * @see JavadocConfig#getControllerPackage()
+     */
+    public String getControllerPackageComment() {
+        return getJavadocConfig().getControllerPackage();
+    }
+
+    /**
+     * @see JavadocConfig#setControllerPackage(String)
+     */
+    public void setControllerPackageComment(String controllerPackageComment) {
+        getJavadocConfig().setControllerPackage(controllerPackageComment);
+    }
+
+    /**
+     * @see JavadocConfig#getTableDefPackage()
+     */
+    public String getTableDefPackageComment() {
+        return getJavadocConfig().getTableDefPackage();
+    }
+
+    /**
+     * @see JavadocConfig#setTableDefPackage(String)
+     */
+    public void setTableDefPackageComment(String tableDefPackageComment) {
+        getJavadocConfig().setTableDefPackage(tableDefPackageComment);
+    }
+
+    /**
+     * @see PackageConfig#getSourceDir()
+     */
     public String getSourceDir() {
-        if (sourceDir == null || sourceDir.trim().length() == 0) {
-            return System.getProperty("user.dir") + "/src/main/java";
-        }
-        return sourceDir;
+        return getPackageConfig().getSourceDir();
     }
 
+    /**
+     * @see PackageConfig#setSourceDir(String)
+     */
     public void setSourceDir(String sourceDir) {
-        this.sourceDir = StringUtil.trimOrNull(sourceDir);
+        getPackageConfig().setSourceDir(sourceDir);
     }
 
+    /**
+     * @see PackageConfig#getBasePackage()
+     */
     public String getBasePackage() {
-        return basePackage;
+        return getPackageConfig().getBasePackage();
     }
 
+    /**
+     * @see PackageConfig#setBasePackage(String)
+     */
     public void setBasePackage(String basePackage) {
-        this.basePackage = StringUtil.trimOrNull(basePackage);
+        getPackageConfig().setBasePackage(basePackage);
     }
 
+    /**
+     * @see PackageConfig#getEntityPackage()
+     */
     public String getEntityPackage() {
-        if (StringUtil.isBlank(entityPackage)) {
-            entityPackage = basePackage + ".entity";
-        }
-        return entityPackage;
+        return getPackageConfig().getEntityPackage();
     }
 
+    /**
+     * @see PackageConfig#setEntityPackage(String)
+     */
     public void setEntityPackage(String entityPackage) {
-        this.entityPackage = StringUtil.trimOrNull(entityPackage);
+        getPackageConfig().setEntityPackage(entityPackage);
     }
 
-    public String getEntityClassPrefix() {
-        if (StringUtil.isBlank(entityClassPrefix)) {
-            return "";
-        }
-        return entityClassPrefix;
+    /**
+     * @see PackageConfig#getMapperPackage()
+     */
+    public String getMapperPackage() {
+        return getPackageConfig().getMapperPackage();
     }
 
-    public void setEntityClassPrefix(String entityClassPrefix) {
-        this.entityClassPrefix = StringUtil.trimOrNull(entityClassPrefix);
+    /**
+     * @see PackageConfig#setMapperPackage(String)
+     */
+    public void setMapperPackage(String mapperPackage) {
+        getPackageConfig().setMapperPackage(mapperPackage);
     }
 
-    public String getEntityClassSuffix() {
-        if (StringUtil.isBlank(entityClassSuffix)) {
-            return "";
-        }
-        return entityClassSuffix;
+    /**
+     * @see PackageConfig#getServicePackage()
+     */
+    public String getServicePackage() {
+        return getPackageConfig().getServicePackage();
     }
 
-    public void setEntityClassSuffix(String entityClassSuffix) {
-        this.entityClassSuffix = StringUtil.trimOrNull(entityClassSuffix);
+    /**
+     * @see PackageConfig#setServicePackage(String)
+     */
+    public void setServicePackage(String servicePackage) {
+        getPackageConfig().setServicePackage(servicePackage);
     }
 
-    public Class<?> getEntitySupperClass() {
-        return entitySupperClass;
+    /**
+     * @see PackageConfig#getServiceImplPackage()
+     */
+    public String getServiceImplPackage() {
+        return getPackageConfig().getServiceImplPackage();
     }
 
-    public void setEntitySupperClass(Class<?> entitySupperClass) {
-        this.entitySupperClass = entitySupperClass;
+    /**
+     * @see PackageConfig#setServiceImplPackage(String)
+     */
+    public void setServiceImplPackage(String serviceImplPackage) {
+        getPackageConfig().setServiceImplPackage(serviceImplPackage);
     }
 
-    public Class<?>[] getEntityInterfaces() {
-        return entityInterfaces;
+    /**
+     * @see PackageConfig#getControllerPackage()
+     */
+    public String getControllerPackage() {
+        return getPackageConfig().getControllerPackage();
     }
 
-    public void setEntityInterfaces(Class<?>[] entityInterfaces) {
-        this.entityInterfaces = entityInterfaces;
+    /**
+     * @see PackageConfig#setControllerPackage(String)
+     */
+    public void setControllerPackage(String controllerPackage) {
+        getPackageConfig().setControllerPackage(controllerPackage);
     }
 
-    public boolean isEntityWithLombok() {
-        return entityWithLombok;
-    }
-
-    public void setEntityWithLombok(boolean entityWithLombok) {
-        this.entityWithLombok = entityWithLombok;
-    }
-
-    public boolean isTableDefGenerateEnable() {
-        return tableDefGenerateEnable;
-    }
-
-    public void setTableDefGenerateEnable(boolean tableDefGenerateEnable) {
-        this.tableDefGenerateEnable = tableDefGenerateEnable;
-    }
-
+    /**
+     * @see PackageConfig#getTableDefPackage()
+     */
     public String getTableDefPackage() {
-        if (StringUtil.isBlank(tableDefPackage)) {
-            return getEntityPackage() + ".tables";
-        }
-        return tableDefPackage;
+        return getPackageConfig().getTableDefPackage();
     }
 
+    /**
+     * @see PackageConfig#setTableDefPackage(String)
+     */
     public void setTableDefPackage(String tableDefPackage) {
-        this.tableDefPackage = StringUtil.trimOrNull(tableDefPackage);
+        getPackageConfig().setTableDefPackage(tableDefPackage);
     }
 
-    public String getTableDefClassPrefix() {
-        if (StringUtil.isBlank(tableDefClassPrefix)) {
-            return "";
-        }
-        return tableDefClassPrefix;
+    /**
+     * @see PackageConfig#getMapperXmlPath()
+     */
+    public String getMapperXmlPath() {
+        return getPackageConfig().getMapperXmlPath();
     }
 
-    public void setTableDefClassPrefix(String tableDefClassPrefix) {
-        this.tableDefClassPrefix = StringUtil.trimOrNull(tableDefClassPrefix);
+    /**
+     * @see PackageConfig#setMapperXmlPath(String)
+     */
+    public void setMapperXmlPath(String mapperXmlPath) {
+        getPackageConfig().setMapperXmlPath(mapperXmlPath);
     }
 
-    public String getTableDefClassSuffix() {
-        return tableDefClassSuffix;
+    /**
+     * @see StrategyConfig#getTablePrefix()
+     */
+    public String getTablePrefix() {
+        return getStrategyConfig().getTablePrefix();
     }
 
-    public void setTableDefClassSuffix(String tableDefClassSuffix) {
-        this.tableDefClassSuffix = StringUtil.trimOrNull(tableDefClassSuffix);
+    /**
+     * @see StrategyConfig#setTablePrefix(String)
+     */
+    public void setTablePrefix(String tablePrefix) {
+        getStrategyConfig().setTablePrefix(tablePrefix);
+    }
+
+    /**
+     * @see StrategyConfig#getLogicDeleteColumn()
+     */
+    public String getLogicDeleteColumn() {
+        return getStrategyConfig().getLogicDeleteColumn();
+    }
+
+    /**
+     * @see StrategyConfig#setLogicDeleteColumn(String)
+     */
+    public void setLogicDeleteColumn(String logicDeleteColumn) {
+        getStrategyConfig().setLogicDeleteColumn(logicDeleteColumn);
+    }
+
+    /**
+     * @see StrategyConfig#getVersionColumn()
+     */
+    public String getVersionColumn() {
+        return getStrategyConfig().getVersionColumn();
+    }
+
+    /**
+     * @see StrategyConfig#setVersionColumn(String)
+     */
+    public void setVersionColumn(String versionColumn) {
+        getStrategyConfig().setVersionColumn(versionColumn);
+    }
+
+    /**
+     * @see StrategyConfig#getTableConfigMap()
+     */
+    public Map<String, TableConfig> getTableConfigMap() {
+        return getStrategyConfig().getTableConfigMap();
+    }
+
+    /**
+     * @see StrategyConfig#setTableConfigMap(Map)
+     */
+    public void setTableConfigMap(Map<String, TableConfig> tableConfigMap) {
+        getStrategyConfig().setTableConfigMap(tableConfigMap);
+    }
+
+    /**
+     * @see StrategyConfig#setTableConfig(TableConfig)
+     */
+    public void setTableConfig(TableConfig tableConfig) {
+        getStrategyConfig().setTableConfig(tableConfig);
+    }
+
+    /**
+     * @see StrategyConfig#getTableConfig(String)
+     */
+    public TableConfig getTableConfig(String tableName) {
+        return getStrategyConfig().getTableConfig(tableName);
+    }
+
+    /**
+     * @see StrategyConfig#getColumnConfigMap()
+     */
+    public Map<String, ColumnConfig> getColumnConfigMap() {
+        return getStrategyConfig().getColumnConfigMap();
+    }
+
+    /**
+     * @see StrategyConfig#setColumnConfigMap(Map)
+     */
+    public void setColumnConfigMap(Map<String, ColumnConfig> columnConfigMap) {
+        getStrategyConfig().setColumnConfigMap(columnConfigMap);
+    }
+
+    /**
+     * @see StrategyConfig#setColumnConfig(ColumnConfig)
+     */
+    public void setColumnConfig(ColumnConfig columnConfig) {
+        getStrategyConfig().setColumnConfig(columnConfig);
+    }
+
+    /**
+     * @see StrategyConfig#setColumnConfig(String, ColumnConfig)
+     */
+    public void setColumnConfig(String tableName, ColumnConfig columnConfig) {
+        getStrategyConfig().setColumnConfig(tableName, columnConfig);
+    }
+
+    /**
+     * @see StrategyConfig#getColumnConfig(String, String)
+     */
+    public ColumnConfig getColumnConfig(String tableName, String columnName) {
+        return getStrategyConfig().getColumnConfig(tableName, columnName);
+    }
+
+    /**
+     * @see StrategyConfig#isGenerateForView()
+     */
+    public boolean isGenerateForView() {
+        return getStrategyConfig().isGenerateForView();
+    }
+
+    /**
+     * @see StrategyConfig#setGenerateForView(boolean)
+     */
+    public void setGenerateForView(boolean generateForView) {
+        getStrategyConfig().setGenerateForView(generateForView);
+    }
+
+    /**
+     * @see StrategyConfig#getGenerateTables()
+     */
+    public Set<String> getGenerateTables() {
+        return getStrategyConfig().getGenerateTables();
+    }
+
+    /**
+     * @see StrategyConfig#setGenerateTables(Set)
+     */
+    public void setGenerateTables(Set<String> generateTables) {
+        getStrategyConfig().setGenerateTables(generateTables);
+    }
+
+    /**
+     * @see StrategyConfig#setGenerateTable(String...)
+     */
+    public void setGenerateTable(String... tables) {
+        getStrategyConfig().setGenerateTable(tables);
+    }
+
+    /**
+     * @see StrategyConfig#getUnGenerateTables()
+     */
+    public Set<String> getUnGenerateTables() {
+        return getStrategyConfig().getUnGenerateTables();
+    }
+
+    /**
+     * @see StrategyConfig#setUnGenerateTables(Set)
+     */
+    public void setUnGenerateTables(Set<String> unGenerateTables) {
+        getStrategyConfig().setUnGenerateTables(unGenerateTables);
+    }
+
+    /**
+     * @see StrategyConfig#setUnGenerateTable(String...)
+     */
+    public void setUnGenerateTable(String... tables) {
+        getStrategyConfig().setUnGenerateTable(tables);
+    }
+
+    /**
+     * @see TemplateConfig#getTemplate()
+     */
+    public ITemplate getTemplateEngine() {
+        return getTemplateConfig().getTemplate();
+    }
+
+    /**
+     * @see TemplateConfig#setTemplate(ITemplate)
+     */
+    public void setTemplateEngine(ITemplate template) {
+        getTemplateConfig().setTemplate(template);
+    }
+
+    /**
+     * @see TemplateConfig#getEntity()
+     */
+    public String getEntityTemplatePath() {
+        return getTemplateConfig().getEntity();
+    }
+
+    /**
+     * @see TemplateConfig#setEntity(String)
+     */
+    public void setEntityTemplatePath(String entityTemplatePath) {
+        getTemplateConfig().setEntity(entityTemplatePath);
+    }
+
+    /**
+     * @see TemplateConfig#getMapper()
+     */
+    public String getMapperTemplatePath() {
+        return getTemplateConfig().getMapper();
+    }
+
+    /**
+     * @see TemplateConfig#setMapper(String)
+     */
+    public void setMapperTemplatePath(String mapperTemplatePath) {
+        getTemplateConfig().setMapper(mapperTemplatePath);
+    }
+
+    /**
+     * @see TemplateConfig#getService()
+     */
+    public String getServiceTemplatePath() {
+        return getTemplateConfig().getService();
+    }
+
+    /**
+     * @see TemplateConfig#setService(String)
+     */
+    public void setServiceTemplatePath(String serviceTemplatePath) {
+        getTemplateConfig().setService(serviceTemplatePath);
+    }
+
+    /**
+     * @see TemplateConfig#getServiceImpl()
+     */
+    public String getServiceImplTemplatePath() {
+        return getTemplateConfig().getServiceImpl();
+    }
+
+    /**
+     * @see TemplateConfig#setServiceImpl(String)
+     */
+    public void setServiceImplTemplatePath(String serviceImplTemplatePath) {
+        getTemplateConfig().setServiceImpl(serviceImplTemplatePath);
+    }
+
+    /**
+     * @see TemplateConfig#getController()
+     */
+    public String getControllerTemplatePath() {
+        return getTemplateConfig().getController();
+    }
+
+    /**
+     * @see TemplateConfig#setController(String)
+     */
+    public void setControllerTemplatePath(String controllerTemplatePath) {
+        getTemplateConfig().setController(controllerTemplatePath);
+    }
+
+    /**
+     * @see TemplateConfig#getTableDef()
+     */
+    public String getTableDefTemplatePath() {
+        return getTemplateConfig().getTableDef();
+    }
+
+    /**
+     * @see TemplateConfig#setTableDef(String)
+     */
+    public void setTableDefTemplatePath(String tableDefTemplatePath) {
+        getTemplateConfig().setTableDef(tableDefTemplatePath);
+    }
+
+    /**
+     * @see TemplateConfig#getMapperXml()
+     */
+    public String getMapperXmlTemplatePath() {
+        return getTemplateConfig().getMapperXml();
+    }
+
+    /**
+     * @see TemplateConfig#setMapperXml(String)
+     */
+    public void setMapperXmlTemplatePath(String mapperXmlTemplatePath) {
+        getTemplateConfig().setMapperXml(mapperXmlTemplatePath);
+    }
+
+    public boolean isEntityGenerateEnable() {
+        return entityGenerateEnable;
+    }
+
+    /**
+     * @see #enableEntity()
+     * @see #disableEntity()
+     */
+    public void setEntityGenerateEnable(boolean entityGenerateEnable) {
+        this.entityGenerateEnable = entityGenerateEnable;
+    }
+
+    /**
+     * @see EntityConfig#isOverwriteEnable()
+     */
+    public boolean isEntityOverwriteEnable() {
+        return getEntityConfig().isOverwriteEnable();
+    }
+
+    /**
+     * @see EntityConfig#setOverwriteEnable(boolean)
+     */
+    public void setEntityOverwriteEnable(boolean entityOverwriteEnable) {
+        getEntityConfig().setOverwriteEnable(entityOverwriteEnable);
+    }
+
+    /**
+     * @see EntityConfig#getClassPrefix()
+     */
+    public String getEntityClassPrefix() {
+        return getEntityConfig().getClassPrefix();
+    }
+
+    /**
+     * @see EntityConfig#setClassPrefix(String)
+     */
+    public void setEntityClassPrefix(String entityClassPrefix) {
+        getEntityConfig().setClassPrefix(entityClassPrefix);
+    }
+
+    /**
+     * @see EntityConfig#getClassSuffix()
+     */
+    public String getEntityClassSuffix() {
+        return getEntityConfig().getClassSuffix();
+    }
+
+    /**
+     * @see EntityConfig#setClassSuffix(String)
+     */
+    public void setEntityClassSuffix(String entityClassSuffix) {
+        getEntityConfig().setClassSuffix(entityClassSuffix);
+    }
+
+    /**
+     * @see EntityConfig#getSupperClass()
+     */
+    public Class<?> getEntitySupperClass() {
+        return getEntityConfig().getSupperClass();
+    }
+
+    /**
+     * @see EntityConfig#setSupperClass(Class)
+     */
+    public void setEntitySupperClass(Class<?> entitySupperClass) {
+        getEntityConfig().setSupperClass(entitySupperClass);
+    }
+
+    /**
+     * @see EntityConfig#getImplInterfaces()
+     */
+    public Class<?>[] getEntityInterfaces() {
+        return getEntityConfig().getImplInterfaces();
+    }
+
+    /**
+     * @see EntityConfig#setImplInterfaces(Class[])
+     */
+    public void setEntityInterfaces(Class<?>[] entityInterfaces) {
+        getEntityConfig().setImplInterfaces(entityInterfaces);
+    }
+
+    /**
+     * @see EntityConfig#isWithLombok()
+     */
+    public boolean isEntityWithLombok() {
+        return getEntityConfig().isWithLombok();
+    }
+
+    /**
+     * @see EntityConfig#setWithLombok(boolean)
+     */
+    public void setEntityWithLombok(boolean entityWithLombok) {
+        getEntityConfig().setWithLombok(entityWithLombok);
     }
 
     public boolean isMapperGenerateEnable() {
         return mapperGenerateEnable;
     }
 
+    /**
+     * @see #enableMapper()
+     * @see #disableMapper()
+     */
     public void setMapperGenerateEnable(boolean mapperGenerateEnable) {
         this.mapperGenerateEnable = mapperGenerateEnable;
     }
 
+    /**
+     * @see MapperConfig#isOverwriteEnable()
+     */
     public boolean isMapperOverwriteEnable() {
-        return mapperOverwriteEnable;
+        return getMapperConfig().isOverwriteEnable();
     }
 
+    /**
+     * @see MapperConfig#setOverwriteEnable(boolean)
+     */
     public void setMapperOverwriteEnable(boolean mapperOverwriteEnable) {
-        this.mapperOverwriteEnable = mapperOverwriteEnable;
+        getMapperConfig().setOverwriteEnable(mapperOverwriteEnable);
     }
 
+    /**
+     * @see MapperConfig#getClassPrefix()
+     */
     public String getMapperClassPrefix() {
-        if (StringUtil.isBlank(mapperClassPrefix)) {
-            return "";
-        }
-        return mapperClassPrefix;
+        return getMapperConfig().getClassPrefix();
     }
 
+    /**
+     * @see MapperConfig#setClassPrefix(String)
+     */
     public void setMapperClassPrefix(String mapperClassPrefix) {
-        this.mapperClassPrefix = StringUtil.trimOrNull(mapperClassPrefix);
+        getMapperConfig().setClassPrefix(mapperClassPrefix);
     }
 
+    /**
+     * @see MapperConfig#getClassSuffix()
+     */
     public String getMapperClassSuffix() {
-        return mapperClassSuffix;
+        return getMapperConfig().getClassSuffix();
     }
 
+    /**
+     * @see MapperConfig#setClassSuffix(String)
+     */
     public void setMapperClassSuffix(String mapperClassSuffix) {
-        this.mapperClassSuffix = StringUtil.trimOrNull(mapperClassSuffix);
+        getMapperConfig().setClassSuffix(mapperClassSuffix);
     }
 
-    public String getMapperPackage() {
-        if (StringUtil.isBlank(mapperPackage)) {
-            mapperPackage = basePackage + ".mapper";
-        }
-        return mapperPackage;
-    }
-
-    public void setMapperPackage(String mapperPackage) {
-        this.mapperPackage = StringUtil.trimOrNull(mapperPackage);
-    }
-
+    /**
+     * @see MapperConfig#getSupperClass()
+     */
     public Class<?> getMapperSupperClass() {
-        return mapperSupperClass;
+        return getMapperConfig().getSupperClass();
     }
 
+    /**
+     * @see MapperConfig#setSupperClass(Class)
+     */
     public void setMapperSupperClass(Class<?> mapperSupperClass) {
-        this.mapperSupperClass = mapperSupperClass;
+        getMapperConfig().setSupperClass(mapperSupperClass);
     }
 
     public boolean isServiceGenerateEnable() {
         return serviceGenerateEnable;
     }
 
+    /**
+     * @see #enableService()
+     * @see #disableService()
+     */
     public void setServiceGenerateEnable(boolean serviceGenerateEnable) {
         this.serviceGenerateEnable = serviceGenerateEnable;
     }
 
+    /**
+     * @see ServiceConfig#isOverwriteEnable()
+     */
     public boolean isServiceOverwriteEnable() {
-        return serviceOverwriteEnable;
+        return getServiceConfig().isOverwriteEnable();
     }
 
+    /**
+     * @see ServiceConfig#setOverwriteEnable(boolean)
+     */
     public void setServiceOverwriteEnable(boolean serviceOverwriteEnable) {
-        this.serviceOverwriteEnable = serviceOverwriteEnable;
+        getServiceConfig().setOverwriteEnable(serviceOverwriteEnable);
     }
 
+    /**
+     * @see ServiceConfig#getClassPrefix()
+     */
     public String getServiceClassPrefix() {
-        if (StringUtil.isBlank(serviceClassPrefix)) {
-            return "";
-        }
-        return serviceClassPrefix;
+        return getServiceConfig().getClassPrefix();
     }
 
+    /**
+     * @see ServiceConfig#setClassPrefix(String)
+     */
     public void setServiceClassPrefix(String serviceClassPrefix) {
-        this.serviceClassPrefix = StringUtil.trimOrNull(serviceClassPrefix);
+        getServiceConfig().setClassPrefix(serviceClassPrefix);
     }
 
+    /**
+     * @see ServiceConfig#getClassSuffix()
+     */
     public String getServiceClassSuffix() {
-        return serviceClassSuffix;
+        return getServiceConfig().getClassSuffix();
     }
 
+    /**
+     * @see ServiceConfig#setClassSuffix(String)
+     */
     public void setServiceClassSuffix(String serviceClassSuffix) {
-        this.serviceClassSuffix = StringUtil.trimOrNull(serviceClassSuffix);
+        getServiceConfig().setClassSuffix(serviceClassSuffix);
     }
 
-    public String getServicePackage() {
-        if (StringUtil.isBlank(servicePackage)) {
-            servicePackage = basePackage + ".service";
-        }
-        return servicePackage;
-    }
-
-    public void setServicePackage(String servicePackage) {
-        this.servicePackage = StringUtil.trimOrNull(servicePackage);
-    }
-
+    /**
+     * @see ServiceConfig#getSupperClass()
+     */
     public Class<?> getServiceSupperClass() {
-        return serviceSupperClass;
+        return getServiceConfig().getSupperClass();
     }
 
+    /**
+     * @see ServiceConfig#setSupperClass(Class)
+     */
     public void setServiceSupperClass(Class<?> serviceSupperClass) {
-        this.serviceSupperClass = serviceSupperClass;
+        getServiceConfig().setSupperClass(serviceSupperClass);
     }
 
     public boolean isServiceImplGenerateEnable() {
         return serviceImplGenerateEnable;
     }
 
+    /**
+     * @see #enableServiceImpl()
+     * @see #disableServiceImpl()
+     */
     public void setServiceImplGenerateEnable(boolean serviceImplGenerateEnable) {
         this.serviceImplGenerateEnable = serviceImplGenerateEnable;
     }
 
+    /**
+     * @see ServiceImplConfig#isOverwriteEnable()
+     */
     public boolean isServiceImplOverwriteEnable() {
-        return serviceImplOverwriteEnable;
+        return getServiceImplConfig().isOverwriteEnable();
     }
 
+    /**
+     * @see ServiceImplConfig#setOverwriteEnable(boolean)
+     */
     public void setServiceImplOverwriteEnable(boolean serviceImplOverwriteEnable) {
-        this.serviceImplOverwriteEnable = serviceImplOverwriteEnable;
+        getServiceImplConfig().setOverwriteEnable(serviceImplOverwriteEnable);
     }
 
+    /**
+     * @see ServiceImplConfig#getClassPrefix()
+     */
     public String getServiceImplClassPrefix() {
-        if (StringUtil.isBlank(serviceImplClassPrefix)) {
-            return "";
-        }
-        return serviceImplClassPrefix;
+        return getServiceImplConfig().getClassPrefix();
     }
 
+    /**
+     * @see ServiceImplConfig#setClassPrefix(String)
+     */
     public void setServiceImplClassPrefix(String serviceImplClassPrefix) {
-        this.serviceImplClassPrefix = StringUtil.trimOrNull(serviceImplClassPrefix);
+        getServiceImplConfig().setClassPrefix(serviceImplClassPrefix);
     }
 
+    /**
+     * @see ServiceImplConfig#getClassSuffix()
+     */
     public String getServiceImplClassSuffix() {
-        return serviceImplClassSuffix;
+        return getServiceImplConfig().getClassSuffix();
     }
 
+    /**
+     * @see ServiceImplConfig#setClassSuffix(String)
+     */
     public void setServiceImplClassSuffix(String serviceImplClassSuffix) {
-        this.serviceImplClassSuffix = StringUtil.trimOrNull(serviceImplClassSuffix);
+        getServiceImplConfig().setClassSuffix(serviceImplClassSuffix);
     }
 
-    public String getServiceImplPackage() {
-        if (StringUtil.isBlank(serviceImplPackage)) {
-            serviceImplPackage = basePackage + ".service.impl";
-        }
-        return serviceImplPackage;
-    }
-
-    public void setServiceImplPackage(String serviceImplPackage) {
-        this.serviceImplPackage = StringUtil.trimOrNull(serviceImplPackage);
-    }
-
+    /**
+     * @see ServiceImplConfig#getSupperClass()
+     */
     public Class<?> getServiceImplSupperClass() {
-        return serviceImplSupperClass;
+        return getServiceImplConfig().getSupperClass();
     }
 
+    /**
+     * @see ServiceImplConfig#setSupperClass(Class)
+     */
     public void setServiceImplSupperClass(Class<?> serviceImplSupperClass) {
-        this.serviceImplSupperClass = serviceImplSupperClass;
+        getServiceImplConfig().setSupperClass(serviceImplSupperClass);
+    }
+
+    /**
+     * @see ControllerConfig#isOverwriteEnable()
+     */
+    public boolean isControllerOverwriteEnable() {
+        return getControllerConfig().isOverwriteEnable();
     }
 
     public boolean isControllerGenerateEnable() {
         return controllerGenerateEnable;
     }
 
+    /**
+     * @see ControllerConfig#setOverwriteEnable(boolean)
+     */
+    public void setControllerOverwriteEnable(boolean controllerOverwriteEnable) {
+        getControllerConfig().setOverwriteEnable(controllerOverwriteEnable);
+    }
+
+    /**
+     * @see #enableController()
+     * @see #disableController()
+     */
     public void setControllerGenerateEnable(boolean controllerGenerateEnable) {
         this.controllerGenerateEnable = controllerGenerateEnable;
     }
 
-    public boolean isControllerOverwriteEnable() {
-        return controllerOverwriteEnable;
-    }
-
-    public void setControllerOverwriteEnable(boolean controllerOverwriteEnable) {
-        this.controllerOverwriteEnable = controllerOverwriteEnable;
-    }
-
+    /**
+     * @see ControllerConfig#getClassPrefix()
+     */
     public String getControllerClassPrefix() {
-        if (StringUtil.isBlank(controllerClassPrefix)) {
-            return "";
-        }
-        return controllerClassPrefix;
+        return getControllerConfig().getClassPrefix();
     }
 
+    /**
+     * @see ControllerConfig#setClassPrefix(String)
+     */
     public void setControllerClassPrefix(String controllerClassPrefix) {
-        this.controllerClassPrefix = StringUtil.trimOrNull(controllerClassPrefix);
+        getControllerConfig().setClassPrefix(controllerClassPrefix);
     }
 
+    /**
+     * @see ControllerConfig#getClassSuffix()
+     */
     public String getControllerClassSuffix() {
-        return controllerClassSuffix;
+        return getControllerConfig().getClassSuffix();
     }
 
+    /**
+     * @see ControllerConfig#setClassSuffix(String)
+     */
     public void setControllerClassSuffix(String controllerClassSuffix) {
-        this.controllerClassSuffix = StringUtil.trimOrNull(controllerClassSuffix);
+        getControllerConfig().setClassSuffix(controllerClassSuffix);
     }
 
-    public String getControllerPackage() {
-        if (StringUtil.isBlank(controllerPackage)) {
-            controllerPackage = basePackage + ".controller";
-        }
-        return controllerPackage;
-    }
-
-    public void setControllerPackage(String controllerPackage) {
-        this.controllerPackage = StringUtil.trimOrNull(controllerPackage);
-    }
-
+    /**
+     * @see ControllerConfig#getSupperClass()
+     */
     public Class<?> getControllerSupperClass() {
-        return controllerSupperClass;
+        return getControllerConfig().getSupperClass();
     }
 
+    /**
+     * @see ControllerConfig#setSupperClass(Class)
+     */
     public void setControllerSupperClass(Class<?> controllerSupperClass) {
-        this.controllerSupperClass = controllerSupperClass;
+        getControllerConfig().setSupperClass(controllerSupperClass);
     }
 
-    public boolean isRestStyleController() {
-        return restStyleController;
+    /**
+     * @see ControllerConfig#isRestStyle()
+     */
+    public boolean isControllerRestStyle() {
+        return getControllerConfig().isRestStyle();
     }
 
-    public void setRestStyleController(boolean restStyleController) {
-        this.restStyleController = restStyleController;
+    /**
+     * @see ControllerConfig#setRestStyle(boolean)
+     */
+    public void setControllerRestStyle(boolean restStyle) {
+        getControllerConfig().setRestStyle(restStyle);
     }
 
-    public String getTablePrefix() {
-        return tablePrefix;
+    public boolean isTableDefGenerateEnable() {
+        return tableDefGenerateEnable;
     }
 
-    public void setTablePrefix(String tablePrefix) {
-        this.tablePrefix = StringUtil.trimOrNull(tablePrefix);
+    /**
+     * @see #enableTableDef()
+     * @see #disableTableDef()
+     */
+    public void setTableDefGenerateEnable(boolean tableDefGenerateEnable) {
+        this.tableDefGenerateEnable = tableDefGenerateEnable;
     }
 
-    public String getLogicDeleteColumn() {
-        return logicDeleteColumn;
+    /**
+     * @see TableDefConfig#isOverwriteEnable()
+     */
+    public boolean isTableDefOverwriteEnable() {
+        return getTableDefConfig().isOverwriteEnable();
     }
 
-    public void setLogicDeleteColumn(String logicDeleteColumn) {
-        this.logicDeleteColumn = StringUtil.trimOrNull(logicDeleteColumn);
+    /**
+     * @see TableDefConfig#setOverwriteEnable(boolean)
+     */
+    public void setTableDefOverwriteEnable(boolean tableDefOverwriteEnable) {
+        getTableDefConfig().setOverwriteEnable(tableDefOverwriteEnable);
     }
 
-    public String getVersionColumn() {
-        return versionColumn;
+    /**
+     * @see TableDefConfig#getClassPrefix()
+     */
+    public String getTableDefClassPrefix() {
+        return getTableDefConfig().getClassPrefix();
     }
 
-    public void setVersionColumn(String versionColumn) {
-        this.versionColumn = StringUtil.trimOrNull(versionColumn);
+    /**
+     * @see TableDefConfig#setClassPrefix(String)
+     */
+    public void setTableDefClassPrefix(String tableDefClassPrefix) {
+        getTableDefConfig().setClassPrefix(tableDefClassPrefix);
     }
 
-    public Map<String, TableConfig> getTableConfigMap() {
-        return tableConfigMap;
+    /**
+     * @see TableDefConfig#getClassSuffix()
+     */
+    public String getTableDefClassSuffix() {
+        return getTableDefConfig().getClassSuffix();
     }
 
-    public void setTableConfigMap(Map<String, TableConfig> tableConfigMap) {
-        this.tableConfigMap = tableConfigMap;
+    /**
+     * @see TableDefConfig#setClassSuffix(String)
+     */
+    public void setTableDefClassSuffix(String tableDefClassSuffix) {
+        getTableDefConfig().setClassSuffix(tableDefClassSuffix);
     }
 
-    public void addTableConfig(TableConfig tableConfig) {
-        if (tableConfigMap == null) {
-            tableConfigMap = new HashMap<>();
-        }
-        tableConfigMap.put(tableConfig.getTableName(), tableConfig);
+    public boolean isMapperXmlGenerateEnable() {
+        return mapperXmlGenerateEnable;
     }
 
-    public TableConfig getTableConfig(String tableName) {
-        return tableConfigMap == null ? null : tableConfigMap.get(tableName);
+    /**
+     * @see #enableMapperXml()
+     * @see #disableMapperXml()
+     */
+    public void setMapperXmlGenerateEnable(boolean mapperXmlGenerateEnable) {
+        this.mapperXmlGenerateEnable = mapperXmlGenerateEnable;
     }
 
-    public Map<String, ColumnConfig> getDefaultColumnConfigMap() {
-        return defaultColumnConfigMap;
+    /**
+     * @see MapperXmlConfig#isOverwriteEnable()
+     */
+    public boolean isMapperXmlOverwriteEnable() {
+        return getMapperXmlConfig().isOverwriteEnable();
     }
 
-    public void setDefaultColumnConfigMap(Map<String, ColumnConfig> defaultColumnConfigMap) {
-        this.defaultColumnConfigMap = defaultColumnConfigMap;
+    /**
+     * @see MapperXmlConfig#setOverwriteEnable(boolean)
+     */
+    public void setMapperXmlOverwriteEnable(boolean mapperXmlOverwriteEnable) {
+        getMapperXmlConfig().setOverwriteEnable(mapperXmlOverwriteEnable);
     }
 
-
-    public void addColumnConfig(ColumnConfig columnConfig) {
-        if (defaultColumnConfigMap == null) {
-            defaultColumnConfigMap = new HashMap<>();
-        }
-        defaultColumnConfigMap.put(columnConfig.getColumnName(), columnConfig);
+    /**
+     * @see MapperXmlConfig#getFilePrefix()
+     */
+    public String getMapperXmlFilePrefix() {
+        return getMapperXmlConfig().getFilePrefix();
     }
 
-    public void addColumnConfig(String tableName, ColumnConfig columnConfig) {
-        TableConfig tableConfig = getTableConfig(tableName);
-        if (tableConfig == null) {
-            tableConfig = new TableConfig();
-            tableConfig.setTableName(tableName);
-            addTableConfig(tableConfig);
-        }
-
-        tableConfig.addColumnConfig(columnConfig);
+    /**
+     * @see MapperXmlConfig#setFilePrefix(String)
+     */
+    public void setMapperXmlFilePrefix(String mapperXmlFilePrefix) {
+        getMapperXmlConfig().setFilePrefix(mapperXmlFilePrefix);
     }
 
-
-    public ColumnConfig getColumnConfig(String tableName, String columnName) {
-        ColumnConfig columnConfig = null;
-
-        TableConfig tableConfig = getTableConfig(tableName);
-        if (tableConfig != null) {
-            columnConfig = tableConfig.getColumnConfig(columnName);
-        }
-
-        if (columnConfig == null && defaultColumnConfigMap != null) {
-            columnConfig = defaultColumnConfigMap.get(columnName);
-        }
-
-        if (columnConfig == null) {
-            columnConfig = new ColumnConfig();
-        }
-
-        //全局配置的逻辑删除
-        if (columnName.equals(logicDeleteColumn) && columnConfig.getLogicDelete() == null) {
-            columnConfig.setLogicDelete(true);
-        }
-
-        //全部配置的乐观锁版本
-        if (columnName.equals(versionColumn) && columnConfig.getVersion() == null) {
-            columnConfig.setVersion(true);
-        }
-
-
-        return columnConfig;
+    /**
+     * @see MapperXmlConfig#getFileSuffix()
+     */
+    public String getMapperXmlFileSuffix() {
+        return getMapperXmlConfig().getFileSuffix();
     }
 
-    public boolean isGenerateForView() {
-        return generateForView;
+    /**
+     * @see MapperXmlConfig#setFileSuffix(String)
+     */
+    public void setMapperXmlFileSuffix(String mapperXmlFileSuffix) {
+        getMapperXmlConfig().setFileSuffix(mapperXmlFileSuffix);
     }
 
-    public void setGenerateForView(boolean generateForView) {
-        this.generateForView = generateForView;
+    public boolean isPackageInfoGenerateEnable() {
+        return packageInfoGenerateEnable;
     }
 
-    public Set<String> getGenerateTables() {
-        return generateTables;
+    /**
+     * @see #enablePackageInfo()
+     * @see #disablePackageInfo()
+     */
+    public void setPackageInfoGenerateEnable(boolean packageInfoGenerateEnable) {
+        this.packageInfoGenerateEnable = packageInfoGenerateEnable;
     }
 
-    public void setGenerateTables(Set<String> generateTables) {
-        this.generateTables = generateTables;
-    }
-
-    public void addGenerateTable(String... tables) {
-        if (generateTables == null) {
-            generateTables = new HashSet<>();
-        }
-
-        for (String table : tables) {
-            if (table != null && table.trim().length() > 0) {
-                generateTables.add(table.trim());
-            }
-        }
-    }
-
-    public Set<String> getUnGenerateTables() {
-        return unGenerateTables;
-    }
-
-    public void setUnGenerateTables(Set<String> unGenerateTables) {
-        this.unGenerateTables = unGenerateTables;
-    }
-
-
-    public void addUnGenerateTable(String... tables) {
-        if (unGenerateTables == null) {
-            unGenerateTables = new HashSet<>();
-        }
-
-        for (String table : tables) {
-            if (table != null && table.trim().length() > 0) {
-                unGenerateTables.add(table.trim());
-            }
-        }
-    }
-
-    public boolean isSupportGenerate(String table) {
-        if (unGenerateTables != null && unGenerateTables.contains(table)) {
-            return false;
-        }
-
-        //不配置指定比表名的情况下，支持所有表
-        if (generateTables == null || generateTables.isEmpty()) {
-            return true;
-        }
-
-        for (String generateTable : generateTables) {
-            if (generateTable.equals(table)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public ITemplate getTemplateEngine() {
-        if (templateEngine == null) {
-            templateEngine = new EnjoyTemplate();
-        }
-        return templateEngine;
-    }
-
-    public void setTemplateEngine(ITemplate templateEngine) {
-        this.templateEngine = templateEngine;
-    }
-
-    public Map<String, Object> getOthers() {
-        return others;
-    }
-
-    public void setOthers(Map<String, Object> others) {
-        this.others = others;
-    }
-
-    public void addConfig(String key, Object value) {
-        if (others == null) {
-            others = new HashMap<>();
-        }
-        others.put(key, value);
-    }
 }

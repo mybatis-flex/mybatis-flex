@@ -16,6 +16,7 @@
 package com.mybatisflex.codegen;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.StrategyConfig;
 import com.mybatisflex.codegen.dialect.IDialect;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.GeneratorFactory;
@@ -83,22 +84,23 @@ public class Generator {
 
 
     private List<Table> buildTables() throws SQLException {
+        StrategyConfig strategyConfig = globalConfig.getStrategyConfig();
         List<Table> tables = new ArrayList<>();
         try (ResultSet rs = getTablesResultSet()) {
             while (rs.next()) {
                 String tableName = rs.getString("TABLE_NAME");
-                if (!globalConfig.isSupportGenerate(tableName)) {
+                if (!strategyConfig.isSupportGenerate(tableName)) {
                     continue;
                 }
 
                 Table table = new Table();
                 table.setGlobalConfig(globalConfig);
-                table.setTableConfig(globalConfig.getTableConfig(tableName));
+                table.setTableConfig(strategyConfig.getTableConfig(tableName));
 
                 table.setName(tableName);
 
                 String remarks = rs.getString("REMARKS");
-                table.setRemarks(remarks);
+                table.setComment(remarks);
 
 
                 buildPrimaryKey(table);
@@ -113,7 +115,7 @@ public class Generator {
 
 
     protected ResultSet getTablesResultSet() throws SQLException {
-        if (globalConfig.isGenerateForView()) {
+        if (globalConfig.getStrategyConfig().isGenerateForView()) {
             return dialect.getTablesResultSet(dbMeta, conn, new String[]{"TABLE", "VIEW"});
         } else {
             return dialect.getTablesResultSet(dbMeta, conn, new String[]{"TABLE"});
