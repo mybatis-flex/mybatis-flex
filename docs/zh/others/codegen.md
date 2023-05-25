@@ -6,6 +6,7 @@
 在使用前先添加 `mybatis-flex-codegen` 的 Maven 依赖：
 
 ```xml
+
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-codegen</artifactId>
@@ -16,6 +17,7 @@
 同时需要添加数据源的 Maven 依赖和 jdbc 驱动依赖：
 
 ```xml
+
 <dependency>
     <groupId>com.zaxxer</groupId>
     <artifactId>HikariCP</artifactId>
@@ -23,9 +25,9 @@
 </dependency>
 
 <dependency>
-    <groupId>mysql</groupId>
-    <artifactId>mysql-connector-java</artifactId>
-    <version>8.0.32</version>
+<groupId>mysql</groupId>
+<artifactId>mysql-connector-java</artifactId>
+<version>8.0.32</version>
 </dependency>
 ```
 
@@ -33,15 +35,54 @@
 
 ```java
 public class Codegen {
-    
+
     public static void main(String[] args) {
-        
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/your-database?characterEncoding=utf-8");
         dataSource.setUsername("root");
         dataSource.setPassword("******");
 
+        //创建配置内容，两种风格都可以。
+        GlobalConfig globalConfig = createGlobalConfigUseStyle1();
+        //GlobalConfig globalConfig = createGlobalConfigUseStyle2();
+
+        //通过 datasource 和 globalConfig 创建代码生成器
+        Generator generator = new Generator(dataSource, globalConfig);
+
+        //生成代码
+        generator.generate();
+    }
+    
+    public static GlobalConfig createGlobalConfigUseStyle1() {
+        //创建配置内容
+        GlobalConfig globalConfig = new GlobalConfig();
+
+        //设置根包
+        globalConfig.setBasePackage("com.test");
+
+        //设置表前缀和只生成哪些表
+        globalConfig.setTablePrefix("tb_");
+        globalConfig.setGenerateTable("account", "account_session");
+
+        //设置生成 entity 并启用 Lombok
+        globalConfig.setEntityGenerateEnable(true);
+        globalConfig.setWithLombok(true);
+
+        //设置生成 mapper
+        globalConfig.setMapperGenerateEnable(true);
+
+        //可以单独配置某个列
+        ColumnConfig columnConfig = new ColumnConfig();
+        columnConfig.setColumnName("tenant_id");
+        columnConfig.setLarge(true);
+        columnConfig.setVersion(true);
+        globalConfig.setColumnConfig("account", columnConfig);
+
+        return globalConfig;
+    }
+    
+    public static GlobalConfig createGlobalConfigUseStyle2() {
         //创建配置内容
         GlobalConfig globalConfig = new GlobalConfig();
 
@@ -52,7 +93,7 @@ public class Codegen {
         //设置表前缀和只生成哪些表
         globalConfig.getStrategyConfig()
                 .setTablePrefix("tb_")
-                .addGenerateTable("account", "account_session");
+                .setGenerateTable("account", "account_session");
 
         //设置生成 entity 并启用 Lombok
         globalConfig.enableEntity()
@@ -67,13 +108,9 @@ public class Codegen {
         columnConfig.setLarge(true);
         columnConfig.setVersion(true);
         globalConfig.getStrategyConfig()
-                .addColumnConfig("account", columnConfig);
+                .setColumnConfig("account", columnConfig);
 
-        //通过 datasource 和 globalConfig 创建代码生成器
-        Generator generator = new Generator(dataSource, globalConfig);
-
-        //生成代码
-        generator.generate();
+        return globalConfig;
     }
 }
 ```
@@ -85,7 +122,7 @@ public class Codegen {
 
 ## 使用介绍
 
-在 Mybatis-Flex 的代码生成器中，支持如下 7 种类型的的产物生成：
+在 Mybatis-Flex 的代码生成器中，支持如下 8 种类型的的产物生成：
 
 - Entity 实体类
 - Mapper 映射类
@@ -94,6 +131,7 @@ public class Codegen {
 - ServiceImpl 服务实现类
 - Controller 控制类
 - MapperXml 文件
+- package-info.java 文件
 
 启用或关闭某种类型产物的生成，代码如下：
 
@@ -114,6 +152,8 @@ globalConfig.enableEntity()
 ```
 
 ## 全局配置 `GlobalConfig`
+
+> 可以像先前一样直接使用 `setXxx()` 进行配置，也可以使用 `getXxxConfig().setXxx()` 进行分类配置。
 
 | 获取配置                   | 描述               |
 |------------------------|------------------|
@@ -156,12 +196,17 @@ globalConfig.enableEntity()
 
 ## 注释配置 `JavadocConfig`
 
-| 配置                                | 描述    | 默认值                             |
-|-----------------------------------|-------|---------------------------------|
-| setAuthor(String)                 | 作者    | System.getProperty("user.name") |
-| setSince(String)                  | 自     | 日期（yyyy-MM-dd）                  |
-| setTableCommentFormat(Function)   | 表名格式化 | 原表名                             |
-| setPackageCommentFormat(Function) | 包名格式化 | 原包名                             |
+| 配置                              | 描述              | 默认值                             |
+|---------------------------------|-----------------|---------------------------------|
+| setAuthor(String)               | 作者              | System.getProperty("user.name") |
+| setSince(String)                | 自               | 日期（yyyy-MM-dd）                  |
+| setTableCommentFormat(Function) | 表名格式化           | 原表名                             |
+| setEntityPackage(String)        | Entity 包注释      | "实体类层（Entity）软件包。"              |
+| setMapperPackage(String)        | Mapper 包注释      | "映射层（Mapper）软件包。"               |
+| setServicePackage(String)       | Service 包注释     | "服务层（Service）软件包。"              |
+| setServiceImplPackage(String)   | ServiceImpl 包注释 | "服务层实现（ServiceImpl）软件包。"        |
+| setControllerPackage(String)    | Controller 包注释  | "控制层（Controller）软件包。"           |
+| setTableDefPackage(String)      | TableDef 包注释    | "表定义层（TableDef）软件包。"            |
 
 ```java
 globalConfig.getJavadocConfig()
@@ -205,7 +250,7 @@ globalConfig.getPackageConfig()
 ```java
 globalConfig.getStrategyConfig()
         .setTablePrefix("sys_")
-        .setGenerateTables("sys_user", "sys_dept");
+        .setGenerateTables("sys_user","sys_dept");
 ```
 
 ## 模板配置 `TemplateConfig`
@@ -313,11 +358,11 @@ globalConfig.getControllerConfig()
 
 ## TableDef 生成配置 `TableDefConfig`
 
-| 配置                     | 描述            | 默认值   |
-|------------------------|---------------|-------|
-| setClassPrefix(String) | TableDef 类的前缀 | ""    |
-| setClassSuffix(String) | TableDef 类的后缀 | "Def" |
-| setOverwriteEnable(boolean) | 是否覆盖之前生成的文件         | false        |
+| 配置                          | 描述            | 默认值   |
+|-----------------------------|---------------|-------|
+| setClassPrefix(String)      | TableDef 类的前缀 | ""    |
+| setClassSuffix(String)      | TableDef 类的后缀 | "Def" |
+| setOverwriteEnable(boolean) | 是否覆盖之前生成的文件   | false |
 
 ```java
 globalConfig.getTableDefConfig()
@@ -392,7 +437,7 @@ public class ColumnConfig implements Serializable {
     private KeyType keyType;
     private String keyValue;
     private Boolean keyBefore;
-    
+
     // 是否是租户列
     private Boolean tenantId;
 }
@@ -404,13 +449,15 @@ Mybatis-Flex 内置了一个名为：`JdbcTypeMapping` 的 java 类，我们可�
 数据类型，在开始生成代码之前，可以先调用其进行配置，例如：
 
 ```java
-JdbcTypeMapping.registerMapping(LocalDateTime.class, Date.class);
+JdbcTypeMapping.registerMapping(LocalDateTime.class,Date.class);
 ```
+
 那么，当我们生成代码的时候，发现 JDBC 驱动的数据类型为 `LocalDateTime`，则 Entity 对应的属性类型为 `Date`。
 
 ## 自定义代码模板
 
-通过 `GlobalConfig`（全局配置）的 `setTemplateEngine()` 方法，可以配置自己的模板引擎以及模板，以下是内置的 `EnjoyTemplate` 的代码示例：
+通过 `GlobalConfig`（全局配置）的 `setTemplateEngine()` 方法，可以配置自己的模板引擎以及模板，以下是内置的 `EnjoyTemplate`
+的代码示例：
 
 ```java
 public class EnjoyTemplate implements ITemplate {
@@ -507,6 +554,7 @@ public class HtmlGenerator implements IGenerator {
     }
 }
 ```
+
 最后，通过 `GeneratorFactory` 来注册 `HtmlGenerator` 即可：
 
 ```java
