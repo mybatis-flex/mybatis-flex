@@ -280,12 +280,12 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper forUpdate(){
+    public QueryWrapper forUpdate() {
         addEndFragment("FOR UPDATE");
         return this;
     }
 
-    public QueryWrapper forUpdateNoWait(){
+    public QueryWrapper forUpdateNoWait() {
         addEndFragment("FOR UPDATE NOWAIT");
         return this;
     }
@@ -348,7 +348,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper orderBy(String... orderBys) {
-        if(orderBys == null || orderBys.length == 0){
+        if (orderBys == null || orderBys.length == 0) {
             //ignore
             return this;
         }
@@ -395,16 +395,15 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
         List<Object> columnValues = null;
         List<QueryColumn> selectColumns = getSelectColumns();
-        if (CollectionUtil.isNotEmpty(selectColumns)){
+        if (CollectionUtil.isNotEmpty(selectColumns)) {
             for (QueryColumn selectColumn : selectColumns) {
-                if (selectColumn instanceof SelectQueryColumn){
-                    QueryWrapper queryWrapper = ((SelectQueryColumn) selectColumn).getQueryWrapper();
-                    Object[] valueArray = queryWrapper.getValueArray();
-                    if (ArrayUtil.isNotEmpty(valueArray)){
-                        if (columnValues == null){
+                if (selectColumn instanceof HasParamsColumn) {
+                    Object[] paramValues = ((HasParamsColumn) selectColumn).getParamValues();
+                    if (ArrayUtil.isNotEmpty(paramValues)) {
+                        if (columnValues == null) {
                             columnValues = new ArrayList<>();
                         }
-                        columnValues.addAll(Arrays.asList(valueArray));
+                        columnValues.addAll(Arrays.asList(paramValues));
                     }
                 }
             }
@@ -466,7 +465,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         }
 
         Object[] returnValues = columnValues == null ? WrapperUtil.NULL_PARA_ARRAY : columnValues.toArray();
-        returnValues = tableValues != null ? ArrayUtil.concat(returnValues,tableValues.toArray()) : returnValues;
+        returnValues = tableValues != null ? ArrayUtil.concat(returnValues, tableValues.toArray()) : returnValues;
         returnValues = joinValues != null ? ArrayUtil.concat(returnValues, joinValues.toArray()) : returnValues;
         returnValues = ArrayUtil.concat(returnValues, paramValues);
 

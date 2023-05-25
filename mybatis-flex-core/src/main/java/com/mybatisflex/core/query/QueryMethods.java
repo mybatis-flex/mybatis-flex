@@ -65,6 +65,14 @@ public class QueryMethods {
         return new DistinctQueryColumn(columns);
     }
 
+    public static CaseQueryColumn.Builder case_() {
+        return new CaseQueryColumn.Builder();
+    }
+
+    public static CaseSearchQueryColumn.Builder case_(QueryColumn queryColumn) {
+        return new CaseSearchQueryColumn.Builder(queryColumn);
+    }
+
     //CONVERT ( data_type [ ( length ) ] , expression [ , style ] )
     public static StringFunctionQueryColumn convert(String... params) {
         return new StringFunctionQueryColumn("CONVERT", params);

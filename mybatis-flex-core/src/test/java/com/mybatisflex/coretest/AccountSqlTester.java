@@ -324,6 +324,43 @@ public class AccountSqlTester {
 
 
     @Test
+    public void testCase1() {
+        IDialect dialect = new CommonsDialectImpl();
+
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(ACCOUNT.ALL_COLUMNS,
+                        case_()
+                                .when(ACCOUNT.ID.eq(100)).then(100)
+                                .when(ACCOUNT.ID.ge(200)).then(200)
+                                .else_(300)
+                                .end().as("result"))
+                .from(ACCOUNT)
+                .and(ACCOUNT.USER_NAME.like("michael"));
+
+        String sql = dialect.forSelectByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
+    @Test
+    public void testCase2() {
+        IDialect dialect = new CommonsDialectImpl();
+
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(ACCOUNT.ALL_COLUMNS,
+                        case_(ACCOUNT.ID)
+                                .when(100).then(100)
+                                .when(200).then(200)
+                                .else_(300)
+                                .end().as("result"))
+                .from(ACCOUNT)
+                .and(ACCOUNT.USER_NAME.like("michael"));
+
+        String sql = dialect.forSelectByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
+
+    @Test
     public void testLimitOffset() {
 
         QueryWrapper queryWrapper = QueryWrapper.create()

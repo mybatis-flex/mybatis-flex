@@ -17,12 +17,11 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.SqlUtil;
-
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
 
-public class SelectQueryColumn extends QueryColumn {
+public class SelectQueryColumn extends QueryColumn implements HasParamsColumn {
 
     private QueryWrapper queryWrapper;
 
@@ -53,5 +52,10 @@ public class SelectQueryColumn extends QueryColumn {
     @Override
     String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
         return super.toConditionSql(queryTables, dialect);
+    }
+
+    @Override
+    public Object[] getParamValues() {
+        return queryWrapper.getValueArray();
     }
 }

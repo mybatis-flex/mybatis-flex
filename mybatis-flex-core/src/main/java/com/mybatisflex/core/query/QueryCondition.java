@@ -183,8 +183,12 @@ public class QueryCondition implements Serializable {
             if (effectiveBefore != null) {
                 sql.append(effectiveBefore.connector);
             }
+            //列
             sql.append(getColumn().toConditionSql(queryTables, dialect));
+            //逻辑符号
             sql.append(" ").append(logic).append(" ");
+
+            //值（或者问号）
             if (value instanceof QueryColumn) {
                 sql.append(((QueryColumn) value).toConditionSql(queryTables, dialect));
             }
