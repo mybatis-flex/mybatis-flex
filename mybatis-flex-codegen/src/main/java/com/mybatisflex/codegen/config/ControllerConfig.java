@@ -57,46 +57,76 @@ public class ControllerConfig {
         return supperClass.getSimpleName();
     }
 
+    /**
+     * 获取类前缀。
+     */
     public String getClassPrefix() {
         return classPrefix;
     }
 
+    /**
+     * 设置类前缀。
+     */
     public ControllerConfig setClassPrefix(String classPrefix) {
         this.classPrefix = classPrefix;
         return this;
     }
 
+    /**
+     * 获取类后缀。
+     */
     public String getClassSuffix() {
         return classSuffix;
     }
 
+    /**
+     * 设置类后缀。
+     */
     public ControllerConfig setClassSuffix(String classSuffix) {
         this.classSuffix = classSuffix;
         return this;
     }
 
+    /**
+     * 获取父类。
+     */
     public Class<?> getSupperClass() {
         return supperClass;
     }
 
+    /**
+     * 设置父类。
+     */
     public ControllerConfig setSupperClass(Class<?> supperClass) {
         this.supperClass = supperClass;
         return this;
     }
 
+    /**
+     * 是否覆盖原有文件。
+     */
     public boolean isOverwriteEnable() {
         return overwriteEnable;
     }
 
+    /**
+     * 设置是否覆盖原有文件。
+     */
     public ControllerConfig setOverwriteEnable(boolean overwriteEnable) {
         this.overwriteEnable = overwriteEnable;
         return this;
     }
 
+    /**
+     * 是否 REST 风格。
+     */
     public boolean isRestStyle() {
         return restStyle;
     }
 
+    /**
+     * 设置 REST 风格。
+     */
     public ControllerConfig setRestStyle(boolean restStyle) {
         this.restStyle = restStyle;
         return this;

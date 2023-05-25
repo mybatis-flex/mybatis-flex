@@ -56,55 +56,91 @@ public class EntityConfig {
      */
     private boolean withLombok;
 
+    /**
+     * 获取类前缀。
+     */
     public String getClassPrefix() {
         return classPrefix;
     }
 
+    /**
+     * 设置类前缀。
+     */
     public EntityConfig setClassPrefix(String classPrefix) {
         this.classPrefix = classPrefix;
         return this;
     }
 
+    /**
+     * 获取类后缀。
+     */
     public String getClassSuffix() {
         return classSuffix;
     }
 
+    /**
+     * 设置类后缀。
+     */
     public EntityConfig setClassSuffix(String classSuffix) {
         this.classSuffix = classSuffix;
         return this;
     }
 
+    /**
+     * 获取父类。
+     */
     public Class<?> getSupperClass() {
         return supperClass;
     }
 
+    /**
+     * 设置父类。
+     */
     public EntityConfig setSupperClass(Class<?> supperClass) {
         this.supperClass = supperClass;
         return this;
     }
 
+    /**
+     * 是否覆盖原有文件。
+     */
     public boolean isOverwriteEnable() {
         return overwriteEnable;
     }
 
+    /**
+     * 设置是否覆盖原有文件。
+     */
     public EntityConfig setOverwriteEnable(boolean overwriteEnable) {
         this.overwriteEnable = overwriteEnable;
         return this;
     }
 
+    /**
+     * 获取实现接口。
+     */
     public Class<?>[] getImplInterfaces() {
         return implInterfaces;
     }
 
-    public EntityConfig setImplInterfaces(Class<?>[] implInterfaces) {
+    /**
+     * 设置实现接口。
+     */
+    public EntityConfig setImplInterfaces(Class<?>... implInterfaces) {
         this.implInterfaces = implInterfaces;
         return this;
     }
 
+    /**
+     * 是否使用 Lombok。
+     */
     public boolean isWithLombok() {
         return withLombok;
     }
 
+    /**
+     * 设置是否使用 Lombok。
+     */
     public EntityConfig setWithLombok(boolean withLombok) {
         this.withLombok = withLombok;
         return this;

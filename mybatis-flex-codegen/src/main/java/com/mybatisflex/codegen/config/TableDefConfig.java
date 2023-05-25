@@ -39,28 +39,46 @@ public class TableDefConfig {
      */
     private boolean overwriteEnable;
 
+    /**
+     * 获取类前缀。
+     */
     public String getClassPrefix() {
         return classPrefix;
     }
 
+    /**
+     * 设置类前缀。
+     */
     public TableDefConfig setClassPrefix(String classPrefix) {
         this.classPrefix = classPrefix;
         return this;
     }
 
+    /**
+     * 获取类后缀。
+     */
     public String getClassSuffix() {
         return classSuffix;
     }
 
+    /**
+     * 设置类后缀。
+     */
     public TableDefConfig setClassSuffix(String classSuffix) {
         this.classSuffix = classSuffix;
         return this;
     }
 
+    /**
+     * 是否覆盖原有文件。
+     */
     public boolean isOverwriteEnable() {
         return overwriteEnable;
     }
 
+    /**
+     * 设置是否覆盖原有文件。
+     */
     public TableDefConfig setOverwriteEnable(boolean overwriteEnable) {
         this.overwriteEnable = overwriteEnable;
         return this;

@@ -16,13 +16,16 @@
 package com.mybatisflex.codegen.generator.impl;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.JavadocConfig;
 import com.mybatisflex.codegen.config.PackageConfig;
 import com.mybatisflex.codegen.constant.TemplateConst;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,47 +53,39 @@ public class PackageInfoGenerator implements IGenerator {
             return;
         }
 
+        JavadocConfig javadocConfig = globalConfig.getJavadocConfig();
         PackageConfig packageConfig = globalConfig.getPackageConfig();
 
         String sourceDir = packageConfig.getSourceDir();
 
-        Map<String, File> map = new HashMap<>(6);
+        List<Data> dataList = new ArrayList<>();
 
         if (globalConfig.isEntityGenerateEnable()) {
-            String entityPackage = packageConfig.getEntityPackage();
-            map.put(entityPackage, getFilePath(sourceDir, entityPackage));
+            dataList.add(new Data(sourceDir, packageConfig.getEntityPackage(), javadocConfig.getEntityPackage()));
         }
         if (globalConfig.isMapperGenerateEnable()) {
-            String mapperPackage = packageConfig.getMapperPackage();
-            map.put(mapperPackage, getFilePath(sourceDir, mapperPackage));
+            dataList.add(new Data(sourceDir, packageConfig.getMapperPackage(), javadocConfig.getMapperPackage()));
         }
         if (globalConfig.isServiceGenerateEnable()) {
-            String servicePackage = packageConfig.getServicePackage();
-            map.put(servicePackage, getFilePath(sourceDir, servicePackage));
+            dataList.add(new Data(sourceDir, packageConfig.getServicePackage(), javadocConfig.getServicePackage()));
         }
         if (globalConfig.isServiceImplGenerateEnable()) {
-            String serviceImplPackage = packageConfig.getServiceImplPackage();
-            map.put(serviceImplPackage, getFilePath(sourceDir, serviceImplPackage));
+            dataList.add(new Data(sourceDir, packageConfig.getServiceImplPackage(), javadocConfig.getServiceImplPackage()));
         }
         if (globalConfig.isControllerGenerateEnable()) {
-            String controllerPackage = packageConfig.getControllerPackage();
-            map.put(controllerPackage, getFilePath(sourceDir, controllerPackage));
+            dataList.add(new Data(sourceDir, packageConfig.getControllerPackage(), javadocConfig.getControllerPackage()));
         }
         if (globalConfig.isTableDefGenerateEnable()) {
-            String tableDefPackage = packageConfig.getTableDefPackage();
-            map.put(tableDefPackage, getFilePath(sourceDir, tableDefPackage));
+            dataList.add(new Data(sourceDir, packageConfig.getTableDefPackage(), javadocConfig.getTableDefPackage()));
         }
 
-        map.forEach((packageName, filePath) -> {
+        dataList.forEach(data -> {
             Map<String, Object> params = new HashMap<>(3);
-            params.put("packageName", packageName);
-            params.put("javadocConfig", globalConfig.getJavadocConfig());
-            globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, filePath);
+            params.put("packageName", data.packageName);
+            params.put("packageComment", data.packageComment);
+            params.put("javadocConfig", javadocConfig);
+            globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, data.filePath);
         });
-    }
-
-    private File getFilePath(String sourceDir, String packageName) {
-        return new File(sourceDir, packageName.replace(".", "/") + "/package-info.java");
     }
 
     public String getTemplatePath() {
@@ -99,6 +94,24 @@ public class PackageInfoGenerator implements IGenerator {
 
     public void setTemplatePath(String templatePath) {
         this.templatePath = templatePath;
+    }
+
+    private static class Data {
+
+        String packageName;
+        String packageComment;
+        File filePath;
+
+        Data(String sourceDir, String packageName, String packageComment) {
+            this.packageName = packageName;
+            this.packageComment = packageComment;
+            this.filePath = getFilePath(sourceDir, packageName);
+        }
+
+        File getFilePath(String sourceDir, String packageName) {
+            return new File(sourceDir, packageName.replace(".", "/") + "/package-info.java");
+        }
+
     }
 
 }

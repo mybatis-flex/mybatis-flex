@@ -22,6 +22,7 @@ package com.mybatisflex.codegen.config;
  * @author 王帅
  * @since 2023-05-17
  */
+@SuppressWarnings("unused")
 public class MapperXmlConfig {
 
     /**
@@ -39,28 +40,46 @@ public class MapperXmlConfig {
      */
     private boolean overwriteEnable;
 
+    /**
+     * 获取文件前缀。
+     */
     public String getFilePrefix() {
         return filePrefix;
     }
 
+    /**
+     * 设置文件前缀。
+     */
     public MapperXmlConfig setFilePrefix(String filePrefix) {
         this.filePrefix = filePrefix;
         return this;
     }
 
+    /**
+     * 获取文件后缀。
+     */
     public String getFileSuffix() {
         return fileSuffix;
     }
 
+    /**
+     * 设置文件后缀。
+     */
     public MapperXmlConfig setFileSuffix(String fileSuffix) {
         this.fileSuffix = fileSuffix;
         return this;
     }
 
+    /**
+     * 是否覆盖原有文件。
+     */
     public boolean isOverwriteEnable() {
         return overwriteEnable;
     }
 
+    /**
+     * 设置是否覆盖原有文件。
+     */
     public MapperXmlConfig setOverwriteEnable(boolean overwriteEnable) {
         this.overwriteEnable = overwriteEnable;
         return this;
