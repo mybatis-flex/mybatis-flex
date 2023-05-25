@@ -16,9 +16,14 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
+import com.mybatisflex.core.audit.AuditManager;
+import com.mybatisflex.core.audit.ConsoleMessageCollector;
+import com.mybatisflex.core.audit.MessageCollector;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.row.RowUtil;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
@@ -35,12 +40,10 @@ public class MultiDataSourceTester {
                 .addScript("data.sql")
                 .build();
 
-        DataSource dataSource2 = new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.H2)
-                .setName("db2")
-                .addScript("schema02.sql")
-                .addScript("data02.sql")
-                .build();
+        HikariDataSource dataSource2 = new HikariDataSource();
+        dataSource2.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/flex_test?characterEncoding=utf-8");
+        dataSource2.setUsername("root");
+        dataSource2.setPassword("123456");
 
         MybatisFlexBootstrap.getInstance()
                 .setDataSource(dataSource)
@@ -48,28 +51,39 @@ public class MultiDataSourceTester {
                 .addDataSource("ds2", dataSource2)
                 .start();
 
+        //开启审计功能
+        AuditManager.setAuditEnable(true);
+
+        //设置 SQL 审计收集器
+        MessageCollector collector = new ConsoleMessageCollector();
+        AuditManager.setMessageCollector(collector);
+
+
         //默认查询 db1
+        System.out.println("\n------ds1");
         List<Row> rows1 = Db.selectAll("tb_account");
-        System.out.println(rows1);
-
-        System.out.println("------");
-
-        List<Row> rows =  DataSourceKey.use("ds2"
-                , () -> Db.selectAll("tb_account"));
+        RowUtil.printPretty(rows1);
 
 
-        //查询数据源 ds2
+//        System.out.println("\n------ds2");
+//        List<Row> rows =  DataSourceKey.use("ds2"
+//                , () -> Db.selectAll("tb_account"));
+//        RowUtil.printPretty(rows);
+
+
+//        //查询数据源 ds2
+        System.out.println("\n------ds2");
         DataSourceKey.use("ds2");
-        rows = Db.selectAll("tb_account");
-        System.out.println(rows);
-
-        boolean success = Db.tx(() -> {
-            Db.updateById("tb_account",Row.ofKey("id",1)
-                    .set("user_name","测试的user"));
-            return false;
-        });
-        System.out.println("tx: " + success);
-        DataSourceKey.clear();
+        List<Row> rows = Db.selectAll("tb_account");
+        RowUtil.printPretty(rows);
+//
+//        boolean success = Db.tx(() -> {
+//            Db.updateById("tb_account",Row.ofKey("id",1)
+//                    .set("user_name","测试的user"));
+//            return false;
+//        });
+//        System.out.println("tx: " + success);
+//        DataSourceKey.clear();
 
 //        AccountMapper mapper = MybatisFlexBootstrap.getInstance().getMapper(AccountMapper.class);
 //        List<Account> accounts = mapper.selectAll();

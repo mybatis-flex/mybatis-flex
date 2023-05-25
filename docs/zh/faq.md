@@ -2,15 +2,14 @@
 
 ## 示例中的 AccountMapper 和 "ACCOUNT" 在哪里，报错了。
 
-Mybatis-Flex 使用了 APT 技术，这两个类是自动生成的。
-参考：[Mybatis-Flex APT 配置 - Mybatis-Flex 官方网站](./others/apt.md)
+MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的。
+参考：[MyBatis-Flex APT 配置 - MyBatis-Flex 官方网站](./others/apt.md)
 
 
 
 ## SpringBoot 项目，启动报错 Property 'sqlSessionFactory' or 'sqlSessionTempalte' are required
 
 如果当前依赖没有连接池相关依赖，则建议添加 HikariCP 依赖。
-如果已经添加了如 druid 依赖，则配置数据源类型 `spring.datasource.type=com.alibaba.druid.pool.DruidDataSource`。
 
 SpringBoot v2.x 添加 hikariCP 的内容如下：
 
@@ -31,6 +30,9 @@ SpringBoot v3.x 添加 hikariCP 的内容如下：
     <version>5.0.1</version>
 </dependency>
 ```
+
+> 如果使用的是 druid 数据库连接池，则需要添加数据源类型的配置 `spring.datasource.type=com.alibaba.druid.pool.DruidDataSource`。
+
 
 ## 整合 Springboot 3 出现 ClassNotFoundException： NestedIOException 的错误
 
@@ -64,7 +66,7 @@ SpringBoot v3.x 添加 hikariCP 的内容如下：
 
 原因是在数据源的配置中，未添加 `type` 字段的配置：
 
-```yaml 3
+```yaml:line-numbers 3
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -75,10 +77,35 @@ spring:
 第 3 行中的 `type` 字段不能为空，这个并非是 MyBaits-Flex 的问题，而是 Spring 没有内置对 Druid 数据源类型
 的主动发现机制。若使用 `hikariCP` 数据源，则可以不配置 `type` 内容。
 
-> 若使用多数据源，或者把数据源配置到 `mybatis-flex.datasource` 下，使用 mybatis-flex 的数据源发现机制，
-> 使用 druid 也可以不用配置 type，更多文档参考：[多数据源章节](./core/multi-datasource.md)。
+> 若把数据源配置到 `mybatis-flex.datasource` 下，使用 mybatis-flex 的数据源发现机制，
+> 使用 druid 则可以不用配置 type，更多文档参考：[多数据源章节](./core/multi-datasource.md)。
+
+## 多数据源下，使用 Druid 无法启动，出现 "Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured." 错误。
+
+在多数据源的场景下，不能使用 "druid-spring-boot-starter" 依赖，只能使用 "druid" 。
+
+```xml
+ <dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid-spring-boot-starter</artifactId>
+    <version>${druid.version}</version>
+</dependency>
+```
+
+需要把以上的依赖，修改如下：
+
+```xml
+ <dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>${druid.version}</version>
+</dependency>
+```
+
+>错误原因是：druid-spring-boot-starter 内的 DruidDataSourceAutoConfigure 会去自动加载 spring.datasource 下的配置，当使用 MyBatis-Flex 的多数据源时，
+> 这个配置已经不存在了。
 
 ## 与 PageHelper 集成出现错误
 
-在社区中，一些老的项目在使用到了开源项目 PageHelper，用于解决 xml 的分页问题，在和 Mybatis-flex 整合使用中，出现了一些错误，
+在社区中，一些老的项目在使用到了开源项目 PageHelper，用于解决 xml 的分页问题，在和 MyBatis-flex 整合使用中，出现了一些错误，
 这是许多热心的同学给出的解决方案：https://gitee.com/mybatis-flex/mybatis-flex/issues/I71AUE

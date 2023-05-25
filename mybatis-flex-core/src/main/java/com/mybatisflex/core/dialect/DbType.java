@@ -55,10 +55,6 @@ public enum DbType {
      */
     POSTGRE_SQL("postgresql", "PostgreSQL 数据库"),
     /**
-     * SQLSERVER 2005
-     */
-    SQLSERVER_2005("sqlserver2005", "SQLServer2005 数据库"),
-    /**
      * SQLSERVER
      */
     SQLSERVER("sqlserver", "SQLServer 数据库"),

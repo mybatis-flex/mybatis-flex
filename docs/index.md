@@ -22,6 +22,6 @@ features:
   - title: 更灵活
     details: MyBatis-Flex 提供了非常灵活的 QueryWrapper，支持关联查询、多表查询、多主键、逻辑删除、乐观锁更新、数据填充、数据脱敏、等等....
   - title: 更高的性能
-    details: MyBatis-Flex 通过独特的架构，没有任何 Mybatis 拦截器、在 SQL 执行的过程中，没有任何的 Sql Parse，因此会带来指数级的性能增长。
+    details: MyBatis-Flex 通过独特的架构，没有任何 MyBatis 拦截器、在 SQL 执行的过程中，没有任何的 SQL Parse，因此会带来指数级的性能增长。
 ---
 

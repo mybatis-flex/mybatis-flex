@@ -23,6 +23,7 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected List<QueryTable> queryTables;
     protected String dataSource;
+    protected String hint;
 
     protected List<QueryColumn> selectColumns;
     protected List<Join> joins;
@@ -36,6 +37,8 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected Integer limitOffset;
     protected Integer limitRows;
+
+    protected List<String> endFragments;
 
     protected Map<String, Object> context;
 
@@ -52,7 +55,7 @@ public class BaseQueryWrapper<T> implements Serializable {
     }
 
 
-    protected T AddJoin(Join join) {
+    protected T addJoin(Join join) {
         if (joins == null) {
             joins = new LinkedList<>();
         }
@@ -119,6 +122,13 @@ public class BaseQueryWrapper<T> implements Serializable {
         joinTables.add(queryTable);
     }
 
+    protected void addEndFragment(String fragment){
+        if (endFragments == null){
+            endFragments = new ArrayList<>();
+        }
+        endFragments.add(fragment);
+    }
+
 
     protected List<QueryTable> getQueryTables() {
         return queryTables;
@@ -134,6 +144,14 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected void setDataSource(String dataSource) {
         this.dataSource = dataSource;
+    }
+
+    protected String getHint() {
+        return hint;
+    }
+
+    protected void setHint(String hint) {
+        this.hint = hint;
     }
 
     protected List<QueryColumn> getSelectColumns() {
@@ -210,6 +228,14 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected void setLimitRows(Integer limitRows) {
         this.limitRows = limitRows;
+    }
+
+    protected List<String> getEndFragments() {
+        return endFragments;
+    }
+
+    protected void setEndFragments(List<String> endFragments) {
+        this.endFragments = endFragments;
     }
 
     protected Map<String, Object> getContext() {

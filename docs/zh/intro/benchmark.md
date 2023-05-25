@@ -1,6 +1,6 @@
-# Mybatis-Flex 和同类框架「性能」对比
+# MyBatis-Flex 和同类框架「性能」对比
 
-本文主要是展示了 Mybatis-Flex 和 Mybaits-Plus 的「性能」对比。Mybaits-Plus 是一个非常优秀 Mybaits 增强框架，
+本文主要是展示了 MyBatis-Flex 和 Mybaits-Plus 的「性能」对比。Mybaits-Plus 是一个非常优秀 Mybaits 增强框架，
 其开源于 2016 年，有很多的成功案例。
 
 本文只阐述了「性能」方面的对比，「功能」对比请参考 [这里](./comparison.md)。
@@ -19,7 +19,7 @@
 
 ## 测试单条数据查询
 
-Mybatis-Flex 的代码如下：
+MyBatis-Flex 的代码如下：
 
 ```java
 QueryWrapper queryWrapper = new QueryWrapper();
@@ -28,7 +28,7 @@ queryWrapper.where(FLEX_ACCOUNT.ID.ge(100)
 mapper.selectOneByQuery(queryWrapper);
 ```
 
-Mybatis-Plus 的代码如下：
+MyBatis-Plus 的代码如下：
 
 ```java
 QueryWrapper queryWrapper = new QueryWrapper();
@@ -85,14 +85,14 @@ mapper.selectOne(queryWrapper);
 ```
 
 ::: tip 测试结论
-> Mybatis-Flex 的查询单条数据的速度，大概是 Mybatis-Plus 的 5 ~ 10+ 倍。
+> MyBatis-Flex 的查询单条数据的速度，大概是 MyBatis-Plus 的 5 ~ 10+ 倍。
 :::
 
 ## 测试列表(List)数据查询
 
 要求返回的数据为 10 条数据。
 
-Mybatis-Flex 的代码如下：
+MyBatis-Flex 的代码如下：
 
 ```java
 QueryWrapper queryWrapper = new QueryWrapper();
@@ -102,7 +102,7 @@ queryWrapper.where(FLEX_ACCOUNT.ID.ge(100).or(FLEX_ACCOUNT.USER_NAME
 mapper.selectListByQuery(queryWrapper);
 ```
 
-Mybatis-Plus 的代码如下：
+MyBatis-Plus 的代码如下：
 
 ```java
 QueryWrapper queryWrapper = new QueryWrapper();
@@ -159,13 +159,13 @@ mapper.selectList(queryWrapper);
 ```
 
 ::: tip 测试结论
-> Mybatis-Flex 的查询 10 条数据的速度，大概是 Mybatis-Plus 的 5~10 倍左右。
+> MyBatis-Flex 的查询 10 条数据的速度，大概是 MyBatis-Plus 的 5~10 倍左右。
 :::
 
 ## 分页查询
 
 
-Mybatis-Flex 的代码如下：
+MyBatis-Flex 的代码如下：
 
 ```java
 QueryWrapper queryWrapper = new QueryWrapper()
@@ -173,7 +173,7 @@ QueryWrapper queryWrapper = new QueryWrapper()
 mapper.paginate(page, pageSize, 20000, queryWrapper);
 ```
 
-Mybatis-Plus 的代码如下：
+MyBatis-Plus 的代码如下：
 
 ```java
 LambdaQueryWrapper<PlusAccount> queryWrapper = new LambdaQueryWrapper<>();

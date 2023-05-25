@@ -22,6 +22,8 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowCPI;
 import com.mybatisflex.core.row.RowMapper;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 
@@ -213,6 +215,36 @@ public class RowSqlProvider {
         return DialectFactory.getDialect().forUpdateBatchById(tableName, rows);
     }
 
+    /**
+     * updateEntity 的 sql 构建
+     *
+     * @param params
+     * @return sql
+     * @see RowMapper#updateEntity(Object entities)
+     */
+    public static String updateEntity(Map params) {
+        Object entity = ProviderUtil.getEntity(params);
+        if (entity == null) {
+            throw FlexExceptions.wrap("entity can not be null");
+        }
+
+        // 该 Mapper 是通用 Mapper  无法通过 ProviderContext 获取，直接使用 TableInfoFactory
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
+
+        // 执行 onUpdate 监听器
+        tableInfo.invokeOnUpdateListener(entity);
+
+        Object[] updateValues = tableInfo.buildUpdateSqlArgs(entity, false, false);
+        Object[] primaryValues = tableInfo.buildPkSqlArgs(entity);
+        Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
+
+        FlexExceptions.assertAreNotNull(primaryValues, "The value of primary key must not be null, entity[%s]", entity);
+
+        ProviderUtil.setSqlArgs(params, ArrayUtil.concat(updateValues, primaryValues, tenantIdArgs));
+
+        return DialectFactory.getDialect().forUpdateEntity(tableInfo, entity, false);
+    }
+
 
     /**
      * selectOneById 的 sql 构建
@@ -248,7 +280,7 @@ public class RowSqlProvider {
         ProviderUtil.setSqlArgs(params, valueArray);
 
 
-        return DialectFactory.getDialect().forSelectListByQuery(queryWrapper);
+        return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
     }
 
     /**
@@ -258,7 +290,7 @@ public class RowSqlProvider {
      * @return sql
      * @see RowMapper#selectCountByQuery(String, QueryWrapper)
      */
-    public static String selectCountByQuery(Map params) {
+    public static String selectObjectByQuery(Map params) {
         String tableName = ProviderUtil.getTableName(params);
 
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
@@ -267,7 +299,7 @@ public class RowSqlProvider {
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
 
-        return DialectFactory.getDialect().forSelectCountByQuery(queryWrapper);
+        return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
     }
 
 

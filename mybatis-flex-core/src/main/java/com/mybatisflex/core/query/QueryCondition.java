@@ -120,7 +120,7 @@ public class QueryCondition implements Serializable {
         this.effective = (effective != null && effective);
     }
 
-    public <T> QueryCondition when(Predicate<T> fn){
+    public <T> QueryCondition when(Predicate<T> fn) {
         Object val = this.value;
         if (LOGIC_LIKE.equals(logic) && val instanceof String) {
             String valStr = (String) val;
@@ -183,8 +183,12 @@ public class QueryCondition implements Serializable {
             if (effectiveBefore != null) {
                 sql.append(effectiveBefore.connector);
             }
+            //列
             sql.append(getColumn().toConditionSql(queryTables, dialect));
+            //逻辑符号
             sql.append(" ").append(logic).append(" ");
+
+            //值（或者问号）
             if (value instanceof QueryColumn) {
                 sql.append(((QueryColumn) value).toConditionSql(queryTables, dialect));
             }
@@ -262,6 +266,19 @@ public class QueryCondition implements Serializable {
             }
         }
         return paramsCount;
+    }
+
+
+    boolean containsTable(String... tables){
+        if (column == null){
+            return false;
+        }
+        for (String table : tables) {
+            if (column.table != null && table.equals(column.table.name)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

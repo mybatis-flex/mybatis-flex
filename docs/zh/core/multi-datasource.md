@@ -30,7 +30,7 @@ dataSource2.setJdbcUrl(....)
 DataSource dataSource3 = new HikariDataSource();
 dataSource3.setJdbcUrl(....)
         
-MybatisFlexBootstrap.getInstance()
+MyBatisFlexBootstrap.getInstance()
         .setDataSource("ds1", dataSource1)
         .addDataSource("ds2", dataSource2)
         .addDataSource("ds3", dataSource3)

@@ -456,8 +456,7 @@ public class TableInfo {
                     continue;
                 }
 
-                Object value = getPropertyValue(metaObject, property);
-
+                Object value = buildColumnSqlArg(metaObject, column);
                 // ModifyAttrsRecord 忽略 ignoreNulls 的设置，
                 // 当使用 ModifyAttrsRecord 时，可以理解为要对字段进行 null 值进行更新，否则没必要使用 ModifyAttrsRecord
                 // if (ignoreNulls && value == null) {
@@ -530,21 +529,24 @@ public class TableInfo {
             CPI.putContext(queryWrapper, APPEND_CONDITIONS_FLAG, Boolean.TRUE);
         }
 
+        //select xxx.id,(select..) from xxx
+        List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
+        if (selectColumns != null && !selectColumns.isEmpty()) {
+            for (QueryColumn queryColumn : selectColumns) {
+                if (queryColumn instanceof SelectQueryColumn) {
+                    QueryWrapper selectColumnQueryWrapper = CPI.getQueryWrapper((SelectQueryColumn) queryColumn);
+                    doAppendConditions(entity, selectColumnQueryWrapper);
+                }
+            }
+        }
+
         //select * from (select ... from ) 中的子查询处理
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
         if (queryTables != null && !queryTables.isEmpty()) {
             for (QueryTable queryTable : queryTables) {
                 if (queryTable instanceof SelectQueryTable) {
                     QueryWrapper selectQueryWrapper = ((SelectQueryTable) queryTable).getQueryWrapper();
-                    List<QueryTable> selectQueryTables = CPI.getQueryTables(selectQueryWrapper);
-                    if (selectQueryTables != null && !selectQueryTables.isEmpty()) {
-                        for (QueryTable selectQueryTable : selectQueryTables) {
-                            TableInfo tableInfo = TableInfoFactory.ofTableName(selectQueryTable.getName());
-                            if (tableInfo != null) {
-                                tableInfo.appendConditions(entity, selectQueryWrapper);
-                            }
-                        }
-                    }
+                    doAppendConditions(entity, selectQueryWrapper);
                 }
             }
         }
@@ -578,13 +580,7 @@ public class TableInfo {
         List<QueryWrapper> childSelects = CPI.getChildSelect(queryWrapper);
         if (CollectionUtil.isNotEmpty(childSelects)) {
             for (QueryWrapper childQueryWrapper : childSelects) {
-                List<QueryTable> childQueryTables = CPI.getQueryTables(childQueryWrapper);
-                for (QueryTable queryTable : childQueryTables) {
-                    TableInfo tableInfo = TableInfoFactory.ofTableName(queryTable.getName());
-                    if (tableInfo != null) {
-                        tableInfo.appendConditions(entity, childQueryWrapper);
-                    }
-                }
+                doAppendConditions(entity, childQueryWrapper);
             }
         }
 
@@ -593,16 +589,22 @@ public class TableInfo {
         if (CollectionUtil.isNotEmpty(unions)) {
             for (UnionWrapper union : unions) {
                 QueryWrapper unionQueryWrapper = union.getQueryWrapper();
-                List<QueryTable> unionQueryTables = CPI.getQueryTables(unionQueryWrapper);
-                for (QueryTable queryTable : unionQueryTables) {
-                    TableInfo tableInfo = TableInfoFactory.ofTableName(queryTable.getName());
-                    if (tableInfo != null) {
-                        tableInfo.appendConditions(entity, unionQueryWrapper);
-                    }
+                doAppendConditions(entity, unionQueryWrapper);
+            }
+        }
+    }
+
+
+    private void doAppendConditions(Object entity, QueryWrapper queryWrapper) {
+        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        if (queryTables != null && !queryTables.isEmpty()) {
+            for (QueryTable queryTable : queryTables) {
+                TableInfo tableInfo = TableInfoFactory.ofTableName(queryTable.getName());
+                if (tableInfo != null) {
+                    tableInfo.appendConditions(entity, queryWrapper);
                 }
             }
         }
-
     }
 
 
@@ -640,6 +642,16 @@ public class TableInfo {
                     .typeHandler(columnInfo.buildTypeHandler())
                     .build();
             resultMappings.add(mapping);
+
+            //add property mapper for sql as ...
+            if (!Objects.equals(columnInfo.getColumn(), columnInfo.getProperty())) {
+                ResultMapping propertyMapping = new ResultMapping.Builder(configuration, columnInfo.getProperty(),
+                        columnInfo.getProperty(), columnInfo.getPropertyType())
+                        .jdbcType(columnInfo.getJdbcType())
+                        .typeHandler(columnInfo.buildTypeHandler())
+                        .build();
+                resultMappings.add(propertyMapping);
+            }
         }
 
         for (IdInfo idInfo : primaryKeyList) {
@@ -660,9 +672,11 @@ public class TableInfo {
         ColumnInfo columnInfo = columnInfoMapping.get(column);
         Object value = getPropertyValue(metaObject, columnInfo.property);
 
-        TypeHandler typeHandler = columnInfo.buildTypeHandler();
-        if (value != null && typeHandler != null) {
-            return new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
+        if (value != null) {
+            TypeHandler typeHandler = columnInfo.buildTypeHandler();
+            if (typeHandler != null) {
+                return new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
+            }
         }
 
         return value;
@@ -783,7 +797,9 @@ public class TableInfo {
         //默认使用第一个作为插入的租户ID
         Object tenantId = tenantIds[0];
         if (tenantId != null) {
-            metaObject.setValue(columnInfoMapping.get(tenantIdColumn).property, tenantId);
+            String property = columnInfoMapping.get(tenantIdColumn).property;
+            Class<?> setterType = metaObject.getSetterType(property);
+            metaObject.setValue(property, ConvertUtil.convert(tenantId, setterType));
         }
     }
 
@@ -802,7 +818,6 @@ public class TableInfo {
         if (columnValue == null) {
             String property = columnInfoMapping.get(logicDeleteColumn).property;
             Class<?> setterType = metaObject.getSetterType(property);
-
             Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
             metaObject.setValue(property, ConvertUtil.convert(normalValueOfLogicDelete, setterType));
         }

@@ -1,11 +1,11 @@
-# 使用 Mybatis 原生功能
+# 使用 MyBatis 原生功能
 
-我们使用 Mybatis-Flex 作为 Mybatis 的增强框架进行代码开发，并不会影响原有的 Mybatis 的任何功能。 
+我们使用 MyBatis-Flex 作为 MyBatis 的增强框架进行代码开发，并不会影响原有的 MyBatis 的任何功能。 
 
-## 使用 `@Select` 等 Mybatis 原生注解
+## 使用 `@Select` 等 MyBatis 原生注解
 
-Mybatis 提供了 `@Insert` 、`@Delete` 、`@Update` 、`@Select` 4 个注解，用于对 Mapper 的方法进行配置，用于原生编写原生 SQL 进行增删改查，
-在 Mybatis-Flex 我们一样可以使用这些注解。例如：
+MyBatis 提供了 `@Insert` 、`@Delete` 、`@Update` 、`@Select` 4 个注解，用于对 Mapper 的方法进行配置，用于原生编写原生 SQL 进行增删改查，
+在 MyBatis-Flex 我们一样可以使用这些注解。例如：
 
 ```java
 public interface MyAccountMapper extends BaseMapper<Account> {
@@ -15,9 +15,9 @@ public interface MyAccountMapper extends BaseMapper<Account> {
 }
 ```
 
-`@Insert` 、`@Delete` 、`@Update` 等注解也是一样的，也就是说，原有的 Mybatis 功能如何使用，在 Mybatis-Flex 就如何使用。
+`@Insert` 、`@Delete` 、`@Update` 等注解也是一样的，也就是说，原有的 MyBatis 功能如何使用，在 MyBatis-Flex 就如何使用。
 
-`@InsertProvider`、`@DeleteProvider`、`@UpdateProvider`、`@SelectProvider` 等还是和原生 Mybatis 一样的用法。
+`@InsertProvider`、`@DeleteProvider`、`@UpdateProvider`、`@SelectProvider` 等还是和原生 MyBatis 一样的用法。
 
 
 ## 使用 xml 的方式

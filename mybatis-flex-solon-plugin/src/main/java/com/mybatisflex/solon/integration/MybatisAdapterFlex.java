@@ -4,13 +4,15 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
+import com.mybatisflex.core.row.RowMapperInvoker;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.solon.integration.MybatisAdapterDefault;
 import org.noear.solon.Utils;
 import org.noear.solon.core.BeanWrap;
 import org.noear.solon.core.Props;
 import org.noear.solon.core.VarHolder;
-import org.apache.ibatis.solon.integration.MybatisAdapterDefault;
+import org.noear.solon.core.event.EventBus;
 
 import javax.sql.DataSource;
 
@@ -84,6 +86,9 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
         globalConfig.setConfiguration(config);
 
         FlexGlobalConfig.setConfig(environment.getId(), globalConfig, false);
+
+        //增加事件扩展机制
+        EventBus.push(globalConfig);
     }
 
     /**
@@ -102,13 +107,24 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
         return factory;
     }
 
+    RowMapperInvoker rowMapperInvoker;
+
     @Override
     public void injectTo(VarHolder varH) {
         super.injectTo(varH);
 
-        //@Db("db1") SqlSessionFactory factory;
+        //@Db("db1") FlexGlobalConfig globalConfig;
         if (FlexGlobalConfig.class.isAssignableFrom(varH.getType())) {
             varH.setValue(this.getGlobalConfig());
+            return;
+        }
+
+        //@Db("db1") RowMapperInvoker rowMapper;
+        if (RowMapperInvoker.class.equals(varH.getType())) {
+            if (rowMapperInvoker == null) {
+                rowMapperInvoker = new RowMapperInvoker(getFactory());
+            }
+            varH.setValue(rowMapperInvoker);
             return;
         }
     }

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>mybatis-flex-test</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.2.3</version>
+        <version>1.3.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-core</artifactId>
-            <version>1.2.3</version>
+            <version>1.3.0</version>
         </dependency>
 
         <dependency>
@@ -38,6 +38,18 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.199</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -99,6 +111,7 @@
             <version>3.22.0</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
 </project>

@@ -86,9 +86,9 @@ class HelloWorld {
 
 ```java
 //示例2：通过 QueryWrapper 构建条件查询数据列表
-QueryWrapper query=QueryWrapper.create()
+QueryWrapper query = QueryWrapper.create()
     .select()
-    .from(ACCOUNT)
+    .from(ACCOUNT) // 单表查询时表名可省略，自动使用Mapper泛型对应的表
     .where(ACCOUNT.ID.ge(100))
     .and(ACCOUNT.USER_NAME.like("张").or(ACCOUNT.USER_NAME.like("李")));
 
@@ -96,7 +96,7 @@ QueryWrapper query=QueryWrapper.create()
 // ELECT * FROM tb_account
 // WHERE tb_account.id >=  100
 // AND (tb_account.user_name LIKE '%张%' OR tb_account.user_name LIKE '%李%' )
-List<Account> accounts = mapper.selectListByQuery(query);
+List<Account> accounts = accountMapper.selectListByQuery(query);
 ```
 
 示例3：分页查询
@@ -117,7 +117,7 @@ QueryWrapper query=QueryWrapper.create()
 // AND (user_name LIKE '%张%' OR user_name LIKE '%李%' )
 // ORDER BY `id` DESC
 // LIMIT 40,10
-Page<Account> accounts = mapper.paginate(5,10,query);
+Page<Account> accounts = mapper.paginate(5, 10, query);
 ```
 
 ## QueryWrapper 示例
@@ -125,20 +125,30 @@ Page<Account> accounts = mapper.paginate(5,10,query);
 ### select *
 
 ```java
-QueryWrapper query=new QueryWrapper();
-query.select().from(ACCOUNT)
+QueryWrapper query = new QueryWrapper();
+query.select().from(ACCOUNT);
 
 // SQL: 
 // SELECT * FROM tb_account
 ```
+也可以通过静态方法简写成如下两种形式，效果完全相同：
+```java
+// 方式1
+QueryWrapper query = QueryWrapper.create()
+        .select().from(ACCOUNT);
+// 方式2
+QueryWrapper query = select().from(ACCOUNT);
 
+// SQL: 
+// SELECT * FROM tb_account
+```
 ### select columns
 
 简单示例：
 ```java
-QueryWrapper query=new QueryWrapper();
-query.select(ACCOUNT.ID,ACCOUNT.USER_NAME)
-    .from(ACCOUNT)
+QueryWrapper query = new QueryWrapper();
+query.select(ACCOUNT.ID, ACCOUNT.USER_NAME)
+    .from(ACCOUNT);
 
 // SQL: 
 // SELECT id, user_name 
@@ -164,7 +174,7 @@ QueryWrapper query = new QueryWrapper()
 ### select functions
 
 ```java
-QueryWrapper query=new QueryWrapper()
+QueryWrapper query = new QueryWrapper()
     .select(
         ACCOUNT.ID,
         ACCOUNT.USER_NAME,
@@ -180,9 +190,10 @@ QueryWrapper query=new QueryWrapper()
 ```
 
 ### where
-
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+Integer num = 100;
+String userName = "michael";
+QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .where(ACCOUNT.ID.ge(100))
@@ -220,6 +231,21 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 // SQL: 
 // SELECT * FROM tb_account 
 // WHERE user_name LIKE  ? 
+```
+### where 自动忽略 null 值
+当遇到条件值为 null 时，会自动忽略该条件，不会拼接到 SQL 中
+```java
+Integer num = null;
+String userName = "michael";
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(num))
+    .and(ACCOUNT.USER_NAME.like(userName));
+
+// SQL: 
+// SELECT * FROM tb_account 
+// WHERE user_name LIKE '%michael%' 
 ```
 
 
@@ -262,7 +288,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ### and (...) or (...)
 
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .where(ACCOUNT.ID.ge(100))
@@ -279,7 +305,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ### group by
 
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .groupBy(ACCOUNT.USER_NAME);
@@ -292,7 +318,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ### having
 
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .groupBy(ACCOUNT.USER_NAME)
@@ -307,7 +333,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ### orderBy
 
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .orderBy(ACCOUNT.AGE.asc()
@@ -321,7 +347,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ### join
 
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
@@ -400,31 +426,31 @@ Db + Row 工具类，提供了在 Entity 实体类之外的数据库操作能力
 ```java
 //使用原生 SQL 插入数据
 String sql="insert into tb_account(id,name) value (?, ?)";
-Db.insertBySql(sql,1,"michael");
+Db.insertBySql(sql, 1, "michael");
 
 //使用 Row 插入数据
-Row account=new Row();
-account.set("id",100);
-account.set("name","Michael");
-Db.insert("tb_account",account);
+Row account = new Row();
+account.set("id", 100);
+account.set("name", "Michael");
+Db.insert("tb_account", account);
 
 
 //根据主键查询数据
-Row row=Db.selectOneById("tb_account","id",1);
+Row row = Db.selectOneById("tb_account", "id", 1);
 
 //Row 可以直接转换为 Entity 实体类，且性能极高
-Account account=row.toEntity(Account.class);
+Account account = row.toEntity(Account.class);
 
 
 //查询所有大于 18 岁的用户
-String listsql="select * from tb_account where age > ?"
-List<Row> rows=Db.selectListBySql(sql,18);
+String listsql = "select * from tb_account where age > ?"
+List<Row> rows = Db.selectListBySql(sql, 18);
 
 
 //分页查询：每页 10 条数据，查询第 3 页的年龄大于 18 的用户
-QueryWrapper query=QueryWrapper.create()
+QueryWrapper query = QueryWrapper.create()
 .where(ACCOUNT.AGE.ge(18));
-Page<Row> rowPage=Db.paginate("tb_account",3,10,query);
+Page<Row> rowPage = Db.paginate("tb_account", 3, 10, query);
 ```
 
 > Db 工具类还提供了更多 增、删、改、查和分页查询等方法。
@@ -444,7 +470,7 @@ update(T entity)
 有些场景下，我们可能希望只更新 几个 字段，而其中个别字段需要更新为 null。此时需要用到 `UpdateEntity` 工具类，以下是示例代码：
 
 ```java
-Account account=UpdateEntity.of(Account.class);
+Account account = UpdateEntity.of(Account.class);
 account.setId(100);
 account.setUserName(null);
 account.setSex(1);
@@ -466,7 +492,7 @@ set user_name = ?, sex = ? where id = ?
 
 ## 自定义 TypeHandler
 
-使用 @column 注解：
+使用 @Column 注解：
 
 ```java
 @Table("tb_account")
@@ -488,7 +514,6 @@ public class Account {
         }
         options.put(key, value);
     }
-    
 }
 ```
 
@@ -503,7 +528,7 @@ account.addOption("c3", new Date());
 ```
 mybatis 日志：
 ```
-==>  Preparing: INSERT INTO tb_account (user_name, options) VALUES (?, ?)
+==> Preparing: INSERT INTO tb_account (user_name, options) VALUES (?, ?)
 ==> Parameters: test(String), {"c3":"2023-03-17 09:10:16.546","c1":11,"c2":"zhang"}(String)
 ```
 
@@ -545,7 +570,7 @@ public class UUIDKeyGenerator implements IKeyGenerator {
 第 2 步：注册 UUIDKeyGenerator
 
 ```java
-KeyGeneratorFactory.register("myUUID",new UUIDKeyGenerator());
+KeyGeneratorFactory.register("myUUID", new UUIDKeyGenerator());
 ```
 
 第 3 步：在 Entity 里使用 "myUUID" 生成器：

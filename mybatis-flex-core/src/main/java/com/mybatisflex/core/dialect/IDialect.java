@@ -25,6 +25,8 @@ public interface IDialect {
 
     String wrap(String keyword);
 
+    String forHint(String hintString);
+
     String forInsertRow(String tableName, Row row);
 
     String forInsertBatchWithFirstRowColumns(String tableName, List<Row> rows);
@@ -43,14 +45,9 @@ public interface IDialect {
 
     String forSelectOneById(String tableName, String[] primaryKeys, Object[] primaryValues);
 
-    String forSelectListByQuery(QueryWrapper queryWrapper);
-
-    String forSelectCountByQuery(QueryWrapper queryWrapper);
-
+    String forSelectByQuery(QueryWrapper queryWrapper);
 
     String buildSelectSql(QueryWrapper queryWrapper);
-
-    String buildSelectCountSql(QueryWrapper queryWrapper);
 
     String buildDeleteSql(QueryWrapper queryWrapper);
 

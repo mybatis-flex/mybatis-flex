@@ -55,6 +55,14 @@ public class CPI {
         queryWrapper.setDataSource(datasource);
     }
 
+    public static String getHint(QueryWrapper queryWrapper) {
+        return queryWrapper.getHint();
+    }
+
+    public static void setHint(QueryWrapper queryWrapper, String hint) {
+        queryWrapper.setHint(hint);
+    }
+
     public static List<QueryColumn> getSelectColumns(QueryWrapper queryWrapper) {
         return queryWrapper.getSelectColumns();
     }
@@ -80,6 +88,13 @@ public class CPI {
         queryWrapper.setJoins(joins);
     }
 
+    public static String getJoinType(Join join) {
+        return join.type;
+    }
+
+    public static QueryTable getJoinQueryTable(Join join) {
+        return join.getQueryTable();
+    }
 
     public static List<QueryTable> getJoinTables(QueryWrapper queryWrapper) {
         return queryWrapper.getJoinTables();
@@ -143,6 +158,15 @@ public class CPI {
         queryWrapper.setLimitRows(limitRows);
     }
 
+    public static List<String> getEndFragments(QueryWrapper queryWrapper) {
+        return queryWrapper.getEndFragments();
+    }
+
+    public static void setEndFragments(QueryWrapper queryWrapper,List<String> endFragments) {
+        queryWrapper.setEndFragments(endFragments);
+    }
+
+
     public static Map<String, Object> getContext(QueryWrapper queryWrapper) {
         return queryWrapper.getContext();
     }
@@ -174,5 +198,13 @@ public class CPI {
                 && CollectionUtil.isEmpty(queryWrapper.getQueryTables())) {
             queryWrapper.from(tableName);
         }
+    }
+
+    public static boolean containsTable(QueryCondition condition, String... tables) {
+        return condition != null && condition.containsTable(tables);
+    }
+
+    public static QueryWrapper getQueryWrapper(SelectQueryColumn selectQueryColumn) {
+        return selectQueryColumn.getQueryWrapper();
     }
 }

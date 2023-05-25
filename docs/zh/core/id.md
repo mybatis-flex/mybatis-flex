@@ -1,6 +1,6 @@
 # @Id 主键的使用
 
-在 Entity 类中，Mybatis-Flex 是使用 `@Id` 注解来标识主键的，如下代码所示：
+在 Entity 类中，MyBatis-Flex 是使用 `@Id` 注解来标识主键的，如下代码所示：
 
 ```java 5
 @Table("tb_account")
@@ -77,16 +77,16 @@ public enum KeyType {
 
 ## 多主键、复合主键
 
-Mybatis-Flex 多主键就是在 Entity 类里有多个 `@Id` 注解标识而已，比如：
+MyBatis-Flex 多主键就是在 Entity 类里有多个 `@Id` 注解标识而已，比如：
 
 ```java
 @Table("tb_account")
 public class Account {
 
-    @Id(keyType=KeyType.Auto)
+    @Id(keyType = KeyType.Auto)
     private Long id;
-    
-    @Id(keyType=KeyType.Generator, value="uuid")
+
+    @Id(keyType = KeyType.Generator, value = KeyGenerators.uuid)
     private String otherId;
 
     //getter setter
@@ -96,19 +96,19 @@ public class Account {
 
 ## 内置主键生成器
 
-MyBatis-Flex 内置了三种主键生成器：
+MyBatis-Flex 内置了三种主键生成器，他们的名称都定义在 `KeyGenerators` 类里：
 
-- **UUIDKeyGenerator**：生成 UUID 作为数据库主键。
-- **FlexIDKeyGenerator**：独创的 FlexID 算法生成数据库主键（了解更多信息请参阅[源码](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/keygen/impl/FlexIDKeyGenerator.java)）；
-- **SnowFlakeIDKeyGenerator**：通过雪花算法生成数据库主键。
+- **uuid**：通过 `UUIDKeyGenerator` 生成 UUID 作为数据库主键。
+- **flexId**：独创的 FlexID 算法生成数据库主键（了解更多信息请参阅[源码](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/keygen/impl/FlexIDKeyGenerator.java))。
+- **snowFlakeId**：通过雪花算法（`SnowFlakeIDKeyGenerator`）生成数据库主键。
 
-这些主键生成器无需注册，直接使用即可：
+这些主键生成器为 MyBatis-Flex 内置的，可直接使用：
 
-```java
+```java 4
 @Table("tb_account")
 public class Account {
 
-    @Id(keyType=KeyType.Generator, value="flexId")
+    @Id(keyType=KeyType.Generator, value=KeyGenerators.flexId)
     private Long id;
     
     //getter setter
@@ -166,7 +166,7 @@ public class Account {
 一般的项目中，通常是许多的 Entity 使用同一个数据库，同时使用一种主键生成方式，比如说都使用 自增，
 或者都使用通过序列（Sequence）生成，此时，我们是没有必要为每个 Entity 单独配置一样内容的。
 
-Mybatis-Flex 提供了一种全局配置的方式，代码如下：
+MyBatis-Flex 提供了一种全局配置的方式，代码如下：
 
 ```java
 FlexGlobalConfig.KeyConfig keyConfig = new FlexGlobalConfig.KeyConfig();
@@ -183,7 +183,7 @@ FlexGlobalConfig.getDefaultConfig().setKeyConfig(keyConfig);
 @Table("tb_account")
 public class Account {
 
-    @Id()
+    @Id
     private Long id;
     
 }

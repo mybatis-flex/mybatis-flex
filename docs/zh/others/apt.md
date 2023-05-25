@@ -1,6 +1,6 @@
-# Mybatis-Flex APT 配置
+# MyBatis-Flex APT 配置
 
-Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时候，会自动根据 Entity 类定义的字段帮你生成 "ACCOUNT" 类以及 Entity 对应的 Mapper 类，
+MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时候，会自动根据 Entity 类定义的字段帮你生成 "ACCOUNT" 类以及 Entity 对应的 Mapper 类，
 通过开发工具构建项目（如下图），或者执行 maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
 
 ![](../../assets/images/build_idea.png)
@@ -9,7 +9,7 @@ Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 
 ## 配置文件和选项
 
-要对Mybatis-Flex 的APT细节选项进行配置，你需要在`resources`目录下创建名为`mybatis-flex.properties`的文件。
+要对MyBatis-Flex 的APT细节选项进行配置，你需要在`resources`目录下创建名为`mybatis-flex.properties`的文件。
 
 支持的配置选项如下：
 
@@ -18,6 +18,7 @@ Mybatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 | processor.enable                | 全局启用apt开关          | true/false                                               | true                                 |
 | processor.mappersGenerateEnable | 开启 Mapper 自动生成     | true/false                                               | false                                |
 | processor.genPath               | APT 代码生成路径         | 合法的绝对或相对路径                                     | target/generated-sources/annotations |
+| processor.allInTables           | 是否所有的类都生成在 Tables 类里 | true/false                                                | false              |
 | processor.tablesPackage         | Tables 类名              | 合法的包名                                               | ${entityPackage}.table               |
 | processor.tablesClassName       | Tables 类名              | 合法的类名                                               | Tables                               |
 | processor.baseMapperClass       | 自定义 Mapper 的父类     | 全路径类名                                               | com.mybatisflex.core.BaseMapper      |
@@ -135,7 +136,7 @@ processor.baseMapperClass=com.domain.mapper.MyBaseMapper
 ## 和 Lombok、Mapstruct 整合
 
 在很多项目中，用到了 Lombok 帮我们减少代码编写，同时用到 Mapstruct 进行 bean 转换。使用到 Lombok 和 Mapstruct 时，其要求我们再 pom.xml 添加 `annotationProcessorPaths` 配置，
-此时，我们也需要把 Mybatis-Flex 的 annotation 添加到 `annotationProcessorPaths` 配置里去，如下图所示：
+此时，我们也需要把 MyBatis-Flex 的 annotation 添加到 `annotationProcessorPaths` 配置里去，如下图所示：
 
 ```xml 24,25,26,27,28
 <plugin>
@@ -178,7 +179,7 @@ processor.baseMapperClass=com.domain.mapper.MyBaseMapper
 ```
 dependencies {
     ...
-    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.2.3'
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.3.0'
 }
 ```
 

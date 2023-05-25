@@ -15,7 +15,12 @@
  */
 package com.mybatisflex.core.dialect;
 
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryOrderBy;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.CollectionUtil;
+
+import java.util.List;
 
 /**
  * limit 和 offset 参数的处理器
@@ -57,28 +62,32 @@ public interface LimitOffsetProcessor {
     LimitOffsetProcessor DERBY = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             // OFFSET ** ROWS FETCH NEXT ** ROWS ONLY")
-            sql.append(" OFFSET ").append(limitOffset).append("  ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
+            sql.append(" OFFSET ").append(limitOffset).append(" ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
         } else if (limitRows != null) {
-            // FETCH FIRST 20 ROWS ONLY
-            sql.append(" FETCH FIRST ").append(limitRows).append(" ROWS ONLY");
+            sql.append(" OFFSET 0 ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
         }
         return sql;
     };
 
     /**
-     * db2 的处理器
-     * 适合  {@link DbType#DB2,DbType#SQLSERVER_2005}
+     * derby 的处理器
+     * 适合  {@link DbType#DERBY,DbType#ORACLE_12C,DbType#SQLSERVER ,DbType#POSTGRE_SQL}
      */
-    LimitOffsetProcessor DB2 = (sql, queryWrapper, limitRows, limitOffset) -> {
+    LimitOffsetProcessor SQLSERVER = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             // OFFSET ** ROWS FETCH NEXT ** ROWS ONLY")
-            sql.append(" OFFSET ").append(limitOffset).append("  ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
+            sql.append(" OFFSET ").append(limitOffset).append(" ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
         } else if (limitRows != null) {
-            // FETCH FIRST 20 ROWS ONLY
-            sql.append(" FETCH FIRST ").append(limitRows).append(" ROWS ONLY");
+            List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
+            if (CollectionUtil.isNotEmpty(orderBys)) {
+                sql.append(" OFFSET 0 ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
+            } else {
+                sql.insert(6, " TOP " + limitRows);
+            }
         }
         return sql;
     };
+
 
     /**
      * Informix 的处理器

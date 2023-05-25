@@ -16,6 +16,7 @@
 package com.mybatisflex.core.mybatis;
 
 import com.mybatisflex.annotation.UseDataSource;
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.datasource.FlexDataSource;
@@ -45,7 +46,11 @@ public class MapperInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         boolean clearDsKey = false;
         boolean clearDbType = false;
+        boolean isSelectListByQueryAsMethod = FlexConsts.METHOD_SELECT_LIST_BY_QUERY_AS.equals(method.getName());
         try {
+            if (isSelectListByQueryAsMethod){
+                MappedStatementTypes.setCurrentType((Class<?>) args[1]);
+            }
             //获取用户动态指定，由用户指定数据源，则应该有用户清除
             String dataSourceKey = DataSourceKey.get();
 
@@ -73,6 +78,9 @@ public class MapperInvocationHandler implements InvocationHandler {
             }
             return method.invoke(mapper, args);
         } finally {
+            if (isSelectListByQueryAsMethod){
+                MappedStatementTypes.clear();
+            }
             if (clearDbType) {
                 DialectFactory.clearHintDbType();
             }

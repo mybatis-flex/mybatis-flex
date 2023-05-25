@@ -16,22 +16,28 @@
 package com.mybatisflex.core;
 
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.field.FieldQuery;
+import com.mybatisflex.core.field.FieldQueryBuilder;
+import com.mybatisflex.core.mybatis.MappedStatementTypes;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.EntitySqlProvider;
-import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.query.QueryCondition;
-import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
+import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.ConvertUtil;
 import com.mybatisflex.core.util.ObjectUtil;
+import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
+
+import static com.mybatisflex.core.query.QueryMethods.count;
 
 public interface BaseMapper<T> {
 
@@ -41,8 +47,8 @@ public interface BaseMapper<T> {
      * @param entity 实体类
      * @return 返回影响的行数
      */
-    default int insert(T entity){
-        return insert(entity,false);
+    default int insert(T entity) {
+        return insert(entity, false);
     }
 
 
@@ -53,10 +59,9 @@ public interface BaseMapper<T> {
      * @param entity 实体类
      * @return 返回影响的行数
      */
-    default int insertSelective(T entity){
-        return insert(entity,true);
+    default int insertSelective(T entity) {
+        return insert(entity, true);
     }
-
 
 
     /**
@@ -68,7 +73,6 @@ public interface BaseMapper<T> {
      */
     @InsertProvider(type = EntitySqlProvider.class, method = "insert")
     int insert(@Param(FlexConsts.ENTITY) T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls);
-
 
 
     /**
@@ -144,12 +148,12 @@ public interface BaseMapper<T> {
     /**
      * 根据多个 id 批量删除数据
      *
-     * @param ids ids 列表
+     * @param ids  ids 列表
      * @param size 切分大小
      * @return 返回影响的行数
      * @see com.mybatisflex.core.provider.EntitySqlProvider#deleteBatchByIds(Map, ProviderContext)
      */
-    default int deleteBatchByIds(@Param(FlexConsts.PRIMARY_VALUE) List<? extends Serializable> ids, int size) {
+    default int deleteBatchByIds(List<? extends Serializable> ids, int size) {
         if (size <= 0) {
             size = 1000;//默认1000
         }
@@ -263,7 +267,7 @@ public interface BaseMapper<T> {
      * @return 返回影响的行数
      */
 
-    default int updateByQuery(@Param(FlexConsts.ENTITY) T entity, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper) {
+    default int updateByQuery(T entity, QueryWrapper queryWrapper) {
         return updateByQuery(entity, true, queryWrapper);
     }
 
@@ -318,9 +322,27 @@ public interface BaseMapper<T> {
      * @param queryWrapper query 条件
      * @return entity 数据
      */
-    default T selectOneByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper) {
+    default T selectOneByQuery(QueryWrapper queryWrapper) {
         List<T> entities = selectListByQuery(queryWrapper.limit(1));
         return (entities == null || entities.isEmpty()) ? null : entities.get(0);
+    }
+
+
+    /**
+     * 根据 queryWrapper 构建的条件来查询 1 条数据
+     *
+     * @param queryWrapper query 条件
+     * @param asType       接收类型
+     * @return 数据内容
+     */
+    default <R> R selectOneByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
+        try {
+            MappedStatementTypes.setCurrentType(asType);
+            List<R> entities = selectListByQueryAs(queryWrapper.limit(1), asType);
+            return (entities == null || entities.isEmpty()) ? null : entities.get(0);
+        } finally {
+            MappedStatementTypes.clear();
+        }
     }
 
     /**
@@ -390,6 +412,133 @@ public interface BaseMapper<T> {
     List<T> selectListByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
+    default List<T> selectListByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper
+            , Consumer<FieldQueryBuilder<T>>... consumers) {
+
+        List<T> list = selectListByQuery(queryWrapper);
+        if (list == null || list.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        list.forEach(entity -> {
+            for (Consumer<FieldQueryBuilder<T>> consumer : consumers) {
+                FieldQueryBuilder<T> fieldQueryBuilder = new FieldQueryBuilder<>(entity);
+                consumer.accept(fieldQueryBuilder);
+                FieldQuery fieldQuery = fieldQueryBuilder.build();
+                QueryWrapper childQuery = fieldQuery.getQueryWrapper();
+                MetaObject entityMetaObject = SystemMetaObject.forObject(entity);
+                Class<?> setterType = entityMetaObject.getSetterType(fieldQuery.getField());
+
+                Class<?> mappingType = fieldQuery.getMappingType();
+                if (mappingType == null) {
+                    if (setterType.isAssignableFrom(Collection.class)) {
+                        throw new IllegalStateException("Mapping Type can not be null for query Many.");
+                    } else if (setterType.isArray()) {
+                        mappingType = setterType.getComponentType();
+                    } else {
+                        mappingType = setterType;
+                    }
+                }
+
+                Object value;
+                try {
+                    MappedStatementTypes.setCurrentType(mappingType);
+                    if (setterType.isAssignableFrom(List.class)) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                    } else if (setterType.isAssignableFrom(Set.class)) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                        value = new HashSet<>((Collection<?>) value);
+                    } else if (setterType.isArray()) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                        value = ((List<?>) value).toArray();
+                    } else {
+                        value = selectOneByQueryAs(childQuery, mappingType);
+                    }
+                } finally {
+                    MappedStatementTypes.clear();
+                }
+                entityMetaObject.setValue(fieldQuery.getField(), value);
+            }
+        });
+
+        return list;
+    }
+
+
+    /**
+     * 根据 query 来构建条件查询数据列表，要求返回的数据为 asType
+     * 这种场景一般用在 left join 时，有多出了 entity 本身的字段内容，可以转换为 dto、vo 等场景时
+     *
+     * @param queryWrapper 查询条件
+     * @param asType       接收数据类型
+     * @return 数据列表
+     */
+    @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
+    <R> List<R> selectListByQueryAs(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper, Class<R> asType);
+
+
+    default <R> List<R> selectListByQueryAs(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper, Class<R> asType
+            , Consumer<FieldQueryBuilder<R>>... consumers) {
+        List<R> list;
+        try {
+            MappedStatementTypes.setCurrentType(asType);
+            list = selectListByQueryAs(queryWrapper, asType);
+        } finally {
+            MappedStatementTypes.clear();
+        }
+
+        if (list == null || list.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        list.forEach(entity -> {
+            for (Consumer<FieldQueryBuilder<R>> consumer : consumers) {
+                FieldQueryBuilder<R> fieldQueryBuilder = new FieldQueryBuilder<>(entity);
+                consumer.accept(fieldQueryBuilder);
+                FieldQuery fieldQuery = fieldQueryBuilder.build();
+                QueryWrapper childQuery = fieldQuery.getQueryWrapper();
+
+                MetaObject entityMetaObject = SystemMetaObject.forObject(entity);
+                Class<?> setterType = entityMetaObject.getSetterType(fieldQuery.getField());
+
+                Class<?> mappingType = fieldQuery.getMappingType();
+                if (mappingType == null) {
+                    if (setterType.isAssignableFrom(Collection.class)) {
+                        throw new IllegalStateException("Mapping Type can not be null for query Many.");
+                    } else if (setterType.isArray()) {
+                        mappingType = setterType.getComponentType();
+                    } else {
+                        mappingType = setterType;
+                    }
+                }
+
+                Object value;
+                try {
+                    MappedStatementTypes.setCurrentType(mappingType);
+                    if (setterType.isAssignableFrom(List.class)) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                    } else if (setterType.isAssignableFrom(Set.class)) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                        value = new HashSet<>((Collection<?>) value);
+                    } else if (setterType.isArray()) {
+                        value = selectListByQueryAs(childQuery, mappingType);
+                        value = ((List<?>) value).toArray();
+                    } else {
+                        value = selectOneByQueryAs(childQuery, mappingType);
+                    }
+                } finally {
+                    MappedStatementTypes.clear();
+                }
+
+
+                entityMetaObject.setValue(fieldQuery.getField(), value);
+            }
+        });
+
+        return list;
+    }
+
+
     /**
      * 查询全部数据
      *
@@ -397,6 +546,76 @@ public interface BaseMapper<T> {
      */
     default List<T> selectAll() {
         return selectListByQuery(new QueryWrapper());
+    }
+
+
+    /**
+     * 根据 queryWrapper 1 条数据
+     * queryWrapper 执行的结果应该只有 1 列，例如 QueryWrapper.create().select(ACCOUNT.id).where...
+     *
+     * @param queryWrapper 查询包装器
+     * @return 数据量
+     */
+    default Object selectObjectByQuery(QueryWrapper queryWrapper) {
+        List<Object> objects = selectObjectListByQuery(queryWrapper.limit(1));
+        return objects == null || objects.isEmpty() ? null : objects.get(0);
+    }
+
+
+    /**
+     * 根据 queryWrapper 来查询数据列表
+     * queryWrapper 执行的结果应该只有 1 列，例如 QueryWrapper.create().select(ACCOUNT.id).where...
+     *
+     * @param queryWrapper 查询包装器
+     * @return 数据列表
+     * @see EntitySqlProvider#selectObjectByQuery(Map, ProviderContext)
+     */
+    @SelectProvider(type = EntitySqlProvider.class, method = "selectObjectByQuery")
+    List<Object> selectObjectListByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+
+
+    /**
+     * 对 {@link #selectObjectListByQuery(QueryWrapper)} 进行数据转换
+     * 根据 queryWrapper 来查询数据列表
+     * queryWrapper 执行的结果应该只有 1 列，例如 QueryWrapper.create().select(ACCOUNT.id).where...
+     *
+     * @param queryWrapper 查询包装器
+     * @param asType       转换成的数据类型
+     * @return 数据列表
+     */
+    default <R> List<R> selectObjectListByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
+        List<Object> queryResults = selectObjectListByQuery(queryWrapper);
+        if (queryResults == null || queryResults.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<R> results = new ArrayList<>();
+        for (Object queryResult : queryResults) {
+            results.add((R) ConvertUtil.convert(queryResult, asType));
+        }
+        return results;
+    }
+
+
+    /**
+     * 查询数据量
+     *
+     * @param queryWrapper 查询包装器
+     * @return 数据量
+     */
+    default long selectCountByQuery(QueryWrapper queryWrapper) {
+        List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
+        if (CollectionUtil.isEmpty(selectColumns)) {
+            queryWrapper.select(count());
+        }
+        List<Object> objects = selectObjectListByQuery(queryWrapper);
+        Object object = objects == null || objects.isEmpty() ? null : objects.get(0);
+        if (object == null) {
+            return 0;
+        } else if (object instanceof Number) {
+            return ((Number) object).longValue();
+        } else {
+            throw FlexExceptions.wrap("selectCountByQuery error, Can not get number value for queryWrapper: %s", queryWrapper);
+        }
     }
 
 
@@ -409,17 +628,6 @@ public interface BaseMapper<T> {
     default long selectCountByCondition(QueryCondition condition) {
         return selectCountByQuery(QueryWrapper.create().where(condition));
     }
-
-
-    /**
-     * 根据 queryWrapper 来查询数据量
-     *
-     * @param queryWrapper 查询包装器
-     * @return 数据量
-     * @see EntitySqlProvider#selectCountByQuery(Map, ProviderContext)
-     */
-    @SelectProvider(type = EntitySqlProvider.class, method = "selectCountByQuery")
-    long selectCountByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
     /**
@@ -486,17 +694,63 @@ public interface BaseMapper<T> {
      * @param queryWrapper 查询条件
      * @return page 数据
      */
-    default Page<T> paginate(@Param("page") Page<T> page, @Param("query") QueryWrapper queryWrapper) {
+    default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper) {
+        return paginateAs(page, queryWrapper, null);
+    }
 
-        List<QueryColumn> groupByColumns = null;
 
+    default <R> Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
+        List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
+        List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
+
+        List<Join> joins = CPI.getJoins(queryWrapper);
+        boolean removedJoins = true;
         // 只有 totalRow 小于 0 的时候才会去查询总量
         // 这样方便用户做总数缓存，而非每次都要去查询总量
         // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
         if (page.getTotalRow() < 0) {
-            groupByColumns = CPI.getGroupByColumns(queryWrapper);
-            //清除group by 去查询数据
-            CPI.setGroupByColumns(queryWrapper, null);
+
+            //移除 select
+            CPI.setSelectColumns(queryWrapper, Collections.singletonList(count().as("total")));
+
+            //移除 OrderBy
+            if (CollectionUtil.isNotEmpty(orderBys)) {
+                CPI.setOrderBys(queryWrapper, null);
+            }
+
+
+            //移除 left join
+            if (joins != null && !joins.isEmpty()) {
+                for (Join join : joins) {
+                    if (!Join.TYPE_LEFT.equals(CPI.getJoinType(join))) {
+                        removedJoins = false;
+                        break;
+                    }
+                }
+            } else {
+                removedJoins = false;
+            }
+
+            if (removedJoins) {
+                List<String> joinTables = new ArrayList<>();
+                joins.forEach(join -> {
+                    QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
+                    if (joinQueryTable != null && StringUtil.isNotBlank(joinQueryTable.getName())) {
+                        joinTables.add(joinQueryTable.getName());
+                    }
+                });
+
+                QueryCondition where = CPI.getWhereQueryCondition(queryWrapper);
+                if (CPI.containsTable(where, CollectionUtil.toArrayString(joinTables))) {
+                    removedJoins = false;
+                }
+            }
+
+            if (removedJoins) {
+                CPI.setJoins(queryWrapper, null);
+            }
+
+
             long count = selectCountByQuery(queryWrapper);
             page.setTotalRow(count);
         }
@@ -505,15 +759,36 @@ public interface BaseMapper<T> {
             return page;
         }
 
-        //恢复数量查询清除的 groupBy
-        if (groupByColumns != null) {
-            CPI.setGroupByColumns(queryWrapper, groupByColumns);
+        //重置 selectColumns
+        CPI.setSelectColumns(queryWrapper, selectColumns);
+
+        //重置 orderBys
+        if (CollectionUtil.isNotEmpty(orderBys)) {
+            CPI.setOrderBys(queryWrapper, orderBys);
+        }
+
+        //重置 join
+        if (removedJoins) {
+            CPI.setJoins(queryWrapper, joins);
         }
 
         int offset = page.getPageSize() * (page.getPageNumber() - 1);
         queryWrapper.limit(offset, page.getPageSize());
-        List<T> rows = selectListByQuery(queryWrapper);
-        page.setRecords(rows);
+
+        if (asType != null) {
+            try {
+                // 调用内部方法，不走代理，需要主动设置 MappedStatementType
+                // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I73BP6
+                MappedStatementTypes.setCurrentType(asType);
+                List<R> records = selectListByQueryAs(queryWrapper, asType);
+                page.setRecords(records);
+            } finally {
+                MappedStatementTypes.clear();
+            }
+        } else {
+            List<R> records = (List<R>) selectListByQuery(queryWrapper);
+            page.setRecords(records);
+        }
         return page;
     }
 }

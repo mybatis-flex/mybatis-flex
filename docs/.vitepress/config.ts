@@ -58,10 +58,13 @@ export default defineConfig({
             {
                 text: '基础功能',
                 items: [
-                    {text: '增删改', link: '/zh/base/add-delete-update'},
+                    {text: '增、删、改', link: '/zh/base/add-delete-update'},
                     {text: '查询和分页', link: '/zh/base/query'},
-                    {text: 'IService', link: '/zh/base/service'},
+                    {text: '批量操作', link: '/zh/base/batch'},
+                    {text: '一对多、多对一', link: '/zh/base/field-query'},
                     {text: 'QueryWrapper', link: '/zh/base/querywrapper'},
+                    {text: 'Db + Row', link: '/zh/base/db-row'},
+                    {text: 'IService', link: '/zh/base/service'},
                 ]
             },
             {
@@ -70,7 +73,6 @@ export default defineConfig({
                     {text: '@Table 注解', link: '/zh/core/table'},
                     {text: '@Id 注解', link: '/zh/core/id'},
                     {text: '@Column 注解', link: '/zh/core/column'},
-                    {text: 'Db + Row', link: '/zh/core/db-row'},
                     {text: '逻辑删除', link: '/zh/core/logic-delete'},
                     {text: '乐观锁', link: '/zh/core/version'},
                     {text: '数据填充', link: '/zh/core/fill'},
@@ -79,6 +81,7 @@ export default defineConfig({
                     {text: 'SQL 打印', link: '/zh/core/sql-print'},
                     {text: '多数据源', link: '/zh/core/multi-datasource'},
                     {text: '事务管理', link: '/zh/core/tx'},
+                    {text: '数据权限', link: '/zh/core/data-permission'},
                     {text: '字段权限', link: '/zh/core/columns-permission'},
                     {text: '字段加密', link: '/zh/core/columns-encrypt'},
                     {text: '字典回写', link: '/zh/core/columns-dict'},

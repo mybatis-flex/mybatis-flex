@@ -15,58 +15,27 @@
  */
 package com.mybatisflex.core.handler;
 
-import com.mybatisflex.annotation.EnumValue;
-import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.util.ClassUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.util.EnumWrapper;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
 
-    private final Class<?> enumPropertyType;
-    private final E[] enums;
-    private Field property;
-    private Method getter;
+    private EnumWrapper<E> enumWrapper;
 
     public FlexEnumTypeHandler(Class<E> enumClass) {
-        List<Field> allFields = ClassUtil.getAllFields(enumClass, field -> field.getAnnotation(EnumValue.class) != null);
-        Field field = allFields.get(0);
-
-        String fieldGetterName = "get" + StringUtil.firstCharToUpperCase(field.getName());
-        List<Method> allMethods = ClassUtil.getAllMethods(enumClass, method -> {
-            String methodName = method.getName();
-            return methodName.equals(fieldGetterName);
-        });
-
-        enumPropertyType = ClassUtil.wrap(field.getType());
-        enums = enumClass.getEnumConstants();
-
-        if (allMethods.isEmpty()) {
-            if (Modifier.isPublic(field.getModifiers())) {
-                property = field;
-            } else {
-                throw new IllegalStateException("Can not find \"" + fieldGetterName + "()\" method in enum: " + enumClass.getName());
-            }
-        } else {
-            getter = allMethods.get(0);
-        }
-
+        enumWrapper = EnumWrapper.of(enumClass);
     }
 
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, E parameter, JdbcType jdbcType) throws SQLException {
-        Object value = getValue(parameter);
+        Object value = enumWrapper.getEnumValue(parameter);
         if (jdbcType == null) {
             ps.setObject(i, value);
         } else {
@@ -74,55 +43,34 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
         }
     }
 
-
-    private Object getValue(E object) {
-        try {
-            return getter != null
-                    ? getter.invoke(object)
-                    : property.get(object);
-        } catch (Exception e) {
-            throw FlexExceptions.wrap(e);
-        }
-    }
-
-
     @Override
     public E getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        Object value = rs.getObject(columnName, this.enumPropertyType);
+        Object value = rs.getObject(columnName, enumWrapper.getEnumPropertyType());
         if (null == value && rs.wasNull()) {
             return null;
         }
-        return convertToEnum(value);
+        return enumWrapper.toEnum(value);
     }
 
 
     @Override
     public E getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        Object value = rs.getObject(columnIndex, this.enumPropertyType);
+        Object value = rs.getObject(columnIndex, enumWrapper.getEnumPropertyType());
         if (null == value && rs.wasNull()) {
             return null;
         }
-        return convertToEnum(value);
+        return enumWrapper.toEnum(value);
     }
 
 
     @Override
     public E getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        Object value = cs.getObject(columnIndex, this.enumPropertyType);
+        Object value = cs.getObject(columnIndex, enumWrapper.getEnumPropertyType());
         if (null == value && cs.wasNull()) {
             return null;
         }
-        return convertToEnum(value);
+        return enumWrapper.toEnum(value);
     }
 
-
-    private E convertToEnum(Object value) {
-        for (E e : enums) {
-            if (value.equals(getValue(e))) {
-                return e;
-            }
-        }
-        return null;
-    }
 
 }

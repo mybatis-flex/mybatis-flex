@@ -16,12 +16,14 @@
 package com.mybatisflex.core.table;
 
 import com.mybatisflex.annotation.*;
+import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
+import org.apache.ibatis.io.ResolverUtil;
 import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
@@ -57,7 +59,7 @@ public class TableInfoFactory {
             Date.class, java.sql.Date.class, Time.class, Timestamp.class,
             Instant.class, LocalDate.class, LocalDateTime.class, LocalTime.class, OffsetDateTime.class, OffsetTime.class, ZonedDateTime.class,
             Year.class, Month.class, YearMonth.class, JapaneseDate.class,
-            byte[].class, Byte[].class,
+            byte[].class, Byte[].class, Byte.class,
             BigInteger.class, BigDecimal.class,
             char.class, String.class, Character.class
     );
@@ -66,12 +68,26 @@ public class TableInfoFactory {
     private static final Map<Class<?>, TableInfo> mapperTableInfoMap = new ConcurrentHashMap<>();
     private static final Map<Class<?>, TableInfo> entityTableMap = new ConcurrentHashMap<>();
     private static final Map<String, TableInfo> tableInfoMap = new ConcurrentHashMap<>();
+    private static final Set<String> initedPackageNames = new HashSet<>();
+
+
+    public synchronized static void init(String mapperPackageName){
+        if (!initedPackageNames.contains(mapperPackageName)) {
+            ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
+            resolverUtil.find(new ResolverUtil.IsA(BaseMapper.class), mapperPackageName);
+            Set<Class<? extends Class<?>>> mapperSet = resolverUtil.getClasses();
+            for (Class<? extends Class<?>> mapperClass : mapperSet) {
+                ofMapperClass(mapperClass);
+            }
+            initedPackageNames.add(mapperPackageName);
+        }
+    }
 
 
     public static TableInfo ofMapperClass(Class<?> mapperClass) {
         return MapUtil.computeIfAbsent(mapperTableInfoMap, mapperClass, key -> {
             Class<?> entityClass = getEntityClass(mapperClass);
-            if (entityClass == null) {
+            if (entityClass == null){
                 return null;
             }
             return ofEntityClass(entityClass);
@@ -116,7 +132,6 @@ public class TableInfoFactory {
         TableInfo tableInfo = new TableInfo();
         tableInfo.setEntityClass(entityClass);
         tableInfo.setReflector(new Reflector(entityClass));
-
 
         //初始化表名
         Table table = entityClass.getAnnotation(Table.class);

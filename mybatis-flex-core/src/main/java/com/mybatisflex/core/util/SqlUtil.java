@@ -50,7 +50,7 @@ public class SqlUtil {
     }
 
 
-    private static final char[] UN_SAFE_CHARS = "'`\"<>&*+=#-;".toCharArray();
+    private static final char[] UN_SAFE_CHARS = "'`\"<>&+=#-;".toCharArray();
 
     private static boolean isUnSafeChar(char ch) {
         for (char c : UN_SAFE_CHARS) {
@@ -68,19 +68,8 @@ public class SqlUtil {
      * @param result 数据库操作返回影响条数
      * @return {@code true} 操作成功，{@code false} 操作失败。
      */
-    public static boolean retBool(int result) {
-        return result >= 1;
+    public static boolean toBool(Number result) {
+        return result != null && result.longValue() > 0;
     }
-
-    /**
-     * 根据数据库响应结果判断数据库操作是否成功。
-     *
-     * @param result 数据库操作返回影响条数
-     * @return {@code true} 操作成功，{@code false} 操作失败。
-     */
-    public static boolean retBool(long result) {
-        return result >= 1L;
-    }
-
 
 }

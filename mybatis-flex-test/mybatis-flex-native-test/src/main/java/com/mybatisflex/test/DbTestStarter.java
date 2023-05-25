@@ -16,6 +16,7 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
+import com.mybatisflex.core.row.BatchArgsSetter;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowKey;
@@ -56,6 +57,25 @@ public class DbTestStarter {
 
         //查看刚刚插入数据的主键 id
         System.out.println(">>>>>>>>>id: " + row.get("id"));
+
+        //INSERT INTO tb_account
+        //VALUES (1, '张三', 18, 0,'2020-01-11', null,0),
+
+        Db.updateBatch("insert into tb_account(user_name,age,birthday) values (?,?,?)", new BatchArgsSetter() {
+            @Override
+            public int getBatchSize() {
+                return 10;
+            }
+
+            @Override
+            public Object[] getSqlArgs(int index) {
+                Object[] args = new Object[3];
+                args[0] = "michael yang";
+                args[1] = 18 + index;
+                args[2] = new Date();
+                return args;
+            }
+        });
 
 
         //再次查询全部数据

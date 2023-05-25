@@ -19,7 +19,6 @@ package com.mybatisflex.codegen.test;
 import com.mybatisflex.codegen.Generator;
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.junit.Test;
 
 import java.util.function.UnaryOperator;
 

@@ -155,8 +155,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
 
-    public Joiner<QueryWrapper> leftJoinIf(String table, boolean condition) {
-        return joining(Join.TYPE_LEFT, table, condition);
+    public Joiner<QueryWrapper> leftJoinIf(String table, boolean when) {
+        return joining(Join.TYPE_LEFT, table, when);
     }
 
     public Joiner<QueryWrapper> leftJoin(TableDef table) {
@@ -164,88 +164,104 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
 
-    public Joiner<QueryWrapper> leftJoinIf(TableDef table, boolean condition) {
-        return joining(Join.TYPE_LEFT, table.getTableName(), condition);
+    public Joiner<QueryWrapper> leftJoinIf(TableDef table, boolean when) {
+        return joining(Join.TYPE_LEFT, table.getTableName(), when);
     }
 
     public Joiner<QueryWrapper> leftJoin(QueryWrapper table) {
         return joining(Join.TYPE_LEFT, table, true);
     }
 
-    public Joiner<QueryWrapper> leftJoinIf(QueryWrapper table, boolean condition) {
-        return joining(Join.TYPE_LEFT, table, condition);
+    public Joiner<QueryWrapper> leftJoinIf(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_LEFT, table, when);
     }
 
     public Joiner<QueryWrapper> rightJoin(String table) {
         return joining(Join.TYPE_RIGHT, table, true);
     }
 
-    public Joiner<QueryWrapper> rightJoinIf(String table, boolean condition) {
-        return joining(Join.TYPE_RIGHT, table, condition);
+    public Joiner<QueryWrapper> rightJoinIf(String table, boolean when) {
+        return joining(Join.TYPE_RIGHT, table, when);
     }
 
     public Joiner<QueryWrapper> rightJoin(QueryWrapper table) {
         return joining(Join.TYPE_RIGHT, table, true);
     }
 
-    public Joiner<QueryWrapper> rightJoinIf(QueryWrapper table, boolean condition) {
-        return joining(Join.TYPE_RIGHT, table, condition);
+    public Joiner<QueryWrapper> rightJoinIf(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_RIGHT, table, when);
     }
 
     public Joiner<QueryWrapper> innerJoin(String table) {
         return joining(Join.TYPE_INNER, table, true);
     }
 
-    public Joiner<QueryWrapper> innerJoinIf(String table, boolean condition) {
-        return joining(Join.TYPE_INNER, table, condition);
+    public Joiner<QueryWrapper> innerJoinIf(String table, boolean when) {
+        return joining(Join.TYPE_INNER, table, when);
     }
 
     public Joiner<QueryWrapper> innerJoin(TableDef table) {
         return innerJoinIf(table, true);
     }
 
-    public Joiner<QueryWrapper> innerJoinIf(TableDef table, boolean condition) {
-        return joining(Join.TYPE_INNER, table.getTableName(), condition);
+    public Joiner<QueryWrapper> innerJoinIf(TableDef table, boolean when) {
+        return joining(Join.TYPE_INNER, table.getTableName(), when);
     }
 
     public Joiner<QueryWrapper> innerJoin(QueryWrapper table) {
         return joining(Join.TYPE_INNER, table, true);
     }
 
-    public Joiner<QueryWrapper> innerJoinIf(QueryWrapper table, boolean condition) {
-        return joining(Join.TYPE_INNER, table, condition);
+    public Joiner<QueryWrapper> innerJoinIf(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_INNER, table, when);
     }
 
     public Joiner<QueryWrapper> fullJoin(String table) {
         return joining(Join.TYPE_FULL, table, true);
     }
 
-    public Joiner<QueryWrapper> fullJoinIf(String table, boolean condition) {
-        return joining(Join.TYPE_FULL, table, condition);
+    public Joiner<QueryWrapper> fullJoinIf(String table, boolean when) {
+        return joining(Join.TYPE_FULL, table, when);
     }
 
     public Joiner<QueryWrapper> fullJoin(QueryWrapper table) {
         return joining(Join.TYPE_FULL, table, true);
     }
 
-    public Joiner<QueryWrapper> fullJoinIf(QueryWrapper table, boolean condition) {
-        return joining(Join.TYPE_FULL, table, condition);
+    public Joiner<QueryWrapper> fullJoinIf(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_FULL, table, when);
     }
 
     public Joiner<QueryWrapper> crossJoin(String table) {
         return joining(Join.TYPE_CROSS, table, true);
     }
 
-    public Joiner<QueryWrapper> crossJoinIf(String table, boolean condition) {
-        return joining(Join.TYPE_CROSS, table, condition);
+    public Joiner<QueryWrapper> crossJoinIf(String table, boolean when) {
+        return joining(Join.TYPE_CROSS, table, when);
     }
 
     public Joiner<QueryWrapper> crossJoin(QueryWrapper table) {
         return joining(Join.TYPE_CROSS, table, true);
     }
 
-    public Joiner<QueryWrapper> crossJoinIf(QueryWrapper table, boolean condition) {
-        return joining(Join.TYPE_CROSS, table, condition);
+    public Joiner<QueryWrapper> crossJoinIf(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_CROSS, table, when);
+    }
+
+    public Joiner<QueryWrapper> join(String table) {
+        return joining(Join.TYPE_JOIN, table, true);
+    }
+
+    public Joiner<QueryWrapper> join(String table, boolean when) {
+        return joining(Join.TYPE_JOIN, table, when);
+    }
+
+    public Joiner<QueryWrapper> join(QueryWrapper table) {
+        return joining(Join.TYPE_JOIN, table, true);
+    }
+
+    public Joiner<QueryWrapper> join(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_JOIN, table, when);
     }
 
     public QueryWrapper union(QueryWrapper unionQuery) {
@@ -264,16 +280,33 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
+    public QueryWrapper forUpdate() {
+        addEndFragment("FOR UPDATE");
+        return this;
+    }
+
+    public QueryWrapper forUpdateNoWait() {
+        addEndFragment("FOR UPDATE NOWAIT");
+        return this;
+    }
+
+
+//    public QueryWrapper end(String sqlPart){
+//        addEndFragment(sqlPart);
+//        return this;
+//    }
+
+
     protected Joiner<QueryWrapper> joining(String type, String table, boolean condition) {
         Join join = new Join(type, table, condition);
         addJoinTable(join.getQueryTable());
-        return new Joiner<>(AddJoin(join), join);
+        return new Joiner<>(addJoin(join), join);
     }
 
     protected Joiner<QueryWrapper> joining(String type, QueryWrapper queryWrapper, boolean condition) {
         Join join = new Join(type, queryWrapper, condition);
         addJoinTable(join.getQueryTable());
-        return new Joiner<>(AddJoin(join), join);
+        return new Joiner<>(addJoin(join), join);
     }
 
 
@@ -315,8 +348,14 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper orderBy(String... orderBys) {
+        if (orderBys == null || orderBys.length == 0) {
+            //ignore
+            return this;
+        }
         for (String queryOrderBy : orderBys) {
-            addOrderBy(new StringQueryOrderBy(queryOrderBy));
+            if (StringUtil.isNotBlank(queryOrderBy)) {
+                addOrderBy(new StringQueryOrderBy(queryOrderBy));
+            }
         }
         return this;
     }
@@ -343,11 +382,32 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
+    public QueryWrapper hint(String hint) {
+        setHint(hint);
+        return this;
+    }
+
     /**
      * 获取 queryWrapper 的参数
      * 在构建 sql 的时候，需要保证 where 在 having 的前面
      */
     Object[] getValueArray() {
+
+        List<Object> columnValues = null;
+        List<QueryColumn> selectColumns = getSelectColumns();
+        if (CollectionUtil.isNotEmpty(selectColumns)) {
+            for (QueryColumn selectColumn : selectColumns) {
+                if (selectColumn instanceof HasParamsColumn) {
+                    Object[] paramValues = ((HasParamsColumn) selectColumn).getParamValues();
+                    if (ArrayUtil.isNotEmpty(paramValues)) {
+                        if (columnValues == null) {
+                            columnValues = new ArrayList<>();
+                        }
+                        columnValues.addAll(Arrays.asList(paramValues));
+                    }
+                }
+            }
+        }
 
         //select 子查询的参数：select * from (select ....)
         List<Object> tableValues = null;
@@ -404,7 +464,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             }
         }
 
-        Object[] returnValues = tableValues == null ? WrapperUtil.NULL_PARA_ARRAY : tableValues.toArray();
+        Object[] returnValues = columnValues == null ? WrapperUtil.NULL_PARA_ARRAY : columnValues.toArray();
+        returnValues = tableValues != null ? ArrayUtil.concat(returnValues, tableValues.toArray()) : returnValues;
         returnValues = joinValues != null ? ArrayUtil.concat(returnValues, joinValues.toArray()) : returnValues;
         returnValues = ArrayUtil.concat(returnValues, paramValues);
 

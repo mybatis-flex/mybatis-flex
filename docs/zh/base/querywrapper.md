@@ -1,6 +1,6 @@
 # 灵活的 QueryWrapper
 在 [增删改](./add-delete-update) 和 [查询和分页](./query) 章节中，我们随时能看到 QueryWrapper 的身影，QueryWrapper 是用于构造 Sql 的
-强有力工具，也是 Mybatis-Flex 的亮点和特色。
+强有力工具，也是 MyBatis-Flex 的亮点和特色。
 
 ::: tip 提示
 QueryWrapper 可以被序列化通过 RPC 进行传输，因此，在微服务项目中，我们可以在客户端（网关、Controller 层等）构造出 QueryWrapper，传给
@@ -21,7 +21,7 @@ public class AccountController {
     @GetMapping("/accounts")
     List<Account> selectList() {
         
-        //构造 QueryWrapper
+        //构造 QueryWrapper，也支持使用 QueryWrapper.create() 构造，效果相同
         QueryWrapper query = new QueryWrapper();
         query.where(ACCOUNT.ID.ge(100));
 
@@ -51,7 +51,7 @@ where id >= 100
 ## select *
 
 ```java
-QueryWrapper query=new QueryWrapper();
+QueryWrapper query = new QueryWrapper();
 query.select(ACCOUNT.ID, ACCOUNT.USER_NAME)
     .from(ACCOUNT)
 ```
@@ -68,7 +68,7 @@ SELECT id, user_name FROM tb_account
 QueryWrapper query = new QueryWrapper()
     .select(
           ACCOUNT.ID.as("accountId")
-        , ACCOUNT.USER_NAME
+        , ACCOUNT.USER_NAME)
     .from(ACCOUNT.as("a"));
 ```
 
@@ -118,6 +118,68 @@ QueryWrapper query=new QueryWrapper()
 SELECT id, user_name, MAX(birthday), AVG(sex) AS sex_avg
 FROM tb_account
 ```
+
+## select case...when
+
+**示例 1：**
+
+```java
+QueryWrapper wrapper = QueryWrapper.create()
+        .select(ACCOUNT.ID
+            ,case_().when(ACCOUNT.ID.ge(2)).then("x2")
+            .when(ACCOUNT.ID.ge(1)).then("x1")
+            .else_("x100")
+            .end().as("xName")
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+ SELECT `id`, 
+        (CASE WHEN `id` >=  2  THEN 'x2' 
+            WHEN `id` >=  1  THEN 'x1' 
+            ELSE 'x100' 
+            END) AS `xName` 
+ FROM `tb_account`
+```
+
+SQL 执行的结果如下：
+
+```
+|id     |xName     |
+|1      |x1        |
+|2      |x2        |
+```
+
+
+**示例 2：**
+
+```java
+QueryWrapper queryWrapper = QueryWrapper.create()
+        .select(ACCOUNT.ALL_COLUMNS,
+        case_(ACCOUNT.ID)
+        .when(100).then(100)
+        .when(200).then(200)
+        .else_(300).end().as("result"))
+        .from(ACCOUNT)
+        .where(ACCOUNT.USER_NAME.like("michael"));
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT *, 
+       (CASE `id` 
+           WHEN 100 THEN 100 
+           WHEN 200 THEN 200 
+           ELSE 300 END) AS `result` 
+FROM `tb_account` WHERE `user_name` LIKE  ?
+```
+
+::: tip 提示
+在以上示例中，由于 `case` 和 `else` 属于 Java 关键字，无法使用其进行方法命名，因此会添加一个下划线小尾巴 `"_"` 变成 `case_` 和 `else_`，这是无奈之举。
+在以后的 QueryWrapper 构建中，遇到 java 关键字也会采用类型的解决方法。
+:::
 
 ## where
 
@@ -169,6 +231,23 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 ```sql
 SELECT * FROM tb_account
 WHERE user_name LIKE  ? 
+```
+
+## where 动态条件 3
+
+```java 1,5
+String name = null;
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select().from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100)) // when....
+    .and(ACCOUNT.USER_NAME.like(name).when(StringUtil::isNotBlank));
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT * FROM tb_account
+WHERE id >= ? 
 ```
 
 ## where select
@@ -282,6 +361,28 @@ SELECT * FROM tb_account
 ORDER BY age ASC, user_name DESC NULLS LAST
 ```
 
+## hint
+
+Hint 是数据库厂商（比如 Oracle、MySQL、达梦等）提供的一种 SQL语法，它允许用户在 SQL 语句中插入相关的语法，从而影响 SQL 的执行方式。
+它是一种【非常规】的直接影响优化器、指定执行计划的 SQL 优化手段。
+
+
+
+```java
+QueryWrapper queryWrapper=QueryWrapper.create()
+    .select().hint("INDEX_DESC")
+    .from(ACCOUNT)
+    .orderBy(ACCOUNT.AGE.asc(), ACCOUNT.USER_NAME.desc().nullsLast());
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT /*+ INDEX_DESC */  * FROM tb_account
+ORDER BY age ASC, user_name DESC NULLS LAST
+```
+
+
 ## join（left join，inner join...）
 
 ```java
@@ -370,7 +471,7 @@ UNION ALL (SELECT id FROM tb_article)
 ## limit... offset
 
 ::: tip 提示
-在 "limit... offset" 的示例中，Mybatis-Flex 能够自动识别当前数据库👍，并根据数据库的类型生成不同的 SQL，用户也可以很轻易的通过 DialectFactory 注册（新增或改写）自己的实现方言。
+在 "limit... offset" 的示例中，MyBatis-Flex 能够自动识别当前数据库👍，并根据数据库的类型生成不同的 SQL，用户也可以很轻易的通过 DialectFactory 注册（新增或改写）自己的实现方言。
 :::
 
 
@@ -383,7 +484,7 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .offset(20);
 ```
 
-MySql 下执行的代码如下：
+MySQL 下执行的代码如下：
 ```sql
 SELECT * FROM `tb_account` ORDER BY `id` DESC LIMIT 20, 10
 ```
@@ -426,7 +527,7 @@ SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 
 **疑问1：示例代码中的 QueryWrapper 所需要的 "ACCOUNT" 从哪里来的？**
 
-答：Mybatis-Flex 使用了 APT（Annotation Processing Tool）在项目编译的时候，
+答：MyBatis-Flex 使用了 APT（Annotation Processing Tool）在项目编译的时候，
 会自动根据 Entity 类定义的字段生成 "ACCOUNT" 类以及 Entity 对应的 Mapper 类， 通过开发工具构建项目（如下图），
 或者执行 maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
 
@@ -451,4 +552,4 @@ QueryWrapper query1 = QueryWrapper.create()
 QueryWrapper query2 = QueryWrapper.create()
     .where(ACCOUNT.AGE.ge(18));
 ```
-在以上的 `query1` 和 `query2` 中，它们构建出来的 SQL 条件是完全一致的，因为 Mybatis-Flex 会自动忽略 null 值的条件。
+在以上的 `query1` 和 `query2` 中，它们构建出来的 SQL 条件是完全一致的，因为 MyBatis-Flex 会自动忽略 null 值的条件。

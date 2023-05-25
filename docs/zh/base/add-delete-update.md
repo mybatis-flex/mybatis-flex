@@ -1,8 +1,8 @@
-# Mybatis-Flex 的增删改功能
+# MyBatis-Flex 的增删改功能
 
-Mybatis-Flex 内置了一个名为 `BaseMapper` 的接口，它实现了基本的增删改查功能以及分页查询功能。
+MyBatis-Flex 内置了一个名为 `BaseMapper` 的接口，它实现了基本的增删改查功能以及分页查询功能。
 
-> Mybatis-Flex 的 **代码生成器** 生成的所有 Mapper 辅助类，都是继承 BaseMapper。
+> MyBatis-Flex 的 **代码生成器** 生成的所有 Mapper 辅助类，都是继承 BaseMapper。
 
 ## 新增数据
 
@@ -49,7 +49,7 @@ accountMapper.deleteByCondition(ACCOUNT.ID.ge(100));
 delete from tb_account where id >= 100;
 ```
 
->tip: QueryWrapper 非常灵活，也是 Mybatis-Flex 的特色之一，更多关于 QueryWrapper 的
+>tip: QueryWrapper 非常灵活，也是 MyBatis-Flex 的特色之一，更多关于 QueryWrapper 的
 > 请看 [QueryWrapper 章节](./querywrapper)。
 
 ## 更新数据
@@ -71,15 +71,22 @@ delete from tb_account where id >= 100;
 在很多场景下，我们希望只更新**部分字段**，而更新的字段中，一些为 null，一些非 null。此时需要用到 `UpdateEntity` 工具类，以下是示例代码：
 
 ```java
-Account account = UpdateEntity.of(Account.class);
-account.setId(100);
+Account account = UpdateEntity.of(Account.class, 100);
+//Account account = UpdateEntity.of(Account.class);
+//account.setId(100);
+        
 account.setUserName(null);
 account.setAge(10);
 
 accountMapper.update(account);
 ```
 
-以上的示例中，会把 id (主键)为 100 这条数据中的 user_name 字段更新为 null，age 字段更新为 10，其他字段不会被更新。也就是说，通过 UpdateEntity 创建的对象，只会更新调用了 setter 方法的字段，若不调用 setter 方法，不管这个对象里的属性的值是什么，都不会更新到数据库。
+
+
+
+以上的示例中，会把 id (主键)为 100 这条数据中的 user_name 字段更新为 null，age 字段更新为 10，其他字段不会被更新。
+
+也就是说，通过 UpdateEntity 创建的对象，只会更新调用了 setter 方法的字段，若不调用 setter 方法，不管这个对象里的属性的值是什么，都不会更新到数据库。
 
 其执行的 sql 内容如下：
 
@@ -88,3 +95,16 @@ update tb_account
 set user_name = ?, age = ? where id = ? 
 #参数: null,10,100
 ```
+
+注意：
+
+```java
+Account account = UpdateEntity.of(Account.class, 100);
+```
+等同于：
+
+```java
+Account account = UpdateEntity.of(Account.class);
+account.setId(100);
+```
+

@@ -56,7 +56,12 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String wrap(String keyword) {
-        return keywordWrap.wrap(keyword);
+        return "*".equals(keyword) ? keyword : keywordWrap.wrap(keyword);
+    }
+
+    @Override
+    public String forHint(String hintString) {
+        return StringUtil.isNotBlank(hintString) ? "/*+ " + hintString + " */ " : "";
     }
 
     @Override
@@ -255,14 +260,8 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     @Override
-    public String forSelectListByQuery(QueryWrapper queryWrapper) {
+    public String forSelectByQuery(QueryWrapper queryWrapper) {
         return buildSelectSql(queryWrapper);
-    }
-
-
-    @Override
-    public String forSelectCountByQuery(QueryWrapper queryWrapper) {
-        return buildSelectCountSql(queryWrapper);
     }
 
 
@@ -275,7 +274,7 @@ public class CommonsDialectImpl implements IDialect {
 
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 
-        StringBuilder sqlBuilder = buildSelectColumnSql(allTables, selectColumns);
+        StringBuilder sqlBuilder = buildSelectColumnSql(allTables, selectColumns, CPI.getHint(queryWrapper));
         sqlBuilder.append(" FROM ").append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
@@ -298,11 +297,19 @@ public class CommonsDialectImpl implements IDialect {
             sqlBuilder = buildLimitOffsetSql(sqlBuilder, queryWrapper, limitRows, limitOffset);
         }
 
+        List<String> endFragments = CPI.getEndFragments(queryWrapper);
+        if (CollectionUtil.isNotEmpty(endFragments)) {
+            for (String endFragment : endFragments) {
+                sqlBuilder.append(" ").append(endFragment);
+            }
+        }
+
         return sqlBuilder.toString();
     }
 
-    private StringBuilder buildSelectColumnSql(List<QueryTable> queryTables, List<QueryColumn> selectColumns) {
+    private StringBuilder buildSelectColumnSql(List<QueryTable> queryTables, List<QueryColumn> selectColumns, String hint) {
         StringBuilder sqlBuilder = new StringBuilder("SELECT ");
+        sqlBuilder.append(forHint(hint));
         if (selectColumns == null || selectColumns.isEmpty()) {
             sqlBuilder.append("*");
         } else {
@@ -321,36 +328,13 @@ public class CommonsDialectImpl implements IDialect {
 
 
     @Override
-    public String buildSelectCountSql(QueryWrapper queryWrapper) {
-        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
-        List<QueryTable> joinTables = CPI.getJoinTables(queryWrapper);
-        List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
-
-        //ignore selectColumns
-        StringBuilder sqlBuilder = new StringBuilder("SELECT COUNT(*) FROM ");
-        sqlBuilder.append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
-
-
-        buildJoinSql(sqlBuilder, queryWrapper, allTables);
-        buildWhereSql(sqlBuilder, queryWrapper, allTables, true);
-        buildGroupBySql(sqlBuilder, queryWrapper, allTables);
-        buildHavingSql(sqlBuilder, queryWrapper, allTables);
-
-        // ignore orderBy and limit
-        // buildOrderBySql(sqlBuilder, queryWrapper);
-        // buildLimitSql(sqlBuilder, queryWrapper);
-
-        return sqlBuilder.toString();
-    }
-
-    @Override
     public String buildDeleteSql(QueryWrapper queryWrapper) {
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
         List<QueryTable> joinTables = CPI.getJoinTables(queryWrapper);
         List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
 
         //ignore selectColumns
-        StringBuilder sqlBuilder = new StringBuilder("DELETE FROM ");
+        StringBuilder sqlBuilder = new StringBuilder("DELETE " + forHint(CPI.getHint(queryWrapper)) + "FROM ");
         sqlBuilder.append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
@@ -361,6 +345,13 @@ public class CommonsDialectImpl implements IDialect {
         //ignore orderBy and limit
         //buildOrderBySql(sqlBuilder, queryWrapper);
         //buildLimitSql(sqlBuilder, queryWrapper);
+
+        List<String> endFragments = CPI.getEndFragments(queryWrapper);
+        if (CollectionUtil.isNotEmpty(endFragments)) {
+            for (String endFragment : endFragments) {
+                sqlBuilder.append(" ").append(endFragment);
+            }
+        }
 
         return sqlBuilder.toString();
     }
@@ -545,7 +536,7 @@ public class CommonsDialectImpl implements IDialect {
         List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
 
         //ignore selectColumns
-        StringBuilder sqlBuilder = new StringBuilder("UPDATE ");
+        StringBuilder sqlBuilder = new StringBuilder("UPDATE ").append(forHint(CPI.getHint(queryWrapper)));
         sqlBuilder.append(wrap(tableInfo.getTableName()));
         sqlBuilder.append(" SET ").append(wrap(logicDeleteColumn)).append(" = ").append(getLogicDeletedValue());
 
@@ -635,7 +626,7 @@ public class CommonsDialectImpl implements IDialect {
 
         Set<String> modifyAttrs = tableInfo.obtainUpdateColumns(entity, ignoreNulls, true);
 
-        sql.append("UPDATE ").append(wrap(tableInfo.getTableName())).append(" SET ");
+        sql.append("UPDATE ").append(forHint(CPI.getHint(queryWrapper))).append(wrap(tableInfo.getTableName())).append(" SET ");
 
         StringJoiner stringJoiner = new StringJoiner(", ");
 
@@ -665,12 +656,20 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         sql.append(" WHERE ").append(whereConditionSql);
+
+        List<String> endFragments = CPI.getEndFragments(queryWrapper);
+        if (CollectionUtil.isNotEmpty(endFragments)) {
+            for (String endFragment : endFragments) {
+                sql.append(" ").append(endFragment);
+            }
+        }
+
         return sql.toString();
     }
 
     @Override
     public String forSelectOneEntityById(TableInfo tableInfo) {
-        StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn());
+        StringBuilder sql = buildSelectColumnSql(null, null, null);
         sql.append(" FROM ").append(wrap(tableInfo.getTableName()));
         sql.append(" WHERE ");
         String[] pKeys = tableInfo.getPrimaryKeys();
@@ -699,7 +698,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectEntityListByIds(TableInfo tableInfo, Object[] primaryValues) {
-        StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn());
+        StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn(), null);
         sql.append(" FROM ").append(wrap(tableInfo.getTableName()));
         sql.append(" WHERE ");
         String[] primaryKeys = tableInfo.getPrimaryKeys();
@@ -845,7 +844,8 @@ public class CommonsDialectImpl implements IDialect {
 
     protected Object getLogicNormalValue() {
         Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
-        if (normalValueOfLogicDelete instanceof Number) {
+        if (normalValueOfLogicDelete instanceof Number
+                || normalValueOfLogicDelete instanceof Boolean) {
             return normalValueOfLogicDelete;
         }
         return "\"" + normalValueOfLogicDelete.toString() + "\"";
@@ -854,7 +854,8 @@ public class CommonsDialectImpl implements IDialect {
 
     protected Object getLogicDeletedValue() {
         Object deletedValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete();
-        if (deletedValueOfLogicDelete instanceof Number) {
+        if (deletedValueOfLogicDelete instanceof Number
+                || deletedValueOfLogicDelete instanceof Boolean) {
             return deletedValueOfLogicDelete;
         }
         return "\"" + deletedValueOfLogicDelete.toString() + "\"";

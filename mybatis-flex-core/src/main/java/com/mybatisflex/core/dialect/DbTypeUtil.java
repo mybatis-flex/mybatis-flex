@@ -87,7 +87,7 @@ public class DbTypeUtil {
      * @param jdbcUrl jdbcURL
      * @return 返回数据库类型
      */
-    private static DbType parseDbType(String jdbcUrl) {
+    public static DbType parseDbType(String jdbcUrl) {
         jdbcUrl = jdbcUrl.toLowerCase();
         if (jdbcUrl.contains(":mysql:") || jdbcUrl.contains(":cobar:")) {
             return DbType.MYSQL;
@@ -95,9 +95,7 @@ public class DbTypeUtil {
             return DbType.MARIADB;
         } else if (jdbcUrl.contains(":oracle:")) {
             return DbType.ORACLE;
-        } else if (jdbcUrl.contains(":sqlserver:") || jdbcUrl.contains(":microsoft:")) {
-            return DbType.SQLSERVER_2005;
-        } else if (jdbcUrl.contains(":sqlserver2012:")) {
+        } else if (jdbcUrl.contains(":sqlserver:") || jdbcUrl.contains(":microsoft:") || jdbcUrl.contains(":sqlserver2012:")) {
             return DbType.SQLSERVER;
         } else if (jdbcUrl.contains(":postgresql:")) {
             return DbType.POSTGRE_SQL;

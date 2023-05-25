@@ -6,7 +6,7 @@ import com.alibaba.fastjson2.JSONWriter;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.nustaq.serialization.FSTConfiguration;
 
-import static com.mybatisflex.test.table.Tables.ACCOUNT;
+import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 
 public class WrapperSerializeTest {
 

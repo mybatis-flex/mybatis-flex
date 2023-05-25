@@ -15,11 +15,6 @@
  */
 package com.mybatisflex.core.util;
 
-import com.mybatisflex.annotation.EnumValue;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -27,8 +22,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 public class ConvertUtil {
 
@@ -99,40 +92,9 @@ public class ConvertUtil {
             }
             return Short.parseShort(value.toString());
         } else if (targetClass.isEnum()) {
-            Object[] enumConstants = targetClass.getEnumConstants();
-            List<Field> allFields = ClassUtil.getAllFields(targetClass, field -> field.getAnnotation(EnumValue.class) != null);
-            if (allFields.size() == 1) {
-                Field field = allFields.get(0);
-
-                String fieldGetterName = "get" + StringUtil.firstCharToUpperCase(field.getName());
-                List<Method> allMethods = ClassUtil.getAllMethods(targetClass, method -> {
-                    String methodName = method.getName();
-                    return methodName.equals(fieldGetterName);
-                });
-
-                //getter
-                if (allMethods.size() == 1) {
-                    Method getter = allMethods.get(0);
-                    for (Object enumConstant : enumConstants) {
-                        try {
-                            Object enumValue = getter.invoke(enumConstant);
-                            if (Objects.equals(enumValue, value)) {
-                                return enumConstant;
-                            }
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-
-                //public field
-                else if (Modifier.isPublic(field.getModifiers())) {
-                    for (Object enumConstant : enumConstants) {
-                        if (Objects.equals(readPublicField(field, enumConstant), value)) {
-                            return enumConstant;
-                        }
-                    }
-                }
+            EnumWrapper enumWrapper = EnumWrapper.of(targetClass);
+            if (enumWrapper.hasEnumValueAnnotation()) {
+                return enumWrapper.toEnum(value);
             } else if (value instanceof String) {
                 return Enum.valueOf(targetClass, value.toString());
             }
@@ -142,15 +104,6 @@ public class ConvertUtil {
             return null;
         } else {
             throw new IllegalArgumentException("Can not convert \"" + value + "\" to type\"" + targetClass.getName() + "\".");
-        }
-    }
-
-
-    private static Object readPublicField(Field field, Object target) {
-        try {
-            return field.get(target);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
     }
 

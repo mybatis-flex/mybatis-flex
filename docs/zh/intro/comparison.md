@@ -1,17 +1,17 @@
-# Mybatis-Flex 和同类框架「功能」对比
+# MyBatis-Flex 和同类框架「功能」对比
 
-MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来源其官网、git 或者 网络文章，若有错误欢迎纠正。
+MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-MyBatis` 对比，内容来源其官网、git 或者 网络文章，若有错误欢迎纠正。
 
 - MyBatis-Plus：老牌的 MyBatis 增强框架，开源于 2016 年。
-- Fluent-Mybatis：阿里云开发的 Mybatis 增强框架（来至于阿里云·云效产品团队）
+- Fluent-MyBatis：阿里云开发的 MyBatis 增强框架（来自于阿里云·云效产品团队）
 
 > 本文只阐述了「功能」方面的对比，**「性能」** 对比请参考 [这里](./benchmark.md)。
-> 若发现对比中有错误，请加入 Mybatis-Flex QQ 交流群：532992631，然后联系群主纠正。
+> 若发现对比中有错误，请加入 MyBatis-Flex QQ 交流群：532992631，然后联系群主纠正。
 
 ## 功能对比
 
 
-| 功能或特点 | MyBatis-Flex     | MyBatis-Plus    | Fluent-Mybatis     |
+| 功能或特点 | MyBatis-Flex     | MyBatis-Plus    | Fluent-MyBatis     |
 | -------- | -------- | -------- | -------- |
 | 对 entity 的基本增删改查 | ✅ | ✅ | ✅ |
 | 分页查询 | ✅ | ✅ | ✅ |
@@ -24,7 +24,7 @@ MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来
 | 多种 id 生成策略 | ✅ | ✅ | ✅ |
 | 支持多主键、复合主键 | ✅ | ❌ | ❌ |
 | 字段的 typeHandler 配置 | ✅ | ✅ | ✅ |
-| 除了 Mybatis，无其他第三方依赖（更轻量） | ✅ | ❌ | ❌ |
+| 除了 MyBatis，无其他第三方依赖（更轻量） | ✅ | ❌ | ❌ |
 | QueryWrapper 是否支持在微服务项目下进行 RPC 传输 | ✅ | ❌ | 未知 |
 | 逻辑删除 | ✅ | ✅ | ✅ |
 | 乐观锁 | ✅ | ✅ | ✅ |
@@ -50,30 +50,29 @@ MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-Mybatis` 对比，内容来
 **MyBatis-Flex：**
 
 ````java
-QueryCondition condition = EMPLOYEE.LAST_NAME.like("B")
+QueryWrapper query = QueryWrapper.create()
+        .where(EMPLOYEE.LAST_NAME.like(searchWord)) //条件为null时自动忽略
         .and(EMPLOYEE.GENDER.eq(1))
         .and(EMPLOYEE.AGE.gt(24));
-List<Employee> employees = employeeMapper.selectListByCondition(condition);
+List<Employee> employees = employeeMapper.selectListByQuery(query);
 ````
 
 **MyBatis-Plus：**
 
 ````java
-QueryWrapper<Employee> queryWrapper = new QueryWrapper<>();
-queryWrapper
-        .like("last_name","B")
-        .eq("gender",1)
-        .gt("age",24);
+QueryWrapper<Employee> queryWrapper = Wrappers.query()
+        .like(searchWord != null, "last_name", searchWord)
+        .eq("gender", 1)
+        .gt("age", 24);
 List<Employee> employees = employeeMapper.selectList(queryWrapper);
 ````
-或者 MyBatis-Plus 的另一种写法：
+或者 MyBatis-Plus 的 lambda 写法：
 
 ```java
-LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
-queryWrapper
-        .like(Employee::getUserName,"B")
-        .eq(Employee::getGender,1)
-        .gt(Employee::getAge,24);
+LambdaQueryWrapper<Employee> queryWrapper = Wrappers.<Employee>lambdaQuery()
+        .like(StringUtils.isNotEmpty(searchWord), Employee::getUserName,"B")
+        .eq(Employee::getGender, 1)
+        .gt(Employee::getAge, 24);
 List<Employee> employees = employeeMapper.selectList(queryWrapper);
 ```
 
@@ -82,7 +81,7 @@ List<Employee> employees = employeeMapper.selectList(queryWrapper);
 
 ````java
 EmployeeQuery query = new EmployeeQuery()
-    .where.lastName().like("B")
+    .where.lastName().like(searchWord, If::notNull)
     .and.gender().eq(1)
     .and.age().gt(24)
     .end();
@@ -96,7 +95,7 @@ List<Employee> employees = employeeMapper.listEntity(query);
 **MyBatis-Flex：**
 
 ````java
-QueryWrapper query = new QueryWrapper()
+QueryWrapper query = QueryWrapper.create()
     .select(
         ACCOUNT.ID,
         ACCOUNT.USER_NAME,
@@ -108,17 +107,16 @@ List<Employee> employees = employeeMapper.selectListByQuery(query);
 **MyBatis-Plus：**
 
 ````java
-QueryWrapper<Employee> queryWrapper = new QueryWrapper<>();
-queryWrapper
+QueryWrapper<Employee> queryWrapper = Wrappers.query()
     .select(
-        "id"
-        ,"user_name"
-        ,"max(birthday)"
-        ,"avg(birthday) as sex_avg"
+        "id",
+        "user_name",
+        "max(birthday)",
+        "avg(birthday) as sex_avg"
     );
 List<Employee> employees = employeeMapper.selectList(queryWrapper);
 ````
-> 缺点：字段硬编码，容易错处。无法使用 ide 的字段进行重构，无法使用 IDE 自动提示，发生错误不能及时发现。
+> 缺点：字段硬编码，容易拼错。无法使用 ide 的字段进行重构，无法使用 IDE 自动提示，发生错误不能及时发现。
 
 
 **Fluent-MyBatis：**
@@ -153,19 +151,24 @@ OR (age IN (18,19,20) AND user_name LIKE "%michael%" )
 QueryWrapper query = QueryWrapper.create()
     .where(ACCOUNT.ID.ge(100))
     .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
-    .or(ACCOUNT.AGE.in(18,19,20).and(ACCOUNT.USER_NAME.like("michael")));
+    .or(ACCOUNT.AGE.in(18, 19, 20).and(ACCOUNT.USER_NAME.like("michael")));
 ```
 
 **MyBatis-Plus：**
 
 ```java
-QueryWrapper<Employee> query = new QueryWrapper<>();
-queryWrapper.ge("id",100)
-        .and(i->i.eq("sex",1).or(x->x.eq("sex",2)))
-        .or(i->i.in("age",{18,19,20}).like("user_name","michael"));
+QueryWrapper<Employee> query = Wrappers.query()
+        .ge("id", 100)
+        .and(i -> i.eq("sex", 1).or(x -> x.eq("sex", 2)))
+        .or(i -> i.in("age", 18, 19, 20).like("user_name", "michael"));
+// or lambda
+LambdaQueryWrapper<Employee> query = Wrappers.<Employee>lambdaQuery()
+        .ge(Employee::getId, 100)
+        .and(i -> i.eq(Employee::getSex, 1).or(x -> x.eq(Employee::getSex, 2)))
+        .or(i -> i.in(Employee::getAge, 18, 19, 20).like(Employee::getUserName, "michael"));
 ```
 
-**Fluent-Mybatis：**
+**Fluent-MyBatis：**
 
 ```java
 AccountQuery query = new AccountQuery()
@@ -269,7 +272,7 @@ set user_name = "michael", age = 18, birthday = null
 where id = 100
 ```
 
-**Mybatis-Flex** 代码如下：
+**MyBatis-Flex** 代码如下：
 
 ```java
 Account account = UpdateEntity.of(Account.class);
@@ -281,7 +284,7 @@ account.setBirthday(null);
 accountMapper.update(account);
 ```
 
-**Mybatis-Plus** 代码如下（或可使用 Mybatis-Plus 的 `LambdaUpdateWrapper`，但性能没有 `UpdateWrapper` 好）：
+**MyBatis-Plus** 代码如下（或可使用 MyBatis-Plus 的 `LambdaUpdateWrapper`，但性能没有 `UpdateWrapper` 好）：
 
 ```java 
 UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
@@ -293,7 +296,7 @@ updateWrapper.set("birthday", null);
 accountMapper.update(null, updateWrapper);
 ```
 
-**Fluent-Mybatis** 代码如下：
+**Fluent-MyBatis** 代码如下：
 
 ```java 
 AccountUpdate update = new AccountUpdate()

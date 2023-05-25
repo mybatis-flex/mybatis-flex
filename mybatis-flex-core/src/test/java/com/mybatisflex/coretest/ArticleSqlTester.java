@@ -8,7 +8,8 @@ import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.CollectionUtil;
 import org.junit.Test;
 
-import static com.mybatisflex.coretest.table.Tables.ARTICLE;
+import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
+
 
 public class ArticleSqlTester {
 
@@ -20,7 +21,7 @@ public class ArticleSqlTester {
                 .from(ARTICLE);
 
         IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectListByQuery(query);
+        String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
     }
 

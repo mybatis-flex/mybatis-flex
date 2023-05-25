@@ -83,4 +83,24 @@ public class CollectionUtil {
         return new ArrayList<>(Arrays.asList(elements));
     }
 
+    public static <T> List<T> toList(Collection<T> collection) {
+        if (collection instanceof List) {
+            return (List<T>) collection;
+        } else {
+            return new ArrayList<>(collection);
+        }
+    }
+
+    public static String[] toArrayString(Collection<?> collection) {
+        if (isEmpty(collection)) {
+            return new String[0];
+        }
+        String[] results = new String[collection.size()];
+        int index = 0;
+        for (Object o : collection) {
+            results[index++] = String.valueOf(o);
+        }
+        return results;
+    }
+
 }

@@ -30,9 +30,9 @@ public class KeyGeneratorFactory {
         /** 内置了 uuid 的生成器，因此主键配置的时候可以直接配置为 @Id(keyType = KeyType.Generator, value = "uuid")
          * {@link com.mybatisflex.annotation.Id}
          */
-        register("uuid", new UUIDKeyGenerator());
-        register("flexId", new FlexIDKeyGenerator());
-        register("snowFlakeId", new SnowFlakeIDKeyGenerator());
+        register(KeyGenerators.uuid, new UUIDKeyGenerator());
+        register(KeyGenerators.flexId, new FlexIDKeyGenerator());
+        register(KeyGenerators.snowFlakeId, new SnowFlakeIDKeyGenerator());
     }
 
 

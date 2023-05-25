@@ -32,12 +32,12 @@ public class Page<T> implements Serializable {
     private long totalPage = INIT_VALUE;
     private long totalRow = INIT_VALUE;
 
-    public static Page of(int pageNumber, int pageSize) {
-        return new Page(pageNumber, pageSize);
+    public static <T> Page<T> of(int pageNumber, int pageSize) {
+        return new Page<>(pageNumber, pageSize);
     }
 
-    public static Page of(int pageNumber, int pageSize, long totalRow) {
-        return new Page(pageNumber, pageSize, totalRow);
+    public static <T> Page<T> of(int pageNumber, int pageSize, long totalRow) {
+        return new Page<>(pageNumber, pageSize, totalRow);
     }
 
     public Page() {
@@ -114,7 +114,7 @@ public class Page<T> implements Serializable {
         newPage.totalPage = totalPage;
         newPage.totalRow = totalRow;
 
-        if (records != null) {
+        if (records != null && !records.isEmpty()) {
             List<R> newRecords = new ArrayList<>(records.size());
             for (T t : records) {
                 newRecords.add(mapper.apply(t));
