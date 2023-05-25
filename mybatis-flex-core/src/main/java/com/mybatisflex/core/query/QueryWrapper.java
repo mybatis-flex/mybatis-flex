@@ -285,6 +285,17 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
+    public QueryWrapper forUpdateNoWait(){
+        addEndFragment("FOR UPDATE NOWAIT");
+        return this;
+    }
+
+
+//    public QueryWrapper end(String sqlPart){
+//        addEndFragment(sqlPart);
+//        return this;
+//    }
+
 
     protected Joiner<QueryWrapper> joining(String type, String table, boolean condition) {
         Join join = new Join(type, table, condition);
