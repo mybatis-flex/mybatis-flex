@@ -1,3 +1,18 @@
+mybatis-flex v1.3.0 20230525:
+新增：新增 一对多、多对一 查询功能
+新增：为 SqlServer 添加独立的 LimitOffset 处理器
+新增：QueryWrapper 新增 "for update" 的 SQL 构建支持
+新增：QueryWrapper 新增 select convert(...) 的 SQL 构建支持
+新增：QueryWrapper 新增 select case when ... then 的 SQL 构建支持
+优化：APT 默认生成独立文件，之前所有 APT 生成在同一个文件修改为可配置
+修复：Table.camelToUnderline 注解在 APT 上配置不生效的问题
+修复：多租户设置 TenantId 时，在某些极端情况下出现异常的问题
+文档：新增 一对多、多对一 的相关文档
+文档：新增 select case when ... then 的 QueryWrapper 示例
+文档：添加关于 hint 的相关描述
+
+
+
 mybatis-flex v1.2.9 20230523:
 新增：字段添加对 Byte.class 类型的支持 #I76GNW
 修复："select * ,(select ...) from ..." 第二个 select 有参数时出错的问题
