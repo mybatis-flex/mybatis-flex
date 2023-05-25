@@ -297,6 +297,13 @@ public class CommonsDialectImpl implements IDialect {
             sqlBuilder = buildLimitOffsetSql(sqlBuilder, queryWrapper, limitRows, limitOffset);
         }
 
+        List<String> endFragments = CPI.getEndFragments(queryWrapper);
+        if (CollectionUtil.isNotEmpty(endFragments)) {
+            for (String endFragment : endFragments) {
+                sqlBuilder.append(" ").append(endFragment);
+            }
+        }
+
         return sqlBuilder.toString();
     }
 
@@ -338,6 +345,13 @@ public class CommonsDialectImpl implements IDialect {
         //ignore orderBy and limit
         //buildOrderBySql(sqlBuilder, queryWrapper);
         //buildLimitSql(sqlBuilder, queryWrapper);
+
+        List<String> endFragments = CPI.getEndFragments(queryWrapper);
+        if (CollectionUtil.isNotEmpty(endFragments)) {
+            for (String endFragment : endFragments) {
+                sqlBuilder.append(" ").append(endFragment);
+            }
+        }
 
         return sqlBuilder.toString();
     }
@@ -642,6 +656,14 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         sql.append(" WHERE ").append(whereConditionSql);
+
+        List<String> endFragments = CPI.getEndFragments(queryWrapper);
+        if (CollectionUtil.isNotEmpty(endFragments)) {
+            for (String endFragment : endFragments) {
+                sql.append(" ").append(endFragment);
+            }
+        }
+
         return sql.toString();
     }
 

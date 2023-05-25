@@ -292,6 +292,20 @@ public class AccountSqlTester {
         System.out.println(sql);
     }
 
+    @Test
+    public void testForUpdate() {
+        IDialect dialect = new CommonsDialectImpl();
+
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select()
+                .from(ACCOUNT)
+                .and(ACCOUNT.USER_NAME.like("michael"))
+                .forUpdate();
+
+        String sql = dialect.forSelectByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
 
     @Test
     public void testLimitOffset() {

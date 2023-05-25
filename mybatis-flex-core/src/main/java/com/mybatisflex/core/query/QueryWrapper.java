@@ -155,8 +155,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
 
-    public Joiner<QueryWrapper> leftJoinIf(String table, boolean condition) {
-        return joining(Join.TYPE_LEFT, table, condition);
+    public Joiner<QueryWrapper> leftJoinIf(String table, boolean when) {
+        return joining(Join.TYPE_LEFT, table, when);
     }
 
     public Joiner<QueryWrapper> leftJoin(TableDef table) {
@@ -164,104 +164,104 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
 
-    public Joiner<QueryWrapper> leftJoinIf(TableDef table, boolean condition) {
-        return joining(Join.TYPE_LEFT, table.getTableName(), condition);
+    public Joiner<QueryWrapper> leftJoinIf(TableDef table, boolean when) {
+        return joining(Join.TYPE_LEFT, table.getTableName(), when);
     }
 
     public Joiner<QueryWrapper> leftJoin(QueryWrapper table) {
         return joining(Join.TYPE_LEFT, table, true);
     }
 
-    public Joiner<QueryWrapper> leftJoinIf(QueryWrapper table, boolean condition) {
-        return joining(Join.TYPE_LEFT, table, condition);
+    public Joiner<QueryWrapper> leftJoinIf(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_LEFT, table, when);
     }
 
     public Joiner<QueryWrapper> rightJoin(String table) {
         return joining(Join.TYPE_RIGHT, table, true);
     }
 
-    public Joiner<QueryWrapper> rightJoinIf(String table, boolean condition) {
-        return joining(Join.TYPE_RIGHT, table, condition);
+    public Joiner<QueryWrapper> rightJoinIf(String table, boolean when) {
+        return joining(Join.TYPE_RIGHT, table, when);
     }
 
     public Joiner<QueryWrapper> rightJoin(QueryWrapper table) {
         return joining(Join.TYPE_RIGHT, table, true);
     }
 
-    public Joiner<QueryWrapper> rightJoinIf(QueryWrapper table, boolean condition) {
-        return joining(Join.TYPE_RIGHT, table, condition);
+    public Joiner<QueryWrapper> rightJoinIf(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_RIGHT, table, when);
     }
 
     public Joiner<QueryWrapper> innerJoin(String table) {
         return joining(Join.TYPE_INNER, table, true);
     }
 
-    public Joiner<QueryWrapper> innerJoinIf(String table, boolean condition) {
-        return joining(Join.TYPE_INNER, table, condition);
+    public Joiner<QueryWrapper> innerJoinIf(String table, boolean when) {
+        return joining(Join.TYPE_INNER, table, when);
     }
 
     public Joiner<QueryWrapper> innerJoin(TableDef table) {
         return innerJoinIf(table, true);
     }
 
-    public Joiner<QueryWrapper> innerJoinIf(TableDef table, boolean condition) {
-        return joining(Join.TYPE_INNER, table.getTableName(), condition);
+    public Joiner<QueryWrapper> innerJoinIf(TableDef table, boolean when) {
+        return joining(Join.TYPE_INNER, table.getTableName(), when);
     }
 
     public Joiner<QueryWrapper> innerJoin(QueryWrapper table) {
         return joining(Join.TYPE_INNER, table, true);
     }
 
-    public Joiner<QueryWrapper> innerJoinIf(QueryWrapper table, boolean condition) {
-        return joining(Join.TYPE_INNER, table, condition);
+    public Joiner<QueryWrapper> innerJoinIf(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_INNER, table, when);
     }
 
     public Joiner<QueryWrapper> fullJoin(String table) {
         return joining(Join.TYPE_FULL, table, true);
     }
 
-    public Joiner<QueryWrapper> fullJoinIf(String table, boolean condition) {
-        return joining(Join.TYPE_FULL, table, condition);
+    public Joiner<QueryWrapper> fullJoinIf(String table, boolean when) {
+        return joining(Join.TYPE_FULL, table, when);
     }
 
     public Joiner<QueryWrapper> fullJoin(QueryWrapper table) {
         return joining(Join.TYPE_FULL, table, true);
     }
 
-    public Joiner<QueryWrapper> fullJoinIf(QueryWrapper table, boolean condition) {
-        return joining(Join.TYPE_FULL, table, condition);
+    public Joiner<QueryWrapper> fullJoinIf(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_FULL, table, when);
     }
 
     public Joiner<QueryWrapper> crossJoin(String table) {
         return joining(Join.TYPE_CROSS, table, true);
     }
 
-    public Joiner<QueryWrapper> crossJoinIf(String table, boolean condition) {
-        return joining(Join.TYPE_CROSS, table, condition);
+    public Joiner<QueryWrapper> crossJoinIf(String table, boolean when) {
+        return joining(Join.TYPE_CROSS, table, when);
     }
 
     public Joiner<QueryWrapper> crossJoin(QueryWrapper table) {
         return joining(Join.TYPE_CROSS, table, true);
     }
 
-    public Joiner<QueryWrapper> crossJoinIf(QueryWrapper table, boolean condition) {
-        return joining(Join.TYPE_CROSS, table, condition);
+    public Joiner<QueryWrapper> crossJoinIf(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_CROSS, table, when);
     }
 
     public Joiner<QueryWrapper> join(String table) {
         return joining(Join.TYPE_JOIN, table, true);
     }
 
-    public Joiner<QueryWrapper> join(String table, boolean condition) {
-        return joining(Join.TYPE_JOIN, table, condition);
+    public Joiner<QueryWrapper> join(String table, boolean when) {
+        return joining(Join.TYPE_JOIN, table, when);
     }
 
     public Joiner<QueryWrapper> join(QueryWrapper table) {
         return joining(Join.TYPE_JOIN, table, true);
     }
 
-    public Joiner<QueryWrapper> join(QueryWrapper table, boolean condition) {
-        return joining(Join.TYPE_JOIN, table, condition);
+    public Joiner<QueryWrapper> join(QueryWrapper table, boolean when) {
+        return joining(Join.TYPE_JOIN, table, when);
     }
 
     public QueryWrapper union(QueryWrapper unionQuery) {
@@ -279,6 +279,12 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         unions.add(UnionWrapper.unionAll(unionQuery));
         return this;
     }
+
+    public QueryWrapper forUpdate(){
+        addEndFragment("FOR UPDATE");
+        return this;
+    }
+
 
     protected Joiner<QueryWrapper> joining(String type, String table, boolean condition) {
         Join join = new Join(type, table, condition);

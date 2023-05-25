@@ -158,6 +158,15 @@ public class CPI {
         queryWrapper.setLimitRows(limitRows);
     }
 
+    public static List<String> getEndFragments(QueryWrapper queryWrapper) {
+        return queryWrapper.getEndFragments();
+    }
+
+    public static void setEndFragments(QueryWrapper queryWrapper,List<String> endFragments) {
+        queryWrapper.setEndFragments(endFragments);
+    }
+
+
     public static Map<String, Object> getContext(QueryWrapper queryWrapper) {
         return queryWrapper.getContext();
     }

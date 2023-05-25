@@ -38,6 +38,8 @@ public class BaseQueryWrapper<T> implements Serializable {
     protected Integer limitOffset;
     protected Integer limitRows;
 
+    protected List<String> endFragments;
+
     protected Map<String, Object> context;
 
 //    protected boolean ignoreBlankStrings = false;
@@ -118,6 +120,13 @@ public class BaseQueryWrapper<T> implements Serializable {
             joinTables = new ArrayList<>();
         }
         joinTables.add(queryTable);
+    }
+
+    protected void addEndFragment(String fragment){
+        if (endFragments == null){
+            endFragments = new ArrayList<>();
+        }
+        endFragments.add(fragment);
     }
 
 
@@ -219,6 +228,14 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected void setLimitRows(Integer limitRows) {
         this.limitRows = limitRows;
+    }
+
+    protected List<String> getEndFragments() {
+        return endFragments;
+    }
+
+    protected void setEndFragments(List<String> endFragments) {
+        this.endFragments = endFragments;
     }
 
     protected Map<String, Object> getContext() {
