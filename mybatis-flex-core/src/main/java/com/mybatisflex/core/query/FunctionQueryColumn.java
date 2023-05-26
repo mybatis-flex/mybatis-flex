@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * 数据库 聚合函数，例如 count(id) ，max(account.age) 等等
  */
-public class FunctionQueryColumn extends QueryColumn {
+public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn {
 
     protected String fnName;
     protected QueryColumn column;
@@ -59,6 +59,14 @@ public class FunctionQueryColumn extends QueryColumn {
     }
 
     @Override
+    public Object[] getParamValues() {
+        if (column instanceof HasParamsColumn){
+            return ((HasParamsColumn) column).getParamValues();
+        }
+        return WrapperUtil.NULL_PARA_ARRAY;
+    }
+
+    @Override
     public String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String sql = column.toSelectSql(queryTables, dialect);
         return StringUtil.isBlank(sql) ? "" : fnName + "(" + sql + ")" + WrapperUtil.buildAsAlias(alias);
@@ -78,4 +86,6 @@ public class FunctionQueryColumn extends QueryColumn {
                 ", column=" + column +
                 '}';
     }
+
+
 }
