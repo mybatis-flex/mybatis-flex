@@ -125,11 +125,14 @@ FROM tb_account
 
 ```java
 QueryWrapper wrapper = QueryWrapper.create()
-        .select(ACCOUNT.ID
-            ,case_().when(ACCOUNT.ID.ge(2)).then("x2")
-            .when(ACCOUNT.ID.ge(1)).then("x1")
-            .else_("x100")
-            .end().as("xName")
+        .select(
+             ACCOUNT.ID
+            ,case_()
+                .when(ACCOUNT.ID.ge(2)).then("x2")
+                .when(ACCOUNT.ID.ge(1)).then("x1")
+                .else_("x100")
+                .end().as("xName")
+        )
 ```
 
 其查询生成的 Sql 如下：
@@ -156,11 +159,13 @@ SQL 执行的结果如下：
 
 ```java
 QueryWrapper queryWrapper = QueryWrapper.create()
-        .select(ACCOUNT.ALL_COLUMNS,
-        case_(ACCOUNT.ID)
-        .when(100).then(100)
-        .when(200).then(200)
-        .else_(300).end().as("result"))
+        .select(
+                ACCOUNT.ALL_COLUMNS,
+                case_(ACCOUNT.ID)
+                    .when(100).then(100)
+                    .when(200).then(200)
+                    .else_(300).end().as("result")
+        )
         .from(ACCOUNT)
         .where(ACCOUNT.USER_NAME.like("michael"));
 ```
@@ -173,7 +178,8 @@ SELECT *,
            WHEN 100 THEN 100 
            WHEN 200 THEN 200 
            ELSE 300 END) AS `result` 
-FROM `tb_account` WHERE `user_name` LIKE  ?
+FROM `tb_account` 
+WHERE `user_name` LIKE  ?
 ```
 
 ::: tip 提示
