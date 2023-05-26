@@ -244,6 +244,28 @@ public class RowSqlProvider {
 
         return DialectFactory.getDialect().forUpdateEntity(tableInfo, entity, false);
     }
+    /**
+     * 执行类似 update table set field=field+1 where ... 的场景
+     *
+     * @param params
+     * @return sql
+     * @see RowMapper#updateNumberAddByQuery(String, String, Number, QueryWrapper)
+     */
+    public static String updateNumberAddByQuery(Map params) {
+
+        QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
+
+        String tableName = ProviderUtil.getTableName(params);
+        String fieldName = ProviderUtil.getFieldName(params);
+        Number value = (Number) ProviderUtil.getValue(params);
+
+
+        Object[] queryParams = CPI.getValueArray(queryWrapper);
+
+        ProviderUtil.setSqlArgs(params, queryParams);
+
+        return DialectFactory.getDialect().forUpdateNumberAddByQuery(tableName, fieldName, value, queryWrapper);
+    }
 
 
     /**

@@ -279,6 +279,33 @@ public interface BaseMapper<T> {
 
 
     /**
+     * 执行类似 update table set field=field+1 where ... 的场景
+     *
+     * @param fieldName    字段名
+     * @param value        值（ >=0 加，小于 0 减）
+     * @param queryWrapper 条件
+     * @see EntitySqlProvider#updateNumberAddByQuery(Map, ProviderContext)
+     */
+    @UpdateProvider(type = EntitySqlProvider.class, method = "updateNumberAddByQuery")
+    int updateNumberAddByQuery(@Param(FlexConsts.FIELD_NAME) String fieldName, @Param(FlexConsts.VALUE) Number value, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+
+
+    /**
+     * 执行类似 update table set field=field+1 where ... 的场景
+     *
+     * @param fn           字段名
+     * @param value        值（ >=0 加，小于 0 减）
+     * @param queryWrapper 条件
+     * @see EntitySqlProvider#updateNumberAddByQuery(Map, ProviderContext)
+     */
+    default int updateNumberAddByQuery(LambdaGetter<T> fn, Number value, QueryWrapper queryWrapper) {
+        TableInfo tableInfo = TableInfoFactory.ofMapperClass(ClassUtil.getUsefulClass(getClass()));
+        String column = tableInfo.getColumnByProperty(LambdaUtil.getFieldName(fn));
+        return updateNumberAddByQuery(column, value, queryWrapper);
+    }
+
+
+    /**
      * 根据主键来选择数据
      *
      * @param id 多个主键

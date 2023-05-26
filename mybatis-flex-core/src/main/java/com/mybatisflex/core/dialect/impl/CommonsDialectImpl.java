@@ -667,6 +667,33 @@ public class CommonsDialectImpl implements IDialect {
         return sql.toString();
     }
 
+
+    @Override
+    public String forUpdateNumberAddByQuery(String tableName, String fieldName, Number value, QueryWrapper queryWrapper) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE ").append(forHint(CPI.getHint(queryWrapper))).append(wrap(tableName)).append(" SET ");
+        sql.append(wrap(fieldName)).append("=").append(wrap(fieldName)).append(value.intValue() >= 0 ? " + " : " - ").append(Math.abs(value.longValue()));
+
+        String whereConditionSql = buildWhereConditionSql(queryWrapper);
+
+        //不允许全量更新
+        if (StringUtil.isBlank(whereConditionSql)) {
+            throw new IllegalArgumentException("Not allowed UPDATE a table without where condition.");
+        }
+
+        sql.append(" WHERE ").append(whereConditionSql);
+
+        List<String> endFragments = CPI.getEndFragments(queryWrapper);
+        if (CollectionUtil.isNotEmpty(endFragments)) {
+            for (String endFragment : endFragments) {
+                sql.append(" ").append(endFragment);
+            }
+        }
+
+        return sql.toString();
+    }
+
+
     @Override
     public String forSelectOneEntityById(TableInfo tableInfo) {
         StringBuilder sql = buildSelectColumnSql(null, null, null);

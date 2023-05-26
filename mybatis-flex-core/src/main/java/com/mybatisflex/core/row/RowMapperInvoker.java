@@ -185,4 +185,7 @@ public class RowMapperInvoker {
     }
 
 
+    public int updateNumberAddByQuery(String tableName, String fieldName, Number value, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.updateNumberAddByQuery(tableName, fieldName, value, queryWrapper));
+    }
 }

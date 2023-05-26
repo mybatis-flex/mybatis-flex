@@ -247,6 +247,32 @@ public class EntitySqlProvider {
         return DialectFactory.getDialect().forUpdateEntityByQuery(tableInfo, entity, ignoreNulls, queryWrapper);
     }
 
+    /**
+     * updateNumberByQuery 的 sql 构建
+     *
+     * @param params
+     * @param context
+     * @return sql
+     * @see com.mybatisflex.core.BaseMapper#updateNumberAddByQuery(String, Number, QueryWrapper)
+     */
+    public static String updateNumberAddByQuery(Map params, ProviderContext context) {
+        QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
+
+        String fieldName = ProviderUtil.getFieldName(params);
+        Number value = (Number) ProviderUtil.getValue(params);
+
+        TableInfo tableInfo = ProviderUtil.getTableInfo(context);
+
+        //处理逻辑删除 和 多租户等
+        tableInfo.appendConditions(null, queryWrapper);
+
+        Object[] queryParams = CPI.getValueArray(queryWrapper);
+
+        ProviderUtil.setSqlArgs(params, queryParams);
+
+        return DialectFactory.getDialect().forUpdateNumberAddByQuery(tableInfo.getTableName(), fieldName, value, queryWrapper);
+    }
+
 
     /**
      * selectOneById 的 sql 构建
@@ -348,10 +374,6 @@ public class EntitySqlProvider {
 
         return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
     }
-
-
-
-
 
 
     private static List<TableInfo> getTableInfos(ProviderContext context, QueryWrapper queryWrapper) {
