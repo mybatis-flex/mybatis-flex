@@ -22,7 +22,6 @@ import org.apache.ibatis.util.MapUtil;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,31 +44,30 @@ public class EnumWrapper<E extends Enum<E>> {
     public EnumWrapper(Class<E> enumClass) {
         this.enumClass = enumClass;
 
-        List<Field> allFields = ClassUtil.getAllFields(enumClass, field -> field.getAnnotation(EnumValue.class) != null);
-        if (!allFields.isEmpty()) {
+        Field enumValueField = ClassUtil.getFirstField(enumClass, field -> field.getAnnotation(EnumValue.class) != null);
+        if (enumValueField != null) {
             hasEnumValueAnnotation = true;
         }
 
         if (hasEnumValueAnnotation) {
-            Field field = allFields.get(0);
+            String fieldGetterName = "get" + StringUtil.firstCharToUpperCase(enumValueField.getName());
 
-            String fieldGetterName = "get" + StringUtil.firstCharToUpperCase(field.getName());
-            List<Method> allMethods = ClassUtil.getAllMethods(enumClass, method -> {
+            Method getterMethod = ClassUtil.getFirstMethod(enumClass, method -> {
                 String methodName = method.getName();
-                return methodName.equals(fieldGetterName);
+                return methodName.equals(fieldGetterName) && Modifier.isPublic(method.getModifiers());
             });
 
-            enumPropertyType = ClassUtil.wrap(field.getType());
+            enumPropertyType = ClassUtil.wrap(enumValueField.getType());
             enums = enumClass.getEnumConstants();
 
-            if (allMethods.isEmpty()) {
-                if (Modifier.isPublic(field.getModifiers())) {
-                    property = field;
+            if (getterMethod != null) {
+                if (Modifier.isPublic(enumValueField.getModifiers())) {
+                    property = enumValueField;
                 } else {
                     throw new IllegalStateException("Can not find \"" + fieldGetterName + "()\" method in enum: " + enumClass.getName());
                 }
             } else {
-                getter = allMethods.get(0);
+                getter = getterMethod;
             }
         }
     }

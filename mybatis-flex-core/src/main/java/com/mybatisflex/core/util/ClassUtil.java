@@ -181,17 +181,23 @@ public class ClassUtil {
 
     public static List<Field> getAllFields(Class<?> cl) {
         List<Field> fields = new ArrayList<>();
-        doGetFields(cl, fields, null);
+        doGetFields(cl, fields, null, false);
         return fields;
     }
 
     public static List<Field> getAllFields(Class<?> cl, Predicate<Field> predicate) {
         List<Field> fields = new ArrayList<>();
-        doGetFields(cl, fields, predicate);
+        doGetFields(cl, fields, predicate, false);
         return fields;
     }
 
-    private static void doGetFields(Class<?> cl, List<Field> fields, Predicate<Field> predicate) {
+    public static Field getFirstField(Class<?> cl, Predicate<Field> predicate) {
+        List<Field> fields = new ArrayList<>();
+        doGetFields(cl, fields, predicate, true);
+        return fields.isEmpty() ? null : fields.get(0);
+    }
+
+    private static void doGetFields(Class<?> cl, List<Field> fields, Predicate<Field> predicate, boolean firstOnly) {
         if (cl == null || cl == Object.class) {
             return;
         }
@@ -200,26 +206,39 @@ public class ClassUtil {
         for (Field declaredField : declaredFields) {
             if (predicate == null || predicate.test(declaredField)) {
                 fields.add(declaredField);
+                if (firstOnly) {
+                    break;
+                }
             }
         }
 
-        doGetFields(cl.getSuperclass(), fields, predicate);
+        if (firstOnly && !fields.isEmpty()) {
+            return;
+        }
+
+        doGetFields(cl.getSuperclass(), fields, predicate, firstOnly);
     }
 
     public static List<Method> getAllMethods(Class<?> cl) {
         List<Method> methods = new ArrayList<>();
-        doGetMethods(cl, methods, null);
+        doGetMethods(cl, methods, null, false);
         return methods;
     }
 
     public static List<Method> getAllMethods(Class<?> cl, Predicate<Method> predicate) {
         List<Method> methods = new ArrayList<>();
-        doGetMethods(cl, methods, predicate);
+        doGetMethods(cl, methods, predicate, false);
         return methods;
     }
 
+    public static Method getFirstMethod(Class<?> cl, Predicate<Method> predicate) {
+        List<Method> methods = new ArrayList<>();
+        doGetMethods(cl, methods, predicate, true);
+        return methods.isEmpty() ? null : methods.get(0);
+    }
 
-    private static void doGetMethods(Class<?> cl, List<Method> methods, Predicate<Method> predicate) {
+
+    private static void doGetMethods(Class<?> cl, List<Method> methods, Predicate<Method> predicate, boolean firstOnly) {
         if (cl == null || cl == Object.class) {
             return;
         }
@@ -228,10 +247,17 @@ public class ClassUtil {
         for (Method method : declaredMethods) {
             if (predicate == null || predicate.test(method)) {
                 methods.add(method);
+                if (firstOnly) {
+                    break;
+                }
             }
         }
 
-        doGetMethods(cl.getSuperclass(), methods, predicate);
+        if (firstOnly && !methods.isEmpty()) {
+            return;
+        }
+
+        doGetMethods(cl.getSuperclass(), methods, predicate, firstOnly);
     }
 
     private static <T> Class<T> getJdkProxySuperClass(Class<T> clazz) {

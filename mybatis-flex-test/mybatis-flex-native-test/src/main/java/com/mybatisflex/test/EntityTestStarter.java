@@ -71,15 +71,14 @@ public class EntityTestStarter {
         RowUtil.printPretty(rowList);
 
 
-//        List<Account> accounts1 = accountMapper.selectListByQuery(QueryWrapper.create()
-//                , accountFieldQueryBuilder -> accountFieldQueryBuilder
-//                        .field(Account::getArticles)
-//                        .type(Article.class)
-//                        .queryWrapper(entity ->
-//                                select().from(ARTICLE).where(ARTICLE.ACCOUNT_ID.eq(entity.getId()))
-//                        )
-//        );
-//        System.out.println(accounts1);
+        List<Account> accounts1 = accountMapper.selectListByQuery(QueryWrapper.create()
+                , accountFieldQueryBuilder -> accountFieldQueryBuilder
+                        .field(Account::getArticles)
+                        .queryWrapper(entity ->
+                                select().from(ARTICLE).where(ARTICLE.ACCOUNT_ID.eq(entity.getId()))
+                        )
+        );
+        System.out.println(accounts1);
 
 //        MyAccountMapper myAccountMapper = bootstrap.getMapper(MyAccountMapper.class);
 

@@ -24,14 +24,9 @@ import com.mybatisflex.core.provider.EntitySqlProvider;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.CollectionUtil;
-import com.mybatisflex.core.util.ConvertUtil;
-import com.mybatisflex.core.util.ObjectUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.util.*;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.builder.annotation.ProviderContext;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.io.Serializable;
 import java.util.*;
@@ -426,29 +421,24 @@ public interface BaseMapper<T> {
                 consumer.accept(fieldQueryBuilder);
                 FieldQuery fieldQuery = fieldQueryBuilder.build();
                 QueryWrapper childQuery = fieldQuery.getQueryWrapper();
-                MetaObject entityMetaObject = SystemMetaObject.forObject(entity);
-                Class<?> setterType = entityMetaObject.getSetterType(fieldQuery.getField());
 
-                Class<?> mappingType = fieldQuery.getMappingType();
-                if (mappingType == null) {
-                    if (setterType.isAssignableFrom(Collection.class)) {
-                        throw new IllegalStateException("Mapping Type can not be null for query Many.");
-                    } else if (setterType.isArray()) {
-                        mappingType = setterType.getComponentType();
-                    } else {
-                        mappingType = setterType;
-                    }
+                FieldWrapper fieldWrapper = FieldWrapper.of(entity.getClass(), fieldQuery.getField());
+                if (fieldWrapper == null) {
+                    throw new IllegalStateException("Can not find field \"" + fieldQuery.getField() + "\" in class: " + entity.getClass());
                 }
+
+                Class<?> fieldType = fieldWrapper.getFieldType();
+                Class<?> mappingType = fieldWrapper.getMappingType();
 
                 Object value;
                 try {
                     MappedStatementTypes.setCurrentType(mappingType);
-                    if (setterType.isAssignableFrom(List.class)) {
+                    if (fieldType.isAssignableFrom(List.class)) {
                         value = selectListByQueryAs(childQuery, mappingType);
-                    } else if (setterType.isAssignableFrom(Set.class)) {
+                    } else if (fieldType.isAssignableFrom(Set.class)) {
                         value = selectListByQueryAs(childQuery, mappingType);
                         value = new HashSet<>((Collection<?>) value);
-                    } else if (setterType.isArray()) {
+                    } else if (fieldType.isArray()) {
                         value = selectListByQueryAs(childQuery, mappingType);
                         value = ((List<?>) value).toArray();
                     } else {
@@ -457,7 +447,7 @@ public interface BaseMapper<T> {
                 } finally {
                     MappedStatementTypes.clear();
                 }
-                entityMetaObject.setValue(fieldQuery.getField(), value);
+                fieldWrapper.set(value, entity);
             }
         });
 
@@ -498,29 +488,24 @@ public interface BaseMapper<T> {
                 FieldQuery fieldQuery = fieldQueryBuilder.build();
                 QueryWrapper childQuery = fieldQuery.getQueryWrapper();
 
-                MetaObject entityMetaObject = SystemMetaObject.forObject(entity);
-                Class<?> setterType = entityMetaObject.getSetterType(fieldQuery.getField());
+                FieldWrapper fieldWrapper = FieldWrapper.of(entity.getClass(), fieldQuery.getField());
 
-                Class<?> mappingType = fieldQuery.getMappingType();
-                if (mappingType == null) {
-                    if (setterType.isAssignableFrom(Collection.class)) {
-                        throw new IllegalStateException("Mapping Type can not be null for query Many.");
-                    } else if (setterType.isArray()) {
-                        mappingType = setterType.getComponentType();
-                    } else {
-                        mappingType = setterType;
-                    }
+                if (fieldWrapper == null) {
+                    throw new IllegalStateException("Can not find field \"" + fieldQuery.getField() + "\" in class: " + entity.getClass());
                 }
+
+                Class<?> fieldType = fieldWrapper.getFieldType();
+                Class<?> mappingType = fieldWrapper.getMappingType();
 
                 Object value;
                 try {
                     MappedStatementTypes.setCurrentType(mappingType);
-                    if (setterType.isAssignableFrom(List.class)) {
+                    if (fieldType.isAssignableFrom(List.class)) {
                         value = selectListByQueryAs(childQuery, mappingType);
-                    } else if (setterType.isAssignableFrom(Set.class)) {
+                    } else if (fieldType.isAssignableFrom(Set.class)) {
                         value = selectListByQueryAs(childQuery, mappingType);
                         value = new HashSet<>((Collection<?>) value);
-                    } else if (setterType.isArray()) {
+                    } else if (fieldType.isArray()) {
                         value = selectListByQueryAs(childQuery, mappingType);
                         value = ((List<?>) value).toArray();
                     } else {
@@ -529,9 +514,7 @@ public interface BaseMapper<T> {
                 } finally {
                     MappedStatementTypes.clear();
                 }
-
-
-                entityMetaObject.setValue(fieldQuery.getField(), value);
+                fieldWrapper.set(value, entity);
             }
         });
 
@@ -694,12 +677,12 @@ public interface BaseMapper<T> {
      * @param queryWrapper 查询条件
      * @return page 数据
      */
-    default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper) {
-        return paginateAs(page, queryWrapper, null);
+    default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
+        return paginateAs(page, queryWrapper, null, consumers);
     }
 
 
-    default <R> Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
+    default <R> Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
         List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
 
@@ -780,7 +763,7 @@ public interface BaseMapper<T> {
                 // 调用内部方法，不走代理，需要主动设置 MappedStatementType
                 // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I73BP6
                 MappedStatementTypes.setCurrentType(asType);
-                List<R> records = selectListByQueryAs(queryWrapper, asType);
+                List<R> records = selectListByQueryAs(queryWrapper, asType, consumers);
                 page.setRecords(records);
             } finally {
                 MappedStatementTypes.clear();

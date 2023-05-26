@@ -29,7 +29,6 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 List<Article> articles = mapper.selectListByQuery(queryWrapper
     , fieldQueryBuilder -> fieldQueryBuilder
         .field(Article::getCategories) // 或者 .field("categories")
-        .type(Category.class) //非集合，自动读取 type，可以不指定 type
         .queryWrapper(article -> QueryWrapper.create()
             .select().from(CATEGORY)
             .where(CATEGORY.id.in(
