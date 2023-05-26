@@ -15,7 +15,8 @@
  */
 package com.mybatisflex.codegen.config;
 
-import com.mybatisflex.spring.service.IService;
+
+import com.mybatisflex.core.service.IService;
 
 /**
  * 生成 Service 的配置。
