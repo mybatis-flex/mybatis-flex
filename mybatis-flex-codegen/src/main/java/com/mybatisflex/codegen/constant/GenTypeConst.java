@@ -13,39 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.codegen.generator;
-
-import com.mybatisflex.codegen.config.GlobalConfig;
-import com.mybatisflex.codegen.entity.Table;
+package com.mybatisflex.codegen.constant;
 
 /**
- * 文件生成器接口。
+ * 生成类型常量。
  *
- * @author Michael Yang
  * @author 王帅
+ * @since 2023-05-17
  */
-public interface IGenerator {
+public class GenTypeConst {
 
-    /**
-     * 获取模板文件位置。
-     *
-     * @return 路径
-     */
-    String getTemplatePath();
+    public static final String ENTITY = "entity";
+    public static final String MAPPER = "mapper";
+    public static final String SERVICE = "service";
+    public static final String SERVICE_IMPL = "serviceImpl";
+    public static final String CONTROLLER = "controller";
+    public static final String TABLE_DEF = "tableDef";
+    public static final String MAPPER_XML = "mapperXml";
+    public static final String PACKAGE_INFO = "package-info";
 
-    /**
-     * 设置模板文件位置。
-     *
-     * @param templatePath
-     */
-    void setTemplatePath(String templatePath);
 
-    /**
-     * 根据模板生成文件。
-     *
-     * @param table        表内容
-     * @param globalConfig 全局配置
-     */
-    void generate(Table table, GlobalConfig globalConfig);
+    private GenTypeConst() {
+    }
 
 }

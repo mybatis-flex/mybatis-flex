@@ -30,7 +30,7 @@ public class Column {
     private String property;
     private String propertyType;
 
-    private String remarks;
+    private String comment;
 
     private boolean isPrimaryKey = false;
     private Boolean isAutoIncrement;
@@ -63,12 +63,12 @@ public class Column {
         this.propertyType = propertyType;
     }
 
-    public String getRemarks() {
-        return remarks;
+    public String getComment() {
+        return comment;
     }
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public boolean isPrimaryKey() {
@@ -104,12 +104,12 @@ public class Column {
     }
 
 
-    public String buildRemarks(){
-        if (StringUtil.isBlank(remarks)){
+    public String buildComment(){
+        if (StringUtil.isBlank(comment)){
             return "";
         }else {
             StringBuilder sb = new StringBuilder("/**\n")
-                    .append("     * ").append(remarks).append("\n")
+                    .append("     * ").append(comment).append("\n")
                     .append("     */");
             return sb.toString();
         }
@@ -280,7 +280,7 @@ public class Column {
         return "Column{" +
                 "name='" + name + '\'' +
                 ", className='" + propertyType + '\'' +
-                ", remarks='" + remarks + '\'' +
+                ", remarks='" + comment + '\'' +
                 ", isAutoIncrement=" + isAutoIncrement +
                 '}';
     }

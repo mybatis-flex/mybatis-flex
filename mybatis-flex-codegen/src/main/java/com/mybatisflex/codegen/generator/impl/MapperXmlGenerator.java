@@ -15,8 +15,8 @@
  */
 package com.mybatisflex.codegen.generator.impl;
 
-import com.mybatisflex.codegen.config.ControllerConfig;
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.MapperXmlConfig;
 import com.mybatisflex.codegen.config.PackageConfig;
 import com.mybatisflex.codegen.constant.TemplateConst;
 import com.mybatisflex.codegen.entity.Table;
@@ -27,50 +27,47 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Controller 生成器。
+ * MapperXml 生成器。
  *
  * @author 王帅
- * @since 2023-05-14
+ * @since 2023-05-17
  */
-public class ControllerGenerator implements IGenerator {
+public class MapperXmlGenerator implements IGenerator {
 
     private String templatePath;
 
-    public ControllerGenerator() {
-        this(TemplateConst.CONTROLLER);
+    public MapperXmlGenerator() {
+        this(TemplateConst.MAPPER_XML);
     }
 
-    public ControllerGenerator(String templatePath) {
+    public MapperXmlGenerator(String templatePath) {
         this.templatePath = templatePath;
     }
 
     @Override
     public void generate(Table table, GlobalConfig globalConfig) {
 
-        if (!globalConfig.isControllerGenerateEnable()) {
+        if (!globalConfig.isMapperXmlGenerateEnable()) {
             return;
         }
 
         PackageConfig packageConfig = globalConfig.getPackageConfig();
-        ControllerConfig controllerConfig = globalConfig.getControllerConfig();
+        MapperXmlConfig mapperXmlConfig = globalConfig.getMapperXmlConfig();
 
-        String controllerPackagePath = packageConfig.getControllerPackage().replace(".", "/");
-        File controllerJavaFile = new File(packageConfig.getSourceDir(), controllerPackagePath + "/" +
-                table.buildControllerClassName() + ".java");
+        File mapperXmlFile = new File(packageConfig.getMapperXmlPath() + "/" +
+                table.buildMapperXmlFileName() + ".xml");
 
 
-        if (controllerJavaFile.exists() && controllerConfig.isOverwriteEnable()) {
+        if (mapperXmlFile.exists() && !mapperXmlConfig.isOverwriteEnable()) {
             return;
         }
 
 
-        Map<String, Object> params = new HashMap<>(4);
+        Map<String, Object> params = new HashMap<>(2);
         params.put("table", table);
         params.put("packageConfig", packageConfig);
-        params.put("controllerConfig", controllerConfig);
-        params.put("javadocConfig", globalConfig.getJavadocConfig());
 
-        globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, controllerJavaFile);
+        globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, mapperXmlFile);
     }
 
     public String getTemplatePath() {

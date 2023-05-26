@@ -15,8 +15,7 @@
  */
 package com.mybatisflex.codegen.entity;
 
-import com.mybatisflex.codegen.config.GlobalConfig;
-import com.mybatisflex.codegen.config.TableConfig;
+import com.mybatisflex.codegen.config.*;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.math.BigInteger;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
 public class Table {
 
     private String name;
-    private String remarks;
+    private String comment;
     private Set<String> primaryKeys;
     private List<Column> columns = new ArrayList<>();
 
@@ -41,12 +40,12 @@ public class Table {
         this.name = name;
     }
 
-    public String getRemarks() {
-        return remarks;
+    public String getComment() {
+        return globalConfig.getJavadocConfig().formatTableComment(comment);
     }
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
 
@@ -89,7 +88,7 @@ public class Table {
             column.setAutoIncrement(false);
         }
 
-        column.setColumnConfig(globalConfig.getColumnConfig(name, column.getName()));
+        column.setColumnConfig(globalConfig.getStrategyConfig().getColumnConfig(name, column.getName()));
 
         columns.add(column);
     }
@@ -118,8 +117,10 @@ public class Table {
             imports.addAll(column.getImportClasses());
         }
 
+        EntityConfig entityConfig = globalConfig.getEntityConfig();
+
         //开启 lombok
-        if (globalConfig.isEntityWithLombok()) {
+        if (entityConfig.isWithLombok()) {
             //import lombok.AllArgsConstructor;
             //import lombok.Builder;
             //import lombok.Data;
@@ -130,12 +131,12 @@ public class Table {
             imports.add("lombok.NoArgsConstructor");
         }
 
-        if (globalConfig.getEntitySupperClass() != null) {
-            imports.add(globalConfig.getEntitySupperClass().getName());
+        if (entityConfig.getSupperClass() != null) {
+            imports.add(entityConfig.getSupperClass().getName());
         }
 
-        if (globalConfig.getEntityInterfaces() != null) {
-            for (Class<?> entityInterface : globalConfig.getEntityInterfaces()) {
+        if (entityConfig.getImplInterfaces() != null) {
+            for (Class<?> entityInterface : entityConfig.getImplInterfaces()) {
                 imports.add(entityInterface.getName());
             }
         }
@@ -155,20 +156,9 @@ public class Table {
         return imports.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
     }
 
-    public String buildRemarks(){
-        if (StringUtil.isBlank(remarks)){
-            return "";
-        }else {
-            StringBuilder sb = new StringBuilder("/**\n")
-                    .append(" * ").append(remarks).append("\n")
-                    .append(" */");
-            return sb.toString();
-        }
-    }
-
     public String getEntityJavaFileName() {
         String entityJavaFileName = name;
-        String tablePrefix = globalConfig.getTablePrefix();
+        String tablePrefix = globalConfig.getStrategyConfig().getTablePrefix();
         if (tablePrefix != null) {
             String[] tablePrefixes = tablePrefix.split(",");
             for (String prefix : tablePrefixes) {
@@ -189,9 +179,10 @@ public class Table {
      */
     public String buildEntityClassName() {
         String entityJavaFileName = getEntityJavaFileName();
-        return globalConfig.getEntityClassPrefix()
+        EntityConfig entityConfig = globalConfig.getEntityConfig();
+        return entityConfig.getClassPrefix()
                 + entityJavaFileName
-                + globalConfig.getEntityClassSuffix();
+                + entityConfig.getClassSuffix();
     }
 
     /**
@@ -201,21 +192,36 @@ public class Table {
      */
     public String buildTableDefClassName() {
         String tableDefJavaFileName = getEntityJavaFileName();
-        return globalConfig.getTableDefClassPrefix()
+        TableDefConfig tableDefConfig = globalConfig.getTableDefConfig();
+        return tableDefConfig.getClassPrefix()
                 + tableDefJavaFileName
-                + globalConfig.getTableDefClassSuffix();
+                + tableDefConfig.getClassSuffix();
+    }
+
+    /**
+     * 构建 MapperXml 的文件名称
+     *
+     * @return fileName
+     */
+    public String buildMapperXmlFileName() {
+        String tableDefJavaFileName = getEntityJavaFileName();
+        MapperXmlConfig mapperXmlConfig = globalConfig.getMapperXmlConfig();
+        return mapperXmlConfig.getFilePrefix()
+                + tableDefJavaFileName
+                + mapperXmlConfig.getFileSuffix();
     }
 
     public String buildExtends() {
-        if (globalConfig.getEntitySupperClass() != null) {
-            return " extends " + globalConfig.getEntitySupperClass().getSimpleName();
+        EntityConfig entityConfig = globalConfig.getEntityConfig();
+        if (entityConfig.getSupperClass() != null) {
+            return " extends " + entityConfig.getSupperClass().getSimpleName();
         } else {
             return "";
         }
     }
 
     public String buildImplements() {
-        Class<?>[] entityInterfaces = globalConfig.getEntityInterfaces();
+        Class<?>[] entityInterfaces = globalConfig.getEntityConfig().getImplInterfaces();
         if (entityInterfaces != null && entityInterfaces.length > 0) {
             return " implements " + StringUtil.join(", ", Arrays.stream(entityInterfaces)
                     .map(Class::getSimpleName).collect(Collectors.toList()));
@@ -227,30 +233,34 @@ public class Table {
 
     public String buildMapperClassName() {
         String entityJavaFileName = getEntityJavaFileName();
-        return globalConfig.getMapperClassPrefix()
+        MapperConfig mapperConfig = globalConfig.getMapperConfig();
+        return mapperConfig.getClassPrefix()
                 + entityJavaFileName
-                + globalConfig.getMapperClassSuffix();
+                + mapperConfig.getClassSuffix();
     }
 
     public String buildServiceClassName() {
         String entityJavaFileName = getEntityJavaFileName();
-        return globalConfig.getServiceClassPrefix()
+        ServiceConfig serviceConfig = globalConfig.getServiceConfig();
+        return serviceConfig.getClassPrefix()
                 + entityJavaFileName
-                + globalConfig.getServiceClassSuffix();
+                + serviceConfig.getClassSuffix();
     }
 
     public String buildServiceImplClassName() {
         String entityJavaFileName = getEntityJavaFileName();
-        return globalConfig.getServiceImplClassPrefix()
+        ServiceImplConfig serviceImplConfig = globalConfig.getServiceImplConfig();
+        return serviceImplConfig.getClassPrefix()
                 + entityJavaFileName
-                + globalConfig.getServiceImplClassSuffix();
+                + serviceImplConfig.getClassSuffix();
     }
 
     public String buildControllerClassName() {
         String entityJavaFileName = getEntityJavaFileName();
-        return globalConfig.getControllerClassPrefix()
+        ControllerConfig controllerConfig = globalConfig.getControllerConfig();
+        return controllerConfig.getClassPrefix()
                 + entityJavaFileName
-                + globalConfig.getControllerClassSuffix();
+                + controllerConfig.getClassSuffix();
     }
 
     /**
@@ -258,7 +268,7 @@ public class Table {
      */
     public String buildTableAnnotation() {
         StringBuilder tableAnnotation = new StringBuilder();
-        if (globalConfig.isEntityWithLombok()) {
+        if (globalConfig.getEntityConfig().isWithLombok()) {
             //@Data
             //@Builder
             //@NoArgsConstructor
@@ -273,19 +283,19 @@ public class Table {
 
         if (tableConfig != null) {
             if (tableConfig.getSchema() != null) {
-                tableAnnotation.append(", schema = \"" + tableConfig.getSchema() + "\"");
+                tableAnnotation.append(", schema = \"").append(tableConfig.getSchema()).append("\"");
             }
             if (tableConfig.getCamelToUnderline() != null) {
-                tableAnnotation.append(", camelToUnderline = \"" + tableConfig.getCamelToUnderline() + "\"");
+                tableAnnotation.append(", camelToUnderline = \"").append(tableConfig.getCamelToUnderline()).append("\"");
             }
             if (tableConfig.getInsertListenerClass() != null) {
-                tableAnnotation.append(", onInsert = " + tableConfig.getInsertListenerClass().getSimpleName() + ".class");
+                tableAnnotation.append(", onInsert = ").append(tableConfig.getInsertListenerClass().getSimpleName()).append(".class");
             }
             if (tableConfig.getUpdateListenerClass() != null) {
-                tableAnnotation.append(", onUpdate = " + tableConfig.getUpdateListenerClass().getSimpleName() + ".class");
+                tableAnnotation.append(", onUpdate = ").append(tableConfig.getUpdateListenerClass().getSimpleName()).append(".class");
             }
             if (tableConfig.getSetListenerClass() != null) {
-                tableAnnotation.append(", onSet = " + tableConfig.getUpdateListenerClass().getSimpleName() + ".class");
+                tableAnnotation.append(", onSet = ").append(tableConfig.getUpdateListenerClass().getSimpleName()).append(".class");
             }
             if (Boolean.FALSE.equals(tableConfig.getMapperGenerateEnable())) {
                 tableAnnotation.append(", mapperGenerateEnable = false");
@@ -294,40 +304,11 @@ public class Table {
         return tableAnnotation.append(")").toString();
     }
 
-    public String buildMapperImport() {
-        return globalConfig.getMapperSupperClass().getName();
-    }
-
-    public String buildServiceImport() {
-        return globalConfig.getServiceSupperClass().getName();
-    }
-
-    public String buildServiceImplImport() {
-        return globalConfig.getServiceImplSupperClass().getName();
-    }
-
-    public String buildMapperName() {
-        return globalConfig.getMapperSupperClass().getSimpleName();
-    }
-
-    public String buildServiceName() {
-        return globalConfig.getServiceSupperClass().getSimpleName();
-    }
-
-    public String buildServiceImplName() {
-        return globalConfig.getServiceImplSupperClass().getSimpleName();
-    }
-
-    public String buildControllerName() {
-        return globalConfig.getControllerSupperClass().getSimpleName();
-    }
-
-
     @Override
     public String toString() {
         return "Table{" +
                 "name='" + name + '\'' +
-                ", remarks='" + remarks + '\'' +
+                ", remarks='" + comment + '\'' +
                 ", primaryKeys='" + primaryKeys + '\'' +
                 ", columns=" + columns +
                 '}';

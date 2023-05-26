@@ -1,9 +1,14 @@
-package #(globalConfig.entityPackage).tables;
+package #(packageConfig.tableDefPackage);
 
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.table.TableDef;
 
-
+/**
+ * #(table.getComment()) 表定义层。
+ *
+ * @author #(javadocConfig.getAuthor())
+ * @since #(javadocConfig.getSince())
+ */
 public class #(table.buildTableDefClassName()) extends TableDef {
 
     public static final #(table.buildTableDefClassName()) #(table.name) = new #(table.buildTableDefClassName())("#(table.name)");
