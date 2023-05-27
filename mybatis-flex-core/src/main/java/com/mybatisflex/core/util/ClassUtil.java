@@ -67,7 +67,7 @@ public class ClassUtil {
     }
 
 
-    public static Class<?> wrap(Class<?> clazz) {
+    public static Class<?> getWrapType(Class<?> clazz) {
         if (clazz == null || !clazz.isPrimitive()) {
             return clazz;
         }

@@ -57,10 +57,10 @@ public class EnumWrapper<E extends Enum<E>> {
                 return methodName.equals(fieldGetterName) && Modifier.isPublic(method.getModifiers());
             });
 
-            enumPropertyType = ClassUtil.wrap(enumValueField.getType());
+            enumPropertyType = ClassUtil.getWrapType(enumValueField.getType());
             enums = enumClass.getEnumConstants();
 
-            if (getterMethod != null) {
+            if (getterMethod == null) {
                 if (Modifier.isPublic(enumValueField.getModifiers())) {
                     property = enumValueField;
                 } else {
