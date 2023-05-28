@@ -21,6 +21,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static com.mybatisflex.core.query.QueryMethods.sum;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 
 public class ArithmeticQueryColumnTest {
@@ -89,6 +90,18 @@ public class ArithmeticQueryColumnTest {
         System.out.println(sql);
 
         Assert.assertEquals(sql,"SELECT (`id` + (`id` + 100) * 100) AS `x100` FROM `tb_account`");
+    }
+
+    @Test
+    public void testAdd5() {
+        QueryWrapper query = new QueryWrapper()
+                .select(sum(ACCOUNT.ID.multiply(ACCOUNT.AGE)).as("total_x"))
+                .from(ACCOUNT);
+
+        String sql = toSql(query);
+        System.out.println(sql);
+
+        Assert.assertEquals(sql,"SELECT SUM(`id` * `age`) AS total_x FROM `tb_account`");
     }
 
     @Test
