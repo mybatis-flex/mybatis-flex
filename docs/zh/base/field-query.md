@@ -90,7 +90,7 @@ MyBatis-Flex 的关联子查询，和 JPA 等其他第三方框架有很大的�
 
 对 MyBatis-Flex 来说，学习成本是非常低的，在构建子查询时，只需要明白为哪个字段、通过什么样的 SQL 查询就可以了，以下是示例：
 
-```java
+```java 3,4
 List<Article> articles = mapper.selectListByQuery(query
     , fieldQueryBuilder -> fieldQueryBuilder
         .field(...)        // 为哪个字段查询的？
