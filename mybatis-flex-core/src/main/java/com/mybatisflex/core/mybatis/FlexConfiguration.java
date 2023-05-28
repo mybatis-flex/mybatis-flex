@@ -133,9 +133,9 @@ public class FlexConfiguration extends Configuration {
     public MappedStatement getMappedStatement(String id) {
         MappedStatement ms = super.getMappedStatement(id);
 
-        //动态 resultsMap
-        if (id.endsWith(FlexConsts.METHOD_SELECT_LIST_BY_QUERY_AS)) {
-            Class<?> asType = MappedStatementTypes.getCurrentType();
+        //动态 resultsMap，方法名称为：selectListByQuery
+        Class<?> asType = MappedStatementTypes.getCurrentType();
+        if (asType != null) {
             return MapUtil.computeIfAbsent(dynamicMappedStatementCache, asType,
                     aClass -> replaceResultMap(ms, TableInfoFactory.ofEntityClass(asType))
             );

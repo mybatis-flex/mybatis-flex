@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.core.util;
 
+import com.mybatisflex.core.exception.FlexExceptions;
+
 import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.Map;
@@ -26,7 +28,7 @@ public class FieldWrapper {
 
     private Class<?> fieldType;
     private Class<?> mappingType;
-    private Method method;
+    private Method setterMethod;
 
     public static FieldWrapper of(Class<?> clazz, String fieldName) {
         Map<String, FieldWrapper> wrapperMap = cache.get(clazz);
@@ -46,18 +48,22 @@ public class FieldWrapper {
                 if (fieldWrapper == null) {
                     Field findField = ClassUtil.getFirstField(clazz, field -> field.getName().equals(fieldName));
                     if (findField == null) {
-                        return null;
+                        throw new IllegalStateException("Can not find field \"" + fieldName + "\" in class: " + clazz);
                     }
-
-                    fieldWrapper = new FieldWrapper();
-                    fieldWrapper.fieldType = findField.getType();
-                    fieldWrapper.mappingType = getFieldMappingType(findField);
 
                     Method setter = ClassUtil.getFirstMethod(clazz, method ->
                             method.getParameterCount() == 1
                                     && Modifier.isPublic(method.getModifiers())
                                     && method.getName().equals("set" + StringUtil.firstCharToUpperCase(fieldName)));
-                    fieldWrapper.method = setter;
+
+                    if (setter == null) {
+                        throw FlexExceptions.wrap("Can not find method \"set" + StringUtil.firstCharToUpperCase(fieldName) + "\" in class: " + clazz);
+                    }
+
+                    fieldWrapper = new FieldWrapper();
+                    fieldWrapper.fieldType = findField.getType();
+                    fieldWrapper.mappingType = parseMappingType(findField);
+                    fieldWrapper.setterMethod = setter;
 
                     wrapperMap.put(fieldName, fieldWrapper);
                 }
@@ -67,7 +73,7 @@ public class FieldWrapper {
         return fieldWrapper;
     }
 
-    private static Class<?> getFieldMappingType(Field field) {
+    private static Class<?> parseMappingType(Field field) {
         Class<?> fieldType = field.getType();
         if (Collection.class.isAssignableFrom(fieldType)) {
             Type genericType = field.getGenericType();
@@ -87,7 +93,7 @@ public class FieldWrapper {
 
     public void set(Object value, Object to) {
         try {
-            method.invoke(to, value);
+            setterMethod.invoke(to, value);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

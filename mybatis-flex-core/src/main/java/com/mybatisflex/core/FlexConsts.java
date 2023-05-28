@@ -41,7 +41,6 @@ public class FlexConsts {
     public static final String IGNORE_NULLS = "$$ignoreNulls";
 
     public static final String METHOD_INSERT_BATCH = "insertBatch";
-    public static final String METHOD_SELECT_LIST_BY_QUERY_AS = "selectListByQueryAs";
 
     /**
      * 当 entity 使用逻辑删除时，0 为 entity 的正常状态
