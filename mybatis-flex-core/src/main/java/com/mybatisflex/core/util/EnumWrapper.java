@@ -84,7 +84,7 @@ public class EnumWrapper<E extends Enum<E>> {
     }
 
 
-    public E toEnum(Object value) {
+    public E getEnum(Object value) {
         for (E e : enums) {
             if (value.equals(getEnumValue(e))) {
                 return e;

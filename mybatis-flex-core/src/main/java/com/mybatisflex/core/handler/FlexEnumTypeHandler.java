@@ -49,7 +49,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
         if (null == value && rs.wasNull()) {
             return null;
         }
-        return enumWrapper.toEnum(value);
+        return enumWrapper.getEnum(value);
     }
 
 
@@ -59,7 +59,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
         if (null == value && rs.wasNull()) {
             return null;
         }
-        return enumWrapper.toEnum(value);
+        return enumWrapper.getEnum(value);
     }
 
 
@@ -69,7 +69,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
         if (null == value && cs.wasNull()) {
             return null;
         }
-        return enumWrapper.toEnum(value);
+        return enumWrapper.getEnum(value);
     }
 
 
