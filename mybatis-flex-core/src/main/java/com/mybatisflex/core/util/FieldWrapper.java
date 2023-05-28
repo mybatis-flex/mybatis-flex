@@ -15,8 +15,6 @@
  */
 package com.mybatisflex.core.util;
 
-import com.mybatisflex.core.exception.FlexExceptions;
-
 import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.Map;
@@ -57,7 +55,7 @@ public class FieldWrapper {
                                     && method.getName().equals("set" + StringUtil.firstCharToUpperCase(fieldName)));
 
                     if (setter == null) {
-                        throw FlexExceptions.wrap("Can not find method \"set" + StringUtil.firstCharToUpperCase(fieldName) + "\" in class: " + clazz);
+                        throw new IllegalStateException("Can not find method \"set" + StringUtil.firstCharToUpperCase(fieldName) + "\" in class: " + clazz);
                     }
 
                     fieldWrapper = new FieldWrapper();
