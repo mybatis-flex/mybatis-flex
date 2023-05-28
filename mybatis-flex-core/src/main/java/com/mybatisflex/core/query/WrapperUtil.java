@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 
+import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.EnumWrapper;
@@ -30,8 +31,8 @@ import java.util.List;
 class WrapperUtil {
 
 
-    static String buildAsAlias(String alias) {
-        return StringUtil.isBlank(alias) ? "" : " AS " + alias;
+    static String buildAsAlias(String alias, IDialect dialect) {
+        return StringUtil.isBlank(alias) ? "" : " AS " + dialect.wrap(alias);
     }
 
     static final Object[] NULL_PARA_ARRAY = new Object[0];

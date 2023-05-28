@@ -101,7 +101,7 @@ public class ArithmeticQueryColumnTest {
         String sql = toSql(query);
         System.out.println(sql);
 
-        Assert.assertEquals(sql,"SELECT SUM(`id` * `age`) AS total_x FROM `tb_account`");
+        Assert.assertEquals(sql,"SELECT SUM(`id` * `age`) AS `total_x` FROM `tb_account`");
     }
 
     @Test

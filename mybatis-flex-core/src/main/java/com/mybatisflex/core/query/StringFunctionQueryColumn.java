@@ -30,7 +30,7 @@ public class StringFunctionQueryColumn extends QueryColumn {
     protected String fnName;
     protected List<String> params;
 
-    public StringFunctionQueryColumn(String fnName, String ...params) {
+    public StringFunctionQueryColumn(String fnName, String... params) {
         SqlUtil.keepColumnSafely(fnName);
         this.fnName = fnName;
         this.params = Arrays.asList(params);
@@ -56,13 +56,13 @@ public class StringFunctionQueryColumn extends QueryColumn {
 
     @Override
     public String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
-        String sql = StringUtil.join(", ",params);
-        return StringUtil.isBlank(sql) ? "" : fnName + "(" + sql + ")" + WrapperUtil.buildAsAlias(alias);
+        String sql = StringUtil.join(", ", params);
+        return StringUtil.isBlank(sql) ? "" : fnName + "(" + sql + ")" + WrapperUtil.buildAsAlias(alias, dialect);
     }
 
     @Override
     String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
-        String sql = StringUtil.join(", ",params);
+        String sql = StringUtil.join(", ", params);
         return StringUtil.isBlank(sql) ? "" : fnName + "(" + sql + ")";
     }
 

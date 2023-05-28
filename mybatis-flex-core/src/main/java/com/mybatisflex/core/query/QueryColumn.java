@@ -374,7 +374,7 @@ public class QueryColumn implements Serializable {
 
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String tableName = WrapperUtil.getColumnTableName(queryTables, table);
-        return wrap(dialect, tableName, name) + WrapperUtil.buildAsAlias(dialect.wrap(alias));
+        return wrap(dialect, tableName, name) + WrapperUtil.buildAsAlias(alias, dialect);
     }
 
     @Override
