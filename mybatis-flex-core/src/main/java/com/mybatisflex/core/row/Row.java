@@ -316,13 +316,45 @@ public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRec
         return ret;
     }
 
+    public void prepareAttrsByKeySet(){
+        this.modifyAttrs.clear();
+        this.modifyAttrs.addAll(keySet());
 
-    void keepModifyAttrs(Collection<String> attrs) {
+        if (this.primaryKeys != null){
+            for (RowKey primaryKey : primaryKeys) {
+                this.modifyAttrs.removeIf(s -> s.equalsIgnoreCase(primaryKey.getKeyColumn()));
+            }
+        }
+    }
+
+
+    public void prepareAttrsByKeySet(RowKey ... primaryKeys){
+        this.modifyAttrs.clear();
+        this.modifyAttrs.addAll(keySet());
+        this.primaryKeys = primaryKeys;
+
+        for (RowKey primaryKey : primaryKeys) {
+            this.modifyAttrs.removeIf(s -> s.equalsIgnoreCase(primaryKey.getKeyColumn()));
+        }
+    }
+
+    public void prepareAttrs(Collection<String> attrs) {
         if (attrs == null) {
             throw new NullPointerException("attrs is null.");
         }
         clearModifyFlag();
         modifyAttrs.addAll(attrs);
+    }
+
+    public RowKey[] getPrimaryKeys() {
+        return primaryKeys;
+    }
+
+    public void setPrimaryKeys(RowKey... primaryKeys) {
+        this.primaryKeys = primaryKeys;
+        for (RowKey primaryKey : primaryKeys) {
+            this.modifyAttrs.removeIf(s -> s.equalsIgnoreCase(primaryKey.getKeyColumn()));
+        }
     }
 
     /**

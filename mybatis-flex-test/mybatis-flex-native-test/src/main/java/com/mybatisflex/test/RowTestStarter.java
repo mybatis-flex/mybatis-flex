@@ -75,7 +75,7 @@ public class RowTestStarter {
 
         List<Row> rowList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Row row = Row.ofKey(RowKey.ID_AUTO);
+            Row row = Row.ofKey(RowKey.AUTO);
             row.set(ACCOUNT.USER_NAME,"zhang" + i);
             row.set(ACCOUNT.AGE,18);
 //            row.set(ACCOUNT.BIRTHDAY,new Date());

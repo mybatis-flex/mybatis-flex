@@ -15,16 +15,10 @@
  */
 package com.mybatisflex.core.row;
 
-import java.util.Collection;
-
 /**
  * cross package invoker
  */
 public class RowCPI {
-
-    public static void keepModifyAttrs(Row row, Collection<String> attrs) {
-        row.keepModifyAttrs(attrs);
-    }
 
     public static Object[] obtainModifyValues(Row row) {
         return row.obtainModifyValues();
