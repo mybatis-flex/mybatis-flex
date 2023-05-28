@@ -29,13 +29,13 @@ public class EnumWrapper<E extends Enum<E>> {
 
     private static final Map<Class, EnumWrapper> cache = new ConcurrentHashMap<>();
 
-    private Class<?> enumClass;
+    private boolean hasEnumValueAnnotation = false;
 
-    private Class<?> enumPropertyType;
+    private Class<?> enumClass;
     private E[] enums;
     private Field property;
-    private Method getter;
-    private boolean hasEnumValueAnnotation = false;
+    private Class<?> propertyType;
+    private Method getterMethod;
 
     public static <R extends Enum<R>> EnumWrapper<R> of(Class<?> enumClass) {
         return MapUtil.computeIfAbsent(cache, enumClass, EnumWrapper::new);
@@ -43,6 +43,7 @@ public class EnumWrapper<E extends Enum<E>> {
 
     public EnumWrapper(Class<E> enumClass) {
         this.enumClass = enumClass;
+        this.enums = enumClass.getEnumConstants();
 
         Field enumValueField = ClassUtil.getFirstField(enumClass, field -> field.getAnnotation(EnumValue.class) != null);
         if (enumValueField != null) {
@@ -50,24 +51,23 @@ public class EnumWrapper<E extends Enum<E>> {
         }
 
         if (hasEnumValueAnnotation) {
-            String fieldGetterName = "get" + StringUtil.firstCharToUpperCase(enumValueField.getName());
+            String getterMethodName = "get" + StringUtil.firstCharToUpperCase(enumValueField.getName());
 
-            Method getterMethod = ClassUtil.getFirstMethod(enumClass, method -> {
+            Method getter = ClassUtil.getFirstMethod(enumClass, method -> {
                 String methodName = method.getName();
-                return methodName.equals(fieldGetterName) && Modifier.isPublic(method.getModifiers());
+                return methodName.equals(getterMethodName) && Modifier.isPublic(method.getModifiers());
             });
 
-            enumPropertyType = ClassUtil.getWrapType(enumValueField.getType());
-            enums = enumClass.getEnumConstants();
+            propertyType = ClassUtil.getWrapType(enumValueField.getType());
 
-            if (getterMethod == null) {
+            if (getter == null) {
                 if (Modifier.isPublic(enumValueField.getModifiers())) {
                     property = enumValueField;
                 } else {
-                    throw new IllegalStateException("Can not find \"" + fieldGetterName + "()\" method in enum: " + enumClass.getName());
+                    throw new IllegalStateException("Can not find method \"" + getterMethodName + "()\" in enum: " + enumClass.getName());
                 }
             } else {
-                getter = getterMethod;
+                this.getterMethod = getter;
             }
         }
     }
@@ -75,9 +75,7 @@ public class EnumWrapper<E extends Enum<E>> {
 
     public Object getEnumValue(E object) {
         try {
-            return getter != null
-                    ? getter.invoke(object)
-                    : property.get(object);
+            return getterMethod != null ? getterMethod.invoke(object) : property.get(object);
         } catch (Exception e) {
             throw FlexExceptions.wrap(e);
         }
@@ -93,12 +91,12 @@ public class EnumWrapper<E extends Enum<E>> {
         return null;
     }
 
-    public Class<?> getEnumClass() {
-        return enumClass;
+    public boolean hasEnumValueAnnotation() {
+        return hasEnumValueAnnotation;
     }
 
-    public Class<?> getEnumPropertyType() {
-        return enumPropertyType;
+    public Class<?> getEnumClass() {
+        return enumClass;
     }
 
     public E[] getEnums() {
@@ -109,11 +107,11 @@ public class EnumWrapper<E extends Enum<E>> {
         return property;
     }
 
-    public Method getGetter() {
-        return getter;
+    public Class<?> getPropertyType() {
+        return propertyType;
     }
 
-    public boolean hasEnumValueAnnotation() {
-        return hasEnumValueAnnotation;
+    public Method getGetterMethod() {
+        return getterMethod;
     }
 }

@@ -45,7 +45,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
 
     @Override
     public E getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        Object value = rs.getObject(columnName, enumWrapper.getEnumPropertyType());
+        Object value = rs.getObject(columnName, enumWrapper.getPropertyType());
         if (null == value && rs.wasNull()) {
             return null;
         }
@@ -55,7 +55,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
 
     @Override
     public E getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        Object value = rs.getObject(columnIndex, enumWrapper.getEnumPropertyType());
+        Object value = rs.getObject(columnIndex, enumWrapper.getPropertyType());
         if (null == value && rs.wasNull()) {
             return null;
         }
@@ -65,7 +65,7 @@ public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
 
     @Override
     public E getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        Object value = cs.getObject(columnIndex, enumWrapper.getEnumPropertyType());
+        Object value = cs.getObject(columnIndex, enumWrapper.getPropertyType());
         if (null == value && cs.wasNull()) {
             return null;
         }
