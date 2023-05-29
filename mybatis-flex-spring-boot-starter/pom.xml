@@ -76,7 +76,7 @@
         <dependency>
             <groupId>com.github.chris2018998</groupId>
             <artifactId>beecp</artifactId>
-            <version>3.4.0</version>
+            <version>3.4.1</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
