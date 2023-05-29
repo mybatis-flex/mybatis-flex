@@ -95,6 +95,8 @@ public class TableInfo {
     private List<UpdateListener> onUpdateListeners;
     private List<SetListener> onSetListeners;
 
+    private Map<String, Class<?>> joinTypes;
+
 
     private final ReflectorFactory reflectorFactory = new BaseReflectorFactory() {
         @Override
@@ -270,6 +272,20 @@ public class TableInfo {
         return propertyColumnMapping.get(property);
     }
 
+    public Map<String, Class<?>> getJoinTypes() {
+        return joinTypes;
+    }
+
+    public void setJoinTypes(Map<String, Class<?>> joinTypes) {
+        this.joinTypes = joinTypes;
+    }
+
+    public void addJoinType(String fieldName, Class<?> clazz) {
+        if (joinTypes == null) {
+            joinTypes = new HashMap<>();
+        }
+        joinTypes.put(fieldName, clazz);
+    }
 
     void setColumnInfoList(List<ColumnInfo> columnInfoList) {
         this.columnInfoList = columnInfoList;
@@ -640,17 +656,17 @@ public class TableInfo {
         List<ResultMapping> resultMappings = new ArrayList<>();
 
         for (ColumnInfo columnInfo : columnInfoList) {
-            ResultMapping mapping = new ResultMapping.Builder(configuration, columnInfo.getProperty(),
-                    columnInfo.getColumn(), columnInfo.getPropertyType())
+            ResultMapping mapping = new ResultMapping.Builder(configuration, columnInfo.property,
+                    columnInfo.column, columnInfo.propertyType)
                     .jdbcType(columnInfo.getJdbcType())
                     .typeHandler(columnInfo.buildTypeHandler())
                     .build();
             resultMappings.add(mapping);
 
-            //add property mapper for sql as ...
+            //add property mapper for sql: select xxx as property ...
             if (!Objects.equals(columnInfo.getColumn(), columnInfo.getProperty())) {
-                ResultMapping propertyMapping = new ResultMapping.Builder(configuration, columnInfo.getProperty(),
-                        columnInfo.getProperty(), columnInfo.getPropertyType())
+                ResultMapping propertyMapping = new ResultMapping.Builder(configuration, columnInfo.property,
+                        columnInfo.property, columnInfo.propertyType)
                         .jdbcType(columnInfo.getJdbcType())
                         .typeHandler(columnInfo.buildTypeHandler())
                         .build();
@@ -659,8 +675,8 @@ public class TableInfo {
         }
 
         for (IdInfo idInfo : primaryKeyList) {
-            ResultMapping mapping = new ResultMapping.Builder(configuration, idInfo.getProperty(),
-                    idInfo.getColumn(), idInfo.getPropertyType())
+            ResultMapping mapping = new ResultMapping.Builder(configuration, idInfo.property,
+                    idInfo.column, idInfo.propertyType)
                     .flags(CollectionUtil.newArrayList(ResultFlag.ID))
                     .jdbcType(idInfo.getJdbcType())
                     .typeHandler(idInfo.buildTypeHandler())
@@ -668,7 +684,48 @@ public class TableInfo {
             resultMappings.add(mapping);
         }
 
+        if (joinTypes != null && !joinTypes.isEmpty()) {
+            joinTypes.forEach((fieldName, fieldType) -> {
+
+                TableInfo joinTableInfo = TableInfoFactory.ofEntityClass(fieldType);
+                List<ColumnInfo> joinTableInfoColumnInfoList = joinTableInfo.getColumnInfoList();
+
+                for (ColumnInfo joinColumnInfo : joinTableInfoColumnInfoList) {
+                    if (!existColumn(resultMappings, joinColumnInfo.column)) {
+                        ResultMapping mapping = new ResultMapping.Builder(configuration, fieldName + "." + joinColumnInfo.property,
+                                joinColumnInfo.column, joinColumnInfo.propertyType)
+                                .jdbcType(joinColumnInfo.jdbcType)
+                                .typeHandler(joinColumnInfo.buildTypeHandler())
+                                .build();
+                        resultMappings.add(mapping);
+                    }
+
+                    //add property mapper for sql: select xxx as property ...
+                    if (!existColumn(resultMappings, joinColumnInfo.property)) {
+                        if (!Objects.equals(joinColumnInfo.column, joinColumnInfo.property)) {
+                            ResultMapping propertyMapping = new ResultMapping.Builder(configuration, fieldName + "." + joinColumnInfo.property,
+                                    joinColumnInfo.property, joinColumnInfo.propertyType)
+                                    .jdbcType(joinColumnInfo.jdbcType)
+                                    .typeHandler(joinColumnInfo.buildTypeHandler())
+                                    .build();
+                            resultMappings.add(propertyMapping);
+                        }
+                    }
+                }
+            });
+        }
+
         return new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build();
+    }
+
+
+    private static boolean existColumn(List<ResultMapping> resultMappings, String name) {
+        for (ResultMapping resultMapping : resultMappings) {
+            if (resultMapping.getColumn().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

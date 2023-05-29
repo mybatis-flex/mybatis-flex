@@ -21,6 +21,8 @@ import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.row.Db;
+import com.mybatisflex.core.row.RowUtil;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
@@ -112,20 +114,35 @@ public class EntityTestStarter {
 //        Object object = accountMapper.selectObjectByQuery(wrapper2);
 //        System.out.println(object);
 //
+//        QueryWrapper asWrapper = QueryWrapper.create()
+//                .select(ARTICLE.ALL_COLUMNS)
+//                .select(ACCOUNT.USER_NAME.as(ArticleDTO::getAuthorName)
+//                        , ACCOUNT.AGE.as(ArticleDTO::getAuthorAge)
+//                        , ACCOUNT.BIRTHDAY
+//                )
+//                .from(ARTICLE)
+//                .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+////                .where(ACCOUNT.ID.ge(0));
+//                .where(ARTICLE.ID.ge(0).or(ACCOUNT.ID.ge(0)));
+////
+////        List<ArticleDTO> articleDTOS = accountMapper.selectListByQueryAs(asWrapper, ArticleDTO.class);
+////        System.out.println(articleDTOS);
+//        Page<ArticleDTO> paginate = accountMapper.paginateAs(Page.of(1, 1), asWrapper, ArticleDTO.class);
+//        System.out.println(paginate);
+
+
+
         QueryWrapper asWrapper = QueryWrapper.create()
-                .select(ARTICLE.ALL_COLUMNS)
-                .select(ACCOUNT.USER_NAME.as(ArticleDTO::getAuthorName)
-                        , ACCOUNT.AGE.as(ArticleDTO::getAuthorAge)
-                        , ACCOUNT.BIRTHDAY
-                )
+                .select(ARTICLE.ALL_COLUMNS,ACCOUNT.ALL_COLUMNS)
                 .from(ARTICLE)
                 .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
-//                .where(ACCOUNT.ID.ge(0));
                 .where(ARTICLE.ID.ge(0).or(ACCOUNT.ID.ge(0)));
+
+        RowUtil.printPretty(Db.selectListByQuery(asWrapper));
 //
 //        List<ArticleDTO> articleDTOS = accountMapper.selectListByQueryAs(asWrapper, ArticleDTO.class);
 //        System.out.println(articleDTOS);
-        Page<ArticleDTO> paginate = accountMapper.paginateAs(Page.of(1, 1), asWrapper, ArticleDTO.class);
+        Page<ArticleDTO01> paginate = accountMapper.paginateAs(Page.of(1, 10), asWrapper, ArticleDTO01.class);
         System.out.println(paginate);
 
 
