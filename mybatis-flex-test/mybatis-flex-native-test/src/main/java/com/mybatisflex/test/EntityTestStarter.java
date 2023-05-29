@@ -21,16 +21,12 @@ import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.row.Db;
-import com.mybatisflex.core.row.Row;
-import com.mybatisflex.core.row.RowUtil;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-import static com.mybatisflex.core.query.QueryMethods.case_;
 import static com.mybatisflex.core.query.QueryMethods.select;
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
@@ -60,33 +56,33 @@ public class EntityTestStarter {
 
         AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
 
-        QueryWrapper wrapper = QueryWrapper.create().select(ACCOUNT.ID
-                , case_().when(ACCOUNT.ID.ge(2)).then("x2")
-                        .when(ACCOUNT.ID.ge(1)).then("x1")
-                        .else_("x100")
-                        .end().as("xName")
-        ).from(ACCOUNT);
-
-        List<Row> rowList = Db.selectListByQuery(wrapper);
-        RowUtil.printPretty(rowList);
-
-
-        accountMapper.updateNumberAddByQuery("age", 100, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
-        accountMapper.updateNumberAddByQuery(Account::getAge, -50, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
-
-
-        Db.updateNumberAddByQuery("tb_account", "age", 30, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
-        Db.updateNumberAddByQuery("tb_account", "age", -20, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
-
-
-        List<Account> accounts1 = accountMapper.selectListByQuery(QueryWrapper.create()
-                , accountFieldQueryBuilder -> accountFieldQueryBuilder
-                        .field(Account::getArticles)
-                        .queryWrapper(entity ->
-                                select().from(ARTICLE).where(ARTICLE.ACCOUNT_ID.eq(entity.getId()))
-                        )
-        );
-        System.out.println(accounts1);
+//        QueryWrapper wrapper = QueryWrapper.create().select(ACCOUNT.ID
+//                , case_().when(ACCOUNT.ID.ge(2)).then("x2")
+//                        .when(ACCOUNT.ID.ge(1)).then("x1")
+//                        .else_("x100")
+//                        .end().as("xName")
+//        ).from(ACCOUNT);
+//
+//        List<Row> rowList = Db.selectListByQuery(wrapper);
+//        RowUtil.printPretty(rowList);
+//
+//
+//        accountMapper.updateNumberAddByQuery("age", 100, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
+//        accountMapper.updateNumberAddByQuery(Account::getAge, -50, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
+//
+//
+//        Db.updateNumberAddByQuery("tb_account", "age", 30, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
+//        Db.updateNumberAddByQuery("tb_account", "age", -20, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
+//
+//
+//        List<Account> accounts1 = accountMapper.selectListByQuery(QueryWrapper.create()
+//                , accountFieldQueryBuilder -> accountFieldQueryBuilder
+//                        .field(Account::getArticles)
+//                        .queryWrapper(entity ->
+//                                select().from(ARTICLE).where(ARTICLE.ACCOUNT_ID.eq(entity.getId()))
+//                        )
+//        );
+//        System.out.println(accounts1);
 
 //        MyAccountMapper myAccountMapper = bootstrap.getMapper(MyAccountMapper.class);
 
@@ -124,7 +120,8 @@ public class EntityTestStarter {
                 )
                 .from(ARTICLE)
                 .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
-                .where(ACCOUNT.ID.ge(0));
+//                .where(ACCOUNT.ID.ge(0));
+                .where(ARTICLE.ID.ge(0).or(ACCOUNT.ID.ge(0)));
 //
 //        List<ArticleDTO> articleDTOS = accountMapper.selectListByQueryAs(asWrapper, ArticleDTO.class);
 //        System.out.println(articleDTOS);

@@ -269,16 +269,23 @@ public class QueryCondition implements Serializable {
     }
 
 
-    boolean containsTable(String... tables){
-        if (column == null){
-            return false;
+    boolean containsTable(String... tables) {
+        if (column == null || !checkEffective()) {
+            return nextContainsTable(tables);
         }
         for (String table : tables) {
-            if (column.table != null && table.equals(column.table.name)){
+            if (column.table != null && table.equals(column.table.name)) {
                 return true;
             }
         }
-        return false;
+        return nextContainsTable(tables);
+    }
+
+    private boolean nextContainsTable(String... tables) {
+        if (next == null) {
+            return false;
+        }
+        return next.containsTable(tables);
     }
 
     @Override
