@@ -179,30 +179,30 @@ public class ClassUtil {
     }
 
 
-    public static List<Field> getAllFields(Class<?> cl) {
+    public static List<Field> getAllFields(Class<?> clazz) {
         List<Field> fields = new ArrayList<>();
-        doGetFields(cl, fields, null, false);
+        doGetFields(clazz, fields, null, false);
         return fields;
     }
 
-    public static List<Field> getAllFields(Class<?> cl, Predicate<Field> predicate) {
+    public static List<Field> getAllFields(Class<?> clazz, Predicate<Field> predicate) {
         List<Field> fields = new ArrayList<>();
-        doGetFields(cl, fields, predicate, false);
+        doGetFields(clazz, fields, predicate, false);
         return fields;
     }
 
-    public static Field getFirstField(Class<?> cl, Predicate<Field> predicate) {
+    public static Field getFirstField(Class<?> clazz, Predicate<Field> predicate) {
         List<Field> fields = new ArrayList<>();
-        doGetFields(cl, fields, predicate, true);
+        doGetFields(clazz, fields, predicate, true);
         return fields.isEmpty() ? null : fields.get(0);
     }
 
-    private static void doGetFields(Class<?> cl, List<Field> fields, Predicate<Field> predicate, boolean firstOnly) {
-        if (cl == null || cl == Object.class) {
+    private static void doGetFields(Class<?> clazz, List<Field> fields, Predicate<Field> predicate, boolean firstOnly) {
+        if (clazz == null || clazz == Object.class) {
             return;
         }
 
-        Field[] declaredFields = cl.getDeclaredFields();
+        Field[] declaredFields = clazz.getDeclaredFields();
         for (Field declaredField : declaredFields) {
             if (predicate == null || predicate.test(declaredField)) {
                 fields.add(declaredField);
@@ -216,34 +216,34 @@ public class ClassUtil {
             return;
         }
 
-        doGetFields(cl.getSuperclass(), fields, predicate, firstOnly);
+        doGetFields(clazz.getSuperclass(), fields, predicate, firstOnly);
     }
 
-    public static List<Method> getAllMethods(Class<?> cl) {
+    public static List<Method> getAllMethods(Class<?> clazz) {
         List<Method> methods = new ArrayList<>();
-        doGetMethods(cl, methods, null, false);
+        doGetMethods(clazz, methods, null, false);
         return methods;
     }
 
-    public static List<Method> getAllMethods(Class<?> cl, Predicate<Method> predicate) {
+    public static List<Method> getAllMethods(Class<?> clazz, Predicate<Method> predicate) {
         List<Method> methods = new ArrayList<>();
-        doGetMethods(cl, methods, predicate, false);
+        doGetMethods(clazz, methods, predicate, false);
         return methods;
     }
 
-    public static Method getFirstMethod(Class<?> cl, Predicate<Method> predicate) {
+    public static Method getFirstMethod(Class<?> clazz, Predicate<Method> predicate) {
         List<Method> methods = new ArrayList<>();
-        doGetMethods(cl, methods, predicate, true);
+        doGetMethods(clazz, methods, predicate, true);
         return methods.isEmpty() ? null : methods.get(0);
     }
 
 
-    private static void doGetMethods(Class<?> cl, List<Method> methods, Predicate<Method> predicate, boolean firstOnly) {
-        if (cl == null || cl == Object.class) {
+    private static void doGetMethods(Class<?> clazz, List<Method> methods, Predicate<Method> predicate, boolean firstOnly) {
+        if (clazz == null || clazz == Object.class) {
             return;
         }
 
-        Method[] declaredMethods = cl.getDeclaredMethods();
+        Method[] declaredMethods = clazz.getDeclaredMethods();
         for (Method method : declaredMethods) {
             if (predicate == null || predicate.test(method)) {
                 methods.add(method);
@@ -257,8 +257,9 @@ public class ClassUtil {
             return;
         }
 
-        doGetMethods(cl.getSuperclass(), methods, predicate, firstOnly);
+        doGetMethods(clazz.getSuperclass(), methods, predicate, firstOnly);
     }
+
 
     private static <T> Class<T> getJdkProxySuperClass(Class<T> clazz) {
         final Class<?> proxyClass = Proxy.getProxyClass(clazz.getClassLoader(), clazz.getInterfaces());
