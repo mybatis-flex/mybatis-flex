@@ -49,9 +49,11 @@ CREATE TABLE IF NOT EXISTS `tb_article`
 );
 ```
 
-当我们进行关联查询时，可以通过如下代码进行：
+当我们进行关联查询时，可以通过如下 3 种方式进行。
 
-1、定义 `ArticleDTO` 类
+### 方式 1
+
+1、定义 `ArticleDTO` 类，`ArticleDTO` 里定义 `tb_account` 表的字段映射。
 ```java
 public class ArticleDTO {
 
@@ -79,6 +81,8 @@ QueryWrapper query = QueryWrapper.create()
 List<ArticleDTO> results = mapper.selectListByQueryAs(query, ArticleDTO.class);
 System.out.println(results);
 ```
+
+### 方式 2
 
 假设 `ArticleDTO` 定义的属性和 SQL 查询的字段不一致时，例如：
 
@@ -114,8 +118,45 @@ List<ArticleDTO> results = mapper.selectListByQueryAs(query, ArticleDTO.class);
 System.out.println(results);    
 ```
 
+### 方式 3 <Badge type="tip" text="^ v1.3.3" />
 
-**注意事项：**
+1、定义 `ArticleDTO` 类， 在 `ArticleDTO` 定义 `Account` 实体类属性。 例如：
+
+```java
+public class ArticleDTO {
+
+    private Long id;
+    private Long accountId;
+    private String title;
+    private String content;
+    
+    //直接定义 Account 对象
+    private Account account;
+}
+```
+
+2、使用 `QueryWrapper` 构建 `left join` 查询，查询结果通过 `ArticleDTO` 类型接收。
+
+```java
+QueryWrapper query = QueryWrapper.create()
+        .select(ARTICLE.ALL_COLUMNS)
+        .select(ACCOUNT.USER_NAME,ACCOUNT.AGE,ACCOUNT.BIRTHDAY)
+        .from(ARTICLE)
+        .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+        .where(ACCOUNT.ID.ge(0));
+
+List<ArticleDTO> results = mapper.selectListByQueryAs(query, ArticleDTO.class);
+System.out.println(results);
+```
+
+::: tip 方式 3 特别注意事项
+
+- 1、在 `ArticleDTO` 和  `Account` 这两个类中，如果他们有相同的字段，`Account` 中的字段将不会被赋值（该字段为 null，常见的比如 id）。
+- 2、假设在 `ArticleDTO` 中有多个类似 `Account` 的对象，且他们有相同的字段（字段和 `ArticleDTO` 中的不相同），只有优先定义的属性被赋值。
+:::
+
+
+**其他注意事项：**
 
 关联查询（`selectOneByQueryAs`、`selectListByQueryAs` 、`paginateAs` 等方法）中的 `asType` 参数类型（比如：`ArticleDTO`），
 一样支持使用 `@Column`、`@ColumnMask` 注解以及 `@Table` 的 `onInsert`、`onUpdate`、`onSet` 配置。
