@@ -71,7 +71,7 @@ public class TableInfoFactory {
     private static final Set<String> initedPackageNames = new HashSet<>();
 
 
-    public synchronized static void init(String mapperPackageName){
+    public synchronized static void init(String mapperPackageName) {
         if (!initedPackageNames.contains(mapperPackageName)) {
             ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
             resolverUtil.find(new ResolverUtil.IsA(BaseMapper.class), mapperPackageName);
@@ -87,7 +87,7 @@ public class TableInfoFactory {
     public static TableInfo ofMapperClass(Class<?> mapperClass) {
         return MapUtil.computeIfAbsent(mapperTableInfoMap, mapperClass, key -> {
             Class<?> entityClass = getEntityClass(mapperClass);
-            if (entityClass == null){
+            if (entityClass == null) {
                 return null;
             }
             return ofEntityClass(entityClass);
@@ -195,7 +195,8 @@ public class TableInfoFactory {
         Set<String> defaultColumns = new LinkedHashSet<>();
 
 
-        List<Field> entityFields = ClassUtil.getAllFields(entityClass);
+        List<Field> entityFields = getAllFields(entityClass);
+
         for (Field field : entityFields) {
 
             Column column = field.getAnnotation(Column.class);
@@ -347,5 +348,38 @@ public class TableInfoFactory {
 
 
         return tableInfo;
+    }
+
+
+    public static List<Field> getAllFields(Class<?> entityClass) {
+        List<Field> fields = new ArrayList<>();
+        doGetFields(entityClass, fields);
+        return fields;
+    }
+
+
+    private static void doGetFields(Class<?> entityClass, List<Field> fields) {
+        if (entityClass == null || entityClass == Object.class) {
+            return;
+        }
+
+        Field[] declaredFields = entityClass.getDeclaredFields();
+        for (Field declaredField : declaredFields) {
+            if (!existName(fields, declaredField)) {
+                fields.add(declaredField);
+            }
+        }
+
+        doGetFields(entityClass.getSuperclass(), fields);
+    }
+
+
+    private static boolean existName(List<Field> fields, Field field) {
+        for (Field f : fields) {
+            if (f.getName().equalsIgnoreCase(field.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
