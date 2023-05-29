@@ -91,6 +91,13 @@ class ProviderUtil {
         return params.get(FlexConsts.ENTITY);
     }
 
+    public static String getFieldName(Map params) {
+        return (String) params.get(FlexConsts.FIELD_NAME);
+    }
+
+    public static Object getValue(Map params) {
+        return params.get(FlexConsts.VALUE);
+    }
 
     public static List<Object> getEntities(Map params) {
         return (List<Object>) params.get(FlexConsts.ENTITIES);

@@ -224,7 +224,7 @@ public class QueryColumn implements Serializable {
      */
     public QueryCondition in(Object... arrays) {
         //忽略 QueryWrapper.in("name", null) 的情况
-        if (arrays == null || arrays.length == 0  || (arrays.length == 1 && arrays[0] == null)) {
+        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, QueryCondition.LOGIC_IN, arrays);
@@ -262,7 +262,7 @@ public class QueryColumn implements Serializable {
      */
     public QueryCondition notIn(Object... arrays) {
         //忽略 QueryWrapper.notIn("name", null) 的情况
-        if (arrays == null || arrays.length == 0  || (arrays.length == 1 && arrays[0] == null)) {
+        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, QueryCondition.LOGIC_NOT_IN, arrays);
@@ -324,6 +324,40 @@ public class QueryColumn implements Serializable {
     }
 
 
+    // 运算 加减乘除 + - * /
+    public QueryColumn add(QueryColumn queryColumn) {
+        return new ArithmeticQueryColumn(this).add(queryColumn);
+    }
+
+    public QueryColumn add(Number number) {
+        return new ArithmeticQueryColumn(this).add(number);
+    }
+
+    public QueryColumn subtract(QueryColumn queryColumn) {
+        return new ArithmeticQueryColumn(this).subtract(queryColumn);
+    }
+
+    public QueryColumn subtract(Number number) {
+        return new ArithmeticQueryColumn(this).subtract(number);
+    }
+
+    public QueryColumn multiply(QueryColumn queryColumn) {
+        return new ArithmeticQueryColumn(this).multiply(queryColumn);
+    }
+
+    public QueryColumn multiply(Number number) {
+        return new ArithmeticQueryColumn(this).multiply(number);
+    }
+
+    public QueryColumn divide(QueryColumn queryColumn) {
+        return new ArithmeticQueryColumn(this).divide(queryColumn);
+    }
+
+    public QueryColumn divide(Number number) {
+        return new ArithmeticQueryColumn(this).divide(number);
+    }
+
+
     protected String wrap(IDialect dialect, String table, String column) {
         if (StringUtil.isNotBlank(table)) {
             return dialect.wrap(table) + "." + dialect.wrap(column);
@@ -340,7 +374,7 @@ public class QueryColumn implements Serializable {
 
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String tableName = WrapperUtil.getColumnTableName(queryTables, table);
-        return wrap(dialect, tableName, name) + WrapperUtil.buildAsAlias(dialect.wrap(alias));
+        return wrap(dialect, tableName, name) + WrapperUtil.buildAsAlias(alias, dialect);
     }
 
     @Override

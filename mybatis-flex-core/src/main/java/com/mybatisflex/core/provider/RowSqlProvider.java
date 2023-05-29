@@ -82,10 +82,10 @@ public class RowSqlProvider {
             throw FlexExceptions.wrap("rows can not be null or empty.");
         }
 
-        //让所有 row 的列顺序和值的数量与第条数据保持一致
-        //这个必须 new 一个 LinkedHashSet，因为 keepModifyAttrs 会清除 row 所有的 modifyAttrs
+        // 让所有 row 的列顺序和值的数量与第条数据保持一致
+        // 这个必须 new 一个 LinkedHashSet，因为 keepModifyAttrs 会清除 row 所有的 modifyAttrs
         Set<String> modifyAttrs = new LinkedHashSet<>(rows.get(0).obtainModifyAttrs());
-        rows.forEach(row -> RowCPI.keepModifyAttrs(row, modifyAttrs));
+        rows.forEach(row -> row.prepareAttrs(modifyAttrs));
 
 
         Object[] values = new Object[]{};
@@ -243,6 +243,29 @@ public class RowSqlProvider {
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(updateValues, primaryValues, tenantIdArgs));
 
         return DialectFactory.getDialect().forUpdateEntity(tableInfo, entity, false);
+    }
+
+    /**
+     * 执行类似 update table set field=field+1 where ... 的场景
+     *
+     * @param params
+     * @return sql
+     * @see RowMapper#updateNumberAddByQuery(String, String, Number, QueryWrapper)
+     */
+    public static String updateNumberAddByQuery(Map params) {
+
+        QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
+
+        String tableName = ProviderUtil.getTableName(params);
+        String fieldName = ProviderUtil.getFieldName(params);
+        Number value = (Number) ProviderUtil.getValue(params);
+
+
+        Object[] queryParams = CPI.getValueArray(queryWrapper);
+
+        ProviderUtil.setSqlArgs(params, queryParams);
+
+        return DialectFactory.getDialect().forUpdateNumberAddByQuery(tableName, fieldName, value, queryWrapper);
     }
 
 

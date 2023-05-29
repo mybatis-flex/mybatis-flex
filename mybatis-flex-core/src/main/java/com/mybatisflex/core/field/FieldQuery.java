@@ -22,7 +22,7 @@ import java.io.Serializable;
 public class FieldQuery implements Serializable {
 
     private String field;
-    private Class<?> mappingType;
+//    private Class<?> mappingType;
     private QueryWrapper queryWrapper;
 
     public String getField() {
@@ -33,13 +33,13 @@ public class FieldQuery implements Serializable {
         this.field = field;
     }
 
-    public Class<?> getMappingType() {
-        return mappingType;
-    }
-
-    public void setMappingType(Class<?> mappingType) {
-        this.mappingType = mappingType;
-    }
+//    public Class<?> getMappingType() {
+//        return mappingType;
+//    }
+//
+//    public void setMappingType(Class<?> mappingType) {
+//        this.mappingType = mappingType;
+//    }
 
     public QueryWrapper getQueryWrapper() {
         return queryWrapper;

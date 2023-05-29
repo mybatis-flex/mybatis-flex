@@ -266,6 +266,10 @@ public class TableInfo {
         return columnInfoList;
     }
 
+    public String getColumnByProperty(String property) {
+        return propertyColumnMapping.get(property);
+    }
+
 
     void setColumnInfoList(List<ColumnInfo> columnInfoList) {
         this.columnInfoList = columnInfoList;

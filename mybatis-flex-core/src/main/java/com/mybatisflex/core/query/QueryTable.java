@@ -63,7 +63,7 @@ public class QueryTable implements Serializable {
     }
 
     public String toSql(IDialect dialect) {
-        return dialect.wrap(name) + WrapperUtil.buildAsAlias(dialect.wrap(alias));
+        return dialect.wrap(name) + WrapperUtil.buildAsAlias(alias, dialect);
     }
 
     @Override

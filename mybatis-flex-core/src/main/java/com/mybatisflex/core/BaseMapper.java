@@ -24,14 +24,9 @@ import com.mybatisflex.core.provider.EntitySqlProvider;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.CollectionUtil;
-import com.mybatisflex.core.util.ConvertUtil;
-import com.mybatisflex.core.util.ObjectUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.util.*;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.builder.annotation.ProviderContext;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.io.Serializable;
 import java.util.*;
@@ -284,6 +279,33 @@ public interface BaseMapper<T> {
 
 
     /**
+     * 执行类似 update table set field=field+1 where ... 的场景
+     *
+     * @param fieldName    字段名
+     * @param value        值（ >=0 加，小于 0 减）
+     * @param queryWrapper 条件
+     * @see EntitySqlProvider#updateNumberAddByQuery(Map, ProviderContext)
+     */
+    @UpdateProvider(type = EntitySqlProvider.class, method = "updateNumberAddByQuery")
+    int updateNumberAddByQuery(@Param(FlexConsts.FIELD_NAME) String fieldName, @Param(FlexConsts.VALUE) Number value, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+
+
+    /**
+     * 执行类似 update table set field=field+1 where ... 的场景
+     *
+     * @param fn           字段名
+     * @param value        值（ >=0 加，小于 0 减）
+     * @param queryWrapper 条件
+     * @see EntitySqlProvider#updateNumberAddByQuery(Map, ProviderContext)
+     */
+    default int updateNumberAddByQuery(LambdaGetter<T> fn, Number value, QueryWrapper queryWrapper) {
+        TableInfo tableInfo = TableInfoFactory.ofMapperClass(ClassUtil.getUsefulClass(getClass()));
+        String column = tableInfo.getColumnByProperty(LambdaUtil.getFieldName(fn));
+        return updateNumberAddByQuery(column, value, queryWrapper);
+    }
+
+
+    /**
      * 根据主键来选择数据
      *
      * @param id 多个主键
@@ -336,13 +358,8 @@ public interface BaseMapper<T> {
      * @return 数据内容
      */
     default <R> R selectOneByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
-        try {
-            MappedStatementTypes.setCurrentType(asType);
-            List<R> entities = selectListByQueryAs(queryWrapper.limit(1), asType);
-            return (entities == null || entities.isEmpty()) ? null : entities.get(0);
-        } finally {
-            MappedStatementTypes.clear();
-        }
+        List<R> entities = selectListByQueryAs(queryWrapper.limit(1), asType);
+        return (entities == null || entities.isEmpty()) ? null : entities.get(0);
     }
 
     /**
@@ -412,7 +429,7 @@ public interface BaseMapper<T> {
     List<T> selectListByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
-    default List<T> selectListByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper
+    default List<T> selectListByQuery(QueryWrapper queryWrapper
             , Consumer<FieldQueryBuilder<T>>... consumers) {
 
         List<T> list = selectListByQuery(queryWrapper);
@@ -420,46 +437,7 @@ public interface BaseMapper<T> {
             return Collections.emptyList();
         }
 
-        list.forEach(entity -> {
-            for (Consumer<FieldQueryBuilder<T>> consumer : consumers) {
-                FieldQueryBuilder<T> fieldQueryBuilder = new FieldQueryBuilder<>(entity);
-                consumer.accept(fieldQueryBuilder);
-                FieldQuery fieldQuery = fieldQueryBuilder.build();
-                QueryWrapper childQuery = fieldQuery.getQueryWrapper();
-                MetaObject entityMetaObject = SystemMetaObject.forObject(entity);
-                Class<?> setterType = entityMetaObject.getSetterType(fieldQuery.getField());
-
-                Class<?> mappingType = fieldQuery.getMappingType();
-                if (mappingType == null) {
-                    if (setterType.isAssignableFrom(Collection.class)) {
-                        throw new IllegalStateException("Mapping Type can not be null for query Many.");
-                    } else if (setterType.isArray()) {
-                        mappingType = setterType.getComponentType();
-                    } else {
-                        mappingType = setterType;
-                    }
-                }
-
-                Object value;
-                try {
-                    MappedStatementTypes.setCurrentType(mappingType);
-                    if (setterType.isAssignableFrom(List.class)) {
-                        value = selectListByQueryAs(childQuery, mappingType);
-                    } else if (setterType.isAssignableFrom(Set.class)) {
-                        value = selectListByQueryAs(childQuery, mappingType);
-                        value = new HashSet<>((Collection<?>) value);
-                    } else if (setterType.isArray()) {
-                        value = selectListByQueryAs(childQuery, mappingType);
-                        value = ((List<?>) value).toArray();
-                    } else {
-                        value = selectOneByQueryAs(childQuery, mappingType);
-                    }
-                } finally {
-                    MappedStatementTypes.clear();
-                }
-                entityMetaObject.setValue(fieldQuery.getField(), value);
-            }
-        });
+        __queryFields(list, consumers);
 
         return list;
     }
@@ -473,69 +451,25 @@ public interface BaseMapper<T> {
      * @param asType       接收数据类型
      * @return 数据列表
      */
-    @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
-    <R> List<R> selectListByQueryAs(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper, Class<R> asType);
-
-
-    default <R> List<R> selectListByQueryAs(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper, Class<R> asType
-            , Consumer<FieldQueryBuilder<R>>... consumers) {
-        List<R> list;
+    default <R> List<R> selectListByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
         try {
             MappedStatementTypes.setCurrentType(asType);
-            list = selectListByQueryAs(queryWrapper, asType);
+            return (List<R>) selectListByQuery(queryWrapper);
         } finally {
             MappedStatementTypes.clear();
         }
+    }
 
+
+    default <R> List<R> selectListByQueryAs(QueryWrapper queryWrapper, Class<R> asType
+            , Consumer<FieldQueryBuilder<R>>... consumers) {
+        List<R> list = selectListByQueryAs(queryWrapper, asType);
         if (list == null || list.isEmpty()) {
             return Collections.emptyList();
+        } else {
+            __queryFields(list, consumers);
+            return list;
         }
-
-        list.forEach(entity -> {
-            for (Consumer<FieldQueryBuilder<R>> consumer : consumers) {
-                FieldQueryBuilder<R> fieldQueryBuilder = new FieldQueryBuilder<>(entity);
-                consumer.accept(fieldQueryBuilder);
-                FieldQuery fieldQuery = fieldQueryBuilder.build();
-                QueryWrapper childQuery = fieldQuery.getQueryWrapper();
-
-                MetaObject entityMetaObject = SystemMetaObject.forObject(entity);
-                Class<?> setterType = entityMetaObject.getSetterType(fieldQuery.getField());
-
-                Class<?> mappingType = fieldQuery.getMappingType();
-                if (mappingType == null) {
-                    if (setterType.isAssignableFrom(Collection.class)) {
-                        throw new IllegalStateException("Mapping Type can not be null for query Many.");
-                    } else if (setterType.isArray()) {
-                        mappingType = setterType.getComponentType();
-                    } else {
-                        mappingType = setterType;
-                    }
-                }
-
-                Object value;
-                try {
-                    MappedStatementTypes.setCurrentType(mappingType);
-                    if (setterType.isAssignableFrom(List.class)) {
-                        value = selectListByQueryAs(childQuery, mappingType);
-                    } else if (setterType.isAssignableFrom(Set.class)) {
-                        value = selectListByQueryAs(childQuery, mappingType);
-                        value = new HashSet<>((Collection<?>) value);
-                    } else if (setterType.isArray()) {
-                        value = selectListByQueryAs(childQuery, mappingType);
-                        value = ((List<?>) value).toArray();
-                    } else {
-                        value = selectOneByQueryAs(childQuery, mappingType);
-                    }
-                } finally {
-                    MappedStatementTypes.clear();
-                }
-
-
-                entityMetaObject.setValue(fieldQuery.getField(), value);
-            }
-        });
-
-        return list;
     }
 
 
@@ -694,12 +628,12 @@ public interface BaseMapper<T> {
      * @param queryWrapper 查询条件
      * @return page 数据
      */
-    default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper) {
-        return paginateAs(page, queryWrapper, null);
+    default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
+        return paginateAs(page, queryWrapper, null, consumers);
     }
 
 
-    default <R> Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
+    default <R> Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
         List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
 
@@ -776,19 +710,48 @@ public interface BaseMapper<T> {
         queryWrapper.limit(offset, page.getPageSize());
 
         if (asType != null) {
-            try {
-                // 调用内部方法，不走代理，需要主动设置 MappedStatementType
-                // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I73BP6
-                MappedStatementTypes.setCurrentType(asType);
-                List<R> records = selectListByQueryAs(queryWrapper, asType);
-                page.setRecords(records);
-            } finally {
-                MappedStatementTypes.clear();
-            }
+            List<R> records = selectListByQueryAs(queryWrapper, asType);
+            __queryFields(records, consumers);
+            page.setRecords(records);
         } else {
             List<R> records = (List<R>) selectListByQuery(queryWrapper);
+            __queryFields(records, consumers);
             page.setRecords(records);
         }
         return page;
+    }
+
+
+    default <R> void __queryFields(List<R> list, Consumer<FieldQueryBuilder<R>>[] consumers) {
+        if (CollectionUtil.isEmpty(list) || ArrayUtil.isEmpty(consumers) || consumers[0] == null) {
+            return;
+        }
+        list.forEach(entity -> {
+            for (Consumer<FieldQueryBuilder<R>> consumer : consumers) {
+                FieldQueryBuilder<R> fieldQueryBuilder = new FieldQueryBuilder<>(entity);
+                consumer.accept(fieldQueryBuilder);
+                FieldQuery fieldQuery = fieldQueryBuilder.build();
+                QueryWrapper childQuery = fieldQuery.getQueryWrapper();
+
+                FieldWrapper fieldWrapper = FieldWrapper.of(entity.getClass(), fieldQuery.getField());
+
+                Class<?> fieldType = fieldWrapper.getFieldType();
+                Class<?> mappingType = fieldWrapper.getMappingType();
+
+                Object value;
+                if (fieldType.isAssignableFrom(List.class)) {
+                    value = selectListByQueryAs(childQuery, mappingType);
+                } else if (fieldType.isAssignableFrom(Set.class)) {
+                    value = selectListByQueryAs(childQuery, mappingType);
+                    value = new HashSet<>((Collection<?>) value);
+                } else if (fieldType.isArray()) {
+                    value = selectListByQueryAs(childQuery, mappingType);
+                    value = ((List<?>) value).toArray();
+                } else {
+                    value = selectOneByQueryAs(childQuery, mappingType);
+                }
+                fieldWrapper.set(value, entity);
+            }
+        });
     }
 }

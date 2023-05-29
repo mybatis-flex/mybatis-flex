@@ -198,6 +198,20 @@ public interface RowMapper {
     @UpdateProvider(value = RowSqlProvider.class, method = "updateEntity")
     int updateEntity(@Param(FlexConsts.ENTITY) Object entity);
 
+
+    /**
+     * 执行类似 update table set field=field+1 where ... 的场景
+     *
+     * @param fieldName    字段名
+     * @param value        值（ >=0 加，小于 0 减）
+     * @param queryWrapper 条件
+     * @see RowSqlProvider#updateNumberAddByQuery(Map)
+     */
+    @UpdateProvider(type = RowSqlProvider.class, method = "updateNumberAddByQuery")
+    int updateNumberAddByQuery(@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.FIELD_NAME) String fieldName
+            , @Param(FlexConsts.VALUE) Number value, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+
+
     ///////select /////
 
     /**

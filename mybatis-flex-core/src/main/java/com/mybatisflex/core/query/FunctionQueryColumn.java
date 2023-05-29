@@ -60,7 +60,7 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
 
     @Override
     public Object[] getParamValues() {
-        if (column instanceof HasParamsColumn){
+        if (column instanceof HasParamsColumn) {
             return ((HasParamsColumn) column).getParamValues();
         }
         return WrapperUtil.NULL_PARA_ARRAY;
@@ -69,7 +69,7 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
     @Override
     public String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String sql = column.toSelectSql(queryTables, dialect);
-        return StringUtil.isBlank(sql) ? "" : fnName + "(" + sql + ")" + WrapperUtil.buildAsAlias(alias);
+        return StringUtil.isBlank(sql) ? "" : fnName + "(" + sql + ")" + WrapperUtil.buildAsAlias(alias, dialect);
     }
 
     @Override

@@ -142,7 +142,7 @@ mybatis-flex:
 同时，项目若使用到了多个数据源类型，则也需要添加 `type` 来指定当前数据源的类型。
 
 
-除了 `type`、`url`、`username`、`password` 的配置以为，MyBatis-Flex 支持该 `DataSource` 类型的所有参数配置，
+除了 `type`、`url`、`username`、`password` 的配置以外，MyBatis-Flex 支持该 `DataSource` 类型的所有参数配置，
 例如，在 `DruidDataSource` 类中存在 `setAsyncInit` 方法，我们就可以添加 `asyncInit` 的配置，如下所示：
 
 ```yaml 8

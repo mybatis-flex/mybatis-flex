@@ -16,10 +16,7 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
-import com.mybatisflex.core.row.BatchArgsSetter;
-import com.mybatisflex.core.row.Db;
-import com.mybatisflex.core.row.Row;
-import com.mybatisflex.core.row.RowKey;
+import com.mybatisflex.core.row.*;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
@@ -33,7 +30,7 @@ public class DbTestStarter {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .addScript("schema.sql")
-                .addScript("data.sql")
+//                .addScript("data.sql")
                 .build();
 
         MybatisFlexBootstrap.getInstance()
@@ -41,15 +38,18 @@ public class DbTestStarter {
                 .start();
 
         Row row1 = Db.selectOneById("tb_account", "id", 1);
-        System.out.println(row1);
+        RowUtil.printPretty(row1);
 
         //查询全部
         List<Row> rows = Db.selectAll("tb_account");
-        System.out.println(rows);
+        RowUtil.printPretty(rows);
 
 
         //插入 1 条数据
-        Row row = Row.ofKey(RowKey.ID_AUTO);
+
+        Row row = Row.ofKey(RowKey.AUTO);
+//        Row row = new Row();
+//        row.set("id", 3);
         row.set("user_name", "michael yang");
         row.set("age", 18);
         row.set("birthday", new Date());
@@ -80,6 +80,26 @@ public class DbTestStarter {
 
         //再次查询全部数据
         rows = Db.selectAll("tb_account");
-        System.out.println(rows);
+        RowUtil.printPretty(rows);
+
+//        for (Row row2 : rows) {
+////            for (String s : row2.keySet()) {
+////                if (!s.equalsIgnoreCase("id")) {
+////                    row2.set(s, row2.get(s));
+////                }
+////            }
+//            rows.remove("id");
+//        }
+
+//        rows.forEach(row2 -> row2.setPrimaryKeys(RowKey.AUTO));
+        rows.forEach(r -> {
+            r.prepareAttrsByKeySet();
+            r.setPrimaryKeys(RowKey.AUTO);
+        });
+        Db.insertBatch("tb_account", rows, 100);
+
+        //再次查询全部数据
+        rows = Db.selectAll("tb_account");
+        RowUtil.printPretty(rows);
     }
 }

@@ -16,6 +16,7 @@
 package com.mybatisflex.core.row;
 
 import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.core.keygen.KeyGenerators;
 import com.mybatisflex.core.util.SqlUtil;
 
 /**
@@ -26,12 +27,22 @@ public class RowKey {
     /**
      * 自增 ID
      */
-    public static final RowKey ID_AUTO = RowKey.of("id", KeyType.Auto, null, false);
+    public static final RowKey AUTO = RowKey.of("id", KeyType.Auto, null, false);
 
     /**
      * UUID 的 ID
      */
-    public static final RowKey ID_UUID = RowKey.of("id", KeyType.Generator, "uuid", true);
+    public static final RowKey UUID = RowKey.of("id", KeyType.Generator, KeyGenerators.uuid, true);
+
+    /**
+     * flexId
+     */
+    public static final RowKey FLEX_ID = RowKey.of("id", KeyType.Generator, KeyGenerators.flexId, true);
+
+    /**
+     * snowFlakeId
+     */
+    public static final RowKey SNOW_FLAKE_ID = RowKey.of("id", KeyType.Generator, KeyGenerators.snowFlakeId, true);
 
 
     public static RowKey of(String keyColumn) {

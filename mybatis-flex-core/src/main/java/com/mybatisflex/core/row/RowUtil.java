@@ -133,6 +133,9 @@ public class RowUtil {
 
 
     public static void printPretty(Row row) {
+        if (row == null) {
+            return;
+        }
         printPretty(Collections.singletonList(row));
     }
 

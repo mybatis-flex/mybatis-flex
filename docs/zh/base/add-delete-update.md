@@ -64,6 +64,7 @@ delete from tb_account where id >= 100;
 - **updateByQuery(entity, queryWrapper)**：根据 queryWrapper 组成的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）, entity 的 null 属性，会自动被忽略。
 - **updateByQuery(entity, ignoreNulls, queryWrapper)**：据 queryWrapper 组成的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）。 ignoreNulls 用于是否忽略 entity 的 null 属性
 ， 若 ignoreNulls 为 false，entity 的所有 null 属性都会被更新到数据库。
+- **updateNumberAddByQuery(fieldName,value,queryWrapper)**：通过 `update table set field = field + 1 where ... ` 的这种方向更新数据库某个字段内容。
 
 
 ## 部分字段更新

@@ -94,7 +94,7 @@ public class ConvertUtil {
         } else if (targetClass.isEnum()) {
             EnumWrapper enumWrapper = EnumWrapper.of(targetClass);
             if (enumWrapper.hasEnumValueAnnotation()) {
-                return enumWrapper.toEnum(value);
+                return enumWrapper.getEnum(value);
             } else if (value instanceof String) {
                 return Enum.valueOf(targetClass, value.toString());
             }

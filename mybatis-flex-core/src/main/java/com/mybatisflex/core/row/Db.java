@@ -286,6 +286,7 @@ public class Db {
         })).sum();
     }
 
+
     /**
      * 根据主键来批量更新数据
      *
@@ -294,6 +295,11 @@ public class Db {
      */
     public static <T> int updateEntitiesBatch(Collection<T> entities) {
         return updateEntitiesBatch(entities, RowMapper.DEFAULT_BATCH_SIZE);
+    }
+
+
+    public static int updateNumberAddByQuery(String tableName, String fieldName, Number value, QueryWrapper queryWrapper){
+        return invoker().updateNumberAddByQuery(tableName, fieldName, value, queryWrapper);
     }
 
 

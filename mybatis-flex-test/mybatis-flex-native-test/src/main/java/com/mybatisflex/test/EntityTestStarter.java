@@ -71,15 +71,22 @@ public class EntityTestStarter {
         RowUtil.printPretty(rowList);
 
 
-//        List<Account> accounts1 = accountMapper.selectListByQuery(QueryWrapper.create()
-//                , accountFieldQueryBuilder -> accountFieldQueryBuilder
-//                        .field(Account::getArticles)
-//                        .type(Article.class)
-//                        .queryWrapper(entity ->
-//                                select().from(ARTICLE).where(ARTICLE.ACCOUNT_ID.eq(entity.getId()))
-//                        )
-//        );
-//        System.out.println(accounts1);
+        accountMapper.updateNumberAddByQuery("age", 100, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
+        accountMapper.updateNumberAddByQuery(Account::getAge, -50, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
+
+
+        Db.updateNumberAddByQuery("tb_account", "age", 30, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
+        Db.updateNumberAddByQuery("tb_account", "age", -20, QueryWrapper.create().where(ACCOUNT.ID.eq(1)));
+
+
+        List<Account> accounts1 = accountMapper.selectListByQuery(QueryWrapper.create()
+                , accountFieldQueryBuilder -> accountFieldQueryBuilder
+                        .field(Account::getArticles)
+                        .queryWrapper(entity ->
+                                select().from(ARTICLE).where(ARTICLE.ACCOUNT_ID.eq(entity.getId()))
+                        )
+        );
+        System.out.println(accounts1);
 
 //        MyAccountMapper myAccountMapper = bootstrap.getMapper(MyAccountMapper.class);
 

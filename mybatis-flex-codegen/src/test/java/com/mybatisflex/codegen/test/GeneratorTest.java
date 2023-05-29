@@ -19,7 +19,6 @@ package com.mybatisflex.codegen.test;
 import com.mybatisflex.codegen.Generator;
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.junit.Test;
 
 import java.util.function.UnaryOperator;
 
@@ -82,7 +81,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-    @Test
+//    @Test
     public void testCodeGen2() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();

@@ -179,7 +179,7 @@ processor.baseMapperClass=com.domain.mapper.MyBaseMapper
 ```
 dependencies {
     ...
-    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.3.0'
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.3.2'
 }
 ```
 

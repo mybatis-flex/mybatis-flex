@@ -1,3 +1,35 @@
+mybatis-flex v1.3.2 20230528:
+新增：select (field1 * field2 * 100) as xxx from ... 的 SQL 构建场景
+优化：ClassUtil.wrap 方法修改为 getWrapType
+优化：重构 BaseMapper.selectListByQueryAs() 方法，使其更加通用
+优化：重构 EnumWrapper.java，使之方法和变量更加明确易读
+优化：WrapperUtil.buildAsAlias 方法，使之在多种场景下有统一行为
+优化：优化 Row，添加 prepareAttrs() 等方法
+修复：EnumWrapper 对其 getter 方法判断错误的问题
+文档：更新一对多、多对一的子查询相关文档
+
+
+
+mybatis-flex v1.3.1 20230526:
+新增：分页查询添加关联字段查询功能；
+新增：Mapper 添加 updateNumberAddByQuery 方法，用于 update table set xxx = xxx + 1 的场景；
+优化：添加 FieldWrapper 使得关联字段查询拥有更高的性能
+优化：优化 EnumWrapper 使之逻辑更加清晰简单
+优化：字段子查询不在需要配置 type
+优化：代码生成器 remarks 修改为 comment; 感谢 @王帅
+优化：代码生成器 GlobalConfig 拆分，使之更加直观; 感谢 @王帅
+优化：代码生成器新增注释生成配置； 感谢 @王帅
+优化：代码生成器新增 mapper xml 生成功能； 感谢 @王帅
+优化：代码生成器新增 package-info.java 生成功能； 感谢 @王帅
+优化：代码生成器新增 Controller 生成功能； 感谢 @王帅
+优化：代码生成器每个生成的文件，单独支持是否覆盖已生成的文件； 感谢 @王帅
+优化：代码生成器新增设置模板文件位置，可以使用指定的模板生成文件； 感谢 @王帅
+修复：select max(select(...)) 等函数内部有参数时，无法获取的问题；
+文档：更新代码生成器文档。感谢 @王帅
+文档：优化 QueryWrapper 的相关文档
+
+
+
 mybatis-flex v1.3.0 20230525:
 新增：新增 一对多、多对一 查询功能
 新增：为 SqlServer 添加独立的 LimitOffset 处理器
