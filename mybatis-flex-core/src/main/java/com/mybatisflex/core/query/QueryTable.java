@@ -43,9 +43,23 @@ public class QueryTable implements Serializable {
         this.name = name;
     }
 
-    public QueryTable(String table, String alias) {
+    public QueryTable(String schema, String name) {
+        this.schema = schema;
+        this.name = name;
+    }
+
+    public QueryTable(String schema, String table, String alias) {
+        this.schema = schema;
         this.name = table;
         this.alias = alias;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
     public String getName() {
@@ -82,9 +96,9 @@ public class QueryTable implements Serializable {
     public String toSql(IDialect dialect) {
         String sql;
         if (StringUtil.isNotBlank(schema)) {
-            sql = dialect.wrap(schema) + "." + dialect.wrap(name) + WrapperUtil.buildAsAlias(alias, dialect);
+            sql = dialect.wrap(dialect.getRealSchema(schema)) + "." + dialect.wrap(dialect.getRealTable(name)) + WrapperUtil.buildAsAlias(alias, dialect);
         } else {
-            sql = dialect.wrap(name) + WrapperUtil.buildAsAlias(alias, dialect);
+            sql = dialect.wrap(dialect.getRealTable(name)) + WrapperUtil.buildAsAlias(alias, dialect);
         }
         return sql;
     }

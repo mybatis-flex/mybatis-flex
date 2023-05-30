@@ -21,15 +21,11 @@ import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.row.Db;
-import com.mybatisflex.core.row.RowUtil;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-import java.util.List;
 
-import static com.mybatisflex.core.query.QueryMethods.select;
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
 
@@ -138,7 +134,7 @@ public class EntityTestStarter {
                 .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
                 .where(ARTICLE.ID.ge(0).or(ACCOUNT.ID.ge(0)));
 
-        RowUtil.printPretty(Db.selectListByQuery(asWrapper));
+//        RowUtil.printPretty(Db.selectListByQuery(asWrapper));
 //
 //        List<ArticleDTO> articleDTOS = accountMapper.selectListByQueryAs(asWrapper, ArticleDTO.class);
 //        System.out.println(articleDTOS);
@@ -195,15 +191,15 @@ public class EntityTestStarter {
 //                        .or(SYS_CONFIG.TYPE.like(word).when(StrChecker.isNotBlank(word)))
 //                );
 
-        List<Account> accounts = accountMapper.selectListByQuery(
-                select().where(ACCOUNT.AGE.ge(18).when(false))
-                        .and(ACCOUNT.USER_NAME.like("aaaa").when(false)
-                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
-                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
-                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
-                        )
-        );
-        System.out.println(accounts);
+//        List<Account> accounts = accountMapper.selectListByQuery(
+//                select().where(ACCOUNT.AGE.ge(18).when(false))
+//                        .and(ACCOUNT.USER_NAME.like("aaaa").when(false)
+//                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+//                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+//                                .or(ACCOUNT.USER_NAME.like("aaaa").when(false))
+//                        )
+//        );
+//        System.out.println(accounts);
 
 
 //        Page<Account> paginate = accountMapper.paginate(1, 10, QueryWrapper.create());

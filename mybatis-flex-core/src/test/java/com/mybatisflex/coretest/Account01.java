@@ -6,7 +6,7 @@ import com.mybatisflex.annotation.Table;
 
 import java.util.Date;
 
-@Table(value = "tb_account",schema = "flex")
+@Table(value = "tb_a01",schema = "flex")
 public class Account01 {
 
     @Id

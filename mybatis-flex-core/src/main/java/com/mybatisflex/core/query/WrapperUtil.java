@@ -18,7 +18,6 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.ClassUtil;
-import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.EnumWrapper;
 import com.mybatisflex.core.util.StringUtil;
 
@@ -132,39 +131,7 @@ class WrapperUtil {
     }
 
 
-    public static String getColumnTableName(List<QueryTable> queryTables, QueryTable queryTable) {
-        if (queryTables == null) {
-            return "";
-        }
 
-        if (queryTables.size() == 1 && queryTables.get(0).isSameTable(queryTable)) {
-            return "";
-        }
-
-        QueryTable realTable = getRealTable(queryTables, queryTable);
-        if (realTable == null) {
-            return "";
-        }
-
-        return StringUtil.isNotBlank(realTable.alias) ? realTable.alias : realTable.name;
-    }
-
-    public static QueryTable getRealTable(List<QueryTable> queryTables, QueryTable queryTable) {
-        if (CollectionUtil.isEmpty(queryTables)) {
-            return queryTable;
-        }
-
-        if (queryTable == null && queryTables.size() == 1) {
-            return queryTables.get(0);
-        }
-
-        for (QueryTable table : queryTables) {
-            if (table.isSameTable(queryTable)) {
-                return table;
-            }
-        }
-        return queryTable;
-    }
 
 
 }

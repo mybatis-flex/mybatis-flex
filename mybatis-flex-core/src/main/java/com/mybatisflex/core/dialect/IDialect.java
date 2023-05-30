@@ -18,12 +18,21 @@ package com.mybatisflex.core.dialect;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableManager;
 
 import java.util.List;
 
 public interface IDialect {
 
     String wrap(String keyword);
+
+    default String getRealTable(String table) {
+        return TableManager.getRealTable(table);
+    }
+
+    default String getRealSchema(String schema) {
+        return TableManager.getRealSchema(schema);
+    }
 
     String forHint(String hintString);
 
@@ -52,7 +61,6 @@ public interface IDialect {
     String buildDeleteSql(QueryWrapper queryWrapper);
 
     String buildWhereConditionSql(QueryWrapper queryWrapper);
-
 
 
     //////for entity /////
