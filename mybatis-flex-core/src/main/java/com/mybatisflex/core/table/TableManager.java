@@ -22,20 +22,13 @@ import java.util.Map;
 
 public class TableManager {
 
-    private static DynamicSchemaProcessor dynamicSchemaProcessor;
+
     private static DynamicTableProcessor dynamicTableProcessor;
+    private static DynamicSchemaProcessor dynamicSchemaProcessor;
 
     private static final ThreadLocal<Map<String, String>> tableNameMappingTL = ThreadLocal.withInitial(HashMap::new);
     private static final ThreadLocal<Map<String, String>> schemaMappingTL = ThreadLocal.withInitial(HashMap::new);
 
-
-    public static DynamicSchemaProcessor getDynamicSchemaProcessor() {
-        return dynamicSchemaProcessor;
-    }
-
-    public static void setDynamicSchemaProcessor(DynamicSchemaProcessor dynamicSchemaProcessor) {
-        TableManager.dynamicSchemaProcessor = dynamicSchemaProcessor;
-    }
 
     public static DynamicTableProcessor getDynamicTableProcessor() {
         return dynamicTableProcessor;
@@ -45,6 +38,13 @@ public class TableManager {
         TableManager.dynamicTableProcessor = dynamicTableProcessor;
     }
 
+    public static DynamicSchemaProcessor getDynamicSchemaProcessor() {
+        return dynamicSchemaProcessor;
+    }
+
+    public static void setDynamicSchemaProcessor(DynamicSchemaProcessor dynamicSchemaProcessor) {
+        TableManager.dynamicSchemaProcessor = dynamicSchemaProcessor;
+    }
 
     public static void setHintTableMapping(String tableName, String mappingTable) {
         tableNameMappingTL.get().put(tableName, mappingTable);
