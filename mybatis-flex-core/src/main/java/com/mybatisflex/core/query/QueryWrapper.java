@@ -15,10 +15,12 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.*;
@@ -523,6 +525,12 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         childQueryWrappers.addAll(havingChildQuery);
 
         return childQueryWrappers;
+    }
+
+
+    public String toDebugSQL() {
+        String sql = DialectFactory.getDialect().forSelectByQuery(this);
+        return SqlUtil.replaceSqlParams(sql, getValueArray());
     }
 
 
