@@ -16,6 +16,8 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.table.TableDef;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -25,10 +27,16 @@ import java.util.Objects;
  */
 public class QueryTable implements Serializable {
 
+    protected String schema;
     protected String name;
     protected String alias;
 
     public QueryTable() {
+    }
+
+    public QueryTable(TableDef tableDef) {
+        this.name = tableDef.getTableName();
+        this.schema = tableDef.getSchema();
     }
 
     public QueryTable(String name) {
@@ -55,21 +63,38 @@ public class QueryTable implements Serializable {
     }
 
     boolean isSameTable(QueryTable table) {
-        return table != null && Objects.equals(name, table.name);
+        if (table == null) {
+            return false;
+        }
+        if (StringUtil.isNotBlank(alias) && StringUtil.isNotBlank(table.alias)) {
+            if (Objects.equals(alias, table.alias)) {
+                return false;
+            }
+        }
+        return Objects.equals(name, table.name);
     }
+
 
     Object[] getValueArray() {
         return WrapperUtil.NULL_PARA_ARRAY;
     }
 
     public String toSql(IDialect dialect) {
-        return dialect.wrap(name) + WrapperUtil.buildAsAlias(alias, dialect);
+        String sql;
+        if (StringUtil.isNotBlank(schema)) {
+            sql = dialect.wrap(schema) + "." + dialect.wrap(name) + WrapperUtil.buildAsAlias(alias, dialect);
+        } else {
+            sql = dialect.wrap(name) + WrapperUtil.buildAsAlias(alias, dialect);
+        }
+        return sql;
     }
+
 
     @Override
     public String toString() {
         return "QueryTable{" +
-                "name='" + name + '\'' +
+                "schema='" + schema + '\'' +
+                ", name='" + name + '\'' +
                 ", alias='" + alias + '\'' +
                 '}';
     }

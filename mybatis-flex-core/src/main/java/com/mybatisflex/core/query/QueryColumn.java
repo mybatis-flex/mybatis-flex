@@ -53,7 +53,7 @@ public class QueryColumn implements Serializable {
 
     public QueryColumn(TableDef tableDef, String name) {
         SqlUtil.keepColumnSafely(name);
-        this.table = new QueryTable(tableDef.getTableName());
+        this.table = new QueryTable(tableDef);
         this.name = name;
     }
 

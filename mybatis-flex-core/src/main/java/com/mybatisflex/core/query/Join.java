@@ -43,9 +43,9 @@ public class Join implements Serializable {
     protected QueryCondition on;
     protected boolean effective;
 
-    public Join(String type, String table, boolean when) {
+    public Join(String type, QueryTable table, boolean when) {
         this.type = type;
-        this.queryTable = new QueryTable(table);
+        this.queryTable = table;
         this.effective = when;
     }
 
@@ -65,7 +65,7 @@ public class Join implements Serializable {
         this.on = condition;
     }
 
-    QueryCondition getOnCondition(){
+    QueryCondition getOnCondition() {
         return on;
     }
 

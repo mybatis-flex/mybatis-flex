@@ -21,7 +21,13 @@ import java.io.Serializable;
 
 public class TableDef implements Serializable {
 
+    private String schema;
     private final String tableName;
+
+    public TableDef(String schema, String tableName) {
+        this.schema = schema;
+        this.tableName = tableName;
+    }
 
     public TableDef(String tableName) {
         this.tableName = tableName;
@@ -29,6 +35,10 @@ public class TableDef implements Serializable {
 
     public String getTableName() {
         return tableName;
+    }
+
+    public String getSchema() {
+        return schema;
     }
 
     public QueryTable as(String alias) {

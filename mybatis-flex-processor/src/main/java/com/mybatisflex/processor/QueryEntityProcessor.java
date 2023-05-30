@@ -81,7 +81,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
             "@classesInfo" +
             "}\n";
 
-    private static final String tableDefTemplate = "\n\n    public static final @entityClassTableDef @tableField = new @entityClassTableDef(\"@tableName\");\n";
+    private static final String tableDefTemplate = "\n\n    public static final @entityClassTableDef @tableField = new @entityClassTableDef(\"@schema\", \"@tableName\");\n";
 
     private static final String singleEntityClassTemplate = "package @package;\n" +
             "\n" +
@@ -96,8 +96,8 @@ public class QueryEntityProcessor extends AbstractProcessor {
             "@defaultColumns" +
             "@allColumns" +
             "\n" +
-            "    public @entityClassTableDef(String tableName) {\n" +
-            "        super(tableName);\n" +
+            "    public @entityClassTableDef(String schema, String tableName) {\n" +
+            "        super(schema, tableName);\n" +
             "    }\n" +
             "}\n";
 
@@ -109,8 +109,8 @@ public class QueryEntityProcessor extends AbstractProcessor {
             "@defaultColumns" +
             "@allColumns" +
             "\n" +
-            "        public @entityClassTableDef(String tableName) {\n" +
-            "            super(tableName);\n" +
+            "        public @entityClassTableDef(String schema, String tableName) {\n" +
+            "            super(schema, tableName);\n" +
             "        }\n" +
             "    }\n";
 
@@ -177,6 +177,10 @@ public class QueryEntityProcessor extends AbstractProcessor {
                     }
                 }
 
+                String schema = table != null && table.value().trim().length() != 0
+                        ? table.schema()
+                        : "";
+
                 String tableName = table != null && table.value().trim().length() != 0
                         ? table.value()
                         : firstCharToLowerCase(entityClassElement.getSimpleName().toString());
@@ -203,13 +207,13 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 }
 
                 if (allInTables) {
-                    String content = buildTablesClass(entitySimpleName, tableName, propertyAndColumns, defaultColumns, tablesNameStyle, null, allInTables);
+                    String content = buildTablesClass(entitySimpleName, schema, tableName, propertyAndColumns, defaultColumns, tablesNameStyle, null, allInTables);
                     tablesContent.append(content);
                 }
                 //每一个 entity 生成一个独立的文件
                 else {
                     String realGenPackage = genTablesPackage == null || genTablesPackage.trim().length() == 0 ? guessPackage.toString() : genTablesPackage;
-                    String content = buildTablesClass(entitySimpleName, tableName, propertyAndColumns, defaultColumns, tablesNameStyle, realGenPackage, allInTables);
+                    String content = buildTablesClass(entitySimpleName, schema, tableName, propertyAndColumns, defaultColumns, tablesNameStyle, realGenPackage, allInTables);
                     genClass(genPath, realGenPackage, entitySimpleName + "TableDef", content);
                 }
 
@@ -327,12 +331,13 @@ public class QueryEntityProcessor extends AbstractProcessor {
     }
 
 
-    private String buildTablesClass(String entityClass, String tableName, Map<String, String> propertyAndColumns
+    private String buildTablesClass(String entityClass, String schema, String tableName, Map<String, String> propertyAndColumns
             , List<String> defaultColumns, String tablesNameStyle, String realGenPackage, boolean allInTables) {
 
         // tableDefTemplate = "    public static final @entityClassTableDef @tableField = new @entityClassTableDef(\"@tableName\");\n";
 
         String tableDef = tableDefTemplate.replace("@entityClass", entityClass)
+                .replace("@schema", schema)
                 .replace("@tableField", buildName(entityClass, tablesNameStyle))
                 .replace("@tableName", tableName);
 

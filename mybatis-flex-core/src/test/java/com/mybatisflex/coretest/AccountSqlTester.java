@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static com.mybatisflex.core.query.QueryMethods.*;
+import static com.mybatisflex.coretest.table.Account01TableDef.ACCOUNT01;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
 
@@ -24,6 +25,17 @@ public class AccountSqlTester {
         QueryWrapper query = new QueryWrapper()
                 .select()
                 .from(ACCOUNT);
+
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forSelectByQuery(query);
+        System.out.println(sql);
+    }
+
+    @Test
+    public void testSelectWithSchemaSql() {
+        QueryWrapper query = new QueryWrapper()
+                .select()
+                .from(ACCOUNT01);
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(query);
