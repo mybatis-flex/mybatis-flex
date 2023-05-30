@@ -875,7 +875,7 @@ public class CommonsDialectImpl implements IDialect {
                 || normalValueOfLogicDelete instanceof Boolean) {
             return normalValueOfLogicDelete;
         }
-        return "\"" + normalValueOfLogicDelete.toString() + "\"";
+        return "'" + normalValueOfLogicDelete.toString() + "'";
     }
 
 
@@ -885,7 +885,7 @@ public class CommonsDialectImpl implements IDialect {
                 || deletedValueOfLogicDelete instanceof Boolean) {
             return deletedValueOfLogicDelete;
         }
-        return "\"" + deletedValueOfLogicDelete.toString() + "\"";
+        return "'" + deletedValueOfLogicDelete.toString() + "'";
     }
 
 }
