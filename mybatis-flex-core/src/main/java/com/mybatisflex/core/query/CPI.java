@@ -162,7 +162,7 @@ public class CPI {
         return queryWrapper.getEndFragments();
     }
 
-    public static void setEndFragments(QueryWrapper queryWrapper,List<String> endFragments) {
+    public static void setEndFragments(QueryWrapper queryWrapper, List<String> endFragments) {
         queryWrapper.setEndFragments(endFragments);
     }
 
@@ -197,6 +197,13 @@ public class CPI {
         if (StringUtil.isNotBlank(tableName)
                 && CollectionUtil.isEmpty(queryWrapper.getQueryTables())) {
             queryWrapper.from(tableName);
+        }
+    }
+
+    public static void setFromIfNecessary(QueryWrapper queryWrapper, String schema, String tableName) {
+        if (StringUtil.isNotBlank(tableName)
+                && CollectionUtil.isEmpty(queryWrapper.getQueryTables())) {
+            queryWrapper.from(new QueryTable(schema, tableName));
         }
     }
 

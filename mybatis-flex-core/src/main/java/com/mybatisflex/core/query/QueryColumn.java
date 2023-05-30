@@ -18,10 +18,7 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.table.TableDef;
-import com.mybatisflex.core.util.LambdaGetter;
-import com.mybatisflex.core.util.LambdaUtil;
-import com.mybatisflex.core.util.SqlUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.util.*;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -45,15 +42,15 @@ public class QueryColumn implements Serializable {
         this.name = name;
     }
 
-    public QueryColumn(String tableName, String name) {
+    public QueryColumn(String schema, String tableName, String name) {
         SqlUtil.keepColumnSafely(name);
-        this.table = new QueryTable(tableName);
+        this.table = new QueryTable(schema, tableName);
         this.name = name;
     }
 
     public QueryColumn(TableDef tableDef, String name) {
         SqlUtil.keepColumnSafely(name);
-        this.table = new QueryTable(tableDef.getTableName());
+        this.table = new QueryTable(tableDef);
         this.name = name;
     }
 
@@ -358,24 +355,55 @@ public class QueryColumn implements Serializable {
     }
 
 
-    protected String wrap(IDialect dialect, String table, String column) {
-        if (StringUtil.isNotBlank(table)) {
-            return dialect.wrap(table) + "." + dialect.wrap(column);
-        } else {
-            return dialect.wrap(column);
-        }
-    }
-
     String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
-        String tableName = WrapperUtil.getColumnTableName(queryTables, table);
-        return wrap(dialect, tableName, name);
+        QueryTable selectTable = getSelectTable(queryTables, table);
+        if (selectTable == null) {
+            return dialect.wrap(name);
+        } else {
+            if (StringUtil.isNotBlank(selectTable.alias)) {
+                return dialect.wrap(selectTable.alias) + "." + dialect.wrap(name);
+            } else if (StringUtil.isNotBlank(selectTable.getSchema()) && StringUtil.isNotBlank(selectTable.getName())) {
+                return dialect.wrap(dialect.getRealSchema(selectTable.schema)) + "." + dialect.wrap(dialect.getRealTable(selectTable.getName())) + "." + dialect.wrap(name);
+            } else if (StringUtil.isNotBlank(selectTable.getName())) {
+                return dialect.wrap(dialect.getRealTable(selectTable.getName())) + "." + dialect.wrap(name);
+            } else {
+                return dialect.wrap(name);
+            }
+        }
     }
 
 
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
-        String tableName = WrapperUtil.getColumnTableName(queryTables, table);
-        return wrap(dialect, tableName, name) + WrapperUtil.buildAsAlias(alias, dialect);
+        return toConditionSql(queryTables, dialect) + WrapperUtil.buildAsAlias(alias, dialect);
     }
+
+
+    QueryTable getSelectTable(List<QueryTable> queryTables, QueryTable columnTable) {
+        if (queryTables == null || queryTables.isEmpty()) {
+            return null;
+        }
+
+        if (queryTables.size() == 1 && queryTables.get(0).isSameTable(columnTable)) {
+            //ignore table
+            return null;
+        }
+
+        if (CollectionUtil.isEmpty(queryTables)) {
+            return columnTable;
+        }
+
+        if (columnTable == null && queryTables.size() == 1) {
+            return queryTables.get(0);
+        }
+
+        for (QueryTable table : queryTables) {
+            if (table.isSameTable(columnTable)) {
+                return table;
+            }
+        }
+        return columnTable;
+    }
+
 
     @Override
     public String toString() {

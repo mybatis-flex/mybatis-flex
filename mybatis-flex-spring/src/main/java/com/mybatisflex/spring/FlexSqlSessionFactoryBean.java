@@ -19,7 +19,7 @@ import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
-import com.mybatisflex.core.mybatis.FlexXMLConfigBuilder;
+import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.executor.ErrorContext;
@@ -492,8 +492,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
 
         final Configuration targetConfiguration;
 
-//        XMLConfigBuilder xmlConfigBuilder = null;
-        FlexXMLConfigBuilder xmlConfigBuilder = null;
+        XMLConfigBuilder xmlConfigBuilder = null;
         if (this.configuration != null) {
             targetConfiguration = this.configuration;
             if (targetConfiguration.getVariables() == null) {
@@ -502,12 +501,11 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
                 targetConfiguration.getVariables().putAll(this.configurationProperties);
             }
         } else if (this.configLocation != null) {
-//            xmlConfigBuilder = new XMLConfigBuilder(this.configLocation.getInputStream(), null, this.configurationProperties);
-            xmlConfigBuilder = new FlexXMLConfigBuilder(this.configLocation.getInputStream(), null, this.configurationProperties);
+            xmlConfigBuilder = new XMLConfigBuilder(FlexConfiguration.class, this.configLocation.getInputStream(), null, this.configurationProperties);
             targetConfiguration = xmlConfigBuilder.getConfiguration();
         } else {
             LOGGER.debug(
-                    () -> "Property 'configuration' or 'configLocation' not specified, using default MyBatis Configuration");
+                    () -> "Property 'configuration' or 'configLocation' not specified, using default Flex Configuration");
 //            targetConfiguration = new Configuration();
             targetConfiguration = new FlexConfiguration();
             Optional.ofNullable(this.configurationProperties).ifPresent(targetConfiguration::setVariables);

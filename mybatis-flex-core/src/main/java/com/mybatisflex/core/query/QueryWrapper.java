@@ -15,10 +15,12 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.*;
@@ -42,7 +44,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     public QueryWrapper from(TableDef... tableDefs) {
         for (TableDef tableDef : tableDefs) {
-            from(new QueryTable(tableDef.getTableName()));
+            from(new QueryTable(tableDef));
         }
         return this;
     }
@@ -53,7 +55,14 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             if (StringUtil.isBlank(table)) {
                 throw new IllegalArgumentException("table must not be null or blank.");
             }
-            from(new QueryTable(table));
+            int indexOf = table.indexOf(".");
+            if (indexOf > 0) {
+                String schema = table.substring(0, indexOf);
+                table = table.substring(indexOf + 1);
+                from(new QueryTable(schema, table));
+            } else {
+                from(new QueryTable(table));
+            }
         }
         return this;
     }
@@ -151,21 +160,20 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
 
     public Joiner<QueryWrapper> leftJoin(String table) {
-        return joining(Join.TYPE_LEFT, table, true);
+        return joining(Join.TYPE_LEFT, new QueryTable(table), true);
     }
 
 
     public Joiner<QueryWrapper> leftJoinIf(String table, boolean when) {
-        return joining(Join.TYPE_LEFT, table, when);
+        return joining(Join.TYPE_LEFT, new QueryTable(table), when);
     }
 
     public Joiner<QueryWrapper> leftJoin(TableDef table) {
-        return joining(Join.TYPE_LEFT, table.getTableName(), true);
+        return joining(Join.TYPE_LEFT, new QueryTable(table), true);
     }
 
-
     public Joiner<QueryWrapper> leftJoinIf(TableDef table, boolean when) {
-        return joining(Join.TYPE_LEFT, table.getTableName(), when);
+        return joining(Join.TYPE_LEFT, new QueryTable(table), when);
     }
 
     public Joiner<QueryWrapper> leftJoin(QueryWrapper table) {
@@ -176,12 +184,21 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return joining(Join.TYPE_LEFT, table, when);
     }
 
+
     public Joiner<QueryWrapper> rightJoin(String table) {
-        return joining(Join.TYPE_RIGHT, table, true);
+        return joining(Join.TYPE_RIGHT, new QueryTable(table), true);
     }
 
     public Joiner<QueryWrapper> rightJoinIf(String table, boolean when) {
-        return joining(Join.TYPE_RIGHT, table, when);
+        return joining(Join.TYPE_RIGHT, new QueryTable(table), when);
+    }
+
+    public Joiner<QueryWrapper> rightJoinIf(TableDef table) {
+        return joining(Join.TYPE_RIGHT, new QueryTable(table), true);
+    }
+
+    public Joiner<QueryWrapper> rightJoinIf(TableDef table, boolean when) {
+        return joining(Join.TYPE_RIGHT, new QueryTable(table), when);
     }
 
     public Joiner<QueryWrapper> rightJoin(QueryWrapper table) {
@@ -192,12 +209,13 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return joining(Join.TYPE_RIGHT, table, when);
     }
 
+
     public Joiner<QueryWrapper> innerJoin(String table) {
-        return joining(Join.TYPE_INNER, table, true);
+        return joining(Join.TYPE_INNER, new QueryTable(table), true);
     }
 
     public Joiner<QueryWrapper> innerJoinIf(String table, boolean when) {
-        return joining(Join.TYPE_INNER, table, when);
+        return joining(Join.TYPE_INNER, new QueryTable(table), when);
     }
 
     public Joiner<QueryWrapper> innerJoin(TableDef table) {
@@ -205,7 +223,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public Joiner<QueryWrapper> innerJoinIf(TableDef table, boolean when) {
-        return joining(Join.TYPE_INNER, table.getTableName(), when);
+        return joining(Join.TYPE_INNER, new QueryTable(table), when);
     }
 
     public Joiner<QueryWrapper> innerJoin(QueryWrapper table) {
@@ -216,12 +234,21 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return joining(Join.TYPE_INNER, table, when);
     }
 
+
     public Joiner<QueryWrapper> fullJoin(String table) {
-        return joining(Join.TYPE_FULL, table, true);
+        return joining(Join.TYPE_FULL, new QueryTable(table), true);
     }
 
     public Joiner<QueryWrapper> fullJoinIf(String table, boolean when) {
-        return joining(Join.TYPE_FULL, table, when);
+        return joining(Join.TYPE_FULL, new QueryTable(table), when);
+    }
+
+    public Joiner<QueryWrapper> fullJoinIf(TableDef table) {
+        return joining(Join.TYPE_FULL, new QueryTable(table), true);
+    }
+
+    public Joiner<QueryWrapper> fullJoinIf(TableDef table, boolean when) {
+        return joining(Join.TYPE_FULL, new QueryTable(table), when);
     }
 
     public Joiner<QueryWrapper> fullJoin(QueryWrapper table) {
@@ -232,12 +259,21 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return joining(Join.TYPE_FULL, table, when);
     }
 
+
     public Joiner<QueryWrapper> crossJoin(String table) {
-        return joining(Join.TYPE_CROSS, table, true);
+        return joining(Join.TYPE_CROSS, new QueryTable(table), true);
     }
 
     public Joiner<QueryWrapper> crossJoinIf(String table, boolean when) {
-        return joining(Join.TYPE_CROSS, table, when);
+        return joining(Join.TYPE_CROSS, new QueryTable(table), when);
+    }
+
+    public Joiner<QueryWrapper> crossJoinIf(TableDef table) {
+        return joining(Join.TYPE_CROSS, new QueryTable(table), true);
+    }
+
+    public Joiner<QueryWrapper> crossJoinIf(TableDef table, boolean when) {
+        return joining(Join.TYPE_CROSS, new QueryTable(table), when);
     }
 
     public Joiner<QueryWrapper> crossJoin(QueryWrapper table) {
@@ -248,12 +284,21 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return joining(Join.TYPE_CROSS, table, when);
     }
 
+
     public Joiner<QueryWrapper> join(String table) {
-        return joining(Join.TYPE_JOIN, table, true);
+        return joining(Join.TYPE_JOIN, new QueryTable(table), true);
     }
 
     public Joiner<QueryWrapper> join(String table, boolean when) {
-        return joining(Join.TYPE_JOIN, table, when);
+        return joining(Join.TYPE_JOIN, new QueryTable(table), when);
+    }
+
+    public Joiner<QueryWrapper> join(TableDef table) {
+        return joining(Join.TYPE_JOIN, new QueryTable(table), true);
+    }
+
+    public Joiner<QueryWrapper> join(TableDef table, boolean when) {
+        return joining(Join.TYPE_JOIN, new QueryTable(table), when);
     }
 
     public Joiner<QueryWrapper> join(QueryWrapper table) {
@@ -263,6 +308,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     public Joiner<QueryWrapper> join(QueryWrapper table, boolean when) {
         return joining(Join.TYPE_JOIN, table, when);
     }
+
 
     public QueryWrapper union(QueryWrapper unionQuery) {
         if (unions == null) {
@@ -297,7 +343,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 //    }
 
 
-    protected Joiner<QueryWrapper> joining(String type, String table, boolean condition) {
+    protected Joiner<QueryWrapper> joining(String type, QueryTable table, boolean condition) {
         Join join = new Join(type, table, condition);
         addJoinTable(join.getQueryTable());
         return new Joiner<>(addJoin(join), join);
@@ -486,6 +532,12 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         childQueryWrappers.addAll(havingChildQuery);
 
         return childQueryWrappers;
+    }
+
+
+    public String toDebugSQL() {
+        String sql = DialectFactory.getDialect().forSelectByQuery(this);
+        return SqlUtil.replaceSqlParams(sql, getValueArray());
     }
 
 

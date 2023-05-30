@@ -15,35 +15,6 @@
  */
 package com.mybatisflex.core.table;
 
-import com.mybatisflex.core.query.QueryTable;
-
-import java.io.Serializable;
-
-public class TableDef implements Serializable {
-
-    private String schema;
-    private final String tableName;
-
-    public TableDef(String schema, String tableName) {
-        this.schema = schema;
-        this.tableName = tableName;
-    }
-
-    public TableDef(String tableName) {
-        this.tableName = tableName;
-    }
-
-    public String getTableName() {
-        return tableName;
-    }
-
-    public String getSchema() {
-        return schema;
-    }
-
-    public QueryTable as(String alias) {
-        return new QueryTable(schema, tableName, alias);
-    }
-
-
+public interface DynamicTableProcessor {
+    String process(String tableName);
 }

@@ -577,12 +577,12 @@ public class TableInfo {
             if (versionValue == null) {
                 throw FlexExceptions.wrap("The version value of entity[%s] must not be null.", entity);
             }
-            queryWrapper.and(QueryCondition.create(tableName, versionColumn, QueryCondition.LOGIC_EQUALS, versionValue));
+            queryWrapper.and(QueryCondition.create(schema, tableName, versionColumn, QueryCondition.LOGIC_EQUALS, versionValue));
         }
 
         //逻辑删除
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            queryWrapper.and(QueryCondition.create(tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS
+            queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS
                     , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
         }
 
@@ -590,9 +590,9 @@ public class TableInfo {
         Object[] tenantIdArgs = buildTenantIdArgs();
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
             if (tenantIdArgs.length == 1) {
-                queryWrapper.and(QueryCondition.create(tableName, tenantIdColumn, QueryCondition.LOGIC_EQUALS, tenantIdArgs[0]));
+                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, QueryCondition.LOGIC_EQUALS, tenantIdArgs[0]));
             } else {
-                queryWrapper.and(QueryCondition.create(tableName, tenantIdColumn, QueryCondition.LOGIC_IN, tenantIdArgs));
+                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, QueryCondition.LOGIC_IN, tenantIdArgs));
             }
         }
 
@@ -647,7 +647,7 @@ public class TableInfo {
 
     public List<QueryColumn> getDefaultQueryColumn() {
         return Arrays.stream(defaultColumns)
-                .map(name -> new QueryColumn(getTableName(), name))
+                .map(name -> new QueryColumn(schema, getTableName(), name))
                 .collect(Collectors.toList());
     }
 

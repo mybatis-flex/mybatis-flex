@@ -59,6 +59,7 @@ public class CommonsDialectImpl implements IDialect {
         return "*".equals(keyword) ? keyword : keywordWrap.wrap(keyword);
     }
 
+
     @Override
     public String forHint(String hintString) {
         return StringUtil.isNotBlank(hintString) ? "/*+ " + hintString + " */ " : "";
@@ -81,7 +82,7 @@ public class CommonsDialectImpl implements IDialect {
             index++;
         }
 
-        String sql = "INSERT INTO " + wrap(tableName) +
+        String sql = "INSERT INTO " + wrap(getRealTable(tableName)) +
                 "(" + fields + ")  VALUES " +
                 "(" + questions + ")";
         return sql;
@@ -111,7 +112,7 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        String sql = "INSERT INTO " + wrap(tableName) +
+        String sql = "INSERT INTO " + wrap(getRealTable(tableName)) +
                 "(" + fields + ")  VALUES " + questions;
         return sql;
     }
@@ -121,7 +122,7 @@ public class CommonsDialectImpl implements IDialect {
     public String forDeleteById(String tableName, String[] primaryKeys) {
         StringBuilder sql = new StringBuilder();
         sql.append("DELETE FROM ");
-        sql.append(wrap(tableName));
+        sql.append(wrap(getRealTable(tableName)));
         sql.append(" WHERE ");
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
@@ -137,7 +138,7 @@ public class CommonsDialectImpl implements IDialect {
     public String forDeleteBatchByIds(String tableName, String[] primaryKeys, Object[] ids) {
         StringBuilder sql = new StringBuilder();
         sql.append("DELETE FROM ");
-        sql.append(wrap(tableName));
+        sql.append(wrap(getRealTable(tableName)));
         sql.append(" WHERE ");
 
         //多主键的场景
@@ -180,7 +181,7 @@ public class CommonsDialectImpl implements IDialect {
         Set<String> modifyAttrs = row.obtainModifyAttrs();
         String[] primaryKeys = RowCPI.obtainsPrimaryKeyStrings(row);
 
-        sql.append("UPDATE ").append(wrap(tableName)).append(" SET ");
+        sql.append("UPDATE ").append(wrap(getRealTable(tableName))).append(" SET ");
         int index = 0;
         for (Map.Entry<String, Object> e : row.entrySet()) {
             String colName = e.getKey();
@@ -215,7 +216,7 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         String tableName = queryTables.get(0).getName();
-        sql.append("UPDATE ").append(wrap(tableName)).append(" SET ");
+        sql.append("UPDATE ").append(wrap(getRealTable(tableName))).append(" SET ");
         int index = 0;
         for (String modifyAttr : modifyAttrs) {
             if (index > 0) {
@@ -249,7 +250,7 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String forSelectOneById(String tableName, String[] primaryKeys, Object[] primaryValues) {
         StringBuilder sql = new StringBuilder("SELECT * FROM ");
-        sql.append(wrap(tableName)).append(" WHERE ");
+        sql.append(wrap(getRealTable(tableName))).append(" WHERE ");
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
                 sql.append(" AND ");
@@ -875,7 +876,7 @@ public class CommonsDialectImpl implements IDialect {
                 || normalValueOfLogicDelete instanceof Boolean) {
             return normalValueOfLogicDelete;
         }
-        return "'" + normalValueOfLogicDelete.toString() + "'";
+        return "'" + normalValueOfLogicDelete + "'";
     }
 
 
@@ -885,7 +886,7 @@ public class CommonsDialectImpl implements IDialect {
                 || deletedValueOfLogicDelete instanceof Boolean) {
             return deletedValueOfLogicDelete;
         }
-        return "'" + deletedValueOfLogicDelete.toString() + "'";
+        return "'" + deletedValueOfLogicDelete + "'";
     }
 
 }

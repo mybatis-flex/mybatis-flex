@@ -87,6 +87,7 @@ export default defineConfig({
                     {text: '字段加密', link: '/zh/core/columns-encrypt'},
                     {text: '字典回写', link: '/zh/core/columns-dict'},
                     {text: '枚举属性', link: '/zh/core/enum-property'},
+                    {text: '动态表名', link: '/zh/core/dynamic-table'},
                     {text: '多租户', link: '/zh/core/multi-tenancy'},
                 ]
             },

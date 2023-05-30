@@ -1,18 +1,21 @@
 package com.mybatisflex.coretest;
 
-import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
+import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.table.DynamicTableProcessor;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
+import com.mybatisflex.core.table.TableManager;
 import org.junit.Test;
 
 import java.util.Arrays;
 
 import static com.mybatisflex.core.query.QueryMethods.*;
+import static com.mybatisflex.coretest.table.Account01TableDef.ACCOUNT01;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
 
@@ -29,6 +32,52 @@ public class AccountSqlTester {
         String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
     }
+
+    @Test
+    public void testSelectWithSchemaSql() {
+        QueryWrapper query = new QueryWrapper()
+                .select()
+                .from(ACCOUNT01);
+
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forSelectByQuery(query);
+        System.out.println(sql);
+    }
+
+    @Test
+    public void testSelectWithSchemaSql01() {
+        QueryWrapper query = new QueryWrapper()
+                .select()
+                .from(ACCOUNT01).leftJoin(ACCOUNT).on(ACCOUNT01.ID.eq(ACCOUNT.ID))
+                .where(ACCOUNT01.ID.ge(100))
+                .and(ACCOUNT.SEX.eq(1));
+
+        TableManager.setDynamicTableProcessor(new DynamicTableProcessor() {
+            @Override
+            public String process(String tableName) {
+                return tableName+"_01";
+            }
+        });
+        TableManager.setDynamicTableProcessor(original -> original+"_01");
+
+        System.out.println(query.toDebugSQL());
+    }
+
+
+    @Test
+    public void testSelectWithSchemaSql02() {
+        QueryWrapper query = new QueryWrapper()
+                .select()
+                .from(ACCOUNT01).as("a1").leftJoin(ACCOUNT).on(ACCOUNT01.ID.eq(ACCOUNT.ID))
+                .where(ACCOUNT01.ID.ge(100))
+                .and(ACCOUNT.SEX.eq(1));
+
+        TableManager.setDynamicTableProcessor(original -> original+"_01");
+        TableManager.setDynamicTableProcessor(original -> original+"_01");
+
+        System.out.println(query.toDebugSQL());
+    }
+
 
     @Test
     public void testSelectColumnsSql() {

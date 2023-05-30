@@ -62,9 +62,9 @@ public class QueryCondition implements Serializable {
     }
 
 
-    public static QueryCondition create(String table, String column, String logic, Object value) {
+    public static QueryCondition create(String schema, String table, String column, String logic, Object value) {
         QueryCondition condition = new QueryCondition();
-        condition.setColumn(new QueryColumn(table, column));
+        condition.setColumn(new QueryColumn(schema, table, column));
         condition.setLogic(logic);
         condition.setValue(value);
         return condition;
