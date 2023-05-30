@@ -45,6 +45,22 @@ public enum TypeEnum {
 通过注解 `@EnumValue` 为 `code` 属性标注后，当我们保存 Account 内容到数据库时，MyBatis-Flex 会自动使用 `code` 属性值进行保存，同时在读取数据库内容的时候，MyBatis-Flex 自动把数据库的值转换为
 `TypeEnum` 枚举。
 
-::: tip 注意事项
-> @EnumValue 注解标识的属性，要求必须是 public 修饰，或者有 get 方法。
-:::
+**注意事项**
+
+- 1、@EnumValue 注解标识的属性，要求必须是 public 修饰，或者有 get 方法。
+
+- 2、当配置了 @EnumValue 时，QueryWrapper 构建时，传入枚举，自动使用该值进行 SQL 参数拼接。例如： 
+
+```java
+QueryWrapper query = QueryWrapper.create();
+
+query.select().from(ACCOUNT)
+.where(ACCOUNT.TYPE_ENUM.eq(TypeEnum.TYPE1))
+```
+其生成的 SQL 为：
+
+```sql
+select * from tb_account
+where type_enum = 1
+```
+ 

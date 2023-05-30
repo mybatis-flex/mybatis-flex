@@ -109,3 +109,44 @@ spring:
 
 在社区中，一些老的项目在使用到了开源项目 PageHelper，用于解决 xml 的分页问题，在和 MyBatis-flex 整合使用中，出现了一些错误，
 这是许多热心的同学给出的解决方案：https://gitee.com/mybatis-flex/mybatis-flex/issues/I71AUE
+
+
+## 如何自定义 MyBatis 的 Configuration?
+
+1、在不使用 Spring 的场景下：
+
+```java
+FlexConfiguration configuration = new FlexConfiguration();
+MybatisFlexBootstrap.getInstance().setConfiguration(configuration);
+```
+
+2、在使用 Spring-Boot 的场景下：
+
+```java
+@Configuration
+public class MyConfigurationCustomizer implements ConfigurationCustomizer {
+
+    @Override
+    public void customize(FlexConfiguration configuration) {
+        // 在这里为 configuration 进行配置
+        configuration.setLogImpl(StdOutImpl.class);
+    }
+}
+```
+
+3、只使用 Spring（不使用 Spring-Boot ） 的场景：
+
+```java
+@Bean
+public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+    SqlSessionFactoryBean factoryBean = new FlexSqlSessionFactoryBean();
+    factoryBean.setDataSource(dataSource);
+    
+    // 在这里配置
+    FlexConfiguration configuration = new FlexConfiguration();
+    configuration.setLogImpl(StdOutImpl.class);
+    
+    factoryBean.setConfiguration(configuration);
+    return factoryBean.getObject();
+}
+```
