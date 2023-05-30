@@ -1,3 +1,21 @@
+mybatis-flex v1.3.3 20230530:
+新增：添加动态表名和动态 Schema 的支持 #I6VRMF #I6WS3E #I72X21
+新增：添加 @Table(schema=xxx) 配置的支持 #I6VD6U
+新增：Left join 等关联查询时，支持直接赋值对象属性的功能
+新增：添加 QueryWrapper.toDebugSQL() 方法，方便用于调试
+优化：Entity 父子类定义了相同字段时，应已子类优先
+优化：对逻辑删除定义的非 Number 和 Bool 类型的 SQL 构建优化
+优化：升级 MyBatis 到 3.5.13 最新版本
+优化：升级 MyBatis 后，删除冗余的 FlexXMLConfigBuilder 实现
+优化：升级 solon 版本，以支持原生编译功能，感谢 @西东
+修复：分页查询在 left join 优化是，错误移除的问题
+文档：优化 多表查询 的相关文档
+文档：添加枚举属性构建 QueryWrapper 的相关文档
+文档：添加自定义 MyBatis 的 Configuration 的文档
+文档：添加动态表名和动态 Schema 的相关文档
+
+
+
 mybatis-flex v1.3.2 20230528:
 新增：select (field1 * field2 * 100) as xxx from ... 的 SQL 构建场景
 优化：ClassUtil.wrap 方法修改为 getWrapType
