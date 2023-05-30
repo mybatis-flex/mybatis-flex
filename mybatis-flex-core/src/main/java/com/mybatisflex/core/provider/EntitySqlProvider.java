@@ -175,7 +175,7 @@ public class EntitySqlProvider {
         }
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
-        CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
+        CPI.setFromIfNecessary(queryWrapper, tableInfo.getSchema(), tableInfo.getTableName());
 
         tableInfo.appendConditions(null, queryWrapper);
         ProviderUtil.setSqlArgs(params, CPI.getValueArray(queryWrapper));
@@ -339,7 +339,7 @@ public class EntitySqlProvider {
             tableInfo.appendConditions(null, queryWrapper);
 
             CPI.setSelectColumnsIfNecessary(queryWrapper, tableInfo.getDefaultQueryColumn());
-            CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
+            CPI.setFromIfNecessary(queryWrapper, tableInfo.getSchema(), tableInfo.getTableName());
         }
 
         Object[] values = CPI.getValueArray(queryWrapper);
@@ -366,7 +366,7 @@ public class EntitySqlProvider {
 
         for (TableInfo tableInfo : tableInfos) {
             tableInfo.appendConditions(null, queryWrapper);
-            CPI.setFromIfNecessary(queryWrapper, tableInfo.getTableName());
+            CPI.setFromIfNecessary(queryWrapper, tableInfo.getSchema(), tableInfo.getTableName());
         }
 
         Object[] values = CPI.getValueArray(queryWrapper);

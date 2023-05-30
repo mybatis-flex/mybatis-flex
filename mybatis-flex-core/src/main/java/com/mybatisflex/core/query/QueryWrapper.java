@@ -55,7 +55,14 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             if (StringUtil.isBlank(table)) {
                 throw new IllegalArgumentException("table must not be null or blank.");
             }
-            from(new QueryTable(table));
+            int indexOf = table.indexOf(".");
+            if (indexOf > 0) {
+                String schema = table.substring(0, indexOf);
+                table = table.substring(indexOf + 1);
+                from(new QueryTable(schema, table));
+            } else {
+                from(new QueryTable(table));
+            }
         }
         return this;
     }
