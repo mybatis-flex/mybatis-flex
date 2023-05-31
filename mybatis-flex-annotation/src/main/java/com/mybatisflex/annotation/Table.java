@@ -30,7 +30,7 @@ public @interface Table {
     String value();
 
     /**
-     * 数据库的 schema
+     * 数据库的 schema（模式）
      */
     String schema() default "";
 
