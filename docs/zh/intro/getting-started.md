@@ -27,12 +27,12 @@ Maven示例：
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-core</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.4</version>
 </dependency>
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-processor</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.4</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -46,7 +46,7 @@ Gradle示例：
 ```groovy
 // file: build.gradle
 ext {
-    mybatis_flex_version = '1.3.3'
+    mybatis_flex_version = '1.3.4'
 }
 dependencies {
     implementation("com.mybatis-flex:mybatis-flex-core:${mybatis_flex_version}")
