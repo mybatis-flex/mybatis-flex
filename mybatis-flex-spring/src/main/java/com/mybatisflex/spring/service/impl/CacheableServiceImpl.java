@@ -36,7 +36,7 @@ import java.util.Collection;
  *     方法，避免缓存无法更新造成数据不一致。
  *     <li>重写{@link #updateBatch(Collection, int)} 方法，默认抛出异常，不支持批量更新操作，
  *     防止批量更新数据，缓存不一致。
- *     <li>重写 {@link #query()} 方法，解决使用 {@link QueryWrapper#toDebugSQL()} 作为缓存
+ *     <li>重写 {@link #query()} 方法，解决使用 {@link QueryWrapper#toSQL()} 作为缓存
  *     的主键时，"SELECT * FROM" 后面没有表名的问题。
  * </ul>
  *
@@ -84,7 +84,7 @@ public class CacheableServiceImpl<M extends BaseMapper<T>, T> implements IServic
      *
      * <p>使用 {@link QueryWrapper#create()} 构建默认查询条件的时候，
      * 要使用 {@link QueryWrapper#from(String...)} 方法指定从哪个表
-     * 查询数据，不然使用 {@link QueryWrapper#toDebugSQL()} 生成的
+     * 查询数据，不然使用 {@link QueryWrapper#toSQL()} 生成的
      * SQL 语句就是 {@code "SELECT * FROM"}，没有表名信息。
      *
      * <p>默认通过反射获取表名，建议重写，根据情况设置默认表名，以提升效率。

@@ -60,7 +60,7 @@ public class AccountSqlTester {
         });
         TableManager.setDynamicTableProcessor(original -> original+"_01");
 
-        System.out.println(query.toDebugSQL());
+        System.out.println(query.toSQL());
     }
 
 
@@ -75,7 +75,7 @@ public class AccountSqlTester {
         TableManager.setDynamicTableProcessor(original -> original+"_01");
         TableManager.setDynamicTableProcessor(original -> original+"_01");
 
-        System.out.println(query.toDebugSQL());
+        System.out.println(query.toSQL());
     }
 
 

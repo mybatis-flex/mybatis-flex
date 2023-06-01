@@ -68,7 +68,7 @@ public class AccountServiceImpl extends CacheableServiceImpl<AccountMapper, Acco
     // 根据方法名加查询 SQL 语句缓存结果数据
     // 加上方法名是为了避免不同的方法使用一样的 QueryWrapper
     @Override
-    @Cacheable(key = "#root.methodName + ':' + #query.toDebugSQL()")
+    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
     public List<Account> list(QueryWrapper query) {
         return super.list(query);
     }
@@ -122,25 +122,25 @@ public class AccountServiceImpl extends CacheableServiceImpl<MyAccountMapper, Ac
     }
 
     @Override
-    @Cacheable(key = "#root.methodName + ':' + #query.toDebugSQL()")
+    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
     public Account getOne(QueryWrapper query) {
         return super.getOne(query);
     }
 
     @Override
-    @Cacheable(key = "#root.methodName + ':' + #query.toDebugSQL()")
+    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
     public <R> R getOneAs(QueryWrapper query, Class<R> asType) {
         return super.getOneAs(query, asType);
     }
 
     @Override
-    @Cacheable(key = "#root.methodName + ':' + #query.toDebugSQL()")
+    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
     public List<Account> list(QueryWrapper query) {
         return super.list(query);
     }
 
     @Override
-    @Cacheable(key = "#root.methodName + ':' + #query.toDebugSQL()")
+    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
     public <R> List<R> listAs(QueryWrapper query, Class<R> asType) {
         return super.listAs(query, asType);
     }
@@ -153,13 +153,13 @@ public class AccountServiceImpl extends CacheableServiceImpl<MyAccountMapper, Ac
     }
 
     @Override
-    @Cacheable(key = "#root.methodName + ':' + #query.toDebugSQL()")
+    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
     public long count(QueryWrapper query) {
         return super.count(query);
     }
 
     @Override
-    @Cacheable(key = "#root.methodName + ':' + #query.toDebugSQL()")
+    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
     public Page<Account> page(Page<Account> page, QueryWrapper query) {
         return super.page(page, query);
     }
