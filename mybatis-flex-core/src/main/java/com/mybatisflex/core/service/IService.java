@@ -60,6 +60,7 @@ public interface IService<T> {
         return SqlUtil.toBool(getMapper().insertSelective(entity));
     }
 
+
     /**
      * 保存或者更新实体类对象数据。
      *
@@ -149,6 +150,29 @@ public interface IService<T> {
         return SqlUtil.toBool(getMapper().deleteByMap(query));
     }
 
+
+    /**
+     * 更加主键更新 entity，默认忽略 null 值
+     *
+     * @param entity 实体类对象
+     * @return {@code true} 更新成功，{@code false} 更新失败。
+     */
+    default boolean updateById(T entity) {
+        return updateById(entity, true);
+    }
+
+
+    /**
+     * 更加主键更新 entity
+     *
+     * @param entity      entity
+     * @param ignoreNulls 是否忽略 null 值
+     * @return {@code true} 更新成功，{@code false} 更新失败。
+     */
+    default boolean updateById(T entity, boolean ignoreNulls) {
+        return SqlUtil.toBool(getMapper().update(entity, ignoreNulls));
+    }
+
     /**
      * 根据查询条件更新数据。
      *
@@ -158,6 +182,18 @@ public interface IService<T> {
      */
     default boolean update(T entity, QueryWrapper query) {
         return SqlUtil.toBool(getMapper().updateByQuery(entity, query));
+    }
+
+
+    /**
+     * 根据 {@link Map} 构建查询条件更新数据。
+     *
+     * @param entity 实体类对象
+     * @param query  查询条件
+     * @return {@code true} 更新成功，{@code false} 更新失败。
+     */
+    default boolean update(T entity, Map<String, Object> query) {
+        return SqlUtil.toBool(getMapper().updateByMap(entity, query));
     }
 
     /**
@@ -199,26 +235,6 @@ public interface IService<T> {
         });
     }
 
-    /**
-     * 根据数据主键更新数据。
-     *
-     * @param entity 实体类对象
-     * @return {@code true} 更新成功，{@code false} 更新失败。
-     */
-    default boolean updateById(T entity) {
-        return SqlUtil.toBool(getMapper().update(entity));
-    }
-
-    /**
-     * 根据 {@link Map} 构建查询条件更新数据。
-     *
-     * @param entity 实体类对象
-     * @param query  查询条件
-     * @return {@code true} 更新成功，{@code false} 更新失败。
-     */
-    default boolean updateByMap(T entity, Map<String, Object> query) {
-        return SqlUtil.toBool(getMapper().updateByMap(entity, query));
-    }
 
     // ===== 查询（查）操作 =====
 
