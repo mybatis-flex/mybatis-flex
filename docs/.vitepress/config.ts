@@ -78,6 +78,7 @@ export default defineConfig({
                     {text: '乐观锁', link: '/zh/core/version'},
                     {text: '数据填充', link: '/zh/core/fill'},
                     {text: '数据脱敏', link: '/zh/core/mask'},
+                    {text: '数据缓存', link: '/zh/core/data-cache'},
                     {text: 'SQL 审计', link: '/zh/core/audit'},
                     {text: 'SQL 打印', link: '/zh/core/sql-print'},
                     {text: '多数据源', link: '/zh/core/multi-datasource'},

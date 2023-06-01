@@ -1,26 +1,26 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.service;
 
 import com.mybatisflex.core.BaseMapper;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
-import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.SqlUtil;
@@ -36,20 +36,22 @@ import java.util.*;
  * @author 王帅
  * @since 2023-05-01
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "unchecked"})
 public interface IService<T> {
+
+    int DEFAULT_BATCH_SIZE = 1000;
 
     // ===== 保存（增）操作 =====
 
     /**
-     * 获取对应实体类（Entity）的基础映射类（BaseMapper）。
+     * <p>获取对应实体类（Entity）的基础映射类（BaseMapper）。
      *
      * @return 基础映射类（BaseMapper）
      */
     BaseMapper<T> getMapper();
 
     /**
-     * 保存实体类对象数据。
+     * <p>保存实体类对象数据。
      *
      * @param entity 实体类对象
      * @return {@code true} 保存成功，{@code false} 保存失败。
@@ -60,9 +62,8 @@ public interface IService<T> {
         return SqlUtil.toBool(getMapper().insertSelective(entity));
     }
 
-
     /**
-     * 保存或者更新实体类对象数据。
+     * <p>保存或者更新实体类对象数据。
      *
      * @param entity 实体类对象
      * @return {@code true} 保存或更新成功，{@code false} 保存或更新失败。
@@ -73,30 +74,30 @@ public interface IService<T> {
     }
 
     /**
-     * 批量保存实体类对象数据。
+     * <p>批量保存实体类对象数据。
      *
      * @param entities 实体类对象
      * @return {@code true} 保存成功，{@code false} 保存失败。
      */
     default boolean saveBatch(Collection<T> entities) {
-        return SqlUtil.toBool(getMapper().insertBatch(new ArrayList<>(entities)));
+        return saveBatch(entities, DEFAULT_BATCH_SIZE);
     }
 
     // ===== 删除（删）操作 =====
 
     /**
-     * 批量保存实体类对象数据。
+     * <p>批量保存实体类对象数据。
      *
-     * @param entities 实体类对象
-     * @param size     每次保存切分的数量
+     * @param entities  实体类对象
+     * @param batchSize 每次保存切分的数量
      * @return {@code true} 保存成功，{@code false} 保存失败。
      */
-    default boolean saveBatch(Collection<T> entities, int size) {
-        return SqlUtil.toBool(getMapper().insertBatch(CollectionUtil.toList(entities), size));
+    default boolean saveBatch(Collection<T> entities, int batchSize) {
+        return SqlUtil.toBool(getMapper().insertBatch(CollectionUtil.toList(entities), batchSize));
     }
 
     /**
-     * 根据查询条件删除数据。
+     * <p>根据查询条件删除数据。
      *
      * @param query 查询条件
      * @return {@code true} 删除成功，{@code false} 删除失败。
@@ -106,17 +107,17 @@ public interface IService<T> {
     }
 
     /**
-     * 根据查询条件删除数据。
+     * <p>根据查询条件删除数据。
      *
      * @param condition 查询条件
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
     default boolean remove(QueryCondition condition) {
-        return SqlUtil.toBool(getMapper().deleteByCondition(condition));
+        return remove(query().where(condition));
     }
 
     /**
-     * 根据数据主键删除数据。
+     * <p>根据数据主键删除数据。
      *
      * @param id 数据主键
      * @return {@code true} 删除成功，{@code false} 删除失败。
@@ -126,7 +127,7 @@ public interface IService<T> {
     }
 
     /**
-     * 根据数据主键批量删除数据。
+     * <p>根据数据主键批量删除数据。
      *
      * @param ids 数据主键
      * @return {@code true} 删除成功，{@code false} 删除失败。
@@ -141,40 +142,21 @@ public interface IService<T> {
     // ===== 更新（改）操作 =====
 
     /**
-     * 根据 {@link Map} 构建查询条件删除数据。
+     * <p>根据 {@link Map} 构建查询条件删除数据。
      *
      * @param query 查询条件
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
     default boolean removeByMap(Map<String, Object> query) {
-        return SqlUtil.toBool(getMapper().deleteByMap(query));
-    }
-
-
-    /**
-     * 更加主键更新 entity，默认忽略 null 值
-     *
-     * @param entity 实体类对象
-     * @return {@code true} 更新成功，{@code false} 更新失败。
-     */
-    default boolean updateById(T entity) {
-        return updateById(entity, true);
-    }
-
-
-    /**
-     * 更加主键更新 entity
-     *
-     * @param entity      entity
-     * @param ignoreNulls 是否忽略 null 值
-     * @return {@code true} 更新成功，{@code false} 更新失败。
-     */
-    default boolean updateById(T entity, boolean ignoreNulls) {
-        return SqlUtil.toBool(getMapper().update(entity, ignoreNulls));
+        // 防止全表删除
+        if (query == null || query.isEmpty()) {
+            throw FlexExceptions.wrap("deleteByMap is not allow empty map.");
+        }
+        return remove(query().where(query));
     }
 
     /**
-     * 根据查询条件更新数据。
+     * <p>根据查询条件更新数据。
      *
      * @param entity 实体类对象
      * @param query  查询条件
@@ -184,62 +166,69 @@ public interface IService<T> {
         return SqlUtil.toBool(getMapper().updateByQuery(entity, query));
     }
 
-
     /**
-     * 根据 {@link Map} 构建查询条件更新数据。
-     *
-     * @param entity 实体类对象
-     * @param query  查询条件
-     * @return {@code true} 更新成功，{@code false} 更新失败。
-     */
-    default boolean update(T entity, Map<String, Object> query) {
-        return SqlUtil.toBool(getMapper().updateByMap(entity, query));
-    }
-
-    /**
-     * 根据查询条件更新数据。
+     * <p>根据查询条件更新数据。
      *
      * @param entity    实体类对象
      * @param condition 查询条件
      * @return {@code true} 更新成功，{@code false} 更新失败。
      */
     default boolean update(T entity, QueryCondition condition) {
-        return SqlUtil.toBool(getMapper().updateByCondition(entity, condition));
+        return update(entity, query().where(condition));
     }
 
     /**
-     * 根据 id 批量更新数据
+     * <p>根据数据主键批量更新数据
      *
      * @param entities 实体类对象集合
      * @return boolean {@code true} 更新成功，{@code false} 更新失败。
      */
     default boolean updateBatch(Collection<T> entities) {
-        return updateBatch(entities, RowMapper.DEFAULT_BATCH_SIZE);
+        return updateBatch(entities, DEFAULT_BATCH_SIZE);
     }
 
     /**
-     * 根据 id 批量更新数据
+     * <p>根据数据主键批量更新数据
      *
      * @param entities  实体类对象集合
      * @param batchSize 每批次更新数量
-     * @return boolean {@code true} 更新成功，{@code false} 更新失败。
+     * @return {@code true} 更新成功，{@code false} 更新失败。
      */
     @SuppressWarnings("unchecked")
     default boolean updateBatch(Collection<T> entities, int batchSize) {
         return Db.tx(() -> {
             final List<T> entityList = CollectionUtil.toList(entities);
-
             // BaseMapper 是经过 Mybatis 动态代理处理过的对象，需要获取原始 BaseMapper 类型
             final Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
             return SqlUtil.toBool(Arrays.stream(Db.executeBatch(entityList.size(), batchSize, usefulClass, (mapper, index) -> mapper.update(entityList.get(index)))).sum());
         });
     }
 
+    /**
+     * <p>根据数据主键更新数据。
+     *
+     * @param entity 实体类对象
+     * @return {@code true} 更新成功，{@code false} 更新失败。
+     */
+    default boolean updateById(T entity) {
+        return SqlUtil.toBool(getMapper().update(entity));
+    }
+
+    /**
+     * <p>根据 {@link Map} 构建查询条件更新数据。
+     *
+     * @param entity 实体类对象
+     * @param query  查询条件
+     * @return {@code true} 更新成功，{@code false} 更新失败。
+     */
+    default boolean updateByMap(T entity, Map<String, Object> query) {
+        return update(entity, query().where(query));
+    }
 
     // ===== 查询（查）操作 =====
 
     /**
-     * 根据数据主键查询一条数据。
+     * <p>根据数据主键查询一条数据。
      *
      * @param id 数据主键
      * @return 查询结果数据
@@ -249,7 +238,7 @@ public interface IService<T> {
     }
 
     /**
-     * 根据数据主键查询一条数据。
+     * <p>根据数据主键查询一条数据。
      *
      * @param id 数据主键
      * @return 查询结果数据
@@ -260,7 +249,7 @@ public interface IService<T> {
     }
 
     /**
-     * 根据查询条件查询一条数据。
+     * <p>根据查询条件查询一条数据。
      *
      * @param query 查询条件
      * @return 查询结果数据
@@ -269,9 +258,19 @@ public interface IService<T> {
         return getMapper().selectOneByQuery(query);
     }
 
+    /**
+     * <p>根据查询条件查询一条数据。
+     *
+     * @param query 查询条件
+     * @return 查询结果数据
+     * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
+     */
+    default Optional<T> getOneOpt(QueryWrapper query) {
+        return Optional.ofNullable(getOne(query));
+    }
 
     /**
-     * 根据查询条件查询一条数据，并通过 asType 进行接收
+     * <p>根据查询条件查询一条数据，并通过 asType 进行接收
      *
      * @param query  查询条件
      * @param asType 接收的数据类型
@@ -282,41 +281,29 @@ public interface IService<T> {
     }
 
     /**
-     * 根据查询条件查询一条数据。
-     *
-     * @param query 查询条件
-     * @return 查询结果数据
-     * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
-     */
-    default Optional<T> getOneOpt(QueryWrapper query) {
-        return Optional.ofNullable(getOne(query));
-    }
-
-
-    /**
-     * 根据查询条件查询一条数据。
+     * <p>根据查询条件查询一条数据。
      *
      * @param query  查询条件
      * @param asType 接收的数据类型
      * @return 查询结果数据
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
-    default <R> Optional<R> getOneOptAs(QueryWrapper query, Class<R> asType) {
+    default <R> Optional<R> getOneAsOpt(QueryWrapper query, Class<R> asType) {
         return Optional.ofNullable(getOneAs(query, asType));
     }
 
     /**
-     * 根据查询条件查询一条数据。
+     * <p>根据查询条件查询一条数据。
      *
      * @param condition 查询条件
      * @return 查询结果数据
      */
     default T getOne(QueryCondition condition) {
-        return getMapper().selectOneByCondition(condition);
+        return getOne(query().where(condition));
     }
 
     /**
-     * 根据查询条件查询一条数据。
+     * <p>根据查询条件查询一条数据。
      *
      * @param condition 查询条件
      * @return 查询结果数据
@@ -327,37 +314,16 @@ public interface IService<T> {
     }
 
     /**
-     * 查询所有数据。
+     * <p>查询所有数据。
      *
      * @return 所有数据
      */
     default List<T> list() {
-        return getMapper().selectAll();
+        return list(query());
     }
 
     /**
-     * 根据查询条件查询数据集合。
-     *
-     * @param condition 查询条件
-     * @return 数据集合
-     */
-    default List<T> list(QueryCondition condition) {
-        return getMapper().selectListByCondition(condition);
-    }
-
-    /**
-     * 根据查询条件查询数据集合。
-     *
-     * @param condition 查询条件
-     * @return 数据集合
-     */
-    default List<T> list(QueryCondition condition, int count) {
-        return getMapper().selectListByCondition(condition, count);
-    }
-
-
-    /**
-     * 根据查询条件查询数据集合。
+     * <p>根据查询条件查询数据集合。
      *
      * @param query 查询条件
      * @return 数据集合
@@ -367,7 +333,17 @@ public interface IService<T> {
     }
 
     /**
-     * 根据查询条件查询数据集合，并通过 asType 进行接收
+     * <p>根据查询条件查询数据集合。
+     *
+     * @param condition 查询条件
+     * @return 数据集合
+     */
+    default List<T> list(QueryCondition condition) {
+        return list(query().where(condition));
+    }
+
+    /**
+     * <p>根据查询条件查询数据集合，并通过 asType 进行接收
      *
      * @param query  查询条件
      * @param asType 接收的数据类型
@@ -377,9 +353,8 @@ public interface IService<T> {
         return getMapper().selectListByQueryAs(query, asType);
     }
 
-
     /**
-     * 根据数据主键查询数据集合。
+     * <p>根据数据主键查询数据集合。
      *
      * @param ids 数据主键
      * @return 数据集合
@@ -389,19 +364,19 @@ public interface IService<T> {
     }
 
     /**
-     * 根据 {@link Map} 构建查询条件查询数据集合。
+     * <p>根据 {@link Map} 构建查询条件查询数据集合。
      *
      * @param query 查询条件
      * @return 数据集合
      */
     default List<T> listByMap(Map<String, Object> query) {
-        return getMapper().selectListByMap(query);
+        return list(query().where(query));
     }
 
     // ===== 数量查询操作 =====
 
     /**
-     * 根据查询条件判断数据是否存在。
+     * <p>根据查询条件判断数据是否存在。
      *
      * @param query 查询条件
      * @return {@code true} 数据存在，{@code false} 数据不存在。
@@ -411,7 +386,7 @@ public interface IService<T> {
     }
 
     /**
-     * 根据查询条件判断数据是否存在。
+     * <p>根据查询条件判断数据是否存在。
      *
      * @param condition 查询条件
      * @return {@code true} 数据存在，{@code false} 数据不存在。
@@ -421,16 +396,16 @@ public interface IService<T> {
     }
 
     /**
-     * 查询所有数据数量。
+     * <p>查询所有数据数量。
      *
      * @return 所有数据数量
      */
     default long count() {
-        return getMapper().selectCountByQuery(QueryWrapper.create());
+        return count(query());
     }
 
     /**
-     * 根据查询条件查询数据数量。
+     * <p>根据查询条件查询数据数量。
      *
      * @param query 查询条件
      * @return 数据数量
@@ -440,29 +415,29 @@ public interface IService<T> {
     }
 
     /**
-     * 根据查询条件查询数据数量。
+     * <p>根据查询条件查询数据数量。
      *
      * @param condition 查询条件
      * @return 数据数量
      */
     default long count(QueryCondition condition) {
-        return getMapper().selectCountByCondition(condition);
+        return count(query().where(condition));
     }
 
     // ===== 分页查询操作 =====
 
     /**
-     * 分页查询所有数据。
+     * <p>分页查询所有数据。
      *
      * @param page 分页对象
      * @return 分页对象
      */
     default Page<T> page(Page<T> page) {
-        return getMapper().paginate(page, QueryWrapper.create());
+        return page(page, query());
     }
 
     /**
-     * 根据查询条件分页查询数据。
+     * <p>根据查询条件分页查询数据。
      *
      * @param page  分页对象
      * @param query 查询条件
@@ -473,14 +448,18 @@ public interface IService<T> {
     }
 
     /**
-     * 根据查询条件分页查询数据。
+     * <p>根据查询条件分页查询数据。
      *
      * @param page      分页对象
      * @param condition 查询条件
      * @return 分页对象
      */
     default Page<T> page(Page<T> page, QueryCondition condition) {
-        return getMapper().paginate(page, QueryWrapper.create().where(condition));
+        return page(page, query().where(condition));
+    }
+
+    default QueryWrapper query() {
+        return QueryWrapper.create();
     }
 
 }
