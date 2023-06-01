@@ -1,3 +1,14 @@
+mybatis-flex v1.3.4 20230601:
+新增：添加 Spring 下的 CacheableServiceImpl 实现类，方便用户缓存。感谢 @王帅
+优化：重构 IService，使之有更好的方法服用。感谢 @王帅
+优化：重命名 QueryWrapper 的 "toDebugSQL()" 方法名为 "toSQL()"
+修复：当使用 QueryWrapper 未指定 from 时，schema 出错的问题
+修复：当配置 config-location 时，出现 IllegalArgumentException 错误的问题
+修复：case when else 中出现的 column 无法转换的问题 #I7A0B0
+文档：添加关于 CacheableServiceImpl 使用的一些文档。感谢 @王帅
+
+
+
 mybatis-flex v1.3.3 20230530:
 新增：添加动态表名和动态 Schema 的支持 #I6VRMF #I6WS3E #I72X21
 新增：添加 @Table(schema=xxx) 配置的支持 #I6VD6U
