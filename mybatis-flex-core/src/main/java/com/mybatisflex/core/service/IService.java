@@ -156,6 +156,39 @@ public interface IService<T> {
     }
 
     /**
+     * <p>根据数据主键更新数据。
+     *
+     * @param entity 实体类对象
+     * @return {@code true} 更新成功，{@code false} 更新失败。
+     */
+    default boolean updateById(T entity) {
+        return SqlUtil.toBool(getMapper().update(entity));
+    }
+
+
+    /**
+     * 根据主键更新数据
+     *
+     * @param entity 实体对象
+     * @param ignoreNulls 是否忽略 null 值
+     * @return {@code true} 更新成功，{@code false} 更新失败。
+     */
+    default boolean updateById(T entity, boolean ignoreNulls) {
+        return SqlUtil.toBool(getMapper().update(entity, ignoreNulls));
+    }
+
+    /**
+     * <p>根据 {@link Map} 构建查询条件更新数据。
+     *
+     * @param entity 实体类对象
+     * @param query  查询条件
+     * @return {@code true} 更新成功，{@code false} 更新失败。
+     */
+    default boolean update(T entity, Map<String, Object> query) {
+        return update(entity, query().where(query));
+    }
+
+    /**
      * <p>根据查询条件更新数据。
      *
      * @param entity 实体类对象
@@ -204,26 +237,6 @@ public interface IService<T> {
         });
     }
 
-    /**
-     * <p>根据数据主键更新数据。
-     *
-     * @param entity 实体类对象
-     * @return {@code true} 更新成功，{@code false} 更新失败。
-     */
-    default boolean updateById(T entity) {
-        return SqlUtil.toBool(getMapper().update(entity));
-    }
-
-    /**
-     * <p>根据 {@link Map} 构建查询条件更新数据。
-     *
-     * @param entity 实体类对象
-     * @param query  查询条件
-     * @return {@code true} 更新成功，{@code false} 更新失败。
-     */
-    default boolean updateByMap(T entity, Map<String, Object> query) {
-        return update(entity, query().where(query));
-    }
 
     // ===== 查询（查）操作 =====
 
