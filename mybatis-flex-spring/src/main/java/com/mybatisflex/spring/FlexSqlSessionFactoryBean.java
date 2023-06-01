@@ -338,7 +338,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      */
     @Override
     public void setConfiguration(Configuration configuration) {
-        if (!(configuration instanceof FlexConfiguration)) {
+        if (configuration != null && !(configuration instanceof FlexConfiguration)) {
             throw new IllegalArgumentException("Only support FlexConfiguration.");
         }
         this.configuration = configuration;
