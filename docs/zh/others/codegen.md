@@ -53,7 +53,7 @@ public class Codegen {
         //生成代码
         generator.generate();
     }
-    
+
     public static GlobalConfig createGlobalConfigUseStyle1() {
         //创建配置内容
         GlobalConfig globalConfig = new GlobalConfig();
@@ -81,7 +81,7 @@ public class Codegen {
 
         return globalConfig;
     }
-    
+
     public static GlobalConfig createGlobalConfigUseStyle2() {
         //创建配置内容
         GlobalConfig globalConfig = new GlobalConfig();
@@ -139,7 +139,7 @@ public class Codegen {
 // 开启 Entity 的生成
 globalConfig.enableEntity();
 // 关闭 Entity 的生成
-globalConfig.disableEntity();
+        globalConfig.disableEntity();
 ```
 
 所有方法均支持链式调用配置，代码如下：
@@ -331,6 +331,7 @@ globalConfig.getServiceConfig()
 | setClassSuffix(String)      | ServiceImpl 类的后缀 | "ServiceImpl"     |
 | setSupperClass(Class)       | ServiceImpl 类的父类 | ServiceImpl.class |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件      | false             |
+| setCacheExample(boolean)    | 是否添加缓存示例代码       | false             |
 
 ```java
 globalConfig.getServiceImplConfig()
