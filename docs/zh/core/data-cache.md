@@ -78,7 +78,7 @@ public class AccountServiceImpl extends CacheableServiceImpl<AccountMapper, Acco
 
 ## 使用说明
 
-MyBatis-Flex 在 IService 接口中做了方法调用链优化，所以您只需将缓存注解加到一些特定的方法上，即可实现所有相关的方法也可以进行数据缓存。相关方法见如下示例：
+MyBatis-Flex 在 IService 接口中做了方法调用链优化，所以您只需将缓存注解加到一些特定的方法上，即可实现所有相关的方法也可以进行数据缓存。完整的缓存方法见如下示例：
 
 ```java
 @Service
@@ -167,4 +167,16 @@ public class AccountServiceImpl extends CacheableServiceImpl<MyAccountMapper, Ac
 }
 ```
 
+如果您有非常多的缓存实现类，并且需要使用全部的缓存方法，可以使用 [代码生成器](../others/codegen.md) 辅助生成，设置如下代码即可：
 
+```java
+// 使用代码风格 1 生成
+globalConfig.setServiceImplGenerateEnable(true);
+globalConfig.setServiceImplSupperClass(CacheableServiceImpl.class);
+globalConfig.setServiceImplCacheExample(true);
+
+// 或者使用代码风格 2 生成
+globleConfig.enableServiceImpl()
+        .setSupperClass(CacheableServiceImpl.class)
+        .setCacheExample(true);
+```
