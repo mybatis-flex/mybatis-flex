@@ -7,7 +7,7 @@ MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的。
 
 
 
-## SpringBoot 项目，启动报错 Property 'sqlSessionFactory' or 'sqlSessionTempalte' are required
+## SpringBoot 项目，启动报错 Property 'sqlSessionFactory' or 'sqlSessionTemplate' are required
 
 如果当前依赖没有连接池相关依赖，则建议添加 HikariCP 依赖。
 
