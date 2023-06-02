@@ -60,7 +60,7 @@
         <mybatis-velocity.version>2.1.2</mybatis-velocity.version>
         <mybatis-thymeleaf.version>1.0.4</mybatis-thymeleaf.version>
 
-        <mysql.version>8.0.28</mysql.version>
+        <mysql.version>8.0.33</mysql.version>
         <HikariCP.version>4.0.3</HikariCP.version>
 
         <spring.version>5.3.27</spring.version>
