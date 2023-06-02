@@ -236,8 +236,10 @@ public class CommonsDialectImpl implements IDialect {
             throw FlexExceptions.wrap("update sql must need 1 table.");
         }
 
-        String tableName = queryTables.get(0).getName();
-        sql.append("UPDATE ").append(wrap(getRealTable(tableName))).append(" SET ");
+        //fix: support schema
+        QueryTable queryTable = queryTables.get(0);
+//        String tableName = queryTables.get(0).getName();
+        sql.append("UPDATE ").append(queryTable.toSql(this)).append(" SET ");
         int index = 0;
         for (String modifyAttr : modifyAttrs) {
             if (index > 0) {
