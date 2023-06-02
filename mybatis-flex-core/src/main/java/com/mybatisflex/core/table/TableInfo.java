@@ -21,6 +21,7 @@ import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
@@ -116,6 +117,14 @@ public class TableInfo {
 
     public String getTableName() {
         return tableName;
+    }
+
+    public String getWrapSchemaAndTableName(IDialect dialect){
+        if (StringUtil.isNotBlank(schema)){
+            return dialect.wrap(dialect.getRealSchema(schema)) +"." + dialect.wrap(dialect.getRealTable(tableName));
+        }else {
+           return dialect.wrap(dialect.getRealTable(tableName));
+        }
     }
 
     public void setTableName(String tableName) {

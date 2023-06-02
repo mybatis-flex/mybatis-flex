@@ -270,7 +270,7 @@ public class EntitySqlProvider {
 
         ProviderUtil.setSqlArgs(params, queryParams);
 
-        return DialectFactory.getDialect().forUpdateNumberAddByQuery(tableInfo.getTableName(), fieldName, value, queryWrapper);
+        return DialectFactory.getDialect().forUpdateNumberAddByQuery(tableInfo.getSchema(), tableInfo.getTableName(), fieldName, value, queryWrapper);
     }
 
 

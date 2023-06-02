@@ -116,7 +116,7 @@ public class RowSqlProvider {
             ProviderUtil.setSqlArgs(params, primaryValues);
         }
 
-        return DialectFactory.getDialect().forDeleteById(tableName, primaryKeys);
+        return DialectFactory.getDialect().forDeleteById(null, tableName, primaryKeys);
     }
 
     /**
@@ -132,7 +132,7 @@ public class RowSqlProvider {
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
         ProviderUtil.setSqlArgs(params, primaryValues);
-        return DialectFactory.getDialect().forDeleteBatchByIds(tableName, primaryKeys, primaryValues);
+        return DialectFactory.getDialect().forDeleteBatchByIds(null, tableName, primaryKeys, primaryValues);
     }
 
 
@@ -265,7 +265,7 @@ public class RowSqlProvider {
 
         ProviderUtil.setSqlArgs(params, queryParams);
 
-        return DialectFactory.getDialect().forUpdateNumberAddByQuery(tableName, fieldName, value, queryWrapper);
+        return DialectFactory.getDialect().forUpdateNumberAddByQuery(null, tableName, fieldName, value, queryWrapper);
     }
 
 
