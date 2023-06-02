@@ -59,13 +59,14 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#insert(String, Row)
+     * @see RowMapper#insert(String,String, Row)
      */
     public static String insert(Map params) {
         String tableName = ProviderUtil.getTableName(params);
+        String schema = ProviderUtil.getSchemaName(params);
         Row row = ProviderUtil.getRow(params);
         ProviderUtil.setSqlArgs(params, RowCPI.obtainModifyValues(row));
-        return DialectFactory.getDialect().forInsertRow(tableName, row);
+        return DialectFactory.getDialect().forInsertRow(schema,tableName, row);
     }
 
     /**
@@ -73,10 +74,11 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#insertBatchWithFirstRowColumns(String, List)
+     * @see RowMapper#insertBatchWithFirstRowColumns(String, String, List)
      */
     public static String insertBatchWithFirstRowColumns(Map params) {
         String tableName = ProviderUtil.getTableName(params);
+        String schema = ProviderUtil.getSchemaName(params);
         List<Row> rows = ProviderUtil.getRows(params);
         if (rows == null || rows.isEmpty()) {
             throw FlexExceptions.wrap("rows can not be null or empty.");
@@ -95,7 +97,7 @@ public class RowSqlProvider {
         ProviderUtil.setSqlArgs(params, values);
 
         //sql: INSERT INTO `tb_table`(`name`, `sex`) VALUES (?, ?),(?, ?),(?, ?)
-        return DialectFactory.getDialect().forInsertBatchWithFirstRowColumns(tableName, rows);
+        return DialectFactory.getDialect().forInsertBatchWithFirstRowColumns(schema,tableName, rows);
     }
 
     /**
@@ -103,9 +105,10 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#deleteById(String, String, Object)
+     * @see RowMapper#deleteById(String,String, String, Object)
      */
     public static String deleteById(Map params) {
+        String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         String[] primaryKeys = ProviderUtil.getPrimaryKeys(params);
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
@@ -116,7 +119,7 @@ public class RowSqlProvider {
             ProviderUtil.setSqlArgs(params, primaryValues);
         }
 
-        return DialectFactory.getDialect().forDeleteById(null, tableName, primaryKeys);
+        return DialectFactory.getDialect().forDeleteById(schema, tableName, primaryKeys);
     }
 
     /**
@@ -124,15 +127,16 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#deleteBatchByIds(String, String, Collection)
+     * @see RowMapper#deleteBatchByIds(String, String, String, Collection)
      */
     public static String deleteBatchByIds(Map params) {
+        String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         String[] primaryKeys = ProviderUtil.getPrimaryKeys(params);
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
         ProviderUtil.setSqlArgs(params, primaryValues);
-        return DialectFactory.getDialect().forDeleteBatchByIds(null, tableName, primaryKeys, primaryValues);
+        return DialectFactory.getDialect().forDeleteBatchByIds(schema, tableName, primaryKeys, primaryValues);
     }
 
 
@@ -141,12 +145,13 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#deleteByQuery(String, QueryWrapper)
+     * @see RowMapper#deleteByQuery(String,String, QueryWrapper)
      */
     public static String deleteByQuery(Map params) {
+        String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        CPI.setFromIfNecessary(queryWrapper, tableName);
+        CPI.setFromIfNecessary(queryWrapper, schema,tableName);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
@@ -159,13 +164,14 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#updateById(String, Row)
+     * @see RowMapper#updateById(String, String, Row)
      */
     public static String updateById(Map params) {
+        String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         Row row = ProviderUtil.getRow(params);
         ProviderUtil.setSqlArgs(params, RowCPI.obtainAllModifyValues(row));
-        return DialectFactory.getDialect().forUpdateById(tableName, row);
+        return DialectFactory.getDialect().forUpdateById(schema, tableName, row);
     }
 
 
@@ -174,14 +180,15 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#updateByQuery(String, Row, QueryWrapper)
+     * @see RowMapper#updateByQuery(String, String, Row, QueryWrapper)
      */
     public static String updateByQuery(Map params) {
+        String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         Row data = ProviderUtil.getRow(params);
 
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        CPI.setFromIfNecessary(queryWrapper, tableName);
+        CPI.setFromIfNecessary(queryWrapper,schema, tableName);
 
         Object[] modifyValues = RowCPI.obtainModifyValues(data);
         Object[] valueArray = CPI.getValueArray(queryWrapper);
@@ -198,9 +205,10 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#updateBatchById(String, List)
+     * @see RowMapper#updateBatchById(String, String, List)
      */
     public static String updateBatchById(Map params) {
+        String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         List<Row> rows = ProviderUtil.getRows(params);
         if (CollectionUtil.isEmpty(rows)) {
@@ -212,7 +220,7 @@ public class RowSqlProvider {
             values = ArrayUtil.concat(values, RowCPI.obtainAllModifyValues(row));
         }
         ProviderUtil.setSqlArgs(params, values);
-        return DialectFactory.getDialect().forUpdateBatchById(tableName, rows);
+        return DialectFactory.getDialect().forUpdateBatchById(schema,tableName, rows);
     }
 
     /**
@@ -250,12 +258,12 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#updateNumberAddByQuery(String, String, Number, QueryWrapper)
+     * @see RowMapper#updateNumberAddByQuery(String, String, String, Number, QueryWrapper)
      */
     public static String updateNumberAddByQuery(Map params) {
 
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-
+        String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         String fieldName = ProviderUtil.getFieldName(params);
         Number value = (Number) ProviderUtil.getValue(params);
@@ -265,7 +273,7 @@ public class RowSqlProvider {
 
         ProviderUtil.setSqlArgs(params, queryParams);
 
-        return DialectFactory.getDialect().forUpdateNumberAddByQuery(null, tableName, fieldName, value, queryWrapper);
+        return DialectFactory.getDialect().forUpdateNumberAddByQuery(schema, tableName, fieldName, value, queryWrapper);
     }
 
 
@@ -274,16 +282,17 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#selectOneById(String, String, Object)
+     * @see RowMapper#selectOneById(String, String, String, Object)
      */
     public static String selectOneById(Map params) {
+        String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         String[] primaryKeys = ProviderUtil.getPrimaryKeys(params);
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
         ProviderUtil.setSqlArgs(params, primaryValues);
 
-        return DialectFactory.getDialect().forSelectOneById(tableName, primaryKeys, primaryValues);
+        return DialectFactory.getDialect().forSelectOneById(schema,tableName, primaryKeys, primaryValues);
     }
 
 
@@ -292,12 +301,13 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#selectListByQuery(String, QueryWrapper)
+     * @see RowMapper#selectListByQuery(String, String, QueryWrapper)
      */
     public static String selectListByQuery(Map params) {
+        String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        CPI.setFromIfNecessary(queryWrapper, tableName);
+        CPI.setFromIfNecessary(queryWrapper,schema, tableName);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
@@ -311,13 +321,14 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#selectCountByQuery(String, QueryWrapper)
+     * @see RowMapper#selectCountByQuery(String, String, QueryWrapper)
      */
     public static String selectObjectByQuery(Map params) {
+        String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
 
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        CPI.setFromIfNecessary(queryWrapper, tableName);
+        CPI.setFromIfNecessary(queryWrapper,schema,tableName);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);

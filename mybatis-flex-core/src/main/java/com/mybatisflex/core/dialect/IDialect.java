@@ -36,9 +36,9 @@ public interface IDialect {
 
     String forHint(String hintString);
 
-    String forInsertRow(String tableName, Row row);
+    String forInsertRow(String schema,String tableName, Row row);
 
-    String forInsertBatchWithFirstRowColumns(String tableName, List<Row> rows);
+    String forInsertBatchWithFirstRowColumns(String schema, String tableName, List<Row> rows);
 
     String forDeleteById(String schema, String tableName, String[] primaryKeys);
 
@@ -46,13 +46,13 @@ public interface IDialect {
 
     String forDeleteByQuery(QueryWrapper queryWrapper);
 
-    String forUpdateById(String tableName, Row row);
+    String forUpdateById(String schema, String tableName, Row row);
 
     String forUpdateByQuery(QueryWrapper queryWrapper, Row data);
 
-    String forUpdateBatchById(String tableName, List<Row> rows);
+    String forUpdateBatchById(String schema, String tableName, List<Row> rows);
 
-    String forSelectOneById(String tableName, String[] primaryKeys, Object[] primaryValues);
+    String forSelectOneById(String schema, String tableName, String[] primaryKeys, Object[] primaryValues);
 
     String forSelectByQuery(QueryWrapper queryWrapper);
 

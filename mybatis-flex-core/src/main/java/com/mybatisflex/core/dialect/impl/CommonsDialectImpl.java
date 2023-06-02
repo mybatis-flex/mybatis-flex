@@ -66,7 +66,7 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     @Override
-    public String forInsertRow(String tableName, Row row) {
+    public String forInsertRow(String schema, String tableName, Row row) {
         StringBuilder fields = new StringBuilder();
         StringBuilder questions = new StringBuilder();
 
@@ -81,16 +81,20 @@ public class CommonsDialectImpl implements IDialect {
             }
             index++;
         }
-
-        String sql = "INSERT INTO " + wrap(getRealTable(tableName)) +
-                "(" + fields + ")  VALUES " +
-                "(" + questions + ")";
-        return sql;
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO ");
+        if (StringUtil.isNotBlank(schema)) {
+            sql.append(wrap(getRealSchema(schema))).append(".");
+        }
+        sql.append(wrap(getRealTable(tableName)));
+        sql.append("(").append(fields).append(") ");
+        sql.append(" VALUES ").append("(").append(questions).append(")");
+        return sql.toString();
     }
 
 
     @Override
-    public String forInsertBatchWithFirstRowColumns(String tableName, List<Row> rows) {
+    public String forInsertBatchWithFirstRowColumns(String schema, String tableName, List<Row> rows) {
         StringBuilder fields = new StringBuilder();
         StringBuilder questions = new StringBuilder();
 
@@ -112,9 +116,16 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        String sql = "INSERT INTO " + wrap(getRealTable(tableName)) +
-                "(" + fields + ")  VALUES " + questions;
-        return sql;
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT INTO ");
+        if (StringUtil.isNotBlank(schema)) {
+            sql.append(wrap(getRealSchema(schema))).append(".");
+        }
+        sql.append(wrap(getRealTable(tableName)));
+        sql.append(" (").append(fields).append(") ");
+        sql.append(" VALUES ").append(questions);
+        return sql.toString();
     }
 
 
@@ -181,13 +192,17 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     @Override
-    public String forUpdateById(String tableName, Row row) {
+    public String forUpdateById(String schema,String tableName, Row row) {
         StringBuilder sql = new StringBuilder();
 
         Set<String> modifyAttrs = row.obtainModifyAttrs();
         String[] primaryKeys = RowCPI.obtainsPrimaryKeyStrings(row);
 
-        sql.append("UPDATE ").append(wrap(getRealTable(tableName))).append(" SET ");
+        sql.append("UPDATE ");
+        if (StringUtil.isNotBlank(schema)) {
+            sql.append(wrap(getRealSchema(schema))).append(".");
+        }
+        sql.append(wrap(getRealTable(tableName))).append(" SET ");
         int index = 0;
         for (Map.Entry<String, Object> e : row.entrySet()) {
             String colName = e.getKey();
@@ -241,21 +256,24 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     @Override
-    public String forUpdateBatchById(String tableName, List<Row> rows) {
+    public String forUpdateBatchById(String schema,String tableName, List<Row> rows) {
         if (rows.size() == 1) {
-            return forUpdateById(tableName, rows.get(0));
+            return forUpdateById(schema, tableName, rows.get(0));
         }
         StringBuilder sql = new StringBuilder();
         for (Row row : rows) {
-            sql.append(forUpdateById(tableName, row)).append("; ");
+            sql.append(forUpdateById(schema, tableName, row)).append("; ");
         }
         return sql.toString();
     }
 
 
     @Override
-    public String forSelectOneById(String tableName, String[] primaryKeys, Object[] primaryValues) {
+    public String forSelectOneById(String schema, String tableName, String[] primaryKeys, Object[] primaryValues) {
         StringBuilder sql = new StringBuilder("SELECT * FROM ");
+        if (StringUtil.isNotBlank(schema)) {
+            sql.append(wrap(getRealSchema(schema))).append(".");
+        }
         sql.append(wrap(getRealTable(tableName))).append(" WHERE ");
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
