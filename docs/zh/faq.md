@@ -80,9 +80,9 @@ spring:
 > 若把数据源配置到 `mybatis-flex.datasource` 下，使用 mybatis-flex 的数据源发现机制，
 > 使用 druid 则可以不用配置 type，更多文档参考：[多数据源章节](./core/multi-datasource.md)。
 
-## 多数据源下，使用 Druid 无法启动，出现 "Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured." 错误。
+## 使用 `druid-spring-boot-starter`，出现无法启动 或者 数据源识别错误的问题
 
-在多数据源的场景下，不能使用 "druid-spring-boot-starter" 依赖，只能使用 "druid" 。
+在 MyBatis-Flex 不能使用 "druid-spring-boot-starter" 依赖，只能使用 "druid" 。
 
 ```xml
  <dependency>
@@ -102,7 +102,7 @@ spring:
 </dependency>
 ```
 
->错误原因是：druid-spring-boot-starter 内的 DruidDataSourceAutoConfigure 会去自动加载 spring.datasource 下的配置，当使用 MyBatis-Flex 的多数据源时，
+> 原因是：druid-spring-boot-starter 内的 DruidDataSourceAutoConfigure 会去自动加载 spring.datasource 下的配置，当使用 MyBatis-Flex 的多数据源时，
 > 这个配置已经不存在了。
 
 ## 与 PageHelper 集成出现错误
