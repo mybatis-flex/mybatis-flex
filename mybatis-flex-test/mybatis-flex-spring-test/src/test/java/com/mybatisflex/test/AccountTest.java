@@ -41,7 +41,7 @@ public class AccountTest implements WithAssertions {
 
     @Test
     public void testSelectOneByRow() {
-        Row row = Db.selectOneById("tb_account", "id", 1);
+        Row row = Db.selectOneById(null,"tb_account", "id", 1);
         System.out.println(row);
     }
 

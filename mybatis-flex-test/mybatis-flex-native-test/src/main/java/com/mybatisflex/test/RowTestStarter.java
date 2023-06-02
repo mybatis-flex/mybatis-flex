@@ -50,7 +50,7 @@ public class RowTestStarter {
         AuditManager.setAuditEnable(true);
         AuditManager.setMessageCollector(new ConsoleMessageCollector());
 
-        Page<Row> rowPage = Db.paginate("tb_account", 1, 10, QueryWrapper.create().hint("USE_MERGE"));
+        Page<Row> rowPage = Db.paginate("flex","tb_account", 1, 10, QueryWrapper.create().hint("USE_MERGE"));
         System.out.println(rowPage);
 
 
@@ -83,13 +83,13 @@ public class RowTestStarter {
             rowList.add(row);
         }
 
-        Db.insertBatch("tb_account",rowList);
+        Db.insertBatch(null,"tb_account",rowList);
 
         for (Row row : rowList) {
             System.out.println(">>>>>>>id: " + row.get("id"));
         }
 
-        List<Row> rows1 = Db.selectAll("tb_account");
+        List<Row> rows1 = Db.selectAll(null,"tb_account");
         RowUtil.printPretty(rows1);
 
 //        //新增一条数据，自增

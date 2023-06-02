@@ -61,7 +61,7 @@ public class MultiDataSourceTester {
 
         //默认查询 db1
         System.out.println("\n------ds1");
-        List<Row> rows1 = Db.selectAll("tb_account");
+        List<Row> rows1 = Db.selectAll(null,"tb_account");
         RowUtil.printPretty(rows1);
 
 
@@ -74,7 +74,7 @@ public class MultiDataSourceTester {
 //        //查询数据源 ds2
         System.out.println("\n------ds2");
         DataSourceKey.use("ds2");
-        List<Row> rows = Db.selectAll("tb_account");
+        List<Row> rows = Db.selectAll(null,"tb_account");
         RowUtil.printPretty(rows);
 //
 //        boolean success = Db.tx(() -> {

@@ -73,10 +73,10 @@ public class AccountController {
 //        account.setUserName("heihei");
 //        accountMapper.update(account);
 
-        Row row1 = Db.selectOneById("tb_account", "id", 1);
+        Row row1 = Db.selectOneById(null,"tb_account", "id", 1);
         System.out.println(">>>>>>> row1: " + row1);
 
-        Row row2 = Db.selectOneById("tb_account", "id", 2);
+        Row row2 = Db.selectOneById(null,"tb_account", "id", 2);
         System.out.println(">>>>>>> row2: " + row2);
 
 //        Account account1 = accountMapper.selectOneById(1L);
