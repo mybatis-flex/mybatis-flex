@@ -17,15 +17,12 @@
 package com.mybatisflex.spring.service.impl;
 
 import com.mybatisflex.core.BaseMapper;
-import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Collection;
 
 /**
  * <p>可缓存数据的 Service 实现类。
@@ -35,8 +32,6 @@ import java.util.Collection;
  * <ul>
  *     <li>重写 {@link #saveOrUpdate(Object)} 方法，分别调用 {@link #save(Object)} 和 {@link #updateById(Object)}
  *     方法，避免缓存无法更新造成数据不一致。
- *     <li>重写{@link #updateBatch(Collection, int)} 方法，默认抛出异常，不支持批量更新操作，
- *     防止批量更新数据，缓存不一致。
  *     <li>重写 {@link #query()} 方法，解决使用 {@link QueryWrapper#toSQL()} 作为缓存
  *     的主键时，"SELECT * FROM" 后面没有表名的问题。
  * </ul>
@@ -70,14 +65,6 @@ public class CacheableServiceImpl<M extends BaseMapper<T>, T> implements IServic
         } else {
             return updateById(entity);
         }
-    }
-
-    /**
-     * <p>不支持批量更新操作。
-     */
-    @Override
-    public boolean updateBatch(Collection<T> entities, int batchSize) {
-        throw FlexExceptions.wrap("Batch update do not support caching operation.");
     }
 
     /**

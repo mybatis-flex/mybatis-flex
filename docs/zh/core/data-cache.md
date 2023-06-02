@@ -103,16 +103,23 @@ public class AccountServiceImpl extends CacheableServiceImpl<MyAccountMapper, Ac
         return super.removeByIds(ids);
     }
 
+    // 根据查询条件更新时，实体类主键可能为 null。
     @Override
-    @CachePut(key = "#entity.id")
+    @CacheEvict(allEntries = true)
     public boolean update(Account entity, QueryWrapper query) {
         return super.update(entity, query);
     }
 
     @Override
-    @CachePut(key = "#entity.id")
-    public boolean updateById(Account entity) {
-        return super.updateById(entity);
+    @CacheEvict(key = "#entity.id")
+    public boolean updateById(Account entity, boolean ignoreNulls) {
+        return super.updateById(entity, ignoreNulls);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    public boolean updateBatch(Collection<Account> entities, int batchSize) {
+        return super.updateBatch(entities, batchSize);
     }
 
     @Override

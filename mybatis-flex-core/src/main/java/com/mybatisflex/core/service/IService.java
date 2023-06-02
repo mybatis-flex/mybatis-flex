@@ -160,16 +160,16 @@ public interface IService<T> {
      *
      * @param entity 实体类对象
      * @return {@code true} 更新成功，{@code false} 更新失败。
+     * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
     default boolean updateById(T entity) {
-        return SqlUtil.toBool(getMapper().update(entity));
+        return updateById(entity, true);
     }
-
 
     /**
      * 根据主键更新数据
      *
-     * @param entity 实体对象
+     * @param entity      实体对象
      * @param ignoreNulls 是否忽略 null 值
      * @return {@code true} 更新成功，{@code false} 更新失败。
      */
@@ -227,7 +227,6 @@ public interface IService<T> {
      * @param batchSize 每批次更新数量
      * @return {@code true} 更新成功，{@code false} 更新失败。
      */
-    @SuppressWarnings("unchecked")
     default boolean updateBatch(Collection<T> entities, int batchSize) {
         return Db.tx(() -> {
             final List<T> entityList = CollectionUtil.toList(entities);
