@@ -14,7 +14,6 @@ import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -53,15 +52,21 @@ public class #(table.buildServiceImplClassName()) extends #(serviceImplConfig.bu
     }
 
     @Override
-    @CachePut(key = "#entity.#(primaryKey)")
+    @CacheEvict(allEntries = true)
     public boolean update(#(entityClassName) entity, QueryWrapper query) {
         return super.update(entity, query);
     }
 
     @Override
-    @CachePut(key = "#entity.#(primaryKey)")
-    public boolean updateById(#(entityClassName) entity) {
-        return super.updateById(entity);
+    @CacheEvict(key = "#entity.#(primaryKey)")
+    public boolean updateById(#(entityClassName) entity, boolean ignoreNulls) {
+        return super.updateById(entity, ignoreNulls);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    public boolean updateBatch(Collection<#(entityClassName)> entities, int batchSize) {
+        return super.updateBatch(entities, batchSize);
     }
 
     @Override
