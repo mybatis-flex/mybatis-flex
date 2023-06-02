@@ -60,7 +60,7 @@ public class AccountSqlTester {
         });
         TableManager.setDynamicTableProcessor(original -> original+"_01");
 
-        System.out.println(query.toDebugSQL());
+        System.out.println(query.toSQL());
     }
 
 
@@ -75,7 +75,7 @@ public class AccountSqlTester {
         TableManager.setDynamicTableProcessor(original -> original+"_01");
         TableManager.setDynamicTableProcessor(original -> original+"_01");
 
-        System.out.println(query.toDebugSQL());
+        System.out.println(query.toSQL());
     }
 
 
@@ -400,6 +400,25 @@ public class AccountSqlTester {
                                 .when(100).then(100)
                                 .when(200).then(200)
                                 .else_(300)
+                                .end().as("result"))
+                .from(ACCOUNT)
+                .and(ACCOUNT.USER_NAME.like("michael"));
+
+        String sql = dialect.forSelectByQuery(queryWrapper);
+        System.out.println(sql);
+    }
+
+
+    @Test
+    public void testCase3() {
+        IDialect dialect = new CommonsDialectImpl();
+
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(ACCOUNT.ALL_COLUMNS,
+                        case_(ACCOUNT.ID)
+                                .when(100).then(100)
+                                .when(200).then(200)
+                                .else_(convert("varchar", "GETDATE()", "126"))
                                 .end().as("result"))
                 .from(ACCOUNT)
                 .and(ACCOUNT.USER_NAME.like("michael"));

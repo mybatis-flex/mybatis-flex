@@ -37,9 +37,11 @@ MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-MyBatis` 对比，内容来
 | Db + Row | ✅ | ❌ | ❌ |
 | Entity 监听 | ✅ | ❌ | ❌ |
 | 多数据源支持 | ✅ | 借助其他框架或收费 | ❌ |
-| 多数据源是否支持 Spring 的事务管理，比如 `@Transactional` 注解等 | ✅ | ❌ | ❌ |
+| 多数据源是否支持 Spring 的事务管理，比如 `@Transactional` 和 `TransactionTemplate` 等 | ✅ | ❌ | ❌ |
 | 多数据源是否支持 "非Spring" 项目 | ✅ | ❌ | ❌ |
 | 多租户 | ✅ | ✅ | ❌ |
+| 动态表名 | ✅ | ✅ | ❌ |
+| 动态 Schema  | ✅ | ❌ | ❌ |
 
 > 以上内容来自第三方相关产品的官方文档或第三方平台，若有错误，欢迎纠正。
 
