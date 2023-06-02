@@ -1066,6 +1066,20 @@ public class GlobalConfig {
     }
 
     /**
+     * @see ServiceImplConfig#isCacheExample()
+     */
+    public boolean isServiceImplCacheExample() {
+        return getServiceImplConfig().isCacheExample();
+    }
+
+    /**
+     * @see ServiceImplConfig#setCacheExample(boolean)
+     */
+    public void setServiceImplCacheExample(boolean cacheExample) {
+        getServiceImplConfig().setCacheExample(cacheExample);
+    }
+
+    /**
      * @see ControllerConfig#isOverwriteEnable()
      */
     public boolean isControllerOverwriteEnable() {

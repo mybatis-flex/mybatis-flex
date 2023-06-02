@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.codegen.config;
 
+import com.mybatisflex.spring.service.impl.CacheableServiceImpl;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 
 /**
@@ -45,6 +46,11 @@ public class ServiceImplConfig {
      * 是否覆盖之前生成的文件。
      */
     private boolean overwriteEnable;
+
+    /**
+     * 是否生成缓存样例代码。
+     */
+    private boolean cacheExample;
 
     public String buildSuperClassImport() {
         return supperClass.getName();
@@ -111,6 +117,21 @@ public class ServiceImplConfig {
      */
     public ServiceImplConfig setOverwriteEnable(boolean overwriteEnable) {
         this.overwriteEnable = overwriteEnable;
+        return this;
+    }
+
+    /**
+     * 是否生成缓存例子。
+     */
+    public boolean isCacheExample() {
+        return CacheableServiceImpl.class.equals(supperClass) && cacheExample;
+    }
+
+    /**
+     * 设置生成缓存例子。
+     */
+    public ServiceImplConfig setCacheExample(boolean cacheExample) {
+        this.cacheExample = cacheExample;
         return this;
     }
 
