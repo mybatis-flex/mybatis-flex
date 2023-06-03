@@ -14,7 +14,7 @@
 [https://gitee.com/mybatis-flex/mybatis-benchmark](https://gitee.com/mybatis-flex/mybatis-benchmark)
 
 ::: tip 测试说明
-> 在以下的所有测试中，有可能因为每个人的电脑性能不同，测试的结果会有所不同。
+在以下的所有测试中，有可能因为每个人的电脑性能不同，测试的结果会有所不同。
 :::
 
 ## 测试单条数据查询
@@ -159,7 +159,7 @@ mapper.selectList(queryWrapper);
 ```
 
 ::: tip 测试结论
-> MyBatis-Flex 的查询 10 条数据的速度，大概是 MyBatis-Plus 的 5~10 倍左右。
+MyBatis-Flex 的查询 10 条数据的速度，大概是 MyBatis-Plus 的 5~10 倍左右。
 :::
 
 ## 分页查询
@@ -219,7 +219,7 @@ mapper.selectPage(p, queryWrapper);
 ```
 
 ::: tip 测试结论
-> Mybatis-Flex 的分页查询速度，大概是 Mybatis-Plus 的 5~10 倍左右。
+Mybatis-Flex 的分页查询速度，大概是 Mybatis-Plus 的 5~10 倍左右。
 :::
 
 
@@ -305,7 +305,7 @@ mapper.update(plusAccount, lambdaUpdateWrapper);
 ```
 
 ::: tip 测试结论
-> Mybatis-Flex 的数据更新速度，大概是 Mybatis-Plus 的 5~10+ 倍。
+Mybatis-Flex 的数据更新速度，大概是 Mybatis-Plus 的 5~10+ 倍。
 :::
 
 ## 更多的测试
