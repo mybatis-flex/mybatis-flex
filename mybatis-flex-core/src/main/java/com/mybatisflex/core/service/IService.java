@@ -282,7 +282,7 @@ public interface IService<T> {
     }
 
     /**
-     * <p>根据查询条件查询一条数据，并通过 asType 进行接收
+     * <p>根据查询条件查询一条数据，并通过 asType 进行接收。
      *
      * @param query  查询条件
      * @param asType 接收的数据类型
@@ -355,7 +355,7 @@ public interface IService<T> {
     }
 
     /**
-     * <p>根据查询条件查询数据集合，并通过 asType 进行接收
+     * <p>根据查询条件查询数据集合，并通过 asType 进行接收。
      *
      * @param query  查询条件
      * @param asType 接收的数据类型
@@ -456,7 +456,7 @@ public interface IService<T> {
      * @return 分页对象
      */
     default Page<T> page(Page<T> page, QueryWrapper query) {
-        return getMapper().paginate(page, query);
+        return pageAs(page, query, null);
     }
 
     /**
@@ -468,6 +468,18 @@ public interface IService<T> {
      */
     default Page<T> page(Page<T> page, QueryCondition condition) {
         return page(page, query().where(condition));
+    }
+
+    /**
+     * <p>根据查询条件分页查询数据，并通过 asType 进行接收。
+     *
+     * @param page   分页对象
+     * @param query  查询条件
+     * @param asType 接收的数据类型
+     * @return 分页对象
+     */
+    default <R> Page<R> pageAs(Page<R> page, QueryWrapper query, Class<R> asType) {
+        return getMapper().paginateAs(page, query, asType);
     }
 
     default QueryWrapper query() {
