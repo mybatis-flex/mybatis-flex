@@ -33,6 +33,12 @@ SpringBoot v3.x 添加 hikariCP 的内容如下：
 
 > 如果使用的是 druid 数据库连接池，则需要添加数据源类型的配置 `spring.datasource.type=com.alibaba.druid.pool.DruidDataSource`。
 
+## java.sql.SQLException: No value specified for parameter x
+出现这个问题，原因是 MyBatis-Flex 未能正常启动，SQL 执行没有经过 MyBatis-Flex 导致的。其直接是因为和其他第三方增强框架整合使用了，
+比如和 MyBatis-Plus、或者 PageHelper 等整合造成的。
+
+如何与 PageHelper 整合可以看链接： http://localhost:5173/zh/faq.html#%E4%B8%8E-pagehelper-%E9%9B%86%E6%88%90%E5%87%BA%E7%8E%B0%E9%94%99%E8%AF%AF
+
 
 ## 整合 Springboot 3 出现 ClassNotFoundException： NestedIOException 的错误
 
@@ -108,7 +114,28 @@ spring:
 ## 与 PageHelper 集成出现错误
 
 在社区中，一些老的项目在使用到了开源项目 PageHelper，用于解决 xml 的分页问题，在和 MyBatis-flex 整合使用中，出现了一些错误，
-这是许多热心的同学给出的解决方案：https://gitee.com/mybatis-flex/mybatis-flex/issues/I71AUE
+需要把 `pagehelper-spring-boot-starter` 依赖替换为 `pagehelper`;
+
+
+```xml
+<dependency>
+    <groupId>com.github.pagehelper</groupId>
+    <artifactId>pagehelper-spring-boot-starter</artifactId>
+    <version>版本号</version>
+</dependency>
+```
+需要把以上依赖替换如下：
+
+```xml
+<dependency>
+    <groupId>com.github.pagehelper</groupId>
+    <artifactId>pagehelper</artifactId>
+    <version>版本号</version>
+</dependency>
+```
+解决方案：https://gitee.com/mybatis-flex/mybatis-flex/issues/I71AUE
+
+
 
 
 ## 如何自定义 MyBatis 的 Configuration?
