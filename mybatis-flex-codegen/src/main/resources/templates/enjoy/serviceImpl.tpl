@@ -115,9 +115,9 @@ public class #(table.buildServiceImplClassName()) extends #(serviceImplConfig.bu
     }
 
     @Override
-    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
-    public Page<#(entityClassName)> page(Page<#(entityClassName)> page, QueryWrapper query) {
-        return super.page(page, query);
+    @Cacheable(key = "#root.methodName + ':' + #page.getPageSize() + ':' + #page.getPageNumber() + ':' + #query.toSQL()")
+    public <R> Page<R> pageAs(Page<R> page, QueryWrapper query, Class<R> asType) {
+        return super.pageAs(page, query, asType);
     }
 
 #end
