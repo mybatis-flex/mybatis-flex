@@ -37,7 +37,7 @@ SpringBoot v3.x 添加 hikariCP 的内容如下：
 出现这个问题，原因是 MyBatis-Flex 未能正常启动，SQL 执行没有经过 MyBatis-Flex 导致的。其直接是因为和其他第三方增强框架整合使用了，
 比如和 MyBatis-Plus、或者 PageHelper 等整合造成的。
 
-如何与 PageHelper 整合可以看链接： http://localhost:5173/zh/faq.html#%E4%B8%8E-pagehelper-%E9%9B%86%E6%88%90%E5%87%BA%E7%8E%B0%E9%94%99%E8%AF%AF
+如何与 PageHelper 整合可以点击 [这里](/zh/faq.html#%E4%B8%8E-pagehelper-%E9%9B%86%E6%88%90%E5%87%BA%E7%8E%B0%E9%94%99%E8%AF%AF) 查看
 
 
 ## 整合 Springboot 3 出现 ClassNotFoundException： NestedIOException 的错误
