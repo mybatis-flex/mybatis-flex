@@ -559,3 +559,58 @@ QueryWrapper query2 = QueryWrapper.create()
     .where(ACCOUNT.AGE.ge(18));
 ```
 在以上的 `query1` 和 `query2` 中，它们构建出来的 SQL 条件是完全一致的，因为 MyBatis-Flex 会自动忽略 null 值的条件。
+
+## QueryWrapper 序列化
+
+在 `QueryWrapper` 中，由于其定义了 `循环引用` 的一些数据结构，同时，其很多属性都是 `private` 或者 `protected` 修饰且没有 `getter` `setter` 方法，
+这会导致使用一些 json 库在序列化的过程中，出现问题；但这些问题并非 `QueryWrapper` 的问题，而是序列化框架的问题。
+
+因此，我们在使用序列化框架时，需要注意其是否这些特征，比如在使用 FastJson2 序列化时，需要添加一下皮遏制：
+
+序列化：
+
+```java
+String json = JSON.toJSONString(queryWrapper
+        , JSONWriter.Feature.FieldBased // 基于 field，而非 getter 方法
+        , JSONWriter.Feature.ReferenceDetection);
+```
+
+反序列化：
+
+```java
+QueryWrapper query  = JSON.parseObject(json, QueryWrapper.class
+, JSONReader.Feature.FieldBased);
+```
+
+`Gson` 、`Jackson` 等其他框架需要自行参考其文档添加相关配置；另外，我们更加建议使用专业的序列化工具去进行序列化，而非使用 json，比如使用 `JDK Serial` 或者 `fst` 等。
+以下是相关的序列化示例代码：
+
+`JDK Serial` 序列化：
+
+```java
+QueryWrapper queryWrapper = ...
+ByteArrayOutputStream bos = new ByteArrayOutputStream();
+ObjectOutputStream oos = new ObjectOutputStream(bos);
+oos.writeObject(queryWrapper);
+```
+
+`JDK Serial` 反序列化：
+
+```java
+byte[] bytes = ....
+ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+ObjectInputStream ois = new ObjectInputStream(bis);
+QueryWrapper queryWrapper = (QueryWrapper) ois.readObject();
+```
+
+`fst` 序列化 和 反序列化：
+
+```java
+FSTConfiguration fst = FSTConfiguration.createDefaultConfiguration();
+
+//序列化得到 bytes 进行存储或者传输
+byte[] bytes = fst.asByteArray(wrapper);
+
+//反序列化得到 QueryWrapper
+QueryWrapper newWrapper = (QueryWrapper) fst.asObject(bytes);
+```
