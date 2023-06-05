@@ -36,7 +36,7 @@ public interface IDialect {
 
     String forHint(String hintString);
 
-    String forInsertRow(String schema,String tableName, Row row);
+    String forInsertRow(String schema, String tableName, Row row);
 
     String forInsertBatchWithFirstRowColumns(String schema, String tableName, List<Row> rows);
 
@@ -78,7 +78,7 @@ public interface IDialect {
 
     String forUpdateEntityByQuery(TableInfo tableInfo, Object entity, boolean ignoreNulls, QueryWrapper queryWrapper);
 
-    String forUpdateNumberAddByQuery(String schema,String tableName, String fieldName, Number value, QueryWrapper queryWrapper);
+    String forUpdateNumberAddByQuery(String schema, String tableName, String fieldName, Number value, QueryWrapper queryWrapper);
 
     String forSelectOneEntityById(TableInfo tableInfo);
 

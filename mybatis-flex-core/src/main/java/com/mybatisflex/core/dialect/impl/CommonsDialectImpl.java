@@ -192,7 +192,7 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     @Override
-    public String forUpdateById(String schema,String tableName, Row row) {
+    public String forUpdateById(String schema, String tableName, Row row) {
         StringBuilder sql = new StringBuilder();
 
         Set<String> modifyAttrs = row.obtainModifyAttrs();
@@ -258,7 +258,7 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     @Override
-    public String forUpdateBatchById(String schema,String tableName, List<Row> rows) {
+    public String forUpdateBatchById(String schema, String tableName, List<Row> rows) {
         if (rows.size() == 1) {
             return forUpdateById(schema, tableName, rows.get(0));
         }
