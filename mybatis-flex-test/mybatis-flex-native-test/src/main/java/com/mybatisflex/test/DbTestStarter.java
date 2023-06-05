@@ -37,11 +37,11 @@ public class DbTestStarter {
                 .setDataSource(dataSource)
                 .start();
 
-        Row row1 = Db.selectOneById("tb_account", "id", 1);
+        Row row1 = Db.selectOneById(null,"tb_account", "id", 1);
         RowUtil.printPretty(row1);
 
         //查询全部
-        List<Row> rows = Db.selectAll("tb_account");
+        List<Row> rows = Db.selectAll(null,"tb_account");
         RowUtil.printPretty(rows);
 
 
@@ -53,7 +53,7 @@ public class DbTestStarter {
         row.set("user_name", "michael yang");
         row.set("age", 18);
         row.set("birthday", new Date());
-        Db.insert("tb_account", row);
+        Db.insert(null,"tb_account", row);
 
         //查看刚刚插入数据的主键 id
         System.out.println(">>>>>>>>>id: " + row.get("id"));
@@ -79,7 +79,7 @@ public class DbTestStarter {
 
 
         //再次查询全部数据
-        rows = Db.selectAll("tb_account");
+        rows = Db.selectAll(null,"tb_account");
         RowUtil.printPretty(rows);
 
 //        for (Row row2 : rows) {
@@ -96,10 +96,10 @@ public class DbTestStarter {
             r.prepareAttrsByKeySet();
             r.setPrimaryKeys(RowKey.AUTO);
         });
-        Db.insertBatch("tb_account", rows, 100);
+        Db.insertBatch(null,"tb_account", rows, 100);
 
         //再次查询全部数据
-        rows = Db.selectAll("tb_account");
+        rows = Db.selectAll(null,"tb_account");
         RowUtil.printPretty(rows);
     }
 }

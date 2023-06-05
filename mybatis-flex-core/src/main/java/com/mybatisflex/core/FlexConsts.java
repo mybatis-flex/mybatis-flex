@@ -26,6 +26,7 @@ public class FlexConsts {
 
     public static final String SQL = "$$sql";
     public static final String SQL_ARGS = "$$sql_args";
+    public static final String SCHEMA_NAME = "$$schemaName";
     public static final String TABLE_NAME = "$$tableName";
     public static final String FIELD_NAME = "$$fieldName";
     public static final String PRIMARY_KEY = "$$primaryKey";

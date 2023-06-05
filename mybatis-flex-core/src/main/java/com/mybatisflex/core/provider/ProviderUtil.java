@@ -40,6 +40,10 @@ class ProviderUtil {
         params.put(FlexConsts.SQL_ARGS, args);
     }
 
+    public static String getSchemaName(Map params) {
+        Object schemaNameObj = params.get(FlexConsts.SCHEMA_NAME);
+        return schemaNameObj != null ? schemaNameObj.toString().trim() : null;
+    }
     public static String getTableName(Map params) {
         Object tableNameObj = params.get(FlexConsts.TABLE_NAME);
         return tableNameObj != null ? tableNameObj.toString().trim() : null;
