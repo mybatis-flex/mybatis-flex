@@ -143,6 +143,6 @@ AuditManager.setAuditEnable(true);
 每次执行 sql 请求，控制台将输入内容如下：
 
 ```
-Flex exec sql taked 2 ms >>>  SELECT * FROM `tb_account` WHERE `id` = 1
-Flex exec sql taked 3 ms >>>  INSERT INTO `tb_account`(`user_name`, `age`, `birthday`)  VALUES ('lisi', 22, '2023-04-07 15:28:46')
+Flex exec sql took 2 ms >>>  SELECT * FROM `tb_account` WHERE `id` = 1
+Flex exec sql took 3 ms >>>  INSERT INTO `tb_account`(`user_name`, `age`, `birthday`)  VALUES ('lisi', 22, '2023-04-07 15:28:46')
 ```

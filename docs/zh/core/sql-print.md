@@ -17,8 +17,8 @@ AuditManager.setMessageCollector(collector);
 每次执行 SQL 请求，控制台将输入内容如下：
 
 ```
-Flex exec sql taked 2 ms >>>  SELECT * FROM `tb_account` WHERE `id` = 1
-Flex exec sql taked 3 ms >>>  INSERT INTO `tb_account`(`user_name`, `age`, `birthday`)  VALUES ('lisi', 22, '2023-04-07 15:28:46')
+Flex exec sql took 2 ms >>>  SELECT * FROM `tb_account` WHERE `id` = 1
+Flex exec sql took 3 ms >>>  INSERT INTO `tb_account`(`user_name`, `age`, `birthday`)  VALUES ('lisi', 22, '2023-04-07 15:28:46')
 ```
 
 控制台输出了完整的 SQL，以及 SQL 执行消耗时间，方便我们在开发的时候，对慢 SQL 进行排查和快速定位。
