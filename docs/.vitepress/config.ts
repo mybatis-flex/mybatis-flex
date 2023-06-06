@@ -60,7 +60,7 @@ export default defineConfig({
                 text: '基础功能',
                 items: [
                     {text: '增、删、改', link: '/zh/base/add-delete-update'},
-                    {text: '查询和分页', link: '/zh/base/query'},
+                    {text: '查询（多表和分页）', link: '/zh/base/query'},
                     {text: '批量操作', link: '/zh/base/batch'},
                     {text: '一对多、多对一', link: '/zh/base/field-query'},
                     {text: 'QueryWrapper', link: '/zh/base/querywrapper'},

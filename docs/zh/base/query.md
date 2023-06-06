@@ -25,7 +25,7 @@
 - **selectCountByCondition**：根据 QueryWrapper 查询数据量。
 - **selectCountByQuery**：根据 QueryWrapper 查询数据量。
 
-## 关联查询（或多表查询）
+## 多表查询（关联查询）
 
 在 `BaseMapper` 中，提供了 `selectOneByQueryAs`、`selectListByQueryAs` 、`paginateAs` 等方法，用于处理关联查询的场景。
 
@@ -158,28 +158,9 @@ System.out.println(results);
 
 **其他注意事项：**
 
-关联查询（`selectOneByQueryAs`、`selectListByQueryAs` 、`paginateAs` 等方法）中的 `asType` 参数类型（比如：`ArticleDTO`），
+> 关联查询（`selectOneByQueryAs`、`selectListByQueryAs` 、`paginateAs` 等方法）中的 `asType` 参数类型（比如：`ArticleDTO`），
 一样支持使用 `@Column`、`@ColumnMask` 注解以及 `@Table` 的 `onInsert`、`onUpdate`、`onSet` 配置。
 
-同时，要求 `asType` 中的类型，必须定义属性来映射查询到的数据集，因此，以下的使用示例是 **错误** 的：
-
-```java
-QueryWrapper query = QueryWrapper.create()
-        .select(ACCOUNT.id)
-        .from(ACCOUNT);
-
-List<Long> results = mapper.selectOneByQueryAs(query, Long.class);
-```
-在以上的示例中， **错误** 的原因是因为 `Long` 这个类型，并没有名称为 `id` 的属性，用来映射查询的结果集。
-
-在以上的场景中，可以使用如下的方法（以下代码示例是正确的）：
-```java
-QueryWrapper query = QueryWrapper.create()
-        .select(ACCOUNT.id)
-        .from(ACCOUNT);
-
-List<Long> results = mapper.selectObjectListByQueryAs(query, Long.class);
-```
 
 ## 分页查询
 
