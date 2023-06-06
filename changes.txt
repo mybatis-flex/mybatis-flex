@@ -1,3 +1,25 @@
+mybatis-flex v1.3.5 20230606:
+新增：代码生成器添加生成 spring-cache 缓存模板配置。感谢 @王帅
+新增：Db + Row 添加 schema 的支持。感谢 @Font_C
+新增：IService 添加 pageAs 方法。感谢 @王帅
+新增：添加更多 column 工具方法
+优化：Page.java 在传入为 0 的 pageNumber 时添加错误提示
+优化：RawValue.java 修改为 RawFragment 以适应更多场景
+优化：修改 WrapperUtil.getChildSelect() 方法为 getChildQueryWrapper
+优化：修改 BaseMapper.selectListByQueryAs 以支持获取 List<Number> 和 List<String>
+优化：工具类添加 private 构造方法。感谢 @王帅
+修复：在修改和删除时，schema 配置无效的问题
+修复：update 方法应该替换 CachePut 注解为 CacheEvict。感谢 @王帅
+修复：代码生成器生成的缓存 Service 缓存 key 错误的问题。感谢 @王帅
+修复：错别字 taked 修改为 took。感谢 @王帅
+文档：完善代码生成器的相关文档。感谢 @王帅
+文档：同步 IService 最新的文档，删除旧版本的一些方法。感谢 @王帅
+文档：修复 sqlSessionTemplate 错别字的问题。感谢 @阿志同学
+文档：添加关于 QueryWrapper 序列化的相关文档
+文档：继续完善 "常见问题" 的相关文档
+
+
+
 mybatis-flex v1.3.4 20230601:
 新增：添加 Spring 下的 CacheableServiceImpl 实现类，方便用户缓存。感谢 @王帅
 优化：重构 IService，使之有更好的方法服用。感谢 @王帅
