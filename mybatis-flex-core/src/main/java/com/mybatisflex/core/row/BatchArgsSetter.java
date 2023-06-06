@@ -15,9 +15,11 @@
  */
 package com.mybatisflex.core.row;
 
+import com.mybatisflex.core.FlexConsts;
+
 public interface BatchArgsSetter {
 
-    Object[] NONE_ARGS = new Object[0];
+    Object[] NONE_ARGS = FlexConsts.EMPTY_ARRAY;
 
     int getBatchSize();
 

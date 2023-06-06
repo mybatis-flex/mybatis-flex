@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.provider;
 
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.CPI;
@@ -215,7 +216,7 @@ public class RowSqlProvider {
             throw FlexExceptions.wrap("rows can not be null or empty.");
         }
 
-        Object[] values = new Object[0];
+        Object[] values = FlexConsts.EMPTY_ARRAY;
         for (Row row : rows) {
             values = ArrayUtil.concat(values, RowCPI.obtainAllModifyValues(row));
         }

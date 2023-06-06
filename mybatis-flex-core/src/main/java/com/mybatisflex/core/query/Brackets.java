@@ -25,10 +25,10 @@ import java.util.List;
  */
 public class Brackets extends QueryCondition {
 
-    private final QueryCondition child;
+    private final QueryCondition childCondition;
 
     public Brackets(QueryCondition childCondition) {
-        this.child = childCondition;
+        this.childCondition = childCondition;
     }
 
 
@@ -45,16 +45,16 @@ public class Brackets extends QueryCondition {
     }
 
     protected void connectToChild(QueryCondition nextCondition, SqlConnector connector) {
-        child.connect(nextCondition, connector);
+        childCondition.connect(nextCondition, connector);
     }
 
     @Override
     public Object getValue() {
-        return checkEffective() ? WrapperUtil.getValues(child) : null;
+        return checkEffective() ? WrapperUtil.getValues(childCondition) : null;
     }
 
-    public QueryCondition getChild() {
-        return child;
+    public QueryCondition getChildCondition() {
+        return childCondition;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class Brackets extends QueryCondition {
         if (!effective) {
             return false;
         }
-        QueryCondition condition = this.child;
+        QueryCondition condition = this.childCondition;
         while (condition != null) {
             if (condition.checkEffective()) {
                 return true;
@@ -80,7 +80,7 @@ public class Brackets extends QueryCondition {
 
         StringBuilder sql = new StringBuilder();
         if (checkEffective()) {
-            String childSql = child.toSql(queryTables, dialect);
+            String childSql = childCondition.toSql(queryTables, dialect);
             if (StringUtil.isNotBlank(childSql)) {
                 QueryCondition effectiveBefore = getEffectiveBefore();
                 if (effectiveBefore != null) {
@@ -102,13 +102,13 @@ public class Brackets extends QueryCondition {
 
     @Override
     boolean containsTable(String... tables) {
-        return child != null && child.containsTable(tables);
+        return childCondition != null && childCondition.containsTable(tables);
     }
 
     @Override
     public String toString() {
         return "Brackets{" +
-                "childCondition=" + child +
+                "childCondition=" + childCondition +
                 '}';
     }
 }

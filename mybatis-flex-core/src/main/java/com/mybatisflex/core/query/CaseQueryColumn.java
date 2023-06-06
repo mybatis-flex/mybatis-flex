@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.ArrayUtil;
@@ -84,8 +85,8 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
     private String buildValue(Object value) {
         if (value instanceof Number || value instanceof Boolean) {
             return String.valueOf(value);
-        } else if (value instanceof RawValue) {
-            return ((RawValue) value).getContent();
+        } else if (value instanceof RawFragment) {
+            return ((RawFragment) value).getContent();
         } else if (value instanceof QueryColumn) {
             return ((QueryColumn) value).toConditionSql(null, DialectFactory.getDialect());
         } else {
@@ -95,7 +96,7 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
 
     @Override
     public Object[] getParamValues() {
-        Object[] values = WrapperUtil.NULL_PARA_ARRAY;
+        Object[] values = FlexConsts.EMPTY_ARRAY;
         for (When when : whens) {
             values = ArrayUtil.concat(values, WrapperUtil.getValues(when.whenCondition));
         }

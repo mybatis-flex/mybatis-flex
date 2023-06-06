@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.EnumWrapper;
@@ -34,14 +35,12 @@ class WrapperUtil {
         return StringUtil.isBlank(alias) ? "" : " AS " + dialect.wrap(alias);
     }
 
-    static final Object[] NULL_PARA_ARRAY = new Object[0];
-
-    static List<QueryWrapper> getChildSelect(QueryCondition condition) {
+    static List<QueryWrapper> getChildQueryWrapper(QueryCondition condition) {
         List<QueryWrapper> list = null;
         while (condition != null) {
             if (condition.checkEffective()) {
                 if (condition instanceof Brackets) {
-                    List<QueryWrapper> childQueryWrapper = getChildSelect(((Brackets) condition).getChild());
+                    List<QueryWrapper> childQueryWrapper = getChildQueryWrapper(((Brackets) condition).getChildCondition());
                     if (!childQueryWrapper.isEmpty()) {
                         if (list == null) {
                             list = new ArrayList<>();
@@ -80,13 +79,13 @@ class WrapperUtil {
 
     static Object[] getValues(QueryCondition condition) {
         if (condition == null) {
-            return NULL_PARA_ARRAY;
+            return FlexConsts.EMPTY_ARRAY;
         }
 
         List<Object> params = new ArrayList<>();
         getValues(condition, params);
 
-        return params.isEmpty() ? NULL_PARA_ARRAY : params.toArray();
+        return params.isEmpty() ? FlexConsts.EMPTY_ARRAY : params.toArray();
     }
 
 
@@ -98,7 +97,7 @@ class WrapperUtil {
         Object value = condition.getValue();
         if (value == null
                 || value instanceof QueryColumn
-                || value instanceof RawValue) {
+                || value instanceof RawFragment) {
             getValues(condition.next, params);
             return;
         }

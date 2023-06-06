@@ -30,8 +30,6 @@ import java.util.Map;
 
 class ProviderUtil {
 
-    private static final Object[] NULL_ARGS = new Object[0];
-
     public static String getSqlString(Map params) {
         return (String) params.get(FlexConsts.SQL);
     }
@@ -64,7 +62,7 @@ class ProviderUtil {
     public static Object[] getPrimaryValues(Map params) {
         Object primaryValue = params.get(FlexConsts.PRIMARY_VALUE);
         if (primaryValue == null) {
-            return NULL_ARGS;
+            return FlexConsts.EMPTY_ARRAY;
         }
         if (primaryValue.getClass().isArray()) {
             return (Object[]) primaryValue;

@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.provider;
 
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.CPI;
@@ -103,7 +104,7 @@ public class EntitySqlProvider {
         }
 
 
-        Object[] allValues = new Object[0];
+        Object[] allValues = FlexConsts.EMPTY_ARRAY;
         for (Object entity : entities) {
             allValues = ArrayUtil.concat(allValues, tableInfo.buildInsertSqlArgs(entity, false));
         }

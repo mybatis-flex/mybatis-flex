@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.table.TableDef;
@@ -112,13 +113,13 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper where(String sql) {
-        this.setWhereQueryCondition(new StringQueryCondition(sql));
+        this.setWhereQueryCondition(new RawFragment(sql));
         return this;
     }
 
 
     public QueryWrapper where(String sql, Object... params) {
-        this.setWhereQueryCondition(new StringQueryCondition(sql, params));
+        this.setWhereQueryCondition(new RawFragment(sql, params));
         return this;
     }
 
@@ -135,12 +136,12 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper and(String sql) {
-        this.addWhereQueryCondition(new StringQueryCondition(sql), SqlConnector.AND);
+        this.addWhereQueryCondition(new RawFragment(sql), SqlConnector.AND);
         return this;
     }
 
     public QueryWrapper and(String sql, Object... params) {
-        this.addWhereQueryCondition(new StringQueryCondition(sql, params), SqlConnector.AND);
+        this.addWhereQueryCondition(new RawFragment(sql, params), SqlConnector.AND);
         return this;
     }
 
@@ -149,15 +150,14 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper or(String sql) {
-        this.addWhereQueryCondition(new StringQueryCondition(sql), SqlConnector.OR);
+        this.addWhereQueryCondition(new RawFragment(sql), SqlConnector.OR);
         return this;
     }
 
     public QueryWrapper or(String sql, Object... params) {
-        this.addWhereQueryCondition(new StringQueryCondition(sql, params), SqlConnector.OR);
+        this.addWhereQueryCondition(new RawFragment(sql, params), SqlConnector.OR);
         return this;
     }
-
 
     public Joiner<QueryWrapper> leftJoin(String table) {
         return joining(Join.TYPE_LEFT, new QueryTable(table), true);
@@ -510,7 +510,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             }
         }
 
-        Object[] returnValues = columnValues == null ? WrapperUtil.NULL_PARA_ARRAY : columnValues.toArray();
+        Object[] returnValues = columnValues == null ? FlexConsts.EMPTY_ARRAY : columnValues.toArray();
         returnValues = tableValues != null ? ArrayUtil.concat(returnValues, tableValues.toArray()) : returnValues;
         returnValues = joinValues != null ? ArrayUtil.concat(returnValues, joinValues.toArray()) : returnValues;
         returnValues = ArrayUtil.concat(returnValues, paramValues);
@@ -521,8 +521,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     List<QueryWrapper> getChildSelect() {
 
-        List<QueryWrapper> whereChildQuery = WrapperUtil.getChildSelect(whereQueryCondition);
-        List<QueryWrapper> havingChildQuery = WrapperUtil.getChildSelect(havingQueryCondition);
+        List<QueryWrapper> whereChildQuery = WrapperUtil.getChildQueryWrapper(whereQueryCondition);
+        List<QueryWrapper> havingChildQuery = WrapperUtil.getChildQueryWrapper(havingQueryCondition);
 
         if (whereChildQuery.isEmpty() && havingChildQuery.isEmpty()) {
             return Collections.emptyList();

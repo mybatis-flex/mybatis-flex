@@ -82,6 +82,14 @@ public class QueryMethods {
         return new StringQueryColumn(column);
     }
 
+    public static QueryColumn column(String table, String column) {
+        return new QueryColumn(null, table, column);
+    }
+
+    public static QueryColumn column(String schema, String table, String column) {
+        return new QueryColumn(schema, table, column);
+    }
+
     public static SelectQueryColumn column(QueryWrapper queryWrapper) {
         return new SelectQueryColumn(queryWrapper);
     }
@@ -119,12 +127,16 @@ public class QueryMethods {
         return select(count());
     }
 
-    public static QueryWrapper selectCountOne(String countP) {
+    public static QueryWrapper selectCountOne() {
         return select(count("1"));
     }
 
-    public static RawValue raw(String raw) {
-        return new RawValue(raw);
+    public static RawFragment raw(String raw) {
+        return new RawFragment(raw);
+    }
+
+    public static RawFragment raw(String raw, Object... params) {
+        return new RawFragment(raw, params);
     }
 
 }

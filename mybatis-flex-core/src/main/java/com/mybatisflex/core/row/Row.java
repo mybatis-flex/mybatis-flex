@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.row;
 
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.util.ArrayUtil;
@@ -30,8 +31,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRecord {
-
-    private static final Object[] NULL_ARGS = new Object[0];
 
     //主键，多个主键用英文逗号隔开
     private RowKey[] primaryKeys;
@@ -386,7 +385,7 @@ public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRec
 
     Object[] obtainsPrimaryValues() {
         if (ArrayUtil.isEmpty(primaryKeys)) {
-            return NULL_ARGS;
+            return FlexConsts.EMPTY_ARRAY;
         }
         Object[] values = new Object[primaryKeys.length];
         for (int i = 0; i < primaryKeys.length; i++) {

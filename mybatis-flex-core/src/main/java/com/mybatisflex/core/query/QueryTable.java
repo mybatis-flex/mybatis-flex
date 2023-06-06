@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.util.StringUtil;
@@ -90,7 +91,7 @@ public class QueryTable implements Serializable {
 
 
     Object[] getValueArray() {
-        return WrapperUtil.NULL_PARA_ARRAY;
+        return FlexConsts.EMPTY_ARRAY;
     }
 
     public String toSql(IDialect dialect) {

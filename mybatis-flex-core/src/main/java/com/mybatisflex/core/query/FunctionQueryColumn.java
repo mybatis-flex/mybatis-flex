@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
@@ -63,7 +64,7 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
         if (column instanceof HasParamsColumn) {
             return ((HasParamsColumn) column).getParamValues();
         }
-        return WrapperUtil.NULL_PARA_ARRAY;
+        return FlexConsts.EMPTY_ARRAY;
     }
 
     @Override

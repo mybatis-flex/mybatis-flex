@@ -142,11 +142,11 @@ public class QueryCondition implements Serializable {
 
 
     public QueryCondition and(String sql) {
-        return and(new StringQueryCondition(sql));
+        return and(new RawFragment(sql));
     }
 
     public QueryCondition and(String sql, Object... params) {
-        return and(new StringQueryCondition(sql, params));
+        return and(new RawFragment(sql, params));
     }
 
     public QueryCondition and(QueryCondition nextCondition) {
@@ -154,11 +154,11 @@ public class QueryCondition implements Serializable {
     }
 
     public QueryCondition or(String sql) {
-        return or(new StringQueryCondition(sql));
+        return or(new RawFragment(sql));
     }
 
     public QueryCondition or(String sql, Object... params) {
-        return or(new StringQueryCondition(sql, params));
+        return or(new RawFragment(sql, params));
     }
 
     public QueryCondition or(QueryCondition nextCondition) {
@@ -197,8 +197,8 @@ public class QueryCondition implements Serializable {
                 sql.append("(").append(dialect.buildSelectSql((QueryWrapper) value)).append(")");
             }
             //原生sql
-            else if (value instanceof RawValue) {
-                sql.append(((RawValue) value).getContent());
+            else if (value instanceof RawFragment) {
+                sql.append(((RawFragment) value).getContent());
             }
             //正常查询，构建问号
             else {
@@ -230,7 +230,7 @@ public class QueryCondition implements Serializable {
                 || LOGIC_IS_NOT_NULL.equals(logic)
                 || value instanceof QueryColumn
                 || value instanceof QueryWrapper
-                || value instanceof RawValue) {
+                || value instanceof RawFragment) {
             //do nothing
         }
 

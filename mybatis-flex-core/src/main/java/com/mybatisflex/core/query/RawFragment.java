@@ -15,27 +15,28 @@
  */
 package com.mybatisflex.core.query;
 
-
 import com.mybatisflex.core.dialect.IDialect;
 
 import java.util.List;
 
 /**
- * 自定义字符串列，用于扩展
+ * SQL 原生片段
  */
-public class StringQueryCondition extends QueryCondition {
-
-    protected String sqlContent;
+public class RawFragment extends QueryCondition {
 
 
-    public StringQueryCondition(String content) {
-        this.sqlContent = content;
+    protected String content;
+
+
+    public RawFragment(String content) {
+        this.content = content;
     }
 
-    public StringQueryCondition(String content, Object... paras) {
-        this.sqlContent = content;
+    public RawFragment(String content, Object... paras) {
+        this.content = content;
         this.setValue(paras);
     }
+
 
     @Override
     public String toSql(List<QueryTable> queryTables, IDialect dialect) {
@@ -47,7 +48,7 @@ public class StringQueryCondition extends QueryCondition {
             if (effectiveBefore != null) {
                 sql.append(effectiveBefore.connector);
             }
-            sql.append(" ").append(sqlContent).append(" ");
+            sql.append(" ").append(content).append(" ");
         }
 
         if (this.next != null) {
@@ -55,5 +56,10 @@ public class StringQueryCondition extends QueryCondition {
         }
 
         return sql.toString();
+    }
+
+
+    public String getContent() {
+        return content;
     }
 }

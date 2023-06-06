@@ -43,6 +43,9 @@ public class FlexConsts {
 
     public static final String METHOD_INSERT_BATCH = "insertBatch";
 
+    public static final Object[] EMPTY_ARRAY = new Object[0];
+
+
     /**
      * 当 entity 使用逻辑删除时，0 为 entity 的正常状态
      */
