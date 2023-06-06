@@ -452,6 +452,10 @@ public interface BaseMapper<T> {
      * @return 数据列表
      */
     default <R> List<R> selectListByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
+        if (Number.class.isAssignableFrom(asType)
+                || String.class.isAssignableFrom(asType)) {
+            return selectObjectListByQueryAs(queryWrapper, asType);
+        }
         try {
             MappedStatementTypes.setCurrentType(asType);
             return (List<R>) selectListByQuery(queryWrapper);
@@ -522,7 +526,7 @@ public interface BaseMapper<T> {
         if (queryResults == null || queryResults.isEmpty()) {
             return Collections.emptyList();
         }
-        List<R> results = new ArrayList<>();
+        List<R> results = new ArrayList<>(queryResults.size());
         for (Object queryResult : queryResults) {
             results.add((R) ConvertUtil.convert(queryResult, asType));
         }
