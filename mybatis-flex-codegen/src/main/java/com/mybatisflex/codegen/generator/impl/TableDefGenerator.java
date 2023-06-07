@@ -73,10 +73,12 @@ public class TableDefGenerator implements IGenerator {
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, tableDefJavaFile);
     }
 
+    @Override
     public String getTemplatePath() {
         return templatePath;
     }
 
+    @Override
     public void setTemplatePath(String templatePath) {
         this.templatePath = templatePath;
     }

@@ -73,10 +73,12 @@ public class EntityGenerator implements IGenerator {
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, entityJavaFile);
     }
 
+    @Override
     public String getTemplatePath() {
         return templatePath;
     }
 
+    @Override
     public void setTemplatePath(String templatePath) {
         this.templatePath = templatePath;
     }
