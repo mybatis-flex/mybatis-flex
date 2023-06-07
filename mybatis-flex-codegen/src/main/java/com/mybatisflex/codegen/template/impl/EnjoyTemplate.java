@@ -34,7 +34,7 @@ public class EnjoyTemplate implements ITemplate {
 
     public EnjoyTemplate() {
         engine = Engine.create("mybatis-flex", engine -> {
-            engine.addSharedMethod(StringUtil.class);
+            engine.addSharedStaticMethod(StringUtil.class);
             engine.setSourceFactory(new FileAndClassPathSourceFactory());
         });
         // 以下配置将支持 user.girl 表达式去调用 user 对象的 boolean isGirl() 方法
