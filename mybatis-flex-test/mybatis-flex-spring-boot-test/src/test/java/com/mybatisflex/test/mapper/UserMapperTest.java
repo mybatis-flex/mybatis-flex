@@ -18,7 +18,7 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.model.UserInfo;
-import com.mybatisflex.test.model.UserVO1;
+import com.mybatisflex.test.model.UserVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -52,10 +52,10 @@ class UserMapperTest {
                 .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
                 .where(USER.USER_ID.eq(3));
         System.out.println(queryWrapper.toSQL());
-//        UserVO userVO = userMapper.selectListByQueryAs(queryWrapper, UserVO.class);
-        UserVO1 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO1.class);
-//        UserVO2 userVO = userMapper.selectListByQueryAs(queryWrapper, UserVO2.class);
-//        UserVO3 userVO = userMapper.selectListByQueryAs(queryWrapper, UserVO3.class);
+        UserVO userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO.class);
+//        UserVO1 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO1.class);
+//        UserVO2 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO2.class);
+//        UserVO3 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO3.class);
         System.err.println(userVO);
     }
 
@@ -68,8 +68,8 @@ class UserMapperTest {
                 .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
                 .where(USER.USER_ID.ge(2));
         System.out.println(queryWrapper.toSQL());
-//        List<UserVO> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO.class);
-        List<UserVO1> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO1.class);
+        List<UserVO> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO.class);
+//        List<UserVO1> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO1.class);
 //        List<UserVO2> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO2.class);
 //        List<UserVO3> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO3.class);
         userVOS.forEach(System.err::println);
