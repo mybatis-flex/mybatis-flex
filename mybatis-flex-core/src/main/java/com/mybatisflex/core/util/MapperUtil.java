@@ -30,6 +30,10 @@ import java.util.function.Consumer;
 
 public class MapperUtil {
 
+    private MapperUtil() {
+    }
+
+
     public static <R> void queryFields(BaseMapper<?> mapper, List<R> list, Consumer<FieldQueryBuilder<R>>[] consumers) {
         if (CollectionUtil.isEmpty(list) || ArrayUtil.isEmpty(consumers) || consumers[0] == null) {
             return;
@@ -47,11 +51,18 @@ public class MapperUtil {
                 Class<?> mappingType = fieldWrapper.getMappingType();
 
                 Object value;
-                if (fieldType.isAssignableFrom(List.class)) {
+                if (Set.class.isAssignableFrom(fieldType)) {
                     value = mapper.selectListByQueryAs(childQuery, mappingType);
-                } else if (fieldType.isAssignableFrom(Set.class)) {
+                    if (ClassUtil.canInstance(fieldType.getModifiers())) {
+                        value = copyValue(fieldType, value);
+                    } else {
+                        value = new HashSet<>((Collection<?>) value);
+                    }
+                } else if (Collection.class.isAssignableFrom(fieldType)) {
                     value = mapper.selectListByQueryAs(childQuery, mappingType);
-                    value = new HashSet<>((Collection<?>) value);
+                    if (ClassUtil.canInstance(fieldType.getModifiers())) {
+                        value = copyValue(fieldType, value);
+                    }
                 } else if (fieldType.isArray()) {
                     value = mapper.selectListByQueryAs(childQuery, mappingType);
                     value = ((List<?>) value).toArray();
@@ -63,6 +74,12 @@ public class MapperUtil {
         });
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static Object copyValue(Class<?> fieldType, Object value) {
+        Collection collection = (Collection) ClassUtil.newInstance(fieldType);
+        collection.addAll((Collection) value);
+        return collection;
+    }
 
 
     /**
