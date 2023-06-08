@@ -13,31 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.mybatisflex.test.model;
 
-import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.KeyType;
-import com.mybatisflex.annotation.Table;
+import java.util.List;
 
-import java.util.Date;
+/**
+ * @author 王帅
+ * @since 2023-06-07
+ */
 
-@Table(value = "tb_account",onSet = AccountOnSetListener.class)
-public class Account {
+public class UserVO1 {
 
-    @Id(keyType = KeyType.Auto)
-    private Long id;
+    private String userId;
     private String userName;
-    private Integer age;
-    private Date birthday;
+    private List<Role> roleList;
+    private Role role;
 
-
-
-    public Long getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUserName() {
@@ -48,29 +46,29 @@ public class Account {
         this.userName = userName;
     }
 
-    public Integer getAge() {
-        return age;
+    public List<Role> getRoleList() {
+        return roleList;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setRoleList(List<Role> roleList) {
+        this.roleList = roleList;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public Role getRole() {
+        return role;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
     public String toString() {
-        return "Account{" +
-                "id=" + id +
+        return "UserVO1{" +
+                "userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
-                ", age=" + age +
-                ", birthday=" + birthday +
+                ", roleList=" + roleList +
+                ", role=" + role +
                 '}';
     }
 }

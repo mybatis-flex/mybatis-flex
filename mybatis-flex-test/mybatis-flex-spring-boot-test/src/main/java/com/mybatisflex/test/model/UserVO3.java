@@ -13,31 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.mybatisflex.test.model;
 
-import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.KeyType;
-import com.mybatisflex.annotation.Table;
+/**
+ * @author 王帅
+ * @since 2023-06-07
+ */
 
-import java.util.Date;
+public class UserVO3 {
 
-@Table(value = "tb_account",onSet = AccountOnSetListener.class)
-public class Account {
-
-    @Id(keyType = KeyType.Auto)
-    private Long id;
+    private String userId;
     private String userName;
-    private Integer age;
-    private Date birthday;
+    private Integer roleId;
+    private String roleKey;
+    private String roleName;
 
-
-
-    public Long getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUserName() {
@@ -48,29 +45,38 @@ public class Account {
         this.userName = userName;
     }
 
-    public Integer getAge() {
-        return age;
+    public Integer getRoleId() {
+        return roleId;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public String getRoleKey() {
+        return roleKey;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setRoleKey(String roleKey) {
+        this.roleKey = roleKey;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
     @Override
     public String toString() {
-        return "Account{" +
-                "id=" + id +
+        return "UserVO3{" +
+                "userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
-                ", age=" + age +
-                ", birthday=" + birthday +
+                ", roleId=" + roleId +
+                ", roleKey='" + roleKey + '\'' +
+                ", roleName='" + roleName + '\'' +
                 '}';
     }
 }

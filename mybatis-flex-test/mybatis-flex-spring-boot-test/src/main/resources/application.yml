@@ -1,16 +1,17 @@
 # DataSource Config
 spring:
-  h2:
-    console:
-      enabled: true
+#  h2:
+#    console:
+#      enabled: true
   datasource:
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  sql:
-    init:
-      schema-locations: classpath:schema.sql
-      data-locations: classpath:data.sql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mp_test
+    username: root
+    password: 12345678
+#  sql:
+#    init:
+#      schema-locations: classpath:schema.sql
+#      data-locations: classpath:data.sql
 mybatis-flex:
   mapper-locations:
     - classpath*:/mapper/*.xml
