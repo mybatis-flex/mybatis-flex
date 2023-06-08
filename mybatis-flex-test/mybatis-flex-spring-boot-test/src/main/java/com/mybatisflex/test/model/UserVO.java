@@ -17,11 +17,12 @@
 package com.mybatisflex.test.model;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
+ * 用户 VO 对象。
+ *
  * @author 王帅
- * @since 2.0
+ * @since 2023-06-07
  */
 
 public class UserVO {
@@ -29,7 +30,6 @@ public class UserVO {
     private String userId;
     private String userName;
     private List<Role> roleList;
-    private Role role;
 
     public String getUserId() {
         return userId;
@@ -55,43 +55,12 @@ public class UserVO {
         this.roleList = roleList;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        UserVO userVO = (UserVO) o;
-
-        if (!Objects.equals(userId, userVO.userId)) return false;
-        if (!Objects.equals(userName, userVO.userName)) return false;
-        if (!Objects.equals(roleList, userVO.roleList)) return false;
-        return Objects.equals(role, userVO.role);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = userId != null ? userId.hashCode() : 0;
-        result = 31 * result + (userName != null ? userName.hashCode() : 0);
-        result = 31 * result + (roleList != null ? roleList.hashCode() : 0);
-        result = 31 * result + (role != null ? role.hashCode() : 0);
-        return result;
-    }
-
     @Override
     public String toString() {
         return "UserVO{" +
                 "userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
                 ", roleList=" + roleList +
-                ", role=" + role +
                 '}';
     }
 }

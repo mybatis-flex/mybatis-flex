@@ -16,22 +16,28 @@
 
 package com.mybatisflex.test.model;
 
+import java.util.List;
+
 /**
+ * 用户信息。
+ *
  * @author 王帅
  * @since 2023-06-07
  */
+public class UserInfo {
 
-public class UserVO2 {
-
-    private String userId;
+    private Integer userId;
     private String userName;
-    private Role role;
+    private String password;
 
-    public String getUserId() {
+    private List<Role> roleList;
+    private List<OrderInfo> orderInfoList;
+
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -43,20 +49,38 @@ public class UserVO2 {
         this.userName = userName;
     }
 
-    public Role getRole() {
-        return role;
+    public String getPassword() {
+        return password;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<Role> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<Role> roleList) {
+        this.roleList = roleList;
+    }
+
+    public List<OrderInfo> getOrderInfoList() {
+        return orderInfoList;
+    }
+
+    public void setOrderInfoList(List<OrderInfo> orderInfoList) {
+        this.orderInfoList = orderInfoList;
     }
 
     @Override
     public String toString() {
-        return "UserVO2{" +
-                "userId='" + userId + '\'' +
+        return "UserInfo{" +
+                "userId=" + userId +
                 ", userName='" + userName + '\'' +
-                ", role=" + role +
+                ", password='" + password + '\'' +
+                ", roleList=" + roleList +
+                ", orderInfoList=" + orderInfoList +
                 '}';
     }
 }

@@ -16,47 +16,33 @@
 
 package com.mybatisflex.test.model;
 
+import com.mybatisflex.annotation.Table;
+
 /**
+ * 用户订单映射。
+ *
  * @author 王帅
  * @since 2023-06-07
  */
+@Table("tb_user_order")
+public class UserOrder {
 
-public class UserVO2 {
+    private Integer userId;
+    private Integer orderId;
 
-    private String userId;
-    private String userName;
-    private Role role;
-
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    @Override
-    public String toString() {
-        return "UserVO2{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", role=" + role +
-                '}';
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 }

@@ -19,13 +19,13 @@ package com.mybatisflex.test.model;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 
-import java.util.Objects;
-
 /**
+ * 角色。
+ *
  * @author 王帅
- * @since 2.0
+ * @since 2023-06-07
  */
-@Table("sys_role")
+@Table("tb_role")
 public class Role {
 
     @Id
@@ -55,26 +55,6 @@ public class Role {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Role role = (Role) o;
-
-        if (!Objects.equals(roleId, role.roleId)) return false;
-        if (!Objects.equals(roleKey, role.roleKey)) return false;
-        return Objects.equals(roleName, role.roleName);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = roleId != null ? roleId.hashCode() : 0;
-        result = 31 * result + (roleKey != null ? roleKey.hashCode() : 0);
-        result = 31 * result + (roleName != null ? roleName.hashCode() : 0);
-        return result;
     }
 
     @Override

@@ -19,19 +19,20 @@ package com.mybatisflex.test.model;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 
-import java.util.Objects;
-
 /**
+ * 用户。
+ *
  * @author 王帅
- * @since 2.0
+ * @since 2023-06-07
  */
 
-@Table("sys_user")
+@Table("tb_user")
 public class User {
 
     @Id
     private Integer userId;
     private String userName;
+    private String password;
 
     public Integer getUserId() {
         return userId;
@@ -49,22 +50,12 @@ public class User {
         this.userName = userName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-
-        if (!Objects.equals(userId, user.userId)) return false;
-        return Objects.equals(userName, user.userName);
+    public String getPassword() {
+        return password;
     }
 
-    @Override
-    public int hashCode() {
-        int result = userId != null ? userId.hashCode() : 0;
-        result = 31 * result + (userName != null ? userName.hashCode() : 0);
-        return result;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -72,6 +63,7 @@ public class User {
         return "User{" +
                 "userId=" + userId +
                 ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

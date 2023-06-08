@@ -16,47 +16,52 @@
 
 package com.mybatisflex.test.model;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
+ * 订单信息。
+ *
  * @author 王帅
  * @since 2023-06-07
  */
+public class OrderInfo {
 
-public class UserVO2 {
+    private Integer orderId;
+    private LocalDateTime createTime;
 
-    private String userId;
-    private String userName;
-    private Role role;
+    private List<Good> goodList;
 
-    public String getUserId() {
-        return userId;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
-    public String getUserName() {
-        return userName;
+    public LocalDateTime getCreateTime() {
+        return createTime;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
     }
 
-    public Role getRole() {
-        return role;
+    public List<Good> getGoodList() {
+        return goodList;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setGoodList(List<Good> goodList) {
+        this.goodList = goodList;
     }
 
     @Override
     public String toString() {
-        return "UserVO2{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", role=" + role +
+        return "OrderInfo{" +
+                "orderId=" + orderId +
+                ", createTime=" + createTime +
+                ", goodList=" + goodList +
                 '}';
     }
 }

@@ -18,13 +18,13 @@ package com.mybatisflex.test.model;
 
 import com.mybatisflex.annotation.Table;
 
-import java.util.Objects;
-
 /**
+ * 用户与角色连接表。
+ *
  * @author 王帅
- * @since 2.0
+ * @since 2023-06-07
  */
-@Table("sys_user_role")
+@Table("tb_user_role")
 public class UserRole {
 
     private Integer userId;
@@ -44,24 +44,5 @@ public class UserRole {
 
     public void setRoleId(Integer roleId) {
         this.roleId = roleId;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        UserRole userRole = (UserRole) o;
-
-        if (!Objects.equals(userId, userRole.userId)) return false;
-        return Objects.equals(roleId, userRole.roleId);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = userId != null ? userId.hashCode() : 0;
-        result = 31 * result + (roleId != null ? roleId.hashCode() : 0);
-        return result;
     }
 }

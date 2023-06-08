@@ -16,47 +16,45 @@
 
 package com.mybatisflex.test.model;
 
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
+
+import java.time.LocalDateTime;
+
 /**
+ * 订单。
+ *
  * @author 王帅
  * @since 2023-06-07
  */
+@Table("tb_order")
+public class Order {
 
-public class UserVO2 {
+    @Id
+    private int orderId;
+    private LocalDateTime createTime;
 
-    private String userId;
-    private String userName;
-    private Role role;
-
-    public String getUserId() {
-        return userId;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
-    public String getUserName() {
-        return userName;
+    public LocalDateTime getCreateTime() {
+        return createTime;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
     }
 
     @Override
     public String toString() {
-        return "UserVO2{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", role=" + role +
+        return "Order{" +
+                "orderId=" + orderId +
+                ", createTime=" + createTime +
                 '}';
     }
 }

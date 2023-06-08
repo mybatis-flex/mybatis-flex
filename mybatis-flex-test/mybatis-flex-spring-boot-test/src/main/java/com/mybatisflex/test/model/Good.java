@@ -16,47 +16,53 @@
 
 package com.mybatisflex.test.model;
 
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
+
 /**
+ * 商品。
+ *
  * @author 王帅
  * @since 2023-06-07
  */
+@Table("tb_good")
+public class Good {
 
-public class UserVO2 {
+    @Id
+    private Integer goodId;
+    private String name;
+    private double price;
 
-    private String userId;
-    private String userName;
-    private Role role;
-
-    public String getUserId() {
-        return userId;
+    public Integer getGoodId() {
+        return goodId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setGoodId(Integer goodId) {
+        this.goodId = goodId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Role getRole() {
-        return role;
+    public double getPrice() {
+        return price;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     @Override
     public String toString() {
-        return "UserVO2{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", role=" + role +
+        return "Good{" +
+                "goodId=" + goodId +
+                ", name='" + name + '\'' +
+                ", price=" + price +
                 '}';
     }
 }

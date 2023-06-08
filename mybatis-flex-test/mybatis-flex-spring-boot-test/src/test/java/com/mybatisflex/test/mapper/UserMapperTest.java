@@ -17,21 +17,25 @@
 package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.test.model.UserInfo;
 import com.mybatisflex.test.model.UserVO1;
-import com.mybatisflex.test.model.UserVO3;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+import static com.mybatisflex.test.model.table.GoodTableDef.GOOD;
+import static com.mybatisflex.test.model.table.OrderGoodTableDef.ORDER_GOOD;
+import static com.mybatisflex.test.model.table.OrderTableDef.ORDER;
 import static com.mybatisflex.test.model.table.RoleTableDef.ROLE;
+import static com.mybatisflex.test.model.table.UserOrderTableDef.USER_ORDER;
 import static com.mybatisflex.test.model.table.UserRoleTableDef.USER_ROLE;
 import static com.mybatisflex.test.model.table.UserTableDef.USER;
 
 /**
  * @author 王帅
- * @since 2.0
+ * @since 2023-06-07
  */
 @SpringBootTest
 class UserMapperTest {
@@ -59,15 +63,32 @@ class UserMapperTest {
     void testSelectList() {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(USER.USER_ID, USER.USER_NAME, ROLE.ALL_COLUMNS)
-                .from(USER)
-                .leftJoin(USER_ROLE).on(USER_ROLE.USER_ID.eq(USER.USER_ID))
-                .leftJoin(ROLE).on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID));
-//        System.out.println(queryWrapper.toSQL());
+                .from(USER.as("u"))
+                .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+                .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+                .where(USER.USER_ID.ge(2));
+        System.out.println(queryWrapper.toSQL());
 //        List<UserVO> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO.class);
-//        List<UserVO1> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO1.class);
+        List<UserVO1> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO1.class);
 //        List<UserVO2> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO2.class);
-        List<UserVO3> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO3.class);
+//        List<UserVO3> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO3.class);
         userVOS.forEach(System.err::println);
+    }
+
+    @Test
+    void testComplexSelectList() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(USER.ALL_COLUMNS, ROLE.ALL_COLUMNS, ORDER.ALL_COLUMNS, GOOD.ALL_COLUMNS)
+                .from(USER.as("u"))
+                .leftJoin(USER_ROLE).as("ur").on(USER.USER_ID.eq(USER_ROLE.USER_ID))
+                .leftJoin(ROLE).as("r").on(ROLE.ROLE_ID.eq(USER_ROLE.ROLE_ID))
+                .leftJoin(USER_ORDER).as("uo").on(USER.USER_ID.eq(USER_ORDER.USER_ID))
+                .leftJoin(ORDER).as("o").on(ORDER.ORDER_ID.eq(USER_ORDER.ORDER_ID))
+                .leftJoin(ORDER_GOOD).as("og").on(ORDER.ORDER_ID.eq(ORDER_GOOD.ORDER_ID))
+                .leftJoin(GOOD).as("g").on(GOOD.GOOD_ID.eq(ORDER_GOOD.GOOD_ID));
+        System.err.println(queryWrapper.toSQL());
+        List<UserInfo> userInfos = userMapper.selectListByQueryAs(queryWrapper, UserInfo.class);
+        userInfos.forEach(System.err::println);
     }
 
 }

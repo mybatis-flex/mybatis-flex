@@ -16,11 +16,9 @@
 
 package com.mybatisflex.test.model;
 
-import java.util.Objects;
-
 /**
  * @author 王帅
- * @since 2.0
+ * @since 2023-06-07
  */
 
 public class UserVO3 {
@@ -69,30 +67,6 @@ public class UserVO3 {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        UserVO3 userVO3 = (UserVO3) o;
-
-        if (!Objects.equals(userId, userVO3.userId)) return false;
-        if (!Objects.equals(userName, userVO3.userName)) return false;
-        if (!Objects.equals(roleId, userVO3.roleId)) return false;
-        if (!Objects.equals(roleKey, userVO3.roleKey)) return false;
-        return Objects.equals(roleName, userVO3.roleName);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = userId != null ? userId.hashCode() : 0;
-        result = 31 * result + (userName != null ? userName.hashCode() : 0);
-        result = 31 * result + (roleId != null ? roleId.hashCode() : 0);
-        result = 31 * result + (roleKey != null ? roleKey.hashCode() : 0);
-        result = 31 * result + (roleName != null ? roleName.hashCode() : 0);
-        return result;
     }
 
     @Override
