@@ -16,6 +16,7 @@
 
 package com.mybatisflex.test.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class UserVO {
 
     private String userId;
     private String userName;
-    private List<Role> roleList;
+    private ArrayList<Role> roleList;
 
     public String getUserId() {
         return userId;
@@ -51,7 +52,7 @@ public class UserVO {
         return roleList;
     }
 
-    public void setRoleList(List<Role> roleList) {
+    public void setRoleList(ArrayList<Role> roleList) {
         this.roleList = roleList;
     }
 
