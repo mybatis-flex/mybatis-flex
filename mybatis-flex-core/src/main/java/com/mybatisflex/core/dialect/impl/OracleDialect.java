@@ -17,9 +17,15 @@ package com.mybatisflex.core.dialect.impl;
 
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
+import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.StringUtil;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 
 public class OracleDialect extends CommonsDialectImpl {
 
@@ -56,8 +62,92 @@ public class OracleDialect extends CommonsDialectImpl {
     public OracleDialect() {
         this(LimitOffsetProcessor.ORACLE);
     }
+
     public OracleDialect(LimitOffsetProcessor limitOffsetProcessor) {
-        super(new KeywordWrap(keywords,"\"","\""),limitOffsetProcessor);
+        super(new KeywordWrap(keywords, "\"", "\""), limitOffsetProcessor);
     }
 
+    @Override
+    public String forInsertEntityBatch(TableInfo tableInfo, List<?> entities) {
+        /**
+         * INSERT ALL
+         *    INTO t (col1, col2, col3) VALUES ('val1_1', 'val1_2', 'val1_3')
+         *    INTO t (col1, col2, col3) VALUES ('val2_1', 'val2_2', 'val2_3')
+         *    INTO t (col1, col2, col3) VALUES ('val3_1', 'val3_2', 'val3_3')
+         *    .
+         *    .
+         *    .
+         * SELECT 1 FROM DUAL;
+         */
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT ALL");
+        String[] insertColumns = tableInfo.obtainInsertColumns(null, false);
+        String[] warpedInsertColumns = new String[insertColumns.length];
+        for (int i = 0; i < insertColumns.length; i++) {
+            warpedInsertColumns[i] = wrap(insertColumns[i]);
+        }
+
+
+        Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
+        for (int i = 0; i < entities.size(); i++) {
+            sql.append(" INTO ").append(tableInfo.getWrapSchemaAndTableName(this));
+            sql.append(" (").append(StringUtil.join(", ", warpedInsertColumns)).append(")");
+            sql.append(" VALUES ");
+
+            StringJoiner stringJoiner = new StringJoiner(", ", "(", ")");
+            for (String insertColumn : insertColumns) {
+                if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
+                    //直接读取 onInsert 配置的值，而不用 "?" 代替
+                    stringJoiner.add(onInsertColumns.get(insertColumn));
+                } else {
+                    stringJoiner.add("?");
+                }
+            }
+            sql.append(stringJoiner);
+        }
+
+        return sql.append(" SELECT 1 FROM DUAL").toString();
+    }
+
+
+    @Override
+    public String forInsertBatchWithFirstRowColumns(String schema, String tableName, List<Row> rows) {
+        /**
+         * INSERT ALL
+         *    INTO t (col1, col2, col3) VALUES ('val1_1', 'val1_2', 'val1_3')
+         *    INTO t (col1, col2, col3) VALUES ('val2_1', 'val2_2', 'val2_3')
+         *    INTO t (col1, col2, col3) VALUES ('val3_1', 'val3_2', 'val3_3')
+         *    .
+         *    .
+         *    .
+         * SELECT 1 FROM DUAL;
+         */
+        StringBuilder fields = new StringBuilder();
+        Row firstRow = rows.get(0);
+        Set<String> attrs = firstRow.obtainModifyAttrs();
+        int index = 0;
+        for (String column : attrs) {
+            fields.append(wrap(column));
+            if (index != attrs.size() - 1) {
+                fields.append(", ");
+            }
+            index++;
+        }
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("INSERT ALL");
+
+        String tableNameWrap = StringUtil.isNotBlank(schema)
+                ? wrap(getRealSchema(schema)) + "." + wrap(getRealTable(tableName))
+                : wrap(getRealTable(tableName));
+        String questionStrings = buildQuestion(attrs.size(), true);
+
+        for (int i = 0; i < rows.size(); i++) {
+            sql.append(" INTO ").append(tableNameWrap);
+            sql.append(" (").append(fields).append(")");
+            sql.append(" VALUES ").append(questionStrings);
+        }
+
+        return sql.append(" SELECT 1 FROM DUAL").toString();
+    }
 }

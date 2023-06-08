@@ -113,7 +113,7 @@ public class TransactionalManager {
         } finally {
             //恢复上一级事务
             if (currentXID != null) {
-                TransactionContext.hold(currentXID);
+                TransactionContext.holdXID(currentXID);
             }
         }
     }
@@ -147,7 +147,7 @@ public class TransactionalManager {
 
     public static String startTransactional() {
         String xid = UUID.randomUUID().toString();
-        TransactionContext.hold(xid);
+        TransactionContext.holdXID(xid);
         return xid;
     }
 

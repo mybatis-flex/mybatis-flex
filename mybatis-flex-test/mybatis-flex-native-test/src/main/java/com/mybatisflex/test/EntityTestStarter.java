@@ -19,12 +19,15 @@ import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
-import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.row.Db;
+import org.apache.ibatis.cursor.Cursor;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
+
+import java.util.function.Supplier;
 
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
@@ -138,8 +141,30 @@ public class EntityTestStarter {
 //
 //        List<ArticleDTO> articleDTOS = accountMapper.selectListByQueryAs(asWrapper, ArticleDTO.class);
 //        System.out.println(articleDTOS);
-        Page<ArticleDTO01> paginate = accountMapper.paginateAs(Page.of(1, 10), asWrapper, ArticleDTO01.class);
-        System.out.println(paginate);
+//        Page<ArticleDTO01> paginate = accountMapper.paginateAs(Page.of(1, 10), asWrapper, ArticleDTO01.class);
+//        System.out.println(paginate);
+
+        Db.tx(new Supplier<Boolean>() {
+            @Override
+            public Boolean get() {
+                Cursor<Account> accounts = accountMapper.selectCursorByQuery(asWrapper);
+                System.out.println(accounts.isOpen());
+                for (Account account : accounts) {
+                    System.out.println(accounts.isOpen());
+                    System.out.println(account);
+                }
+                System.out.println(accounts.isOpen());
+                return true;
+            }
+        });
+
+//        Cursor<Account> accounts = accountMapper.selectCursorByQuery(asWrapper);
+//        System.out.println(accounts.isOpen());
+//        for (Account account : accounts) {
+//            System.out.println(accounts.isOpen());
+//            System.out.println(account);
+//        }
+//        System.out.println(accounts.isOpen());
 
 
 //        QueryWrapper queryWrapper = new QueryWrapper();

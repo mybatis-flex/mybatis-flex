@@ -47,6 +47,10 @@ select * from tb_account
 where id >= 100
 ```
 
+::: tip 问题：以上示例中，`ACCOUNT.ID.ge(100)` 中的 `ACCOUNT` 是怎么来的？
+MyBatis-Flex 使用了 APT 技术，这个 `ACCOUNT` 是自动生成的。
+参考：《[MyBatis-Flex APT 配置](../others/apt.md)》章节。
+:::
 
 ## select *
 

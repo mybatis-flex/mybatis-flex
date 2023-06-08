@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-import static com.mybatisflex.test.model.table.AccountTableDef.ACCOUNT;
+import static com.mybatisflex.test.model.table.AccountTableDef.accountDef;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
@@ -33,7 +33,7 @@ public class AccountTest implements WithAssertions {
     @Test
     public void testSelectByQuery() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(ACCOUNT.AGE.eq(18));
+                .where(accountDef.age.eq(18));
         List<Account> accounts = accountMapper.selectListByQuery(queryWrapper);
         assertThat(accounts.size()).isEqualTo(1);
         assertThat(accounts.get(0).getAge()).isEqualTo(18);
