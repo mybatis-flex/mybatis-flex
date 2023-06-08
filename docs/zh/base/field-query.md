@@ -108,7 +108,7 @@ List<Article> articles = mapper.selectListByQuery(query
 
 ## 结果映射
 
-您也可以继续使用连表查询，如果是原生 MyBatis 的话，可以使用 `<resultMap>` 标签来构建结果映射，在 MyBatis-Flex 中提供了自动结果映射功能，这样您就可以只关注于 SQL 语句的构建。
+您也可以继续使用联表查询，如果是原生 MyBatis 的话，可以使用 `<resultMap>` 标签来构建结果映射，在 MyBatis-Flex 中提供了自动结果映射功能，这样您就可以只关注于 SQL 语句的构建。
 
 ## 代码示例（Join Query）
 
@@ -147,7 +147,7 @@ public class UserVO {
 }
 ```
 
-这个操作只需要连表查询即可完成，对于连表查询的结果映射，MyBatis-Flex 会自动帮您完成：
+这个操作只需要联表查询即可完成，对于联表查询的结果映射，MyBatis-Flex 会自动帮您完成：
 
 ```java
 @SpringBootTest
@@ -170,7 +170,7 @@ class UserMapperTest {
 }
 ```
 
-构建的连表查询 SQL 语句为：
+构建的联表查询 SQL 语句为：
 
 ```sql
 SELECT `u`.`user_id`,
@@ -188,3 +188,16 @@ UserVO{userId='1', userName='admin', roleList=[Role{roleId=1, roleKey='admin', r
 UserVO{userId='2', userName='ry', roleList=[Role{roleId=2, roleKey='common', roleName='普通角色'}]}
 UserVO{userId='3', userName='test', roleList=[Role{roleId=1, roleKey='admin', roleName='超级管理员'}, Role{roleId=2, roleKey='common', roleName='普通角色'}]}
 ```
+
+## 特别注意！！！
+
+使用 `join` 联表查询的时候，只能使用 `selectListXxx` 方法查询 List 数据，不能使用 `selectOneXxx` 方法查询单个数据。
+
+```java
+default <R> R selectOneByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
+    List<R> entities = selectListByQueryAs(queryWrapper.limit(1), asType);
+    return (entities == null || entities.isEmpty()) ? null : entities.get(0);
+}
+```
+
+因为这个 `selectOneXxx` 方法都是调用的对应的 `selectListXxx` 方法，其中添加了 `queryWrapper.limit(1)` 约束，将数据限制在了一条，而联表查询数据有可能是多条的，这样自动映射就会出现数据丢失。
