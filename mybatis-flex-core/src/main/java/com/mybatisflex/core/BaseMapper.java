@@ -345,7 +345,7 @@ public interface BaseMapper<T> {
      * @return entity 数据
      */
     default T selectOneByQuery(QueryWrapper queryWrapper) {
-        return SqlUtil.getSelectOneResult(selectListByQuery(queryWrapper));
+        return MapperUtil.getSelectOneResult(selectListByQuery(queryWrapper));
     }
 
 
@@ -357,7 +357,7 @@ public interface BaseMapper<T> {
      * @return 数据内容
      */
     default <R> R selectOneByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
-        return SqlUtil.getSelectOneResult(selectListByQueryAs(queryWrapper, asType));
+        return MapperUtil.getSelectOneResult(selectListByQueryAs(queryWrapper, asType));
     }
 
     /**
@@ -503,7 +503,7 @@ public interface BaseMapper<T> {
      * @return 数据量
      */
     default Object selectObjectByQuery(QueryWrapper queryWrapper) {
-        return SqlUtil.getSelectOneResult(selectObjectListByQuery(queryWrapper));
+        return MapperUtil.getSelectOneResult(selectObjectListByQuery(queryWrapper));
     }
 
 

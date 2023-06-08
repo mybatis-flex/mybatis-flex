@@ -19,6 +19,8 @@ import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.field.FieldQuery;
 import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.query.QueryWrapper;
+import org.apache.ibatis.exceptions.TooManyResultsException;
+import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -59,5 +61,22 @@ public class MapperUtil {
                 fieldWrapper.set(value, entity);
             }
         });
+    }
+
+
+
+    /**
+     * 搬运加改造 {@link DefaultSqlSession#selectOne(String, Object)}
+     */
+    public static <T> T getSelectOneResult(List<T> list) {
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+        int size = list.size();
+        if (size == 1) {
+            return list.get(0);
+        }
+        throw new TooManyResultsException(
+                "Expected one result (or null) to be returned by selectOne(), but found: " + size);
     }
 }
