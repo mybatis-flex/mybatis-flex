@@ -26,9 +26,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 
-import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
-import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
-
 public class EntityTestStarter {
 
     public static void main(String[] args) {
@@ -117,8 +114,9 @@ public class EntityTestStarter {
 //                        , ACCOUNT.AGE.as(ArticleDTO::getAuthorAge)
 //                        , ACCOUNT.BIRTHDAY
 //                )
-                .from(ARTICLE)
-                .leftJoin(ACCOUNT).as("a").on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+                .from(Article.class)
+//                .leftJoin(Account.class).as("a").on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+                .leftJoin(Account.class).as("a").on(s -> s.where(Account::getId).eq(Article::getAccountId))
                 .where(Account::getId).ge(100, If::notEmpty)
                 .and(queryWrapper -> {
                     queryWrapper

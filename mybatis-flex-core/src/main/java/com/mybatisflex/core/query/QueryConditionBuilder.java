@@ -15,16 +15,19 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
+
 import java.util.Collection;
 import java.util.function.Predicate;
 
-public class LambdaConditionBuilder {
+public class QueryConditionBuilder {
 
     private QueryWrapper queryWrapper;
     private QueryColumn queryColumn;
     private SqlConnector connector;
 
-    public LambdaConditionBuilder(QueryWrapper queryWrapper, QueryColumn queryColumn, SqlConnector connector) {
+    public QueryConditionBuilder(QueryWrapper queryWrapper, QueryColumn queryColumn, SqlConnector connector) {
         this.queryWrapper = queryWrapper;
         this.queryColumn = queryColumn;
         this.connector = connector;
@@ -51,6 +54,16 @@ public class LambdaConditionBuilder {
     }
 
 
+    public <T> QueryWrapper eq(LambdaGetter<T> value) {
+        return eq(LambdaUtil.getQueryColumn(value));
+    }
+
+
+    public <T> QueryWrapper eq(LambdaGetter<T> value, Predicate<T> when) {
+        return eq(LambdaUtil.getQueryColumn(value), when);
+    }
+
+
     /**
      * not equals !=
      *
@@ -68,6 +81,15 @@ public class LambdaConditionBuilder {
             queryWrapper.addWhereQueryCondition(queryColumn.ne(value, when), connector);
         }
         return queryWrapper;
+    }
+
+    public <T> QueryWrapper ne(LambdaGetter<T> value) {
+        return ne(LambdaUtil.getQueryColumn(value));
+    }
+
+
+    public <T> QueryWrapper ne(LambdaGetter<T> value, Predicate<T> when) {
+        return ne(LambdaUtil.getQueryColumn(value), when);
     }
 
 
@@ -139,6 +161,16 @@ public class LambdaConditionBuilder {
         return queryWrapper;
     }
 
+    public <T> QueryWrapper gt(LambdaGetter<T> value) {
+        return gt(LambdaUtil.getQueryColumn(value));
+    }
+
+
+    public <T> QueryWrapper gt(LambdaGetter<T> value, Predicate<T> when) {
+        return gt(LambdaUtil.getQueryColumn(value), when);
+    }
+
+
     /**
      * 大于等于 greater or equal
      *
@@ -156,6 +188,15 @@ public class LambdaConditionBuilder {
             queryWrapper.addWhereQueryCondition(queryColumn.ge(value, when), connector);
         }
         return queryWrapper;
+    }
+
+    public <T> QueryWrapper ge(LambdaGetter<T> value) {
+        return ge(LambdaUtil.getQueryColumn(value));
+    }
+
+
+    public <T> QueryWrapper ge(LambdaGetter<T> value, Predicate<T> when) {
+        return ge(LambdaUtil.getQueryColumn(value), when);
     }
 
     /**
@@ -177,6 +218,15 @@ public class LambdaConditionBuilder {
         return queryWrapper;
     }
 
+    public <T> QueryWrapper lt(LambdaGetter<T> value) {
+        return lt(LambdaUtil.getQueryColumn(value));
+    }
+
+
+    public <T> QueryWrapper lt(LambdaGetter<T> value, Predicate<T> when) {
+        return lt(LambdaUtil.getQueryColumn(value), when);
+    }
+
     /**
      * 小于等于 less or equal
      *
@@ -189,11 +239,21 @@ public class LambdaConditionBuilder {
         return queryWrapper;
     }
 
+
     public <T> QueryWrapper le(Object value, Predicate<T> when) {
         if (value != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.le(value, when), connector);
         }
         return queryWrapper;
+    }
+
+    public <T> QueryWrapper le(LambdaGetter<T> value) {
+        return le(LambdaUtil.getQueryColumn(value));
+    }
+
+
+    public <T> QueryWrapper le(LambdaGetter<T> value, Predicate<T> when) {
+        return le(LambdaUtil.getQueryColumn(value), when);
     }
 
 
@@ -364,6 +424,7 @@ public class LambdaConditionBuilder {
         }
         return queryWrapper;
     }
+
 
     public <T> QueryWrapper between(Object start, Object end, Predicate<T> when) {
         if (queryWrapper != null) {

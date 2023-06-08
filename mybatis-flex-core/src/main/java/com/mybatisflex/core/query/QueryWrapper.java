@@ -137,8 +137,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public <T> LambdaConditionBuilder where(LambdaGetter<T> fn) {
-        return new LambdaConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
+    public <T> QueryConditionBuilder where(LambdaGetter<T> fn) {
+        return new QueryConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
     }
 
     public QueryWrapper and(QueryCondition queryCondition) {
@@ -155,8 +155,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public <T> LambdaConditionBuilder and(LambdaGetter<T> fn) {
-        return new LambdaConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
+    public <T> QueryConditionBuilder and(LambdaGetter<T> fn) {
+        return new QueryConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
     }
 
 
@@ -184,6 +184,10 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
+    public <T> QueryConditionBuilder or(LambdaGetter<T> fn) {
+        return new QueryConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.OR);
+    }
+
     public QueryWrapper or(Consumer<QueryWrapper> consumer) {
         QueryWrapper newWrapper = new QueryWrapper();
         consumer.accept(newWrapper);
@@ -192,11 +196,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             or(new Brackets(whereQueryCondition));
         }
         return this;
-    }
-
-
-    public <T> LambdaConditionBuilder or(LambdaGetter<T> fn) {
-        return new LambdaConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.OR);
     }
 
     public Joiner<QueryWrapper> leftJoin(String table) {
