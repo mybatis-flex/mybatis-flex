@@ -22,10 +22,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class MapperUtil {
@@ -51,17 +48,13 @@ public class MapperUtil {
                 Class<?> mappingType = fieldWrapper.getMappingType();
 
                 Object value;
-                if (Set.class.isAssignableFrom(fieldType)) {
+                if (Collection.class.isAssignableFrom(fieldType)) {
                     value = mapper.selectListByQueryAs(childQuery, mappingType);
-                    if (ClassUtil.canInstance(fieldType.getModifiers())) {
-                        value = copyValue(fieldType, value);
-                    } else {
-                        value = new HashSet<>((Collection<?>) value);
-                    }
-                } else if (Collection.class.isAssignableFrom(fieldType)) {
-                    value = mapper.selectListByQueryAs(childQuery, mappingType);
-                    if (ClassUtil.canInstance(fieldType.getModifiers())) {
-                        value = copyValue(fieldType, value);
+                    if (!fieldType.isAssignableFrom(value.getClass())) {
+                        fieldType = getWrapType(fieldType);
+                        Collection newValue = (Collection) ClassUtil.newInstance(fieldType);
+                        newValue.addAll((Collection) value);
+                        value = newValue;
                     }
                 } else if (fieldType.isArray()) {
                     value = mapper.selectListByQueryAs(childQuery, mappingType);
@@ -74,11 +67,17 @@ public class MapperUtil {
         });
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    private static Object copyValue(Class<?> fieldType, Object value) {
-        Collection collection = (Collection) ClassUtil.newInstance(fieldType);
-        collection.addAll((Collection) value);
-        return collection;
+
+    private static Class<?> getWrapType(Class<?> type) {
+        if (List.class.isAssignableFrom(type)) {
+            return ArrayList.class;
+        }
+
+        if (Set.class.isAssignableFrom(type)) {
+            return HashSet.class;
+        }
+
+        throw new IllegalStateException("Field query can not support type: " + type.getName());
     }
 
 
