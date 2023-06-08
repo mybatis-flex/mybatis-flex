@@ -26,7 +26,7 @@ import com.mybatisflex.annotation.Table;
  * @since 2023-06-07
  */
 @Table("tb_role")
-public class Role {
+public class Role implements Comparable<Role> {
 
     @Id
     private Integer roleId;
@@ -64,5 +64,10 @@ public class Role {
                 ", roleKey='" + roleKey + '\'' +
                 ", roleName='" + roleName + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Role o) {
+        return Integer.compare(this.roleId, o.roleId);
     }
 }

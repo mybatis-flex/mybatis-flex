@@ -16,7 +16,8 @@
 
 package com.mybatisflex.test.model;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.TreeSet;
 
 /**
  * 用户 VO 对象。
@@ -29,7 +30,7 @@ public class UserVO {
 
     private String userId;
     private String userName;
-    private List<Role> roleList;
+    private TreeSet<Role> roleList;
 
     public String getUserId() {
         return userId;
@@ -47,11 +48,11 @@ public class UserVO {
         this.userName = userName;
     }
 
-    public List<Role> getRoleList() {
+    public Collection<Role> getRoleList() {
         return roleList;
     }
 
-    public void setRoleList(List<Role> roleList) {
+    public void setRoleList(TreeSet<Role> roleList) {
         this.roleList = roleList;
     }
 
