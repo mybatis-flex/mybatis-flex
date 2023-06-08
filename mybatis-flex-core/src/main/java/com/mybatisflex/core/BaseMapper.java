@@ -27,6 +27,7 @@ import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.*;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.apache.ibatis.cursor.Cursor;
 
 import java.io.Serializable;
 import java.util.*;
@@ -441,6 +442,17 @@ public interface BaseMapper<T> {
 
         return list;
     }
+
+    /**
+     * 根据 query 来构建条件查询游标数据 Cursor
+     * 该方法必须在事务中才能正常使用，非事务下无法获取数据
+     *
+     * @param queryWrapper 查询条件
+     * @return 游标数据 Cursor
+     */
+    @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
+    Cursor<T> selectCursorByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+
 
 
     /**

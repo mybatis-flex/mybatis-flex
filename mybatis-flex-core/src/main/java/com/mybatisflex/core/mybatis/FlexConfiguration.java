@@ -34,6 +34,7 @@ import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
+import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.session.*;
@@ -91,6 +92,17 @@ public class FlexConfiguration extends Configuration {
         } else {
             return super.newParameterHandler(mappedStatement, parameterObject, boundSql);
         }
+    }
+
+
+    @Override
+    public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement
+            , RowBounds rowBounds, ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
+//        ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler,
+//                resultHandler, boundSql, rowBounds);
+        ResultSetHandler resultSetHandler = new FlexResultSetHandler(executor, mappedStatement, parameterHandler,
+                resultHandler, boundSql, rowBounds);
+        return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
     }
 
     /**
