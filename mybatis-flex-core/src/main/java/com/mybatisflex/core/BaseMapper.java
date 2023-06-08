@@ -740,11 +740,11 @@ public interface BaseMapper<T> {
                 Class<?> mappingType = fieldWrapper.getMappingType();
 
                 Object value;
-                if (fieldType.isAssignableFrom(List.class)) {
-                    value = selectListByQueryAs(childQuery, mappingType);
-                } else if (fieldType.isAssignableFrom(Set.class)) {
+                if (Set.class.isAssignableFrom(fieldType)) {
                     value = selectListByQueryAs(childQuery, mappingType);
                     value = new HashSet<>((Collection<?>) value);
+                } else if (Collection.class.isAssignableFrom(fieldType)) {
+                    value = selectListByQueryAs(childQuery, mappingType);
                 } else if (fieldType.isArray()) {
                     value = selectListByQueryAs(childQuery, mappingType);
                     value = ((List<?>) value).toArray();
