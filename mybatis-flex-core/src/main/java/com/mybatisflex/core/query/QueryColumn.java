@@ -23,6 +23,7 @@ import com.mybatisflex.core.util.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * 查询列，描述的是一张表的字段
@@ -114,6 +115,14 @@ public class QueryColumn implements Serializable {
     }
 
 
+    public <T> QueryCondition eq(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, QueryCondition.LOGIC_EQUALS, value).when(fn);
+    }
+
+
     /**
      * not equals !=
      *
@@ -126,12 +135,31 @@ public class QueryColumn implements Serializable {
         return QueryCondition.create(this, QueryCondition.LOGIC_NOT_EQUALS, value);
     }
 
+    public <T> QueryCondition ne(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, QueryCondition.LOGIC_NOT_EQUALS, value).when(fn);
+    }
 
+
+    /**
+     * like %%
+     *
+     * @param value
+     */
     public QueryCondition like(Object value) {
         if (value == null) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, "%" + value + "%");
+    }
+
+    public <T> QueryCondition like(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, "%" + value + "%").when(fn);
     }
 
 
@@ -142,12 +170,26 @@ public class QueryColumn implements Serializable {
         return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, "%" + value);
     }
 
+    public <T> QueryCondition likeLeft(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, "%" + value).when(fn);
+    }
+
 
     public QueryCondition likeRight(Object value) {
         if (value == null) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, value + "%");
+    }
+
+    public <T> QueryCondition likeRight(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, value + "%").when(fn);
     }
 
     /**
@@ -162,6 +204,13 @@ public class QueryColumn implements Serializable {
         return QueryCondition.create(this, QueryCondition.LOGIC_GT, value);
     }
 
+    public <T> QueryCondition gt(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, QueryCondition.LOGIC_GT, value).when(fn);
+    }
+
     /**
      * 大于等于 greater or equal
      *
@@ -172,6 +221,13 @@ public class QueryColumn implements Serializable {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, QueryCondition.LOGIC_GE, value);
+    }
+
+    public <T> QueryCondition ge(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, QueryCondition.LOGIC_GE, value).when(fn);
     }
 
     /**
@@ -186,6 +242,13 @@ public class QueryColumn implements Serializable {
         return QueryCondition.create(this, QueryCondition.LOGIC_LT, value);
     }
 
+    public <T> QueryCondition lt(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, QueryCondition.LOGIC_LT, value).when(fn);
+    }
+
     /**
      * 小于等于 less or equal
      *
@@ -198,6 +261,13 @@ public class QueryColumn implements Serializable {
         return QueryCondition.create(this, QueryCondition.LOGIC_LE, value);
     }
 
+    public <T> QueryCondition le(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, QueryCondition.LOGIC_LE, value).when(fn);
+    }
+
 
     /**
      * IS NULL
@@ -208,6 +278,10 @@ public class QueryColumn implements Serializable {
         return QueryCondition.create(this, QueryCondition.LOGIC_IS_NULL, null);
     }
 
+    public <T> QueryCondition isNull(Predicate<T> fn) {
+        return QueryCondition.create(this, QueryCondition.LOGIC_IS_NULL, null).when(fn);
+    }
+
 
     /**
      * IS NOT NULL
@@ -216,6 +290,10 @@ public class QueryColumn implements Serializable {
      */
     public QueryCondition isNotNull() {
         return QueryCondition.create(this, QueryCondition.LOGIC_IS_NOT_NULL, null);
+    }
+
+    public <T> QueryCondition isNotNull(Predicate<T> fn) {
+        return QueryCondition.create(this, QueryCondition.LOGIC_IS_NOT_NULL, null).when(fn);
     }
 
 
@@ -233,6 +311,14 @@ public class QueryColumn implements Serializable {
         return QueryCondition.create(this, QueryCondition.LOGIC_IN, arrays);
     }
 
+    public <T> QueryCondition in(Object[] arrays, Predicate<T> fn) {
+        //忽略 QueryWrapper.in("name", null) 的情况
+        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null)) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, QueryCondition.LOGIC_IN, arrays).when(fn);
+    }
+
     /**
      * in child select
      *
@@ -241,6 +327,10 @@ public class QueryColumn implements Serializable {
      */
     public QueryCondition in(QueryWrapper queryWrapper) {
         return QueryCondition.create(this, QueryCondition.LOGIC_IN, queryWrapper);
+    }
+
+    public <T> QueryCondition in(QueryWrapper queryWrapper, Predicate<T> fn) {
+        return QueryCondition.create(this, QueryCondition.LOGIC_IN, queryWrapper).when(fn);
     }
 
 
@@ -253,6 +343,13 @@ public class QueryColumn implements Serializable {
     public QueryCondition in(Collection<?> collection) {
         if (collection != null && !collection.isEmpty()) {
             return in(collection.toArray());
+        }
+        return QueryCondition.createEmpty();
+    }
+
+    public <T> QueryCondition in(Collection<?> collection, Predicate<T> fn) {
+        if (collection != null && !collection.isEmpty()) {
+            return in(collection.toArray(), fn);
         }
         return QueryCondition.createEmpty();
     }
@@ -271,6 +368,14 @@ public class QueryColumn implements Serializable {
         return QueryCondition.create(this, QueryCondition.LOGIC_NOT_IN, arrays);
     }
 
+    public <T> QueryCondition notIn(Object[] arrays, Predicate<T> fn) {
+        //忽略 QueryWrapper.notIn("name", null) 的情况
+        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null)) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, QueryCondition.LOGIC_NOT_IN, arrays).when(fn);
+    }
+
 
     /**
      * not in Collection
@@ -285,6 +390,13 @@ public class QueryColumn implements Serializable {
         return QueryCondition.createEmpty();
     }
 
+    public <T> QueryCondition notIn(Collection<?> collection, Predicate<T> fn) {
+        if (collection != null && !collection.isEmpty()) {
+            return notIn(collection.toArray(), fn);
+        }
+        return QueryCondition.createEmpty();
+    }
+
     /**
      * not in child select
      *
@@ -292,6 +404,10 @@ public class QueryColumn implements Serializable {
      */
     public QueryCondition notIn(QueryWrapper queryWrapper) {
         return QueryCondition.create(this, QueryCondition.LOGIC_NOT_IN, queryWrapper);
+    }
+
+    public <T> QueryCondition notIn(QueryWrapper queryWrapper, Predicate<T> fn) {
+        return QueryCondition.create(this, QueryCondition.LOGIC_NOT_IN, queryWrapper).when(fn);
     }
 
 
@@ -305,6 +421,11 @@ public class QueryColumn implements Serializable {
         return QueryCondition.create(this, QueryCondition.LOGIC_BETWEEN, new Object[]{start, end});
     }
 
+    public <T> QueryCondition between(Object start, Object end, Predicate<T> fn) {
+        return QueryCondition.create(this, QueryCondition.LOGIC_BETWEEN, new Object[]{start, end}).when(fn);
+    }
+
+
     /**
      * not between
      *
@@ -313,6 +434,10 @@ public class QueryColumn implements Serializable {
      */
     public QueryCondition notBetween(Object start, Object end) {
         return QueryCondition.create(this, QueryCondition.LOGIC_NOT_BETWEEN, new Object[]{start, end});
+    }
+
+    public <T> QueryCondition notBetween(Object start, Object end, Predicate<T> fn) {
+        return QueryCondition.create(this, QueryCondition.LOGIC_NOT_BETWEEN, new Object[]{start, end}).when(fn);
     }
 
 

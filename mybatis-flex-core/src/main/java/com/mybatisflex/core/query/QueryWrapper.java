@@ -17,14 +17,13 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
-import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.table.TableDef;
-import com.mybatisflex.core.util.ArrayUtil;
-import com.mybatisflex.core.util.CollectionUtil;
-import com.mybatisflex.core.util.SqlUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
+import com.mybatisflex.core.util.*;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
@@ -46,6 +45,15 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     public QueryWrapper from(TableDef... tableDefs) {
         for (TableDef tableDef : tableDefs) {
             from(new QueryTable(tableDef));
+        }
+        return this;
+    }
+
+
+    public QueryWrapper from(Class<?>... entityClasses) {
+        for (Class<?> entityClass : entityClasses) {
+            TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
+            from(new QueryTable(tableInfo.getSchema(), tableInfo.getTableName()));
         }
         return this;
     }
@@ -99,10 +107,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         if (CollectionUtil.isEmpty(queryTables)) {
             throw new IllegalArgumentException("query table must not be empty.");
         }
-        if (queryTables.size() > 1) {
-            throw FlexExceptions.wrap("QueryWrapper.as(...) only support 1 table");
-        }
-        queryTables.get(0).alias = alias;
+
+        queryTables.get(queryTables.size() - 1).alias = alias;
         return this;
     }
 
@@ -131,6 +137,10 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
+    public <T> LambdaConditionBuilder where(LambdaGetter<T> fn) {
+        return new LambdaConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
+    }
+
     public QueryWrapper and(QueryCondition queryCondition) {
         return addWhereQueryCondition(queryCondition, SqlConnector.AND);
     }
@@ -142,6 +152,21 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     public QueryWrapper and(String sql, Object... params) {
         this.addWhereQueryCondition(new RawFragment(sql, params), SqlConnector.AND);
+        return this;
+    }
+
+    public <T> LambdaConditionBuilder and(LambdaGetter<T> fn) {
+        return new LambdaConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
+    }
+
+
+    public QueryWrapper and(Consumer<QueryWrapper> consumer) {
+        QueryWrapper newWrapper = new QueryWrapper();
+        consumer.accept(newWrapper);
+        QueryCondition whereQueryCondition = newWrapper.whereQueryCondition;
+        if (whereQueryCondition != null) {
+            and(new Brackets(whereQueryCondition));
+        }
         return this;
     }
 
@@ -157,6 +182,21 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     public QueryWrapper or(String sql, Object... params) {
         this.addWhereQueryCondition(new RawFragment(sql, params), SqlConnector.OR);
         return this;
+    }
+
+    public QueryWrapper or(Consumer<QueryWrapper> consumer) {
+        QueryWrapper newWrapper = new QueryWrapper();
+        consumer.accept(newWrapper);
+        QueryCondition whereQueryCondition = newWrapper.whereQueryCondition;
+        if (whereQueryCondition != null) {
+            or(new Brackets(whereQueryCondition));
+        }
+        return this;
+    }
+
+
+    public <T> LambdaConditionBuilder or(LambdaGetter<T> fn) {
+        return new LambdaConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.OR);
     }
 
     public Joiner<QueryWrapper> leftJoin(String table) {

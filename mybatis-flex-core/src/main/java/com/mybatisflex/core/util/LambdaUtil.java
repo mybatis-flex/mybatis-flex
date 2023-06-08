@@ -15,6 +15,10 @@
  */
 package com.mybatisflex.core.util;
 
+import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import org.apache.ibatis.reflection.property.PropertyNamer;
 import org.apache.ibatis.util.MapUtil;
 
@@ -26,14 +30,32 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class LambdaUtil {
 
-    private LambdaUtil() {}
+    private LambdaUtil() {
+    }
 
     private static final Map<Class<?>, SerializedLambda> lambdaMap = new ConcurrentHashMap<>();
+    private static final Map<String, Class<?>> classMap = new ConcurrentHashMap<>();
 
     public static <T> String getFieldName(LambdaGetter<T> getter) {
         SerializedLambda lambda = getSerializedLambda(getter);
         String methodName = lambda.getImplMethodName();
         return PropertyNamer.methodToProperty(methodName);
+    }
+
+
+    public static <T> QueryColumn getQueryColumn(LambdaGetter<T> getter) {
+        SerializedLambda lambda = getSerializedLambda(getter);
+        String methodName = lambda.getImplMethodName();
+        String implClass = lambda.getImplClass();
+        Class<?> entityClass = MapUtil.computeIfAbsent(classMap, implClass, s -> {
+            try {
+                return Class.forName(s.replace("/","."));
+            } catch (ClassNotFoundException e) {
+                throw FlexExceptions.wrap(e);
+            }
+        });
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
+        return tableInfo.getQueryColumnByProperty(PropertyNamer.methodToProperty(methodName));
     }
 
 

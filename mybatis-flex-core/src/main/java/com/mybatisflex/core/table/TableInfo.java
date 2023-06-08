@@ -1071,4 +1071,8 @@ public class TableInfo {
         }
         return value;
     }
+
+    public QueryColumn getQueryColumnByProperty(String property) {
+        return new QueryColumn(schema, tableName, propertyColumnMapping.get(property));
+    }
 }

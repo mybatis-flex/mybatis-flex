@@ -15,6 +15,9 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
+
 public class QueryMethods {
 
     public static FunctionQueryColumn count() {
@@ -88,6 +91,10 @@ public class QueryMethods {
 
     public static QueryColumn column(String schema, String table, String column) {
         return new QueryColumn(schema, table, column);
+    }
+
+    public static <T> QueryColumn column(LambdaGetter<T> fn) {
+        return LambdaUtil.getQueryColumn(fn);
     }
 
     public static SelectQueryColumn column(QueryWrapper queryWrapper) {

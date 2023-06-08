@@ -19,15 +19,12 @@ import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
+import com.mybatisflex.core.query.If;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.row.Db;
-import org.apache.ibatis.cursor.Cursor;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-
-import java.util.function.Supplier;
 
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
@@ -113,29 +110,50 @@ public class EntityTestStarter {
 //        Object object = accountMapper.selectObjectByQuery(wrapper2);
 //        System.out.println(object);
 //
-//        QueryWrapper asWrapper = QueryWrapper.create()
+
+        QueryWrapper asWrapper1 = QueryWrapper.create()
 //                .select(ARTICLE.ALL_COLUMNS)
 //                .select(ACCOUNT.USER_NAME.as(ArticleDTO::getAuthorName)
 //                        , ACCOUNT.AGE.as(ArticleDTO::getAuthorAge)
 //                        , ACCOUNT.BIRTHDAY
 //                )
+                .from(ARTICLE)
+                .leftJoin(ACCOUNT).as("a").on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+                .where(Account::getId).ge(100, If::notEmpty)
+                .and(queryWrapper -> {
+                    queryWrapper
+                            .where(Account::getId).ge(100)
+                            .or(Account::getAge).gt(200)
+                            .and(Article::getAccountId).eq(200)
+                            .or(queryWrapper1 -> {
+                                queryWrapper1.where(Account::getId).like("a",If::notEmpty);
+                            })
+                    ;
+                });
+        System.out.println(asWrapper1.toSQL());
+//                .and(query->query.and);
+//                .andEq(Account::getId,100);
+//                .and(new Brackets(column))
+//                .where(column(Account::getId).eq(1).when(If::notEmpty));
+
+//                .where(ARTICLE.ID.ge(0).or(ACCOUNT.ID.ge(0)));
+        // .where(Account::getId).eq(1).and()
+        //   where(eq(Account::getId,1))
+
+
+//
+//        List<ArticleDTO> articleDTOS = accountMapper.selectListByQueryAs(asWrapper, ArticleDTO.class);
+//        System.out.println(articleDTOS);
+//        Page<ArticleDTO> paginate = accountMapper.paginateAs(Page.of(1, 1), asWrapper1, ArticleDTO.class);
+//        System.out.println(paginate);
+//
+//
+//
+//        QueryWrapper asWrapper = QueryWrapper.create()
+//                .select(ARTICLE.ALL_COLUMNS,ACCOUNT.ALL_COLUMNS)
 //                .from(ARTICLE)
 //                .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
-////                .where(ACCOUNT.ID.ge(0));
 //                .where(ARTICLE.ID.ge(0).or(ACCOUNT.ID.ge(0)));
-////
-////        List<ArticleDTO> articleDTOS = accountMapper.selectListByQueryAs(asWrapper, ArticleDTO.class);
-////        System.out.println(articleDTOS);
-//        Page<ArticleDTO> paginate = accountMapper.paginateAs(Page.of(1, 1), asWrapper, ArticleDTO.class);
-//        System.out.println(paginate);
-
-
-
-        QueryWrapper asWrapper = QueryWrapper.create()
-                .select(ARTICLE.ALL_COLUMNS,ACCOUNT.ALL_COLUMNS)
-                .from(ARTICLE)
-                .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
-                .where(ARTICLE.ID.ge(0).or(ACCOUNT.ID.ge(0)));
 
 //        RowUtil.printPretty(Db.selectListByQuery(asWrapper));
 //
@@ -144,19 +162,19 @@ public class EntityTestStarter {
 //        Page<ArticleDTO01> paginate = accountMapper.paginateAs(Page.of(1, 10), asWrapper, ArticleDTO01.class);
 //        System.out.println(paginate);
 
-        Db.tx(new Supplier<Boolean>() {
-            @Override
-            public Boolean get() {
-                Cursor<Account> accounts = accountMapper.selectCursorByQuery(asWrapper);
-                System.out.println(accounts.isOpen());
-                for (Account account : accounts) {
-                    System.out.println(accounts.isOpen());
-                    System.out.println(account);
-                }
-                System.out.println(accounts.isOpen());
-                return true;
-            }
-        });
+//        Db.tx(new Supplier<Boolean>() {
+//            @Override
+//            public Boolean get() {
+//                Cursor<Account> accounts = accountMapper.selectCursorByQuery(asWrapper);
+//                System.out.println(accounts.isOpen());
+//                for (Account account : accounts) {
+//                    System.out.println(accounts.isOpen());
+//                    System.out.println(account);
+//                }
+//                System.out.println(accounts.isOpen());
+//                return true;
+//            }
+//        });
 
 //        Cursor<Account> accounts = accountMapper.selectCursorByQuery(asWrapper);
 //        System.out.println(accounts.isOpen());
