@@ -156,6 +156,9 @@ public class QueryEntityProcessor extends AbstractProcessor {
             //upperCase, lowerCase, upperCamelCase, lowerCamelCase
             String tablesNameStyle = props.getProperties().getProperty("processor.tablesNameStyle", "upperCase");
 
+            //包名对应的变量后缀
+            String tablesDefSuffix = props.getProperties().getProperty("processor.tablesDefSuffix", "");
+
             String[] entityIgnoreSuffixes = props.getProperties().getProperty("processor.entity.ignoreSuffixes", "").split(",");
 
 
@@ -207,13 +210,15 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 }
 
                 if (allInTables) {
-                    String content = buildTablesClass(entitySimpleName, schema, tableName, propertyAndColumns, defaultColumns, tablesNameStyle, null, allInTables);
+                    String content = buildTablesClass(entitySimpleName, schema, tableName, propertyAndColumns, defaultColumns, tablesNameStyle
+                            , tablesDefSuffix, null, allInTables);
                     tablesContent.append(content);
                 }
                 //每一个 entity 生成一个独立的文件
                 else {
                     String realGenPackage = genTablesPackage == null || genTablesPackage.trim().length() == 0 ? guessPackage.toString() : genTablesPackage;
-                    String content = buildTablesClass(entitySimpleName, schema, tableName, propertyAndColumns, defaultColumns, tablesNameStyle, realGenPackage, allInTables);
+                    String content = buildTablesClass(entitySimpleName, schema, tableName, propertyAndColumns, defaultColumns, tablesNameStyle
+                            , tablesDefSuffix, realGenPackage, allInTables);
                     genClass(genPath, realGenPackage, entitySimpleName + "TableDef", content);
                 }
 
@@ -332,13 +337,14 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
 
     private String buildTablesClass(String entityClass, String schema, String tableName, Map<String, String> propertyAndColumns
-            , List<String> defaultColumns, String tablesNameStyle, String realGenPackage, boolean allInTables) {
+            , List<String> defaultColumns, String tablesNameStyle, String tablesDefSuffix, String realGenPackage, boolean allInTables) {
 
         // tableDefTemplate = "    public static final @entityClassTableDef @tableField = new @entityClassTableDef(\"@tableName\");\n";
 
         String tableDef = tableDefTemplate.replace("@entityClass", entityClass)
                 .replace("@schema", schema)
-                .replace("@tableField", buildName(entityClass, tablesNameStyle))
+                .replace("@tableField", buildName(entityClass, tablesNameStyle)
+                        + (tablesDefSuffix != null ? tablesDefSuffix.trim() : ""))
                 .replace("@tableName", tableName);
 
 
