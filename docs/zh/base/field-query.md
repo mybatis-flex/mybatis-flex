@@ -188,16 +188,3 @@ UserVO{userId='1', userName='admin', roleList=[Role{roleId=1, roleKey='admin', r
 UserVO{userId='2', userName='ry', roleList=[Role{roleId=2, roleKey='common', roleName='普通角色'}]}
 UserVO{userId='3', userName='test', roleList=[Role{roleId=1, roleKey='admin', roleName='超级管理员'}, Role{roleId=2, roleKey='common', roleName='普通角色'}]}
 ```
-
-## 特别注意！！！
-
-使用 `join` 联表查询的时候，只能使用 `selectListXxx` 方法查询 List 数据，不能使用 `selectOneXxx` 方法查询单个数据。
-
-```java
-default <R> R selectOneByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
-    List<R> entities = selectListByQueryAs(queryWrapper.limit(1), asType);
-    return (entities == null || entities.isEmpty()) ? null : entities.get(0);
-}
-```
-
-因为这个 `selectOneXxx` 方法都是调用的对应的 `selectListXxx` 方法，其中添加了 `queryWrapper.limit(1)` 约束，将数据限制在了一条，而联表查询数据有可能是多条的，这样自动映射就会出现数据丢失。

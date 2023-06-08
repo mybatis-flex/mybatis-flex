@@ -15,13 +15,18 @@
  */
 package com.mybatisflex.core.util;
 
+import org.apache.ibatis.exceptions.TooManyResultsException;
+import org.apache.ibatis.session.defaults.DefaultSqlSession;
+
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 
 public class SqlUtil {
 
-    private SqlUtil() {}
+    private SqlUtil() {
+    }
 
     public static void keepColumnSafely(String column) {
         if (StringUtil.isBlank(column)) {
@@ -78,7 +83,7 @@ public class SqlUtil {
     }
 
 
-    public static String replaceSqlParams(String sql, Object[] params){
+    public static String replaceSqlParams(String sql, Object[] params) {
         if (params != null && params.length > 0) {
             for (Object value : params) {
                 // null
@@ -106,6 +111,21 @@ public class SqlUtil {
             }
         }
         return sql;
+    }
+
+    /**
+     * 搬运加改造 {@link DefaultSqlSession#selectOne(String, Object)}
+     */
+    public static <T> T getSelectOneResult(List<T> list) {
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+        int size = list.size();
+        if (size == 1) {
+            return list.get(0);
+        }
+        throw new TooManyResultsException(
+                "Expected one result (or null) to be returned by selectOne(), but found: " + size);
     }
 
 }

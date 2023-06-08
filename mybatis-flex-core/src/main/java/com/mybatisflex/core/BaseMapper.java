@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core;
 
@@ -346,8 +346,7 @@ public interface BaseMapper<T> {
      * @return entity 数据
      */
     default T selectOneByQuery(QueryWrapper queryWrapper) {
-        List<T> entities = selectListByQuery(queryWrapper.limit(1));
-        return (entities == null || entities.isEmpty()) ? null : entities.get(0);
+        return SqlUtil.getSelectOneResult(selectListByQuery(queryWrapper));
     }
 
 
@@ -359,8 +358,7 @@ public interface BaseMapper<T> {
      * @return 数据内容
      */
     default <R> R selectOneByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
-        List<R> entities = selectListByQueryAs(queryWrapper.limit(1), asType);
-        return (entities == null || entities.isEmpty()) ? null : entities.get(0);
+        return SqlUtil.getSelectOneResult(selectListByQueryAs(queryWrapper, asType));
     }
 
     /**
@@ -507,8 +505,7 @@ public interface BaseMapper<T> {
      * @return 数据量
      */
     default Object selectObjectByQuery(QueryWrapper queryWrapper) {
-        List<Object> objects = selectObjectListByQuery(queryWrapper.limit(1));
-        return objects == null || objects.isEmpty() ? null : objects.get(0);
+        return SqlUtil.getSelectOneResult(selectObjectListByQuery(queryWrapper));
     }
 
 
