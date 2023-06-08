@@ -25,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+import static com.mybatisflex.core.query.QueryMethods.select;
 import static com.mybatisflex.test.model.table.GoodTableDef.GOOD;
 import static com.mybatisflex.test.model.table.OrderGoodTableDef.ORDER_GOOD;
 import static com.mybatisflex.test.model.table.OrderTableDef.ORDER;
@@ -60,18 +61,40 @@ class UserMapperTest {
     }
 
     @Test
+    void testFieldQuery() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(USER.USER_ID, USER.USER_NAME)
+                .from(USER.as("u"))
+                .where(USER.USER_ID.eq(3));
+        System.out.println(queryWrapper.toSQL());
+        List<UserVO> userVOs = userMapper.selectListByQueryAs(queryWrapper, UserVO.class,
+                fieldQueryBuilder -> fieldQueryBuilder
+                        .field(UserVO::getRoleList)
+                        .queryWrapper(user -> QueryWrapper.create()
+                                .select()
+                                .from(ROLE)
+                                .where(ROLE.ROLE_ID.in(
+                                                select(USER_ROLE.ROLE_ID)
+                                                        .from(USER_ROLE)
+                                                        .where(USER_ROLE.USER_ID.eq(user.getUserId())
+                                                        )
+                                        )
+                                )
+                        )
+        );
+        System.err.println(userVOs);
+    }
+
+    @Test
     void testSelectList() {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(USER.USER_ID, USER.USER_NAME, ROLE.ALL_COLUMNS)
                 .from(USER.as("u"))
                 .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
                 .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
-                .where(USER.USER_ID.ge(2));
+                .where(USER.USER_ID.eq(3));
         System.out.println(queryWrapper.toSQL());
         List<UserVO> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO.class);
-//        List<UserVO1> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO1.class);
-//        List<UserVO2> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO2.class);
-//        List<UserVO3> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO3.class);
         userVOS.forEach(System.err::println);
     }
 
