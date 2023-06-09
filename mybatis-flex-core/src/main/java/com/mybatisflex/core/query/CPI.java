@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  * Cross Package Invoke
- * 夸包调用工具类，这么设计的原因，是需要保证 QueryWrapper 方法对于用户的纯净性
+ * 跨包调用工具类，这么设计的原因，是需要保证 QueryWrapper 方法对于用户的纯净性
  * 而 framework 又可以通过 CPI 来调用 QueryWrapper 的其他方法
  */
 
