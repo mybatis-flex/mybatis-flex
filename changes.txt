@@ -1,3 +1,20 @@
+mybatis-flex v1.3.6 20230609:
+新增：QueryWrapper 添加对 Lambda 构建的支持
+新增：APT 添加 processor.tablesDefSuffix 配置 Table 后缀的支持
+新增：多表查询支持自动映射实体类中的 association 和 collection 类型，感谢 @王帅
+新增：BaseMapper.selectCursorByQuery() 用于游标查询的支持
+优化：QueryColumn 添加一个 QueryTable 参数的构造器
+优化：移动 BaseMapper.__queryFields() 方法到 MapperUtil
+优化：修改 QueryWrapper 的 leftJoinIf 方法为 leftJoin
+修复：代码生成器 EnjoyTemplate 出现 IllegalAccessException 错误的问题
+修复：修复 Oracle 批量新增出现 SQL 语法错误的问题
+修复：QueryWrapper 不能使用超过一次的问题 https://github.com/mybatis-flex/mybatis-flex/issues/49
+文档：QueryWrapper 文档添加关于 APT 的说明
+文档：QueryWrapper 文档添加 Lambda 构建的代码示例
+文档：一对多添加关于自动映射的相关文档，感谢 @王帅
+
+
+
 mybatis-flex v1.3.5 20230606:
 新增：代码生成器添加生成 spring-cache 缓存模板配置。感谢 @王帅
 新增：Db + Row 添加 schema 的支持。感谢 @Font_C
