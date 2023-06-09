@@ -23,8 +23,10 @@ import com.mybatisflex.core.table.IdInfo;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.util.ConvertUtil;
 import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.executor.ExecutorException;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.invoker.Invoker;
 import org.apache.ibatis.session.Configuration;
 
@@ -67,11 +69,14 @@ public class CustomKeyGenerator implements KeyGenerator {
     @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
         Object entity = ((Map) parameter).get(FlexConsts.ENTITY);
+        Configuration configuration = ms.getConfiguration();
+        MetaObject metaParam = configuration.newMetaObject(parameter);
         Object generateId = keyGenerator.generate(entity, idInfo.getColumn());
         try {
+            MetaObject metaObjectForProperty= metaParam.metaObjectForProperty(FlexConsts.ENTITY);
             Invoker setInvoker = tableInfo.getReflector().getSetInvoker(idInfo.getProperty());
             Object id = ConvertUtil.convert(generateId, setInvoker.getType());
-            setInvoker.invoke(entity, new Object[]{id});
+            this.setValue(metaObjectForProperty,this.idInfo.getProperty(),id);
         } catch (Exception e) {
             throw FlexExceptions.wrap(e);
         }
@@ -81,5 +86,13 @@ public class CustomKeyGenerator implements KeyGenerator {
     @Override
     public void processAfter(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
         //do nothing
+    }
+
+    private void setValue(MetaObject metaParam, String property, Object value) {
+        if (!metaParam.hasSetter(property)) {
+            throw new ExecutorException("No setter found for the keyProperty '" + property + "' in " + metaParam.getOriginalObject().getClass().getName() + ".");
+        } else {
+            metaParam.setValue(property, value);
+        }
     }
 }
