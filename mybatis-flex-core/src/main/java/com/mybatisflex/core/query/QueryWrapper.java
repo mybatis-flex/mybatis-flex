@@ -32,6 +32,24 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return new QueryWrapper();
     }
 
+
+    public QueryWrapper select(String... columns) {
+        for (String column : columns) {
+            addSelectColumn(new StringQueryColumn(column));
+        }
+        return this;
+    }
+
+
+    public <T> QueryWrapper select(LambdaGetter<T>... lambdaGetters) {
+        for (LambdaGetter<T> lambdaGetter : lambdaGetters) {
+            QueryColumn queryColumn = LambdaUtil.getQueryColumn(lambdaGetter);
+            addSelectColumn(queryColumn);
+        }
+        return this;
+    }
+
+
     public QueryWrapper select(QueryColumn... queryColumns) {
         for (QueryColumn column : queryColumns) {
             if (column != null) {
