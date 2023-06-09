@@ -685,6 +685,11 @@ public interface BaseMapper<T> {
             MapperUtil.queryFields(this, records, consumers);
             page.setRecords(records);
         }
+
+        // 将之前设置的 limit 清除掉
+        CPI.setLimitRows(queryWrapper, null);
+        CPI.setLimitOffset(queryWrapper, null);
+
         return page;
     }
 
