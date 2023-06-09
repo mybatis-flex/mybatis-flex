@@ -46,7 +46,7 @@ public class FlexTransactionManager extends AbstractPlatformTransactionManager {
     @Override
     protected void doResume(Object transaction, Object suspendedResources) throws TransactionException {
         String xid = (String) suspendedResources;
-        TransactionContext.hold(xid);
+        TransactionContext.holdXID(xid);
     }
 
     @Override

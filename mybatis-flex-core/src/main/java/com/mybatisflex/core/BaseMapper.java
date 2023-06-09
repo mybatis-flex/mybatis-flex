@@ -1,22 +1,21 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core;
 
 import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.field.FieldQuery;
 import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.mybatis.MappedStatementTypes;
 import com.mybatisflex.core.paginate.Page;
@@ -27,6 +26,7 @@ import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.*;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.apache.ibatis.cursor.Cursor;
 
 import java.io.Serializable;
 import java.util.*;
@@ -345,8 +345,7 @@ public interface BaseMapper<T> {
      * @return entity 数据
      */
     default T selectOneByQuery(QueryWrapper queryWrapper) {
-        List<T> entities = selectListByQuery(queryWrapper.limit(1));
-        return (entities == null || entities.isEmpty()) ? null : entities.get(0);
+        return MapperUtil.getSelectOneResult(selectListByQuery(queryWrapper));
     }
 
 
@@ -358,8 +357,7 @@ public interface BaseMapper<T> {
      * @return 数据内容
      */
     default <R> R selectOneByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
-        List<R> entities = selectListByQueryAs(queryWrapper.limit(1), asType);
-        return (entities == null || entities.isEmpty()) ? null : entities.get(0);
+        return MapperUtil.getSelectOneResult(selectListByQueryAs(queryWrapper, asType));
     }
 
     /**
@@ -437,10 +435,20 @@ public interface BaseMapper<T> {
             return Collections.emptyList();
         }
 
-        __queryFields(list, consumers);
+        MapperUtil.queryFields(this, list, consumers);
 
         return list;
     }
+
+    /**
+     * 根据 query 来构建条件查询游标数据 Cursor
+     * 该方法必须在事务中才能正常使用，非事务下无法获取数据
+     *
+     * @param queryWrapper 查询条件
+     * @return 游标数据 Cursor
+     */
+    @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
+    Cursor<T> selectCursorByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
     /**
@@ -471,7 +479,7 @@ public interface BaseMapper<T> {
         if (list == null || list.isEmpty()) {
             return Collections.emptyList();
         } else {
-            __queryFields(list, consumers);
+            MapperUtil.queryFields(this, list, consumers);
             return list;
         }
     }
@@ -495,8 +503,7 @@ public interface BaseMapper<T> {
      * @return 数据量
      */
     default Object selectObjectByQuery(QueryWrapper queryWrapper) {
-        List<Object> objects = selectObjectListByQuery(queryWrapper.limit(1));
-        return objects == null || objects.isEmpty() ? null : objects.get(0);
+        return MapperUtil.getSelectOneResult(selectObjectListByQuery(queryWrapper));
     }
 
 
@@ -542,17 +549,22 @@ public interface BaseMapper<T> {
      */
     default long selectCountByQuery(QueryWrapper queryWrapper) {
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
-        if (CollectionUtil.isEmpty(selectColumns)) {
-            queryWrapper.select(count());
-        }
-        List<Object> objects = selectObjectListByQuery(queryWrapper);
-        Object object = objects == null || objects.isEmpty() ? null : objects.get(0);
-        if (object == null) {
-            return 0;
-        } else if (object instanceof Number) {
-            return ((Number) object).longValue();
-        } else {
-            throw FlexExceptions.wrap("selectCountByQuery error, Can not get number value for queryWrapper: %s", queryWrapper);
+        try {
+            if (CollectionUtil.isEmpty(selectColumns)) {
+                queryWrapper.select(count());
+            }
+            List<Object> objects = selectObjectListByQuery(queryWrapper);
+            Object object = objects == null || objects.isEmpty() ? null : objects.get(0);
+            if (object == null) {
+                return 0;
+            } else if (object instanceof Number) {
+                return ((Number) object).longValue();
+            } else {
+                throw FlexExceptions.wrap("selectCountByQuery error, Can not get number value for queryWrapper: %s", queryWrapper);
+            }
+        } finally {
+            //fixed https://github.com/mybatis-flex/mybatis-flex/issues/49
+            CPI.setSelectColumns(queryWrapper, selectColumns);
         }
     }
 
@@ -715,47 +727,15 @@ public interface BaseMapper<T> {
 
         if (asType != null) {
             List<R> records = selectListByQueryAs(queryWrapper, asType);
-            __queryFields(records, consumers);
+            MapperUtil.queryFields(this, records, consumers);
             page.setRecords(records);
         } else {
             List<R> records = (List<R>) selectListByQuery(queryWrapper);
-            __queryFields(records, consumers);
+            MapperUtil.queryFields(this, records, consumers);
             page.setRecords(records);
         }
         return page;
     }
 
 
-    default <R> void __queryFields(List<R> list, Consumer<FieldQueryBuilder<R>>[] consumers) {
-        if (CollectionUtil.isEmpty(list) || ArrayUtil.isEmpty(consumers) || consumers[0] == null) {
-            return;
-        }
-        list.forEach(entity -> {
-            for (Consumer<FieldQueryBuilder<R>> consumer : consumers) {
-                FieldQueryBuilder<R> fieldQueryBuilder = new FieldQueryBuilder<>(entity);
-                consumer.accept(fieldQueryBuilder);
-                FieldQuery fieldQuery = fieldQueryBuilder.build();
-                QueryWrapper childQuery = fieldQuery.getQueryWrapper();
-
-                FieldWrapper fieldWrapper = FieldWrapper.of(entity.getClass(), fieldQuery.getField());
-
-                Class<?> fieldType = fieldWrapper.getFieldType();
-                Class<?> mappingType = fieldWrapper.getMappingType();
-
-                Object value;
-                if (fieldType.isAssignableFrom(List.class)) {
-                    value = selectListByQueryAs(childQuery, mappingType);
-                } else if (fieldType.isAssignableFrom(Set.class)) {
-                    value = selectListByQueryAs(childQuery, mappingType);
-                    value = new HashSet<>((Collection<?>) value);
-                } else if (fieldType.isArray()) {
-                    value = selectListByQueryAs(childQuery, mappingType);
-                    value = ((List<?>) value).toArray();
-                } else {
-                    value = selectOneByQueryAs(childQuery, mappingType);
-                }
-                fieldWrapper.set(value, entity);
-            }
-        });
-    }
 }

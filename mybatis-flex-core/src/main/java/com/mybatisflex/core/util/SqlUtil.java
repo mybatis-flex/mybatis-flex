@@ -21,7 +21,8 @@ import java.util.regex.Matcher;
 
 public class SqlUtil {
 
-    private SqlUtil() {}
+    private SqlUtil() {
+    }
 
     public static void keepColumnSafely(String column) {
         if (StringUtil.isBlank(column)) {
@@ -78,7 +79,13 @@ public class SqlUtil {
     }
 
 
-    public static String replaceSqlParams(String sql, Object[] params){
+    /**
+     * 替换 sql 中的问号 ？
+     * @param sql sql 内容
+     * @param params 参数
+     * @return 完整的 sql
+     */
+    public static String replaceSqlParams(String sql, Object[] params) {
         if (params != null && params.length > 0) {
             for (Object value : params) {
                 // null
@@ -107,5 +114,7 @@ public class SqlUtil {
         }
         return sql;
     }
+
+
 
 }

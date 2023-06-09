@@ -61,8 +61,8 @@ export default defineConfig({
                 items: [
                     {text: '增、删、改', link: '/zh/base/add-delete-update'},
                     {text: '查询（多表和分页）', link: '/zh/base/query'},
-                    {text: '批量操作', link: '/zh/base/batch'},
                     {text: '一对多、多对一', link: '/zh/base/field-query'},
+                    {text: '批量操作', link: '/zh/base/batch'},
                     {text: 'QueryWrapper', link: '/zh/base/querywrapper'},
                     {text: 'Db + Row', link: '/zh/base/db-row'},
                     {text: 'IService', link: '/zh/base/service'},

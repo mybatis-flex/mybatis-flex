@@ -37,7 +37,7 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
     @Override
     public SqlSessionFactory build(Reader reader, String environment, Properties properties) {
         try {
-            // 需要 mybaits v3.5.13+
+            // 需要 mybatis v3.5.13+
             // https://github.com/mybatis/mybatis-3/commit/d7826d71a7005a8b4d4e0e7a020db0f6c7e253a4
             XMLConfigBuilder parser = new XMLConfigBuilder(FlexConfiguration.class, reader, environment, properties);
             return build(parser.parse());
@@ -59,7 +59,7 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
     @Override
     public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
         try {
-            // 需要 mybaits v3.5.13+
+            // 需要 mybatis v3.5.13+
             // https://github.com/mybatis/mybatis-3/commit/d7826d71a7005a8b4d4e0e7a020db0f6c7e253a4
             XMLConfigBuilder parser = new XMLConfigBuilder(FlexConfiguration.class, inputStream, environment, properties);
             return build(parser.parse());

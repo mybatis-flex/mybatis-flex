@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.mybatis;
 
@@ -27,7 +27,6 @@ import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.EntityWrapperFactory;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.executor.CachingExecutor;
 import org.apache.ibatis.executor.Executor;
@@ -35,16 +34,17 @@ import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
+import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ResultMap;
+import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -92,6 +92,17 @@ public class FlexConfiguration extends Configuration {
         } else {
             return super.newParameterHandler(mappedStatement, parameterObject, boundSql);
         }
+    }
+
+
+    @Override
+    public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement
+            , RowBounds rowBounds, ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
+//        ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler,
+//                resultHandler, boundSql, rowBounds);
+        ResultSetHandler resultSetHandler = new FlexResultSetHandler(executor, mappedStatement, parameterHandler,
+                resultHandler, boundSql, rowBounds);
+        return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
     }
 
     /**
@@ -178,13 +189,39 @@ public class FlexConfiguration extends Configuration {
 
         String resultMapId = tableInfo.getEntityClass().getName();
 
-        ResultMap resultMap;
+        /*ResultMap resultMap;
         if (hasResultMap(resultMapId)) {
             resultMap = getResultMap(resultMapId);
         } else {
             resultMap = tableInfo.buildResultMap(this);
             this.addResultMap(resultMap);
+        }*/
+
+        // 变量名与属性名区分开
+        List<ResultMap> resultMapList;
+        if (hasResultMap(resultMapId)) {
+            resultMapList = new ArrayList<>();
+            fillResultMapList(resultMapId, resultMapList);
+        } else {
+            resultMapList = tableInfo.buildResultMapList(this);
+            for (ResultMap resultMap : resultMapList) {
+                if (!hasResultMap(resultMap.getId())) {
+                    addResultMap(resultMap);
+                }
+            }
         }
+
+        /*
+         * 这里解释一下为什么要反转这个集合：
+         *
+         * MyBatis 在解析 ResultMaps 的时候，是按照顺序一个一个进行解析的，对于有嵌套
+         * 的 ResultMap 对象，也就是 nestResultMap 需要放在靠前的位置，首先解析。
+         *
+         * 而我们进行递归 buildResultMapList 也好，fillResultMapList 也好，都是
+         * 非嵌套 ResultMap 在集合最开始的位置，所以要反转一下集合，将 hasNestedResultMaps
+         * 的 ResultMap 对象放到集合的最前面。
+         */
+        Collections.reverse(resultMapList);
 
         return new MappedStatement.Builder(ms.getConfiguration(), ms.getId(), ms.getSqlSource(), ms.getSqlCommandType())
                 .resource(ms.getResource())
@@ -198,12 +235,26 @@ public class FlexConfiguration extends Configuration {
                 .lang(ms.getLang())
                 .resultOrdered(ms.isResultOrdered())
                 .resultSets(ms.getResultSets() == null ? null : String.join(",", ms.getResultSets()))
-                .resultMaps(CollectionUtil.newArrayList(resultMap)) // 替换resultMap
+                //.resultMaps(CollectionUtil.newArrayList(resultMap)) // 替换resultMap
+                .resultMaps(resultMapList)
                 .resultSetType(ms.getResultSetType())
                 .flushCacheRequired(ms.isFlushCacheRequired())
                 .useCache(ms.isUseCache())
                 .cache(ms.getCache())
                 .build();
+    }
+
+    private void fillResultMapList(String resultMapId, List<ResultMap> resultMapList) {
+        ResultMap resultMap = this.getResultMap(resultMapId);
+        resultMapList.add(resultMap);
+        if (resultMap.hasNestedResultMaps()) {
+            for (ResultMapping resultMapping : resultMap.getResultMappings()) {
+                String nestedResultMapId = resultMapping.getNestedResultMapId();
+                if (nestedResultMapId != null) {
+                    fillResultMapList(nestedResultMapId, resultMapList);
+                }
+            }
+        }
     }
 
     /**

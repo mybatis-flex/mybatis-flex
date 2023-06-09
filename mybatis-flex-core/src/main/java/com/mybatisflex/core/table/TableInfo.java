@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.table;
 
@@ -39,6 +39,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.util.MapUtil;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -96,7 +97,22 @@ public class TableInfo {
     private List<UpdateListener> onUpdateListeners;
     private List<SetListener> onSetListeners;
 
+    /**
+     * @deprecated 该功能有更好的方式实现，此属性可能会被移除。
+     */
+    @Deprecated
     private Map<String, Class<?>> joinTypes;
+
+
+    /**
+     * 对应 MapperXML 配置文件中 {@code <resultMap>} 标签下的 {@code <association>} 标签。
+     */
+    private Map<String, Class<?>> associationType;
+
+    /**
+     * 对应 MapperXML 配置文件中 {@code <resultMap>} 标签下的 {@code <collection>} 标签。
+     */
+    private Map<Field, Class<?>> collectionType;
 
 
     private final ReflectorFactory reflectorFactory = new BaseReflectorFactory() {
@@ -119,11 +135,11 @@ public class TableInfo {
         return tableName;
     }
 
-    public String getWrapSchemaAndTableName(IDialect dialect){
-        if (StringUtil.isNotBlank(schema)){
-            return dialect.wrap(dialect.getRealSchema(schema)) +"." + dialect.wrap(dialect.getRealTable(tableName));
-        }else {
-           return dialect.wrap(dialect.getRealTable(tableName));
+    public String getWrapSchemaAndTableName(IDialect dialect) {
+        if (StringUtil.isNotBlank(schema)) {
+            return dialect.wrap(dialect.getRealSchema(schema)) + "." + dialect.wrap(dialect.getRealTable(tableName));
+        } else {
+            return dialect.wrap(dialect.getRealTable(tableName));
         }
     }
 
@@ -294,6 +310,36 @@ public class TableInfo {
             joinTypes = new HashMap<>();
         }
         joinTypes.put(fieldName, clazz);
+    }
+
+    public Map<String, Class<?>> getAssociationType() {
+        return associationType;
+    }
+
+    public void setAssociationType(Map<String, Class<?>> associationType) {
+        this.associationType = associationType;
+    }
+
+    public void addAssociationType(String fieldName, Class<?> clazz) {
+        if (associationType == null) {
+            associationType = new HashMap<>();
+        }
+        associationType.put(fieldName, clazz);
+    }
+
+    public Map<Field, Class<?>> getCollectionType() {
+        return collectionType;
+    }
+
+    public void setCollectionType(Map<Field, Class<?>> collectionType) {
+        this.collectionType = collectionType;
+    }
+
+    public void addCollectionType(Field field, Class<?> genericClass) {
+        if (collectionType == null) {
+            collectionType = new HashMap<>();
+        }
+        collectionType.put(field, genericClass);
     }
 
     void setColumnInfoList(List<ColumnInfo> columnInfoList) {
@@ -660,6 +706,10 @@ public class TableInfo {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @deprecated 该功能有更好的方式实现，此方法可能会被移除。
+     */
+    @Deprecated
     public ResultMap buildResultMap(Configuration configuration) {
         String resultMapId = entityClass.getName();
         List<ResultMapping> resultMappings = new ArrayList<>();
@@ -727,6 +777,90 @@ public class TableInfo {
         return new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build();
     }
 
+    public List<ResultMap> buildResultMapList(Configuration configuration) {
+        String resultMapId = entityClass.getName();
+        List<ResultMap> resultMaps = new ArrayList<>();
+        List<ResultMapping> resultMappings = new ArrayList<>();
+
+        // <resultMap> 标签下的 <result> 标签映射
+        for (ColumnInfo columnInfo : columnInfoList) {
+            ResultMapping mapping = new ResultMapping.Builder(configuration, columnInfo.property,
+                    columnInfo.column, columnInfo.propertyType)
+                    .jdbcType(columnInfo.getJdbcType())
+                    .typeHandler(columnInfo.buildTypeHandler())
+                    .build();
+            resultMappings.add(mapping);
+
+            //add property mapper for sql: select xxx as property ...
+            if (!Objects.equals(columnInfo.getColumn(), columnInfo.getProperty())) {
+                ResultMapping propertyMapping = new ResultMapping.Builder(configuration, columnInfo.property,
+                        columnInfo.property, columnInfo.propertyType)
+                        .jdbcType(columnInfo.getJdbcType())
+                        .typeHandler(columnInfo.buildTypeHandler())
+                        .build();
+                resultMappings.add(propertyMapping);
+            }
+        }
+
+        // <resultMap> 标签下的 <id> 标签映射
+        for (IdInfo idInfo : primaryKeyList) {
+            ResultMapping mapping = new ResultMapping.Builder(configuration, idInfo.property,
+                    idInfo.column, idInfo.propertyType)
+                    .flags(CollectionUtil.newArrayList(ResultFlag.ID))
+                    .jdbcType(idInfo.getJdbcType())
+                    .typeHandler(idInfo.buildTypeHandler())
+                    .build();
+            resultMappings.add(mapping);
+        }
+
+        // <resultMap> 标签下的 <association> 标签映射
+        if (associationType != null) {
+            associationType.forEach((fieldName, fieldType) -> {
+                // 获取嵌套类型的信息，也就是 javaType 属性
+                TableInfo tableInfo = TableInfoFactory.ofEntityClass(fieldType);
+                // 构建嵌套类型的 ResultMap 对象，也就是 <association> 标签下的内容
+                // 这里是递归调用，直到嵌套类型里面没有其他嵌套类型或者集合类型为止
+                List<ResultMap> resultMapList = tableInfo.buildResultMapList(configuration);
+                // 寻找是否有嵌套 ResultMap 引用
+                Optional<ResultMap> nestedResultMap = resultMapList.stream()
+                        .filter(e -> fieldType.getName().equals(e.getId()))
+                        .findFirst();
+                // 处理嵌套类型 ResultMapping 引用
+                nestedResultMap.ifPresent(resultMap -> resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
+                        .javaType(fieldType)
+                        .nestedResultMapId(resultMap.getId())
+                        .build()));
+                // 全部添加到 ResultMap 集合当中
+                resultMaps.addAll(resultMapList);
+            });
+        }
+
+        // <resultMap> 标签下的 <collection> 标签映射
+        if (collectionType != null) {
+            collectionType.forEach((field, genericClass) -> {
+                // 获取集合泛型类型的信息，也就是 ofType 属性
+                TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
+                // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
+                // 这里是递归调用，直到集合类型里面没有其他嵌套类型或者集合类型为止
+                List<ResultMap> resultMapList = tableInfo.buildResultMapList(configuration);
+                // 寻找是否有嵌套 ResultMap 引用
+                Optional<ResultMap> nestedResultMap = resultMapList.stream()
+                        .filter(e -> genericClass.getName().equals(e.getId()))
+                        .findFirst();
+                // 处理嵌套类型 ResultMapping 引用
+                nestedResultMap.ifPresent(resultMap -> resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
+                        .javaType(field.getType())
+                        .nestedResultMapId(resultMap.getId())
+                        .build()));
+                // 全部添加到 ResultMap 集合当中
+                resultMaps.addAll(resultMapList);
+            });
+        }
+
+        resultMaps.add(new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build());
+
+        return resultMaps;
+    }
 
     private static boolean existColumn(List<ResultMapping> resultMappings, String name) {
         for (ResultMapping resultMapping : resultMappings) {
@@ -936,5 +1070,9 @@ public class TableInfo {
             value = setListener.onSet(entity, property, value);
         }
         return value;
+    }
+
+    public QueryColumn getQueryColumnByProperty(String property) {
+        return new QueryColumn(schema, tableName, propertyColumnMapping.get(property));
     }
 }

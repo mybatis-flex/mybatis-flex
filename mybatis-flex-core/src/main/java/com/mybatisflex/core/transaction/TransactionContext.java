@@ -16,11 +16,16 @@
 package com.mybatisflex.core.transaction;
 
 
+import org.apache.ibatis.cursor.Cursor;
+
+import java.io.IOException;
+
 public class TransactionContext {
 
     private TransactionContext() {}
 
     private static final ThreadLocal<String> XID_HOLDER = new ThreadLocal<>();
+    private static final ThreadLocal<Cursor<?>> CURSOR_HOLDER = new ThreadLocal<>();
 
     public static String getXID() {
         return XID_HOLDER.get();
@@ -28,10 +33,29 @@ public class TransactionContext {
 
     public static void release() {
         XID_HOLDER.remove();
+        releaseCursor();
     }
 
-    public static void hold(String xid) {
+    public static void releaseCursor() {
+        try {
+            Cursor<?> cursor = CURSOR_HOLDER.get();
+            if (cursor != null){
+                try {
+                    cursor.close();
+                } catch (IOException e) {
+                }
+            }
+        }finally {
+            CURSOR_HOLDER.remove();
+        }
+    }
+
+    public static void holdXID(String xid) {
         XID_HOLDER.set(xid);
+    }
+
+    public static void holdCursor(Cursor<?> cursor) {
+        CURSOR_HOLDER.set(cursor);
     }
 
 }

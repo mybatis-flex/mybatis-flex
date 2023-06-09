@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.core.query;
 
+import java.util.function.Consumer;
+
 /**
  * @author michael yang (fuhai999@gmail.com)
  * @Date: 2020/1/14
@@ -41,6 +43,13 @@ public class Joiner<M> {
 
     public M on(QueryCondition on) {
         join.on(on);
+        return queryWrapper;
+    }
+
+    public M on(Consumer<QueryWrapper> consumer) {
+        QueryWrapper newWrapper = new QueryWrapper();
+        consumer.accept(newWrapper);
+        join.on(newWrapper.whereQueryCondition);
         return queryWrapper;
     }
 }

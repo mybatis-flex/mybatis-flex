@@ -13,31 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.mybatisflex.test.model;
 
-import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.KeyType;
-import com.mybatisflex.annotation.Table;
+/**
+ * @author 王帅
+ * @since 2023-06-07
+ */
 
-import java.util.Date;
+public class UserVO2 {
 
-@Table(value = "tb_account",onSet = AccountOnSetListener.class)
-public class Account {
-
-    @Id(keyType = KeyType.Auto)
-    private Long id;
+    private String userId;
     private String userName;
-    private Integer age;
-    private Date birthday;
+    private Role role;
 
-
-
-    public Long getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUserName() {
@@ -48,29 +43,20 @@ public class Account {
         this.userName = userName;
     }
 
-    public Integer getAge() {
-        return age;
+    public Role getRole() {
+        return role;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
     public String toString() {
-        return "Account{" +
-                "id=" + id +
+        return "UserVO2{" +
+                "userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
-                ", age=" + age +
-                ", birthday=" + birthday +
+                ", role=" + role +
                 '}';
     }
 }

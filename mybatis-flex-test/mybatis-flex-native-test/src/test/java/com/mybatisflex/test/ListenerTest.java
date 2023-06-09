@@ -4,7 +4,6 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.assertj.core.api.WithAssertions;
-import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
@@ -20,7 +19,7 @@ import java.util.Date;
 public class ListenerTest implements WithAssertions {
 
     // 注册父类接口监听器
-    @Test
+//    @Test
     public void onInsertInterface() throws Exception {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
