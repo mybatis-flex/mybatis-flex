@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.row;
 
@@ -21,11 +21,14 @@ import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.RowSqlProvider;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.MapperUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import static com.mybatisflex.core.query.QueryMethods.count;
 
@@ -435,78 +438,37 @@ public interface RowMapper {
         List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
 
         List<Join> joins = CPI.getJoins(queryWrapper);
-        boolean removedJoins = true;
 
         // 只有 totalRow 小于 0 的时候才会去查询总量
         // 这样方便用户做总数缓存，而非每次都要去查询总量
         // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
         if (page.getTotalRow() < 0) {
-
-            //移除 seelct
-            CPI.setSelectColumns(queryWrapper, Collections.singletonList(count().as("total")));
-
-            //移除 OrderBy
-            if (CollectionUtil.isNotEmpty(orderBys)) {
-                CPI.setOrderBys(queryWrapper, null);
-            }
-
-            //移除 left join
-            if (joins != null && !joins.isEmpty()) {
-                for (Join join : joins) {
-                    if (!Join.TYPE_LEFT.equals(CPI.getJoinType(join))) {
-                        removedJoins = false;
-                        break;
-                    }
-                }
-            } else {
-                removedJoins = false;
-            }
-
-            if (removedJoins) {
-                List<String> joinTables = new ArrayList<>();
-                joins.forEach(join -> {
-                    QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
-                    if (joinQueryTable != null && StringUtil.isNotBlank(joinQueryTable.getName())) {
-                        joinTables.add(joinQueryTable.getName());
-                    }
-                });
-
-                QueryCondition where = CPI.getWhereQueryCondition(queryWrapper);
-                if (CPI.containsTable(where, CollectionUtil.toArrayString(joinTables))) {
-                    removedJoins = false;
-                }
-            }
-
-            if (removedJoins) {
-                CPI.setJoins(queryWrapper, null);
-            }
-
+            queryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
             long count = selectCountByQuery(schema,tableName, queryWrapper);
             page.setTotalRow(count);
         }
 
-        if (page.getTotalRow() == 0 || page.getPageNumber() > page.getTotalPage()) {
+        if (page.isEmpty()) {
             return page;
         }
 
         //重置 selectColumns
         CPI.setSelectColumns(queryWrapper, selectColumns);
-
         //重置 orderBys
-        if (CollectionUtil.isNotEmpty(orderBys)) {
-            CPI.setOrderBys(queryWrapper, orderBys);
-        }
-
+        CPI.setOrderBys(queryWrapper, orderBys);
         //重置 join
-        if (removedJoins) {
-            CPI.setJoins(queryWrapper, joins);
-        }
+        CPI.setJoins(queryWrapper, joins);
 
         int offset = page.getPageSize() * (page.getPageNumber() - 1);
         queryWrapper.limit(offset, page.getPageSize());
 
         List<Row> records = selectListByQuery(schema,tableName, queryWrapper);
         page.setRecords(records);
+
+        // 将之前设置的 limit 清除掉
+        CPI.setLimitRows(queryWrapper, null);
+        CPI.setLimitOffset(queryWrapper, null);
+
         return page;
 
     }
