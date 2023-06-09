@@ -132,6 +132,10 @@ public class Page<T> implements Serializable {
         return getTotalRow() == 0 || getPageNumber() > getTotalPage();
     }
 
+    public boolean hasNext() {
+        return getTotalPage() != 0 && getPageNumber() < getTotalPage();
+    }
+
 
     public <R> Page<R> map(Function<? super T, ? extends R> mapper) {
         Page<R> newPage = new Page<>();
