@@ -260,6 +260,23 @@ SELECT * FROM tb_account
 WHERE id >= ? 
 ```
 
+## where 动态条件 4
+
+```java 1,5
+String name = null;
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select().from(ACCOUNT)
+    .where(ACCOUNT.ID.ge(100)) 
+    .and(ACCOUNT.USER_NAME.like(name, If::hasText));
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT * FROM tb_account
+WHERE id >= ? 
+```
+
 ## where select
 ```java
 QueryWrapper queryWrapper = QueryWrapper.create()
@@ -533,36 +550,57 @@ Firebird 下执行的代码如下：
 SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 ```
 
-## 存在疑问？
+## Lambda 扩展
 
-**疑问1：示例代码中的 QueryWrapper 所需要的 "ACCOUNT" 从哪里来的？**
+虽然 MyBaits-Flex 也支持 lambda 方式，但是并不推荐使用，建议在一些简单的场景下使用，以下是示例：
 
-答：MyBatis-Flex 使用了 APT（Annotation Processing Tool）在项目编译的时候，
-会自动根据 Entity 类定义的字段生成 "ACCOUNT" 类以及 Entity 对应的 Mapper 类， 通过开发工具构建项目（如下图），
-或者执行 maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
+简单示例：
+```java
+QueryWrapper query = QueryWrapper.create();
+query.where(Account::getId).ge(100)
+        .and(Account::getUserName).like("michael")
+        .or(Account::getUserName).like(" ", If::hasText);
+System.out.println(query.toSQL());
+```
+SQL 输入内容如下：
 
-![](../../assets/images/build_idea.png)
+```sql
+SELECT * FROM  WHERE `id` >=  100  AND `user_name` LIKE  '%michael%'
+```
 
-> 更多关于 APT 的配置，请进入 [APT 配置章节](../others/apt.md) 了解。
-
-## 特别注意事项!!!
-在 QueryWrapper 的条件构建中，如果传入 null 值，则自动忽略该条件，这有许多的好处，不需要额外的通过 `when()` 方法判断。但是也带来一些额外的知识记忆点，
-因此，正对这一点需要特别注意一下。
-
-例如：
+稍微复杂点的示例：
 
 ```java
-String userName = null;
-Integer id = null;
-QueryWrapper query1 = QueryWrapper.create()
-    .where(ACCOUNT.AGE.ge(18))
-    .and(ACCOUNT.USER_NAME.like(userName))
-    .and(ACCOUNT.ID.ge(id));
-
-QueryWrapper query2 = QueryWrapper.create()
-    .where(ACCOUNT.AGE.ge(18));
+QueryWrapper query = QueryWrapper.create()
+    .from(Article.class)
+    .leftJoin(Account.class).as("a").on(
+        wrapper -> wrapper.where(Account::getId).eq(Article::getAccountId)
+    )
+    .where(Account::getId).ge(100, If::notEmpty)
+    .and(wrapper -> {
+        wrapper.where(Account::getId).ge(100)
+                .or(Account::getAge).gt(200)
+                .and(Article::getAccountId).eq(200)
+                .or(wrapper1 -> {
+                    wrapper1.where(Account::getId).like("a", If::notEmpty);
+                })
+        ;
+    });
+System.out.println(query.toSQL());
 ```
-在以上的 `query1` 和 `query2` 中，它们构建出来的 SQL 条件是完全一致的，因为 MyBatis-Flex 会自动忽略 null 值的条件。
+SQL 输入内容如下：
+
+```sql
+SELECT * FROM `tb_article` 
+    LEFT JOIN `tb_account` AS `a` ON `a`.`id` = `tb_article`.`account_id` 
+WHERE `a`.`id` >=  100  AND 
+      (`a`.`id` >=  100  
+           OR `a`.`age` >  200  
+           AND `tb_article`.`account_id` =  200  
+           OR (`a`.`id` LIKE  '%a%' )
+      )
+```
+
 
 ## QueryWrapper 序列化
 
@@ -618,3 +656,38 @@ byte[] bytes = fst.asByteArray(wrapper);
 //反序列化得到 QueryWrapper
 QueryWrapper newWrapper = (QueryWrapper) fst.asObject(bytes);
 ```
+
+
+
+## 特别注意事项!!!
+在 QueryWrapper 的条件构建中，如果传入 null 值，则自动忽略该条件，这有许多的好处，不需要额外的通过 `when()` 方法判断。但是也带来一些额外的知识记忆点，
+因此，正对这一点需要特别注意一下。
+
+例如：
+
+```java
+String userName = null;
+Integer id = null;
+QueryWrapper query1 = QueryWrapper.create()
+    .where(ACCOUNT.AGE.ge(18))
+    .and(ACCOUNT.USER_NAME.like(userName))
+    .and(ACCOUNT.ID.ge(id));
+
+QueryWrapper query2 = QueryWrapper.create()
+    .where(ACCOUNT.AGE.ge(18));
+```
+在以上的 `query1` 和 `query2` 中，它们构建出来的 SQL 条件是完全一致的，因为 MyBatis-Flex 会自动忽略 null 值的条件。
+
+
+## 存在疑问？
+
+**疑问1：示例代码中的 QueryWrapper 所需要的 "ACCOUNT" 从哪里来的？**
+
+答：MyBatis-Flex 使用了 APT（Annotation Processing Tool）在项目编译的时候，
+会自动根据 Entity 类定义的字段生成 "ACCOUNT" 类以及 Entity 对应的 Mapper 类， 通过开发工具构建项目（如下图），
+或者执行 maven 编译命令: `mvn clean package` 都可以自动生成。这个原理和 lombok 一致。
+
+![](../../assets/images/build_idea.png)
+
+> 更多关于 APT 的配置，请进入 [APT 配置章节](../others/apt.md) 了解。
+

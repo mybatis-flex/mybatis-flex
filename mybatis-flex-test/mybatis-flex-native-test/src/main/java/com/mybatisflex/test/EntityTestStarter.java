@@ -108,7 +108,13 @@ public class EntityTestStarter {
 //        System.out.println(object);
 //
 
-        QueryWrapper asWrapper1 = QueryWrapper.create()
+        QueryWrapper query1 = QueryWrapper.create();
+        query1.where(Account::getId).ge(100)
+                .and(Account::getUserName).like("michael")
+                .or(Account::getUserName).like(null,If::notNull);
+        System.out.println(query1.toSQL());
+
+        QueryWrapper query = QueryWrapper.create()
 //                .select(ARTICLE.ALL_COLUMNS)
 //                .select(ACCOUNT.USER_NAME.as(ArticleDTO::getAuthorName)
 //                        , ACCOUNT.AGE.as(ArticleDTO::getAuthorAge)
@@ -116,19 +122,18 @@ public class EntityTestStarter {
 //                )
                 .from(Article.class)
 //                .leftJoin(Account.class).as("a").on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
-                .leftJoin(Account.class).as("a").on(s -> s.where(Account::getId).eq(Article::getAccountId))
+                .leftJoin(Account.class).as("a").on(wrapper -> wrapper.where(Account::getId).eq(Article::getAccountId))
                 .where(Account::getId).ge(100, If::notEmpty)
-                .and(queryWrapper -> {
-                    queryWrapper
-                            .where(Account::getId).ge(100)
+                .and(wrapper -> {
+                    wrapper.where(Account::getId).ge(100)
                             .or(Account::getAge).gt(200)
                             .and(Article::getAccountId).eq(200)
-                            .or(queryWrapper1 -> {
-                                queryWrapper1.where(Account::getId).like("a",If::notEmpty);
+                            .or(wrapper1 -> {
+                                wrapper1.where(Account::getId).like("a", If::notEmpty);
                             })
                     ;
                 });
-        System.out.println(asWrapper1.toSQL());
+        System.out.println(query.toSQL());
 //                .and(query->query.and);
 //                .andEq(Account::getId,100);
 //                .and(new Brackets(column))
