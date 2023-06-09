@@ -16,6 +16,7 @@
 
 package com.mybatisflex.test.mapper;
 
+import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.model.UserInfo;
 import com.mybatisflex.test.model.UserVO;
@@ -39,6 +40,7 @@ import static com.mybatisflex.test.model.table.UserTableDef.USER;
  * @since 2023-06-07
  */
 @SpringBootTest
+@SuppressWarnings("all")
 class UserMapperTest {
 
     @Autowired
@@ -112,6 +114,23 @@ class UserMapperTest {
         System.err.println(queryWrapper.toSQL());
         List<UserInfo> userInfos = userMapper.selectListByQueryAs(queryWrapper, UserInfo.class);
         userInfos.forEach(System.err::println);
+    }
+
+    @Test
+    void testPage() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(USER.USER_ID, USER.USER_NAME, ROLE.ALL_COLUMNS)
+                .from(USER.as("u"))
+                .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+                .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID));
+        System.err.println(queryWrapper.toSQL());
+        Page<UserVO> page;
+        int pageNumber = 0;
+        do {
+            page = Page.of(++pageNumber, 1);
+            page = userMapper.paginateAs(page, queryWrapper, UserVO.class);
+            System.err.println(page);
+        } while (page.hasNext());
     }
 
 }
