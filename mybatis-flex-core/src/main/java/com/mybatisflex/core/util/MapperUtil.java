@@ -31,6 +31,7 @@ public class MapperUtil {
     }
 
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static <R> void queryFields(BaseMapper<?> mapper, List<R> list, Consumer<FieldQueryBuilder<R>>[] consumers) {
         if (CollectionUtil.isEmpty(list) || ArrayUtil.isEmpty(consumers) || consumers[0] == null) {
             return;
@@ -69,6 +70,10 @@ public class MapperUtil {
 
 
     private static Class<?> getWrapType(Class<?> type) {
+        if (ClassUtil.canInstance(type.getModifiers())) {
+            return type;
+        }
+
         if (List.class.isAssignableFrom(type)) {
             return ArrayList.class;
         }
