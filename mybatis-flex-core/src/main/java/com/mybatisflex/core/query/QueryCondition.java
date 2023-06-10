@@ -306,8 +306,8 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             clone.column = ObjectUtil.clone(this.column);
             clone.value = ObjectUtil.cloneObject(this.value);
             clone.before = clone.next = null;
-            for (QueryCondition x = next; x != null; x = x.next) {
-                clone.next = x.clone();
+            if (this.next != null) {
+                clone.next = this.next.clone();
                 clone.next.before = clone;
             }
             return clone;
