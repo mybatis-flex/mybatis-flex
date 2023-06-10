@@ -1,24 +1,27 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.query;
 
-import java.io.Serializable;
+import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.ObjectUtil;
+
 import java.util.*;
 
-public class BaseQueryWrapper<T> implements Serializable {
+@SuppressWarnings({"unchecked", "unused"})
+public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSupport<T> {
 
 
     protected List<QueryTable> queryTables;
@@ -255,5 +258,27 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected <R> R getContext(String key){
         return context == null ? null : (R) context.get(key);
+    }
+
+    @Override
+    public T clone() {
+        try {
+            T clone = (T) super.clone();
+            // deep clone ...
+            clone.queryTables = CollectionUtil.cloneValue(this.queryTables, ArrayList::new);
+            clone.selectColumns = CollectionUtil.cloneValue(this.selectColumns, LinkedList::new);
+            clone.joins = CollectionUtil.cloneValue(this.joins, LinkedList::new);
+            clone.joinTables = CollectionUtil.cloneValue(this.joinTables, ArrayList::new);
+            clone.whereQueryCondition = ObjectUtil.clone(this.whereQueryCondition);
+            clone.groupByColumns = CollectionUtil.cloneValue(this.groupByColumns, LinkedList::new);
+            clone.havingQueryCondition = ObjectUtil.clone(this.havingQueryCondition);
+            clone.orderBys = CollectionUtil.cloneValue(this.orderBys, LinkedList::new);
+            clone.unions = CollectionUtil.cloneValue(this.unions, ArrayList::new);
+            clone.endFragments = CollectionUtil.newArrayList(this.endFragments);
+            clone.context = CollectionUtil.newHashMap(this.context);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

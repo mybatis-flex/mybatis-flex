@@ -1,27 +1,24 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.dialect.IDialect;
-import com.mybatisflex.core.util.ArrayUtil;
-import com.mybatisflex.core.util.LambdaGetter;
-import com.mybatisflex.core.util.LambdaUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +51,14 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
             return "(" + sql + ") AS " + dialect.wrap(alias);
         }
         return sql.toString();
+    }
+
+    @Override
+    public CaseQueryColumn clone() {
+        CaseQueryColumn clone = (CaseQueryColumn) super.clone();
+        // deep clone ...
+        clone.whens = CollectionUtil.cloneValue(this.whens, ArrayList::new);
+        return clone;
     }
 
 
@@ -100,14 +105,14 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
         for (When when : whens) {
             values = ArrayUtil.concat(values, WrapperUtil.getValues(when.whenCondition));
         }
-        if (elseValue instanceof HasParamsColumn){
-            values = ArrayUtil.concat(values,((HasParamsColumn) elseValue).getParamValues());
+        if (elseValue instanceof HasParamsColumn) {
+            values = ArrayUtil.concat(values, ((HasParamsColumn) elseValue).getParamValues());
         }
         return values;
     }
 
 
-    public static class When {
+    public static class When implements CloneSupport<When> {
         private Builder builder;
         private QueryCondition whenCondition;
         private Object thenValue;
@@ -122,9 +127,22 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
             this.builder.caseQueryColumn.addWhen(this);
             return builder;
         }
+
+        @Override
+        public When clone() {
+            try {
+                When clone = (When) super.clone();
+                // deep clone ...
+                clone.whenCondition = ObjectUtil.clone(this.whenCondition);
+                clone.thenValue = ObjectUtil.cloneObject(this.thenValue);
+                return clone;
+            } catch (CloneNotSupportedException e) {
+                throw new AssertionError();
+            }
+        }
     }
 
-    public static class Builder {
+    public static class Builder implements CloneSupport<Builder> {
 
         private CaseQueryColumn caseQueryColumn = new CaseQueryColumn();
 
@@ -139,6 +157,18 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
 
         public CaseQueryColumn end() {
             return caseQueryColumn;
+        }
+
+        @Override
+        public Builder clone() {
+            try {
+                Builder clone = (Builder) super.clone();
+                // deep clone ...
+                clone.caseQueryColumn = this.caseQueryColumn.clone();
+                return clone;
+            } catch (CloneNotSupportedException e) {
+                throw new AssertionError();
+            }
         }
     }
 }
