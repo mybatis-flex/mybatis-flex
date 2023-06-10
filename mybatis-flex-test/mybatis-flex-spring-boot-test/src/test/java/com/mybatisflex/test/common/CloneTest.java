@@ -47,7 +47,7 @@ class CloneTest {
          */
         calcTime(count, "new", this::newQueryWrapper);
         calcTime(count, "clone", queryWrapper::clone);
-        calcTime(count, "serial",() -> SerialUtil.cloneObject(queryWrapper));
+        calcTime(count, "serial", () -> SerialUtil.cloneObject(queryWrapper));
     }
 
     @Test
@@ -71,7 +71,10 @@ class CloneTest {
 
     private QueryWrapper newQueryWrapper() {
         return QueryWrapper.create()
-                .select(case_().when(USER.USER_ID.eq(3)).then("x3").end(),
+                .select(case_()
+                                .when(USER.USER_ID.eq(3)).then("x3")
+                                .when(USER.USER_ID.eq(5)).then("x4")
+                                .end(),
                         distinct(USER.USER_ID.add(4)),
                         USER.USER_NAME,
                         ROLE.ALL_COLUMNS)
@@ -80,6 +83,7 @@ class CloneTest {
                 .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
                 .where(USER.USER_ID.eq(3))
                 .and(ROLE.ROLE_NAME.in(Arrays.asList(1, 2, 3)))
+                .or(ROLE.ROLE_ID.ge(USER.USER_ID))
                 .groupBy(ROLE.ROLE_NAME)
                 .having(ROLE.ROLE_ID.ge(7))
                 .orderBy(ROLE.ROLE_NAME.asc());
