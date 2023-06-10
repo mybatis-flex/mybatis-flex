@@ -308,7 +308,7 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             clone.before = clone.next = null;
             for (QueryCondition x = next; x != null; x = x.next) {
                 clone.next = x.clone();
-                clone.next.before = this;
+                clone.next.before = clone;
             }
             return clone;
         } catch (CloneNotSupportedException e) {
