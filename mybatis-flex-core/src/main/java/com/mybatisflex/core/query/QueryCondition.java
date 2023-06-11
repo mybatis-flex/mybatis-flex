@@ -1,31 +1,31 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.query;
 
 
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.ClassUtil;
+import com.mybatisflex.core.util.ObjectUtil;
 
-import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class QueryCondition implements Serializable {
+public class QueryCondition implements CloneSupport<QueryCondition> {
 
     public static final String LOGIC_LIKE = "LIKE";
     public static final String LOGIC_GT = ">";
@@ -296,5 +296,23 @@ public class QueryCondition implements Serializable {
                 ", value=" + value +
                 ", effective=" + effective +
                 '}';
+    }
+
+    @Override
+    public QueryCondition clone() {
+        try {
+            QueryCondition clone = (QueryCondition) super.clone();
+            // deep clone ...
+            clone.column = ObjectUtil.clone(this.column);
+            clone.value = ObjectUtil.cloneObject(this.value);
+            clone.before = clone.next = null;
+            if (this.next != null) {
+                clone.next = this.next.clone();
+                clone.next.before = clone;
+            }
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

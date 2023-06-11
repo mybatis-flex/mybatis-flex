@@ -13,33 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.mybatisflex.core.query;
 
-
-import com.mybatisflex.core.dialect.IDialect;
-import com.mybatisflex.core.util.SqlUtil;
-
-import java.util.List;
+import java.io.Serializable;
 
 /**
- * 排序字段
+ * <p>克隆支持接口。
+ *
+ * <p>支持序列化克隆与 {@link Object#clone()} 方法。
+ *
+ * @param <T> 克隆对象类型
+ * @author 王帅
+ * @since 2023-06-10
  */
-public class StringQueryOrderBy extends QueryOrderBy {
+public interface CloneSupport<T> extends Serializable, Cloneable {
 
-    private final String orderBy;
+    /**
+     * 改写 {@link Object#clone()} 方法。
+     *
+     * @return 克隆对象
+     */
+    T clone();
 
-    public StringQueryOrderBy(String orderBy) {
-        SqlUtil.keepOrderBySqlSafely(orderBy);
-        this.orderBy = orderBy;
-    }
-
-    @Override
-    public String toSql(List<QueryTable> queryTables, IDialect dialect) {
-        return orderBy;
-    }
-
-    @Override
-    public StringQueryOrderBy clone() {
-        return (StringQueryOrderBy) super.clone();
-    }
 }

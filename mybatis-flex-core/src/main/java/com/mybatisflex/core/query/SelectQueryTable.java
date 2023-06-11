@@ -54,4 +54,12 @@ public class SelectQueryTable extends QueryTable {
             return "(" + sql + ")";
         }
     }
+
+    @Override
+    public SelectQueryTable clone() {
+        SelectQueryTable clone = (SelectQueryTable) super.clone();
+        // deep clone ...
+        clone.queryWrapper = this.queryWrapper.clone();
+        return clone;
+    }
 }

@@ -15,8 +15,12 @@
  */
 package com.mybatisflex.core.util;
 
+import com.mybatisflex.core.query.CloneSupport;
+
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 
 public class CollectionUtil {
@@ -103,6 +107,32 @@ public class CollectionUtil {
             results[index++] = String.valueOf(o);
         }
         return results;
+    }
+
+    @SuppressWarnings("all")
+    public static <E extends CloneSupport<E>> List<E> cloneValue(Collection<E> collection, Supplier<List<E>> collectionSupplier) {
+        if (isEmpty(collection)) {
+            return collectionSupplier.get();
+        }
+        return collection.stream()
+                // 这里不能使用 CloneSupport::clone
+                // java.lang.BootstrapMethodError: call site initialization exception
+                .map(cloneable -> cloneable.clone())
+                .collect(Collectors.toCollection(collectionSupplier));
+    }
+
+    public static <E> ArrayList<E> newArrayList(Collection<E> collection) {
+        if (isEmpty(collection)) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(collection);
+    }
+
+    public static <K, V> HashMap<K, V> newHashMap(Map<K, V> map) {
+        if (map == null || map.isEmpty()) {
+            return new HashMap<>();
+        }
+        return new HashMap<>(map);
     }
 
 }

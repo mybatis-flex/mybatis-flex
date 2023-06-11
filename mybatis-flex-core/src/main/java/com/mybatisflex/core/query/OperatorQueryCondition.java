@@ -1,21 +1,22 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.util.ObjectUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
@@ -25,9 +26,9 @@ import java.util.List;
  * 示例1：and not ( id > 100 and name like %%)
  */
 public class OperatorQueryCondition extends QueryCondition {
-    
+
     private final String operator;
-    private final QueryCondition child;
+    private QueryCondition child;
 
     public OperatorQueryCondition(String operator, QueryCondition child) {
         this.operator = operator;
@@ -65,5 +66,13 @@ public class OperatorQueryCondition extends QueryCondition {
     @Override
     boolean containsTable(String... tables) {
         return child != null && child.containsTable(tables);
+    }
+
+    @Override
+    public OperatorQueryCondition clone() {
+        OperatorQueryCondition clone = (OperatorQueryCondition) super.clone();
+        // deep clone ...
+        clone.child = ObjectUtil.clone(this.child);
+        return clone;
     }
 }
