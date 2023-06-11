@@ -676,7 +676,7 @@ QueryWrapper query1 = QueryWrapper.create()
 QueryWrapper query2 = QueryWrapper.create()
     .where(ACCOUNT.AGE.ge(18));
 ```
-在以上的 `query1` 和 `query2` 中，它们构建出来的 SQL 条件是完全一致的，因为 MyBatis-Flex 会自动忽略 null 值的条件。
+在以上的 `query1` 中，由于 `userName` 和 `id` 都为 null，MyBatis-Flex 会自动忽略 null 值的条件，因此，它们构建出来的 SQL 条件是和 `query2` 完全一致的 。
 
 
 ## 存在疑问？
