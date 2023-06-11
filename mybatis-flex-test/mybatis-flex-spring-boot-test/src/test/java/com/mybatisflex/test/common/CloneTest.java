@@ -17,7 +17,7 @@
 package com.mybatisflex.test.common;
 
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.util.SerialUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -38,12 +38,12 @@ class CloneTest {
     @Test
     void test() {
         QueryWrapper queryWrapper = newQueryWrapper();
-        int count = 1_000;
+        int count = 10000;
 
         /*
-         * new: 11ms
-         * clone: 30ms
-         * serial: 467ms
+         * new: 50 ms
+         * clone: 68 ms
+         * serial: 2634 ms
          */
         calcTime(count, "new", this::newQueryWrapper);
         calcTime(count, "clone", queryWrapper::clone);
@@ -58,6 +58,9 @@ class CloneTest {
         System.out.println(queryWrapper.toSQL());
         System.out.println(queryWrapper1.toSQL());
         System.out.println(queryWrapper2.toSQL());
+
+        Assertions.assertEquals(queryWrapper.toSQL(),queryWrapper1.toSQL());
+        Assertions.assertEquals(queryWrapper.toSQL(),queryWrapper2.toSQL());
     }
 
     private void calcTime(int count, String type, Supplier<QueryWrapper> supplier) {

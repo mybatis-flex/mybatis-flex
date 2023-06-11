@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.mybatisflex.core.util;
+package com.mybatisflex.test.common;
 
 import java.io.*;
 
