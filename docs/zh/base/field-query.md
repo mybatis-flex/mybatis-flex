@@ -194,7 +194,7 @@ LEFT JOIN `sys_role` AS `r` ON `ur`.`role_id` = `r`.`role_id`;
 
 最终自动映射的结果为：
 
-```text
+```txt
 UserVO{userId='1', userName='admin', roleList=[Role{roleId=1, roleKey='admin', roleName='超级管理员'}]}
 UserVO{userId='2', userName='ry', roleList=[Role{roleId=2, roleKey='common', roleName='普通角色'}]}
 UserVO{userId='3', userName='test', roleList=[Role{roleId=1, roleKey='admin', roleName='超级管理员'}, Role{roleId=2, roleKey='common', roleName='普通角色'}]}
