@@ -275,11 +275,11 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
             clone.havingQueryCondition = ObjectUtil.clone(this.havingQueryCondition);
             clone.orderBys = CollectionUtil.cloneArrayList(this.orderBys);
             clone.unions = CollectionUtil.cloneArrayList(this.unions);
-
+            // copy List if necessary ...
             if (this.endFragments != null){
                 clone.endFragments = CollectionUtil.newArrayList(this.endFragments);
             }
-
+            // copy Map if necessary ...
             if (this.context != null){
                 clone.context = CollectionUtil.newHashMap(this.context);
             }
