@@ -117,7 +117,7 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
             this.whenCondition = whenCondition;
         }
 
-        public void then(Object thenValue) {
+        public void setThenValue(Object thenValue) {
             this.thenValue = thenValue;
         }
 
@@ -163,7 +163,7 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
             }
 
             public Builder then(Object thenValue) {
-                this.builder.lastWhen.then(thenValue);
+                this.builder.lastWhen.setThenValue(thenValue);
                 this.builder.caseQueryColumn.addWhen(builder.lastWhen);
                 return builder;
             }
