@@ -34,7 +34,7 @@ public class DistinctQueryColumn extends QueryColumn {
         if (CollectionUtil.isEmpty(queryTables)) {
             return "";
         }
-        return " DISTINCT " + StringUtil.join(", ", queryColumns, queryColumn ->
+        return "DISTINCT " + StringUtil.join(", ", queryColumns, queryColumn ->
                 queryColumn.toSelectSql(queryTables, dialect));
     }
 
