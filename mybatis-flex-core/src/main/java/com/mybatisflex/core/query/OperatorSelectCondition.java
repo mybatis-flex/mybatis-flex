@@ -45,9 +45,9 @@ public class OperatorSelectCondition extends QueryCondition {
             String childSql = dialect.buildSelectSql(queryWrapper);
             if (StringUtil.isNotBlank(childSql)) {
 
-                QueryCondition effectiveBefore = getEffectiveBefore();
-                if (effectiveBefore != null) {
-                    sql.append(effectiveBefore.connector);
+                QueryCondition prevEffectiveCondition = getPrevEffectiveCondition();
+                if (prevEffectiveCondition != null) {
+                    sql.append(prevEffectiveCondition.connector);
                 }
                 sql.append(operator).append("(").append(childSql).append(")");
             }

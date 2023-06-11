@@ -50,10 +50,11 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
     protected Object value;
     protected boolean effective = true;
 
-    //当前条件的上个条件
-    protected QueryCondition before;
-    //当前条件的上个下一个
+    //当前条件的上一个条件
+    protected QueryCondition prev;
+    //当前条件的下一个条件
     protected QueryCondition next;
+
     //两个条件直接的连接符
     protected SqlConnector connector;
 
@@ -172,7 +173,7 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         } else {
             this.next = nextCondition;
             this.connector = connector;
-            nextCondition.before = this;
+            nextCondition.prev = this;
         }
     }
 
@@ -180,9 +181,9 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         StringBuilder sql = new StringBuilder();
         //检测是否生效
         if (checkEffective()) {
-            QueryCondition effectiveBefore = getEffectiveBefore();
-            if (effectiveBefore != null) {
-                sql.append(effectiveBefore.connector);
+            QueryCondition prevEffectiveCondition = getPrevEffectiveCondition();
+            if (prevEffectiveCondition != null) {
+                sql.append(prevEffectiveCondition.connector);
             }
             //列
             sql.append(getColumn().toConditionSql(queryTables, dialect));
@@ -215,11 +216,11 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
     }
 
 
-    protected QueryCondition getEffectiveBefore() {
-        if (before != null && before.checkEffective()) {
-            return before;
-        } else if (before != null) {
-            return before.getEffectiveBefore();
+    protected QueryCondition getPrevEffectiveCondition() {
+        if (prev != null && prev.checkEffective()) {
+            return prev;
+        } else if (prev != null) {
+            return prev.getPrevEffectiveCondition();
         } else {
             return null;
         }
@@ -306,10 +307,10 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             // deep clone ...
             clone.column = ObjectUtil.clone(this.column);
             clone.value = ObjectUtil.cloneObject(this.value);
-            clone.before = clone.next = null;
+            clone.prev = clone.next = null;
             if (this.next != null) {
                 clone.next = this.next.clone();
-                clone.next.before = clone;
+                clone.next.prev = clone;
             }
             return clone;
         } catch (CloneNotSupportedException e) {

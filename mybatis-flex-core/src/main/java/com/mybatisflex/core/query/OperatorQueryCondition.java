@@ -28,11 +28,11 @@ import java.util.List;
 public class OperatorQueryCondition extends QueryCondition {
 
     private final String operator;
-    private QueryCondition child;
+    private QueryCondition childCondition;
 
-    public OperatorQueryCondition(String operator, QueryCondition child) {
+    public OperatorQueryCondition(String operator, QueryCondition childCondition) {
         this.operator = operator;
-        this.child = child;
+        this.childCondition = childCondition;
     }
 
     @Override
@@ -41,11 +41,11 @@ public class OperatorQueryCondition extends QueryCondition {
 
         //检测是否生效
         if (checkEffective()) {
-            String childSql = child.toSql(queryTables, dialect);
+            String childSql = childCondition.toSql(queryTables, dialect);
             if (StringUtil.isNotBlank(childSql)) {
-                QueryCondition effectiveBefore = getEffectiveBefore();
-                if (effectiveBefore != null) {
-                    sql.append(effectiveBefore.connector);
+                QueryCondition prevEffectiveCondition = getPrevEffectiveCondition();
+                if (prevEffectiveCondition != null) {
+                    sql.append(prevEffectiveCondition.connector);
                 }
                 sql.append(operator).append("(").append(childSql).append(")");
             }
@@ -60,19 +60,19 @@ public class OperatorQueryCondition extends QueryCondition {
 
     @Override
     public Object getValue() {
-        return WrapperUtil.getValues(child);
+        return WrapperUtil.getValues(childCondition);
     }
 
     @Override
     boolean containsTable(String... tables) {
-        return child != null && child.containsTable(tables);
+        return childCondition != null && childCondition.containsTable(tables);
     }
 
     @Override
     public OperatorQueryCondition clone() {
         OperatorQueryCondition clone = (OperatorQueryCondition) super.clone();
         // deep clone ...
-        clone.child = ObjectUtil.clone(this.child);
+        clone.childCondition = ObjectUtil.clone(this.childCondition);
         return clone;
     }
 }

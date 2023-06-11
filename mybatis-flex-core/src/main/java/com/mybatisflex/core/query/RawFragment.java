@@ -44,9 +44,9 @@ public class RawFragment extends QueryCondition {
 
         //检测是否生效
         if (checkEffective()) {
-            QueryCondition effectiveBefore = getEffectiveBefore();
-            if (effectiveBefore != null) {
-                sql.append(effectiveBefore.connector);
+            QueryCondition prevEffectiveCondition = getPrevEffectiveCondition();
+            if (prevEffectiveCondition != null) {
+                sql.append(prevEffectiveCondition.connector);
             }
             sql.append(" ").append(content).append(" ");
         }
