@@ -16,6 +16,10 @@
 
 package com.mybatisflex.test.common;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
+import com.alibaba.fastjson2.JSONWriter;
+
 import java.io.*;
 
 /**
@@ -49,6 +53,22 @@ public class SerialUtil {
     public static <T> T cloneObject(Object obj) {
         //noinspection unchecked
         return (T) readObject(writeObject(obj));
+    }
+
+    public static String toJSONString(Object obj) {
+        return JSON.toJSONString(obj, JSONWriter.Feature.FieldBased,
+                JSONWriter.Feature.WriteClassName,
+                JSONWriter.Feature.NotWriteRootClassName,
+                JSONWriter.Feature.ReferenceDetection);
+    }
+
+    public static <T> T parseObject(String str, Class<T> tClass) {
+        return JSON.parseObject(str, tClass, JSONReader.Feature.FieldBased,
+                JSONReader.Feature.SupportClassForName);
+    }
+
+    public static <T> T cloneObject(Object obj, Class<T> tClass) {
+        return parseObject(toJSONString(obj), tClass);
     }
 
 }
