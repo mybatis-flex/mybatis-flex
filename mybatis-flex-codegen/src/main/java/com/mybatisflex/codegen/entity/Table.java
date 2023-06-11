@@ -128,18 +128,6 @@ public class Table {
 
         EntityConfig entityConfig = globalConfig.getEntityConfig();
 
-        //开启 lombok
-        if (entityConfig.isWithLombok()) {
-            //import lombok.AllArgsConstructor;
-            //import lombok.Builder;
-            //import lombok.Data;
-            //import lombok.NoArgsConstructor;
-            imports.add("lombok.AllArgsConstructor");
-            imports.add("lombok.Builder");
-            imports.add("lombok.Data");
-            imports.add("lombok.NoArgsConstructor");
-        }
-
         if (entityConfig.getSupperClass() != null) {
             imports.add(entityConfig.getSupperClass().getName());
         }
@@ -277,16 +265,6 @@ public class Table {
      */
     public String buildTableAnnotation() {
         StringBuilder tableAnnotation = new StringBuilder();
-        if (globalConfig.getEntityConfig().isWithLombok()) {
-            //@Data
-            //@Builder
-            //@NoArgsConstructor
-            //@AllArgsConstructor
-            tableAnnotation.append("@Data\n");
-            tableAnnotation.append("@Builder\n");
-            tableAnnotation.append("@NoArgsConstructor\n");
-            tableAnnotation.append("@AllArgsConstructor\n");
-        }
 
         tableAnnotation.append("@Table(value = \"").append(name).append("\"");
 

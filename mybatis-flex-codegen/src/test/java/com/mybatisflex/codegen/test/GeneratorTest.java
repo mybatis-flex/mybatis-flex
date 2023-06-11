@@ -20,6 +20,7 @@ import com.mybatisflex.codegen.Generator;
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.spring.service.impl.CacheableServiceImpl;
 import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Test;
 
 import java.util.function.UnaryOperator;
 
@@ -82,7 +83,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-//    @Test
+    @Test
     public void testCodeGen2() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -112,8 +113,8 @@ public class GeneratorTest {
                 .setGenerateTable("sys_user");
 
         //设置模板路径
-        globalConfig.getTemplateConfig()
-                .setEntity("D:\\Documents\\配置文件\\entity.tpl");
+        //globalConfig.getTemplateConfig()
+        //        .setEntity("D:\\Documents\\配置文件\\entity.tpl");
 
         //配置生成 entity
         globalConfig.enableEntity()
