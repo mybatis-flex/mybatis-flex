@@ -83,10 +83,6 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
         return this;
     }
 
-    @Override
-    public <T> QueryColumn as(LambdaGetter<T> fn) {
-        return as(LambdaUtil.getFieldName(fn));
-    }
 
     private String buildValue(Object value) {
         if (value instanceof Number || value instanceof Boolean) {
@@ -114,19 +110,15 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
 
 
     public static class When implements CloneSupport<When> {
-        private Builder builder;
         private QueryCondition whenCondition;
         private Object thenValue;
 
-        public When(Builder builder, QueryCondition whenCondition) {
-            this.builder = builder;
+        public When(QueryCondition whenCondition) {
             this.whenCondition = whenCondition;
         }
 
-        public Builder then(Object thenValue) {
+        public void then(Object thenValue) {
             this.thenValue = thenValue;
-            this.builder.caseQueryColumn.addWhen(this);
-            return builder;
         }
 
         @Override
@@ -143,12 +135,14 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
         }
     }
 
-    public static class Builder implements CloneSupport<Builder> {
+    public static class Builder {
 
         private CaseQueryColumn caseQueryColumn = new CaseQueryColumn();
+        private When lastWhen;
 
-        public When when(QueryCondition condition) {
-            return new When(this, condition);
+        public Then when(QueryCondition condition) {
+            lastWhen = new When(condition);
+            return new Then(this);
         }
 
         public Builder else_(Object elseValue) {
@@ -160,15 +154,18 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
             return caseQueryColumn;
         }
 
-        @Override
-        public Builder clone() {
-            try {
-                Builder clone = (Builder) super.clone();
-                // deep clone ...
-                clone.caseQueryColumn = this.caseQueryColumn.clone();
-                return clone;
-            } catch (CloneNotSupportedException e) {
-                throw FlexExceptions.wrap(e);
+        public static class Then {
+
+            private Builder builder;
+
+            public Then(Builder builder) {
+                this.builder = builder;
+            }
+
+            public Builder then(Object thenValue) {
+                this.builder.lastWhen.then(thenValue);
+                this.builder.caseQueryColumn.addWhen(builder.lastWhen);
+                return builder;
             }
         }
     }

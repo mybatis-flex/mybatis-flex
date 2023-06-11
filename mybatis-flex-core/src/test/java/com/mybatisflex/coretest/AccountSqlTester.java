@@ -374,8 +374,6 @@ public class AccountSqlTester {
 
     @Test
     public void testCase1() {
-        IDialect dialect = new CommonsDialectImpl();
-
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(ACCOUNT.ALL_COLUMNS,
                         case_()
@@ -386,8 +384,7 @@ public class AccountSqlTester {
                 .from(ACCOUNT)
                 .and(ACCOUNT.USER_NAME.like("michael"));
 
-        String sql = dialect.forSelectByQuery(queryWrapper);
-        System.out.println(sql);
+        System.out.println(queryWrapper.toSQL());
     }
 
     @Test
