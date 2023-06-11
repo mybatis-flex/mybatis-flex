@@ -217,13 +217,10 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
 
 
     protected QueryCondition getPrevEffectiveCondition() {
-        if (prev != null && prev.checkEffective()) {
-            return prev;
-        } else if (prev != null) {
-            return prev.getPrevEffectiveCondition();
-        } else {
+        if (prev == null) {
             return null;
         }
+        return prev.checkEffective() ? prev : prev.getPrevEffectiveCondition();
     }
 
 

@@ -83,15 +83,15 @@ public class Brackets extends QueryCondition {
         if (checkEffective()) {
             String childSql = childCondition.toSql(queryTables, dialect);
             if (StringUtil.isNotBlank(childSql)) {
-                QueryCondition prevCondition = getPrevEffectiveCondition();
-                if (prevCondition != null) {
-                    childSql = prevCondition.connector + "(" + childSql + ")";
+                QueryCondition prevEffectiveCondition = getPrevEffectiveCondition();
+                if (prevEffectiveCondition != null) {
+                    childSql = prevEffectiveCondition.connector + "(" + childSql + ")";
                 } else if (StringUtil.isNotBlank(sqlNext)) {
                     childSql = "(" + childSql + ")";
                 }
                 sql.append(childSql);
             } else {
-                //all child conditions is not effective
+                //all child conditions are not effective
                 //fixed gitee #I6W89G
                 this.effective = false;
             }
