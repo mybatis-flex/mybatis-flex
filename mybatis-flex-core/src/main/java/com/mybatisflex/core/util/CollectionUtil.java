@@ -108,9 +108,8 @@ public class CollectionUtil {
             return null;
         }
         List<E> arrayList = new ArrayList<>(list.size());
-        int index = 0;
         for (E e : list) {
-            arrayList.add(index++, e.clone());
+            arrayList.add(e.clone());
         }
         return arrayList;
     }
