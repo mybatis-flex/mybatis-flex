@@ -90,6 +90,13 @@ public class MapperInvocationHandler implements InvocationHandler {
         }
 
         Class<?>[] interfaces = proxy.getClass().getInterfaces();
+        for (Class<?> anInterface : interfaces) {
+            UseDataSource annotation = anInterface.getAnnotation(UseDataSource.class);
+            if (annotation != null) {
+                return annotation.value();
+            }
+        }
+
         if (interfaces[0] != RowMapper.class) {
             TableInfo tableInfo = TableInfoFactory.ofMapperClass(interfaces[0]);
             if (tableInfo != null) {
