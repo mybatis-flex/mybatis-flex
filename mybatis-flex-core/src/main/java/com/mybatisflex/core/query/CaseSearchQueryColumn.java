@@ -18,6 +18,7 @@ package com.mybatisflex.core.query;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.*;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class CaseSearchQueryColumn extends QueryColumn implements HasParamsColum
         CaseSearchQueryColumn clone = (CaseSearchQueryColumn) super.clone();
         // deep clone ...
         clone.queryColumn = ObjectUtil.clone(this.queryColumn);
-        clone.whens = CollectionUtil.cloneValue(this.whens, ArrayList::new);
+        clone.whens = CollectionUtil.cloneArrayList(this.whens);
         return clone;
     }
 
@@ -138,7 +139,7 @@ public class CaseSearchQueryColumn extends QueryColumn implements HasParamsColum
                 clone.thenValue = ObjectUtil.cloneObject(this.thenValue);
                 return clone;
             } catch (CloneNotSupportedException e) {
-                throw new AssertionError();
+                throw FlexExceptions.wrap(e);
             }
         }
     }
@@ -175,7 +176,7 @@ public class CaseSearchQueryColumn extends QueryColumn implements HasParamsColum
                 clone.caseQueryColumn = this.caseQueryColumn.clone();
                 return clone;
             } catch (CloneNotSupportedException e) {
-                throw new AssertionError();
+                throw FlexExceptions.wrap(e);
             }
         }
     }

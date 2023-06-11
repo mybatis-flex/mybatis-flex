@@ -19,7 +19,6 @@ import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DistinctQueryColumn extends QueryColumn {
@@ -43,7 +42,7 @@ public class DistinctQueryColumn extends QueryColumn {
     public DistinctQueryColumn clone() {
         DistinctQueryColumn clone = (DistinctQueryColumn) super.clone();
         // deep clone ...
-        clone.queryColumns = CollectionUtil.cloneValue(this.queryColumns, ArrayList::new);
+        clone.queryColumns = CollectionUtil.cloneArrayList(this.queryColumns);
         return clone;
     }
 }

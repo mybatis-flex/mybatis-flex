@@ -17,6 +17,7 @@ package com.mybatisflex.core.query;
 
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.util.*;
 
@@ -553,7 +554,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
             clone.table = ObjectUtil.clone(this.table);
             return clone;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+            throw FlexExceptions.wrap(e);
         }
     }
 }

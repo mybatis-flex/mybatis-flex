@@ -659,6 +659,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     @Override
     public QueryWrapper clone() {
-        return (QueryWrapper) super.clone();
+        return super.clone();
     }
 }

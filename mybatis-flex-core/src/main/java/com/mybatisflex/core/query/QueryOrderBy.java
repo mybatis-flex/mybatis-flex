@@ -17,6 +17,7 @@ package com.mybatisflex.core.query;
 
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ObjectUtil;
 
 import java.util.List;
@@ -79,7 +80,7 @@ public class QueryOrderBy implements CloneSupport<QueryOrderBy> {
             clone.queryColumn = ObjectUtil.clone(this.queryColumn);
             return clone;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+            throw FlexExceptions.wrap(e);
         }
     }
 }

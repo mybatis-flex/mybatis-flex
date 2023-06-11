@@ -17,6 +17,7 @@ package com.mybatisflex.core.query;
 
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.ObjectUtil;
 
@@ -312,7 +313,7 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             }
             return clone;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+            throw FlexExceptions.wrap(e);
         }
     }
 }

@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
@@ -101,7 +102,7 @@ public class ArithmeticQueryColumn extends QueryColumn {
     public ArithmeticQueryColumn clone() {
         ArithmeticQueryColumn clone = (ArithmeticQueryColumn) super.clone();
         // deep clone ...
-        clone.arithmeticInfos = CollectionUtil.cloneValue(this.arithmeticInfos, ArrayList::new);
+        clone.arithmeticInfos = CollectionUtil.cloneArrayList(this.arithmeticInfos);
         return clone;
     }
 
@@ -145,7 +146,7 @@ public class ArithmeticQueryColumn extends QueryColumn {
             try {
                 return (ArithmeticInfo) super.clone();
             } catch (CloneNotSupportedException e) {
-                throw new AssertionError();
+                throw FlexExceptions.wrap(e);
             }
         }
     }

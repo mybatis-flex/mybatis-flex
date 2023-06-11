@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.ObjectUtil;
 
@@ -50,7 +51,7 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
 
     protected T addSelectColumn(QueryColumn queryColumn) {
         if (selectColumns == null) {
-            selectColumns = new LinkedList<>();
+            selectColumns = new ArrayList<>();
         }
 
         selectColumns.add(queryColumn);
@@ -60,7 +61,7 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
 
     protected T addJoin(Join join) {
         if (joins == null) {
-            joins = new LinkedList<>();
+            joins = new ArrayList<>();
         }
         joins.add(join);
         return (T) this;
@@ -91,7 +92,7 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
 
     protected T addGroupByColumns(QueryColumn queryColumn) {
         if (groupByColumns == null) {
-            groupByColumns = new LinkedList<>();
+            groupByColumns = new ArrayList<>();
         }
 
         groupByColumns.add(queryColumn);
@@ -265,20 +266,26 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
         try {
             T clone = (T) super.clone();
             // deep clone ...
-            clone.queryTables = CollectionUtil.cloneValue(this.queryTables, ArrayList::new);
-            clone.selectColumns = CollectionUtil.cloneValue(this.selectColumns, LinkedList::new);
-            clone.joins = CollectionUtil.cloneValue(this.joins, LinkedList::new);
-            clone.joinTables = CollectionUtil.cloneValue(this.joinTables, ArrayList::new);
+            clone.queryTables = CollectionUtil.cloneArrayList(this.queryTables);
+            clone.selectColumns = CollectionUtil.cloneArrayList(this.selectColumns);
+            clone.joins = CollectionUtil.cloneArrayList(this.joins);
+            clone.joinTables = CollectionUtil.cloneArrayList(this.joinTables);
             clone.whereQueryCondition = ObjectUtil.clone(this.whereQueryCondition);
-            clone.groupByColumns = CollectionUtil.cloneValue(this.groupByColumns, LinkedList::new);
+            clone.groupByColumns = CollectionUtil.cloneArrayList(this.groupByColumns);
             clone.havingQueryCondition = ObjectUtil.clone(this.havingQueryCondition);
-            clone.orderBys = CollectionUtil.cloneValue(this.orderBys, LinkedList::new);
-            clone.unions = CollectionUtil.cloneValue(this.unions, ArrayList::new);
-            clone.endFragments = CollectionUtil.newArrayList(this.endFragments);
-            clone.context = CollectionUtil.newHashMap(this.context);
+            clone.orderBys = CollectionUtil.cloneArrayList(this.orderBys);
+            clone.unions = CollectionUtil.cloneArrayList(this.unions);
+
+            if (this.endFragments != null){
+                clone.endFragments = CollectionUtil.newArrayList(this.endFragments);
+            }
+
+            if (this.context != null){
+                clone.context = CollectionUtil.newHashMap(this.context);
+            }
             return clone;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+            throw FlexExceptions.wrap(e);
         }
     }
 }

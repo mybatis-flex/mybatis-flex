@@ -19,13 +19,12 @@ import com.mybatisflex.core.query.CloneSupport;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 
 public class CollectionUtil {
 
-    private CollectionUtil() {}
+    private CollectionUtil() {
+    }
 
 
     public static boolean isEmpty(Collection<?> collection) {
@@ -81,13 +80,7 @@ public class CollectionUtil {
         return concurrentHashMap.computeIfAbsent(key, mappingFunction);
     }
 
-    public static <T> Set<T> newHashSet(T... elements) {
-        return new HashSet<>(Arrays.asList(elements));
-    }
 
-    public static <T> List<T> newArrayList(T... elements) {
-        return new ArrayList<>(Arrays.asList(elements));
-    }
 
     public static <T> List<T> toList(Collection<T> collection) {
         if (collection instanceof List) {
@@ -110,16 +103,28 @@ public class CollectionUtil {
     }
 
     @SuppressWarnings("all")
-    public static <E extends CloneSupport<E>> List<E> cloneValue(Collection<E> collection, Supplier<List<E>> collectionSupplier) {
-        if (isEmpty(collection)) {
-            return collectionSupplier.get();
+    public static <E extends CloneSupport<E>> List<E> cloneArrayList(List<E> list) {
+        if (list == null) {
+            return null;
         }
-        return collection.stream()
-                // 这里不能使用 CloneSupport::clone
-                // java.lang.BootstrapMethodError: call site initialization exception
-                .map(cloneable -> cloneable.clone())
-                .collect(Collectors.toCollection(collectionSupplier));
+        List<E> arrayList = new ArrayList<>(list.size());
+        int index = 0;
+        for (E e : list) {
+            arrayList.add(index++, e.clone());
+        }
+        return arrayList;
     }
+
+
+    public static <T> Set<T> newHashSet(T... elements) {
+        return new HashSet<>(Arrays.asList(elements));
+    }
+
+
+    public static <T> List<T> newArrayList(T... elements) {
+        return new ArrayList<>(Arrays.asList(elements));
+    }
+
 
     public static <E> ArrayList<E> newArrayList(Collection<E> collection) {
         if (isEmpty(collection)) {
@@ -127,6 +132,7 @@ public class CollectionUtil {
         }
         return new ArrayList<>(collection);
     }
+
 
     public static <K, V> HashMap<K, V> newHashMap(Map<K, V> map) {
         if (map == null || map.isEmpty()) {
