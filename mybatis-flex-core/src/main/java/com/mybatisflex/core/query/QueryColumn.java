@@ -167,14 +167,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         if (value == null) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, "%" + value);
+        return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, value + "%");
     }
 
     public <T> QueryCondition likeLeft(Object value, Predicate<T> fn) {
         if (value == null) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, "%" + value).when(fn);
+        return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, value + "%").when(fn);
     }
 
 
@@ -182,14 +182,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         if (value == null) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, value + "%");
+        return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, "%" + value);
     }
 
     public <T> QueryCondition likeRight(Object value, Predicate<T> fn) {
         if (value == null) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, value + "%").when(fn);
+        return QueryCondition.create(this, QueryCondition.LOGIC_LIKE, "%" + value).when(fn);
     }
 
     /**
