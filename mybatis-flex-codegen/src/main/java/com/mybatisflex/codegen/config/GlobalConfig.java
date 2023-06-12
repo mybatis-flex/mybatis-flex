@@ -611,6 +611,22 @@ public class GlobalConfig {
         getStrategyConfig().setGenerateForView(generateForView);
     }
 
+
+    /**
+     * @see StrategyConfig#getGenerateSchema()
+     */
+    public String getGenerateSchema() {
+        return getStrategyConfig().getGenerateSchema();
+    }
+
+    /**
+     * @see StrategyConfig#setGenerateSchema(String)
+     */
+    public void setGenerateSchema(String generateSchema) {
+        getStrategyConfig().setGenerateSchema(generateSchema);
+    }
+
+
     /**
      * @see StrategyConfig#getGenerateTables()
      */
