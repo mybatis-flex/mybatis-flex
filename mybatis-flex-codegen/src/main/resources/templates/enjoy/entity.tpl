@@ -1,7 +1,14 @@
+#set(withLombok = entityConfig.isWithLombok())
 package #(packageConfig.entityPackage);
 
-#for(importClass:table.buildImports())
+#for(importClass : table.buildImports())
 import #(importClass);
+#end
+#if(withLombok)
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 #end
 
 /**
@@ -10,15 +17,21 @@ import #(importClass);
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())
  */
+#if(withLombok)
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+#end
 #(table.buildTableAnnotation())
 public class #(table.buildEntityClassName())#(table.buildExtends())#(table.buildImplements()) {
-#for(column: table.columns)
+#for(column : table.columns)
 
     #(column.buildComment())
     #(column.buildAnnotations())private #(column.propertySimpleType) #(column.property);
 #end
 
-    #if(!entityConfig.isWithLombok())
+#if(!withLombok)
     #for(column: table.columns)
     public #(column.propertySimpleType) #(column.getterMethod())() {
         return #(column.property);
@@ -29,5 +42,5 @@ public class #(table.buildEntityClassName())#(table.buildExtends())#(table.build
     }
 
     #end
-    #end
+#end
 }

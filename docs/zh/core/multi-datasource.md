@@ -66,10 +66,11 @@ List<Row> rows =  DataSourceKey.use("ds2"
 
 ## 数据源切换（设置）
 
-MyBatis-Flex 提供了 3 种方式来配置数据源：
+MyBatis-Flex 提供了 4 种方式来配置数据源：
 - 1、编码，使用`DataSourceKey.use` 方法。
-- 2、`@UseDataSource("dataSourceName")` 在 Mapper 方法上，添加注解，用于指定使用哪个数据源。
-- 3、`@Table(dataSource="dataSourceName")` 在 Entity 类上添加注解，该 Entity 的增删改查请求默认使用该数据源。
+- 2、`@UseDataSource("dataSourceName")` 在 Mapper 类上，添加注解，用于指定使用哪个数据源。
+- 3、`@UseDataSource("dataSourceName")` 在 Mapper 方法上，添加注解，用于指定使用哪个数据源。
+- 4、`@Table(dataSource="dataSourceName")` 在 Entity 类上添加注解，该 Entity 的增删改查请求默认使用该数据源。
 
 
 `DataSourceKey.use` 示例：
@@ -84,6 +85,15 @@ try{
 ```
 
 `@UseDataSource("dataSourceName")` 示例：
+
+```java 1
+@UseDataSource("ds2")
+interface AccountMapper extends BaseMapper{
+    List<Account> myMethod();
+}
+```
+
+或者
 ```java 3
 interface AccountMapper extends BaseMapper{
 
@@ -91,6 +101,8 @@ interface AccountMapper extends BaseMapper{
     List<Account> myMethod();
 }
 ```
+
+
 
 `@Table(dataSource="dataSourceName")` 示例：
 ```java 1
@@ -105,7 +117,7 @@ public class Account {
 ```
 
 ::: tip 数据源配置的优先级
-`DataSourceKey.use()` > `@UseDataSource()` > `@Table(dataSource="...")`
+`DataSourceKey.use()` > `@UseDataSource()在方法上` > `@UseDataSource()在类上` >`@Table(dataSource="...")`
 :::
 
 ## 更多的 Spring Yaml 配置支持

@@ -1,23 +1,24 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.util.ObjectUtil;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -26,7 +27,7 @@ import java.util.function.Supplier;
  * @author michael yang (fuhai999@gmail.com)
  * @Date: 2020/1/14
  */
-public class Join implements Serializable {
+public class Join implements CloneSupport<Join> {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,7 +40,7 @@ public class Join implements Serializable {
 
 
     protected final String type;
-    protected final QueryTable queryTable;
+    protected QueryTable queryTable;
     protected QueryCondition on;
     protected boolean effective;
 
@@ -91,5 +92,18 @@ public class Join implements Serializable {
         newQueryTables.add(queryTable);
         sql.append(" ON ").append(on.toSql(newQueryTables, dialect));
         return sql.toString();
+    }
+
+    @Override
+    public Join clone() {
+        try {
+            Join clone = (Join) super.clone();
+            // deep clone ...
+            clone.queryTable = ObjectUtil.clone(this.queryTable);
+            clone.on = ObjectUtil.clone(this.on);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw FlexExceptions.wrap(e);
+        }
     }
 }

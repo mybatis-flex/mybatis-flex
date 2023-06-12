@@ -1,27 +1,25 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.dialect.IDialect;
-import com.mybatisflex.core.util.ArrayUtil;
-import com.mybatisflex.core.util.LambdaGetter;
-import com.mybatisflex.core.util.LambdaUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +54,14 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
         return sql.toString();
     }
 
+    @Override
+    public CaseQueryColumn clone() {
+        CaseQueryColumn clone = (CaseQueryColumn) super.clone();
+        // deep clone ...
+        clone.whens = CollectionUtil.cloneArrayList(this.whens);
+        return clone;
+    }
+
 
     @Override
     String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
@@ -77,10 +83,6 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
         return this;
     }
 
-    @Override
-    public <T> QueryColumn as(LambdaGetter<T> fn) {
-        return as(LambdaUtil.getFieldName(fn));
-    }
 
     private String buildValue(Object value) {
         if (value instanceof Number || value instanceof Boolean) {
@@ -100,36 +102,47 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
         for (When when : whens) {
             values = ArrayUtil.concat(values, WrapperUtil.getValues(when.whenCondition));
         }
-        if (elseValue instanceof HasParamsColumn){
-            values = ArrayUtil.concat(values,((HasParamsColumn) elseValue).getParamValues());
+        if (elseValue instanceof HasParamsColumn) {
+            values = ArrayUtil.concat(values, ((HasParamsColumn) elseValue).getParamValues());
         }
         return values;
     }
 
 
-    public static class When {
-        private Builder builder;
+    public static class When implements CloneSupport<When> {
         private QueryCondition whenCondition;
         private Object thenValue;
 
-        public When(Builder builder, QueryCondition whenCondition) {
-            this.builder = builder;
+        public When(QueryCondition whenCondition) {
             this.whenCondition = whenCondition;
         }
 
-        public Builder then(Object thenValue) {
+        public void setThenValue(Object thenValue) {
             this.thenValue = thenValue;
-            this.builder.caseQueryColumn.addWhen(this);
-            return builder;
+        }
+
+        @Override
+        public When clone() {
+            try {
+                When clone = (When) super.clone();
+                // deep clone ...
+                clone.whenCondition = ObjectUtil.clone(this.whenCondition);
+                clone.thenValue = ObjectUtil.cloneObject(this.thenValue);
+                return clone;
+            } catch (CloneNotSupportedException e) {
+                throw FlexExceptions.wrap(e);
+            }
         }
     }
 
     public static class Builder {
 
         private CaseQueryColumn caseQueryColumn = new CaseQueryColumn();
+        private When lastWhen;
 
-        public When when(QueryCondition condition) {
-            return new When(this, condition);
+        public Then when(QueryCondition condition) {
+            lastWhen = new When(condition);
+            return new Then(this);
         }
 
         public Builder else_(Object elseValue) {
@@ -139,6 +152,21 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
 
         public CaseQueryColumn end() {
             return caseQueryColumn;
+        }
+
+        public static class Then {
+
+            private Builder builder;
+
+            public Then(Builder builder) {
+                this.builder = builder;
+            }
+
+            public Builder then(Object thenValue) {
+                this.builder.lastWhen.setThenValue(thenValue);
+                this.builder.caseQueryColumn.addWhen(builder.lastWhen);
+                return builder;
+            }
         }
     }
 }

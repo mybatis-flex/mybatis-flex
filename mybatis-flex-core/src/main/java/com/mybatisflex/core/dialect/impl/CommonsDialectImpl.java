@@ -28,6 +28,8 @@ import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -704,7 +706,7 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(getRealSchema(schema))).append(".");
         }
         sql.append(wrap(getRealTable(tableName))).append(" SET ");
-        sql.append(wrap(fieldName)).append("=").append(wrap(fieldName)).append(value.intValue() >= 0 ? " + " : " - ").append(Math.abs(value.longValue()));
+        sql.append(wrap(fieldName)).append("=").append(wrap(fieldName)).append(geZero(value) ? " + " : " - ").append(abs(value));
 
         String whereConditionSql = buildWhereConditionSql(queryWrapper);
 
@@ -721,8 +723,37 @@ public class CommonsDialectImpl implements IDialect {
                 sql.append(" ").append(endFragment);
             }
         }
-
         return sql.toString();
+    }
+
+
+    protected boolean geZero(Number number) {
+        if (number instanceof BigDecimal) {
+            return ((BigDecimal) number).signum() >= 0;
+        } else if (number instanceof BigInteger) {
+            return ((BigInteger) number).signum() >= 0;
+        } else if (number instanceof Float) {
+            return (Float) number >= 0;
+        } else if (number instanceof Double) {
+            return (Double) number >= 0;
+        } else {
+            return number.longValue() >= 0;
+        }
+    }
+
+
+    protected Number abs(Number number) {
+        if (number instanceof BigDecimal) {
+            return ((BigDecimal) number).abs();
+        } else if (number instanceof BigInteger) {
+            return ((BigInteger) number).abs();
+        } else if (number instanceof Float) {
+            return Math.abs((Float) number);
+        } else if (number instanceof Double) {
+            return Math.abs((Double) number);
+        } else {
+            return Math.abs(number.longValue());
+        }
     }
 
 

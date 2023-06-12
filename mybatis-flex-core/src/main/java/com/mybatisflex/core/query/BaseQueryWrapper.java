@@ -1,24 +1,28 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.query;
 
-import java.io.Serializable;
+import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.ObjectUtil;
+
 import java.util.*;
 
-public class BaseQueryWrapper<T> implements Serializable {
+@SuppressWarnings({"unchecked", "unused"})
+public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSupport<T> {
 
 
     protected List<QueryTable> queryTables;
@@ -47,7 +51,7 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected T addSelectColumn(QueryColumn queryColumn) {
         if (selectColumns == null) {
-            selectColumns = new LinkedList<>();
+            selectColumns = new ArrayList<>();
         }
 
         selectColumns.add(queryColumn);
@@ -57,7 +61,7 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected T addJoin(Join join) {
         if (joins == null) {
-            joins = new LinkedList<>();
+            joins = new ArrayList<>();
         }
         joins.add(join);
         return (T) this;
@@ -88,7 +92,7 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected T addGroupByColumns(QueryColumn queryColumn) {
         if (groupByColumns == null) {
-            groupByColumns = new LinkedList<>();
+            groupByColumns = new ArrayList<>();
         }
 
         groupByColumns.add(queryColumn);
@@ -255,5 +259,33 @@ public class BaseQueryWrapper<T> implements Serializable {
 
     protected <R> R getContext(String key){
         return context == null ? null : (R) context.get(key);
+    }
+
+    @Override
+    public T clone() {
+        try {
+            T clone = (T) super.clone();
+            // deep clone ...
+            clone.queryTables = CollectionUtil.cloneArrayList(this.queryTables);
+            clone.selectColumns = CollectionUtil.cloneArrayList(this.selectColumns);
+            clone.joins = CollectionUtil.cloneArrayList(this.joins);
+            clone.joinTables = CollectionUtil.cloneArrayList(this.joinTables);
+            clone.whereQueryCondition = ObjectUtil.clone(this.whereQueryCondition);
+            clone.groupByColumns = CollectionUtil.cloneArrayList(this.groupByColumns);
+            clone.havingQueryCondition = ObjectUtil.clone(this.havingQueryCondition);
+            clone.orderBys = CollectionUtil.cloneArrayList(this.orderBys);
+            clone.unions = CollectionUtil.cloneArrayList(this.unions);
+            // copy List if necessary ...
+            if (this.endFragments != null){
+                clone.endFragments = CollectionUtil.newArrayList(this.endFragments);
+            }
+            // copy Map if necessary ...
+            if (this.context != null){
+                clone.context = CollectionUtil.newHashMap(this.context);
+            }
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw FlexExceptions.wrap(e);
+        }
     }
 }

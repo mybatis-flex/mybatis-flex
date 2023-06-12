@@ -1,21 +1,22 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.util.ObjectUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 public class Brackets extends QueryCondition {
 
-    private final QueryCondition childCondition;
+    private QueryCondition childCondition;
 
     public Brackets(QueryCondition childCondition) {
         this.childCondition = childCondition;
@@ -82,15 +83,15 @@ public class Brackets extends QueryCondition {
         if (checkEffective()) {
             String childSql = childCondition.toSql(queryTables, dialect);
             if (StringUtil.isNotBlank(childSql)) {
-                QueryCondition effectiveBefore = getEffectiveBefore();
-                if (effectiveBefore != null) {
-                    childSql = effectiveBefore.connector + "(" + childSql + ")";
+                QueryCondition prevEffectiveCondition = getPrevEffectiveCondition();
+                if (prevEffectiveCondition != null) {
+                    childSql = prevEffectiveCondition.connector + "(" + childSql + ")";
                 } else if (StringUtil.isNotBlank(sqlNext)) {
                     childSql = "(" + childSql + ")";
                 }
                 sql.append(childSql);
             } else {
-                //all child conditions is not effective
+                //all child conditions are not effective
                 //fixed gitee #I6W89G
                 this.effective = false;
             }
@@ -110,5 +111,13 @@ public class Brackets extends QueryCondition {
         return "Brackets{" +
                 "childCondition=" + childCondition +
                 '}';
+    }
+
+    @Override
+    public Brackets clone() {
+        Brackets clone = (Brackets) super.clone();
+        // deep clone ...
+        clone.childCondition = ObjectUtil.clone(this.childCondition);
+        return clone;
     }
 }

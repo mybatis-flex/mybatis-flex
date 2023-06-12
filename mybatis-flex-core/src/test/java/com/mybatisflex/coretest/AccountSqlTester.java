@@ -374,8 +374,6 @@ public class AccountSqlTester {
 
     @Test
     public void testCase1() {
-        IDialect dialect = new CommonsDialectImpl();
-
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(ACCOUNT.ALL_COLUMNS,
                         case_()
@@ -386,8 +384,7 @@ public class AccountSqlTester {
                 .from(ACCOUNT)
                 .and(ACCOUNT.USER_NAME.like("michael"));
 
-        String sql = dialect.forSelectByQuery(queryWrapper);
-        System.out.println(sql);
+        System.out.println(queryWrapper.toSQL());
     }
 
     @Test
@@ -472,9 +469,9 @@ public class AccountSqlTester {
     @Test
     public void testSelectLimitSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(distinct(ARTICLE.ID))
                 .select(ACCOUNT.ALL_COLUMNS)
                 .select(ARTICLE.ID.as("article_id"))
-                .select(distinct(ARTICLE.ID))
                 .select(max(ACCOUNT.SEX))
                 .select(count(distinct(ARTICLE.ID)))
                 .from(ACCOUNT).as("a1")
@@ -495,9 +492,7 @@ public class AccountSqlTester {
                 .orderBy(ACCOUNT.ID.desc())
                 .limit(10, 10);
 
-        String mysqlSql = new CommonsDialectImpl().forSelectByQuery(queryWrapper);
-        System.out.println(">>>>> mysql: \n" + mysqlSql);
-        System.out.println(">>>>> mysql: \n" + Arrays.toString(CPI.getValueArray(queryWrapper)));
+        System.out.println(queryWrapper.toSQL());
 
 //        String oracleSql = new OracleDialect().forSelectListByQuery(CPI.getQueryTable(queryWrapper).getName(), queryWrapper);
 //        System.out.println(">>>>> oracle: " + oracleSql);

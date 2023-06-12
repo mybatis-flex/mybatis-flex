@@ -1,21 +1,23 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.ArrayList;
@@ -96,6 +98,14 @@ public class ArithmeticQueryColumn extends QueryColumn {
         return sql.toString();
     }
 
+    @Override
+    public ArithmeticQueryColumn clone() {
+        ArithmeticQueryColumn clone = (ArithmeticQueryColumn) super.clone();
+        // deep clone ...
+        clone.arithmeticInfos = CollectionUtil.cloneArrayList(this.arithmeticInfos);
+        return clone;
+    }
+
 
     @Override
     String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
@@ -107,12 +117,13 @@ public class ArithmeticQueryColumn extends QueryColumn {
     }
 
 
-    static class ArithmeticInfo {
+    static class ArithmeticInfo implements CloneSupport<ArithmeticInfo> {
+
         private String symbol;
         private Object value;
 
         public ArithmeticInfo(Object value) {
-            this.value = value;
+            this(null, value);
         }
 
         public ArithmeticInfo(String symbol, Object value) {
@@ -128,6 +139,15 @@ public class ArithmeticQueryColumn extends QueryColumn {
                 valueSql = String.valueOf(value);
             }
             return index == 0 ? valueSql : symbol  + valueSql;
+        }
+
+        @Override
+        public ArithmeticInfo clone() {
+            try {
+                return (ArithmeticInfo) super.clone();
+            } catch (CloneNotSupportedException e) {
+                throw FlexExceptions.wrap(e);
+            }
         }
     }
 }

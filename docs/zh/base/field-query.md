@@ -106,9 +106,6 @@ List<Article> articles = mapper.selectListByQuery(query
 通过以上内容看出，`Article` 的任何属性，都是可以通过传入 `FieldQueryBuilder` 来构建 `QueryWrapper` 进行再次查询，
 这些不仅仅只适用于  `一对多`、`一对一`、`多对一`、`多对多`等场景。任何 `Article` 对象里的属性，需要二次查询赋值的，都是可以通过这种方式进行。
 
-[comment]: <> (## 结果映射)
-
-[comment]: <> (您也可以继续使用联表查询，如果是原生 MyBatis 的话，可以使用 `<resultMap>` 标签来构建结果映射，在 MyBatis-Flex 中提供了自动结果映射功能，这样您就可以只关注于 SQL 语句的构建。)
 
 ## Join Query 
 
@@ -197,7 +194,7 @@ LEFT JOIN `sys_role` AS `r` ON `ur`.`role_id` = `r`.`role_id`;
 
 最终自动映射的结果为：
 
-```text
+```txt
 UserVO{userId='1', userName='admin', roleList=[Role{roleId=1, roleKey='admin', roleName='超级管理员'}]}
 UserVO{userId='2', userName='ry', roleList=[Role{roleId=2, roleKey='common', roleName='普通角色'}]}
 UserVO{userId='3', userName='test', roleList=[Role{roleId=1, roleKey='admin', roleName='超级管理员'}, Role{roleId=2, roleKey='common', roleName='普通角色'}]}

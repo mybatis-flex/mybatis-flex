@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.row;
 
@@ -21,11 +21,14 @@ import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.RowSqlProvider;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.MapperUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import static com.mybatisflex.core.query.QueryMethods.count;
 
@@ -45,7 +48,7 @@ public interface RowMapper {
      * @see RowSqlProvider#insert(Map)
      */
     @InsertProvider(value = RowSqlProvider.class, method = "insert")
-    int insert(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROW) Row row);
+    int insert(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROW) Row row);
 
 
     /**
@@ -71,7 +74,7 @@ public interface RowMapper {
      * @see RowSqlProvider#insertBatchWithFirstRowColumns(Map)
      */
     @InsertProvider(value = RowSqlProvider.class, method = "insertBatchWithFirstRowColumns")
-    int insertBatchWithFirstRowColumns(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROWS) List<Row> rows);
+    int insertBatchWithFirstRowColumns(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROWS) List<Row> rows);
 
 
     /////// delete /////
@@ -94,8 +97,8 @@ public interface RowMapper {
      * @param row       id 和 值的数据，可以通过 {@link Row#ofKey(String, Object)} 来创建
      * @return 执行影响的行数
      */
-    default int deleteById(String schema,String tableName, Row row) {
-        return deleteById(schema,tableName, StringUtil.join(",", row.obtainsPrimaryKeyStrings()), row.obtainsPrimaryValues());
+    default int deleteById(String schema, String tableName, Row row) {
+        return deleteById(schema, tableName, StringUtil.join(",", row.obtainsPrimaryKeyStrings()), row.obtainsPrimaryValues());
     }
 
     /**
@@ -109,7 +112,7 @@ public interface RowMapper {
      * @see RowSqlProvider#deleteById(Map)
      */
     @DeleteProvider(value = RowSqlProvider.class, method = "deleteById")
-    int deleteById(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.PRIMARY_KEY) String primaryKey, @Param(FlexConsts.PRIMARY_VALUE) Object id);
+    int deleteById(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.PRIMARY_KEY) String primaryKey, @Param(FlexConsts.PRIMARY_VALUE) Object id);
 
 
     /**
@@ -123,20 +126,20 @@ public interface RowMapper {
      * @see RowSqlProvider#deleteBatchByIds(Map)
      */
     @DeleteProvider(value = RowSqlProvider.class, method = "deleteBatchByIds")
-    int deleteBatchByIds(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.PRIMARY_KEY) String primaryKey, @Param(FlexConsts.PRIMARY_VALUE) Collection<?> ids);
+    int deleteBatchByIds(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.PRIMARY_KEY) String primaryKey, @Param(FlexConsts.PRIMARY_VALUE) Collection<?> ids);
 
 
     /**
      * 根据 queryWrapper 构建 where 条件来删除数据
      *
-     * @param schema     模式
+     * @param schema       模式
      * @param tableName    表名
      * @param queryWrapper queryWrapper
      * @return 执行影响的行数
      * @see RowSqlProvider#deleteByQuery(Map)
      */
     @DeleteProvider(value = RowSqlProvider.class, method = "deleteByQuery")
-    int deleteByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+    int deleteByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
     ////////update ////
@@ -155,20 +158,20 @@ public interface RowMapper {
     /**
      * 根据主键来更新数据
      *
-     * @param schema     模式
+     * @param schema    模式
      * @param tableName 表名
      * @param row       数据，其必须包含主键数据列名和值
      * @return 执行影响的行数
      * @see RowSqlProvider#updateById(Map)
      */
     @UpdateProvider(value = RowSqlProvider.class, method = "updateById")
-    int updateById(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROW) Row row);
+    int updateById(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROW) Row row);
 
 
     /**
      * 根据 queryWrapper 来构建 where 条件更新数据
      *
-     * @param schema     模式
+     * @param schema       模式
      * @param tableName    表名
      * @param data         更新数据
      * @param queryWrapper queryWrapper
@@ -176,7 +179,7 @@ public interface RowMapper {
      * @see RowSqlProvider#updateByQuery(Map)
      */
     @UpdateProvider(value = RowSqlProvider.class, method = "updateByQuery")
-    int updateByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROW) Row data, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+    int updateByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROW) Row data, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
     /**
@@ -185,14 +188,14 @@ public interface RowMapper {
      * 1、此方法需要在 mysql 等链接配置需要开启 allowMultiQueries=true
      * 2、更新成功返回的结果也可能为 0
      *
-     * @param schema     模式
+     * @param schema    模式
      * @param tableName 表名
      * @param rows      数据，其必须包含主键数据列名和值
      * @return 执行影响的行数
      * @see RowSqlProvider#updateBatchById(Map)
      */
     @UpdateProvider(value = RowSqlProvider.class, method = "updateBatchById")
-    int updateBatchById(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROWS) List<Row> rows);
+    int updateBatchById(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.ROWS) List<Row> rows);
 
 
     /**
@@ -215,7 +218,7 @@ public interface RowMapper {
      * @see RowSqlProvider#updateNumberAddByQuery(Map)
      */
     @UpdateProvider(type = RowSqlProvider.class, method = "updateNumberAddByQuery")
-    int updateNumberAddByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.FIELD_NAME) String fieldName
+    int updateNumberAddByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.FIELD_NAME) String fieldName
             , @Param(FlexConsts.VALUE) Number value, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
@@ -249,13 +252,14 @@ public interface RowMapper {
      * @param row       主键和ID的描述，通过 {@link Row#ofKey(String, Object)} 来进行构建
      * @return 返回一条数据，或者 null
      */
-    default Row selectOneById(String schema,String tableName, Row row) {
-        return selectOneById(schema,tableName, StringUtil.join(",", row.obtainsPrimaryKeyStrings()), row.obtainsPrimaryValues());
+    default Row selectOneById(String schema, String tableName, Row row) {
+        return selectOneById(schema, tableName, StringUtil.join(",", row.obtainsPrimaryKeyStrings()), row.obtainsPrimaryValues());
     }
 
     /**
      * 根据主键来查询数据
-     * @param schema    模式
+     *
+     * @param schema     模式
      * @param tableName  表名
      * @param primaryKey 主键
      * @param id         id 值
@@ -263,7 +267,7 @@ public interface RowMapper {
      * @see RowSqlProvider#selectOneById(Map)
      */
     @SelectProvider(value = RowSqlProvider.class, method = "selectOneById")
-    Row selectOneById(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.PRIMARY_KEY) String primaryKey, @Param(FlexConsts.PRIMARY_VALUE) Object id);
+    Row selectOneById(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.PRIMARY_KEY) String primaryKey, @Param(FlexConsts.PRIMARY_VALUE) Object id);
 
 
     /**
@@ -274,8 +278,8 @@ public interface RowMapper {
      * @param queryWrapper queryWrapper
      * @return row or null
      */
-    default Row selectOneByQuery(String schema,String tableName, QueryWrapper queryWrapper) {
-        List<Row> rows = selectListByQuery(schema,tableName, queryWrapper.limit(1));
+    default Row selectOneByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
+        List<Row> rows = selectListByQuery(schema, tableName, queryWrapper.limit(1));
         if (rows == null || rows.isEmpty()) {
             return null;
         } else {
@@ -304,18 +308,18 @@ public interface RowMapper {
      * @see RowSqlProvider#selectListByQuery(Map)
      */
     @SelectProvider(value = RowSqlProvider.class, method = "selectListByQuery")
-    List<Row> selectListByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+    List<Row> selectListByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
     /**
      * 查询某张表的全部数据
      *
-     * @param schema       模式
+     * @param schema    模式
      * @param tableName 表名
      * @return row 列表
      */
-    default List<Row> selectAll(String schema,String tableName) {
-        return selectListByQuery(schema,tableName, QueryWrapper.create());
+    default List<Row> selectAll(String schema, String tableName) {
+        return selectListByQuery(schema, tableName, QueryWrapper.create());
     }
 
     /**
@@ -369,9 +373,9 @@ public interface RowMapper {
      * @param queryWrapper queryWrapper
      * @return 数据
      */
-    default Object selectObjectByQuery(String schema,String tableName, QueryWrapper queryWrapper) {
+    default Object selectObjectByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
         queryWrapper.limit(1);
-        List<Object> objects = selectObjectListByQuery(schema,tableName, queryWrapper);
+        List<Object> objects = selectObjectListByQuery(schema, tableName, queryWrapper);
         if (objects == null || objects.isEmpty()) {
             return null;
         }
@@ -388,7 +392,7 @@ public interface RowMapper {
      * @see RowSqlProvider#selectObjectByQuery(Map)
      */
     @SelectProvider(type = RowSqlProvider.class, method = "selectObjectByQuery")
-    List<Object> selectObjectListByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema,@Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+    List<Object> selectObjectListByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
     /**
@@ -399,13 +403,13 @@ public interface RowMapper {
      * @param queryWrapper 查询包装器
      * @return 数据量
      */
-    default long selectCountByQuery(String schema,String tableName, QueryWrapper queryWrapper) {
+    default long selectCountByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
         if (CollectionUtil.isEmpty(selectColumns)) {
             queryWrapper.select(count());
         }
 
-        List<Object> objects = selectObjectListByQuery(schema,tableName, queryWrapper);
+        List<Object> objects = selectObjectListByQuery(schema, tableName, queryWrapper);
         Object object = objects == null || objects.isEmpty() ? null : objects.get(0);
         if (object == null) {
             return 0;
@@ -426,87 +430,46 @@ public interface RowMapper {
      * @param queryWrapper 条件
      * @return
      */
-    default Page<Row> paginate(String schema,String tableName, Page<Row> page, QueryWrapper queryWrapper) {
+    default Page<Row> paginate(String schema, String tableName, Page<Row> page, QueryWrapper queryWrapper) {
 
-        CPI.setFromIfNecessary(queryWrapper,schema, tableName);
+        CPI.setFromIfNecessary(queryWrapper, schema, tableName);
 
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 
         List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
 
         List<Join> joins = CPI.getJoins(queryWrapper);
-        boolean removedJoins = true;
 
         // 只有 totalRow 小于 0 的时候才会去查询总量
         // 这样方便用户做总数缓存，而非每次都要去查询总量
         // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
         if (page.getTotalRow() < 0) {
-
-            //移除 seelct
-            CPI.setSelectColumns(queryWrapper, Collections.singletonList(count().as("total")));
-
-            //移除 OrderBy
-            if (CollectionUtil.isNotEmpty(orderBys)) {
-                CPI.setOrderBys(queryWrapper, null);
-            }
-
-            //移除 left join
-            if (joins != null && !joins.isEmpty()) {
-                for (Join join : joins) {
-                    if (!Join.TYPE_LEFT.equals(CPI.getJoinType(join))) {
-                        removedJoins = false;
-                        break;
-                    }
-                }
-            } else {
-                removedJoins = false;
-            }
-
-            if (removedJoins) {
-                List<String> joinTables = new ArrayList<>();
-                joins.forEach(join -> {
-                    QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
-                    if (joinQueryTable != null && StringUtil.isNotBlank(joinQueryTable.getName())) {
-                        joinTables.add(joinQueryTable.getName());
-                    }
-                });
-
-                QueryCondition where = CPI.getWhereQueryCondition(queryWrapper);
-                if (CPI.containsTable(where, CollectionUtil.toArrayString(joinTables))) {
-                    removedJoins = false;
-                }
-            }
-
-            if (removedJoins) {
-                CPI.setJoins(queryWrapper, null);
-            }
-
-            long count = selectCountByQuery(schema,tableName, queryWrapper);
+            QueryWrapper countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
+            long count = selectCountByQuery(schema, tableName, countQueryWrapper);
             page.setTotalRow(count);
         }
 
-        if (page.getTotalRow() == 0 || page.getPageNumber() > page.getTotalPage()) {
+        if (page.isEmpty()) {
             return page;
         }
 
         //重置 selectColumns
         CPI.setSelectColumns(queryWrapper, selectColumns);
-
         //重置 orderBys
-        if (CollectionUtil.isNotEmpty(orderBys)) {
-            CPI.setOrderBys(queryWrapper, orderBys);
-        }
-
+        CPI.setOrderBys(queryWrapper, orderBys);
         //重置 join
-        if (removedJoins) {
-            CPI.setJoins(queryWrapper, joins);
-        }
+        CPI.setJoins(queryWrapper, joins);
 
         int offset = page.getPageSize() * (page.getPageNumber() - 1);
         queryWrapper.limit(offset, page.getPageSize());
 
-        List<Row> records = selectListByQuery(schema,tableName, queryWrapper);
+        List<Row> records = selectListByQuery(schema, tableName, queryWrapper);
         page.setRecords(records);
+
+        // 将之前设置的 limit 清除掉
+        CPI.setLimitRows(queryWrapper, null);
+        CPI.setLimitOffset(queryWrapper, null);
+
         return page;
 
     }

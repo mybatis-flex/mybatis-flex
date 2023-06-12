@@ -15,13 +15,16 @@
  */
 package com.mybatisflex.core.util;
 
+import com.mybatisflex.core.query.CloneSupport;
+
 import java.util.*;
 import java.util.function.Function;
 
 
 public class CollectionUtil {
 
-    private CollectionUtil() {}
+    private CollectionUtil() {
+    }
 
 
     public static boolean isEmpty(Collection<?> collection) {
@@ -77,13 +80,7 @@ public class CollectionUtil {
         return concurrentHashMap.computeIfAbsent(key, mappingFunction);
     }
 
-    public static <T> Set<T> newHashSet(T... elements) {
-        return new HashSet<>(Arrays.asList(elements));
-    }
 
-    public static <T> List<T> newArrayList(T... elements) {
-        return new ArrayList<>(Arrays.asList(elements));
-    }
 
     public static <T> List<T> toList(Collection<T> collection) {
         if (collection instanceof List) {
@@ -103,6 +100,44 @@ public class CollectionUtil {
             results[index++] = String.valueOf(o);
         }
         return results;
+    }
+
+    @SuppressWarnings("all")
+    public static <E extends CloneSupport<E>> List<E> cloneArrayList(List<E> list) {
+        if (list == null) {
+            return null;
+        }
+        List<E> arrayList = new ArrayList<>(list.size());
+        for (E e : list) {
+            arrayList.add(e.clone());
+        }
+        return arrayList;
+    }
+
+
+    public static <T> Set<T> newHashSet(T... elements) {
+        return new HashSet<>(Arrays.asList(elements));
+    }
+
+
+    public static <T> List<T> newArrayList(T... elements) {
+        return new ArrayList<>(Arrays.asList(elements));
+    }
+
+
+    public static <E> ArrayList<E> newArrayList(Collection<E> collection) {
+        if (isEmpty(collection)) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(collection);
+    }
+
+
+    public static <K, V> HashMap<K, V> newHashMap(Map<K, V> map) {
+        if (map == null || map.isEmpty()) {
+            return new HashMap<>();
+        }
+        return new HashMap<>(map);
     }
 
 }
