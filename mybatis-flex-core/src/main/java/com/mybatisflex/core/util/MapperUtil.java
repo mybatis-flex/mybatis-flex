@@ -50,7 +50,7 @@ public class MapperUtil {
     public static QueryWrapper rawCountQueryWrapper(QueryWrapper queryWrapper) {
         return QueryWrapper.create()
                 .select(count().as("total"))
-                .from(queryWrapper);
+                .from(queryWrapper).as("t");
     }
 
     /**
