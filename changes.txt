@@ -1,3 +1,24 @@
+mybatis-flex v1.3.7 20230612:
+新增：添加 QueryWrapper.select(String) 和 QueryWrapper.select(lambda) 方法
+新增：添加 UseDataSource 注解对 mapper 类作用的支持
+新增：QueryWrapper 的 clone() 方法，方便用于深度复制当前的 QueryWrapper，感谢 @王帅
+优化：在 id 没有 setter 的情况下，错误信息不明确的问题，感谢 @chenjian835
+优化：修改 CPI 注释内容错别字的问题，感谢 @Alex
+优化：修改 QueryCondition 的 "before" 属性为 "prev"
+优化：重构 case when 的构建功能，方便其进行序列化
+优化：DistinctQueryColumn 构建 SQL 多出一个空格的问题
+优化：使用 QueryWrapper.select() 无参方法时，方法调用不明确的问题，感谢 @王帅
+优化：代码生成器提取 lombok 的配置到模板，方便用户自定义模板功能，感谢 @王帅
+修复：field query 方式不支持集合子类型的问题，感谢 @王帅
+修复：分页查询中有 group by 和 distinct 的 count 查询有误的问题，感谢 @王帅
+修复：在 select ... from(select...) 中，子查询没有括号导致 sql 解析错误的问题，感谢 @王帅
+修复：updateNumberAddByQuery 在传入小数点数据时，出错的问题
+文档：修改 QueryWrapper 的部分错别字，感谢 @锟斤拷
+文档：更新一对多、多对一的相关文档
+文档：更新多数据源的相关文档
+
+
+
 mybatis-flex v1.3.6 20230609:
 新增：QueryWrapper 添加对 Lambda 构建的支持
 新增：APT 添加 processor.tablesDefSuffix 配置 Table 后缀的支持
