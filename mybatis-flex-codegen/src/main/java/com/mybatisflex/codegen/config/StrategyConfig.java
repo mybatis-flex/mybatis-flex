@@ -61,6 +61,10 @@ public class StrategyConfig {
     private Map<String, ColumnConfig> columnConfigMap;
 
     /**
+     * 需要生成的表在哪个模式下
+     */
+    private String generateSchema;
+    /**
      * 生成哪些表，白名单。
      */
     private Set<String> generateTables;
@@ -69,7 +73,28 @@ public class StrategyConfig {
      * 不生成哪些表，黑名单。
      */
     private Set<String> unGenerateTables;
-    
+
+
+    /**
+     * 设置要生成的模式
+     *
+     * @return
+     */
+    public String getGenerateSchema() {
+        return generateSchema;
+    }
+
+    /**
+     * 获取要生成的模式
+     *
+     * @param generateSchema
+     * @return
+     */
+    public StrategyConfig setGenerateSchema(String generateSchema) {
+        this.generateSchema = generateSchema;
+        return this;
+    }
+
     /**
      * 获取表配置。
      */

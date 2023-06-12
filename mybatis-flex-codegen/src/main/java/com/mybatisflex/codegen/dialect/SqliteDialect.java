@@ -50,8 +50,8 @@ public class SqliteDialect implements IDialect {
 
 
     @Override
-    public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String[] types) throws SQLException {
-        return dbMeta.getTables(conn.getCatalog(), null, null, types);
+    public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String schema, String[] types) throws SQLException {
+        return dbMeta.getTables(conn.getCatalog(), schema, null, types);
     }
 
 

@@ -29,7 +29,7 @@ public abstract class JdbcDialect implements IDialect {
     public void buildTableColumns(Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
         Map<String, String> columnRemarks = buildColumnRemarks(table, dbMeta, conn);
 
-        String sql = forBuildColumnsSql(table.getName());
+        String sql = forBuildColumnsSql(table.getSchema(), table.getName());
         try (Statement stm = conn.createStatement(); ResultSet rs = stm.executeQuery(sql)) {
 
             ResultSetMetaData columnMetaData = rs.getMetaData();
@@ -67,10 +67,10 @@ public abstract class JdbcDialect implements IDialect {
 
 
     @Override
-    public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String[] types) throws SQLException {
-        return dbMeta.getTables(conn.getCatalog(), null, null, types);
+    public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String schema, String[] types) throws SQLException {
+        return dbMeta.getTables(conn.getCatalog(), schema, null, types);
     }
 
 
-    abstract String forBuildColumnsSql(String tableName);
+    abstract String forBuildColumnsSql(String schema, String tableName);
 }

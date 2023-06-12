@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 public class Table {
 
+    private String schema;
     private String name;
     private String comment;
     private Set<String> primaryKeys;
@@ -31,6 +32,14 @@ public class Table {
 
     private GlobalConfig globalConfig;
     private TableConfig tableConfig;
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
     public String getName() {
         return name;
@@ -268,10 +277,14 @@ public class Table {
 
         tableAnnotation.append("@Table(value = \"").append(name).append("\"");
 
+        if (StringUtil.isNotBlank(schema)) {
+            tableAnnotation.append(", schema = \"").append(schema).append("\"");
+        }
+
         if (tableConfig != null) {
-            if (tableConfig.getSchema() != null) {
-                tableAnnotation.append(", schema = \"").append(tableConfig.getSchema()).append("\"");
-            }
+//            if (tableConfig.getSchema() != null) {
+//                tableAnnotation.append(", schema = \"").append(tableConfig.getSchema()).append("\"");
+//            }
             if (tableConfig.getCamelToUnderline() != null) {
                 tableAnnotation.append(", camelToUnderline = \"").append(tableConfig.getCamelToUnderline()).append("\"");
             }
@@ -294,6 +307,7 @@ public class Table {
     @Override
     public String toString() {
         return "Table{" +
+                "schema'" + schema + '\'' +
                 "name='" + name + '\'' +
                 ", remarks='" + comment + '\'' +
                 ", primaryKeys='" + primaryKeys + '\'' +

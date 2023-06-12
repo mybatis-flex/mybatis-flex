@@ -17,6 +17,7 @@ package com.mybatisflex.codegen.dialect;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.entity.Table;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -27,29 +28,29 @@ public interface IDialect {
 
     IDialect DEFAULT = new JdbcDialect() {
         @Override
-        String forBuildColumnsSql(String tableName) {
-            return "SELECT * FROM " + tableName + " WHERE 1 = 2";
+        String forBuildColumnsSql(String schema, String tableName) {
+            return "SELECT * FROM " + (StringUtil.isNotBlank(schema) ? schema + "." : "") + tableName + " WHERE 1 = 2";
         }
     };
 
 
     IDialect MYSQL = new JdbcDialect() {
         @Override
-        String forBuildColumnsSql(String tableName) {
-            return "SELECT * FROM `" + tableName + "` WHERE 1 = 2";
+        String forBuildColumnsSql(String schema, String tableName) {
+            return "SELECT * FROM `" + (StringUtil.isNotBlank(schema) ? schema + "`.`" : "") + tableName + "` WHERE 1 = 2";
         }
     };
 
 
     IDialect ORACLE = new JdbcDialect() {
         @Override
-        public String forBuildColumnsSql(String tableName) {
-            return "SELECT * FROM \"" + tableName + "\" WHERE rownum < 1";
+        public String forBuildColumnsSql(String schema, String tableName) {
+            return "SELECT * FROM \"" + (StringUtil.isNotBlank(schema) ? schema + "\".\"" : "") + tableName + "\" WHERE rownum < 1";
         }
 
         @Override
-        public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String[] types) throws SQLException {
-            return dbMeta.getTables(conn.getCatalog(), dbMeta.getUserName(), null, types);
+        public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String schema, String[] types) throws SQLException {
+            return dbMeta.getTables(conn.getCatalog(), StringUtil.isNotBlank(schema) ? schema : dbMeta.getUserName(), null, types);
         }
     };
 
@@ -58,5 +59,5 @@ public interface IDialect {
 
     void buildTableColumns(Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException;
 
-    ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String[] types) throws SQLException;
+    ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String schema, String[] types) throws SQLException;
 }
