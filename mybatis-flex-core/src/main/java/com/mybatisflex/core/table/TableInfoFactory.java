@@ -209,7 +209,7 @@ public class TableInfoFactory {
 
             Class<?> fieldType = reflector.getGetterType(field.getName());
 
-            //满足一下 3 中情况，不支持该类型
+            //满足以下 3 种情况，不支持该类型
             if ((column == null || column.typeHandler() == UnknownTypeHandler.class) // 未配置 typeHandler
                     && !fieldType.isEnum()   // 类型不是枚举
                     && !defaultSupportColumnTypes.contains(fieldType) //默认的自动类型不包含该类型
