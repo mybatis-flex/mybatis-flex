@@ -17,7 +17,6 @@ package com.mybatisflex.core.mybatis;
 
 import com.mybatisflex.core.transaction.TransactionContext;
 import org.apache.ibatis.cursor.Cursor;
-import org.apache.ibatis.cursor.defaults.DefaultCursor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.resultset.DefaultResultSetHandler;
@@ -32,32 +31,41 @@ import java.util.Iterator;
 
 public class FlexResultSetHandler extends DefaultResultSetHandler {
 
-    public FlexResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler, ResultHandler<?> resultHandler, BoundSql boundSql, RowBounds rowBounds) {
+    public FlexResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler
+            , ResultHandler<?> resultHandler, BoundSql boundSql, RowBounds rowBounds) {
         super(executor, mappedStatement, parameterHandler, resultHandler, boundSql, rowBounds);
     }
 
+
+    /**
+     * 从写 handleCursorResultSets, 用于适配在事务下自动关闭 Cursor
+     */
     @Override
     public <E> Cursor<E> handleCursorResultSets(Statement stmt) throws SQLException {
-        return new FlexCursor<>(super.handleCursorResultSets(stmt));
+        Cursor<E> defaultCursor = super.handleCursorResultSets(stmt);
+
+        //in transaction
+        if (TransactionContext.getXID() != null) {
+            return new FlexCursor<>(defaultCursor);
+        }
+
+        return defaultCursor;
     }
 
-    static class FlexCursor<T> extends DefaultCursor<T> {
 
-        private Cursor originalCursor;
+    static class FlexCursor<T> implements Cursor<T> {
 
-        public FlexCursor(Cursor cursor) {
-            super(null, null, null, null);
+        private final Cursor<T> originalCursor;
+
+        public FlexCursor(Cursor<T> cursor) {
             this.originalCursor = cursor;
             TransactionContext.holdCursor(cursor);
         }
 
         @Override
         public void close() {
-            //非事务场景下，通过 releaseCursor 对 cursor 进行 close
-            if (TransactionContext.getXID() == null) {
-                TransactionContext.releaseCursor();
-            }
-            //else 在事务的场景下，由事务主动关闭
+            // do nothing
+            // 由 TransactionContext 去关闭
         }
 
         @Override
@@ -77,14 +85,7 @@ public class FlexResultSetHandler extends DefaultResultSetHandler {
 
         @Override
         public Iterator<T> iterator() {
-            try {
-                return originalCursor.iterator();
-            } catch (IllegalStateException e) {
-                if (TransactionContext.getXID() == null) {
-                    throw new IllegalStateException(e.getMessage() + " Cursor must use in transaction.");
-                }
-                throw e;
-            }
+            return originalCursor.iterator();
         }
     }
 }
