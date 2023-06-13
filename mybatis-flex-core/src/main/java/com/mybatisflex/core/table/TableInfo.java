@@ -98,13 +98,6 @@ public class TableInfo {
     private List<SetListener> onSetListeners;
 
     /**
-     * @deprecated 该功能有更好的方式实现，此属性可能会被移除。
-     */
-    @Deprecated
-    private Map<String, Class<?>> joinTypes;
-
-
-    /**
      * 对应 MapperXML 配置文件中 {@code <resultMap>} 标签下的 {@code <association>} 标签。
      */
     private Map<String, Class<?>> associationType;
@@ -295,21 +288,6 @@ public class TableInfo {
 
     public String getColumnByProperty(String property) {
         return propertyColumnMapping.get(property);
-    }
-
-    public Map<String, Class<?>> getJoinTypes() {
-        return joinTypes;
-    }
-
-    public void setJoinTypes(Map<String, Class<?>> joinTypes) {
-        this.joinTypes = joinTypes;
-    }
-
-    public void addJoinType(String fieldName, Class<?> clazz) {
-        if (joinTypes == null) {
-            joinTypes = new HashMap<>();
-        }
-        joinTypes.put(fieldName, clazz);
     }
 
     public Map<String, Class<?>> getAssociationType() {
