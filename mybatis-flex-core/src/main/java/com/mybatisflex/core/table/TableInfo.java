@@ -707,8 +707,8 @@ public class TableInfo {
     }
 
 
-    public ResultMap buildResultMap(Configuration configuration) {
-        String resultMapId = entityClass.getName();
+    public ResultMap buildResultMap(Configuration configuration, boolean withNested) {
+        String resultMapId = entityClass.getName() + (withNested ? "" : "$nested");
         if (configuration.hasResultMap(resultMapId)) {
             return configuration.getResultMap(resultMapId);
         }
@@ -746,12 +746,12 @@ public class TableInfo {
         }
 
         // <resultMap> 标签下的 <association> 标签映射
-        if (associationType != null) {
+        if (withNested && associationType != null) {
             associationType.forEach((fieldName, fieldType) -> {
                 // 获取嵌套类型的信息，也就是 javaType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(fieldType);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <association> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration);
+                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration, false);
                 resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
                         .javaType(fieldType)
                         .nestedResultMapId(nestedResultMap.getId())
@@ -760,12 +760,12 @@ public class TableInfo {
         }
 
         // <resultMap> 标签下的 <collection> 标签映射
-        if (collectionType != null) {
+        if (withNested && collectionType != null) {
             collectionType.forEach((field, genericClass) -> {
                 // 获取集合泛型类型的信息，也就是 ofType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration);
+                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration, false);
                 resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
                         .javaType(field.getType())
                         .nestedResultMapId(nestedResultMap.getId())
