@@ -20,6 +20,7 @@ import com.mybatisflex.core.util.LambdaUtil;
 
 public class QueryMethods {
 
+    /////count
     public static FunctionQueryColumn count() {
         return new FunctionQueryColumn("COUNT", new StringQueryColumn("*"));
     }
@@ -32,6 +33,12 @@ public class QueryMethods {
         return new FunctionQueryColumn("COUNT", column);
     }
 
+    public static <T> FunctionQueryColumn count(LambdaGetter<T> fn) {
+        return new FunctionQueryColumn("COUNT", LambdaUtil.getQueryColumn(fn));
+    }
+
+
+    /////max
     public static FunctionQueryColumn max(String column) {
         return new FunctionQueryColumn("MAX", column);
     }
@@ -40,6 +47,12 @@ public class QueryMethods {
         return new FunctionQueryColumn("MAX", column);
     }
 
+    public static <T> FunctionQueryColumn max(LambdaGetter<T> fn) {
+        return new FunctionQueryColumn("MAX", LambdaUtil.getQueryColumn(fn));
+    }
+
+
+    /////min
     public static FunctionQueryColumn min(String column) {
         return new FunctionQueryColumn("MIN", column);
     }
@@ -48,6 +61,12 @@ public class QueryMethods {
         return new FunctionQueryColumn("MIN", column);
     }
 
+    public static <T> FunctionQueryColumn min(LambdaGetter<T> fn) {
+        return new FunctionQueryColumn("MIN", LambdaUtil.getQueryColumn(fn));
+    }
+
+
+    /////avg
     public static FunctionQueryColumn avg(String column) {
         return new FunctionQueryColumn("AVG", column);
     }
@@ -56,6 +75,12 @@ public class QueryMethods {
         return new FunctionQueryColumn("AVG", column);
     }
 
+    public static <T> FunctionQueryColumn avg(LambdaGetter<T> fn) {
+        return new FunctionQueryColumn("AVG", LambdaUtil.getQueryColumn(fn));
+    }
+
+
+    /////sum
     public static FunctionQueryColumn sum(String column) {
         return new FunctionQueryColumn("SUM", column);
     }
@@ -64,10 +89,61 @@ public class QueryMethods {
         return new FunctionQueryColumn("SUM", column);
     }
 
+    public static <T> FunctionQueryColumn sum(LambdaGetter<T> fn) {
+        return new FunctionQueryColumn("SUM", LambdaUtil.getQueryColumn(fn));
+    }
+
+
+    /////year
+    public static FunctionQueryColumn year(String column) {
+        return new FunctionQueryColumn("YEAR", column);
+    }
+
+
+    public static FunctionQueryColumn year(QueryColumn column) {
+        return new FunctionQueryColumn("YEAR", column);
+    }
+
+    public static <T> FunctionQueryColumn year(LambdaGetter<T> fn) {
+        return new FunctionQueryColumn("YEAR", LambdaUtil.getQueryColumn(fn));
+    }
+
+
+    /////month
+    public static FunctionQueryColumn month(String column) {
+        return new FunctionQueryColumn("MONTH", column);
+    }
+
+    public static FunctionQueryColumn month(QueryColumn column) {
+        return new FunctionQueryColumn("MONTH", column);
+    }
+
+    public static <T> FunctionQueryColumn month(LambdaGetter<T> fn) {
+        return new FunctionQueryColumn("MONTH", LambdaUtil.getQueryColumn(fn));
+    }
+
+
+    /////month
+    public static FunctionQueryColumn day(String column) {
+        return new FunctionQueryColumn("DAY", column);
+    }
+
+    public static FunctionQueryColumn day(QueryColumn column) {
+        return new FunctionQueryColumn("DAY", column);
+    }
+
+    public static <T> FunctionQueryColumn day(LambdaGetter<T> fn) {
+        return new FunctionQueryColumn("DAY", LambdaUtil.getQueryColumn(fn));
+    }
+
+
+    /////distinct
     public static DistinctQueryColumn distinct(QueryColumn... columns) {
         return new DistinctQueryColumn(columns);
     }
 
+
+    /////case then else ...
     public static CaseQueryColumn.Builder case_() {
         return new CaseQueryColumn.Builder();
     }
@@ -75,6 +151,7 @@ public class QueryMethods {
     public static CaseSearchQueryColumn.Builder case_(QueryColumn queryColumn) {
         return new CaseSearchQueryColumn.Builder(queryColumn);
     }
+
 
     //CONVERT ( data_type [ ( length ) ] , expression [ , style ] )
     public static StringFunctionQueryColumn convert(String... params) {
