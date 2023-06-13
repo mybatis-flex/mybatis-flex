@@ -16,19 +16,15 @@
 
 package com.mybatisflex.test.model;
 
-import java.util.List;
-
 /**
  * @author 王帅
  * @since 2023-06-07
  */
-
 public class UserVO1 {
 
     private String userId;
     private String userName;
-    private List<Role> roleList;
-    private Role role;
+    private RoleVO1 role;
 
     public String getUserId() {
         return userId;
@@ -46,19 +42,11 @@ public class UserVO1 {
         this.userName = userName;
     }
 
-    public List<Role> getRoleList() {
-        return roleList;
-    }
-
-    public void setRoleList(List<Role> roleList) {
-        this.roleList = roleList;
-    }
-
-    public Role getRole() {
+    public RoleVO1 getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleVO1 role) {
         this.role = role;
     }
 
@@ -67,8 +55,7 @@ public class UserVO1 {
         return "UserVO1{" +
                 "userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
-                ", roleList=" + roleList +
-                ", role=" + role +
+                ", roleVO1=" + role +
                 '}';
     }
 }
