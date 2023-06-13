@@ -218,12 +218,15 @@ public class TableInfoFactory {
                 if (Collection.class.isAssignableFrom(fieldType)) {
                     ParameterizedType genericType = (ParameterizedType) field.getGenericType();
                     Type actualTypeArgument = genericType.getActualTypeArguments()[0];
-                    tableInfo.addCollectionType(field, (Class<?>) actualTypeArgument);
+
+                    //需排除 List<String>  List<Long> 等场景
+                    if (!defaultSupportColumnTypes.contains(actualTypeArgument)) {
+                        tableInfo.addCollectionType(field, (Class<?>) actualTypeArgument);
+                    }
                 }
                 // 实体类嵌套
                 else if (!Map.class.isAssignableFrom(fieldType)
                         && !fieldType.isArray()) {
-                    // tableInfo.addJoinType(field.getName(), fieldType);
                     tableInfo.addAssociationType(field.getName(), fieldType);
                 }
                 // 不支持的类型直接跳过

@@ -19,6 +19,8 @@ package com.mybatisflex.test.model;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 
+import java.util.List;
+
 /**
  * 角色。
  *
@@ -32,6 +34,8 @@ public class Role implements Comparable<Role> {
     private Integer roleId;
     private String roleKey;
     private String roleName;
+
+    private List<UserVO> userVOS;
 
     public Integer getRoleId() {
         return roleId;
@@ -55,6 +59,14 @@ public class Role implements Comparable<Role> {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public List<UserVO> getUserVOS() {
+        return userVOS;
+    }
+
+    public void setUserVOS(List<UserVO> userVOS) {
+        this.userVOS = userVOS;
     }
 
     @Override
