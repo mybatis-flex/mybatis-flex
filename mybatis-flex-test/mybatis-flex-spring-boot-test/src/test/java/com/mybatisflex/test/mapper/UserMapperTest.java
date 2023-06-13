@@ -18,6 +18,7 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.test.model.User;
 import com.mybatisflex.test.model.UserInfo;
 import com.mybatisflex.test.model.UserVO;
 import org.junit.jupiter.api.Test;
@@ -102,6 +103,8 @@ class UserMapperTest {
 
     @Test
     void testSelectListNoJoin() {
+        List<User> users = userMapper.selectListByQueryAs(QueryWrapper.create(), User.class);
+        users.forEach(System.err::println);
         List<UserVO> userVOS = userMapper.selectListByQueryAs(QueryWrapper.create(), UserVO.class);
         userVOS.forEach(System.err::println);
     }

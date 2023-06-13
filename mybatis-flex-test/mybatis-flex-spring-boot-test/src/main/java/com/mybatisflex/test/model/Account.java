@@ -15,18 +15,16 @@
  */
 package com.mybatisflex.test.model;
 
-import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 
 import java.util.Date;
 
 @Table(value = "tb_account",onSet = AccountOnSetListener.class)
-public class Account {
+public class Account extends BaseEntity<String, Long> {
 
-    @Id(keyType = KeyType.Auto)
-    private Long id;
-    private String userName;
+    /*@Id(keyType = KeyType.Auto)
+    private Long id;*/
+    //private String userName;
     private Integer age;
     private Date birthday;
 
