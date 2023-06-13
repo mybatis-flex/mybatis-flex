@@ -685,8 +685,17 @@ public class TableInfo {
     }
 
 
-    public ResultMap buildResultMap(Configuration configuration, boolean withNested) {
-        String resultMapId = entityClass.getName() + (withNested ? "" : "$nested");
+    public ResultMap buildResultMap(Configuration configuration) {
+        return doBuildResultMap(configuration, new HashSet<>());
+    }
+
+    private ResultMap doBuildResultMap(Configuration configuration, Set<String> context) {
+
+        //是否有循环引用
+        boolean withCircularReference = context.contains(entityClass.getName());
+        String resultMapId = entityClass.getName() + (withCircularReference ? "$nested" : "");
+        context.add(resultMapId);
+
         if (configuration.hasResultMap(resultMapId)) {
             return configuration.getResultMap(resultMapId);
         }
@@ -724,12 +733,12 @@ public class TableInfo {
         }
 
         // <resultMap> 标签下的 <association> 标签映射
-        if (withNested && associationType != null) {
+        if (!withCircularReference && associationType != null) {
             associationType.forEach((fieldName, fieldType) -> {
                 // 获取嵌套类型的信息，也就是 javaType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(fieldType);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <association> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration, false);
+                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
                 resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
                         .javaType(fieldType)
                         .nestedResultMapId(nestedResultMap.getId())
@@ -738,12 +747,12 @@ public class TableInfo {
         }
 
         // <resultMap> 标签下的 <collection> 标签映射
-        if (withNested && collectionType != null) {
+        if (!withCircularReference && collectionType != null) {
             collectionType.forEach((field, genericClass) -> {
                 // 获取集合泛型类型的信息，也就是 ofType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration, false);
+                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
                 resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
                         .javaType(field.getType())
                         .nestedResultMapId(nestedResultMap.getId())
@@ -753,6 +762,7 @@ public class TableInfo {
 
         ResultMap resultMap = new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build();
         configuration.addResultMap(resultMap);
+        context.add(resultMapId);
         return resultMap;
     }
 
