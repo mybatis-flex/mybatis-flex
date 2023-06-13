@@ -22,7 +22,8 @@ import java.io.IOException;
 
 public class TransactionContext {
 
-    private TransactionContext() {}
+    private TransactionContext() {
+    }
 
     private static final ThreadLocal<String> XID_HOLDER = new ThreadLocal<>();
     private static final ThreadLocal<Cursor<?>> CURSOR_HOLDER = new ThreadLocal<>();
@@ -33,19 +34,20 @@ public class TransactionContext {
 
     public static void release() {
         XID_HOLDER.remove();
-        releaseCursor();
+        closeCursor();
     }
 
-    public static void releaseCursor() {
+    private static void closeCursor() {
         try {
             Cursor<?> cursor = CURSOR_HOLDER.get();
-            if (cursor != null){
+            if (cursor != null) {
                 try {
                     cursor.close();
                 } catch (IOException e) {
+                    //ignore
                 }
             }
-        }finally {
+        } finally {
             CURSOR_HOLDER.remove();
         }
     }
