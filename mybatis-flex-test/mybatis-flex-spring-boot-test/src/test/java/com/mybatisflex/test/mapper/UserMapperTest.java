@@ -101,6 +101,12 @@ class UserMapperTest {
     }
 
     @Test
+    void testSelectListNoJoin() {
+        List<UserVO> userVOS = userMapper.selectListByQueryAs(QueryWrapper.create(), UserVO.class);
+        userVOS.forEach(System.err::println);
+    }
+
+    @Test
     void testComplexSelectList() {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(USER.ALL_COLUMNS, ROLE.ALL_COLUMNS, ORDER.ALL_COLUMNS, GOOD.ALL_COLUMNS)
