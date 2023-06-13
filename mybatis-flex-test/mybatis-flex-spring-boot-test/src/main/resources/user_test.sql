@@ -1,19 +1,3 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : MySQL3306
- Source Server Type    : MySQL
- Source Server Version : 80024
- Source Host           : localhost:3306
- Source Schema         : mp_test
-
- Target Server Type    : MySQL
- Target Server Version : 80024
- File Encoding         : 65001
-
- Date: 08/06/2023 19:48:10
-*/
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -23,13 +7,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `tb_good`;
 CREATE TABLE `tb_good`
 (
-    `good_id` int                                                           NOT NULL AUTO_INCREMENT,
-    `name`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-    `price`   decimal(10, 2)                                                NULL DEFAULT NULL,
+    `good_id` int                                NOT NULL AUTO_INCREMENT,
+    `name`    varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+    `price`   decimal(10, 2)                     NULL DEFAULT NULL,
     PRIMARY KEY (`good_id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -67,7 +50,6 @@ CREATE TABLE `tb_order`
     PRIMARY KEY (`order_id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -96,7 +78,6 @@ CREATE TABLE `tb_order_good`
     `good_id`  int NOT NULL
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -135,13 +116,12 @@ VALUES (6, 10);
 DROP TABLE IF EXISTS `tb_role`;
 CREATE TABLE `tb_role`
 (
-    `role_id`   int                                                           NOT NULL AUTO_INCREMENT,
-    `role_key`  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-    `role_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `role_id`   int                                NOT NULL AUTO_INCREMENT,
+    `role_key`  varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+    `role_name` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`role_id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -162,13 +142,12 @@ VALUES (4, 'admin', '管理员用户');
 DROP TABLE IF EXISTS `tb_user`;
 CREATE TABLE `tb_user`
 (
-    `user_id`   int                                                           NOT NULL AUTO_INCREMENT,
-    `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-    `password`  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `user_id`   int                                NOT NULL AUTO_INCREMENT,
+    `user_name` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+    `password`  varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`user_id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -193,7 +172,6 @@ CREATE TABLE `tb_user_order`
     `order_id` int NOT NULL
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -222,7 +200,6 @@ CREATE TABLE `tb_user_role`
     `role_id` int NOT NULL
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------

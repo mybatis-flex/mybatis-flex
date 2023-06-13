@@ -706,80 +706,12 @@ public class TableInfo {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * @deprecated 该功能有更好的方式实现，此方法可能会被移除。
-     */
-    @Deprecated
+
     public ResultMap buildResultMap(Configuration configuration) {
         String resultMapId = entityClass.getName();
-        List<ResultMapping> resultMappings = new ArrayList<>();
-
-        for (ColumnInfo columnInfo : columnInfoList) {
-            ResultMapping mapping = new ResultMapping.Builder(configuration, columnInfo.property,
-                    columnInfo.column, columnInfo.propertyType)
-                    .jdbcType(columnInfo.getJdbcType())
-                    .typeHandler(columnInfo.buildTypeHandler())
-                    .build();
-            resultMappings.add(mapping);
-
-            //add property mapper for sql: select xxx as property ...
-            if (!Objects.equals(columnInfo.getColumn(), columnInfo.getProperty())) {
-                ResultMapping propertyMapping = new ResultMapping.Builder(configuration, columnInfo.property,
-                        columnInfo.property, columnInfo.propertyType)
-                        .jdbcType(columnInfo.getJdbcType())
-                        .typeHandler(columnInfo.buildTypeHandler())
-                        .build();
-                resultMappings.add(propertyMapping);
-            }
+        if (configuration.hasResultMap(resultMapId)) {
+            return configuration.getResultMap(resultMapId);
         }
-
-        for (IdInfo idInfo : primaryKeyList) {
-            ResultMapping mapping = new ResultMapping.Builder(configuration, idInfo.property,
-                    idInfo.column, idInfo.propertyType)
-                    .flags(CollectionUtil.newArrayList(ResultFlag.ID))
-                    .jdbcType(idInfo.getJdbcType())
-                    .typeHandler(idInfo.buildTypeHandler())
-                    .build();
-            resultMappings.add(mapping);
-        }
-
-        if (joinTypes != null && !joinTypes.isEmpty()) {
-            joinTypes.forEach((fieldName, fieldType) -> {
-
-                TableInfo joinTableInfo = TableInfoFactory.ofEntityClass(fieldType);
-                List<ColumnInfo> joinTableInfoColumnInfoList = joinTableInfo.getColumnInfoList();
-
-                for (ColumnInfo joinColumnInfo : joinTableInfoColumnInfoList) {
-                    if (!existColumn(resultMappings, joinColumnInfo.column)) {
-                        ResultMapping mapping = new ResultMapping.Builder(configuration, fieldName + "." + joinColumnInfo.property,
-                                joinColumnInfo.column, joinColumnInfo.propertyType)
-                                .jdbcType(joinColumnInfo.jdbcType)
-                                .typeHandler(joinColumnInfo.buildTypeHandler())
-                                .build();
-                        resultMappings.add(mapping);
-                    }
-
-                    //add property mapper for sql: select xxx as property ...
-                    if (!existColumn(resultMappings, joinColumnInfo.property)) {
-                        if (!Objects.equals(joinColumnInfo.column, joinColumnInfo.property)) {
-                            ResultMapping propertyMapping = new ResultMapping.Builder(configuration, fieldName + "." + joinColumnInfo.property,
-                                    joinColumnInfo.property, joinColumnInfo.propertyType)
-                                    .jdbcType(joinColumnInfo.jdbcType)
-                                    .typeHandler(joinColumnInfo.buildTypeHandler())
-                                    .build();
-                            resultMappings.add(propertyMapping);
-                        }
-                    }
-                }
-            });
-        }
-
-        return new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build();
-    }
-
-    public List<ResultMap> buildResultMapList(Configuration configuration) {
-        String resultMapId = entityClass.getName();
-        List<ResultMap> resultMaps = new ArrayList<>();
         List<ResultMapping> resultMappings = new ArrayList<>();
 
         // <resultMap> 标签下的 <result> 标签映射
@@ -819,19 +751,11 @@ public class TableInfo {
                 // 获取嵌套类型的信息，也就是 javaType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(fieldType);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <association> 标签下的内容
-                // 这里是递归调用，直到嵌套类型里面没有其他嵌套类型或者集合类型为止
-                List<ResultMap> resultMapList = tableInfo.buildResultMapList(configuration);
-                // 寻找是否有嵌套 ResultMap 引用
-                Optional<ResultMap> nestedResultMap = resultMapList.stream()
-                        .filter(e -> fieldType.getName().equals(e.getId()))
-                        .findFirst();
-                // 处理嵌套类型 ResultMapping 引用
-                nestedResultMap.ifPresent(resultMap -> resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
+                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration);
+                resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
                         .javaType(fieldType)
-                        .nestedResultMapId(resultMap.getId())
-                        .build()));
-                // 全部添加到 ResultMap 集合当中
-                resultMaps.addAll(resultMapList);
+                        .nestedResultMapId(nestedResultMap.getId())
+                        .build());
             });
         }
 
@@ -841,34 +765,17 @@ public class TableInfo {
                 // 获取集合泛型类型的信息，也就是 ofType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
-                // 这里是递归调用，直到集合类型里面没有其他嵌套类型或者集合类型为止
-                List<ResultMap> resultMapList = tableInfo.buildResultMapList(configuration);
-                // 寻找是否有嵌套 ResultMap 引用
-                Optional<ResultMap> nestedResultMap = resultMapList.stream()
-                        .filter(e -> genericClass.getName().equals(e.getId()))
-                        .findFirst();
-                // 处理嵌套类型 ResultMapping 引用
-                nestedResultMap.ifPresent(resultMap -> resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
+                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration);
+                resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
                         .javaType(field.getType())
-                        .nestedResultMapId(resultMap.getId())
-                        .build()));
-                // 全部添加到 ResultMap 集合当中
-                resultMaps.addAll(resultMapList);
+                        .nestedResultMapId(nestedResultMap.getId())
+                        .build());
             });
         }
 
-        resultMaps.add(new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build());
-
-        return resultMaps;
-    }
-
-    private static boolean existColumn(List<ResultMapping> resultMappings, String name) {
-        for (ResultMapping resultMapping : resultMappings) {
-            if (resultMapping.getColumn().equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
+        ResultMap resultMap = new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build();
+        configuration.addResultMap(resultMap);
+        return resultMap;
     }
 
 
