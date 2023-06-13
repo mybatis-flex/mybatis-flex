@@ -17,6 +17,7 @@ package com.mybatisflex.core.query;
 
 
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.EnumWrapper;
@@ -31,10 +32,6 @@ import java.util.List;
 class WrapperUtil {
 
     private WrapperUtil() {}
-
-    static String buildAsAlias(String alias, IDialect dialect) {
-        return StringUtil.isBlank(alias) ? "" : " AS " + dialect.wrap(alias);
-    }
 
     static List<QueryWrapper> getChildQueryWrapper(QueryCondition condition) {
         List<QueryWrapper> list = null;
@@ -131,7 +128,15 @@ class WrapperUtil {
     }
 
 
+    static String withBracket(String sql) {
+        return SqlConsts.LEFT_BRACKET + sql + SqlConsts.RIGHT_BRACKET;
+    }
 
+    static String withAlias(String sql, String alias) {
+        return SqlConsts.LEFT_BRACKET + sql + SqlConsts.RIGHT_BRACKET + SqlConsts.AS + alias;
+    }
 
-
+    static String withAliasIf(String alias, IDialect dialect) {
+        return StringUtil.isBlank(alias) ? SqlConsts.EMPTY : SqlConsts.AS + dialect.wrap(alias);
+    }
 }

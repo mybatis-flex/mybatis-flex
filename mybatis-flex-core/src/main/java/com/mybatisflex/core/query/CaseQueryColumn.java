@@ -16,10 +16,14 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.util.*;
+import com.mybatisflex.core.util.ArrayUtil;
+import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.ObjectUtil;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,17 +43,17 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
 
     @Override
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
-        StringBuilder sql = new StringBuilder("CASE");
+        StringBuilder sql = new StringBuilder(SqlConsts.CASE);
         for (When when : whens) {
-            sql.append(" WHEN ").append(when.whenCondition.toSql(queryTables, dialect));
-            sql.append(" THEN ").append(buildValue(when.thenValue));
+            sql.append(SqlConsts.WHEN).append(when.whenCondition.toSql(queryTables, dialect));
+            sql.append(SqlConsts.THEN).append(buildValue(when.thenValue));
         }
         if (elseValue != null) {
-            sql.append(" ELSE ").append(buildValue(elseValue));
+            sql.append(SqlConsts.ELSE).append(buildValue(elseValue));
         }
-        sql.append(" END");
+        sql.append(SqlConsts.END);
         if (StringUtil.isNotBlank(alias)) {
-            return "(" + sql + ") AS " + dialect.wrap(alias);
+            return WrapperUtil.withAlias(sql.toString(), dialect.wrap(alias));
         }
         return sql.toString();
     }
@@ -65,16 +69,16 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
 
     @Override
     String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
-        StringBuilder sql = new StringBuilder("CASE");
+        StringBuilder sql = new StringBuilder(SqlConsts.CASE);
         for (When when : whens) {
-            sql.append(" WHEN ").append(when.whenCondition.toSql(queryTables, dialect));
-            sql.append(" THEN ").append(buildValue(when.thenValue));
+            sql.append(SqlConsts.WHEN).append(when.whenCondition.toSql(queryTables, dialect));
+            sql.append(SqlConsts.THEN).append(buildValue(when.thenValue));
         }
         if (elseValue != null) {
-            sql.append(" ELSE ").append(buildValue(elseValue));
+            sql.append(SqlConsts.ELSE).append(buildValue(elseValue));
         }
-        sql.append(" END");
-        return "(" + sql + ")";
+        sql.append(SqlConsts.END);
+        return WrapperUtil.withBracket(sql.toString());
     }
 
     @Override
