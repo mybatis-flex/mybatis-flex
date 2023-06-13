@@ -209,19 +209,18 @@ public class FlexConfiguration extends Configuration {
                     addResultMap(resultMap);
                 }
             }
+            /*
+             * 这里解释一下为什么要反转这个集合：
+             *
+             * MyBatis 在解析 ResultMaps 的时候，是按照顺序一个一个进行解析的，对于有嵌套
+             * 的 ResultMap 对象，也就是 nestResultMap 需要放在靠前的位置，首先解析。
+             *
+             * 而我们进行递归 buildResultMapList 是非嵌套 ResultMap 在集合最开始的位置，
+             * 所以要反转一下集合，将 hasNestedResultMaps 的 ResultMap 对象放到集合的最
+             * 前面。
+             */
+            Collections.reverse(resultMapList);
         }
-
-        /*
-         * 这里解释一下为什么要反转这个集合：
-         *
-         * MyBatis 在解析 ResultMaps 的时候，是按照顺序一个一个进行解析的，对于有嵌套
-         * 的 ResultMap 对象，也就是 nestResultMap 需要放在靠前的位置，首先解析。
-         *
-         * 而我们进行递归 buildResultMapList 也好，fillResultMapList 也好，都是
-         * 非嵌套 ResultMap 在集合最开始的位置，所以要反转一下集合，将 hasNestedResultMaps
-         * 的 ResultMap 对象放到集合的最前面。
-         */
-        Collections.reverse(resultMapList);
 
         return new MappedStatement.Builder(ms.getConfiguration(), ms.getId(), ms.getSqlSource(), ms.getSqlCommandType())
                 .resource(ms.getResource())
