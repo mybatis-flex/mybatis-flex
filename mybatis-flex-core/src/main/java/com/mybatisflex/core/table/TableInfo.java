@@ -21,7 +21,6 @@ import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
-import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
@@ -97,13 +96,6 @@ public class TableInfo {
     private List<InsertListener> onInsertListeners;
     private List<UpdateListener> onUpdateListeners;
     private List<SetListener> onSetListeners;
-
-    /**
-     * @deprecated 该功能有更好的方式实现，此属性可能会被移除。
-     */
-    @Deprecated
-    private Map<String, Class<?>> joinTypes;
-
 
     /**
      * 对应 MapperXML 配置文件中 {@code <resultMap>} 标签下的 {@code <association>} 标签。
@@ -296,21 +288,6 @@ public class TableInfo {
 
     public String getColumnByProperty(String property) {
         return propertyColumnMapping.get(property);
-    }
-
-    public Map<String, Class<?>> getJoinTypes() {
-        return joinTypes;
-    }
-
-    public void setJoinTypes(Map<String, Class<?>> joinTypes) {
-        this.joinTypes = joinTypes;
-    }
-
-    public void addJoinType(String fieldName, Class<?> clazz) {
-        if (joinTypes == null) {
-            joinTypes = new HashMap<>();
-        }
-        joinTypes.put(fieldName, clazz);
     }
 
     public Map<String, Class<?>> getAssociationType() {
@@ -633,12 +610,12 @@ public class TableInfo {
             if (versionValue == null) {
                 throw FlexExceptions.wrap("The version value of entity[%s] must not be null.", entity);
             }
-            queryWrapper.and(QueryCondition.create(schema, tableName, versionColumn, SqlConsts.EQUALS, versionValue));
+            queryWrapper.and(QueryCondition.create(schema, tableName, versionColumn, QueryCondition.LOGIC_EQUALS, versionValue));
         }
 
         //逻辑删除
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, SqlConsts.EQUALS
+            queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS
                     , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
         }
 
@@ -646,9 +623,9 @@ public class TableInfo {
         Object[] tenantIdArgs = buildTenantIdArgs();
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
             if (tenantIdArgs.length == 1) {
-                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.EQUALS, tenantIdArgs[0]));
+                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, QueryCondition.LOGIC_EQUALS, tenantIdArgs[0]));
             } else {
-                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.IN, tenantIdArgs));
+                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, QueryCondition.LOGIC_IN, tenantIdArgs));
             }
         }
 
@@ -708,8 +685,8 @@ public class TableInfo {
     }
 
 
-    public ResultMap buildResultMap(Configuration configuration) {
-        String resultMapId = entityClass.getName();
+    public ResultMap buildResultMap(Configuration configuration, boolean withNested) {
+        String resultMapId = entityClass.getName() + (withNested ? "" : "$nested");
         if (configuration.hasResultMap(resultMapId)) {
             return configuration.getResultMap(resultMapId);
         }
@@ -747,12 +724,12 @@ public class TableInfo {
         }
 
         // <resultMap> 标签下的 <association> 标签映射
-        if (associationType != null) {
+        if (withNested && associationType != null) {
             associationType.forEach((fieldName, fieldType) -> {
                 // 获取嵌套类型的信息，也就是 javaType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(fieldType);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <association> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration);
+                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration, false);
                 resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
                         .javaType(fieldType)
                         .nestedResultMapId(nestedResultMap.getId())
@@ -761,12 +738,12 @@ public class TableInfo {
         }
 
         // <resultMap> 标签下的 <collection> 标签映射
-        if (collectionType != null) {
+        if (withNested && collectionType != null) {
             collectionType.forEach((field, genericClass) -> {
                 // 获取集合泛型类型的信息，也就是 ofType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration);
+                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration, false);
                 resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
                         .javaType(field.getType())
                         .nestedResultMapId(nestedResultMap.getId())
