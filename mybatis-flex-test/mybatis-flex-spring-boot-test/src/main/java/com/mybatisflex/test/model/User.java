@@ -19,6 +19,8 @@ package com.mybatisflex.test.model;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 
+import java.util.List;
+
 /**
  * 用户。
  *
@@ -33,6 +35,8 @@ public class User {
     private Integer userId;
     private String userName;
     private String password;
+    //@Column(ignore = true)
+    private List<Role> roleList;
 
     public Integer getUserId() {
         return userId;
@@ -58,12 +62,21 @@ public class User {
         this.password = password;
     }
 
+    public List<Role> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<Role> roleList) {
+        this.roleList = roleList;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "userId=" + userId +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
+                ", roleList=" + roleList +
                 '}';
     }
 }
