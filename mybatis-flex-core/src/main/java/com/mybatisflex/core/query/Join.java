@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ObjectUtil;
@@ -30,13 +31,6 @@ import java.util.function.Supplier;
 public class Join implements CloneSupport<Join> {
 
     private static final long serialVersionUID = 1L;
-
-    public static final String TYPE_JOIN = " JOIN ";
-    public static final String TYPE_LEFT = " LEFT JOIN ";
-    public static final String TYPE_RIGHT = " RIGHT JOIN ";
-    public static final String TYPE_INNER = " INNER JOIN ";
-    public static final String TYPE_FULL = " FULL JOIN ";
-    public static final String TYPE_CROSS = " CROSS JOIN ";
 
 
     protected final String type;
@@ -90,7 +84,7 @@ public class Join implements CloneSupport<Join> {
         //left join xxx as xxx2 on xxx2.id = xxx3.other
         List<QueryTable> newQueryTables = new ArrayList<>(queryTables);
         newQueryTables.add(queryTable);
-        sql.append(" ON ").append(on.toSql(newQueryTables, dialect));
+        sql.append(SqlConsts.ON).append(on.toSql(newQueryTables, dialect));
         return sql.toString();
     }
 

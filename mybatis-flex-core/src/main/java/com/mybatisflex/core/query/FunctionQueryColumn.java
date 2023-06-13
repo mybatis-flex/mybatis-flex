@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.ObjectUtil;
 import com.mybatisflex.core.util.SqlUtil;
@@ -71,7 +72,13 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
     @Override
     public String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String sql = column.toSelectSql(queryTables, dialect);
-        return StringUtil.isBlank(sql) ? "" : fnName + "(" + sql + ")" + WrapperUtil.buildAsAlias(alias, dialect);
+        if (StringUtil.isBlank(sql)) {
+            return SqlConsts.EMPTY;
+        }
+        if (StringUtil.isBlank(alias)) {
+            return fnName + WrapperUtil.withBracket(sql);
+        }
+        return fnName + WrapperUtil.withAlias(sql, dialect.wrap(alias));
     }
 
     @Override
