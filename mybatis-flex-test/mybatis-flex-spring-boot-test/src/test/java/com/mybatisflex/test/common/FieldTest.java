@@ -16,7 +16,6 @@
 
 package com.mybatisflex.test.common;
 
-import com.mybatisflex.core.util.StringUtil;
 import com.mybatisflex.test.model.Account;
 import com.mybatisflex.test.model.BaseEntity;
 import com.mybatisflex.test.model.UserVO;
@@ -25,7 +24,6 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author 王帅
@@ -37,8 +35,8 @@ class FieldTest {
     void test() {
         String genericString = BaseEntity.class.toGenericString();
         System.out.println(genericString);
-        List<String> genericParameters = StringUtil.getGenericParameters(genericString);
-        System.out.println(genericParameters);
+//        List<String> genericParameters = StringUtil.getGenericParameters(genericString);
+//        System.out.println(genericParameters);
     }
 
     @Test

@@ -66,4 +66,4 @@ public class MyServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
     }
 }
 ```
-当然，在 `IService` 中，除了 `list` 方法以外，还有其他的查询方法，可能也需要复写一下。
+当然，在 `IService` 中，除了 `list` 方法以外，还有其他的查询方法，可能也需要复写。

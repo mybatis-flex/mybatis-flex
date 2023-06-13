@@ -73,7 +73,7 @@ import java.util.stream.Stream;
  * 参考 {@link <a href="https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisAutoConfiguration.java">
  * https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisAutoConfiguration.java</a>}
  * <p>
- * 为 Mybatis-Flex 开启自动配置功能，主要修改一下几个方面:
+ * 为 Mybatis-Flex 开启自动配置功能，主要修改以下几个方面:
  * <p>
  * 1、替换配置为 mybatis-flex 的配置前缀
  * 2、修改 SqlSessionFactory 为 FlexSqlSessionFactoryBean
