@@ -48,7 +48,8 @@ import java.util.stream.Collectors;
 
 public class TableInfoFactory {
 
-    private TableInfoFactory() {}
+    private TableInfoFactory() {
+    }
 
     private static final Set<Class<?>> defaultSupportColumnTypes = CollectionUtil.newHashSet(
             int.class, Integer.class,
@@ -132,7 +133,8 @@ public class TableInfoFactory {
 
         TableInfo tableInfo = new TableInfo();
         tableInfo.setEntityClass(entityClass);
-        tableInfo.setReflector(new Reflector(entityClass));
+        Reflector reflector = new Reflector(entityClass);
+        tableInfo.setReflector(reflector);
 
         //初始化表名
         Table table = entityClass.getAnnotation(Table.class);
@@ -205,7 +207,7 @@ public class TableInfoFactory {
                 continue; // ignore
             }
 
-            Class<?> fieldType = field.getType();
+            Class<?> fieldType = reflector.getGetterType(field.getName());
 
             //满足一下 3 中情况，不支持该类型
             if ((column == null || column.typeHandler() == UnknownTypeHandler.class) // 未配置 typeHandler
@@ -281,7 +283,7 @@ public class TableInfoFactory {
             Id id = field.getAnnotation(Id.class);
             ColumnInfo columnInfo;
             if (id != null) {
-                columnInfo = new IdInfo(columnName, field.getName(), field.getType(), id);
+                columnInfo = new IdInfo(columnName, field.getName(), fieldType, id);
                 idInfos.add((IdInfo) columnInfo);
             } else {
                 columnInfo = new ColumnInfo();
@@ -290,7 +292,7 @@ public class TableInfoFactory {
 
             columnInfo.setColumn(columnName);
             columnInfo.setProperty(field.getName());
-            columnInfo.setPropertyType(field.getType());
+            columnInfo.setPropertyType(fieldType);
 
             if (column != null && column.typeHandler() != UnknownTypeHandler.class) {
                 Class<?> typeHandlerClass = column.typeHandler();
@@ -302,7 +304,7 @@ public class TableInfoFactory {
 
             ColumnMask columnMask = field.getAnnotation(ColumnMask.class);
             if (columnMask != null && StringUtil.isNotBlank(columnMask.value())) {
-                if (String.class != field.getType()) {
+                if (String.class != fieldType) {
                     throw new IllegalStateException("@ColumnMask() only support for string type field. error: " + entityClass.getName() + "." + field.getName());
                 }
                 columnInfo.setMaskType(columnMask.value().trim());
