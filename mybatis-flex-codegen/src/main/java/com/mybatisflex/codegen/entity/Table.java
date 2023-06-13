@@ -50,7 +50,7 @@ public class Table {
     }
 
     public String getComment() {
-        if(StringUtil.isNotBlank(comment)) {
+        if (StringUtil.isNotBlank(comment)) {
             return globalConfig.getJavadocConfig().formatTableComment(comment);
         }
         return null;
