@@ -71,6 +71,8 @@ public class EntityGenerator implements IGenerator {
         params.put("javadocConfig", globalConfig.getJavadocConfig());
 
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, entityJavaFile);
+
+        System.out.println("Entity ---> " + entityJavaFile);
     }
 
     @Override

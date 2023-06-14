@@ -71,6 +71,8 @@ public class ControllerGenerator implements IGenerator {
         params.put("javadocConfig", globalConfig.getJavadocConfig());
 
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, controllerJavaFile);
+
+        System.out.println("Controller ---> " + controllerJavaFile);
     }
 
     @Override

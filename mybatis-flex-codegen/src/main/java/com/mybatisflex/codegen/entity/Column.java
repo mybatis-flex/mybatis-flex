@@ -275,8 +275,8 @@ public class Column {
                     || columnConfig.getVersion() != null
                     || columnConfig.getJdbcType() != null
                     || columnConfig.getTypeHandler() != null
-                    || Boolean.TRUE.equals(columnConfig.getTenantId()
-                    || needGenColumnAnnotation)
+                    || Boolean.TRUE.equals(columnConfig.getTenantId())
+                    || needGenColumnAnnotation
             ) {
                 importClasses.add(com.mybatisflex.annotation.Column.class.getName());
             }

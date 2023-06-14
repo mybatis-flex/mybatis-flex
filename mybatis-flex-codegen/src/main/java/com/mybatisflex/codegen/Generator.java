@@ -67,6 +67,8 @@ public class Generator {
                     generator.generate(table, globalConfig);
                 }
             }
+
+            System.out.println("Code is generated successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }

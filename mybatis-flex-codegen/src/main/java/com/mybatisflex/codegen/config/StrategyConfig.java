@@ -16,6 +16,8 @@
 
 package com.mybatisflex.codegen.config;
 
+import com.mybatisflex.core.util.StringUtil;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -69,13 +71,13 @@ public class StrategyConfig {
      * 不生成哪些表，黑名单。
      */
     private Set<String> unGenerateTables;
-    
+
     /**
      * 获取表配置。
      */
     public TableConfig getTableConfig(String tableName) {
         return tableConfigMap == null ? null : tableConfigMap.get(tableName);
-    }    
+    }
 
     /**
      * 设置表配置。
@@ -203,8 +205,8 @@ public class StrategyConfig {
     /**
      * 设置表前缀。
      */
-    public StrategyConfig setTablePrefix(String tablePrefix) {
-        this.tablePrefix = tablePrefix;
+    public StrategyConfig setTablePrefix(String... tablePrefix) {
+        this.tablePrefix = StringUtil.join(",", tablePrefix);
         return this;
     }
 

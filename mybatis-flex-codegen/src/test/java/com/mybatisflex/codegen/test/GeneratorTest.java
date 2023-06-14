@@ -27,13 +27,13 @@ import java.util.function.UnaryOperator;
 public class GeneratorTest {
 
 
-    //@Test
+    @Test
     public void testCodeGen1() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/flex_test?characterEncoding=utf-8");
         dataSource.setUsername("root");
-        dataSource.setPassword("12345678");
+        dataSource.setPassword("123456");
 
         GlobalConfig globalConfig = new GlobalConfig();
 
@@ -50,11 +50,11 @@ public class GeneratorTest {
         globalConfig.setBasePackage("com.test");
 
         //设置表前缀和只生成哪些表
-        globalConfig.setTablePrefix("sys_");
-        globalConfig.setGenerateTable("sys_user");
+        globalConfig.setTablePrefix("sys_", "tb_");
+//        globalConfig.setGenerateTable("sys_user","tb_account");
 
         //设置模板路径
-        globalConfig.setEntityTemplatePath("D:\\Documents\\配置文件\\entity.tpl");
+//        globalConfig.setEntityTemplatePath("D:\\Documents\\配置文件\\entity.tpl");
 
         //配置生成 entity
         globalConfig.setEntityGenerateEnable(true);
@@ -83,7 +83,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-    @Test
+//    @Test
     public void testCodeGen2() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();

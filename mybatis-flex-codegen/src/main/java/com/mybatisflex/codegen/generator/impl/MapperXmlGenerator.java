@@ -68,6 +68,8 @@ public class MapperXmlGenerator implements IGenerator {
         params.put("packageConfig", packageConfig);
 
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, mapperXmlFile);
+
+        System.out.println("MapperXML ---> " + mapperXmlFile);
     }
 
     @Override
