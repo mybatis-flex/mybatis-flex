@@ -30,7 +30,7 @@ public class KeywordWrap {
     /**
      * 无反义处理, 适用于 db2, informix, clickhouse 等
      */
-    public final static KeywordWrap NONE = new KeywordWrap("", "") {
+    public static final KeywordWrap NONE = new KeywordWrap("", "") {
         @Override
         public String wrap(String keyword) {
             return keyword;
@@ -40,27 +40,27 @@ public class KeywordWrap {
     /**
      * 反引号反义处理, 适用于 mysql, h2 等
      */
-    public final static KeywordWrap BACKQUOTE = new KeywordWrap("`", "`");
+    public static final KeywordWrap BACKQUOTE = new KeywordWrap("`", "`");
 
     /**
      * 双引号反义处理, 适用于 postgresql, sqlite, derby, oracle 等
      */
-    public final static KeywordWrap DOUBLE_QUOTATION = new KeywordWrap("\"", "\"");
+    public static final KeywordWrap DOUBLE_QUOTATION = new KeywordWrap("\"", "\"");
 
     /**
      * 方括号反义处理, 适用于 sqlserver
      */
-    public final static KeywordWrap SQUARE_BRACKETS = new KeywordWrap("[", "]");
+    public static final KeywordWrap SQUARE_BRACKETS = new KeywordWrap("[", "]");
 
     /**
      * 大小写敏感
      */
-    private boolean caseSensitive = false;
+    private final boolean caseSensitive;
 
     /**
      * 数据库关键字
      */
-    private Set<String> keywords = Collections.emptySet();
+    private final Set<String> keywords;
 
     /**
      * 前缀
