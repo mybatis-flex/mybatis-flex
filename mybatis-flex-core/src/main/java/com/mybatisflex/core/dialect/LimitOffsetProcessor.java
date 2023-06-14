@@ -131,7 +131,7 @@ public interface LimitOffsetProcessor {
             }
             StringBuilder newSql = new StringBuilder("SELECT * FROM (SELECT TEMP_DATAS.*, ROWNUM RN FROM (");
             newSql.append(sql);
-            newSql.append(") TEMP_DATAS WHERE ROWNUM <= ").append(limitOffset + limitRows).append(" ) WHERE RN > ").append(limitOffset);
+            newSql.append(") TEMP_DATAS WHERE ROWNUM <= ").append(limitOffset + limitRows).append(") WHERE RN > ").append(limitOffset);
             return newSql;
         }
         return sql;
