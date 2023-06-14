@@ -90,7 +90,7 @@ public class Codegen {
         globalConfig.getPackageConfig()
                 .setBasePackage("com.test");
 
-        //设置表前缀和只生成哪些表
+        //设置表前缀和只生成哪些表，setGenerateTable 未配置时，生成所有表
         globalConfig.getStrategyConfig()
                 .setTablePrefix("tb_")
                 .setGenerateTable("account", "account_session");
@@ -252,6 +252,8 @@ globalConfig.getStrategyConfig()
         .setTablePrefix("sys_")
         .setGenerateTables("sys_user","sys_dept");
 ```
+
+> `setGenerateTables` 和 `setUnGenerateTables` 未配置时，生成所有表。
 
 ## 模板配置 `TemplateConfig`
 
