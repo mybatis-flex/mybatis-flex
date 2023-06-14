@@ -25,6 +25,7 @@ import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.io.ResolverUtil;
 import org.apache.ibatis.reflection.Reflector;
+import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
@@ -216,7 +217,7 @@ public class TableInfoFactory {
             ) {
                 // 集合嵌套
                 if (Collection.class.isAssignableFrom(fieldType)) {
-                    Type genericType = field.getGenericType();
+                    Type genericType = TypeParameterResolver.resolveFieldType(field, entityClass);
                     if (genericType instanceof ParameterizedType){
                         Class<?> actualTypeArgument = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
                         //需排除 List<String>  List<Long> 等场景
