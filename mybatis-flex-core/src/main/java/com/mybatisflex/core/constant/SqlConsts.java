@@ -90,9 +90,6 @@ public final class SqlConsts {
     public static final String START_AT = " START AT ";
     public static final String ROWS_ONLY = " ROWS ONLY";
     public static final String ROWS_FETCH_NEXT = " ROWS FETCH NEXT ";
-    public static final String WHERE_RN = ") WHERE RN >";
-    public static final String WHERE_ROWNUM = ") TEMP_DATAS WHERE ROWNUM <=";
-    public static final String ROWNUM_RN_FROM = "SELECT * FROM (SELECT TEMP_DATAS.*, ROWNUM RN FROM (";
 
 
     // === 联表查询关键字 ===
