@@ -73,7 +73,7 @@ const {Layout} = DefaultTheme
 
         <div class="content">
           <div class="banner">
-            <a href="http://www.codeformat.cn" target="_blank"><img src="http://www.codeformat.cn/static/images/logo.png"></a>
+            <a href="http://www.codeformat.cn" target="_blank"><img src="/assets/images/ad/logo-code-format.png"></a>
           </div>
           <div class="banner">
             虚以待位
