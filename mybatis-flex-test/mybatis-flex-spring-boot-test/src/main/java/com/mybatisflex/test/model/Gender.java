@@ -16,14 +16,16 @@
 
 package com.mybatisflex.test.model;
 
+import com.mybatisflex.annotation.EnumValue;
+
 /**
  * @author 王帅
  * @since 2023-06-14
  */
 public enum Gender {
 
-    MALE, FEMALE;
-    /*MALE(1), FEMALE(0);
+    //    MALE, FEMALE;
+    MALE(1), FEMALE(0);
 
     public int getCode() {
         return code;
@@ -34,6 +36,6 @@ public enum Gender {
 
     Gender(int code) {
         this.code = code;
-    }*/
+    }
 
 }

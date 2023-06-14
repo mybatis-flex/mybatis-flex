@@ -19,8 +19,8 @@ import com.mybatisflex.annotation.Table;
 
 import java.util.Date;
 
-@Table(value = "tb_account",onSet = AccountOnSetListener.class)
-public class Account extends BaseEntity<String, Long> {
+@Table(value = "tb_account", onSet = AccountOnSetListener.class)
+public class Account extends BaseEntity<String, Long, String> {
 
     /*@Id(keyType = KeyType.Auto)
     private Long id;*/
@@ -77,6 +77,7 @@ public class Account extends BaseEntity<String, Long> {
                 ", userName='" + userName + '\'' +
                 ", age=" + age +
                 ", birthday=" + birthday +
+                ", list=" + roles +
                 '}';
     }
 }

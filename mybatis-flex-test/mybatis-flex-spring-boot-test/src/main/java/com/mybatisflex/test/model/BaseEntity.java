@@ -16,13 +16,25 @@
 
 package com.mybatisflex.test.model;
 
+import java.util.List;
+
 /**
  * @author 王帅
  * @since 2.0
  */
-public class BaseEntity<T, ID> extends IdEntity<ID> {
+public class BaseEntity<T, ID, L> extends IdEntity<ID> {
 
     protected T userName;
+    protected List<L> roles;
+
+    public List<L> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<L> roles) {
+        this.roles = roles;
+    }
+
 
     public T getUserName() {
         return userName;
