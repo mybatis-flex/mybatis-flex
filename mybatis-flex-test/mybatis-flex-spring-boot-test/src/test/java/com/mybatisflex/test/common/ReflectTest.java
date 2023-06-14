@@ -14,28 +14,27 @@
  *  limitations under the License.
  */
 
-package com.mybatisflex.test.model;
+package com.mybatisflex.test.common;
 
-import com.mybatisflex.annotation.EnumValue;
+import com.mybatisflex.core.util.ClassUtil;
+import com.mybatisflex.test.model.Account;
+import org.apache.ibatis.reflection.TypeParameterResolver;
+import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
 /**
  * @author 王帅
  * @since 2023-06-14
  */
-public enum Gender {
+class ReflectTest {
 
-    //    MALE, FEMALE;
-    MALE(1), FEMALE(0);
-
-    public int getCode() {
-        return code;
-    }
-
-    @EnumValue
-    private final int code;
-
-    Gender(int code) {
-        this.code = code;
+    @Test
+    void test() {
+        Field field = ClassUtil.getAllFields(Account.class, f -> f.getName().equals("list")).get(0);
+        Type type = TypeParameterResolver.resolveFieldType(field, Account.class);
+        System.out.println(type);
     }
 
 }
