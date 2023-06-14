@@ -24,9 +24,12 @@ package com.mybatisflex.core.constant;
  */
 public final class SqlConsts {
 
-    public static final String EMPTY = "";
+    private SqlConsts() {
+    }
 
     // === 常用符号 ===
+
+    public static final String EMPTY = "";
     public static final String BLANK = " ";
     public static final String ASTERISK = "*";
     public static final String REFERENCE = ".";
@@ -37,10 +40,12 @@ public final class SqlConsts {
     public static final String SINGLE_QUOTE = "'";
     public static final String LEFT_BRACKET = "(";
     public static final String RIGHT_BRACKET = ")";
-    public static final String HINT_START = "/*+ ";
 
     // === SQL 关键字 ===
+
+    public static final String HINT_START = "/*+ ";
     public static final String HINT_END = " */ ";
+
     public static final String AS = " AS ";
     public static final String OR = " OR ";
     public static final String END = " END";
@@ -51,7 +56,9 @@ public final class SqlConsts {
     public static final String THEN = " THEN ";
     public static final String ELSE = " ELSE ";
     public static final String FROM = " FROM ";
+    public static final String INTO = " INTO ";
     public static final String WHERE = " WHERE ";
+    public static final String INSERT = "INSERT";
     public static final String SELECT = "SELECT ";
     public static final String VALUES = " VALUES ";
     public static final String DELETE = "DELETE";
@@ -60,18 +67,18 @@ public final class SqlConsts {
     public static final String DISTINCT = "DISTINCT ";
     public static final String GROUP_BY = " GROUP BY ";
     public static final String ORDER_BY = " ORDER BY ";
-    public static final String INSERT = "INSERT";
-    public static final String INTO = " INTO ";
     public static final String INSERT_INTO = INSERT + INTO;
     public static final String DELETE_FROM = DELETE + FROM;
     public static final String SELECT_ALL_FROM = SELECT + ASTERISK + FROM;
-    public static final String INSERT_ALL = "INSERT ALL ";
 
     // === Oracle SQl ===
+
+    public static final String INSERT_ALL = "INSERT ALL ";
     public static final String INSERT_ALL_END = " SELECT 1 FROM DUAL";
-    public static final String ON = " ON ";
 
     // === 联表查询关键字 ===
+
+    public static final String ON = " ON ";
     public static final String JOIN = " JOIN ";
     public static final String UNION = " UNION ";
     public static final String UNION_ALL = " UNION ALL ";
@@ -80,33 +87,41 @@ public final class SqlConsts {
     public static final String RIGHT_JOIN = " RIGHT JOIN ";
     public static final String INNER_JOIN = " INNER JOIN ";
     public static final String CROSS_JOIN = " CROSS JOIN ";
-    public static final String GT = " > ";
 
     // === 逻辑符号 ===
+
+    public static final String GT = " > ";
     public static final String GE = " >= ";
     public static final String LT = " < ";
     public static final String LE = " <= ";
     public static final String NOT = " NOT ";
     public static final String LIKE = " LIKE ";
+
     public static final String EQUALS = " = ";
     public static final String NOT_EQUALS = " != ";
+
     public static final String IS_NULL = " IS NULL ";
     public static final String IS_NOT_NULL = " IS NOT NULL ";
+
     public static final String IN = " IN ";
     public static final String NOT_IN = " NOT IN ";
+
     public static final String BETWEEN = " BETWEEN ";
     public static final String NOT_BETWEEN = " NOT BETWEEN ";
+
     public static final String EXISTS = " EXISTS ";
     public static final String NOT_EXISTS = " NOT EXISTS ";
-    public static final String ASC = " ASC";
 
     // === 排序相关关键字 ===
+
+    public static final String ASC = " ASC";
     public static final String DESC = " DESC";
     public static final String NULLS_FIRST = " NULLS FIRST";
     public static final String NULLS_LAST = " NULLS LAST";
-    public static final String SUM = "SUM";
 
     // === SQL 函数名 ===
+
+    public static final String SUM = "SUM";
     public static final String MAX = "MIX";
     public static final String MIN = "MIN";
     public static final String AVG = "AVG";
@@ -115,17 +130,17 @@ public final class SqlConsts {
     public static final String MONTH = "MONTH";
     public static final String COUNT = "COUNT";
     public static final String CONVERT = "CONVERT";
-    public static final String PLUS_SIGN = " + ";
 
     // === 数学运算符 ===
+
+    public static final String PLUS_SIGN = " + ";
     public static final String MINUS_SIGN = " - ";
     public static final String DIVISION_SIGN = " / ";
     public static final String MULTIPLICATION_SIGN = " * ";
-    public static final String EQUALS_PLACEHOLDER = " = ? ";
 
     // === 其他拼接需要的字符串 ===
+
+    public static final String EQUALS_PLACEHOLDER = " = ? ";
     public static final String AND_PLACEHOLDER = BLANK + PLACEHOLDER + AND + PLACEHOLDER + BLANK;
-    private SqlConsts() {
-    }
 
 }
