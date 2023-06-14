@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ClassUtil;
@@ -27,22 +28,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class QueryCondition implements CloneSupport<QueryCondition> {
-
-    public static final String LOGIC_LIKE = "LIKE";
-    public static final String LOGIC_GT = ">";
-    public static final String LOGIC_GE = ">=";
-    public static final String LOGIC_LT = "<";
-    public static final String LOGIC_LE = "<=";
-    public static final String LOGIC_EQUALS = "=";
-    public static final String LOGIC_NOT_EQUALS = "!=";
-
-    public static final String LOGIC_IS_NULL = "IS NULL";
-    public static final String LOGIC_IS_NOT_NULL = "IS NOT NULL";
-
-    public static final String LOGIC_IN = "IN";
-    public static final String LOGIC_NOT_IN = "NOT IN";
-    public static final String LOGIC_BETWEEN = "BETWEEN";
-    public static final String LOGIC_NOT_BETWEEN = "NOT BETWEEN";
 
 
     protected QueryColumn column;
@@ -73,7 +58,7 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
     }
 
     public static QueryCondition create(QueryColumn queryColumn, Object value) {
-        return create(queryColumn, LOGIC_EQUALS, value);
+        return create(queryColumn, SqlConsts.EQUALS, value);
     }
 
     public static QueryCondition create(QueryColumn queryColumn, String logic, Object value) {
@@ -124,12 +109,12 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
 
     public <T> QueryCondition when(Predicate<T> fn) {
         Object val = this.value;
-        if (LOGIC_LIKE.equals(logic) && val instanceof String) {
+        if (SqlConsts.LIKE.equals(logic) && val instanceof String) {
             String valStr = (String) val;
-            if (valStr.startsWith("%")) {
+            if (valStr.startsWith(SqlConsts.PERCENT_SIGN)) {
                 valStr = valStr.substring(1);
             }
-            if (valStr.endsWith("%")) {
+            if (valStr.endsWith(SqlConsts.PERCENT_SIGN)) {
                 valStr = valStr.substring(0, valStr.length() - 1);
             }
             val = valStr;
@@ -188,7 +173,7 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             //列
             sql.append(getColumn().toConditionSql(queryTables, dialect));
             //逻辑符号
-            sql.append(" ").append(logic).append(" ");
+            sql.append(logic);
 
             //值（或者问号）
             if (value instanceof QueryColumn) {
@@ -196,7 +181,9 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             }
             //子查询
             else if (value instanceof QueryWrapper) {
-                sql.append("(").append(dialect.buildSelectSql((QueryWrapper) value)).append(")");
+                sql.append(SqlConsts.BRACKET_LEFT)
+                        .append(dialect.buildSelectSql((QueryWrapper) value))
+                        .append(SqlConsts.BRACKET_RIGHT);
             }
             //原生sql
             else if (value instanceof RawFragment) {
@@ -225,8 +212,9 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
 
 
     protected void appendQuestionMark(StringBuilder sqlBuilder) {
-        if (LOGIC_IS_NULL.equals(logic)
-                || LOGIC_IS_NOT_NULL.equals(logic)
+        //noinspection StatementWithEmptyBody
+        if (SqlConsts.IS_NULL.equals(logic)
+                || SqlConsts.IS_NOT_NULL.equals(logic)
                 || value instanceof QueryColumn
                 || value instanceof QueryWrapper
                 || value instanceof RawFragment) {
@@ -234,22 +222,22 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         }
 
         //between, not between
-        else if (LOGIC_BETWEEN.equals(logic) || LOGIC_NOT_BETWEEN.equals(logic)) {
-            sqlBuilder.append(" ? AND ? ");
+        else if (SqlConsts.BETWEEN.equals(logic) || SqlConsts.NOT_BETWEEN.equals(logic)) {
+            sqlBuilder.append(SqlConsts.AND_PLACEHOLDER);
         }
         //in, not in
-        else if (LOGIC_IN.equals(logic) || LOGIC_NOT_IN.equals(logic)) {
+        else if (SqlConsts.IN.equals(logic) || SqlConsts.NOT_IN.equals(logic)) {
             int paramsCount = calculateValueArrayCount();
-            sqlBuilder.append('(');
+            sqlBuilder.append(SqlConsts.BRACKET_LEFT);
             for (int i = 0; i < paramsCount; i++) {
-                sqlBuilder.append('?');
+                sqlBuilder.append(SqlConsts.PLACEHOLDER);
                 if (i != paramsCount - 1) {
-                    sqlBuilder.append(',');
+                    sqlBuilder.append(SqlConsts.DELIMITER);
                 }
             }
-            sqlBuilder.append(')');
+            sqlBuilder.append(SqlConsts.BRACKET_RIGHT);
         } else {
-            sqlBuilder.append(" ? ");
+            sqlBuilder.append(SqlConsts.PLACEHOLDER);
         }
     }
 

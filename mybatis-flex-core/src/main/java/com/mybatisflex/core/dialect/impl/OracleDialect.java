@@ -1,20 +1,21 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.dialect.impl;
 
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.row.Row;
@@ -26,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
+
+import static com.mybatisflex.core.constant.SqlConsts.*;
 
 public class OracleDialect extends CommonsDialectImpl {
 
@@ -80,7 +83,7 @@ public class OracleDialect extends CommonsDialectImpl {
          * SELECT 1 FROM DUAL;
          */
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT ALL");
+        sql.append(INSERT_ALL);
         String[] insertColumns = tableInfo.obtainInsertColumns(null, false);
         String[] warpedInsertColumns = new String[insertColumns.length];
         for (int i = 0; i < insertColumns.length; i++) {
@@ -90,23 +93,23 @@ public class OracleDialect extends CommonsDialectImpl {
 
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
         for (int i = 0; i < entities.size(); i++) {
-            sql.append(" INTO ").append(tableInfo.getWrapSchemaAndTableName(this));
-            sql.append(" (").append(StringUtil.join(", ", warpedInsertColumns)).append(")");
-            sql.append(" VALUES ");
+            sql.append(INTO).append(tableInfo.getWrapSchemaAndTableName(this));
+            sql.append(BLANK).append(BRACKET_LEFT).append(StringUtil.join(DELIMITER, warpedInsertColumns)).append(BRACKET_RIGHT);
+            sql.append(VALUES);
 
-            StringJoiner stringJoiner = new StringJoiner(", ", "(", ")");
+            StringJoiner stringJoiner = new StringJoiner(DELIMITER, BRACKET_LEFT, BRACKET_RIGHT);
             for (String insertColumn : insertColumns) {
                 if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                     //直接读取 onInsert 配置的值，而不用 "?" 代替
                     stringJoiner.add(onInsertColumns.get(insertColumn));
                 } else {
-                    stringJoiner.add("?");
+                    stringJoiner.add(PLACEHOLDER);
                 }
             }
             sql.append(stringJoiner);
         }
 
-        return sql.append(" SELECT 1 FROM DUAL").toString();
+        return sql.append(INSERT_ALL_END).toString();
     }
 
 
@@ -129,25 +132,25 @@ public class OracleDialect extends CommonsDialectImpl {
         for (String column : attrs) {
             fields.append(wrap(column));
             if (index != attrs.size() - 1) {
-                fields.append(", ");
+                fields.append(SqlConsts.DELIMITER);
             }
             index++;
         }
 
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT ALL");
+        sql.append(INSERT_ALL);
 
         String tableNameWrap = StringUtil.isNotBlank(schema)
-                ? wrap(getRealSchema(schema)) + "." + wrap(getRealTable(tableName))
+                ? wrap(getRealSchema(schema)) + REFERENCE + wrap(getRealTable(tableName))
                 : wrap(getRealTable(tableName));
-        String questionStrings = buildQuestion(attrs.size(), true);
+        String questionStrings = buildQuestion(attrs.size());
 
         for (int i = 0; i < rows.size(); i++) {
-            sql.append(" INTO ").append(tableNameWrap);
-            sql.append(" (").append(fields).append(")");
-            sql.append(" VALUES ").append(questionStrings);
+            sql.append(INTO).append(tableNameWrap);
+            sql.append(BLANK).append(BRACKET_LEFT).append(fields).append(BRACKET_RIGHT);
+            sql.append(VALUES).append(questionStrings);
         }
 
-        return sql.append(" SELECT 1 FROM DUAL").toString();
+        return sql.append(INSERT_ALL_END).toString();
     }
 }

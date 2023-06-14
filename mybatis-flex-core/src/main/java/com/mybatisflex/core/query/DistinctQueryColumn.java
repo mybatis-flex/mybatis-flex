@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
@@ -32,9 +33,9 @@ public class DistinctQueryColumn extends QueryColumn {
     @Override
     public String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         if (CollectionUtil.isEmpty(queryTables)) {
-            return "";
+            return SqlConsts.EMPTY;
         }
-        return "DISTINCT " + StringUtil.join(", ", queryColumns, queryColumn ->
+        return SqlConsts.DISTINCT + StringUtil.join(SqlConsts.DELIMITER, queryColumns, queryColumn ->
                 queryColumn.toSelectSql(queryTables, dialect));
     }
 

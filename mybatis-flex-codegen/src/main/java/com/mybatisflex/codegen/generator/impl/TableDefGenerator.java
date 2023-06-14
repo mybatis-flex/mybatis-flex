@@ -71,6 +71,8 @@ public class TableDefGenerator implements IGenerator {
         params.put("javadocConfig", globalConfig.getJavadocConfig());
 
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, tableDefJavaFile);
+
+        System.out.println("TableDef ---> " + tableDefJavaFile);
     }
 
     @Override

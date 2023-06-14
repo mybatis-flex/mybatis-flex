@@ -133,7 +133,8 @@ public class TableInfoFactory {
 
         TableInfo tableInfo = new TableInfo();
         tableInfo.setEntityClass(entityClass);
-        tableInfo.setReflector(new Reflector(entityClass));
+        Reflector reflector = new Reflector(entityClass);
+        tableInfo.setReflector(reflector);
 
         //初始化表名
         Table table = entityClass.getAnnotation(Table.class);
@@ -206,21 +207,22 @@ public class TableInfoFactory {
                 continue; // ignore
             }
 
-            Class<?> fieldType = field.getType();
+            Class<?> fieldType = reflector.getGetterType(field.getName());
 
-            //满足一下 3 中情况，不支持该类型
+            //满足以下 3 种情况，不支持该类型
             if ((column == null || column.typeHandler() == UnknownTypeHandler.class) // 未配置 typeHandler
                     && !fieldType.isEnum()   // 类型不是枚举
                     && !defaultSupportColumnTypes.contains(fieldType) //默认的自动类型不包含该类型
             ) {
                 // 集合嵌套
                 if (Collection.class.isAssignableFrom(fieldType)) {
-                    ParameterizedType genericType = (ParameterizedType) field.getGenericType();
-                    Type actualTypeArgument = genericType.getActualTypeArguments()[0];
-
-                    //需排除 List<String>  List<Long> 等场景
-                    if (!defaultSupportColumnTypes.contains(actualTypeArgument)) {
-                        tableInfo.addCollectionType(field, (Class<?>) actualTypeArgument);
+                    Type genericType = field.getGenericType();
+                    if (genericType instanceof ParameterizedType){
+                        Class<?> actualTypeArgument = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
+                        //需排除 List<String>  List<Long> 等场景
+                        if (!defaultSupportColumnTypes.contains(actualTypeArgument)) {
+                            tableInfo.addCollectionType(field, actualTypeArgument);
+                        }
                     }
                 }
                 // 实体类嵌套
@@ -285,7 +287,7 @@ public class TableInfoFactory {
             Id id = field.getAnnotation(Id.class);
             ColumnInfo columnInfo;
             if (id != null) {
-                columnInfo = new IdInfo(columnName, field.getName(), field.getType(), id);
+                columnInfo = new IdInfo(columnName, field.getName(), fieldType, id);
                 idInfos.add((IdInfo) columnInfo);
             } else {
                 columnInfo = new ColumnInfo();
@@ -294,7 +296,7 @@ public class TableInfoFactory {
 
             columnInfo.setColumn(columnName);
             columnInfo.setProperty(field.getName());
-            columnInfo.setPropertyType(field.getType());
+            columnInfo.setPropertyType(fieldType);
 
             if (column != null && column.typeHandler() != UnknownTypeHandler.class) {
                 Class<?> typeHandlerClass = column.typeHandler();
@@ -306,7 +308,7 @@ public class TableInfoFactory {
 
             ColumnMask columnMask = field.getAnnotation(ColumnMask.class);
             if (columnMask != null && StringUtil.isNotBlank(columnMask.value())) {
-                if (String.class != field.getType()) {
+                if (String.class != fieldType) {
                     throw new IllegalStateException("@ColumnMask() only support for string type field. error: " + entityClass.getName() + "." + field.getName());
                 }
                 columnInfo.setMaskType(columnMask.value().trim());

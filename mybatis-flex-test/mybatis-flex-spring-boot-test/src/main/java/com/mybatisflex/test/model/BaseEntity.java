@@ -18,44 +18,17 @@ package com.mybatisflex.test.model;
 
 /**
  * @author 王帅
- * @since 2023-06-07
+ * @since 2.0
  */
-public class UserVO1 {
+public class BaseEntity<T, ID> extends IdEntity<ID> {
 
-    private String userId;
-    private String userName;
-    private RoleVO1 role;
+    protected T userName;
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
+    public T getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
+    public void setUserName(T userName) {
         this.userName = userName;
-    }
-
-    public RoleVO1 getRole() {
-        return role;
-    }
-
-    public void setRole(RoleVO1 role) {
-        this.role = role;
-    }
-
-    @Override
-    public String toString() {
-        return "UserVO1{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", roleVO1=" + role +
-                '}';
     }
 }

@@ -35,6 +35,8 @@ public class Column {
     private boolean isPrimaryKey = false;
     private Boolean isAutoIncrement;
 
+    private boolean needGenColumnAnnotation = false;
+
     private ColumnConfig columnConfig;
 
 
@@ -45,6 +47,7 @@ public class Column {
     public void setName(String name) {
         this.name = name;
         this.property = buildPropertyName();
+        this.needGenColumnAnnotation = !name.equalsIgnoreCase(StringUtil.camelToUnderline(property));
     }
 
     public String getProperty() {
@@ -104,10 +107,10 @@ public class Column {
     }
 
 
-    public String buildComment(){
-        if (StringUtil.isBlank(comment)){
+    public String buildComment() {
+        if (StringUtil.isBlank(comment)) {
             return "";
-        }else {
+        } else {
             StringBuilder sb = new StringBuilder("/**\n")
                     .append("     * ").append(comment).append("\n")
                     .append("     */");
@@ -164,10 +167,17 @@ public class Column {
                 || columnConfig.getJdbcType() != null
                 || columnConfig.getTypeHandler() != null
                 || columnConfig.getTenantId() != null
+                || needGenColumnAnnotation
         ) {
             annotations.append("@Column(");
             boolean needComma = false;
+            if (needGenColumnAnnotation) {
+                annotations.append("value = \"" + name + "\"");
+                needComma = true;
+            }
+
             if (columnConfig.getOnInsertValue() != null) {
+                addComma(annotations, needComma);
                 annotations.append("onInsertValue = \"" + columnConfig.getOnInsertValue() + "\"");
                 needComma = true;
             }
@@ -266,6 +276,7 @@ public class Column {
                     || columnConfig.getJdbcType() != null
                     || columnConfig.getTypeHandler() != null
                     || Boolean.TRUE.equals(columnConfig.getTenantId())
+                    || needGenColumnAnnotation
             ) {
                 importClasses.add(com.mybatisflex.annotation.Column.class.getName());
             }

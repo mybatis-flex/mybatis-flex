@@ -194,7 +194,7 @@ public class FlexConfiguration extends Configuration {
         if (hasResultMap(resultMapId)) {
             resultMap = getResultMap(resultMapId);
         } else {
-            resultMap = tableInfo.buildResultMap(this, true);
+            resultMap = tableInfo.buildResultMap(this);
         }
 
         return new MappedStatement.Builder(ms.getConfiguration(), ms.getId(), ms.getSqlSource(), ms.getSqlCommandType())

@@ -71,6 +71,8 @@ public class MapperGenerator implements IGenerator {
         params.put("javadocConfig", globalConfig.getJavadocConfig());
 
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, mapperJavaFile);
+
+        System.out.println("Mapper ---> " + mapperJavaFile);
     }
 
     @Override

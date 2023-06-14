@@ -21,6 +21,7 @@ import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
@@ -610,12 +611,12 @@ public class TableInfo {
             if (versionValue == null) {
                 throw FlexExceptions.wrap("The version value of entity[%s] must not be null.", entity);
             }
-            queryWrapper.and(QueryCondition.create(schema, tableName, versionColumn, QueryCondition.LOGIC_EQUALS, versionValue));
+            queryWrapper.and(QueryCondition.create(schema, tableName, versionColumn, SqlConsts.EQUALS, versionValue));
         }
 
         //逻辑删除
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS
+            queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, SqlConsts.EQUALS
                     , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
         }
 
@@ -623,9 +624,9 @@ public class TableInfo {
         Object[] tenantIdArgs = buildTenantIdArgs();
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
             if (tenantIdArgs.length == 1) {
-                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, QueryCondition.LOGIC_EQUALS, tenantIdArgs[0]));
+                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.EQUALS, tenantIdArgs[0]));
             } else {
-                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, QueryCondition.LOGIC_IN, tenantIdArgs));
+                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.IN, tenantIdArgs));
             }
         }
 
@@ -685,8 +686,21 @@ public class TableInfo {
     }
 
 
-    public ResultMap buildResultMap(Configuration configuration, boolean withNested) {
-        String resultMapId = entityClass.getName() + (withNested ? "" : "$nested");
+    public ResultMap buildResultMap(Configuration configuration) {
+        return doBuildResultMap(configuration, new HashSet<>());
+    }
+
+    private ResultMap doBuildResultMap(Configuration configuration, Set<String> context) {
+
+        //是否有循环引用
+        boolean withCircularReference = context.contains(entityClass.getName());
+        if (withCircularReference) {
+            return null;
+        }
+
+        String resultMapId = entityClass.getName();
+        context.add(resultMapId);
+
         if (configuration.hasResultMap(resultMapId)) {
             return configuration.getResultMap(resultMapId);
         }
@@ -724,35 +738,40 @@ public class TableInfo {
         }
 
         // <resultMap> 标签下的 <association> 标签映射
-        if (withNested && associationType != null) {
+        if (associationType != null) {
             associationType.forEach((fieldName, fieldType) -> {
                 // 获取嵌套类型的信息，也就是 javaType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(fieldType);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <association> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration, false);
-                resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
-                        .javaType(fieldType)
-                        .nestedResultMapId(nestedResultMap.getId())
-                        .build());
+                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
+                if (nestedResultMap != null) {
+                    resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
+                            .javaType(fieldType)
+                            .nestedResultMapId(nestedResultMap.getId())
+                            .build());
+                }
             });
         }
 
         // <resultMap> 标签下的 <collection> 标签映射
-        if (withNested && collectionType != null) {
+        if (collectionType != null) {
             collectionType.forEach((field, genericClass) -> {
                 // 获取集合泛型类型的信息，也就是 ofType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.buildResultMap(configuration, false);
-                resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
-                        .javaType(field.getType())
-                        .nestedResultMapId(nestedResultMap.getId())
-                        .build());
+                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
+                if (nestedResultMap != null) {
+                    resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
+                            .javaType(field.getType())
+                            .nestedResultMapId(nestedResultMap.getId())
+                            .build());
+                }
             });
         }
 
         ResultMap resultMap = new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build();
         configuration.addResultMap(resultMap);
+        context.add(resultMapId);
         return resultMap;
     }
 

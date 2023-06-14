@@ -34,11 +34,15 @@ import java.util.Map;
  */
 public class AuditManager {
 
+
+    private AuditManager() {
+    }
+
+
     private static MessageFactory messageFactory = new DefaultMessageFactory();
 
     private static boolean auditEnable = false;
     private static Clock clock = System::currentTimeMillis;
-    private AuditManager() {}
     private static MessageCollector messageCollector = new ScheduledMessageCollector();
 
     public static boolean isAuditEnable() {
@@ -88,6 +92,7 @@ public class AuditManager {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public static <T> T startAudit(AuditRunnable<T> supplier, BoundSql boundSql, Configuration configuration) throws SQLException {
         AuditMessage auditMessage = messageFactory.create();
         if (auditMessage == null) {
