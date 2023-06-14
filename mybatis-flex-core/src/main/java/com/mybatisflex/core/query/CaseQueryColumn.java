@@ -17,7 +17,6 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.constant.SqlConsts;
-import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ArrayUtil;
@@ -43,19 +42,11 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
 
     @Override
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
-        StringBuilder sql = new StringBuilder(SqlConsts.CASE);
-        for (When when : whens) {
-            sql.append(SqlConsts.WHEN).append(when.whenCondition.toSql(queryTables, dialect));
-            sql.append(SqlConsts.THEN).append(buildValue(when.thenValue));
-        }
-        if (elseValue != null) {
-            sql.append(SqlConsts.ELSE).append(buildValue(elseValue));
-        }
-        sql.append(SqlConsts.END);
+        String sql = buildSql(queryTables, dialect);
         if (StringUtil.isNotBlank(alias)) {
-            return WrapperUtil.withAlias(sql.toString(), dialect.wrap(alias));
+            return WrapperUtil.withAlias(sql, dialect.wrap(alias));
         }
-        return sql.toString();
+        return sql;
     }
 
     @Override
@@ -63,41 +54,33 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
         CaseQueryColumn clone = (CaseQueryColumn) super.clone();
         // deep clone ...
         clone.whens = CollectionUtil.cloneArrayList(this.whens);
+        clone.elseValue = ObjectUtil.cloneObject(this.elseValue);
         return clone;
     }
 
 
     @Override
     String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
+        return WrapperUtil.withBracket(buildSql(queryTables, dialect));
+    }
+
+    private String buildSql(List<QueryTable> queryTables, IDialect dialect) {
         StringBuilder sql = new StringBuilder(SqlConsts.CASE);
         for (When when : whens) {
             sql.append(SqlConsts.WHEN).append(when.whenCondition.toSql(queryTables, dialect));
-            sql.append(SqlConsts.THEN).append(buildValue(when.thenValue));
+            sql.append(SqlConsts.THEN).append(WrapperUtil.buildValue(when.thenValue));
         }
         if (elseValue != null) {
-            sql.append(SqlConsts.ELSE).append(buildValue(elseValue));
+            sql.append(SqlConsts.ELSE).append(WrapperUtil.buildValue(elseValue));
         }
         sql.append(SqlConsts.END);
-        return WrapperUtil.withBracket(sql.toString());
+        return sql.toString();
     }
 
     @Override
     public QueryColumn as(String alias) {
         this.alias = alias;
         return this;
-    }
-
-
-    private String buildValue(Object value) {
-        if (value instanceof Number || value instanceof Boolean) {
-            return String.valueOf(value);
-        } else if (value instanceof RawFragment) {
-            return ((RawFragment) value).getContent();
-        } else if (value instanceof QueryColumn) {
-            return ((QueryColumn) value).toConditionSql(null, DialectFactory.getDialect());
-        } else {
-            return "'" + value + "'";
-        }
     }
 
     @Override

@@ -18,6 +18,7 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.model.Account;
+import com.mybatisflex.test.model.Gender;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -60,6 +61,14 @@ class AccountMapperTest {
     @Test
     void testSelect() {
         accountMapper.selectListByQuery(QueryWrapper.create()).forEach(System.err::println);
+    }
+
+    @Test
+    void testEnum() {
+        Account account = new Account();
+        account.setId(1L);
+        account.setGender(Gender.MALE);
+        accountMapper.update(account);
     }
 
 }
