@@ -216,12 +216,13 @@ public class TableInfoFactory {
             ) {
                 // 集合嵌套
                 if (Collection.class.isAssignableFrom(fieldType)) {
-                    ParameterizedType genericType = (ParameterizedType) field.getGenericType();
-                    Type actualTypeArgument = genericType.getActualTypeArguments()[0];
-
-                    //需排除 List<String>  List<Long> 等场景
-                    if (!defaultSupportColumnTypes.contains(actualTypeArgument)) {
-                        tableInfo.addCollectionType(field, (Class<?>) actualTypeArgument);
+                    Type genericType = field.getGenericType();
+                    if (genericType instanceof ParameterizedType){
+                        Class<?> actualTypeArgument = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
+                        //需排除 List<String>  List<Long> 等场景
+                        if (!defaultSupportColumnTypes.contains(actualTypeArgument)) {
+                            tableInfo.addCollectionType(field, actualTypeArgument);
+                        }
                     }
                 }
                 // 实体类嵌套

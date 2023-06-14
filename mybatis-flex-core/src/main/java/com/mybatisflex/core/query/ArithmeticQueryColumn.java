@@ -116,7 +116,7 @@ public class ArithmeticQueryColumn extends QueryColumn {
         for (int i = 0; i < arithmeticInfos.size(); i++) {
             sql.append(arithmeticInfos.get(i).toSql(queryTables, dialect, i));
         }
-        return SqlConsts.LEFT_BRACKET + sql + SqlConsts.RIGHT_BRACKET;
+        return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT;
     }
 
 

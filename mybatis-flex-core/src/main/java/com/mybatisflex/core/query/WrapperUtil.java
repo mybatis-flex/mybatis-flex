@@ -142,11 +142,11 @@ class WrapperUtil {
 
 
     static String withBracket(String sql) {
-        return SqlConsts.LEFT_BRACKET + sql + SqlConsts.RIGHT_BRACKET;
+        return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT;
     }
 
     static String withAlias(String sql, String alias) {
-        return SqlConsts.LEFT_BRACKET + sql + SqlConsts.RIGHT_BRACKET + SqlConsts.AS + alias;
+        return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT + SqlConsts.AS + alias;
     }
 
     static String withAliasIf(String alias, IDialect dialect) {
