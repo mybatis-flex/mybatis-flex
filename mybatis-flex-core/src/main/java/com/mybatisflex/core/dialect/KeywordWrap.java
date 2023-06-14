@@ -40,7 +40,7 @@ public class KeywordWrap {
     /**
      * 反引号反义处理, 适用于 mysql, h2 等
      */
-    public static final KeywordWrap BACKQUOTE = new KeywordWrap("`", "`");
+    public static final KeywordWrap BACK_QUOTE = new KeywordWrap("`", "`");
 
     /**
      * 双引号反义处理, 适用于 postgresql, sqlite, derby, oracle 等
