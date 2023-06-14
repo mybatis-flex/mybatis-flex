@@ -43,7 +43,7 @@ import static com.mybatisflex.core.constant.SqlConsts.*;
  */
 public class CommonsDialectImpl implements IDialect {
 
-    protected KeywordWrap keywordWrap = KeywordWrap.BACKQUOTE;
+    protected KeywordWrap keywordWrap = KeywordWrap.BACK_QUOTE;
     private LimitOffsetProcessor limitOffsetProcessor = LimitOffsetProcessor.MYSQL;
 
     public CommonsDialectImpl() {
