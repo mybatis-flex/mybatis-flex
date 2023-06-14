@@ -62,6 +62,7 @@ public class Codegen {
         globalConfig.setBasePackage("com.test");
 
         //设置表前缀和只生成哪些表
+        globalConfig.setGenerateSchema("schema");
         globalConfig.setTablePrefix("tb_");
         globalConfig.setGenerateTable("account", "account_session");
 
@@ -92,6 +93,7 @@ public class Codegen {
 
         //设置表前缀和只生成哪些表，setGenerateTable 未配置时，生成所有表
         globalConfig.getStrategyConfig()
+                .setGenerateSchema("schema")
                 .setTablePrefix("tb_")
                 .setGenerateTable("account", "account_session");
 
@@ -243,12 +245,14 @@ globalConfig.getPackageConfig()
 | setVersionColumn(String)       | 乐观锁的字段名称               | null  |
 | setGenerateForView(boolean)    | 是否生成视图映射               | false |
 | setTableConfig(TableConfig)    | 单独为某张表添加独立的配置          | null  |
+| setGenerateSchema(String)      | 生成哪个schema下的表          | null  |
 | setColumnConfig(ColumnConfig)  | 设置某个列的全局配置             | null  |
 | setGenerateTables(String...)   | 生成哪些表，白名单              | null  |
 | setUnGenerateTables(String...) | 不生成哪些表，黑名单             | null  |
 
 ```java
 globalConfig.getStrategyConfig()
+        .setGenerateSchema("schema")
         .setTablePrefix("sys_")
         .setGenerateTables("sys_user","sys_dept");
 ```
