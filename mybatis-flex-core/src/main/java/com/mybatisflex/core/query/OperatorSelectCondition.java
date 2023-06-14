@@ -51,9 +51,9 @@ public class OperatorSelectCondition extends QueryCondition {
                     sql.append(prevEffectiveCondition.connector);
                 }
                 sql.append(operator)
-                        .append(SqlConsts.LEFT_BRACKET)
+                        .append(SqlConsts.BRACKET_LEFT)
                         .append(childSql)
-                        .append(SqlConsts.RIGHT_BRACKET);
+                        .append(SqlConsts.BRACKET_RIGHT);
             }
         }
 

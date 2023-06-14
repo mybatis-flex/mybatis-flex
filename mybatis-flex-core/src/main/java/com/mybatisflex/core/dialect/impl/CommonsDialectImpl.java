@@ -91,8 +91,8 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
         }
         sql.append(wrap(getRealTable(tableName)));
-        sql.append(LEFT_BRACKET).append(fields).append(RIGHT_BRACKET);
-        sql.append(VALUES).append(LEFT_BRACKET).append(questions).append(RIGHT_BRACKET);
+        sql.append(BRACKET_LEFT).append(fields).append(BRACKET_RIGHT);
+        sql.append(VALUES).append(BRACKET_LEFT).append(questions).append(BRACKET_RIGHT);
         return sql.toString();
     }
 
@@ -127,9 +127,9 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
         }
         sql.append(wrap(getRealTable(tableName)));
-        sql.append(BLANK).append(LEFT_BRACKET)
+        sql.append(BLANK).append(BRACKET_LEFT)
                 .append(fields)
-                .append(RIGHT_BRACKET).append(BLANK);
+                .append(BRACKET_RIGHT).append(BLANK);
         sql.append(VALUES).append(questions);
         return sql.toString();
     }
@@ -170,14 +170,14 @@ public class CommonsDialectImpl implements IDialect {
                 if (i > 0) {
                     sql.append(OR);
                 }
-                sql.append(LEFT_BRACKET);
+                sql.append(BRACKET_LEFT);
                 for (int j = 0; j < primaryKeys.length; j++) {
                     if (j > 0) {
                         sql.append(AND);
                     }
                     sql.append(wrap(primaryKeys[j])).append(EQUALS_PLACEHOLDER);
                 }
-                sql.append(RIGHT_BRACKET);
+                sql.append(BRACKET_RIGHT);
             }
         }
         // 单主键
@@ -318,7 +318,7 @@ public class CommonsDialectImpl implements IDialect {
 
         List<UnionWrapper> unions = CPI.getUnions(queryWrapper);
         if (CollectionUtil.isNotEmpty(unions)) {
-            sqlBuilder.insert(0, LEFT_BRACKET).append(RIGHT_BRACKET);
+            sqlBuilder.insert(0, BRACKET_LEFT).append(BRACKET_RIGHT);
             for (UnionWrapper unionWrapper : unions) {
                 unionWrapper.buildSql(sqlBuilder, this);
             }
@@ -419,9 +419,9 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        return sql.append(LEFT_BRACKET).append(sqlFields).append(RIGHT_BRACKET)
+        return sql.append(BRACKET_LEFT).append(sqlFields).append(BRACKET_RIGHT)
                 .append(VALUES)
-                .append(LEFT_BRACKET).append(sqlValues).append(RIGHT_BRACKET)
+                .append(BRACKET_LEFT).append(sqlValues).append(BRACKET_RIGHT)
                 .toString();
     }
 
@@ -434,14 +434,14 @@ public class CommonsDialectImpl implements IDialect {
         for (int i = 0; i < insertColumns.length; i++) {
             warpedInsertColumns[i] = wrap(insertColumns[i]);
         }
-        sql.append(LEFT_BRACKET)
+        sql.append(BRACKET_LEFT)
                 .append(StringUtil.join(DELIMITER, warpedInsertColumns))
-                .append(RIGHT_BRACKET);
+                .append(BRACKET_RIGHT);
         sql.append(VALUES);
 
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
         for (int i = 0; i < entities.size(); i++) {
-            StringJoiner stringJoiner = new StringJoiner(DELIMITER, LEFT_BRACKET, RIGHT_BRACKET);
+            StringJoiner stringJoiner = new StringJoiner(DELIMITER, BRACKET_LEFT, BRACKET_RIGHT);
             for (String insertColumn : insertColumns) {
                 if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                     //直接读取 onInsert 配置的值，而不用 "?" 代替
@@ -509,7 +509,7 @@ public class CommonsDialectImpl implements IDialect {
 
             //多租户
             if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
-                deleteSQL = deleteSQL.replace(WHERE, WHERE + LEFT_BRACKET) + RIGHT_BRACKET;
+                deleteSQL = deleteSQL.replace(WHERE, WHERE + BRACKET_LEFT) + BRACKET_RIGHT;
                 deleteSQL += AND + wrap(tableInfo.getTenantIdColumn()) + IN + buildQuestion(tenantIdArgs.length);
             }
             return deleteSQL;
@@ -520,7 +520,7 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(tableInfo.getWrapSchemaAndTableName(this));
         sql.append(SET).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicDeletedValue());
         sql.append(WHERE);
-        sql.append(LEFT_BRACKET);
+        sql.append(BRACKET_LEFT);
 
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
@@ -530,14 +530,14 @@ public class CommonsDialectImpl implements IDialect {
                 if (i > 0) {
                     sql.append(OR);
                 }
-                sql.append(LEFT_BRACKET);
+                sql.append(BRACKET_LEFT);
                 for (int j = 0; j < primaryKeys.length; j++) {
                     if (j > 0) {
                         sql.append(AND);
                     }
                     sql.append(wrap(primaryKeys[j])).append(EQUALS_PLACEHOLDER);
                 }
-                sql.append(RIGHT_BRACKET);
+                sql.append(BRACKET_RIGHT);
             }
         }
         // 单主键
@@ -550,7 +550,7 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        sql.append(RIGHT_BRACKET).append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+        sql.append(BRACKET_RIGHT).append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
 
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
             sql.append(AND).append(wrap(tableInfo.getTenantIdColumn())).append(IN).append(buildQuestion(tenantIdArgs.length));
@@ -807,7 +807,7 @@ public class CommonsDialectImpl implements IDialect {
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         if (StringUtil.isNotBlank(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
-            sql.append(LEFT_BRACKET);
+            sql.append(BRACKET_LEFT);
         }
 
         //多主键的场景
@@ -816,14 +816,14 @@ public class CommonsDialectImpl implements IDialect {
                 if (i > 0) {
                     sql.append(OR);
                 }
-                sql.append(LEFT_BRACKET);
+                sql.append(BRACKET_LEFT);
                 for (int j = 0; j < primaryKeys.length; j++) {
                     if (j > 0) {
                         sql.append(AND);
                     }
                     sql.append(wrap(primaryKeys[j])).append(EQUALS_PLACEHOLDER);
                 }
-                sql.append(RIGHT_BRACKET);
+                sql.append(BRACKET_RIGHT);
             }
         }
         // 单主键
@@ -837,7 +837,7 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         if (StringUtil.isNotBlank(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
-            sql.append(RIGHT_BRACKET);
+            sql.append(BRACKET_RIGHT);
         }
 
 
@@ -932,14 +932,14 @@ public class CommonsDialectImpl implements IDialect {
 
 
     protected String buildQuestion(int count) {
-        StringBuilder sb = new StringBuilder(LEFT_BRACKET);
+        StringBuilder sb = new StringBuilder(BRACKET_LEFT);
         for (int i = 0; i < count; i++) {
             sb.append(PLACEHOLDER);
             if (i != count - 1) {
                 sb.append(DELIMITER);
             }
         }
-        sb.append(RIGHT_BRACKET);
+        sb.append(BRACKET_RIGHT);
         return sb.toString();
     }
 

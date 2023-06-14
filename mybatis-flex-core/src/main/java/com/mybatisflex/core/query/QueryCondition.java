@@ -181,9 +181,9 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             }
             //子查询
             else if (value instanceof QueryWrapper) {
-                sql.append(SqlConsts.LEFT_BRACKET)
+                sql.append(SqlConsts.BRACKET_LEFT)
                         .append(dialect.buildSelectSql((QueryWrapper) value))
-                        .append(SqlConsts.RIGHT_BRACKET);
+                        .append(SqlConsts.BRACKET_RIGHT);
             }
             //原生sql
             else if (value instanceof RawFragment) {
@@ -228,14 +228,14 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         //in, not in
         else if (SqlConsts.IN.equals(logic) || SqlConsts.NOT_IN.equals(logic)) {
             int paramsCount = calculateValueArrayCount();
-            sqlBuilder.append(SqlConsts.LEFT_BRACKET);
+            sqlBuilder.append(SqlConsts.BRACKET_LEFT);
             for (int i = 0; i < paramsCount; i++) {
                 sqlBuilder.append(SqlConsts.PLACEHOLDER);
                 if (i != paramsCount - 1) {
                     sqlBuilder.append(SqlConsts.DELIMITER);
                 }
             }
-            sqlBuilder.append(SqlConsts.RIGHT_BRACKET);
+            sqlBuilder.append(SqlConsts.BRACKET_RIGHT);
         } else {
             sqlBuilder.append(SqlConsts.PLACEHOLDER);
         }

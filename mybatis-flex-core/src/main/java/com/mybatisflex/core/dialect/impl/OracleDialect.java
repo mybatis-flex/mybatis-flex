@@ -94,10 +94,10 @@ public class OracleDialect extends CommonsDialectImpl {
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
         for (int i = 0; i < entities.size(); i++) {
             sql.append(INTO).append(tableInfo.getWrapSchemaAndTableName(this));
-            sql.append(BLANK).append(LEFT_BRACKET).append(StringUtil.join(DELIMITER, warpedInsertColumns)).append(RIGHT_BRACKET);
+            sql.append(BLANK).append(BRACKET_LEFT).append(StringUtil.join(DELIMITER, warpedInsertColumns)).append(BRACKET_RIGHT);
             sql.append(VALUES);
 
-            StringJoiner stringJoiner = new StringJoiner(DELIMITER, LEFT_BRACKET, RIGHT_BRACKET);
+            StringJoiner stringJoiner = new StringJoiner(DELIMITER, BRACKET_LEFT, BRACKET_RIGHT);
             for (String insertColumn : insertColumns) {
                 if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                     //直接读取 onInsert 配置的值，而不用 "?" 代替
@@ -147,7 +147,7 @@ public class OracleDialect extends CommonsDialectImpl {
 
         for (int i = 0; i < rows.size(); i++) {
             sql.append(INTO).append(tableNameWrap);
-            sql.append(BLANK).append(LEFT_BRACKET).append(fields).append(RIGHT_BRACKET);
+            sql.append(BLANK).append(BRACKET_LEFT).append(fields).append(BRACKET_RIGHT);
             sql.append(VALUES).append(questionStrings);
         }
 
