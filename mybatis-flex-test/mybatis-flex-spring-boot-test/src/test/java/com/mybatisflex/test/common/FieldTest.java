@@ -35,8 +35,6 @@ class FieldTest {
     void test() {
         String genericString = BaseEntity.class.toGenericString();
         System.out.println(genericString);
-//        List<String> genericParameters = StringUtil.getGenericParameters(genericString);
-//        System.out.println(genericParameters);
     }
 
     @Test
