@@ -28,6 +28,7 @@ public final class SqlConsts {
     }
 
     // === 常用符号 ===
+
     public static final String EMPTY = "";
     public static final String BLANK = " ";
     public static final String ASTERISK = "*";
@@ -44,6 +45,7 @@ public final class SqlConsts {
 
 
     // === SQL 关键字 ===
+
     public static final String AS = " AS ";
     public static final String OR = " OR ";
     public static final String END = " END";
@@ -71,9 +73,9 @@ public final class SqlConsts {
 
 
     // === Oracle SQl ===
+
     public static final String INSERT_ALL = "INSERT ALL ";
     public static final String INSERT_ALL_END = " SELECT 1 FROM DUAL";
-
 
 
     // === Limit Offset ===
@@ -92,7 +94,9 @@ public final class SqlConsts {
     public static final String WHERE_ROWNUM = ") TEMP_DATAS WHERE ROWNUM <=";
     public static final String ROWNUM_RN_FROM = "SELECT * FROM (SELECT TEMP_DATAS.*, ROWNUM RN FROM (";
 
+
     // === 联表查询关键字 ===
+
     public static final String ON = " ON ";
     public static final String JOIN = " JOIN ";
     public static final String UNION = " UNION ";
@@ -105,6 +109,7 @@ public final class SqlConsts {
 
 
     // === 逻辑符号 ===
+
     public static final String GT = " > ";
     public static final String GE = " >= ";
     public static final String LT = " < ";
@@ -124,6 +129,7 @@ public final class SqlConsts {
 
 
     // === 排序相关关键字 ===
+
     public static final String ASC = " ASC";
     public static final String DESC = " DESC";
     public static final String NULLS_FIRST = " NULLS FIRST";
@@ -131,6 +137,7 @@ public final class SqlConsts {
 
 
     // === SQL 函数名 ===
+
     public static final String SUM = "SUM";
     public static final String MAX = "MIX";
     public static final String MIN = "MIN";
@@ -143,15 +150,15 @@ public final class SqlConsts {
 
 
     // === 数学运算符 ===
-    public static final String PLUS_SIGN = " + ";
 
-    // === 数学运算符 ===
+    public static final String PLUS_SIGN = " + ";
     public static final String MINUS_SIGN = " - ";
     public static final String DIVISION_SIGN = " / ";
     public static final String MULTIPLICATION_SIGN = " * ";
-    public static final String EQUALS_PLACEHOLDER = " = ? ";
 
     // === 其他拼接需要的字符串 ===
+
+    public static final String EQUALS_PLACEHOLDER = " = ? ";
     public static final String AND_PLACEHOLDER = BLANK + PLACEHOLDER + AND + PLACEHOLDER + BLANK;
 
 }
