@@ -76,6 +76,22 @@ public final class SqlConsts {
     public static final String INSERT_ALL = "INSERT ALL ";
     public static final String INSERT_ALL_END = " SELECT 1 FROM DUAL";
 
+    // === Limit Offset ===
+
+    public static final String TO = " TO ";
+    public static final String TOP = " TOP ";
+    public static final String ROWS = " ROWS ";
+    public static final String SKIP = " SKIP ";
+    public static final String FIRST = " FIRST ";
+    public static final String LIMIT = " LIMIT ";
+    public static final String OFFSET = " OFFSET ";
+    public static final String START_AT = " START AT ";
+    public static final String ROWS_ONLY = " ROWS ONLY";
+    public static final String ROWS_FETCH_NEXT = " ROWS FETCH NEXT ";
+    public static final String WHERE_RN = ") WHERE RN >";
+    public static final String WHERE_ROWNUM = ") TEMP_DATAS WHERE ROWNUM <=";
+    public static final String ROWNUM_RN_FROM = "SELECT * FROM (SELECT TEMP_DATAS.*, ROWNUM RN FROM (";
+
     // === 联表查询关键字 ===
 
     public static final String ON = " ON ";
