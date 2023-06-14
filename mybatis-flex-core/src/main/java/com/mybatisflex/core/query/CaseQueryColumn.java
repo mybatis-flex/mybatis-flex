@@ -63,6 +63,7 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
         CaseQueryColumn clone = (CaseQueryColumn) super.clone();
         // deep clone ...
         clone.whens = CollectionUtil.cloneArrayList(this.whens);
+        clone.elseValue = ObjectUtil.cloneObject(this.elseValue);
         return clone;
     }
 
