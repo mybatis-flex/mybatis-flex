@@ -16,25 +16,37 @@
 在自定义方言中，重写 `forSelectByQuery` 方法，这个方法是用于构建返回根据 `QueryWrapper` 查询的方法， 以下是示例代码：
 
 ```java
-public class MyPermissionDialect extends CommonsDialectImpl{
+public class MyPermissionDialect extends CommonsDialectImpl {
 
     @Override
     public String forSelectByQuery(QueryWrapper queryWrapper) {
-        
+
         //获取当前用户信息，为 queryWrapper 添加额外的条件
         queryWrapper.and("...");
-        
+
         return supper.buildSelectSql(queryWrapper);
     }
+}
+```
+
+特别的，如果您使用的是 `Oracle` 数据库，需要继承 `OracleDialect` 类，示例：
+
+```java
+public class MyOraclePermissionDialect extends OracleDialect {
+
+    // 这个构造器只有在 Oracle 12C 的版本下才需要添加。
+    // public MyOraclePermissionDialect() {
+    //    super(LimitOffsetProcessor.DERBY);
+    // }
+
 }
 ```
 
 在项目启动时，通过 `DialectFactory` 注册 `MyPermissionDialect`：
 
 ```java
-DialectFactory.registerDialect(DbType.MYSQL, new MyPermissionDialect());
+DialectFactory.registerDialect(DbType.MYSQL,new MyPermissionDialect());
 ```
-
 
 **常见问题1：通过重写 `IDialect` 后，所有的查询都添加了条件，但是有些表不需要条件如何做？**
 
