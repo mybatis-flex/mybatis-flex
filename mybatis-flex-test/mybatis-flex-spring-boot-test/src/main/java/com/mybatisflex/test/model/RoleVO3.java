@@ -16,26 +16,30 @@
 
 package com.mybatisflex.test.model;
 
-import com.mybatisflex.annotation.Id;
-
 /**
  * @author 王帅
- * @since 2023-06-07
+ * @since 2023-06-15
  */
+public class RoleVO3 {
 
-public class UserVO3 {
-
-    @Id
-    private String userId;
+    private Integer roleId;
+    private String roleKey;
     private String userName;
-    private RoleVO3 roleVO3;
 
-    public String getUserId() {
-        return userId;
+    public Integer getRoleId() {
+        return roleId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getRoleKey() {
+        return roleKey;
+    }
+
+    public void setRoleKey(String roleKey) {
+        this.roleKey = roleKey;
     }
 
     public String getUserName() {
@@ -46,20 +50,12 @@ public class UserVO3 {
         this.userName = userName;
     }
 
-    public RoleVO3 getRoleVO3() {
-        return roleVO3;
-    }
-
-    public void setRoleVO3(RoleVO3 roleVO3) {
-        this.roleVO3 = roleVO3;
-    }
-
     @Override
     public String toString() {
-        return "UserVO3{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", roleVO3=" + roleVO3 +
+        return "RoleVO3{" +
+                "roleId=" + roleId +
+                ", roleKey='" + roleKey + '\'' +
+                ", roleName='" + userName + '\'' +
                 '}';
     }
 }
