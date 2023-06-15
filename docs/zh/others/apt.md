@@ -103,7 +103,7 @@ processor.entity.ignoreSuffixes = Model, Dto
 
 ## APT 开启 Mapper 生成
 
-从 v1.1.9 开始， APT 的 Mapper 功能是关闭的，若需要开启 Mapper 的自动生成功能，需要添加一下配置。
+从 v1.1.9 开始， APT 的 Mapper 功能是关闭的，若需要开启 Mapper 的自动生成功能，需要添加以下配置。
 
 ```properties
 processor.mappersGenerateEnable = true
@@ -180,7 +180,7 @@ processor.baseMapperClass=com.domain.mapper.MyBaseMapper
 ```
 dependencies {
     ...
-    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.3.6'
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.3.8'
 }
 ```
 

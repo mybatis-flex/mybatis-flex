@@ -25,6 +25,38 @@
 - **selectCountByCondition**：根据 QueryWrapper 查询数据量。
 - **selectCountByQuery**：根据 QueryWrapper 查询数据量。
 
+## 游标查询
+
+我们对大量数据进行处理时，为防止方法内存泄漏情况，应该使用游标（Cursor）方式进行数据查询并处理数据。
+在 `BaseMapper` 中，存在如下的游标查询方法：
+
+```java
+Cursor<T> selectCursorByQuery(QueryWrapper queryWrapper);
+```
+其使用方法如下：
+
+```java
+Db.tx(() -> {
+    Cursor<Account> accounts = accountMapper.selectCursorByQuery(query);
+    for (Account account : accounts) {
+        System.out.println(account);
+    }
+    return true;
+});
+```
+
+以上的示例中，数据库并**不是**把所有的数据一次性返回给应用，而是每循环 1 次才会去数据库里拿 1 条数据，这样，就算有 100w 级数据，也不会导致我们应用内存溢出，同时，在 for 循环中，
+我们可以随时终止数据读取。
+
+但由于游标查询是在 for 循环的时候，才去数据库拿数据。因此必须保证 `selectCursorByQuery` 方法及其处理必须是在事务中进行，才能保证其链接并未与数据库断开。
+
+**以下场景经常需要用到游标查询功能：**
+
+- 1、数据查询并写入到缓存
+- 2、Excel 导出等
+
+
+
 ## 多表查询（关联查询）
 
 在 `BaseMapper` 中，提供了 `selectOneByQueryAs`、`selectListByQueryAs` 、`paginateAs` 等方法，用于处理关联查询的场景。

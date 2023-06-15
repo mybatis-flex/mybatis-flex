@@ -16,6 +16,8 @@
 
 package com.mybatisflex.codegen.config;
 
+import com.mybatisflex.core.util.StringUtil;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -61,6 +63,10 @@ public class StrategyConfig {
     private Map<String, ColumnConfig> columnConfigMap;
 
     /**
+     * 需要生成的表在哪个模式下
+     */
+    private String generateSchema;
+    /**
      * 生成哪些表，白名单。
      */
     private Set<String> generateTables;
@@ -69,13 +75,34 @@ public class StrategyConfig {
      * 不生成哪些表，黑名单。
      */
     private Set<String> unGenerateTables;
-    
+
+
+    /**
+     * 设置要生成的模式
+     *
+     * @return
+     */
+    public String getGenerateSchema() {
+        return generateSchema;
+    }
+
+    /**
+     * 获取要生成的模式
+     *
+     * @param generateSchema
+     * @return
+     */
+    public StrategyConfig setGenerateSchema(String generateSchema) {
+        this.generateSchema = generateSchema;
+        return this;
+    }
+
     /**
      * 获取表配置。
      */
     public TableConfig getTableConfig(String tableName) {
         return tableConfigMap == null ? null : tableConfigMap.get(tableName);
-    }    
+    }
 
     /**
      * 设置表配置。
@@ -203,8 +230,8 @@ public class StrategyConfig {
     /**
      * 设置表前缀。
      */
-    public StrategyConfig setTablePrefix(String tablePrefix) {
-        this.tablePrefix = tablePrefix;
+    public StrategyConfig setTablePrefix(String... tablePrefix) {
+        this.tablePrefix = StringUtil.join(",", tablePrefix);
         return this;
     }
 

@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.ObjectUtil;
 import com.mybatisflex.core.util.StringUtil;
@@ -49,7 +50,10 @@ public class OperatorSelectCondition extends QueryCondition {
                 if (prevEffectiveCondition != null) {
                     sql.append(prevEffectiveCondition.connector);
                 }
-                sql.append(operator).append("(").append(childSql).append(")");
+                sql.append(operator)
+                        .append(SqlConsts.BRACKET_LEFT)
+                        .append(childSql)
+                        .append(SqlConsts.BRACKET_RIGHT);
             }
         }
 

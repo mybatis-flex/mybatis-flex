@@ -16,6 +16,7 @@
 package com.mybatisflex.core.util;
 
 import com.mybatisflex.core.BaseMapper;
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.field.FieldQuery;
 import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.query.*;
@@ -50,7 +51,7 @@ public class MapperUtil {
     public static QueryWrapper rawCountQueryWrapper(QueryWrapper queryWrapper) {
         return QueryWrapper.create()
                 .select(count().as("total"))
-                .from(queryWrapper);
+                .from(queryWrapper).as("t");
     }
 
     /**
@@ -100,7 +101,7 @@ public class MapperUtil {
         // 只有全是 left join 语句才会清除 join
         // 因为如果是 inner join 或 right join 往往都会放大记录数
         for (Join join : joins) {
-            if (!Join.TYPE_LEFT.equals(CPI.getJoinType(join))) {
+            if (!SqlConsts.LEFT_JOIN.equals(CPI.getJoinType(join))) {
                 return false;
             }
         }

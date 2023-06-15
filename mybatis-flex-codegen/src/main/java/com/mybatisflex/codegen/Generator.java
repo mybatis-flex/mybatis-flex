@@ -67,6 +67,8 @@ public class Generator {
                     generator.generate(table, globalConfig);
                 }
             }
+
+            System.out.println("Code is generated successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,8 +87,9 @@ public class Generator {
 
     private List<Table> buildTables() throws SQLException {
         StrategyConfig strategyConfig = globalConfig.getStrategyConfig();
+        String schemaName = strategyConfig.getGenerateSchema();
         List<Table> tables = new ArrayList<>();
-        try (ResultSet rs = getTablesResultSet()) {
+        try (ResultSet rs = getTablesResultSet(schemaName)) {
             while (rs.next()) {
                 String tableName = rs.getString("TABLE_NAME");
                 if (!strategyConfig.isSupportGenerate(tableName)) {
@@ -97,6 +100,7 @@ public class Generator {
                 table.setGlobalConfig(globalConfig);
                 table.setTableConfig(strategyConfig.getTableConfig(tableName));
 
+                table.setSchema(schemaName);
                 table.setName(tableName);
 
                 String remarks = rs.getString("REMARKS");
@@ -114,11 +118,11 @@ public class Generator {
     }
 
 
-    protected ResultSet getTablesResultSet() throws SQLException {
+    protected ResultSet getTablesResultSet(String schema) throws SQLException {
         if (globalConfig.getStrategyConfig().isGenerateForView()) {
-            return dialect.getTablesResultSet(dbMeta, conn, new String[]{"TABLE", "VIEW"});
+            return dialect.getTablesResultSet(dbMeta, conn, schema, new String[]{"TABLE", "VIEW"});
         } else {
-            return dialect.getTablesResultSet(dbMeta, conn, new String[]{"TABLE"});
+            return dialect.getTablesResultSet(dbMeta, conn, schema, new String[]{"TABLE"});
         }
     }
 }

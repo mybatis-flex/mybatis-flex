@@ -56,6 +56,12 @@ public class FlexDataSource extends AbstractDataSource {
         dbTypeHashMap.put(dataSourceKey, DbTypeUtil.getDbType(dataSource));
     }
 
+    public void removeDatasource(String dataSourceKey) {
+        dataSourceMap.remove(dataSourceKey);
+        dbTypeHashMap.remove(dataSourceKey);
+    }
+
+
     public DbType getDbType(String dataSourceKey) {
         return dbTypeHashMap.get(dataSourceKey);
     }
@@ -100,7 +106,7 @@ public class FlexDataSource extends AbstractDataSource {
         }
     }
 
-     static void closeAutoCommit(Connection connection){
+    static void closeAutoCommit(Connection connection) {
         try {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
@@ -110,9 +116,9 @@ public class FlexDataSource extends AbstractDataSource {
         }
     }
 
-     static void resetAutoCommit(Connection connection){
+    static void resetAutoCommit(Connection connection) {
         try {
-            if (!connection.getAutoCommit()){
+            if (!connection.getAutoCommit()) {
                 connection.setAutoCommit(true);
             }
         } catch (SQLException e) {
@@ -133,7 +139,7 @@ public class FlexDataSource extends AbstractDataSource {
     /**
      * 方便用于 {@link DbTypeUtil#getDbType(DataSource)}
      */
-    public String getUrl(){
+    public String getUrl() {
         return DbTypeUtil.getJdbcUrl(defaultDataSource);
     }
 
@@ -167,7 +173,7 @@ public class FlexDataSource extends AbstractDataSource {
     }
 
     private static class ConnectionHandler implements InvocationHandler {
-        private static final String[] proxyMethods = new String[]{"commit", "rollback", "close","setAutoCommit"};
+        private static final String[] proxyMethods = new String[]{"commit", "rollback", "close", "setAutoCommit"};
         private final Connection original;
         private final String xid;
 
@@ -188,7 +194,7 @@ public class FlexDataSource extends AbstractDataSource {
             }
 
             //setAutoCommit: true
-            if ("close".equalsIgnoreCase(method.getName())){
+            if ("close".equalsIgnoreCase(method.getName())) {
                 resetAutoCommit(original);
             }
 

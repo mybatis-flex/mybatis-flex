@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.CollectionUtil;
@@ -22,6 +23,8 @@ import com.mybatisflex.core.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.mybatisflex.core.constant.SqlConsts.*;
 
 public class ArithmeticQueryColumn extends QueryColumn {
 
@@ -34,49 +37,49 @@ public class ArithmeticQueryColumn extends QueryColumn {
 
     @Override
     public QueryColumn add(QueryColumn queryColumn) {
-        arithmeticInfos.add(new ArithmeticInfo(" + ", queryColumn));
+        arithmeticInfos.add(new ArithmeticInfo(PLUS_SIGN, queryColumn));
         return this;
     }
 
     @Override
     public QueryColumn add(Number number) {
-        arithmeticInfos.add(new ArithmeticInfo(" + ", number));
+        arithmeticInfos.add(new ArithmeticInfo(PLUS_SIGN, number));
         return this;
     }
 
     @Override
     public QueryColumn subtract(QueryColumn queryColumn) {
-        arithmeticInfos.add(new ArithmeticInfo(" - ", queryColumn));
+        arithmeticInfos.add(new ArithmeticInfo(MINUS_SIGN, queryColumn));
         return this;
     }
 
     @Override
     public QueryColumn subtract(Number number) {
-        arithmeticInfos.add(new ArithmeticInfo(" - ", number));
+        arithmeticInfos.add(new ArithmeticInfo(MINUS_SIGN, number));
         return this;
     }
 
     @Override
     public QueryColumn multiply(QueryColumn queryColumn) {
-        arithmeticInfos.add(new ArithmeticInfo(" * ", queryColumn));
+        arithmeticInfos.add(new ArithmeticInfo(MULTIPLICATION_SIGN, queryColumn));
         return this;
     }
 
     @Override
     public QueryColumn multiply(Number number) {
-        arithmeticInfos.add(new ArithmeticInfo(" * ", number));
+        arithmeticInfos.add(new ArithmeticInfo(MULTIPLICATION_SIGN, number));
         return this;
     }
 
     @Override
     public QueryColumn divide(QueryColumn queryColumn) {
-        arithmeticInfos.add(new ArithmeticInfo(" / ", queryColumn));
+        arithmeticInfos.add(new ArithmeticInfo(DIVISION_SIGN, queryColumn));
         return this;
     }
 
     @Override
     public QueryColumn divide(Number number) {
-        arithmeticInfos.add(new ArithmeticInfo(" / ", number));
+        arithmeticInfos.add(new ArithmeticInfo(DIVISION_SIGN, number));
         return this;
     }
 
@@ -93,7 +96,7 @@ public class ArithmeticQueryColumn extends QueryColumn {
             sql.append(arithmeticInfos.get(i).toSql(queryTables, dialect, i));
         }
         if (StringUtil.isNotBlank(alias)) {
-            return "(" + sql + ") AS " + dialect.wrap(alias);
+            return WrapperUtil.withAlias(sql.toString(), dialect.wrap(alias));
         }
         return sql.toString();
     }
@@ -113,7 +116,7 @@ public class ArithmeticQueryColumn extends QueryColumn {
         for (int i = 0; i < arithmeticInfos.size(); i++) {
             sql.append(arithmeticInfos.get(i).toSql(queryTables, dialect, i));
         }
-        return "(" + sql + ")";
+        return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT;
     }
 
 

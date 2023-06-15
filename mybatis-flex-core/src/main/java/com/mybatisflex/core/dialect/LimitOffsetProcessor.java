@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.dialect;
 
@@ -21,6 +21,8 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.CollectionUtil;
 
 import java.util.List;
+
+import static com.mybatisflex.core.constant.SqlConsts.*;
 
 /**
  * limit 和 offset 参数的处理器
@@ -33,9 +35,9 @@ public interface LimitOffsetProcessor {
      */
     LimitOffsetProcessor MYSQL = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
-            sql.append(" LIMIT ").append(limitOffset).append(", ").append(limitRows);
+            sql.append(LIMIT).append(limitOffset).append(DELIMITER).append(limitRows);
         } else if (limitRows != null) {
-            sql.append(" LIMIT ").append(limitRows);
+            sql.append(LIMIT).append(limitRows);
         }
         return sql;
     };
@@ -48,9 +50,9 @@ public interface LimitOffsetProcessor {
      */
     LimitOffsetProcessor POSTGRESQL = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
-            sql.append(" LIMIT ").append(limitRows).append(" OFFSET ").append(limitOffset);
+            sql.append(LIMIT).append(limitRows).append(OFFSET).append(limitOffset);
         } else if (limitRows != null) {
-            sql.append(" LIMIT ").append(limitRows);
+            sql.append(LIMIT).append(limitRows);
         }
         return sql;
     };
@@ -62,9 +64,9 @@ public interface LimitOffsetProcessor {
     LimitOffsetProcessor DERBY = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             // OFFSET ** ROWS FETCH NEXT ** ROWS ONLY")
-            sql.append(" OFFSET ").append(limitOffset).append(" ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
+            sql.append(OFFSET).append(limitOffset).append(ROWS_FETCH_NEXT).append(limitRows).append(ROWS_ONLY);
         } else if (limitRows != null) {
-            sql.append(" OFFSET 0 ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
+            sql.append(OFFSET).append(0).append(ROWS_FETCH_NEXT).append(limitRows).append(ROWS_ONLY);
         }
         return sql;
     };
@@ -76,13 +78,13 @@ public interface LimitOffsetProcessor {
     LimitOffsetProcessor SQLSERVER = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             // OFFSET ** ROWS FETCH NEXT ** ROWS ONLY")
-            sql.append(" OFFSET ").append(limitOffset).append(" ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
+            sql.append(OFFSET).append(limitOffset).append(ROWS_FETCH_NEXT).append(limitRows).append(ROWS_ONLY);
         } else if (limitRows != null) {
             List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
             if (CollectionUtil.isNotEmpty(orderBys)) {
-                sql.append(" OFFSET 0 ROWS FETCH NEXT ").append(limitRows).append(" ROWS ONLY");
+                sql.append(OFFSET).append(0).append(ROWS_FETCH_NEXT).append(limitRows).append(ROWS_ONLY);
             } else {
-                sql.insert(6, " TOP " + limitRows);
+                sql.insert(6, TOP + limitRows);
             }
         }
         return sql;
@@ -97,9 +99,9 @@ public interface LimitOffsetProcessor {
     LimitOffsetProcessor INFORMIX = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             // SELECT SKIP 2 FIRST 1 * FROM
-            sql.insert(6, " SKIP " + limitOffset + " FIRST " + limitRows);
+            sql.insert(6, SKIP + limitOffset + FIRST + limitRows);
         } else if (limitRows != null) {
-            sql.insert(6, " FIRST " + limitRows);
+            sql.insert(6, FIRST + limitRows);
         }
         return sql;
     };
@@ -111,9 +113,9 @@ public interface LimitOffsetProcessor {
     LimitOffsetProcessor FIREBIRD = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             // ROWS 2 TO 3
-            sql.append(" ROWS ").append(limitOffset).append(" TO ").append(limitOffset + limitRows);
+            sql.append(ROWS).append(limitOffset).append(TO).append(limitOffset + limitRows);
         } else if (limitRows != null) {
-            sql.insert(6, " FIRST " + limitRows);
+            sql.insert(6, FIRST + limitRows);
         }
         return sql;
     };
@@ -129,7 +131,7 @@ public interface LimitOffsetProcessor {
             }
             StringBuilder newSql = new StringBuilder("SELECT * FROM (SELECT TEMP_DATAS.*, ROWNUM RN FROM (");
             newSql.append(sql);
-            newSql.append(") TEMP_DATAS WHERE  ROWNUM <=").append(limitOffset + limitRows).append(") WHERE RN >").append(limitOffset);
+            newSql.append(") TEMP_DATAS WHERE ROWNUM <= ").append(limitOffset + limitRows).append(") WHERE RN > ").append(limitOffset);
             return newSql;
         }
         return sql;
@@ -142,9 +144,9 @@ public interface LimitOffsetProcessor {
     LimitOffsetProcessor SYBASE = (sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
             //SELECT TOP 1 START AT 3 * FROM
-            sql.insert(6, " TOP " + limitRows + " START AT " + (limitOffset + 1));
+            sql.insert(6, TOP + limitRows + START_AT + (limitOffset + 1));
         } else if (limitRows != null) {
-            sql.insert(6, " TOP " + limitRows);
+            sql.insert(6, TOP + limitRows);
         }
         return sql;
     };

@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.dialect.impl;
 
@@ -35,13 +35,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import static com.mybatisflex.core.constant.SqlConsts.*;
+
 /**
  * 通用的方言设计，其他方言可以继承于当前 CommonsDialectImpl
  * 创建或获取方言请参考 {@link com.mybatisflex.core.dialect.DialectFactory}
  */
 public class CommonsDialectImpl implements IDialect {
 
-    protected KeywordWrap keywordWrap = KeywordWrap.BACKQUOTE;
+    protected KeywordWrap keywordWrap = KeywordWrap.BACK_QUOTE;
     private LimitOffsetProcessor limitOffsetProcessor = LimitOffsetProcessor.MYSQL;
 
     public CommonsDialectImpl() {
@@ -58,13 +60,13 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String wrap(String keyword) {
-        return "*".equals(keyword) ? keyword : keywordWrap.wrap(keyword);
+        return ASTERISK.equals(keyword) ? keyword : keywordWrap.wrap(keyword);
     }
 
 
     @Override
     public String forHint(String hintString) {
-        return StringUtil.isNotBlank(hintString) ? "/*+ " + hintString + " */ " : "";
+        return StringUtil.isNotBlank(hintString) ? HINT_START + hintString + HINT_END : EMPTY;
     }
 
     @Override
@@ -76,21 +78,21 @@ public class CommonsDialectImpl implements IDialect {
         int index = 0;
         for (String attr : attrs) {
             fields.append(wrap(attr));
-            questions.append("?");
+            questions.append(PLACEHOLDER);
             if (index != attrs.size() - 1) {
-                fields.append(", ");
-                questions.append(", ");
+                fields.append(DELIMITER);
+                questions.append(DELIMITER);
             }
             index++;
         }
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO ");
+        sql.append(INSERT_INTO);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(".");
+            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
         }
         sql.append(wrap(getRealTable(tableName)));
-        sql.append("(").append(fields).append(") ");
-        sql.append(" VALUES ").append("(").append(questions).append(")");
+        sql.append(BRACKET_LEFT).append(fields).append(BRACKET_RIGHT);
+        sql.append(VALUES).append(BRACKET_LEFT).append(questions).append(BRACKET_RIGHT);
         return sql.toString();
     }
 
@@ -106,27 +108,29 @@ public class CommonsDialectImpl implements IDialect {
         for (String column : attrs) {
             fields.append(wrap(column));
             if (index != attrs.size() - 1) {
-                fields.append(", ");
+                fields.append(DELIMITER);
             }
             index++;
         }
 
         for (int i = 0; i < rows.size(); i++) {
-            questions.append(buildQuestion(attrs.size(), true));
+            questions.append(buildQuestion(attrs.size()));
             if (i != rows.size() - 1) {
-                questions.append(",");
+                questions.append(DELIMITER);
             }
         }
 
 
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO ");
+        sql.append(INSERT_INTO);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(".");
+            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
         }
         sql.append(wrap(getRealTable(tableName)));
-        sql.append(" (").append(fields).append(") ");
-        sql.append(" VALUES ").append(questions);
+        sql.append(BLANK).append(BRACKET_LEFT)
+                .append(fields)
+                .append(BRACKET_RIGHT).append(BLANK);
+        sql.append(VALUES).append(questions);
         return sql.toString();
     }
 
@@ -134,17 +138,17 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String forDeleteById(String schema, String tableName, String[] primaryKeys) {
         StringBuilder sql = new StringBuilder();
-        sql.append("DELETE FROM ");
+        sql.append(DELETE_FROM);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(".");
+            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
         }
         sql.append(wrap(getRealTable(tableName)));
-        sql.append(" WHERE ");
+        sql.append(WHERE);
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
-                sql.append(" AND ");
+                sql.append(AND);
             }
-            sql.append(wrap(primaryKeys[i])).append(" = ?");
+            sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
         return sql.toString();
     }
@@ -153,36 +157,36 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String forDeleteBatchByIds(String schema, String tableName, String[] primaryKeys, Object[] ids) {
         StringBuilder sql = new StringBuilder();
-        sql.append("DELETE FROM ");
+        sql.append(DELETE_FROM);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(".");
+            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
         }
         sql.append(wrap(getRealTable(tableName)));
-        sql.append(" WHERE ");
+        sql.append(WHERE);
 
         //多主键的场景
         if (primaryKeys.length > 1) {
             for (int i = 0; i < ids.length / primaryKeys.length; i++) {
                 if (i > 0) {
-                    sql.append(" OR ");
+                    sql.append(OR);
                 }
-                sql.append("(");
+                sql.append(BRACKET_LEFT);
                 for (int j = 0; j < primaryKeys.length; j++) {
                     if (j > 0) {
-                        sql.append(" AND ");
+                        sql.append(AND);
                     }
-                    sql.append(wrap(primaryKeys[j])).append(" = ?");
+                    sql.append(wrap(primaryKeys[j])).append(EQUALS_PLACEHOLDER);
                 }
-                sql.append(")");
+                sql.append(BRACKET_RIGHT);
             }
         }
         // 单主键
         else {
             for (int i = 0; i < ids.length; i++) {
                 if (i > 0) {
-                    sql.append(" OR ");
+                    sql.append(OR);
                 }
-                sql.append(wrap(primaryKeys[0])).append(" = ?");
+                sql.append(wrap(primaryKeys[0])).append(EQUALS_PLACEHOLDER);
             }
         }
         return sql.toString();
@@ -200,28 +204,28 @@ public class CommonsDialectImpl implements IDialect {
         Set<String> modifyAttrs = row.obtainModifyAttrs();
         String[] primaryKeys = RowCPI.obtainsPrimaryKeyStrings(row);
 
-        sql.append("UPDATE ");
+        sql.append(UPDATE);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(".");
+            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
         }
-        sql.append(wrap(getRealTable(tableName))).append(" SET ");
+        sql.append(wrap(getRealTable(tableName))).append(SET);
         int index = 0;
         for (Map.Entry<String, Object> e : row.entrySet()) {
             String colName = e.getKey();
             if (modifyAttrs.contains(colName) && !ArrayUtil.contains(primaryKeys, colName)) {
                 if (index > 0) {
-                    sql.append(", ");
+                    sql.append(DELIMITER);
                 }
-                sql.append(wrap(colName)).append(" = ? ");
+                sql.append(wrap(colName)).append(EQUALS_PLACEHOLDER);
                 index++;
             }
         }
-        sql.append(" WHERE ");
+        sql.append(WHERE);
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
-                sql.append(" AND ");
+                sql.append(AND);
             }
-            sql.append(wrap(primaryKeys[i])).append(" = ?");
+            sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
 
         return sql.toString();
@@ -241,19 +245,19 @@ public class CommonsDialectImpl implements IDialect {
         //fix: support schema
         QueryTable queryTable = queryTables.get(0);
 //        String tableName = queryTables.get(0).getName();
-        sql.append("UPDATE ").append(queryTable.toSql(this)).append(" SET ");
+        sql.append(UPDATE).append(queryTable.toSql(this)).append(SET);
         int index = 0;
         for (String modifyAttr : modifyAttrs) {
             if (index > 0) {
-                sql.append(", ");
+                sql.append(DELIMITER);
             }
-            sql.append(wrap(modifyAttr)).append(" = ? ");
+            sql.append(wrap(modifyAttr)).append(EQUALS_PLACEHOLDER);
             index++;
         }
 
         String whereConditionSql = buildWhereConditionSql(queryWrapper);
         if (StringUtil.isNotBlank(whereConditionSql)) {
-            sql.append(" WHERE ").append(whereConditionSql);
+            sql.append(WHERE).append(whereConditionSql);
         }
 
         return sql.toString();
@@ -266,7 +270,7 @@ public class CommonsDialectImpl implements IDialect {
         }
         StringBuilder sql = new StringBuilder();
         for (Row row : rows) {
-            sql.append(forUpdateById(schema, tableName, row)).append("; ");
+            sql.append(forUpdateById(schema, tableName, row)).append(SEMICOLON).append(BLANK);
         }
         return sql.toString();
     }
@@ -274,16 +278,16 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectOneById(String schema, String tableName, String[] primaryKeys, Object[] primaryValues) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM ");
+        StringBuilder sql = new StringBuilder(SELECT_ALL_FROM);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(".");
+            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
         }
-        sql.append(wrap(getRealTable(tableName))).append(" WHERE ");
+        sql.append(wrap(getRealTable(tableName))).append(WHERE);
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
-                sql.append(" AND ");
+                sql.append(AND);
             }
-            sql.append(wrap(primaryKeys[i])).append(" = ?");
+            sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
         return sql.toString();
     }
@@ -304,7 +308,7 @@ public class CommonsDialectImpl implements IDialect {
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 
         StringBuilder sqlBuilder = buildSelectColumnSql(allTables, selectColumns, CPI.getHint(queryWrapper));
-        sqlBuilder.append(" FROM ").append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
+        sqlBuilder.append(FROM).append(StringUtil.join(DELIMITER, queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
         buildWhereSql(sqlBuilder, queryWrapper, allTables, true);
@@ -314,7 +318,7 @@ public class CommonsDialectImpl implements IDialect {
 
         List<UnionWrapper> unions = CPI.getUnions(queryWrapper);
         if (CollectionUtil.isNotEmpty(unions)) {
-            sqlBuilder.insert(0, "(").append(")");
+            sqlBuilder.insert(0, BRACKET_LEFT).append(BRACKET_RIGHT);
             for (UnionWrapper unionWrapper : unions) {
                 unionWrapper.buildSql(sqlBuilder, this);
             }
@@ -329,7 +333,7 @@ public class CommonsDialectImpl implements IDialect {
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
         if (CollectionUtil.isNotEmpty(endFragments)) {
             for (String endFragment : endFragments) {
-                sqlBuilder.append(" ").append(endFragment);
+                sqlBuilder.append(BLANK).append(endFragment);
             }
         }
 
@@ -337,17 +341,17 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     private StringBuilder buildSelectColumnSql(List<QueryTable> queryTables, List<QueryColumn> selectColumns, String hint) {
-        StringBuilder sqlBuilder = new StringBuilder("SELECT ");
+        StringBuilder sqlBuilder = new StringBuilder(SELECT);
         sqlBuilder.append(forHint(hint));
         if (selectColumns == null || selectColumns.isEmpty()) {
-            sqlBuilder.append("*");
+            sqlBuilder.append(ASTERISK);
         } else {
             int index = 0;
             for (QueryColumn selectColumn : selectColumns) {
                 String selectColumnSql = CPI.toSelectSql(selectColumn, queryTables, this);
                 sqlBuilder.append(selectColumnSql);
                 if (index != selectColumns.size() - 1) {
-                    sqlBuilder.append(", ");
+                    sqlBuilder.append(DELIMITER);
                 }
                 index++;
             }
@@ -363,8 +367,12 @@ public class CommonsDialectImpl implements IDialect {
         List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
 
         //ignore selectColumns
-        StringBuilder sqlBuilder = new StringBuilder("DELETE " + forHint(CPI.getHint(queryWrapper)) + "FROM ");
-        sqlBuilder.append(StringUtil.join(", ", queryTables, queryTable -> queryTable.toSql(this)));
+        StringBuilder sqlBuilder = new StringBuilder(DELETE);
+        String hint = CPI.getHint(queryWrapper);
+        if (StringUtil.isNotBlank(hint)) {
+            sqlBuilder.append(BLANK).append(hint).deleteCharAt(sqlBuilder.length() - 1);
+        }
+        sqlBuilder.append(FROM).append(StringUtil.join(DELIMITER, queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
         buildWhereSql(sqlBuilder, queryWrapper, allTables, false);
@@ -378,7 +386,7 @@ public class CommonsDialectImpl implements IDialect {
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
         if (CollectionUtil.isNotEmpty(endFragments)) {
             for (String endFragment : endFragments) {
-                sqlBuilder.append(" ").append(endFragment);
+                sqlBuilder.append(BLANK).append(endFragment);
             }
         }
 
@@ -388,60 +396,63 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String buildWhereConditionSql(QueryWrapper queryWrapper) {
         QueryCondition whereQueryCondition = CPI.getWhereQueryCondition(queryWrapper);
-        return whereQueryCondition != null ? whereQueryCondition.toSql(CPI.getQueryTables(queryWrapper), this) : "";
+        return whereQueryCondition != null ? whereQueryCondition.toSql(CPI.getQueryTables(queryWrapper), this) : EMPTY;
     }
 
     @Override
     public String forInsertEntity(TableInfo tableInfo, Object entity, boolean ignoreNulls) {
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO ").append(tableInfo.getWrapSchemaAndTableName(this));
+        sql.append(INSERT_INTO).append(tableInfo.getWrapSchemaAndTableName(this));
 
         String[] insertColumns = tableInfo.obtainInsertColumns(entity, ignoreNulls);
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
 
-        StringJoiner sqlFields = new StringJoiner(", ");
-        StringJoiner sqlValues = new StringJoiner(", ");
+        StringJoiner sqlFields = new StringJoiner(DELIMITER);
+        StringJoiner sqlValues = new StringJoiner(DELIMITER);
 
         for (String insertColumn : insertColumns) {
             sqlFields.add(wrap(insertColumn));
             if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                 sqlValues.add(onInsertColumns.get(insertColumn));
             } else {
-                sqlValues.add("?");
+                sqlValues.add(PLACEHOLDER);
             }
         }
 
-        return sql.append("(").append(sqlFields).append(")")
-                .append(" VALUES ")
-                .append("(").append(sqlValues).append(")").toString();
+        return sql.append(BRACKET_LEFT).append(sqlFields).append(BRACKET_RIGHT)
+                .append(VALUES)
+                .append(BRACKET_LEFT).append(sqlValues).append(BRACKET_RIGHT)
+                .toString();
     }
 
     @Override
     public String forInsertEntityBatch(TableInfo tableInfo, List<?> entities) {
         StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO ").append(tableInfo.getWrapSchemaAndTableName(this));
+        sql.append(INSERT_INTO).append(tableInfo.getWrapSchemaAndTableName(this));
         String[] insertColumns = tableInfo.obtainInsertColumns(null, false);
         String[] warpedInsertColumns = new String[insertColumns.length];
         for (int i = 0; i < insertColumns.length; i++) {
             warpedInsertColumns[i] = wrap(insertColumns[i]);
         }
-        sql.append("(").append(StringUtil.join(", ", warpedInsertColumns)).append(")");
-        sql.append(" VALUES ");
+        sql.append(BRACKET_LEFT)
+                .append(StringUtil.join(DELIMITER, warpedInsertColumns))
+                .append(BRACKET_RIGHT);
+        sql.append(VALUES);
 
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
         for (int i = 0; i < entities.size(); i++) {
-            StringJoiner stringJoiner = new StringJoiner(", ", "(", ")");
+            StringJoiner stringJoiner = new StringJoiner(DELIMITER, BRACKET_LEFT, BRACKET_RIGHT);
             for (String insertColumn : insertColumns) {
                 if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                     //直接读取 onInsert 配置的值，而不用 "?" 代替
                     stringJoiner.add(onInsertColumns.get(insertColumn));
                 } else {
-                    stringJoiner.add("?");
+                    stringJoiner.add(PLACEHOLDER);
                 }
             }
             sql.append(stringJoiner);
             if (i != entities.size() - 1) {
-                sql.append(", ");
+                sql.append(DELIMITER);
             }
         }
 
@@ -457,7 +468,7 @@ public class CommonsDialectImpl implements IDialect {
             String deleteByIdSql = forDeleteById(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryKeys());
 
             if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
-                deleteByIdSql += " AND " + wrap(tableInfo.getTenantIdColumn()) + " IN " + buildQuestion(tenantIdArgs.length, true);
+                deleteByIdSql += AND + wrap(tableInfo.getTenantIdColumn()) + IN + buildQuestion(tenantIdArgs.length);
             }
             return deleteByIdSql;
         }
@@ -466,21 +477,21 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder sql = new StringBuilder();
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
-        sql.append("UPDATE ").append(tableInfo.getWrapSchemaAndTableName(this));
-        sql.append(" SET ").append(wrap(logicDeleteColumn)).append(" = ").append(getLogicDeletedValue());
-        sql.append(" WHERE ");
+        sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this));
+        sql.append(SET).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicDeletedValue());
+        sql.append(WHERE);
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
-                sql.append(" AND ");
+                sql.append(AND);
             }
-            sql.append(wrap(primaryKeys[i])).append(" = ?");
+            sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
 
-        sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(getLogicNormalValue());
+        sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
 
         //租户ID
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
-            sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" IN ").append(buildQuestion(tenantIdArgs.length, true));
+            sql.append(AND).append(wrap(tableInfo.getTenantIdColumn())).append(IN).append(buildQuestion(tenantIdArgs.length));
         }
 
         return sql.toString();
@@ -498,18 +509,18 @@ public class CommonsDialectImpl implements IDialect {
 
             //多租户
             if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
-                deleteSQL = deleteSQL.replace(" WHERE ", " WHERE (") + ")";
-                deleteSQL += " AND " + wrap(tableInfo.getTenantIdColumn()) + " IN " + buildQuestion(tenantIdArgs.length, true);
+                deleteSQL = deleteSQL.replace(WHERE, WHERE + BRACKET_LEFT) + BRACKET_RIGHT;
+                deleteSQL += AND + wrap(tableInfo.getTenantIdColumn()) + IN + buildQuestion(tenantIdArgs.length);
             }
             return deleteSQL;
         }
 
         StringBuilder sql = new StringBuilder();
-        sql.append("UPDATE ");
+        sql.append(UPDATE);
         sql.append(tableInfo.getWrapSchemaAndTableName(this));
-        sql.append(" SET ").append(wrap(logicDeleteColumn)).append(" = ").append(getLogicDeletedValue());
-        sql.append(" WHERE ");
-        sql.append("(");
+        sql.append(SET).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicDeletedValue());
+        sql.append(WHERE);
+        sql.append(BRACKET_LEFT);
 
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
@@ -517,32 +528,32 @@ public class CommonsDialectImpl implements IDialect {
         if (primaryKeys.length > 1) {
             for (int i = 0; i < primaryValues.length / primaryKeys.length; i++) {
                 if (i > 0) {
-                    sql.append(" OR ");
+                    sql.append(OR);
                 }
-                sql.append("(");
+                sql.append(BRACKET_LEFT);
                 for (int j = 0; j < primaryKeys.length; j++) {
                     if (j > 0) {
-                        sql.append(" AND ");
+                        sql.append(AND);
                     }
-                    sql.append(wrap(primaryKeys[j])).append(" = ?");
+                    sql.append(wrap(primaryKeys[j])).append(EQUALS_PLACEHOLDER);
                 }
-                sql.append(")");
+                sql.append(BRACKET_RIGHT);
             }
         }
         // 单主键
         else {
             for (int i = 0; i < primaryValues.length; i++) {
                 if (i > 0) {
-                    sql.append(" OR ");
+                    sql.append(OR);
                 }
-                sql.append(wrap(primaryKeys[0])).append(" = ?");
+                sql.append(wrap(primaryKeys[0])).append(EQUALS_PLACEHOLDER);
             }
         }
 
-        sql.append(") AND ").append(wrap(logicDeleteColumn)).append(" = ").append(getLogicNormalValue());
+        sql.append(BRACKET_RIGHT).append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
 
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
-            sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" IN ").append(buildQuestion(tenantIdArgs.length, true));
+            sql.append(AND).append(wrap(tableInfo.getTenantIdColumn())).append(IN).append(buildQuestion(tenantIdArgs.length));
         }
 
         return sql.toString();
@@ -565,9 +576,9 @@ public class CommonsDialectImpl implements IDialect {
         List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
 
         //ignore selectColumns
-        StringBuilder sqlBuilder = new StringBuilder("UPDATE ").append(forHint(CPI.getHint(queryWrapper)));
+        StringBuilder sqlBuilder = new StringBuilder(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
         sqlBuilder.append(tableInfo.getWrapSchemaAndTableName(this));
-        sqlBuilder.append(" SET ").append(wrap(logicDeleteColumn)).append(" = ").append(getLogicDeletedValue());
+        sqlBuilder.append(SET).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicDeletedValue());
 
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
@@ -590,39 +601,39 @@ public class CommonsDialectImpl implements IDialect {
         Set<String> modifyAttrs = tableInfo.obtainUpdateColumns(entity, ignoreNulls, false);
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
-        sql.append("UPDATE ").append(tableInfo.getWrapSchemaAndTableName(this)).append(" SET ");
+        sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this)).append(SET);
 
-        StringJoiner stringJoiner = new StringJoiner(", ");
+        StringJoiner stringJoiner = new StringJoiner(DELIMITER);
 
         for (String modifyAttr : modifyAttrs) {
-            stringJoiner.add(wrap(modifyAttr) + " = ?");
+            stringJoiner.add(wrap(modifyAttr) + EQUALS_PLACEHOLDER);
         }
 
         Map<String, String> onUpdateColumns = tableInfo.getOnUpdateColumns();
         if (onUpdateColumns != null && !onUpdateColumns.isEmpty()) {
-            onUpdateColumns.forEach((column, value) -> stringJoiner.add(wrap(column) + " = " + value));
+            onUpdateColumns.forEach((column, value) -> stringJoiner.add(wrap(column) + EQUALS + value));
         }
 
         //乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
         if (StringUtil.isNotBlank(versionColumn)) {
-            stringJoiner.add(wrap(versionColumn) + " = " + wrap(versionColumn) + " + 1 ");
+            stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 
         sql.append(stringJoiner);
 
-        sql.append(" WHERE ");
+        sql.append(WHERE);
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
-                sql.append(" AND ");
+                sql.append(AND);
             }
-            sql.append(wrap(primaryKeys[i])).append(" = ?");
+            sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
 
         //逻辑删除条件，已删除的数据不能被修改
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(getLogicNormalValue());
+            sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
         }
 
 
@@ -630,9 +641,9 @@ public class CommonsDialectImpl implements IDialect {
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
             if (tenantIdArgs.length == 1) {
-                sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" = ?");
+                sql.append(AND).append(wrap(tableInfo.getTenantIdColumn())).append(EQUALS_PLACEHOLDER);
             } else {
-                sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" IN ").append(buildQuestion(tenantIdArgs.length, true));
+                sql.append(AND).append(wrap(tableInfo.getTenantIdColumn())).append(IN).append(buildQuestion(tenantIdArgs.length));
             }
         }
 
@@ -642,7 +653,7 @@ public class CommonsDialectImpl implements IDialect {
             if (versionValue == null) {
                 throw FlexExceptions.wrap("The version value of entity[%s] must not be null.", entity);
             }
-            sql.append(" AND ").append(wrap(versionColumn)).append(" = ").append(versionValue);
+            sql.append(AND).append(wrap(versionColumn)).append(EQUALS).append(versionValue);
         }
 
 
@@ -655,24 +666,24 @@ public class CommonsDialectImpl implements IDialect {
 
         Set<String> modifyAttrs = tableInfo.obtainUpdateColumns(entity, ignoreNulls, true);
 
-        sql.append("UPDATE ").append(forHint(CPI.getHint(queryWrapper)))
-                .append(tableInfo.getWrapSchemaAndTableName(this)).append(" SET ");
+        sql.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)))
+                .append(tableInfo.getWrapSchemaAndTableName(this)).append(SET);
 
-        StringJoiner stringJoiner = new StringJoiner(", ");
+        StringJoiner stringJoiner = new StringJoiner(DELIMITER);
 
         for (String modifyAttr : modifyAttrs) {
-            stringJoiner.add(wrap(modifyAttr) + " = ?");
+            stringJoiner.add(wrap(modifyAttr) + EQUALS_PLACEHOLDER);
         }
 
         Map<String, String> onUpdateColumns = tableInfo.getOnUpdateColumns();
         if (onUpdateColumns != null && !onUpdateColumns.isEmpty()) {
-            onUpdateColumns.forEach((column, value) -> stringJoiner.add(wrap(column) + " = " + value));
+            onUpdateColumns.forEach((column, value) -> stringJoiner.add(wrap(column) + EQUALS + value));
         }
 
         //乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
         if (StringUtil.isNotBlank(versionColumn)) {
-            stringJoiner.add(wrap(versionColumn) + " = " + wrap(versionColumn) + " + 1 ");
+            stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 
         sql.append(stringJoiner);
@@ -685,12 +696,12 @@ public class CommonsDialectImpl implements IDialect {
             throw new IllegalArgumentException("Not allowed UPDATE a table without where condition.");
         }
 
-        sql.append(" WHERE ").append(whereConditionSql);
+        sql.append(WHERE).append(whereConditionSql);
 
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
         if (CollectionUtil.isNotEmpty(endFragments)) {
             for (String endFragment : endFragments) {
-                sql.append(" ").append(endFragment);
+                sql.append(BLANK).append(endFragment);
             }
         }
 
@@ -701,12 +712,12 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String forUpdateNumberAddByQuery(String schema, String tableName, String fieldName, Number value, QueryWrapper queryWrapper) {
         StringBuilder sql = new StringBuilder();
-        sql.append("UPDATE ").append(forHint(CPI.getHint(queryWrapper)));
+        sql.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(".");
+            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
         }
-        sql.append(wrap(getRealTable(tableName))).append(" SET ");
-        sql.append(wrap(fieldName)).append("=").append(wrap(fieldName)).append(geZero(value) ? " + " : " - ").append(abs(value));
+        sql.append(wrap(getRealTable(tableName))).append(SET);
+        sql.append(wrap(fieldName)).append(EQUALS).append(wrap(fieldName)).append(geZero(value) ? PLUS_SIGN : MINUS_SIGN).append(abs(value));
 
         String whereConditionSql = buildWhereConditionSql(queryWrapper);
 
@@ -715,12 +726,12 @@ public class CommonsDialectImpl implements IDialect {
             throw new IllegalArgumentException("Not allowed UPDATE a table without where condition.");
         }
 
-        sql.append(" WHERE ").append(whereConditionSql);
+        sql.append(WHERE).append(whereConditionSql);
 
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
         if (CollectionUtil.isNotEmpty(endFragments)) {
             for (String endFragment : endFragments) {
-                sql.append(" ").append(endFragment);
+                sql.append(BLANK).append(endFragment);
             }
         }
         return sql.toString();
@@ -760,26 +771,26 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String forSelectOneEntityById(TableInfo tableInfo) {
         StringBuilder sql = buildSelectColumnSql(null, null, null);
-        sql.append(" FROM ").append(tableInfo.getWrapSchemaAndTableName(this));
-        sql.append(" WHERE ");
+        sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this));
+        sql.append(WHERE);
         String[] pKeys = tableInfo.getPrimaryKeys();
         for (int i = 0; i < pKeys.length; i++) {
             if (i > 0) {
-                sql.append(" AND ");
+                sql.append(AND);
             }
-            sql.append(wrap(pKeys[i])).append(" = ?");
+            sql.append(wrap(pKeys[i])).append(EQUALS_PLACEHOLDER);
         }
 
         //逻辑删除的情况下，需要添加逻辑删除的条件
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(getLogicNormalValue());
+            sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
         }
 
         //多租户
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
-            sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" IN ").append(buildQuestion(tenantIdArgs.length, true));
+            sql.append(AND).append(wrap(tableInfo.getTenantIdColumn())).append(IN).append(buildQuestion(tenantIdArgs.length));
         }
 
         return sql.toString();
@@ -789,53 +800,53 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String forSelectEntityListByIds(TableInfo tableInfo, Object[] primaryValues) {
         StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn(), null);
-        sql.append(" FROM ").append(tableInfo.getWrapSchemaAndTableName(this));
-        sql.append(" WHERE ");
+        sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this));
+        sql.append(WHERE);
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         if (StringUtil.isNotBlank(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
-            sql.append("(");
+            sql.append(BRACKET_LEFT);
         }
 
         //多主键的场景
         if (primaryKeys.length > 1) {
             for (int i = 0; i < primaryValues.length / primaryKeys.length; i++) {
                 if (i > 0) {
-                    sql.append(" OR ");
+                    sql.append(OR);
                 }
-                sql.append("(");
+                sql.append(BRACKET_LEFT);
                 for (int j = 0; j < primaryKeys.length; j++) {
                     if (j > 0) {
-                        sql.append(" AND ");
+                        sql.append(AND);
                     }
-                    sql.append(wrap(primaryKeys[j])).append(" = ?");
+                    sql.append(wrap(primaryKeys[j])).append(EQUALS_PLACEHOLDER);
                 }
-                sql.append(")");
+                sql.append(BRACKET_RIGHT);
             }
         }
         // 单主键
         else {
             for (int i = 0; i < primaryValues.length; i++) {
                 if (i > 0) {
-                    sql.append(" OR ");
+                    sql.append(OR);
                 }
-                sql.append(wrap(primaryKeys[0])).append(" = ?");
+                sql.append(wrap(primaryKeys[0])).append(EQUALS_PLACEHOLDER);
             }
         }
 
         if (StringUtil.isNotBlank(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
-            sql.append(")");
+            sql.append(BRACKET_RIGHT);
         }
 
 
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(" AND ").append(wrap(logicDeleteColumn)).append(" = ").append(getLogicNormalValue());
+            sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
         }
 
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
-            sql.append(" AND ").append(wrap(tableInfo.getTenantIdColumn())).append(" IN").append(buildQuestion(tenantIdArgs.length, true));
+            sql.append(AND).append(wrap(tableInfo.getTenantIdColumn())).append(IN).append(buildQuestion(tenantIdArgs.length));
         }
 
         return sql.toString();
@@ -860,7 +871,7 @@ public class CommonsDialectImpl implements IDialect {
         if (whereQueryCondition != null) {
             String whereSql = whereQueryCondition.toSql(queryTables, this);
             if (StringUtil.isNotBlank(whereSql)) {
-                sqlBuilder.append(" WHERE ").append(whereSql);
+                sqlBuilder.append(WHERE).append(whereSql);
             } else if (!allowNoCondition) {
                 throw new IllegalArgumentException("Not allowed DELETE a table without where condition.");
             }
@@ -871,13 +882,13 @@ public class CommonsDialectImpl implements IDialect {
     protected void buildGroupBySql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, List<QueryTable> queryTables) {
         List<QueryColumn> groupByColumns = CPI.getGroupByColumns(queryWrapper);
         if (groupByColumns != null && !groupByColumns.isEmpty()) {
-            sqlBuilder.append(" GROUP BY ");
+            sqlBuilder.append(GROUP_BY);
             int index = 0;
             for (QueryColumn groupByColumn : groupByColumns) {
                 String groupBy = CPI.toConditionSql(groupByColumn, queryTables, this);
                 sqlBuilder.append(groupBy);
                 if (index != groupByColumns.size() - 1) {
-                    sqlBuilder.append(", ");
+                    sqlBuilder.append(DELIMITER);
                 }
                 index++;
             }
@@ -890,7 +901,7 @@ public class CommonsDialectImpl implements IDialect {
         if (havingQueryCondition != null) {
             String havingSql = havingQueryCondition.toSql(queryTables, this);
             if (StringUtil.isNotBlank(havingSql)) {
-                sqlBuilder.append(" HAVING ").append(havingSql);
+                sqlBuilder.append(HAVING).append(havingSql);
             }
         }
     }
@@ -899,12 +910,12 @@ public class CommonsDialectImpl implements IDialect {
     protected void buildOrderBySql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, List<QueryTable> queryTables) {
         List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
         if (orderBys != null && !orderBys.isEmpty()) {
-            sqlBuilder.append(" ORDER BY ");
+            sqlBuilder.append(ORDER_BY);
             int index = 0;
             for (QueryOrderBy orderBy : orderBys) {
                 sqlBuilder.append(orderBy.toSql(queryTables, this));
                 if (index != orderBys.size() - 1) {
-                    sqlBuilder.append(", ");
+                    sqlBuilder.append(DELIMITER);
                 }
                 index++;
             }
@@ -920,15 +931,16 @@ public class CommonsDialectImpl implements IDialect {
     }
 
 
-    protected String buildQuestion(int count, boolean withBrackets) {
-        StringBuilder sb = new StringBuilder();
+    protected String buildQuestion(int count) {
+        StringBuilder sb = new StringBuilder(BRACKET_LEFT);
         for (int i = 0; i < count; i++) {
-            sb.append("?");
+            sb.append(PLACEHOLDER);
             if (i != count - 1) {
-                sb.append(", ");
+                sb.append(DELIMITER);
             }
         }
-        return withBrackets ? "(" + sb + ")" : sb.toString();
+        sb.append(BRACKET_RIGHT);
+        return sb.toString();
     }
 
 
@@ -938,7 +950,7 @@ public class CommonsDialectImpl implements IDialect {
                 || normalValueOfLogicDelete instanceof Boolean) {
             return normalValueOfLogicDelete;
         }
-        return "'" + normalValueOfLogicDelete + "'";
+        return SINGLE_QUOTE + normalValueOfLogicDelete + SINGLE_QUOTE;
     }
 
 
@@ -948,7 +960,7 @@ public class CommonsDialectImpl implements IDialect {
                 || deletedValueOfLogicDelete instanceof Boolean) {
             return deletedValueOfLogicDelete;
         }
-        return "'" + deletedValueOfLogicDelete + "'";
+        return SINGLE_QUOTE + deletedValueOfLogicDelete + SINGLE_QUOTE;
     }
 
 }

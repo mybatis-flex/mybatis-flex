@@ -15,38 +15,44 @@
  */
 package com.mybatisflex.test.model;
 
-import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 
 import java.util.Date;
 
-@Table(value = "tb_account",onSet = AccountOnSetListener.class)
-public class Account {
+@Table(value = "tb_account", onSet = AccountOnSetListener.class)
+public class Account extends BaseEntity<String, Long, String> {
 
-    @Id(keyType = KeyType.Auto)
-    private Long id;
-    private String userName;
+    /*@Id(keyType = KeyType.Auto)
+    private Long id;*/
+    //private String userName;
     private Integer age;
     private Date birthday;
 
+    private Gender gender;
 
+    public Gender getGender() {
+        return gender;
+    }
 
-    public Long getId() {
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    /*public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
+    }*/
 
-    public String getUserName() {
+    /*public String getUserName() {
         return userName;
     }
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
+    }*/
 
     public Integer getAge() {
         return age;
@@ -71,6 +77,7 @@ public class Account {
                 ", userName='" + userName + '\'' +
                 ", age=" + age +
                 ", birthday=" + birthday +
+                ", list=" + roles +
                 '}';
     }
 }

@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class RawFragment extends QueryCondition {
             if (prevEffectiveCondition != null) {
                 sql.append(prevEffectiveCondition.connector);
             }
-            sql.append(" ").append(content).append(" ");
+            sql.append(SqlConsts.BLANK).append(content).append(SqlConsts.BLANK);
         }
 
         if (this.next != null) {

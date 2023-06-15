@@ -5,7 +5,7 @@ spring:
 #      enabled: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/mp_test
+    url: jdbc:mysql://localhost:3306/flex_test
     username: root
     password: 12345678
 #  sql:

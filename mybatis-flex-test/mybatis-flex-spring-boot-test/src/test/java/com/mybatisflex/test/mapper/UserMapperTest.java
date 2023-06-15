@@ -18,8 +18,10 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.test.model.User;
 import com.mybatisflex.test.model.UserInfo;
 import com.mybatisflex.test.model.UserVO;
+import com.mybatisflex.test.model.UserVO1;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -101,6 +103,14 @@ class UserMapperTest {
     }
 
     @Test
+    void testSelectListNoJoin() {
+        List<User> users = userMapper.selectListByQueryAs(QueryWrapper.create(), User.class);
+        users.forEach(System.err::println);
+        List<UserVO> userVOS = userMapper.selectListByQueryAs(QueryWrapper.create(), UserVO.class);
+        userVOS.forEach(System.err::println);
+    }
+
+    @Test
     void testComplexSelectList() {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(USER.ALL_COLUMNS, ROLE.ALL_COLUMNS, ORDER.ALL_COLUMNS, GOOD.ALL_COLUMNS)
@@ -114,6 +124,18 @@ class UserMapperTest {
         System.err.println(queryWrapper.toSQL());
         List<UserInfo> userInfos = userMapper.selectListByQueryAs(queryWrapper, UserInfo.class);
         userInfos.forEach(System.err::println);
+    }
+
+    @Test
+    void testCircularReference() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(USER.USER_ID, USER.USER_NAME, ROLE.ALL_COLUMNS)
+                .from(USER.as("u"))
+                .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+                .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+                .where(USER.USER_ID.eq(1));
+        List<UserVO1> userVO1s = userMapper.selectListByQueryAs(queryWrapper, UserVO1.class);
+        System.err.println(userVO1s);
     }
 
     @Test

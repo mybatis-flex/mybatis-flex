@@ -30,7 +30,8 @@ import java.util.function.Supplier;
  */
 public class TransactionalManager {
 
-    private TransactionalManager() {}
+    private TransactionalManager() {
+    }
 
     private static final Log log = LogFactory.getLog(TransactionalManager.class);
 
@@ -55,7 +56,7 @@ public class TransactionalManager {
     }
 
 
-    public static Boolean exec(Supplier<Boolean> supplier, Propagation propagation) {
+    public static <T> T exec(Supplier<T> supplier, Propagation propagation, boolean withResult) {
         //上一级事务的id，支持事务嵌套
         String currentXID = TransactionContext.getXID();
         try {
@@ -65,7 +66,7 @@ public class TransactionalManager {
                     if (currentXID != null) {
                         return supplier.get();
                     } else {
-                        return execNewTransactional(supplier);
+                        return execNewTransactional(supplier, withResult);
                     }
 
 
@@ -85,7 +86,7 @@ public class TransactionalManager {
 
                     //始终以新事务的方式运行，若存在当前事务，则暂停（挂起）当前事务。
                 case REQUIRES_NEW:
-                    return execNewTransactional(supplier);
+                    return execNewTransactional(supplier, withResult);
 
 
                 //以非事务的方式运行，若存在当前事务，则暂停（挂起）当前事务。
@@ -118,24 +119,32 @@ public class TransactionalManager {
         }
     }
 
-    private static Boolean execNewTransactional(Supplier<Boolean> supplier) {
+    private static <T> T execNewTransactional(Supplier<T> supplier, boolean withResult) {
         String xid = startTransactional();
-        Boolean success = false;
-        boolean rollbacked = false;
+        T result = null;
+        boolean isRollback = false;
         try {
-            success = supplier.get();
+            result = supplier.get();
         } catch (Throwable e) {
-            rollbacked = true;
+            isRollback = true;
             rollback(xid);
             throw new TransactionException(e.getMessage(), e);
         } finally {
-            if (success != null && success) {
-                commit(xid);
-            } else if (!rollbacked) {
-                rollback(xid);
+            if (!isRollback) {
+                if (!withResult) {
+                    if (result instanceof Boolean && (Boolean) result) {
+                        commit(xid);
+                    }
+                    //null or false
+                    else {
+                        rollback(xid);
+                    }
+                } else {
+                    commit(xid);
+                }
             }
         }
-        return success;
+        return result;
     }
 
 

@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ObjectUtil;
@@ -26,14 +27,14 @@ public class UnionWrapper implements CloneSupport<UnionWrapper> {
 
     public static UnionWrapper union(QueryWrapper queryWrapper) {
         UnionWrapper unionWrapper = new UnionWrapper();
-        unionWrapper.key = " UNION ";
+        unionWrapper.key = SqlConsts.UNION;
         unionWrapper.queryWrapper = queryWrapper;
         return unionWrapper;
     }
 
     public static UnionWrapper unionAll(QueryWrapper queryWrapper) {
         UnionWrapper unionWrapper = new UnionWrapper();
-        unionWrapper.key = " UNION ALL ";
+        unionWrapper.key = SqlConsts.UNION_ALL;
         unionWrapper.queryWrapper = queryWrapper;
         return unionWrapper;
     }
@@ -59,7 +60,10 @@ public class UnionWrapper implements CloneSupport<UnionWrapper> {
     }
 
     public void buildSql(StringBuilder sqlBuilder, IDialect dialect) {
-        sqlBuilder.append(key).append("(").append(dialect.buildSelectSql(queryWrapper)).append(")");
+        sqlBuilder.append(key)
+                .append(SqlConsts.BRACKET_LEFT)
+                .append(dialect.buildSelectSql(queryWrapper))
+                .append(SqlConsts.BRACKET_RIGHT);
     }
 
     @Override

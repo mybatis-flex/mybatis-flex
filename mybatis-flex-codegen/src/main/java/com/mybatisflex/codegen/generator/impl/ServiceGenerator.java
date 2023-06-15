@@ -71,6 +71,8 @@ public class ServiceGenerator implements IGenerator {
         params.put("javadocConfig", globalConfig.getJavadocConfig());
 
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, serviceJavaFile);
+
+        System.out.println("Service ---> " + serviceJavaFile);
     }
 
     @Override

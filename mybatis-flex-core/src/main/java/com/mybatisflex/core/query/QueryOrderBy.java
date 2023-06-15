@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ObjectUtil;
@@ -29,7 +30,7 @@ public class QueryOrderBy implements CloneSupport<QueryOrderBy> {
 
     private QueryColumn queryColumn;
 
-    private String orderType = "ASC"; //asc desc
+    private String orderType = SqlConsts.ASC; //asc desc
 
     private boolean nullsFirst = false;
     private boolean nullsLast = false;
@@ -63,11 +64,11 @@ public class QueryOrderBy implements CloneSupport<QueryOrderBy> {
 
 
     public String toSql(List<QueryTable> queryTables, IDialect dialect) {
-        String sql = queryColumn.toConditionSql(queryTables, dialect) + " " + orderType;
+        String sql = queryColumn.toConditionSql(queryTables, dialect) + orderType;
         if (nullsFirst) {
-            sql = sql + " NULLS FIRST";
+            sql = sql + SqlConsts.NULLS_FIRST;
         } else if (nullsLast) {
-            sql = sql + " NULLS LAST";
+            sql = sql + SqlConsts.NULLS_LAST;
         }
         return sql;
     }

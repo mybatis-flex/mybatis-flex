@@ -21,6 +21,7 @@ import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
@@ -96,13 +97,6 @@ public class TableInfo {
     private List<InsertListener> onInsertListeners;
     private List<UpdateListener> onUpdateListeners;
     private List<SetListener> onSetListeners;
-
-    /**
-     * @deprecated 该功能有更好的方式实现，此属性可能会被移除。
-     */
-    @Deprecated
-    private Map<String, Class<?>> joinTypes;
-
 
     /**
      * 对应 MapperXML 配置文件中 {@code <resultMap>} 标签下的 {@code <association>} 标签。
@@ -295,21 +289,6 @@ public class TableInfo {
 
     public String getColumnByProperty(String property) {
         return propertyColumnMapping.get(property);
-    }
-
-    public Map<String, Class<?>> getJoinTypes() {
-        return joinTypes;
-    }
-
-    public void setJoinTypes(Map<String, Class<?>> joinTypes) {
-        this.joinTypes = joinTypes;
-    }
-
-    public void addJoinType(String fieldName, Class<?> clazz) {
-        if (joinTypes == null) {
-            joinTypes = new HashMap<>();
-        }
-        joinTypes.put(fieldName, clazz);
     }
 
     public Map<String, Class<?>> getAssociationType() {
@@ -632,12 +611,12 @@ public class TableInfo {
             if (versionValue == null) {
                 throw FlexExceptions.wrap("The version value of entity[%s] must not be null.", entity);
             }
-            queryWrapper.and(QueryCondition.create(schema, tableName, versionColumn, QueryCondition.LOGIC_EQUALS, versionValue));
+            queryWrapper.and(QueryCondition.create(schema, tableName, versionColumn, SqlConsts.EQUALS, versionValue));
         }
 
         //逻辑删除
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, QueryCondition.LOGIC_EQUALS
+            queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, SqlConsts.EQUALS
                     , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
         }
 
@@ -645,9 +624,9 @@ public class TableInfo {
         Object[] tenantIdArgs = buildTenantIdArgs();
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
             if (tenantIdArgs.length == 1) {
-                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, QueryCondition.LOGIC_EQUALS, tenantIdArgs[0]));
+                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.EQUALS, tenantIdArgs[0]));
             } else {
-                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, QueryCondition.LOGIC_IN, tenantIdArgs));
+                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.IN, tenantIdArgs));
             }
         }
 
@@ -706,80 +685,25 @@ public class TableInfo {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * @deprecated 该功能有更好的方式实现，此方法可能会被移除。
-     */
-    @Deprecated
+
     public ResultMap buildResultMap(Configuration configuration) {
-        String resultMapId = entityClass.getName();
-        List<ResultMapping> resultMappings = new ArrayList<>();
-
-        for (ColumnInfo columnInfo : columnInfoList) {
-            ResultMapping mapping = new ResultMapping.Builder(configuration, columnInfo.property,
-                    columnInfo.column, columnInfo.propertyType)
-                    .jdbcType(columnInfo.getJdbcType())
-                    .typeHandler(columnInfo.buildTypeHandler())
-                    .build();
-            resultMappings.add(mapping);
-
-            //add property mapper for sql: select xxx as property ...
-            if (!Objects.equals(columnInfo.getColumn(), columnInfo.getProperty())) {
-                ResultMapping propertyMapping = new ResultMapping.Builder(configuration, columnInfo.property,
-                        columnInfo.property, columnInfo.propertyType)
-                        .jdbcType(columnInfo.getJdbcType())
-                        .typeHandler(columnInfo.buildTypeHandler())
-                        .build();
-                resultMappings.add(propertyMapping);
-            }
-        }
-
-        for (IdInfo idInfo : primaryKeyList) {
-            ResultMapping mapping = new ResultMapping.Builder(configuration, idInfo.property,
-                    idInfo.column, idInfo.propertyType)
-                    .flags(CollectionUtil.newArrayList(ResultFlag.ID))
-                    .jdbcType(idInfo.getJdbcType())
-                    .typeHandler(idInfo.buildTypeHandler())
-                    .build();
-            resultMappings.add(mapping);
-        }
-
-        if (joinTypes != null && !joinTypes.isEmpty()) {
-            joinTypes.forEach((fieldName, fieldType) -> {
-
-                TableInfo joinTableInfo = TableInfoFactory.ofEntityClass(fieldType);
-                List<ColumnInfo> joinTableInfoColumnInfoList = joinTableInfo.getColumnInfoList();
-
-                for (ColumnInfo joinColumnInfo : joinTableInfoColumnInfoList) {
-                    if (!existColumn(resultMappings, joinColumnInfo.column)) {
-                        ResultMapping mapping = new ResultMapping.Builder(configuration, fieldName + "." + joinColumnInfo.property,
-                                joinColumnInfo.column, joinColumnInfo.propertyType)
-                                .jdbcType(joinColumnInfo.jdbcType)
-                                .typeHandler(joinColumnInfo.buildTypeHandler())
-                                .build();
-                        resultMappings.add(mapping);
-                    }
-
-                    //add property mapper for sql: select xxx as property ...
-                    if (!existColumn(resultMappings, joinColumnInfo.property)) {
-                        if (!Objects.equals(joinColumnInfo.column, joinColumnInfo.property)) {
-                            ResultMapping propertyMapping = new ResultMapping.Builder(configuration, fieldName + "." + joinColumnInfo.property,
-                                    joinColumnInfo.property, joinColumnInfo.propertyType)
-                                    .jdbcType(joinColumnInfo.jdbcType)
-                                    .typeHandler(joinColumnInfo.buildTypeHandler())
-                                    .build();
-                            resultMappings.add(propertyMapping);
-                        }
-                    }
-                }
-            });
-        }
-
-        return new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build();
+        return doBuildResultMap(configuration, new HashSet<>());
     }
 
-    public List<ResultMap> buildResultMapList(Configuration configuration) {
+    private ResultMap doBuildResultMap(Configuration configuration, Set<String> context) {
+
+        //是否有循环引用
+        boolean withCircularReference = context.contains(entityClass.getName());
+        if (withCircularReference) {
+            return null;
+        }
+
         String resultMapId = entityClass.getName();
-        List<ResultMap> resultMaps = new ArrayList<>();
+        context.add(resultMapId);
+
+        if (configuration.hasResultMap(resultMapId)) {
+            return configuration.getResultMap(resultMapId);
+        }
         List<ResultMapping> resultMappings = new ArrayList<>();
 
         // <resultMap> 标签下的 <result> 标签映射
@@ -819,19 +743,13 @@ public class TableInfo {
                 // 获取嵌套类型的信息，也就是 javaType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(fieldType);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <association> 标签下的内容
-                // 这里是递归调用，直到嵌套类型里面没有其他嵌套类型或者集合类型为止
-                List<ResultMap> resultMapList = tableInfo.buildResultMapList(configuration);
-                // 寻找是否有嵌套 ResultMap 引用
-                Optional<ResultMap> nestedResultMap = resultMapList.stream()
-                        .filter(e -> fieldType.getName().equals(e.getId()))
-                        .findFirst();
-                // 处理嵌套类型 ResultMapping 引用
-                nestedResultMap.ifPresent(resultMap -> resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
-                        .javaType(fieldType)
-                        .nestedResultMapId(resultMap.getId())
-                        .build()));
-                // 全部添加到 ResultMap 集合当中
-                resultMaps.addAll(resultMapList);
+                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
+                if (nestedResultMap != null) {
+                    resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
+                            .javaType(fieldType)
+                            .nestedResultMapId(nestedResultMap.getId())
+                            .build());
+                }
             });
         }
 
@@ -841,34 +759,20 @@ public class TableInfo {
                 // 获取集合泛型类型的信息，也就是 ofType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
-                // 这里是递归调用，直到集合类型里面没有其他嵌套类型或者集合类型为止
-                List<ResultMap> resultMapList = tableInfo.buildResultMapList(configuration);
-                // 寻找是否有嵌套 ResultMap 引用
-                Optional<ResultMap> nestedResultMap = resultMapList.stream()
-                        .filter(e -> genericClass.getName().equals(e.getId()))
-                        .findFirst();
-                // 处理嵌套类型 ResultMapping 引用
-                nestedResultMap.ifPresent(resultMap -> resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
-                        .javaType(field.getType())
-                        .nestedResultMapId(resultMap.getId())
-                        .build()));
-                // 全部添加到 ResultMap 集合当中
-                resultMaps.addAll(resultMapList);
+                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
+                if (nestedResultMap != null) {
+                    resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
+                            .javaType(field.getType())
+                            .nestedResultMapId(nestedResultMap.getId())
+                            .build());
+                }
             });
         }
 
-        resultMaps.add(new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build());
-
-        return resultMaps;
-    }
-
-    private static boolean existColumn(List<ResultMapping> resultMappings, String name) {
-        for (ResultMapping resultMapping : resultMappings) {
-            if (resultMapping.getColumn().equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
+        ResultMap resultMap = new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build();
+        configuration.addResultMap(resultMap);
+        context.add(resultMapId);
+        return resultMap;
     }
 
 
