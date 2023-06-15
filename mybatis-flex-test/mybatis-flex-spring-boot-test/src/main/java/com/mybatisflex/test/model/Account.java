@@ -29,7 +29,6 @@ public class Account extends BaseEntity<String, Long, String> {
     private Date birthday;
 
     private Gender gender;
-    private RoleVO2<String, String> roleName;
 
     public Gender getGender() {
         return gender;
@@ -79,7 +78,6 @@ public class Account extends BaseEntity<String, Long, String> {
                 ", age=" + age +
                 ", birthday=" + birthday +
                 ", roles=" + roles +
-                ", roleName=" + roleName +
                 '}';
     }
 }

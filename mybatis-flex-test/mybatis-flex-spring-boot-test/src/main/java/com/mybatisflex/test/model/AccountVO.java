@@ -23,14 +23,14 @@ public class AccountVO extends IdEntity<Long> {
     private Date birthday;
 
     private Gender gender;
-    private RoleVO2<String, String> roleName;
+    private RoleVO2<String, String> role;
 
-    public RoleVO2<String, String> getRoleName() {
-        return roleName;
+    public RoleVO2<String, String> getRole() {
+        return role;
     }
 
-    public void setRoleName(RoleVO2<String, String> roleName) {
-        this.roleName = roleName;
+    public void setRole(RoleVO2<String, String> role) {
+        this.role = role;
     }
 
     public Gender getGender() {
@@ -63,7 +63,7 @@ public class AccountVO extends IdEntity<Long> {
                 "id=" + id +
                 ", age=" + age +
                 ", birthday=" + birthday +
-                ", roleName=" + roleName +
+                ", roleName=" + role +
                 '}';
     }
 }

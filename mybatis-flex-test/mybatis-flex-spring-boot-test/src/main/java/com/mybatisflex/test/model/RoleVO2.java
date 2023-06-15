@@ -20,10 +20,10 @@ package com.mybatisflex.test.model;
  * @author 王帅
  * @since 2023-06-15
  */
-public class RoleVO2<T, E> {
+public class RoleVO2<T, K> {
 
     private T roleName;
-    private RoleKey<E> roleKey;
+    private RoleKey<K> roleKey;
 
     public T getRoleName() {
         return roleName;
@@ -31,6 +31,14 @@ public class RoleVO2<T, E> {
 
     public void setRoleName(T roleName) {
         this.roleName = roleName;
+    }
+
+    public RoleKey<K> getRoleKey() {
+        return roleKey;
+    }
+
+    public void setRoleKey(RoleKey<K> roleKey) {
+        this.roleKey = roleKey;
     }
 
     @Override
