@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * @author 王帅
@@ -32,9 +33,12 @@ class ReflectTest {
 
     @Test
     void test() {
-        Field field = ClassUtil.getAllFields(Account.class, f -> f.getName().equals("list")).get(0);
-        Type type = TypeParameterResolver.resolveFieldType(field, Account.class);
-        System.out.println(type);
+        List<Field> allFields = ClassUtil.getAllFields(Account.class);
+        for (Field field : allFields) {
+            Type type = TypeParameterResolver.resolveFieldType(field, Account.class);
+            System.out.println("field: " + field+"----->Type:" + type);
+        }
+
     }
 
 }
