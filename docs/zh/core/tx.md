@@ -7,7 +7,15 @@ MyBatis-Flex 提供了一个名为 `Db.tx()` 的方法<Badge type="tip" text="^1
 ```java
 boolean tx(Supplier<Boolean> supplier);
 boolean tx(Supplier<Boolean> supplier, Propagation propagation);
+
+<T> T txWithResult(Supplier<T> supplier);
+<T> T txWithResult(Supplier<T> supplier, Propagation propagation);
 ```
+方法：
+- tx：返回结果为 Boolean，返回 `null` 或者 `false` 或者 抛出异常，事务回滚
+- txWithResult：返回结果由 `Supplier` 参数决定，只有抛出异常时，事务回滚
+
+参数：
 - **supplier**：要执行的内容（代码）
 - **propagation**：事务传播属性
 
