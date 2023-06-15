@@ -18,12 +18,17 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.model.Account;
+import com.mybatisflex.test.model.AccountVO;
 import com.mybatisflex.test.model.Gender;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
+
+import static com.mybatisflex.test.model.table.AccountTableDef.ACCOUNT;
+import static com.mybatisflex.test.model.table.RoleTableDef.ROLE;
+import static com.mybatisflex.test.model.table.UserRoleTableDef.USER_ROLE;
 
 /**
  * @author 王帅
@@ -61,6 +66,27 @@ class AccountMapperTest {
     @Test
     void testSelect() {
         accountMapper.selectListByQuery(QueryWrapper.create()).forEach(System.err::println);
+    }
+
+    @Test
+    void testListString() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(ACCOUNT.ALL_COLUMNS, ROLE.ROLE_NAME.as("roles"))
+                .from(ACCOUNT)
+                .leftJoin(USER_ROLE).on(USER_ROLE.USER_ID.eq(ACCOUNT.ID))
+                .leftJoin(ROLE).on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID));
+        accountMapper.selectListByQuery(queryWrapper).forEach(System.err::println);
+        accountMapper.selectListByQueryAs(queryWrapper, AccountVO.class).forEach(System.err::println);
+    }
+
+    @Test
+    void testGenericEntity() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(ACCOUNT.ALL_COLUMNS, ROLE.ALL_COLUMNS)
+                .from(ACCOUNT)
+                .leftJoin(USER_ROLE).on(USER_ROLE.USER_ID.eq(ACCOUNT.ID))
+                .leftJoin(ROLE).on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID));
+        accountMapper.selectListByQueryAs(queryWrapper, AccountVO.class).forEach(System.err::println);
     }
 
     @Test
