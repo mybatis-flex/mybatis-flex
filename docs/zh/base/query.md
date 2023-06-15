@@ -184,7 +184,8 @@ System.out.println(results);
 ::: tip 方式 3 特别注意事项
 
 - 1、在 `ArticleDTO` 和  `Account` 这两个类中，如果他们有相同的字段，`Account` 中的字段将和 `ArticleDTO` 中的字段拥有一样的值。
-- 2、假设在 `ArticleDTO` 中有多个类似 `Account` 的对象，且他们有相同的字段（字段和 `ArticleDTO` 中的不相同），所有属性的值优先定义的属性的值相同。
+- 2、假设在 `ArticleDTO` 中有多个类似 `Account` 的对象，且他们有相同的字段（字段和 `ArticleDTO`
+  中的不相同），所有相同属性名的值与优先定义的属性的值相同。
   :::
 
 
