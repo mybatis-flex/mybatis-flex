@@ -136,7 +136,7 @@ public final class SqlConsts {
     // === SQL 函数名 ===
 
     public static final String SUM = "SUM";
-    public static final String MAX = "MIX";
+    public static final String MAX = "MAX";
     public static final String MIN = "MIN";
     public static final String AVG = "AVG";
     public static final String DAY = "DAY";
