@@ -37,7 +37,7 @@ public enum KeyType {
     Generator,
 
     /**
-     * 其他方式，比如说在代码层用户手动设置
+     * 其他方式，比如在代码层用户手动设置
      */
     None,
 }

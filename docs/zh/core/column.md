@@ -139,7 +139,7 @@ WHERE `id` = ?
 
 ## isLarge
 
-用于标识这个字段是否是大字段，比如说存放文章的文章字段，在一般的场景中是没必要对这个字段进行查询的， 若字段被表示为 `isLarge`，那么 APT 生成 "ARTICLE" 类时，默认不会存放在 DEFAULT_COLUMNS 中，以下
+用于标识这个字段是否是大字段，比如存放文章的文章字段，在一般的场景中是没必要对这个字段进行查询的， 若字段被表示为 `isLarge`，那么 APT 生成 "ARTICLE" 类时，默认不会存放在 DEFAULT_COLUMNS 中，以下
 是 Article.java 以及 APT 生成的类：
 
 ```java
