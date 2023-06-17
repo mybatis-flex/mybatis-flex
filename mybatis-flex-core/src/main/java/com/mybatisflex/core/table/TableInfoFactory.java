@@ -52,7 +52,7 @@ public class TableInfoFactory {
     private TableInfoFactory() {
     }
 
-    private static final Set<Class<?>> defaultSupportColumnTypes = CollectionUtil.newHashSet(
+    static final Set<Class<?>> defaultSupportColumnTypes = CollectionUtil.newHashSet(
             int.class, Integer.class,
             short.class, Short.class,
             long.class, Long.class,
@@ -218,12 +218,13 @@ public class TableInfoFactory {
                 // 集合嵌套
                 if (Collection.class.isAssignableFrom(fieldType)) {
                     Type genericType = TypeParameterResolver.resolveFieldType(field, entityClass);
-                    if (genericType instanceof ParameterizedType){
+                    if (genericType instanceof ParameterizedType) {
                         Class<?> actualTypeArgument = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
                         //需排除 List<String>  List<Long> 等场景
-                        if (!defaultSupportColumnTypes.contains(actualTypeArgument)) {
+                        /*if (!defaultSupportColumnTypes.contains(actualTypeArgument)) {
                             tableInfo.addCollectionType(field, actualTypeArgument);
-                        }
+                        }*/
+                        tableInfo.addCollectionType(field, actualTypeArgument);
                     }
                 }
                 // 实体类嵌套
@@ -236,9 +237,7 @@ public class TableInfoFactory {
             }
 
             //列名
-            String columnName = column != null && StringUtil.isNotBlank(column.value())
-                    ? column.value()
-                    : (tableInfo.isCamelToUnderline() ? StringUtil.camelToUnderline(field.getName()) : field.getName());
+            String columnName = getColumnName(tableInfo.isCamelToUnderline(), field, column);
 
             //逻辑删除字段
             if (column != null && column.isLogicDelete()) {
@@ -364,6 +363,16 @@ public class TableInfoFactory {
 
 
         return tableInfo;
+    }
+
+    static String getColumnName(boolean isCamelToUnderline, Field field, Column column) {
+        if (column != null && StringUtil.isNotBlank(column.value())) {
+            return column.value();
+        }
+        if (isCamelToUnderline) {
+            return StringUtil.camelToUnderline(field.getName());
+        }
+        return field.getName();
     }
 
 
