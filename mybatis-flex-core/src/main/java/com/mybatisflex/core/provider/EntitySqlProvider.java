@@ -208,10 +208,10 @@ public class EntitySqlProvider {
         CPI.setFromIfNecessary(queryWrapper, tableInfo.getSchema(), tableInfo.getTableName());
 
         tableInfo.appendConditions(null, queryWrapper);
+
+        String sql = DialectFactory.getDialect().forDeleteEntityBatchByQuery(tableInfo, queryWrapper);
         ProviderUtil.setSqlArgs(params, CPI.getValueArray(queryWrapper));
-
-
-        return DialectFactory.getDialect().forDeleteEntityBatchByQuery(tableInfo, queryWrapper);
+        return sql;
     }
 
 
@@ -269,12 +269,14 @@ public class EntitySqlProvider {
         //处理逻辑删除 和 多租户等
         tableInfo.appendConditions(entity, queryWrapper);
 
+        //优先构建 sql，再构建参数
+        String sql = DialectFactory.getDialect().forUpdateEntityByQuery(tableInfo, entity, ignoreNulls, queryWrapper);
+
         Object[] values = tableInfo.buildUpdateSqlArgs(entity, ignoreNulls, true);
         Object[] queryParams = CPI.getValueArray(queryWrapper);
-
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(values, queryParams));
 
-        return DialectFactory.getDialect().forUpdateEntityByQuery(tableInfo, entity, ignoreNulls, queryWrapper);
+        return sql;
     }
 
     /**
@@ -296,11 +298,14 @@ public class EntitySqlProvider {
         //处理逻辑删除 和 多租户等
         tableInfo.appendConditions(null, queryWrapper);
 
-        Object[] queryParams = CPI.getValueArray(queryWrapper);
+        //优先构建 sql，再构建参数
+        String sql = DialectFactory.getDialect().forUpdateNumberAddByQuery(tableInfo.getSchema()
+                , tableInfo.getTableName(), fieldName, value, queryWrapper);
 
+        Object[] queryParams = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, queryParams);
 
-        return DialectFactory.getDialect().forUpdateNumberAddByQuery(tableInfo.getSchema(), tableInfo.getTableName(), fieldName, value, queryWrapper);
+        return sql;
     }
 
 
@@ -372,10 +377,13 @@ public class EntitySqlProvider {
             CPI.setFromIfNecessary(queryWrapper, tableInfo.getSchema(), tableInfo.getTableName());
         }
 
+        //优先构建 sql，再构建参数
+        String sql = DialectFactory.getDialect().forSelectByQuery(queryWrapper);
+
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
 
-        return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
+        return sql;
     }
 
     /**
@@ -399,10 +407,13 @@ public class EntitySqlProvider {
             CPI.setFromIfNecessary(queryWrapper, tableInfo.getSchema(), tableInfo.getTableName());
         }
 
+        //优先构建 sql，再构建参数
+        String sql = DialectFactory.getDialect().forSelectByQuery(queryWrapper);
+
         Object[] values = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, values);
 
-        return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
+        return sql;
     }
 
 
