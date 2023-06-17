@@ -73,10 +73,13 @@ const {Layout} = DefaultTheme
 
         <div class="content">
           <div class="banner">
-            <a href="http://www.codeformat.cn" target="_blank"><img src="/assets/images/ad/logo-code-format.png"></a>
+            <a href="http://www.codeformat.cn" target="_blank"><img src="/assets/images/ad/code-format.png"></a>
           </div>
           <div class="banner">
-            虚以待位
+            <a href="http://www.jpress.cn" target="_blank" style="height:50px;
+            background: #18a808;width: 105px;color: #fff;font-size: 18px">
+              信创 CMS
+            </a>
           </div>
           <div class="banner">
             虚以待位

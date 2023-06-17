@@ -66,14 +66,14 @@ public class Account {
 在某些场景下，程序希望查询得到的数据是原始数据，而非脱敏数据。比如要去查询用户的手机号，然后给用户发送短信。又或者说，我们进入编辑页面编辑用户数据，
 如果编辑页面展示的是脱敏数据，然后再次点击保存，那么数据库的真实数据也会被脱敏覆盖。
 
-因此，MaskManager 提供了 `withoutMask`、`skipMask`、`restoreMask` 三个方法来处理这种场景：
+因此，MaskManager 提供了 `execWithoutMask`、`skipMask`、`restoreMask` 三个方法来处理这种场景：
 
-推荐使用`withoutMask`方法，该方法使用了模版方法设计模式，保障跳过脱敏处理并执行相关逻辑后自动恢复脱敏处理。
+推荐使用`execWithoutMask`方法，该方法使用了模版方法设计模式，保障跳过脱敏处理并执行相关逻辑后自动恢复脱敏处理。
 
-`withoutMask`方法实现如下：
+`execWithoutMask`方法实现如下：
 
 ```java
-public static <T> T withoutMask(Supplier<T> supplier) {
+public static <T> T execWithoutMask(Supplier<T> supplier) {
     try {
         skipMask();
         return supplier.get();
@@ -87,7 +87,7 @@ public static <T> T withoutMask(Supplier<T> supplier) {
 
 ```java
 AccountMapper mapper = ...;
-List<Account> accounts = MaskManager.withoutMask(mapper::selectAll);
+List<Account> accounts = MaskManager.execWithoutMask(mapper::selectAll);
 System.out.println(accounts);
 ```
 
@@ -108,5 +108,5 @@ try {
 ```
 
 ::: tip 提示
-在具体的应用中，我们通常会把`withoutMask`、`skipMask()` 和 `restoreMask()` 放到统一的拦截器里，对某一类业务进行统一拦截和处理。
+在具体的应用中，我们通常会把`execWithoutMask`、`skipMask()` 和 `restoreMask()` 放到统一的拦截器里，对某一类业务进行统一拦截和处理。
 :::

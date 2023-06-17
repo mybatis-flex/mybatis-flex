@@ -1,3 +1,17 @@
+mybatis-flex v1.3.9 20230617:
+新增：Db.txWithResult 方法，用于执行有返回结果的事务
+优化：更新 OracleDialect 的相关关键字
+优化：Page.java 允许传入小于 0 TotalRow 数据
+修复：SqlConsts 函数名出错的问题，感谢 @王帅
+修复：当 Entity 有泛型的 BaseEntity 时，表构建出错的问题，感谢 @王帅
+修复：当 Entity 在不同的包里，APT 生成在一个包的 bug，感谢 @王帅
+文档：更新关于事务相关的文档
+文档：更新关于数据权限的相关文档
+文档：更新关于多表查询的相关文档
+文档：新增关于 QueryWrapper 函数构建的相关文档
+
+
+
 mybatis-flex v1.3.8 20230614:
 新增：添加 FlexDataSource.removeDatasource() 方法，#I7CQU9
 新增：代码生成器添加 Schema 配置的支持，感谢 @Font_C

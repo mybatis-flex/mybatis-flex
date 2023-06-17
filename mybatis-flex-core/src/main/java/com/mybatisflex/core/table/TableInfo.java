@@ -25,6 +25,7 @@ import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
@@ -166,7 +167,7 @@ public class TableInfo {
     }
 
     public String getLogicDeleteColumn() {
-        return logicDeleteColumn;
+        return LogicDeleteManager.getLogicDeleteColumn(logicDeleteColumn);
     }
 
     public void setLogicDeleteColumn(String logicDeleteColumn) {
@@ -358,6 +359,30 @@ public class TableInfo {
 
 
     /**
+     * 构建 insert 的 Sql 参数
+     *
+     * @param entity      从 entity 中获取
+     * @param ignoreNulls 是否忽略 null 值
+     * @return 数组
+     */
+    public Object[] buildInsertSqlArgs(Object entity, boolean ignoreNulls) {
+        MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
+        String[] insertColumns = obtainInsertColumns(entity, ignoreNulls);
+
+        List<Object> values = new ArrayList<>(insertColumns.length);
+        for (String insertColumn : insertColumns) {
+            if (onInsertColumns == null || !onInsertColumns.containsKey(insertColumn)) {
+                Object value = buildColumnSqlArg(metaObject, insertColumn);
+                if (ignoreNulls && value == null) {
+                    continue;
+                }
+                values.add(value);
+            }
+        }
+        return values.toArray();
+    }
+
+    /**
      * 插入（新增）数据时，获取所有要插入的字段
      *
      * @param entity
@@ -386,16 +411,9 @@ public class TableInfo {
     }
 
 
-    /**
-     * 构建 insert 的 Sql 参数
-     *
-     * @param entity      从 entity 中获取
-     * @param ignoreNulls 是否忽略 null 值
-     * @return 数组
-     */
-    public Object[] buildInsertSqlArgs(Object entity, boolean ignoreNulls) {
+    public Object[] buildInsertSqlArgsWithPk(Object entity, boolean ignoreNulls) {
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
-        String[] insertColumns = obtainInsertColumns(entity, ignoreNulls);
+        String[] insertColumns = obtainInsertColumnsWithPk(entity, ignoreNulls);
 
         List<Object> values = new ArrayList<>(insertColumns.length);
         for (String insertColumn : insertColumns) {
@@ -410,6 +428,41 @@ public class TableInfo {
         return values.toArray();
     }
 
+
+    /**
+     * 插入（新增）数据时，获取所有要插入的字段
+     *
+     * @param entity
+     * @param ignoreNulls
+     * @return 字段列表
+     */
+    public String[] obtainInsertColumnsWithPk(Object entity, boolean ignoreNulls) {
+        if (!ignoreNulls) {
+            return ArrayUtil.concat(primaryKeys, columns);
+        } else {
+            MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
+            List<String> retColumns = new ArrayList<>();
+            for (String primaryKey : primaryKeys) {
+                Object value = buildColumnSqlArg(metaObject, primaryKey);
+                if (value == null) {
+                    throw new IllegalArgumentException("Entity Primary Key value must not be null.");
+                }
+                retColumns.add(primaryKey);
+            }
+            for (String insertColumn : columns) {
+                if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
+                    retColumns.add(insertColumn);
+                } else {
+                    Object value = buildColumnSqlArg(metaObject, insertColumn);
+                    if (value == null) {
+                        continue;
+                    }
+                    retColumns.add(insertColumn);
+                }
+            }
+            return ArrayUtil.concat(insertPrimaryKeys, retColumns.toArray(new String[0]));
+        }
+    }
 
     /**
      * 获取要修改的值
@@ -615,7 +668,7 @@ public class TableInfo {
         }
 
         //逻辑删除
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+        if (StringUtil.isNotBlank(getLogicDeleteColumn())) {
             queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, SqlConsts.EQUALS
                     , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
         }
@@ -917,7 +970,7 @@ public class TableInfo {
      * @param entityObject
      */
     public void initLogicDeleteValueIfNecessary(Object entityObject) {
-        if (StringUtil.isBlank(logicDeleteColumn)) {
+        if (StringUtil.isBlank(getLogicDeleteColumn())) {
             return;
         }
 

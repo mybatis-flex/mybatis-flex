@@ -61,7 +61,7 @@ public class MaskManager {
     /**
      * 跳过脱敏处理
      */
-    public static <T> T withoutMask(Supplier<T> supplier) {
+    public static <T> T execWithoutMask(Supplier<T> supplier) {
         try {
             skipMask();
             return supplier.get();
