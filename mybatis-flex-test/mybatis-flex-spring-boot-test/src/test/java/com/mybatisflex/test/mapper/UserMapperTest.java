@@ -152,4 +152,21 @@ class UserMapperTest {
         } while (page.hasNext());
     }
 
+    @Test
+    void testListString() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(USER.USER_ID,
+                        USER.USER_NAME,
+                        ROLE.ROLE_NAME.as("roles"),
+                        ROLE.ROLE_ID.as("role_ids"))
+                .from(USER.as("u"))
+                .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+                .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+                .where(USER.USER_ID.eq(2));
+        UserVO2 user = userMapper.selectOneByQueryAs(queryWrapper, UserVO2.class);
+        System.err.println(user);
+        user = userMapper.selectOneByQueryAs(queryWrapper, UserVO2.class);
+        System.err.println(user);
+    }
+
 }

@@ -15,10 +15,7 @@
  */
 package com.mybatisflex.core.table;
 
-import com.mybatisflex.annotation.InsertListener;
-import com.mybatisflex.annotation.KeyType;
-import com.mybatisflex.annotation.SetListener;
-import com.mybatisflex.annotation.UpdateListener;
+import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.constant.SqlConsts;
@@ -39,6 +36,7 @@ import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.type.UnknownTypeHandler;
 import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.Field;
@@ -809,15 +807,33 @@ public class TableInfo {
         // <resultMap> 标签下的 <collection> 标签映射
         if (collectionType != null) {
             collectionType.forEach((field, genericClass) -> {
-                // 获取集合泛型类型的信息，也就是 ofType 属性
-                TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
-                // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
-                if (nestedResultMap != null) {
+                if (TableInfoFactory.defaultSupportColumnTypes.contains(genericClass)) {
+                    // List<String> List<Integer> 等
+                    String columnName = TableInfoFactory.getColumnName(camelToUnderline, field, field.getAnnotation(Column.class));
+                    // 映射 <result column="..."/>
+                    String nestedResultMapId = entityClass.getName() + "." + field.getName();
+                    ResultMapping resultMapping = new ResultMapping.Builder(configuration, null)
+                            .column(columnName)
+                            .typeHandler(new UnknownTypeHandler(configuration))
+                            .build();
+                    ResultMap nestedResultMap = new ResultMap.Builder(configuration, nestedResultMapId, genericClass, Collections.singletonList(resultMapping)).build();
+                    configuration.addResultMap(nestedResultMap);
+                    // 映射 <collection property="..." ofType="genericClass">
                     resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
                             .javaType(field.getType())
                             .nestedResultMapId(nestedResultMap.getId())
                             .build());
+                } else {
+                    // 获取集合泛型类型的信息，也就是 ofType 属性
+                    TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
+                    // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
+                    ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
+                    if (nestedResultMap != null) {
+                        resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
+                                .javaType(field.getType())
+                                .nestedResultMapId(nestedResultMap.getId())
+                                .build());
+                    }
                 }
             });
         }

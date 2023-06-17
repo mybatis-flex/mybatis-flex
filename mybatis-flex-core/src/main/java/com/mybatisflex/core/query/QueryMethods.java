@@ -15,126 +15,130 @@
  */
 package com.mybatisflex.core.query;
 
-import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
+import static com.mybatisflex.core.constant.SqlConsts.*;
+
 public class QueryMethods {
+
+    private QueryMethods() {
+    }
 
     /////count
     public static FunctionQueryColumn count() {
-        return new FunctionQueryColumn(SqlConsts.COUNT, new StringQueryColumn("*"));
+        return new FunctionQueryColumn(COUNT, new StringQueryColumn("*"));
     }
 
     public static FunctionQueryColumn count(String column) {
-        return new FunctionQueryColumn(SqlConsts.COUNT, column);
+        return new FunctionQueryColumn(COUNT, column);
     }
 
     public static FunctionQueryColumn count(QueryColumn column) {
-        return new FunctionQueryColumn(SqlConsts.COUNT, column);
+        return new FunctionQueryColumn(COUNT, column);
     }
 
     public static <T> FunctionQueryColumn count(LambdaGetter<T> fn) {
-        return new FunctionQueryColumn(SqlConsts.COUNT, LambdaUtil.getQueryColumn(fn));
+        return new FunctionQueryColumn(COUNT, LambdaUtil.getQueryColumn(fn));
     }
 
 
     /////max
     public static FunctionQueryColumn max(String column) {
-        return new FunctionQueryColumn(SqlConsts.MAX, column);
+        return new FunctionQueryColumn(MAX, column);
     }
 
     public static FunctionQueryColumn max(QueryColumn column) {
-        return new FunctionQueryColumn(SqlConsts.MAX, column);
+        return new FunctionQueryColumn(MAX, column);
     }
 
     public static <T> FunctionQueryColumn max(LambdaGetter<T> fn) {
-        return new FunctionQueryColumn(SqlConsts.MAX, LambdaUtil.getQueryColumn(fn));
+        return new FunctionQueryColumn(MAX, LambdaUtil.getQueryColumn(fn));
     }
 
 
     /////min
     public static FunctionQueryColumn min(String column) {
-        return new FunctionQueryColumn(SqlConsts.MIN, column);
+        return new FunctionQueryColumn(MIN, column);
     }
 
     public static FunctionQueryColumn min(QueryColumn column) {
-        return new FunctionQueryColumn(SqlConsts.MIN, column);
+        return new FunctionQueryColumn(MIN, column);
     }
 
     public static <T> FunctionQueryColumn min(LambdaGetter<T> fn) {
-        return new FunctionQueryColumn(SqlConsts.MIN, LambdaUtil.getQueryColumn(fn));
+        return new FunctionQueryColumn(MIN, LambdaUtil.getQueryColumn(fn));
     }
 
 
     /////avg
     public static FunctionQueryColumn avg(String column) {
-        return new FunctionQueryColumn(SqlConsts.AVG, column);
+        return new FunctionQueryColumn(AVG, column);
     }
 
     public static FunctionQueryColumn avg(QueryColumn column) {
-        return new FunctionQueryColumn(SqlConsts.AVG, column);
+        return new FunctionQueryColumn(AVG, column);
     }
 
     public static <T> FunctionQueryColumn avg(LambdaGetter<T> fn) {
-        return new FunctionQueryColumn(SqlConsts.AVG, LambdaUtil.getQueryColumn(fn));
+        return new FunctionQueryColumn(AVG, LambdaUtil.getQueryColumn(fn));
     }
 
 
     /////sum
     public static FunctionQueryColumn sum(String column) {
-        return new FunctionQueryColumn(SqlConsts.SUM, column);
+        return new FunctionQueryColumn(SUM, column);
     }
 
     public static FunctionQueryColumn sum(QueryColumn column) {
-        return new FunctionQueryColumn(SqlConsts.SUM, column);
+        return new FunctionQueryColumn(SUM, column);
     }
 
     public static <T> FunctionQueryColumn sum(LambdaGetter<T> fn) {
-        return new FunctionQueryColumn(SqlConsts.SUM, LambdaUtil.getQueryColumn(fn));
+        return new FunctionQueryColumn(SUM, LambdaUtil.getQueryColumn(fn));
     }
 
 
     /////year
     public static FunctionQueryColumn year(String column) {
-        return new FunctionQueryColumn(SqlConsts.YEAR, column);
+        return new FunctionQueryColumn(YEAR, column);
     }
 
 
     public static FunctionQueryColumn year(QueryColumn column) {
-        return new FunctionQueryColumn(SqlConsts.YEAR, column);
+        return new FunctionQueryColumn(YEAR, column);
     }
 
     public static <T> FunctionQueryColumn year(LambdaGetter<T> fn) {
-        return new FunctionQueryColumn(SqlConsts.YEAR, LambdaUtil.getQueryColumn(fn));
+        return new FunctionQueryColumn(YEAR, LambdaUtil.getQueryColumn(fn));
     }
 
 
     /////month
     public static FunctionQueryColumn month(String column) {
-        return new FunctionQueryColumn(SqlConsts.MONTH, column);
+        return new FunctionQueryColumn(MONTH, column);
     }
 
     public static FunctionQueryColumn month(QueryColumn column) {
-        return new FunctionQueryColumn(SqlConsts.MONTH, column);
+        return new FunctionQueryColumn(MONTH, column);
     }
 
     public static <T> FunctionQueryColumn month(LambdaGetter<T> fn) {
-        return new FunctionQueryColumn(SqlConsts.MONTH, LambdaUtil.getQueryColumn(fn));
+        return new FunctionQueryColumn(MONTH, LambdaUtil.getQueryColumn(fn));
     }
 
 
     /////month
     public static FunctionQueryColumn day(String column) {
-        return new FunctionQueryColumn(SqlConsts.DAY, column);
+        return new FunctionQueryColumn(DAY, column);
     }
 
     public static FunctionQueryColumn day(QueryColumn column) {
-        return new FunctionQueryColumn(SqlConsts.DAY, column);
+        return new FunctionQueryColumn(DAY, column);
     }
 
     public static <T> FunctionQueryColumn day(LambdaGetter<T> fn) {
-        return new FunctionQueryColumn(SqlConsts.DAY, LambdaUtil.getQueryColumn(fn));
+        return new FunctionQueryColumn(DAY, LambdaUtil.getQueryColumn(fn));
     }
 
 
@@ -156,7 +160,7 @@ public class QueryMethods {
 
     //CONVERT ( data_type [ ( length ) ] , expression [ , style ] )
     public static StringFunctionQueryColumn convert(String... params) {
-        return new StringFunctionQueryColumn(SqlConsts.CONVERT, params);
+        return new StringFunctionQueryColumn(CONVERT, params);
     }
 
     public static StringQueryColumn column(String column) {
@@ -180,15 +184,15 @@ public class QueryMethods {
     }
 
     public static QueryCondition exists(QueryWrapper queryWrapper) {
-        return new OperatorSelectCondition(SqlConsts.EXISTS, queryWrapper);
+        return new OperatorSelectCondition(EXISTS, queryWrapper);
     }
 
     public static QueryCondition notExists(QueryWrapper queryWrapper) {
-        return new OperatorSelectCondition(SqlConsts.NOT_EXISTS, queryWrapper);
+        return new OperatorSelectCondition(NOT_EXISTS, queryWrapper);
     }
 
     public static QueryCondition not(QueryCondition childCondition) {
-        return new OperatorQueryCondition(SqlConsts.NOT, childCondition);
+        return new OperatorQueryCondition(NOT, childCondition);
     }
 
     public static QueryCondition noCondition() {
