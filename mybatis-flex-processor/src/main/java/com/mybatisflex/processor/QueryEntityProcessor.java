@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.processor;
 
@@ -41,6 +41,7 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.time.chrono.JapaneseDate;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -162,23 +163,14 @@ public class QueryEntityProcessor extends AbstractProcessor {
             String[] entityIgnoreSuffixes = props.getProperties().getProperty("processor.entity.ignoreSuffixes", "").split(",");
 
 
-            StringBuilder guessPackage = new StringBuilder();
+            AtomicReference<String> entityClassName = new AtomicReference<>();
 
             StringBuilder tablesContent = new StringBuilder();
             roundEnv.getElementsAnnotatedWith(Table.class).forEach((Consumer<Element>) entityClassElement -> {
 
                 Table table = entityClassElement.getAnnotation(Table.class);
 
-                //init genPackage
-                if ((genTablesPackage == null || genTablesPackage.trim().length() == 0)
-                        && guessPackage.length() == 0) {
-                    String entityClassName = entityClassElement.toString();
-                    if (!entityClassName.contains(".")) {
-                        guessPackage.append("table");// = "table";
-                    } else {
-                        guessPackage.append(entityClassName.substring(0, entityClassName.lastIndexOf(".")) + ".table");
-                    }
-                }
+                entityClassName.set(entityClassElement.toString());
 
                 String schema = table != null && table.value().trim().length() != 0
                         ? table.schema()
@@ -216,7 +208,7 @@ public class QueryEntityProcessor extends AbstractProcessor {
                 }
                 //每一个 entity 生成一个独立的文件
                 else {
-                    String realGenPackage = genTablesPackage == null || genTablesPackage.trim().length() == 0 ? guessPackage.toString() : genTablesPackage;
+                    String realGenPackage = isEmpty(genMappersPackage) ? guessTablesPackage(entityClassName.get()) : genTablesPackage;
                     String content = buildTablesClass(entitySimpleName, schema, tableName, propertyAndColumns, defaultColumns, tablesNameStyle
                             , tablesDefSuffix, realGenPackage, allInTables);
                     genClass(genPath, realGenPackage, entitySimpleName + "TableDef", content);
@@ -224,20 +216,33 @@ public class QueryEntityProcessor extends AbstractProcessor {
 
                 //是否开启 mapper 生成功能
                 if ("true".equalsIgnoreCase(mappersGenerateEnable) && table.mapperGenerateEnable()) {
-                    String realMapperPackage = genMappersPackage == null || genMappersPackage.trim().length() == 0
-                            ? guessMapperPackage(entityClassElement.toString()) : genMappersPackage;
+                    String realMapperPackage = isEmpty(genMappersPackage) ? guessMapperPackage(entityClassElement.toString()) : genMappersPackage;
                     genMapperClass(genPath, realMapperPackage, entityClassElement.toString(), baseMapperClass, entitySimpleName);
                 }
             });
 
             if (allInTables && tablesContent.length() > 0) {
-                String realGenPackage = genTablesPackage == null || genTablesPackage.trim().length() == 0 ? guessPackage.toString() : genTablesPackage;
+                String realGenPackage = isEmpty(genTablesPackage) ? guessTablesPackage(entityClassName.get()) : genTablesPackage;
                 genTablesClass(genPath, realGenPackage, className, tablesContent.toString());
             }
 
         }
 
         return false;
+    }
+
+    private static boolean isEmpty(String str) {
+        return str == null || str.trim().length() == 0;
+    }
+
+    private String guessTablesPackage(String entityClassName) {
+        StringBuilder guessPackage = new StringBuilder();
+        if (!entityClassName.contains(".")) {
+            guessPackage.append("table");// = "table";
+        } else {
+            guessPackage.append(entityClassName, 0, entityClassName.lastIndexOf(".")).append(".table");
+        }
+        return guessPackage.toString();
     }
 
 
