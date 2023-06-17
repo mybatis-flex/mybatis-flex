@@ -393,11 +393,13 @@ public class CommonsDialectImpl implements IDialect {
         return sqlBuilder.toString();
     }
 
+
     @Override
     public String buildWhereConditionSql(QueryWrapper queryWrapper) {
         QueryCondition whereQueryCondition = CPI.getWhereQueryCondition(queryWrapper);
         return whereQueryCondition != null ? whereQueryCondition.toSql(CPI.getQueryTables(queryWrapper), this) : EMPTY;
     }
+
 
     @Override
     public String forInsertEntity(TableInfo tableInfo, Object entity, boolean ignoreNulls) {
@@ -424,6 +426,35 @@ public class CommonsDialectImpl implements IDialect {
                 .append(BRACKET_LEFT).append(sqlValues).append(BRACKET_RIGHT)
                 .toString();
     }
+
+
+    @Override
+    public String forInsertEntityWithPk(TableInfo tableInfo, Object entity, boolean ignoreNulls) {
+
+        StringBuilder sql = new StringBuilder();
+        sql.append(INSERT_INTO).append(tableInfo.getWrapSchemaAndTableName(this));
+
+        String[] insertColumns = tableInfo.obtainInsertColumnsWithPk(entity, ignoreNulls);
+        Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
+
+        StringJoiner sqlFields = new StringJoiner(DELIMITER);
+        StringJoiner sqlValues = new StringJoiner(DELIMITER);
+
+        for (String insertColumn : insertColumns) {
+            sqlFields.add(wrap(insertColumn));
+            if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
+                sqlValues.add(onInsertColumns.get(insertColumn));
+            } else {
+                sqlValues.add(PLACEHOLDER);
+            }
+        }
+
+        return sql.append(BRACKET_LEFT).append(sqlFields).append(BRACKET_RIGHT)
+                .append(VALUES)
+                .append(BRACKET_LEFT).append(sqlValues).append(BRACKET_RIGHT)
+                .toString();
+    }
+
 
     @Override
     public String forInsertEntityBatch(TableInfo tableInfo, List<?> entities) {

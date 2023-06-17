@@ -66,6 +66,8 @@ public interface IDialect {
     //////for entity /////
     String forInsertEntity(TableInfo tableInfo, Object entity, boolean ignoreNulls);
 
+    String forInsertEntityWithPk(TableInfo tableInfo, Object entity, boolean ignoreNulls);
+
     String forInsertEntityBatch(TableInfo tableInfo, List<?> entities);
 
     String forDeleteEntityById(TableInfo tableInfo);
