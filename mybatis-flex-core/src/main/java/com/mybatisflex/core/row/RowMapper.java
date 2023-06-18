@@ -19,7 +19,9 @@ import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.RowSqlProvider;
-import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.MapperUtil;
 import com.mybatisflex.core.util.StringUtil;
@@ -431,46 +433,38 @@ public interface RowMapper {
      * @return
      */
     default Page<Row> paginate(String schema, String tableName, Page<Row> page, QueryWrapper queryWrapper) {
+        try {
+            CPI.setFromIfNecessary(queryWrapper, schema, tableName);
 
-        CPI.setFromIfNecessary(queryWrapper, schema, tableName);
+            // 只有 totalRow 小于 0 的时候才会去查询总量
+            // 这样方便用户做总数缓存，而非每次都要去查询总量
+            // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
+            if (page.getTotalRow() < 0) {
+                QueryWrapper countQueryWrapper;
+                if (page.isOptimizeCountSql()) {
+                    countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
+                } else {
+                    countQueryWrapper = MapperUtil.rawCountQueryWrapper(queryWrapper);
+                }
+                page.setTotalRow(selectCountByQuery(schema, tableName, countQueryWrapper));
+            }
 
-        List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
+            if (page.isEmpty()) {
+                return page;
+            }
 
-        List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
+            queryWrapper.limit(page.getOffset(), page.getPageSize());
 
-        List<Join> joins = CPI.getJoins(queryWrapper);
+            page.setRecords(selectListByQuery(schema, tableName, queryWrapper));
 
-        // 只有 totalRow 小于 0 的时候才会去查询总量
-        // 这样方便用户做总数缓存，而非每次都要去查询总量
-        // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
-        if (page.getTotalRow() < 0) {
-            QueryWrapper countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
-            long count = selectCountByQuery(schema, tableName, countQueryWrapper);
-            page.setTotalRow(count);
-        }
-
-        if (page.isEmpty()) {
             return page;
+
+        } finally {
+            // 将之前设置的 limit 清除掉
+            // 保险起见把重置代码放到 finally 代码块中
+            CPI.setLimitRows(queryWrapper, null);
+            CPI.setLimitOffset(queryWrapper, null);
         }
-
-        //重置 selectColumns
-        CPI.setSelectColumns(queryWrapper, selectColumns);
-        //重置 orderBys
-        CPI.setOrderBys(queryWrapper, orderBys);
-        //重置 join
-        CPI.setJoins(queryWrapper, joins);
-
-        int offset = page.getPageSize() * (page.getPageNumber() - 1);
-        queryWrapper.limit(offset, page.getPageSize());
-
-        List<Row> records = selectListByQuery(schema, tableName, queryWrapper);
-        page.setRecords(records);
-
-        // 将之前设置的 limit 清除掉
-        CPI.setLimitRows(queryWrapper, null);
-        CPI.setLimitOffset(queryWrapper, null);
-
-        return page;
 
     }
 

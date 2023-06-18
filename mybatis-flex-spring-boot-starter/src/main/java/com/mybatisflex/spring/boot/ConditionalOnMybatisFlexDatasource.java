@@ -19,6 +19,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.context.annotation.Conditional;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.*;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
@@ -34,6 +36,7 @@ import java.util.Iterator;
 @Conditional(ConditionalOnMybatisFlexDatasource.OnMybatisFlexDataSourceCondition.class)
 public @interface ConditionalOnMybatisFlexDatasource {
 
+    @Order(Ordered.HIGHEST_PRECEDENCE + 40)
     class OnMybatisFlexDataSourceCondition extends SpringBootCondition {
 
         @Override
@@ -44,8 +47,8 @@ public @interface ConditionalOnMybatisFlexDatasource {
                 Iterator<PropertySource<?>> it = propertySources.stream().iterator();
                 while (it.hasNext()) {
                     PropertySource<?> ps = it.next();
-                    if (ps instanceof MapPropertySource) {
-                        for (String propertyName : ((MapPropertySource) ps).getSource().keySet()) {
+                    if (ps instanceof EnumerablePropertySource) {
+                        for (String propertyName : ((EnumerablePropertySource<?>) ps).getPropertyNames()) {
                             if (propertyName.startsWith("mybatis-flex.datasource.")) {
                                 return ConditionOutcome.match();
                             }

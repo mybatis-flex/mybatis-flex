@@ -20,7 +20,10 @@ import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.mybatis.MappedStatementTypes;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.EntitySqlProvider;
-import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.*;
@@ -667,47 +670,43 @@ public interface BaseMapper<T> {
 
 
     default <R> Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
-        List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
-        List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
-        List<Join> joins = CPI.getJoins(queryWrapper);
-        // 只有 totalRow 小于 0 的时候才会去查询总量
-        // 这样方便用户做总数缓存，而非每次都要去查询总量
-        // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
-        if (page.getTotalRow() < 0) {
-            QueryWrapper countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
-            long count = selectCountByQuery(countQueryWrapper);
-            page.setTotalRow(count);
-        }
+        try {
+            // 只有 totalRow 小于 0 的时候才会去查询总量
+            // 这样方便用户做总数缓存，而非每次都要去查询总量
+            // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
+            if (page.getTotalRow() < 0) {
+                QueryWrapper countQueryWrapper;
+                if (page.isOptimizeCountSql()) {
+                    countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
+                } else {
+                    countQueryWrapper = MapperUtil.rawCountQueryWrapper(queryWrapper);
+                }
+                page.setTotalRow(selectCountByQuery(countQueryWrapper));
+            }
 
-        if (page.isEmpty()) {
+            if (page.isEmpty()) {
+                return page;
+            }
+
+            queryWrapper.limit(page.getOffset(), page.getPageSize());
+
+            List<R> records;
+            if (asType != null) {
+                records = selectListByQueryAs(queryWrapper, asType);
+            } else {
+                records = (List<R>) selectListByQuery(queryWrapper);
+            }
+            MapperUtil.queryFields(this, records, consumers);
+            page.setRecords(records);
+
             return page;
+
+        } finally {
+            // 将之前设置的 limit 清除掉
+            // 保险起见把重置代码放到 finally 代码块中
+            CPI.setLimitRows(queryWrapper, null);
+            CPI.setLimitOffset(queryWrapper, null);
         }
-
-        //重置 selectColumns
-        CPI.setSelectColumns(queryWrapper, selectColumns);
-        //重置 orderBys
-        CPI.setOrderBys(queryWrapper, orderBys);
-        //重置 join
-        CPI.setJoins(queryWrapper, joins);
-
-        int offset = page.getPageSize() * (page.getPageNumber() - 1);
-        queryWrapper.limit(offset, page.getPageSize());
-
-        if (asType != null) {
-            List<R> records = selectListByQueryAs(queryWrapper, asType);
-            MapperUtil.queryFields(this, records, consumers);
-            page.setRecords(records);
-        } else {
-            List<R> records = (List<R>) selectListByQuery(queryWrapper);
-            MapperUtil.queryFields(this, records, consumers);
-            page.setRecords(records);
-        }
-
-        // 将之前设置的 limit 清除掉
-        CPI.setLimitRows(queryWrapper, null);
-        CPI.setLimitOffset(queryWrapper, null);
-
-        return page;
     }
 
 

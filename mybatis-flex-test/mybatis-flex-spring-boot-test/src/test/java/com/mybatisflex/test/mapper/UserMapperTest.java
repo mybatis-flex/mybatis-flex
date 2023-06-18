@@ -143,10 +143,11 @@ class UserMapperTest {
                 .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
                 .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID));
         System.err.println(queryWrapper.toSQL());
-        Page<UserVO> page;
+        Page<UserVO> page = Page.of(1, 1);
+        page.setOptimizeCountSql(false);
         int pageNumber = 0;
         do {
-            page = Page.of(++pageNumber, 1);
+            page.setPageNumber(page.getPageNumber() + 1);
             page = userMapper.paginateAs(page, queryWrapper, UserVO.class);
             System.err.println(page);
         } while (page.hasNext());
