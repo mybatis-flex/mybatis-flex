@@ -31,6 +31,8 @@ public class Page<T> implements IPage<T> {
     private long totalPage = INIT_VALUE;
     private long totalRow = INIT_VALUE;
 
+    private boolean optimizeCountSql = true;
+
     public static <T> Page<T> of(int pageNumber, int pageSize) {
         return new Page<>(pageNumber, pageSize);
     }
@@ -62,6 +64,16 @@ public class Page<T> implements IPage<T> {
         this.setTotalRow(totalRow);
     }
 
+
+    @Override
+    public boolean isOptimizeCountSql() {
+        return optimizeCountSql;
+    }
+
+    @Override
+    public void setOptimizeCountSql(boolean optimizeCountSql) {
+        this.optimizeCountSql = optimizeCountSql;
+    }
 
     @Override
     public List<T> getRecords() {

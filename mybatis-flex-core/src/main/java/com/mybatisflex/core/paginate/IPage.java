@@ -85,6 +85,24 @@ public interface IPage<T> extends Serializable {
     void setRecords(List<T> records);
 
     /**
+     * 是否自动优化 COUNT 查询语句（默认优化）。
+     *
+     * @return {@code true} 优化，{@code false} 不优化
+     */
+    default boolean isOptimizeCountSql() {
+        return true;
+    }
+
+    /**
+     * 设置是否自动优化 COUNT 查询语句。
+     *
+     * @param optimizeCountSql 是否优化
+     */
+    default void setOptimizeCountSql(boolean optimizeCountSql) {
+        // 默认总是优化
+    }
+
+    /**
      * 获取总页数。
      *
      * @return 总页数

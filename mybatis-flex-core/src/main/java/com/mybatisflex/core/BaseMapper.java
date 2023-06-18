@@ -675,7 +675,12 @@ public interface BaseMapper<T> {
             // 这样方便用户做总数缓存，而非每次都要去查询总量
             // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
             if (page.getTotalRow() < 0) {
-                QueryWrapper countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
+                QueryWrapper countQueryWrapper;
+                if (page.isOptimizeCountSql()) {
+                    countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
+                } else {
+                    countQueryWrapper = MapperUtil.rawCountQueryWrapper(queryWrapper);
+                }
                 page.setTotalRow(selectCountByQuery(countQueryWrapper));
             }
 
