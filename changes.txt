@@ -1,3 +1,15 @@
+mybatis-flex v1.4.0 20230618:
+新增：LogicDeleteManager，用于处理跳过逻辑删除的场景
+新增：BaseMapper 新增 insertWithPk 方法，用于插入带有主键的 Entity 数据
+新增：left join 等添加对基本类型集合属性的支持，感谢 @王帅
+优化：重命名 MaskManager.withoutMask() 方法为 "execWithoutMask"
+修复：通过方言动态添加 queryWrapper 条件，出现 No value specified for param 错误的问题
+修复：GroupBy FunctionColumns 出现 sql 构建错误的问题
+修复：CacheableServiceImpl 无法获取正确的 TableInfo 的问题
+修复：远程数据源配置（比如 Nacos）无法正确拉取的问题，感谢 @王帅
+
+
+
 mybatis-flex v1.3.9 20230617:
 新增：Db.txWithResult 方法，用于执行有返回结果的事务
 优化：更新 OracleDialect 的相关关键字
