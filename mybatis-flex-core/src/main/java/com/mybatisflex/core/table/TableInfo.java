@@ -15,16 +15,14 @@
  */
 package com.mybatisflex.core.table;
 
-import com.mybatisflex.annotation.InsertListener;
-import com.mybatisflex.annotation.KeyType;
-import com.mybatisflex.annotation.SetListener;
-import com.mybatisflex.annotation.UpdateListener;
+import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.javassist.ModifyAttrsRecord;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
@@ -38,6 +36,7 @@ import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.type.UnknownTypeHandler;
 import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.Field;
@@ -166,7 +165,7 @@ public class TableInfo {
     }
 
     public String getLogicDeleteColumn() {
-        return logicDeleteColumn;
+        return LogicDeleteManager.getLogicDeleteColumn(logicDeleteColumn);
     }
 
     public void setLogicDeleteColumn(String logicDeleteColumn) {
@@ -358,6 +357,30 @@ public class TableInfo {
 
 
     /**
+     * 构建 insert 的 Sql 参数
+     *
+     * @param entity      从 entity 中获取
+     * @param ignoreNulls 是否忽略 null 值
+     * @return 数组
+     */
+    public Object[] buildInsertSqlArgs(Object entity, boolean ignoreNulls) {
+        MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
+        String[] insertColumns = obtainInsertColumns(entity, ignoreNulls);
+
+        List<Object> values = new ArrayList<>(insertColumns.length);
+        for (String insertColumn : insertColumns) {
+            if (onInsertColumns == null || !onInsertColumns.containsKey(insertColumn)) {
+                Object value = buildColumnSqlArg(metaObject, insertColumn);
+                if (ignoreNulls && value == null) {
+                    continue;
+                }
+                values.add(value);
+            }
+        }
+        return values.toArray();
+    }
+
+    /**
      * 插入（新增）数据时，获取所有要插入的字段
      *
      * @param entity
@@ -386,16 +409,9 @@ public class TableInfo {
     }
 
 
-    /**
-     * 构建 insert 的 Sql 参数
-     *
-     * @param entity      从 entity 中获取
-     * @param ignoreNulls 是否忽略 null 值
-     * @return 数组
-     */
-    public Object[] buildInsertSqlArgs(Object entity, boolean ignoreNulls) {
+    public Object[] buildInsertSqlArgsWithPk(Object entity, boolean ignoreNulls) {
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
-        String[] insertColumns = obtainInsertColumns(entity, ignoreNulls);
+        String[] insertColumns = obtainInsertColumnsWithPk(entity, ignoreNulls);
 
         List<Object> values = new ArrayList<>(insertColumns.length);
         for (String insertColumn : insertColumns) {
@@ -410,6 +426,41 @@ public class TableInfo {
         return values.toArray();
     }
 
+
+    /**
+     * 插入（新增）数据时，获取所有要插入的字段
+     *
+     * @param entity
+     * @param ignoreNulls
+     * @return 字段列表
+     */
+    public String[] obtainInsertColumnsWithPk(Object entity, boolean ignoreNulls) {
+        if (!ignoreNulls) {
+            return ArrayUtil.concat(primaryKeys, columns);
+        } else {
+            MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
+            List<String> retColumns = new ArrayList<>();
+            for (String primaryKey : primaryKeys) {
+                Object value = buildColumnSqlArg(metaObject, primaryKey);
+                if (value == null) {
+                    throw new IllegalArgumentException("Entity Primary Key value must not be null.");
+                }
+                retColumns.add(primaryKey);
+            }
+            for (String insertColumn : columns) {
+                if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
+                    retColumns.add(insertColumn);
+                } else {
+                    Object value = buildColumnSqlArg(metaObject, insertColumn);
+                    if (value == null) {
+                        continue;
+                    }
+                    retColumns.add(insertColumn);
+                }
+            }
+            return ArrayUtil.concat(insertPrimaryKeys, retColumns.toArray(new String[0]));
+        }
+    }
 
     /**
      * 获取要修改的值
@@ -615,7 +666,7 @@ public class TableInfo {
         }
 
         //逻辑删除
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+        if (StringUtil.isNotBlank(getLogicDeleteColumn())) {
             queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, SqlConsts.EQUALS
                     , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
         }
@@ -756,15 +807,33 @@ public class TableInfo {
         // <resultMap> 标签下的 <collection> 标签映射
         if (collectionType != null) {
             collectionType.forEach((field, genericClass) -> {
-                // 获取集合泛型类型的信息，也就是 ofType 属性
-                TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
-                // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
-                if (nestedResultMap != null) {
+                if (TableInfoFactory.defaultSupportColumnTypes.contains(genericClass)) {
+                    // List<String> List<Integer> 等
+                    String columnName = TableInfoFactory.getColumnName(camelToUnderline, field, field.getAnnotation(Column.class));
+                    // 映射 <result column="..."/>
+                    String nestedResultMapId = entityClass.getName() + "." + field.getName();
+                    ResultMapping resultMapping = new ResultMapping.Builder(configuration, null)
+                            .column(columnName)
+                            .typeHandler(new UnknownTypeHandler(configuration))
+                            .build();
+                    ResultMap nestedResultMap = new ResultMap.Builder(configuration, nestedResultMapId, genericClass, Collections.singletonList(resultMapping)).build();
+                    configuration.addResultMap(nestedResultMap);
+                    // 映射 <collection property="..." ofType="genericClass">
                     resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
                             .javaType(field.getType())
                             .nestedResultMapId(nestedResultMap.getId())
                             .build());
+                } else {
+                    // 获取集合泛型类型的信息，也就是 ofType 属性
+                    TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
+                    // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
+                    ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
+                    if (nestedResultMap != null) {
+                        resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
+                                .javaType(field.getType())
+                                .nestedResultMapId(nestedResultMap.getId())
+                                .build());
+                    }
                 }
             });
         }
@@ -917,7 +986,7 @@ public class TableInfo {
      * @param entityObject
      */
     public void initLogicDeleteValueIfNecessary(Object entityObject) {
-        if (StringUtil.isBlank(logicDeleteColumn)) {
+        if (StringUtil.isBlank(getLogicDeleteColumn())) {
             return;
         }
 

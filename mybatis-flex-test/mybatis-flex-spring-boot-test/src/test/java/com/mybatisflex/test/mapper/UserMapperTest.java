@@ -18,10 +18,7 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.test.model.User;
-import com.mybatisflex.test.model.UserInfo;
-import com.mybatisflex.test.model.UserVO;
-import com.mybatisflex.test.model.UserVO1;
+import com.mybatisflex.test.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,12 +52,12 @@ class UserMapperTest {
                 .from(USER.as("u"))
                 .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
                 .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
-                .where(USER.USER_ID.eq(3));
+                .where(USER.USER_ID.eq(1));
         System.out.println(queryWrapper.toSQL());
-        UserVO userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO.class);
+//        UserVO userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO.class);
 //        UserVO1 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO1.class);
 //        UserVO2 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO2.class);
-//        UserVO3 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO3.class);
+        UserVO3 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO3.class);
         System.err.println(userVO);
     }
 
@@ -153,6 +150,23 @@ class UserMapperTest {
             page = userMapper.paginateAs(page, queryWrapper, UserVO.class);
             System.err.println(page);
         } while (page.hasNext());
+    }
+
+    @Test
+    void testListString() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(USER.USER_ID,
+                        USER.USER_NAME,
+                        ROLE.ROLE_NAME.as("roles"),
+                        ROLE.ROLE_ID.as("role_ids"))
+                .from(USER.as("u"))
+                .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+                .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+                .where(USER.USER_ID.eq(2));
+        UserVO2 user = userMapper.selectOneByQueryAs(queryWrapper, UserVO2.class);
+        System.err.println(user);
+        user = userMapper.selectOneByQueryAs(queryWrapper, UserVO2.class);
+        System.err.println(user);
     }
 
 }

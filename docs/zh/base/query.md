@@ -183,15 +183,16 @@ System.out.println(results);
 
 ::: tip 方式 3 特别注意事项
 
-- 1、在 `ArticleDTO` 和  `Account` 这两个类中，如果他们有相同的字段，`Account` 中的字段将不会被赋值（该字段为 null，常见的比如 id）。
-- 2、假设在 `ArticleDTO` 中有多个类似 `Account` 的对象，且他们有相同的字段（字段和 `ArticleDTO` 中的不相同），只有优先定义的属性被赋值。
-:::
+- 1、在 `ArticleDTO` 和  `Account` 这两个类中，如果他们有相同的字段，`Account` 中的字段将和 `ArticleDTO` 中的字段拥有一样的值。
+- 2、假设在 `ArticleDTO` 中有多个类似 `Account` 的对象，且他们有相同的字段（字段和 `ArticleDTO`
+  中的不相同），所有相同属性名的值与优先定义的属性的值相同。
+  :::
 
 
 **其他注意事项：**
 
 > 关联查询（`selectOneByQueryAs`、`selectListByQueryAs` 、`paginateAs` 等方法）中的 `asType` 参数类型（比如：`ArticleDTO`），
-一样支持使用 `@Column`、`@ColumnMask` 注解以及 `@Table` 的 `onInsert`、`onUpdate`、`onSet` 配置。
+> 一样支持使用 `@Column`、`@ColumnMask` 注解以及 `@Table` 的 `onInsert`、`onUpdate`、`onSet` 配置。
 
 
 ## 分页查询

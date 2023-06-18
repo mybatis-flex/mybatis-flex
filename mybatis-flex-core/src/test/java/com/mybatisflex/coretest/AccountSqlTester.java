@@ -264,6 +264,15 @@ public class AccountSqlTester {
     }
 
     @Test
+    public void testGroup_I7EAY9() {
+        QueryWrapper query = QueryWrapper.create()
+                .from(ACCOUNT).as("a")
+                .from(ACCOUNT01).as("b")
+                .groupBy(year(ACCOUNT.BIRTHDAY));
+        System.out.println(query.toSQL());
+    }
+
+    @Test
     public void testHavingSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select()

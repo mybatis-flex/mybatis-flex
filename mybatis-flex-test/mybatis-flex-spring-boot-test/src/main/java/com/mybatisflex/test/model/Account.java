@@ -77,7 +77,7 @@ public class Account extends BaseEntity<String, Long, String> {
                 ", userName='" + userName + '\'' +
                 ", age=" + age +
                 ", birthday=" + birthday +
-                ", list=" + roles +
+                ", roles=" + roles +
                 '}';
     }
 }

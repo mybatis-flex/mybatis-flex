@@ -82,6 +82,15 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
     }
 
     @Override
+    String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
+        String sql = column.toSelectSql(queryTables, dialect);
+        if (StringUtil.isBlank(sql)) {
+            return SqlConsts.EMPTY;
+        }
+        return fnName + WrapperUtil.withBracket(sql);
+    }
+
+    @Override
     public QueryColumn as(String alias) {
         SqlUtil.keepColumnSafely(alias);
         this.alias = alias;

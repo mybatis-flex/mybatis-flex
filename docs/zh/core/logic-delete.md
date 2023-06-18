@@ -70,3 +70,15 @@ globalConfig.setNormalValueOfLogicDelete("...");
 //设置数据已被删除时的值
 globalConfig.setDeletedValueOfLogicDelete("...");
 ```
+
+## 跳过逻辑删除处理
+
+在某些场景下，我们再执行查询、更新或删除数据时，有必要跳过 MyBatis-Flex 自动添加的逻辑删除的相关条件，
+此时，我们可以使用 LogicDeleteManager.execWithoutLogicDelete() 方法处理，代码如下：
+
+```java
+LogicDeleteManager.execWithoutLogicDelete(() -> 
+            accountMapper.deleteById(1)
+        );
+```
+以上代码中，`accountMapper` 会直接对 `Account` 数据进行物理删除，忽略逻辑删除字段配置。

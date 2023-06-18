@@ -35,8 +35,23 @@ public class DistinctQueryColumn extends QueryColumn {
         if (CollectionUtil.isEmpty(queryTables)) {
             return SqlConsts.EMPTY;
         }
+
+        String sql = SqlConsts.DISTINCT + StringUtil.join(SqlConsts.DELIMITER, queryColumns, queryColumn ->
+                queryColumn.toSelectSql(queryTables, dialect));
+
+        return sql + WrapperUtil.buildAlias(alias, dialect);
+    }
+
+
+    @Override
+    String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
+        if (CollectionUtil.isEmpty(queryTables)) {
+            return SqlConsts.EMPTY;
+        }
+
         return SqlConsts.DISTINCT + StringUtil.join(SqlConsts.DELIMITER, queryColumns, queryColumn ->
                 queryColumn.toSelectSql(queryTables, dialect));
+
     }
 
     @Override

@@ -70,6 +70,23 @@ public interface BaseMapper<T> {
     int insert(@Param(FlexConsts.ENTITY) T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls);
 
 
+
+    default int insertWithPk(T entity) {
+        return insertWithPk(entity, true);
+    }
+
+    /**
+     * 带有主键的插入，此时 entity 不会经过主键生成器生成主键
+     *
+     * @param entity      带有主键的实体类
+     * @param ignoreNulls 是否忽略 null 值
+     * @return 返回影响的行数
+     * @see com.mybatisflex.core.provider.EntitySqlProvider#insertWithPk(Map, ProviderContext)
+     */
+    @InsertProvider(type = EntitySqlProvider.class, method = "insertWithPk")
+    int insertWithPk(@Param(FlexConsts.ENTITY) T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls);
+
+
     /**
      * 批量插入 entity 数据，只会根据第一条数据来构建插入的字段内容
      *

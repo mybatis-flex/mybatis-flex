@@ -60,14 +60,14 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#insert(String,String, Row)
+     * @see RowMapper#insert(String, String, Row)
      */
     public static String insert(Map params) {
         String tableName = ProviderUtil.getTableName(params);
         String schema = ProviderUtil.getSchemaName(params);
         Row row = ProviderUtil.getRow(params);
         ProviderUtil.setSqlArgs(params, RowCPI.obtainModifyValues(row));
-        return DialectFactory.getDialect().forInsertRow(schema,tableName, row);
+        return DialectFactory.getDialect().forInsertRow(schema, tableName, row);
     }
 
     /**
@@ -98,7 +98,7 @@ public class RowSqlProvider {
         ProviderUtil.setSqlArgs(params, values);
 
         //sql: INSERT INTO `tb_table`(`name`, `sex`) VALUES (?, ?),(?, ?),(?, ?)
-        return DialectFactory.getDialect().forInsertBatchWithFirstRowColumns(schema,tableName, rows);
+        return DialectFactory.getDialect().forInsertBatchWithFirstRowColumns(schema, tableName, rows);
     }
 
     /**
@@ -106,7 +106,7 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#deleteById(String,String, String, Object)
+     * @see RowMapper#deleteById(String, String, String, Object)
      */
     public static String deleteById(Map params) {
         String schema = ProviderUtil.getSchemaName(params);
@@ -146,18 +146,21 @@ public class RowSqlProvider {
      *
      * @param params
      * @return sql
-     * @see RowMapper#deleteByQuery(String,String, QueryWrapper)
+     * @see RowMapper#deleteByQuery(String, String, QueryWrapper)
      */
     public static String deleteByQuery(Map params) {
         String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        CPI.setFromIfNecessary(queryWrapper, schema,tableName);
+        CPI.setFromIfNecessary(queryWrapper, schema, tableName);
+
+        //优先构建 sql，再构建参数
+        String sql = DialectFactory.getDialect().forDeleteByQuery(queryWrapper);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
 
-        return DialectFactory.getDialect().forDeleteByQuery(queryWrapper);
+        return sql;
     }
 
     /**
@@ -189,14 +192,17 @@ public class RowSqlProvider {
         Row data = ProviderUtil.getRow(params);
 
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        CPI.setFromIfNecessary(queryWrapper,schema, tableName);
+        CPI.setFromIfNecessary(queryWrapper, schema, tableName);
+
+        //优先构建 sql，再构建参数
+        String sql = DialectFactory.getDialect().forUpdateByQuery(queryWrapper, data);
 
         Object[] modifyValues = RowCPI.obtainModifyValues(data);
         Object[] valueArray = CPI.getValueArray(queryWrapper);
 
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(modifyValues, valueArray));
 
-        return DialectFactory.getDialect().forUpdateByQuery(queryWrapper, data);
+        return sql;
     }
 
 
@@ -221,7 +227,7 @@ public class RowSqlProvider {
             values = ArrayUtil.concat(values, RowCPI.obtainAllModifyValues(row));
         }
         ProviderUtil.setSqlArgs(params, values);
-        return DialectFactory.getDialect().forUpdateBatchById(schema,tableName, rows);
+        return DialectFactory.getDialect().forUpdateBatchById(schema, tableName, rows);
     }
 
     /**
@@ -269,12 +275,13 @@ public class RowSqlProvider {
         String fieldName = ProviderUtil.getFieldName(params);
         Number value = (Number) ProviderUtil.getValue(params);
 
+        //优先构建 sql，再构建参数
+        String sql = DialectFactory.getDialect().forUpdateNumberAddByQuery(schema
+                , tableName, fieldName, value, queryWrapper);
 
         Object[] queryParams = CPI.getValueArray(queryWrapper);
-
         ProviderUtil.setSqlArgs(params, queryParams);
-
-        return DialectFactory.getDialect().forUpdateNumberAddByQuery(schema, tableName, fieldName, value, queryWrapper);
+        return sql;
     }
 
 
@@ -293,7 +300,7 @@ public class RowSqlProvider {
 
         ProviderUtil.setSqlArgs(params, primaryValues);
 
-        return DialectFactory.getDialect().forSelectOneById(schema,tableName, primaryKeys, primaryValues);
+        return DialectFactory.getDialect().forSelectOneById(schema, tableName, primaryKeys, primaryValues);
     }
 
 
@@ -308,13 +315,15 @@ public class RowSqlProvider {
         String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        CPI.setFromIfNecessary(queryWrapper,schema, tableName);
+        CPI.setFromIfNecessary(queryWrapper, schema, tableName);
+
+        //优先构建 sql，再构建参数
+        String sql = DialectFactory.getDialect().forSelectByQuery(queryWrapper);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
 
-
-        return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
+        return sql;
     }
 
     /**
@@ -329,12 +338,15 @@ public class RowSqlProvider {
         String tableName = ProviderUtil.getTableName(params);
 
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        CPI.setFromIfNecessary(queryWrapper,schema,tableName);
+        CPI.setFromIfNecessary(queryWrapper, schema, tableName);
+
+        //优先构建 sql，再构建参数
+        String sql = DialectFactory.getDialect().forSelectByQuery(queryWrapper);
 
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
 
-        return DialectFactory.getDialect().forSelectByQuery(queryWrapper);
+        return sql;
     }
 
 

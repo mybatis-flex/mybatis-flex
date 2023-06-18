@@ -149,7 +149,7 @@ class WrapperUtil {
         return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT + SqlConsts.AS + alias;
     }
 
-    static String withAliasIf(String alias, IDialect dialect) {
+    static String buildAlias(String alias, IDialect dialect) {
         return StringUtil.isBlank(alias) ? SqlConsts.EMPTY : SqlConsts.AS + dialect.wrap(alias);
     }
 }

@@ -22,6 +22,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
+import com.mybatisflex.core.util.ClassUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -90,7 +91,8 @@ public class CacheableServiceImpl<M extends BaseMapper<T>, T> implements IServic
      */
     @Override
     public QueryWrapper query() {
-        TableInfo tableInfo = TableInfoFactory.ofMapperClass(getMapper().getClass());
+        Class<?> mapperClass = ClassUtil.getUsefulClass(getMapper().getClass());
+        TableInfo tableInfo = TableInfoFactory.ofMapperClass(mapperClass);
         return QueryWrapper.create().from(new QueryTable(tableInfo.getSchema(), tableInfo.getTableName()));
     }
 

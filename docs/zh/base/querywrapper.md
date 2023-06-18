@@ -104,7 +104,7 @@ FROM tb_account AS a, tb_article AS b
 WHERE a.id = b.account_id
 ```
 
-## select function
+## select function（SQL 函数）
 
 ```java
 QueryWrapper query=new QueryWrapper()
@@ -122,6 +122,22 @@ QueryWrapper query=new QueryWrapper()
 SELECT id, user_name, MAX(birthday), AVG(sex) AS sex_avg
 FROM tb_account
 ```
+
+目前，MyBatis-Flex 内置的函数支持如下：
+
+- count
+- max
+- min
+- avg
+- sum
+- year
+- month
+- day
+- convert
+
+更多的函数，用户可以参考 [QueryMethods](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/query/QueryMethods.java)
+，然后再自己的项目里进行自定义扩展。
+
 
 ## select case...when
 
