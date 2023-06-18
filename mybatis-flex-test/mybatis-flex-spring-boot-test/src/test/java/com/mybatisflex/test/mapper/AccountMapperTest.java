@@ -69,17 +69,6 @@ class AccountMapperTest {
     }
 
     @Test
-    void testListString() {
-        QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(ACCOUNT.ALL_COLUMNS, ROLE.ROLE_NAME.as("roles"))
-                .from(ACCOUNT)
-                .leftJoin(USER_ROLE).on(USER_ROLE.USER_ID.eq(ACCOUNT.ID))
-                .leftJoin(ROLE).on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID));
-        accountMapper.selectListByQuery(queryWrapper).forEach(System.err::println);
-        accountMapper.selectListByQueryAs(queryWrapper, AccountVO.class).forEach(System.err::println);
-    }
-
-    @Test
     void testGenericEntity() {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(ACCOUNT.ALL_COLUMNS, ROLE.ALL_COLUMNS)

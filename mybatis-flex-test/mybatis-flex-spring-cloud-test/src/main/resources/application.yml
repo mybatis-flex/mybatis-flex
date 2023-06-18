@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+  config:
+    import: nacos:application-datasource.yml
