@@ -85,6 +85,15 @@ public interface IPage<T> extends Serializable {
     void setRecords(List<T> records);
 
     /**
+     * 获取当前分页偏移量。
+     *
+     * @return 偏移量
+     */
+    default int getOffset() {
+        return getPageSize() * (getPageNumber() - 1);
+    }
+
+    /**
      * 是否自动优化 COUNT 查询语句（默认优化）。
      *
      * @return {@code true} 优化，{@code false} 不优化

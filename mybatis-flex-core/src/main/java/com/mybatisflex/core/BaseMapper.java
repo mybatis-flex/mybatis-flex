@@ -688,8 +688,7 @@ public interface BaseMapper<T> {
                 return page;
             }
 
-            int offset = page.getPageSize() * (page.getPageNumber() - 1);
-            queryWrapper.limit(offset, page.getPageSize());
+            queryWrapper.limit(page.getOffset(), page.getPageSize());
 
             List<R> records;
             if (asType != null) {

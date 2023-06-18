@@ -453,8 +453,7 @@ public interface RowMapper {
                 return page;
             }
 
-            int offset = page.getPageSize() * (page.getPageNumber() - 1);
-            queryWrapper.limit(offset, page.getPageSize());
+            queryWrapper.limit(page.getOffset(), page.getPageSize());
 
             page.setRecords(selectListByQuery(schema, tableName, queryWrapper));
 
