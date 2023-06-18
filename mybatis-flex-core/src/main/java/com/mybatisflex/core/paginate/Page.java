@@ -15,13 +15,12 @@
  */
 package com.mybatisflex.core.paginate;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-public class Page<T> implements Serializable {
+public class Page<T> implements IPage<T> {
 
     private static final long serialVersionUID = 1L;
     public static final int INIT_VALUE = -1;
@@ -64,10 +63,12 @@ public class Page<T> implements Serializable {
     }
 
 
+    @Override
     public List<T> getRecords() {
         return records;
     }
 
+    @Override
     public void setRecords(List<T> records) {
         if (records == null) {
             records = Collections.emptyList();
@@ -75,10 +76,12 @@ public class Page<T> implements Serializable {
         this.records = records;
     }
 
+    @Override
     public int getPageNumber() {
         return pageNumber;
     }
 
+    @Override
     public void setPageNumber(int pageNumber) {
         if (pageNumber < 1) {
             throw new IllegalArgumentException("pageNumber must greater than or equal 1，current value is: " + pageNumber);
@@ -87,10 +90,12 @@ public class Page<T> implements Serializable {
     }
 
 
+    @Override
     public int getPageSize() {
         return pageSize;
     }
 
+    @Override
     public void setPageSize(int pageSize) {
         if (pageSize < 0) {
             throw new IllegalArgumentException("pageSize must greater than or equal 0，current value is: " + pageSize);
@@ -99,18 +104,22 @@ public class Page<T> implements Serializable {
         this.calcTotalPage();
     }
 
+    @Override
     public long getTotalPage() {
         return totalPage;
     }
 
+    @Override
     public void setTotalPage(long totalPage) {
         this.totalPage = totalPage;
     }
 
+    @Override
     public long getTotalRow() {
         return totalRow;
     }
 
+    @Override
     public void setTotalRow(long totalRow) {
         this.totalRow = totalRow;
         this.calcTotalPage();
@@ -127,10 +136,12 @@ public class Page<T> implements Serializable {
         }
     }
 
+    @Override
     public boolean isEmpty() {
         return getTotalRow() == 0 || getPageNumber() > getTotalPage();
     }
 
+    @Override
     public boolean hasNext() {
         return getTotalPage() != 0 && getPageNumber() < getTotalPage();
     }
