@@ -7,19 +7,33 @@ MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的。
 
 ## 阿里镜像找不到依赖？
 
-```text
-Could not find artifact com.mybatis-flex:mybatis-flex-spring-boot-starter:pom:1.4.0 in alimaven (http://maven.aliyun.com/nexus/content/groups/public/)
+```txt
+Could not find artifact com.mybatis-flex:mybatis-flex-spring-boot-starter:pom:1.4.0 
+in alimaven (http://maven.aliyun.com/nexus/content/groups/public/)
 ```
 
-这个是因为目前阿里云镜像正在维护，可以替换为腾讯的镜像源，更改 `settings.xml` 文件，添加：
+这个是因为目前阿里云镜像正在维护，可以替换为`腾讯云`或者`华为云`的镜像源，更改 Maven 安装目录下的 `settings.xml` 文件，
+添加如下配置：
+
+腾讯云：
 
 ```xml
-
 <mirror>
-    <id>nexus-tencentyun</id>
+    <id>tencent-cloud</id>
     <mirrorOf>*</mirrorOf>
-    <name>Nexus tencentyun</name>
-    <url>http://mirrors.cloud.tencent.com/nexus/repository/maven-public/</url>
+    <name>tencent-cloud</name>
+    <url>https://mirrors.cloud.tencent.com/nexus/repository/maven-public/</url>
+</mirror>
+```
+
+华为云：
+
+```xml
+<mirror>
+    <id>huawei-cloud</id>
+    <mirrorOf>*</mirrorOf>
+    <name>huawei-cloud</name>
+    <url>https://mirrors.huaweicloud.com/repository/maven/</url>
 </mirror>
 ```
 
