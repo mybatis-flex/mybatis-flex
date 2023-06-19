@@ -509,7 +509,7 @@ public class CommonsDialectImpl implements IDialect {
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
         sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this));
-        sql.append(SET).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicDeletedValue());
+        sql.append(SET).append(buildLogicDeletedSet(logicDeleteColumn));
         sql.append(WHERE);
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
@@ -518,7 +518,8 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
 
-        sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+//        sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+        sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
 
         //租户ID
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
@@ -549,7 +550,7 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder sql = new StringBuilder();
         sql.append(UPDATE);
         sql.append(tableInfo.getWrapSchemaAndTableName(this));
-        sql.append(SET).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicDeletedValue());
+        sql.append(SET).append(buildLogicDeletedSet(logicDeleteColumn));
         sql.append(WHERE);
         sql.append(BRACKET_LEFT);
 
@@ -581,7 +582,7 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        sql.append(BRACKET_RIGHT).append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+        sql.append(BRACKET_RIGHT).append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
 
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
             sql.append(AND).append(wrap(tableInfo.getTenantIdColumn())).append(IN).append(buildQuestion(tenantIdArgs.length));
@@ -609,7 +610,7 @@ public class CommonsDialectImpl implements IDialect {
         //ignore selectColumns
         StringBuilder sqlBuilder = new StringBuilder(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
         sqlBuilder.append(tableInfo.getWrapSchemaAndTableName(this));
-        sqlBuilder.append(SET).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicDeletedValue());
+        sqlBuilder.append(SET).append(buildLogicDeletedSet(logicDeleteColumn));
 
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
@@ -664,7 +665,7 @@ public class CommonsDialectImpl implements IDialect {
         //逻辑删除条件，已删除的数据不能被修改
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+            sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
         }
 
 
@@ -815,7 +816,7 @@ public class CommonsDialectImpl implements IDialect {
         //逻辑删除的情况下，需要添加逻辑删除的条件
         String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+            sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
         }
 
         //多租户
@@ -873,7 +874,7 @@ public class CommonsDialectImpl implements IDialect {
 
 
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+            sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
         }
 
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
@@ -972,6 +973,16 @@ public class CommonsDialectImpl implements IDialect {
         }
         sb.append(BRACKET_RIGHT);
         return sb.toString();
+    }
+
+
+    protected String buildLogicNormalCondition(String logicColumn) {
+        return wrap(logicColumn) + EQUALS + getLogicNormalValue();
+    }
+
+
+    protected String buildLogicDeletedSet(String logicColumn) {
+        return wrap(logicColumn) + EQUALS + getLogicDeletedValue();
     }
 
 
