@@ -441,7 +441,7 @@ public interface RowMapper {
             // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
             if (page.getTotalRow() < 0) {
                 QueryWrapper countQueryWrapper;
-                if (page.isOptimizeCountSql()) {
+                if (page.needOptimizeCountQuery()) {
                     countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
                 } else {
                     countQueryWrapper = MapperUtil.rawCountQueryWrapper(queryWrapper);
@@ -453,7 +453,7 @@ public interface RowMapper {
                 return page;
             }
 
-            queryWrapper.limit(page.getOffset(), page.getPageSize());
+            queryWrapper.limit(page.offset(), page.getPageSize());
 
             page.setRecords(selectListByQuery(schema, tableName, queryWrapper));
 
