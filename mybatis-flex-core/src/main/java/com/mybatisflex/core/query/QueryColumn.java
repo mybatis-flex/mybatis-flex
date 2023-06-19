@@ -44,6 +44,12 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         this.name = name;
     }
 
+    public QueryColumn(String tableName, String name) {
+        SqlUtil.keepColumnSafely(name);
+        this.table = new QueryTable(tableName);
+        this.name = name;
+    }
+
     public QueryColumn(String schema, String tableName, String name) {
         SqlUtil.keepColumnSafely(name);
         this.table = new QueryTable(schema, tableName);

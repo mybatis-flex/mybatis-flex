@@ -37,7 +37,7 @@ public class CaseSearchQueryColumn extends QueryColumn implements HasParamsColum
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String sql = buildSql(queryTables, dialect);
         if (StringUtil.isNotBlank(alias)) {
-            return WrapperUtil.withAlias(sql, dialect.wrap(alias));
+            return WrapperUtil.withAlias(sql, dialect.wrap(alias), dialect);
         }
         return sql;
     }

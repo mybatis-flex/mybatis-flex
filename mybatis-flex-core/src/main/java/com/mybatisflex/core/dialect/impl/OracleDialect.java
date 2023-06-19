@@ -33,7 +33,7 @@ import static com.mybatisflex.core.constant.SqlConsts.*;
 public class OracleDialect extends CommonsDialectImpl {
 
     //https://docs.oracle.com/cd/A97630_01/appdev.920/a42525/apb.htm
-    private static final Set<String> keywords = CollectionUtil.newHashSet(
+    public static final Set<String> keywords = CollectionUtil.newHashSet(
             "ACCESS", "ELSE", "MODIFY", "START", "ADD", "EXCLUSIVE", "NOAUDIT", "SELECT",
             "ALL", "EXISTS", "NOCOMPRESS", "SESSION", "ALTER", "FILE", "NOT", "SET", "AND", "FLOAT",
             "NOTFOUND", "SHARE", "ANY", "FOR", "NOWAIT", "SIZE", "ARRAYLEN", "FROM", "NULL", "SMALLINT",
@@ -86,7 +86,11 @@ public class OracleDialect extends CommonsDialectImpl {
     }
 
     public OracleDialect(LimitOffsetProcessor limitOffsetProcessor) {
-        super(new KeywordWrap(keywords, "\"", "\""), limitOffsetProcessor);
+        this(new KeywordWrap(false, true, keywords, "\"", "\""), limitOffsetProcessor);
+    }
+
+    public OracleDialect(KeywordWrap keywordWrap, LimitOffsetProcessor limitOffsetProcessor) {
+        super(keywordWrap, limitOffsetProcessor);
     }
 
     @Override

@@ -55,7 +55,12 @@ public class KeywordWrap {
     /**
      * 大小写敏感
      */
-    private final boolean caseSensitive;
+    private boolean caseSensitive = false;
+
+    /**
+     * 自动把关键字转换为大写
+     */
+    private boolean keywordsToUpperCase = false;
 
     /**
      * 数据库关键字
@@ -88,12 +93,29 @@ public class KeywordWrap {
         this.suffix = suffix;
     }
 
+    public KeywordWrap(boolean caseSensitive, boolean keywordsToUpperCase, Set<String> keywords, String prefix, String suffix) {
+        this.caseSensitive = caseSensitive;
+        this.keywordsToUpperCase = keywordsToUpperCase;
+        this.keywords = keywords;
+        this.prefix = prefix;
+        this.suffix = suffix;
+    }
+
     public String wrap(String keyword) {
-        if (StringUtil.isBlank(keyword) || SqlConsts.ASTERISK.equals(keyword)) {
+        if (StringUtil.isBlank(keyword) || SqlConsts.ASTERISK.equals(keyword.trim())) {
             return keyword;
         }
-        if (caseSensitive || keywords.isEmpty() || keywords.contains(keyword.toUpperCase(Locale.ENGLISH))) {
+
+        if (caseSensitive || keywords.isEmpty()) {
             return prefix + keyword + suffix;
+        }
+
+        if (keywords.contains(keyword.toUpperCase(Locale.ENGLISH))) {
+            if (keywordsToUpperCase) {
+                return prefix + keyword.toUpperCase() + suffix;
+            } else {
+                return prefix + keyword + suffix;
+            }
         }
         return keyword;
     }

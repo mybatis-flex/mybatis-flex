@@ -20,6 +20,7 @@ import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.dialect.impl.OracleDialect;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.EnumWrapper;
 import com.mybatisflex.core.util.StringUtil;
@@ -145,11 +146,15 @@ class WrapperUtil {
         return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT;
     }
 
-    static String withAlias(String sql, String alias) {
-        return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT + SqlConsts.AS + alias;
+    static String withAlias(String sql, String alias, IDialect dialect) {
+        return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT + getAsKeyWord(dialect) + alias;
     }
 
     static String buildAlias(String alias, IDialect dialect) {
-        return StringUtil.isBlank(alias) ? SqlConsts.EMPTY : SqlConsts.AS + dialect.wrap(alias);
+        return StringUtil.isBlank(alias) ? SqlConsts.EMPTY : getAsKeyWord(dialect) + dialect.wrap(alias);
+    }
+
+    private static String getAsKeyWord(IDialect dialect){
+        return dialect instanceof OracleDialect ? SqlConsts.BLANK : SqlConsts.AS;
     }
 }

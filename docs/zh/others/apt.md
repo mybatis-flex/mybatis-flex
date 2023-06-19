@@ -136,7 +136,7 @@ processor.baseMapperClass=com.domain.mapper.MyBaseMapper
 
 有时候可能会遇到实体类不在同一个包中的情况，例如：
 
-```text
+```txt
 com.example.entityPackage1
     └─ Entity1
 com.example.entityPackage2
@@ -145,7 +145,7 @@ com.example.entityPackage2
 
 此时的辅助类会生成在对应的包下，例如：
 
-```text
+```txt
 com.example.entityPackage1.table
     └─ Entity1TableDef
 com.example.entityPackage2.table
@@ -154,7 +154,7 @@ com.example.entityPackage2.table
 
 但是，如果您设置了 `processor.allInTables=true` 的话，`Tables` 文件将会生成在最后一个包中，例如：
 
-```text
+```txt
 com.example.entityPackage2.table
     └─ Tables
 ```

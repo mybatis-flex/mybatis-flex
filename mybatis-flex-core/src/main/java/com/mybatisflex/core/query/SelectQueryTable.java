@@ -49,7 +49,7 @@ public class SelectQueryTable extends QueryTable {
     public String toSql(IDialect dialect) {
         String sql = dialect.buildSelectSql(queryWrapper);
         if (StringUtil.isNotBlank(alias)) {
-            return WrapperUtil.withAlias(sql, dialect.wrap(alias));
+            return WrapperUtil.withAlias(sql, dialect.wrap(alias), dialect);
         } else {
             return WrapperUtil.withBracket(sql);
         }
