@@ -1,13 +1,13 @@
 # DataSource Config
-#spring:
-#  h2:
-#    console:
-#      enabled: true
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/flex_test
-#    username: root
-#    password: 12345678
+spring:
+  #  h2:
+  #    console:
+  #      enabled: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/flex_test
+    username: root
+    password: 12345678
 #  sql:
 #    init:
 #      schema-locations: classpath:schema.sql
@@ -15,11 +15,11 @@
 mybatis-flex:
   mapper-locations:
     - classpath*:/mapper/*.xml
-  datasource:
-    data-center:
-      url: jdbc:mysql://localhost:3306/flex_test
-      username: root
-      password: 12345678
+#  datasource:
+#    data-center:
+#      url: jdbc:mysql://localhost:3306/flex_test
+#      username: root
+#      password: 12345678
 #mybatis-flex:
 #  datasource:
 #    ds1:
