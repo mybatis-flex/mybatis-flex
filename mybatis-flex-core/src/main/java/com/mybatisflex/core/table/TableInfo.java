@@ -164,10 +164,13 @@ public class TableInfo {
         this.dataSource = dataSource;
     }
 
-    public String getLogicDeleteColumn() {
+    public String getLogicDeleteColumnOrSkip() {
         return LogicDeleteManager.getLogicDeleteColumn(logicDeleteColumn);
     }
 
+    public String getLogicDeleteColumn() {
+        return logicDeleteColumn;
+    }
     public void setLogicDeleteColumn(String logicDeleteColumn) {
         this.logicDeleteColumn = logicDeleteColumn;
     }
@@ -666,9 +669,10 @@ public class TableInfo {
         }
 
         //逻辑删除
-        if (StringUtil.isNotBlank(getLogicDeleteColumn())) {
-            queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, SqlConsts.EQUALS
-                    , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
+        if (StringUtil.isNotBlank(getLogicDeleteColumnOrSkip())) {
+//            queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, SqlConsts.EQUALS
+//                    , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
+            LogicDeleteManager.getProcessor().buildQueryCondition(queryWrapper,this);
         }
 
         //多租户
@@ -986,7 +990,7 @@ public class TableInfo {
      * @param entityObject
      */
     public void initLogicDeleteValueIfNecessary(Object entityObject) {
-        if (StringUtil.isBlank(getLogicDeleteColumn())) {
+        if (StringUtil.isBlank(getLogicDeleteColumnOrSkip())) {
             return;
         }
 

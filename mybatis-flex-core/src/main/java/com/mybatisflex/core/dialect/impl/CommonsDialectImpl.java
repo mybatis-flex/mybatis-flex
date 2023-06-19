@@ -15,11 +15,11 @@
  */
 package com.mybatisflex.core.dialect.impl;
 
-import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowCPI;
@@ -492,7 +492,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forDeleteEntityById(TableInfo tableInfo) {
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         //正常删除
         if (StringUtil.isBlank(logicDeleteColumn)) {
@@ -518,7 +518,6 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
 
-//        sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
         sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
 
         //租户ID
@@ -532,7 +531,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forDeleteEntityBatchByIds(TableInfo tableInfo, Object[] primaryValues) {
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
         //正常删除
@@ -594,7 +593,7 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String forDeleteEntityBatchByQuery(TableInfo tableInfo, QueryWrapper queryWrapper) {
 
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
 
         //正常删除
         if (StringUtil.isBlank(logicDeleteColumn)) {
@@ -663,7 +662,7 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         //逻辑删除条件，已删除的数据不能被修改
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
             sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
         }
@@ -814,7 +813,7 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         //逻辑删除的情况下，需要添加逻辑删除的条件
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
             sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
         }
@@ -836,7 +835,7 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(WHERE);
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         if (StringUtil.isNotBlank(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
             sql.append(BRACKET_LEFT);
@@ -975,34 +974,14 @@ public class CommonsDialectImpl implements IDialect {
         return sb.toString();
     }
 
-
     protected String buildLogicNormalCondition(String logicColumn) {
-        return wrap(logicColumn) + EQUALS + getLogicNormalValue();
+        return LogicDeleteManager.getProcessor().buildLogicNormalCondition(logicColumn,this);
     }
 
 
     protected String buildLogicDeletedSet(String logicColumn) {
-        return wrap(logicColumn) + EQUALS + getLogicDeletedValue();
+        return LogicDeleteManager.getProcessor().buildLogicDeletedSet(logicColumn,this);
     }
 
-
-    protected Object getLogicNormalValue() {
-        Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
-        if (normalValueOfLogicDelete instanceof Number
-                || normalValueOfLogicDelete instanceof Boolean) {
-            return normalValueOfLogicDelete;
-        }
-        return SINGLE_QUOTE + normalValueOfLogicDelete + SINGLE_QUOTE;
-    }
-
-
-    protected Object getLogicDeletedValue() {
-        Object deletedValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete();
-        if (deletedValueOfLogicDelete instanceof Number
-                || deletedValueOfLogicDelete instanceof Boolean) {
-            return deletedValueOfLogicDelete;
-        }
-        return SINGLE_QUOTE + deletedValueOfLogicDelete + SINGLE_QUOTE;
-    }
 
 }
