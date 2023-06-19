@@ -65,7 +65,7 @@ public class StringFunctionQueryColumn extends QueryColumn {
         if (StringUtil.isBlank(alias)) {
             return fnName + WrapperUtil.withBracket(sql);
         }
-        return fnName + WrapperUtil.withAlias(sql, dialect.wrap(alias));
+        return fnName + WrapperUtil.withAlias(sql, dialect.wrap(alias), dialect);
     }
 
     @Override
