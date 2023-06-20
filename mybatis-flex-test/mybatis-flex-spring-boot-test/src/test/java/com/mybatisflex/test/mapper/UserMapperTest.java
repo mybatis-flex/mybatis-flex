@@ -144,7 +144,7 @@ class UserMapperTest {
                 .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID));
         System.err.println(queryWrapper.toSQL());
         Page<UserVO> page = Page.of(1, 1);
-        page.setOptimizeCountSql(false);
+        page.setOptimizeCountQuery(false);
         int pageNumber = 0;
         do {
             page.setPageNumber(page.getPageNumber() + 1);

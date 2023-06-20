@@ -54,6 +54,51 @@ SELECT * FROM tb_account where id = ? and is_delete = 0
 - selectCountBy**
 - paginate
 
+同时，比如 Left Join 或者子查询等，若 **子表也设置了逻辑删除字段**， 那么子表也会添加相应的逻辑删除条件，例如：
+
+```java
+QueryWrapper query1 = QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .leftJoin(ARTICLE).as("a").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+    .where(ACCOUNT.AGE.ge(10));
+```
+其执行的 SQL 如下：
+
+```sql
+SELECT * FROM `tb_account` 
+    LEFT JOIN `tb_article` AS `a` ON `tb_account`.`id` = `a`.`account_id` 
+WHERE `tb_account`.`age` >= 10 
+  AND `tb_account`.`is_delete` = 0 AND `a`.`is_delete` = 0
+```
+自动添加上 `tb_account.is_delete = 0 AND a.is_delete = 0` 条件。
+
+示例 2：
+
+```java
+ QueryWrapper query2 = QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .leftJoin(
+            //子查询
+            select().from(ARTICLE).where(ARTICLE.ID.ge(100))
+    ).as("a").on(
+            ACCOUNT.ID.eq(raw("a.id"))
+    )
+    .where(ACCOUNT.AGE.ge(10));
+```
+其执行的 SQL 如下：
+
+```sql
+SELECT * FROM `tb_account` 
+    LEFT JOIN (
+        SELECT * FROM `tb_article` WHERE `id` >= 100 AND `is_delete` = 0
+        ) AS `a` 
+    ON `tb_account`.`id` = a.id 
+WHERE `tb_account`.`age` >= 10 AND `tb_account`.`is_delete` = 0
+```
+
+
 ## 逻辑删除的默认值配置
 
 在某些场景下，我们可能希望数据库存入的逻辑删除中的值并非 0 和 1，比如可能是 true 和 false 等，那么，我们可以通过配置 `FlexGlobalConfig`
@@ -82,3 +127,38 @@ LogicDeleteManager.execWithoutLogicDelete(() ->
         );
 ```
 以上代码中，`accountMapper` 会直接对 `Account` 数据进行物理删除，忽略逻辑删除字段配置。
+
+## 自定义逻辑删除处理功能
+
+在社区中，有许多用户提出希望使用时间类型，当删除时，设置删除字段为`当前时间`，当正常时，设置为 `0` 或者 `null`。
+那么，我们可以通过 `LogicDeleteManager` 设置一个新的 `LogicDeleteProcessor`：
+
+`LogicDeleteProcessor` 接口的内容如下：
+
+```java
+public interface LogicDeleteProcessor {
+
+    /**
+     * 用户构建查询正常数据的条件
+     * @param logicColumn
+     * @param dialect
+     */
+    String buildLogicNormalCondition(String logicColumn, IDialect dialect);
+
+    /**
+     * 用户与构建删除数据时的内容
+     * @param logicColumn
+     * @param dialect
+     */
+    String buildLogicDeletedSet(String logicColumn, IDialect dialect);
+
+    /**
+     * 用于构建通过 QueryWrapper 查询数据时的内容
+     * @param queryWrapper
+     * @param tableInfo
+     */
+    void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo);
+}
+```
+
+具体实现可以参考：[DefaultLogicDeleteProcessorImpl](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/logicdelete/DefaultLogicDeleteProcessorImpl.java)

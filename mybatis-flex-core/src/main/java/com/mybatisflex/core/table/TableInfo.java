@@ -128,6 +128,10 @@ public class TableInfo {
         return tableName;
     }
 
+    public String getTableNameWithSchema() {
+        return StringUtil.isNotBlank(schema) ? schema + "." + tableName : tableName;
+    }
+
     public String getWrapSchemaAndTableName(IDialect dialect) {
         if (StringUtil.isNotBlank(schema)) {
             return dialect.wrap(dialect.getRealSchema(schema)) + "." + dialect.wrap(dialect.getRealTable(tableName));
@@ -164,8 +168,12 @@ public class TableInfo {
         this.dataSource = dataSource;
     }
 
-    public String getLogicDeleteColumn() {
+    public String getLogicDeleteColumnOrSkip() {
         return LogicDeleteManager.getLogicDeleteColumn(logicDeleteColumn);
+    }
+
+    public String getLogicDeleteColumn() {
+        return logicDeleteColumn;
     }
 
     public void setLogicDeleteColumn(String logicDeleteColumn) {
@@ -624,6 +632,7 @@ public class TableInfo {
     }
 
     private static final String APPEND_CONDITIONS_FLAG = "appendConditions";
+    private static final String APPEND_JOIN_FLAG = "appendJoins";
 
     public void appendConditions(Object entity, QueryWrapper queryWrapper) {
 
@@ -666,9 +675,8 @@ public class TableInfo {
         }
 
         //逻辑删除
-        if (StringUtil.isNotBlank(getLogicDeleteColumn())) {
-            queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, SqlConsts.EQUALS
-                    , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
+        if (StringUtil.isNotBlank(getLogicDeleteColumnOrSkip())) {
+            LogicDeleteManager.getProcessor().buildQueryCondition(queryWrapper, this);
         }
 
         //多租户
@@ -689,6 +697,31 @@ public class TableInfo {
             }
         }
 
+
+        //join
+        if (!Boolean.TRUE.equals(CPI.getContext(queryWrapper, APPEND_JOIN_FLAG))) {
+            List<Join> joins = CPI.getJoins(queryWrapper);
+            if (CollectionUtil.isNotEmpty(joins)) {
+                for (Join join : joins) {
+                    QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
+                    if (joinQueryTable instanceof SelectQueryTable) {
+                        QueryWrapper childQuery = ((SelectQueryTable) joinQueryTable).getQueryWrapper();
+                        doAppendConditions(entity, childQuery);
+                    } else {
+                        String nameWithSchema = joinQueryTable.getNameWithSchema();
+                        if (StringUtil.isNotBlank(nameWithSchema)) {
+                            TableInfo tableInfo = TableInfoFactory.ofTableName(nameWithSchema);
+                            if (tableInfo != null) {
+                                CPI.putContext(queryWrapper, APPEND_CONDITIONS_FLAG, Boolean.FALSE);
+                                CPI.putContext(queryWrapper, APPEND_JOIN_FLAG, Boolean.TRUE);
+                                tableInfo.appendConditions(entity, queryWrapper);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         //union
         List<UnionWrapper> unions = CPI.getUnions(queryWrapper);
         if (CollectionUtil.isNotEmpty(unions)) {
@@ -704,9 +737,17 @@ public class TableInfo {
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
         if (queryTables != null && !queryTables.isEmpty()) {
             for (QueryTable queryTable : queryTables) {
-                TableInfo tableInfo = TableInfoFactory.ofTableName(queryTable.getName());
-                if (tableInfo != null) {
-                    tableInfo.appendConditions(entity, queryWrapper);
+                if (queryTable instanceof SelectQueryTable) {
+                    QueryWrapper childQuery = ((SelectQueryTable) queryTable).getQueryWrapper();
+                    doAppendConditions(entity, childQuery);
+                } else {
+                    String nameWithSchema = queryTable.getNameWithSchema();
+                    if (StringUtil.isNotBlank(nameWithSchema)) {
+                        TableInfo tableInfo = TableInfoFactory.ofTableName(nameWithSchema);
+                        if (tableInfo != null) {
+                            tableInfo.appendConditions(entity, queryWrapper);
+                        }
+                    }
                 }
             }
         }
@@ -986,7 +1027,7 @@ public class TableInfo {
      * @param entityObject
      */
     public void initLogicDeleteValueIfNecessary(Object entityObject) {
-        if (StringUtil.isBlank(getLogicDeleteColumn())) {
+        if (StringUtil.isBlank(getLogicDeleteColumnOrSkip())) {
             return;
         }
 

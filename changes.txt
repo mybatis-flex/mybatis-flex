@@ -1,3 +1,18 @@
+mybatis-flex v1.4.1 20230620:
+新增：分页查询 Page 对象添加否优化 count 查询的选项，感谢 @王帅
+新增：添加 LogicDeleteProcessor.java 用于构建自定义的逻辑删除功能
+优化：完善后添加类的相关注释、版权信息等内容，感谢 @王帅
+优化：QueryColumn 添加构造方法 QueryColumn(String tableName, String name)
+修复：Oracle 下的 as 关键字错误的问题
+修复：多表联查时，逻辑删除字段和租户字段，只过滤主表，未过滤子表的问题 #I7EV67
+修复：低版本 spring-cloud 使用 bootstrap.yml 拉取不到 nacos 中多数据源配置的问题，感谢 @王帅
+修复：使用 druid-spring-boot-starter 时 mybatis-flex 多数据源不生效，感谢 @王帅
+文档：更新 APT 文档，添加实体类不在同一个包说明，感谢 @王帅
+文档：添加找不到依赖 faq 说明，感谢 @王帅
+文档：逻辑删除添加关于 LogicDeleteProcessor 的相关文档
+
+
+
 mybatis-flex v1.4.0 20230618:
 新增：LogicDeleteManager，用于处理跳过逻辑删除的场景
 新增：BaseMapper 新增 insertWithPk 方法，用于插入带有主键的 Entity 数据

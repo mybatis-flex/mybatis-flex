@@ -55,10 +55,10 @@ public class AccountSqlTester {
         TableManager.setDynamicTableProcessor(new DynamicTableProcessor() {
             @Override
             public String process(String tableName) {
-                return tableName+"_01";
+                return tableName + "_01";
             }
         });
-        TableManager.setDynamicTableProcessor(original -> original+"_01");
+        TableManager.setDynamicTableProcessor(original -> original + "_01");
 
         System.out.println(query.toSQL());
     }
@@ -72,8 +72,8 @@ public class AccountSqlTester {
                 .where(ACCOUNT01.ID.ge(100))
                 .and(ACCOUNT.SEX.eq(1));
 
-        TableManager.setDynamicTableProcessor(original -> original+"_01");
-        TableManager.setDynamicTableProcessor(original -> original+"_01");
+        TableManager.setDynamicTableProcessor(original -> original + "_01");
+        TableManager.setDynamicTableProcessor(original -> original + "_01");
 
         System.out.println(query.toSQL());
     }
@@ -263,6 +263,8 @@ public class AccountSqlTester {
         System.out.println(sql);
     }
 
+
+    //https://gitee.com/mybatis-flex/mybatis-flex/issues/I7EAY9
     @Test
     public void testGroup_I7EAY9() {
         QueryWrapper query = QueryWrapper.create()
@@ -329,6 +331,10 @@ public class AccountSqlTester {
         String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
     }
+
+
+
+
 
     @Test
     public void testOrderBySql() {
