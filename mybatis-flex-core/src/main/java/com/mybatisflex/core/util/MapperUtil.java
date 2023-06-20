@@ -42,7 +42,7 @@ public class MapperUtil {
      *
      * <p><pre>
      * {@code
-     * SELECT COUNT(*) AS `total` FROM ( ...用户构建的 SQL 语句... );
+     * SELECT COUNT(*) AS `total` FROM ( ...用户构建的 SQL 语句... ) AS `t`;
      * }
      * </pre>
      *
@@ -58,22 +58,25 @@ public class MapperUtil {
      * 优化 COUNT 查询语句。
      */
     public static QueryWrapper optimizeCountQueryWrapper(QueryWrapper queryWrapper) {
-        List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
-        List<QueryColumn> groupByColumns = CPI.getGroupByColumns(queryWrapper);
+        // 对克隆对象进行操作，不影响原来的 QueryWrapper 对象
+        QueryWrapper clone = queryWrapper.clone();
+        // 将最后面的 order by 移除掉
+        CPI.setOrderBys(clone, null);
+        // 获取查询列和分组列，用于判断是否进行优化
+        List<QueryColumn> selectColumns = CPI.getSelectColumns(clone);
+        List<QueryColumn> groupByColumns = CPI.getGroupByColumns(clone);
         // 如果有 distinct 语句或者 group by 语句则不优化
         // 这种一旦优化了就会造成 count 语句查询出来的值不对
         if (hasDistinct(selectColumns) || hasGroupBy(groupByColumns)) {
-            return rawCountQueryWrapper(queryWrapper);
+            return rawCountQueryWrapper(clone);
         }
         // 判断能不能清除 join 语句
-        if (canClearJoins(queryWrapper)) {
-            CPI.setJoins(queryWrapper, null);
+        if (canClearJoins(clone)) {
+            CPI.setJoins(clone, null);
         }
-        // 最后将最后面的 order by 移除掉
-        // 将 select 里面的列换成 COUNT(*) AS `total` 就好了
-        CPI.setOrderBys(queryWrapper, null);
-        CPI.setSelectColumns(queryWrapper, Collections.singletonList(count().as("total")));
-        return queryWrapper;
+        // 将 select 里面的列换成 COUNT(*) AS `total`
+        CPI.setSelectColumns(clone, Collections.singletonList(count().as("total")));
+        return clone;
     }
 
     private static boolean hasDistinct(List<QueryColumn> selectColumns) {

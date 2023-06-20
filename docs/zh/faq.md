@@ -5,16 +5,47 @@
 MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的。
 参考：[MyBatis-Flex APT 配置 - MyBatis-Flex 官方网站](./others/apt.md)
 
+## 阿里镜像找不到依赖？
+
+```txt
+Could not find artifact com.mybatis-flex:mybatis-flex-spring-boot-starter:pom:1.4.0 
+in alimaven (http://maven.aliyun.com/nexus/content/groups/public/)
+```
+
+这个是因为目前阿里云镜像正在维护，可以替换为`腾讯云`或者`华为云`的镜像源，更改 Maven 安装目录下的 `settings.xml` 文件，
+添加如下配置：
+
+腾讯云：
+
+```xml
+<mirror>
+    <id>tencent-cloud</id>
+    <mirrorOf>*</mirrorOf>
+    <name>tencent-cloud</name>
+    <url>https://mirrors.cloud.tencent.com/nexus/repository/maven-public/</url>
+</mirror>
+```
+
+华为云：
+
+```xml
+<mirror>
+    <id>huawei-cloud</id>
+    <mirrorOf>*</mirrorOf>
+    <name>huawei-cloud</name>
+    <url>https://mirrors.huaweicloud.com/repository/maven/</url>
+</mirror>
+```
 
 ## 启动出错？目前社区反馈有如下几个错误原因
 
-
-- 1、添加了错误的数据源依赖版本，比如 SpringBoot v2.x 使用 HikariCP 时，应该是 HikariCP 的 4.x 版本。而 SpringBoot v3.x 应该使用 HikariCP 的 5.x 版本。
-- 2、主动添加了 MyBatis 或者 `mybatis-spring-boot-starter` 的依赖，导致版本不匹配。使用 SpringBoot 的情况下，应该引用 `mybatis-flex-spring-boot-starter` 就可以了，不需要再添加其他 MyBatis 依赖。
-- 3、使用了 `druid-spring-boot-starter` 依赖，导致 flex 的 DataSource 无法被接管。应该使用 `druid` 就可以了，不要用 `druid-spring-boot-starter`。
+- 1、添加了错误的数据源依赖版本，比如 SpringBoot v2.x 使用 HikariCP 时，应该是 HikariCP 的 4.x 版本。而 SpringBoot v3.x 应该使用
+  HikariCP 的 5.x 版本。
+- 2、主动添加了 MyBatis 或者 `mybatis-spring-boot-starter` 的依赖，导致版本不匹配。使用 SpringBoot
+  的情况下，应该引用 `mybatis-flex-spring-boot-starter` 就可以了，不需要再添加其他 MyBatis 依赖。
+- 3、使用了 `druid-spring-boot-starter` 依赖，导致 flex 的 DataSource 无法被接管。应该使用 `druid`
+  就可以了，不要用 `druid-spring-boot-starter`。
 - 4、使用了 `MyBatis-Plus` 或者 `pagehelper-spring-boot-starter` 而被这些框架优先初始化 MyBatis， MyBatis-Flex 未得到初始化。
-
-
 
 ## SpringBoot 项目，启动报错 Property 'sqlSessionFactory' or 'sqlSessionTemplate' are required
 

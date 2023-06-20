@@ -132,14 +132,48 @@ processor.mappersPackage = com.your-package
 processor.baseMapperClass=com.domain.mapper.MyBaseMapper
 ```
 
+## 实体类不在一个包中
 
+有时候可能会遇到实体类不在同一个包中的情况，例如：
+
+```txt
+com.example.entityPackage1
+    └─ Entity1
+com.example.entityPackage2
+    └─ Entity2
+```
+
+此时的辅助类会生成在对应的包下，例如：
+
+```txt
+com.example.entityPackage1.table
+    └─ Entity1TableDef
+com.example.entityPackage2.table
+    └─ Entity2TableDef
+```
+
+但是，如果您设置了 `processor.allInTables=true` 的话，`Tables` 文件将会生成在最后一个包中，例如：
+
+```txt
+com.example.entityPackage2.table
+    └─ Tables
+```
+
+所以，如果您的实体类在多个包中，又指定了 `processor.allInTables=true` 选项，推荐设置 `Tables` 文件的位置，例如：
+
+```properties
+processor.allInTables=true
+processor.tablesPackage=com.example.entity.table
+```
 
 ## 和 Lombok、Mapstruct 整合
 
-在很多项目中，用到了 Lombok 帮我们减少代码编写，同时用到 Mapstruct 进行 bean 转换。使用到 Lombok 和 Mapstruct 时，其要求我们再 pom.xml 添加 `annotationProcessorPaths` 配置，
+在很多项目中，用到了 Lombok 帮我们减少代码编写，同时用到 Mapstruct 进行 bean 转换。使用到 Lombok 和 Mapstruct 时，其要求我们再
+pom.xml 添加 `annotationProcessorPaths` 配置，
 此时，我们也需要把 MyBatis-Flex 的 annotation 添加到 `annotationProcessorPaths` 配置里去，如下图所示：
 
 ```xml 24,25,26,27,28
+
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-compiler-plugin</artifactId>

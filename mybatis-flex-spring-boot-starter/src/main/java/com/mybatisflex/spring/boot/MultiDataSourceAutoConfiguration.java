@@ -25,6 +25,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -33,11 +34,11 @@ import java.util.Map;
 /**
  * 多数据源的配置支持
  */
-@org.springframework.context.annotation.Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
 @ConditionalOnMybatisFlexDatasource()
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MybatisFlexProperties.class)
-@AutoConfigureBefore({DataSourceAutoConfiguration.class})
+@ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
+@AutoConfigureBefore(value = DataSourceAutoConfiguration.class, name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
 public class MultiDataSourceAutoConfiguration {
 
     private final Map<String, Map<String, String>> dataSourceProperties;
@@ -55,12 +56,12 @@ public class MultiDataSourceAutoConfiguration {
         FlexDataSource flexDataSource = null;
 
         if (dataSourceProperties != null && !dataSourceProperties.isEmpty()) {
-            for (String key : dataSourceProperties.keySet()) {
-                DataSource dataSource = new DataSourceBuilder(dataSourceProperties.get(key)).build();
+            for (Map.Entry<String, Map<String, String>> entry : dataSourceProperties.entrySet()) {
+                DataSource dataSource = new DataSourceBuilder(entry.getValue()).build();
                 if (flexDataSource == null) {
-                    flexDataSource = new FlexDataSource(key, dataSource);
+                    flexDataSource = new FlexDataSource(entry.getKey(), dataSource);
                 } else {
-                    flexDataSource.addDataSource(key, dataSource);
+                    flexDataSource.addDataSource(entry.getKey(), dataSource);
                 }
             }
         }

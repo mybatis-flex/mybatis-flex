@@ -15,11 +15,11 @@
  */
 package com.mybatisflex.core.dialect.impl;
 
-import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowCPI;
@@ -492,7 +492,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forDeleteEntityById(TableInfo tableInfo) {
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         //正常删除
         if (StringUtil.isBlank(logicDeleteColumn)) {
@@ -509,7 +509,7 @@ public class CommonsDialectImpl implements IDialect {
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
         sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this));
-        sql.append(SET).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicDeletedValue());
+        sql.append(SET).append(buildLogicDeletedSet(logicDeleteColumn));
         sql.append(WHERE);
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
@@ -518,7 +518,7 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
 
-        sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+        sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
 
         //租户ID
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
@@ -531,7 +531,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forDeleteEntityBatchByIds(TableInfo tableInfo, Object[] primaryValues) {
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
         //正常删除
@@ -549,7 +549,7 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder sql = new StringBuilder();
         sql.append(UPDATE);
         sql.append(tableInfo.getWrapSchemaAndTableName(this));
-        sql.append(SET).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicDeletedValue());
+        sql.append(SET).append(buildLogicDeletedSet(logicDeleteColumn));
         sql.append(WHERE);
         sql.append(BRACKET_LEFT);
 
@@ -581,7 +581,7 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        sql.append(BRACKET_RIGHT).append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+        sql.append(BRACKET_RIGHT).append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
 
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
             sql.append(AND).append(wrap(tableInfo.getTenantIdColumn())).append(IN).append(buildQuestion(tenantIdArgs.length));
@@ -593,7 +593,7 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String forDeleteEntityBatchByQuery(TableInfo tableInfo, QueryWrapper queryWrapper) {
 
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
 
         //正常删除
         if (StringUtil.isBlank(logicDeleteColumn)) {
@@ -609,7 +609,7 @@ public class CommonsDialectImpl implements IDialect {
         //ignore selectColumns
         StringBuilder sqlBuilder = new StringBuilder(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
         sqlBuilder.append(tableInfo.getWrapSchemaAndTableName(this));
-        sqlBuilder.append(SET).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicDeletedValue());
+        sqlBuilder.append(SET).append(buildLogicDeletedSet(logicDeleteColumn));
 
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
@@ -662,9 +662,9 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         //逻辑删除条件，已删除的数据不能被修改
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+            sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
         }
 
 
@@ -813,9 +813,9 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         //逻辑删除的情况下，需要添加逻辑删除的条件
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+            sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
         }
 
         //多租户
@@ -835,7 +835,7 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(WHERE);
         String[] primaryKeys = tableInfo.getPrimaryKeys();
 
-        String logicDeleteColumn = tableInfo.getLogicDeleteColumn();
+        String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         if (StringUtil.isNotBlank(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
             sql.append(BRACKET_LEFT);
@@ -873,7 +873,7 @@ public class CommonsDialectImpl implements IDialect {
 
 
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
-            sql.append(AND).append(wrap(logicDeleteColumn)).append(EQUALS).append(getLogicNormalValue());
+            sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn));
         }
 
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
@@ -974,24 +974,14 @@ public class CommonsDialectImpl implements IDialect {
         return sb.toString();
     }
 
-
-    protected Object getLogicNormalValue() {
-        Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
-        if (normalValueOfLogicDelete instanceof Number
-                || normalValueOfLogicDelete instanceof Boolean) {
-            return normalValueOfLogicDelete;
-        }
-        return SINGLE_QUOTE + normalValueOfLogicDelete + SINGLE_QUOTE;
+    protected String buildLogicNormalCondition(String logicColumn) {
+        return LogicDeleteManager.getProcessor().buildLogicNormalCondition(logicColumn,this);
     }
 
 
-    protected Object getLogicDeletedValue() {
-        Object deletedValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete();
-        if (deletedValueOfLogicDelete instanceof Number
-                || deletedValueOfLogicDelete instanceof Boolean) {
-            return deletedValueOfLogicDelete;
-        }
-        return SINGLE_QUOTE + deletedValueOfLogicDelete + SINGLE_QUOTE;
+    protected String buildLogicDeletedSet(String logicColumn) {
+        return LogicDeleteManager.getProcessor().buildLogicDeletedSet(logicColumn,this);
     }
+
 
 }

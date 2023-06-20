@@ -82,3 +82,38 @@ LogicDeleteManager.execWithoutLogicDelete(() ->
         );
 ```
 以上代码中，`accountMapper` 会直接对 `Account` 数据进行物理删除，忽略逻辑删除字段配置。
+
+## 自定义逻辑删除处理功能
+
+在社区中，有许多用户提出希望使用时间类型，当删除时，设置删除字段为`当前时间`，当正常时，设置为 `0` 或者 `null`。
+那么，我们可以通过 `LogicDeleteManager` 设置一个新的 `LogicDeleteProcessor`：
+
+`LogicDeleteProcessor` 接口的内容如下：
+
+```java
+public interface LogicDeleteProcessor {
+
+    /**
+     * 用户构建查询正常数据的条件
+     * @param logicColumn
+     * @param dialect
+     */
+    String buildLogicNormalCondition(String logicColumn, IDialect dialect);
+
+    /**
+     * 用户与构建删除数据时的内容
+     * @param logicColumn
+     * @param dialect
+     */
+    String buildLogicDeletedSet(String logicColumn, IDialect dialect);
+
+    /**
+     * 用于构建通过 QueryWrapper 查询数据时的内容
+     * @param queryWrapper
+     * @param tableInfo
+     */
+    void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo);
+}
+```
+
+具体实现可以参考：[DefaultLogicDeleteProcessorImpl](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/logicdelete/DefaultLogicDeleteProcessorImpl.java)
