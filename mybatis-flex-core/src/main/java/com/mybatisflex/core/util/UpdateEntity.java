@@ -92,8 +92,8 @@ public class UpdateEntity {
                 if (value != null) {
                     reflector.getSetInvoker(propertyName).invoke(newEntity, new Object[]{value});
                 }
-            } catch (Exception e) {
-                //ignore;
+            } catch (Exception ignored) {
+                // do nothing here.
             }
         }
 
