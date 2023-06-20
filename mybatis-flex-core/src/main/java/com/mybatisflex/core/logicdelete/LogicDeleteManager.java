@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.core.logicdelete;
 
-import com.mybatisflex.core.logicdelete.impl.DefaultLogicDeleteProcessorImpl;
+import com.mybatisflex.core.logicdelete.impl.DefaultLogicDeleteProcessor;
 
 import java.util.function.Supplier;
 
@@ -27,7 +27,7 @@ public class LogicDeleteManager {
     private LogicDeleteManager() {
     }
 
-    private static LogicDeleteProcessor processor = new DefaultLogicDeleteProcessorImpl();
+    private static LogicDeleteProcessor processor = new DefaultLogicDeleteProcessor();
     private static final ThreadLocal<Boolean> skipFlags = new ThreadLocal<>();
 
     /**

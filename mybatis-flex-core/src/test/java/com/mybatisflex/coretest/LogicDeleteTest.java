@@ -21,7 +21,7 @@ import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
 import com.mybatisflex.core.logicdelete.impl.BooleanLogicDeleteProcessor;
 import com.mybatisflex.core.logicdelete.impl.DateTimeLogicDeleteProcessor;
-import com.mybatisflex.core.logicdelete.impl.DefaultLogicDeleteProcessorImpl;
+import com.mybatisflex.core.logicdelete.impl.DefaultLogicDeleteProcessor;
 import com.mybatisflex.core.logicdelete.impl.IntegerLogicDeleteProcessor;
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class LogicDeleteTest {
 
     @Test
     public void test() {
-        print("DefaultLogicDeleteProcessor", new DefaultLogicDeleteProcessorImpl());
+        print("DefaultLogicDeleteProcessor", new DefaultLogicDeleteProcessor());
         print("BooleanLogicDeleteProcessor", new BooleanLogicDeleteProcessor());
         print("IntegerLogicDeleteProcessor", new IntegerLogicDeleteProcessor());
         print("DateTimeLogicDeleteProcessor", new DateTimeLogicDeleteProcessor());

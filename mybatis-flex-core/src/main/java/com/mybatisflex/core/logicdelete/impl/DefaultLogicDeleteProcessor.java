@@ -27,7 +27,7 @@ import static com.mybatisflex.core.constant.SqlConsts.SINGLE_QUOTE;
 /**
  * 默认逻辑删除处理器。
  */
-public class DefaultLogicDeleteProcessorImpl extends AbstractLogicDeleteProcessor {
+public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 
     @Override
     public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo) {
