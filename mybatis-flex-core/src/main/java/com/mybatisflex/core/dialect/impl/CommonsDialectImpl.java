@@ -244,7 +244,6 @@ public class CommonsDialectImpl implements IDialect {
 
         //fix: support schema
         QueryTable queryTable = queryTables.get(0);
-//        String tableName = queryTables.get(0).getName();
         sql.append(UPDATE).append(queryTable.toSql(this)).append(SET);
         int index = 0;
         for (String modifyAttr : modifyAttrs) {
@@ -380,8 +379,8 @@ public class CommonsDialectImpl implements IDialect {
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
 
         //ignore orderBy and limit
-        //buildOrderBySql(sqlBuilder, queryWrapper);
-        //buildLimitSql(sqlBuilder, queryWrapper);
+        //buildOrderBySql(sqlBuilder, queryWrapper)
+        //buildLimitSql(sqlBuilder, queryWrapper)
 
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
         if (CollectionUtil.isNotEmpty(endFragments)) {
@@ -618,8 +617,8 @@ public class CommonsDialectImpl implements IDialect {
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
 
         //ignore orderBy and limit
-        //buildOrderBySql(sqlBuilder, queryWrapper);
-        //buildLimitSql(sqlBuilder, queryWrapper);
+        //buildOrderBySql(sqlBuilder, queryWrapper)
+        //buildLimitSql(sqlBuilder, queryWrapper)
 
         return sqlBuilder.toString();
     }
