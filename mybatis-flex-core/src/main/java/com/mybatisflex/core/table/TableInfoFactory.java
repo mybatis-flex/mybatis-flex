@@ -221,9 +221,6 @@ public class TableInfoFactory {
                     if (genericType instanceof ParameterizedType) {
                         Class<?> actualTypeArgument = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
                         //需排除 List<String>  List<Long> 等场景
-                        /*if (!defaultSupportColumnTypes.contains(actualTypeArgument)) {
-                            tableInfo.addCollectionType(field, actualTypeArgument);
-                        }*/
                         tableInfo.addCollectionType(field, actualTypeArgument);
                     }
                 }
