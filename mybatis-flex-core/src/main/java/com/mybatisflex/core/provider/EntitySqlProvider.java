@@ -423,9 +423,9 @@ public class EntitySqlProvider {
         if (CollectionUtil.isNotEmpty(queryTables)) {
             tableInfos = new ArrayList<>();
             for (QueryTable queryTable : queryTables) {
-                String tableName = queryTable.getName();
-                if (StringUtil.isNotBlank(tableName)) {
-                    TableInfo tableInfo = TableInfoFactory.ofTableName(tableName);
+                String tableNameWithSchema = queryTable.getNameWithSchema();
+                if (StringUtil.isNotBlank(tableNameWithSchema)) {
+                    TableInfo tableInfo = TableInfoFactory.ofTableName(tableNameWithSchema);
                     if (tableInfo != null) {
                         tableInfos.add(tableInfo);
                     }

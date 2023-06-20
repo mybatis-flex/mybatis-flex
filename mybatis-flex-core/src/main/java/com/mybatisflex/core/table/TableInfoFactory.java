@@ -101,7 +101,7 @@ public class TableInfoFactory {
     public static TableInfo ofEntityClass(Class<?> entityClass) {
         return MapUtil.computeIfAbsent(entityTableMap, entityClass, aClass -> {
             TableInfo tableInfo = createTableInfo(entityClass);
-            tableInfoMap.put(tableInfo.getTableName(), tableInfo);
+            tableInfoMap.put(tableInfo.getTableNameWithSchema(), tableInfo);
             return tableInfo;
         });
     }

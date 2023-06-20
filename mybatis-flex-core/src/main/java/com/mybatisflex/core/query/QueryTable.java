@@ -71,6 +71,10 @@ public class QueryTable implements CloneSupport<QueryTable> {
         this.name = name;
     }
 
+    public String getNameWithSchema() {
+        return StringUtil.isNotBlank(schema) ? schema + "." + name : name;
+    }
+
 
     public QueryTable as(String alias) {
         this.alias = alias;
@@ -84,8 +88,7 @@ public class QueryTable implements CloneSupport<QueryTable> {
         if (StringUtil.isNotBlank(alias)
                 && StringUtil.isNotBlank(table.alias)
                 && (Objects.equals(alias, table.alias))) {
-                return false;
-
+            return false;
         }
         return Objects.equals(name, table.name);
     }
