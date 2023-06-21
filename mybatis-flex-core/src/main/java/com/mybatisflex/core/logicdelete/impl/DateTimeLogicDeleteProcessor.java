@@ -16,8 +16,11 @@
 
 package com.mybatisflex.core.logicdelete.impl;
 
+import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.logicdelete.AbstractLogicDeleteProcessor;
-import com.mybatisflex.core.query.RawFragment;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.table.TableInfo;
 
 /**
  * {@link java.time.LocalDateTime} 类型的属性对应的逻辑删除处理器。
@@ -26,6 +29,17 @@ import com.mybatisflex.core.query.RawFragment;
  * @since 2023-06-20
  */
 public class DateTimeLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
+
+    @Override
+    public String buildLogicNormalCondition(String logicColumn, IDialect dialect) {
+        return dialect.wrap(logicColumn) + " IS NULL";
+    }
+
+    @Override
+    public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo) {
+        QueryColumn queryColumn = new QueryColumn(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getLogicDeleteColumn());
+        queryWrapper.and(queryColumn.isNull());
+    }
 
     /**
      * 逻辑删除字段值为 {@code null} 表示数据未删除。
@@ -40,7 +54,7 @@ public class DateTimeLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      */
     @Override
     protected Object getLogicDeletedValue() {
-        return new RawFragment("NOW()");
+        return "NOW()";
     }
 
 }
