@@ -16,6 +16,8 @@
 
 package com.mybatisflex.test.model;
 
+import com.mybatisflex.annotation.Column;
+
 import java.util.List;
 
 /**
@@ -25,6 +27,7 @@ import java.util.List;
 public class BaseEntity<T, ID, L> extends IdEntity<ID> {
 
     protected T userName;
+    @Column(ignore = true)
     protected List<L> roles;
 
     public List<L> getRoles() {
