@@ -138,7 +138,7 @@ MyBatis-Flex 提供了三种字段类型对应的逻辑删除处理器，用户�
 | IntegerLogicDeleteProcessor  | integer  | 0       | 1        |
 | BooleanLogicDeleteProcessor  | tinyint  | false   | true     |
 | DateTimeLogicDeleteProcessor | datetime | null    | 被删除时间    |
-| LongLogicDeleteProcessor     | bigint   | 0       | 被删除时的时间戳 |
+| TimeStampLogicDeleteProcessor     | bigint   | 0       | 被删除时的时间戳 |
 
 使用时，只需通过 `LogicDeleteManager` 来设置逻辑删除处理器即可，例如：
 

@@ -31,7 +31,7 @@ public class BooleanLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      */
     @Override
     protected Object getLogicNormalValue() {
-        return "FALSE";
+        return false;
     }
 
     /**
@@ -39,7 +39,7 @@ public class BooleanLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      */
     @Override
     protected Object getLogicDeletedValue() {
-        return "TRUE";
+        return true;
     }
 
 }
