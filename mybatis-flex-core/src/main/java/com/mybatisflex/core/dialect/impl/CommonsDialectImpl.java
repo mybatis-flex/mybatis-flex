@@ -30,10 +30,7 @@ import com.mybatisflex.core.util.StringUtil;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 
 import static com.mybatisflex.core.constant.SqlConsts.*;
 
@@ -244,7 +241,6 @@ public class CommonsDialectImpl implements IDialect {
 
         //fix: support schema
         QueryTable queryTable = queryTables.get(0);
-//        String tableName = queryTables.get(0).getName();
         sql.append(UPDATE).append(queryTable.toSql(this)).append(SET);
         int index = 0;
         for (String modifyAttr : modifyAttrs) {
@@ -307,7 +303,15 @@ public class CommonsDialectImpl implements IDialect {
 
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 
-        StringBuilder sqlBuilder = buildSelectColumnSql(allTables, selectColumns, CPI.getHint(queryWrapper));
+        StringBuilder sqlBuilder = new StringBuilder();
+        With with = CPI.getWith(queryWrapper);
+        if (with != null) {
+            sqlBuilder.append(with.toSql(this));
+        }
+
+        buildSelectColumnSql(sqlBuilder, allTables, selectColumns, CPI.getHint(queryWrapper));
+
+
         sqlBuilder.append(FROM).append(StringUtil.join(DELIMITER, queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
@@ -340,8 +344,44 @@ public class CommonsDialectImpl implements IDialect {
         return sqlBuilder.toString();
     }
 
-    private StringBuilder buildSelectColumnSql(List<QueryTable> queryTables, List<QueryColumn> selectColumns, String hint) {
-        StringBuilder sqlBuilder = new StringBuilder(SELECT);
+    @Override
+    public String buildNoSelectSql(QueryWrapper queryWrapper) {
+        StringBuilder sqlBuilder = new StringBuilder();
+
+        buildJoinSql(sqlBuilder, queryWrapper, Collections.EMPTY_LIST);
+        buildWhereSql(sqlBuilder, queryWrapper, Collections.EMPTY_LIST, true);
+        buildGroupBySql(sqlBuilder, queryWrapper, Collections.EMPTY_LIST);
+        buildHavingSql(sqlBuilder, queryWrapper, Collections.EMPTY_LIST);
+        buildOrderBySql(sqlBuilder, queryWrapper, Collections.EMPTY_LIST);
+
+        List<UnionWrapper> unions = CPI.getUnions(queryWrapper);
+        if (CollectionUtil.isNotEmpty(unions)) {
+            if (sqlBuilder.length() > 0) {
+                sqlBuilder.insert(0, BRACKET_LEFT).append(BRACKET_RIGHT);
+            }
+            for (UnionWrapper unionWrapper : unions) {
+                unionWrapper.buildSql(sqlBuilder, this);
+            }
+        }
+
+        Integer limitRows = CPI.getLimitRows(queryWrapper);
+        Integer limitOffset = CPI.getLimitOffset(queryWrapper);
+        if (limitRows != null || limitOffset != null) {
+            sqlBuilder = buildLimitOffsetSql(sqlBuilder, queryWrapper, limitRows, limitOffset);
+        }
+
+        List<String> endFragments = CPI.getEndFragments(queryWrapper);
+        if (CollectionUtil.isNotEmpty(endFragments)) {
+            for (String endFragment : endFragments) {
+                sqlBuilder.append(BLANK).append(endFragment);
+            }
+        }
+
+        return sqlBuilder.toString();
+    }
+
+    private void buildSelectColumnSql(StringBuilder sqlBuilder, List<QueryTable> queryTables, List<QueryColumn> selectColumns, String hint) {
+        sqlBuilder.append(SELECT);
         sqlBuilder.append(forHint(hint));
         if (selectColumns == null || selectColumns.isEmpty()) {
             sqlBuilder.append(ASTERISK);
@@ -356,7 +396,6 @@ public class CommonsDialectImpl implements IDialect {
                 index++;
             }
         }
-        return sqlBuilder;
     }
 
 
@@ -380,8 +419,8 @@ public class CommonsDialectImpl implements IDialect {
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
 
         //ignore orderBy and limit
-        //buildOrderBySql(sqlBuilder, queryWrapper);
-        //buildLimitSql(sqlBuilder, queryWrapper);
+        //buildOrderBySql(sqlBuilder, queryWrapper)
+        //buildLimitSql(sqlBuilder, queryWrapper)
 
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
         if (CollectionUtil.isNotEmpty(endFragments)) {
@@ -618,8 +657,8 @@ public class CommonsDialectImpl implements IDialect {
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
 
         //ignore orderBy and limit
-        //buildOrderBySql(sqlBuilder, queryWrapper);
-        //buildLimitSql(sqlBuilder, queryWrapper);
+        //buildOrderBySql(sqlBuilder, queryWrapper)
+        //buildLimitSql(sqlBuilder, queryWrapper)
 
         return sqlBuilder.toString();
     }
@@ -801,7 +840,8 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectOneEntityById(TableInfo tableInfo) {
-        StringBuilder sql = buildSelectColumnSql(null, null, null);
+        StringBuilder sql = new StringBuilder();
+        buildSelectColumnSql(sql, null, null, null);
         sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this));
         sql.append(WHERE);
         String[] pKeys = tableInfo.getPrimaryKeys();
@@ -830,7 +870,8 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectEntityListByIds(TableInfo tableInfo, Object[] primaryValues) {
-        StringBuilder sql = buildSelectColumnSql(null, tableInfo.getDefaultQueryColumn(), null);
+        StringBuilder sql = new StringBuilder();
+        buildSelectColumnSql(sql, null, tableInfo.getDefaultQueryColumn(), null);
         sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this));
         sql.append(WHERE);
         String[] primaryKeys = tableInfo.getPrimaryKeys();
@@ -975,12 +1016,12 @@ public class CommonsDialectImpl implements IDialect {
     }
 
     protected String buildLogicNormalCondition(String logicColumn) {
-        return LogicDeleteManager.getProcessor().buildLogicNormalCondition(logicColumn,this);
+        return LogicDeleteManager.getProcessor().buildLogicNormalCondition(logicColumn, this);
     }
 
 
     protected String buildLogicDeletedSet(String logicColumn) {
-        return LogicDeleteManager.getProcessor().buildLogicDeletedSet(logicColumn,this);
+        return LogicDeleteManager.getProcessor().buildLogicDeletedSet(logicColumn, this);
     }
 
 

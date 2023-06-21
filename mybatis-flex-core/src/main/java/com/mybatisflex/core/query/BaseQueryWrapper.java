@@ -25,6 +25,7 @@ import java.util.*;
 public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSupport<T> {
 
 
+    protected With with;
     protected List<QueryTable> queryTables;
     protected String dataSource;
     protected String hint;

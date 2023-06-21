@@ -199,13 +199,14 @@ public class QueryMethods {
         return QueryCondition.createEmpty();
     }
 
-    private static QueryWrapper newWrapper() {
-        return new QueryWrapper();
-    }
 
-
+    // QueryWrapper methods
     public static QueryWrapper select(QueryColumn... queryColumns) {
         return newWrapper().select(queryColumns);
+    }
+
+    public static QueryWrapper union(QueryWrapper queryWrapper) {
+        return newWrapper().union(queryWrapper);
     }
 
     public static QueryWrapper selectOne() {
@@ -219,6 +220,12 @@ public class QueryMethods {
     public static QueryWrapper selectCountOne() {
         return select(count("1"));
     }
+
+
+    private static QueryWrapper newWrapper() {
+        return new QueryWrapper();
+    }
+
 
     public static RawFragment raw(String raw) {
         return new RawFragment(raw);

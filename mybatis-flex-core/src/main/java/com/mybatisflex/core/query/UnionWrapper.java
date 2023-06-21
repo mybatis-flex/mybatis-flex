@@ -25,14 +25,14 @@ public class UnionWrapper implements CloneSupport<UnionWrapper> {
     private String key;
     private QueryWrapper queryWrapper;
 
-    public static UnionWrapper union(QueryWrapper queryWrapper) {
+    static UnionWrapper union(QueryWrapper queryWrapper) {
         UnionWrapper unionWrapper = new UnionWrapper();
         unionWrapper.key = SqlConsts.UNION;
         unionWrapper.queryWrapper = queryWrapper;
         return unionWrapper;
     }
 
-    public static UnionWrapper unionAll(QueryWrapper queryWrapper) {
+    static UnionWrapper unionAll(QueryWrapper queryWrapper) {
         UnionWrapper unionWrapper = new UnionWrapper();
         unionWrapper.key = SqlConsts.UNION_ALL;
         unionWrapper.queryWrapper = queryWrapper;

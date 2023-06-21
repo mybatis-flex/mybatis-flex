@@ -82,7 +82,7 @@ public class HttpUtil {
     private static SSLSocketFactory initSSLSocketFactory() {
         try {
             TrustManager[] tm = {new HttpUtil.TrustAnyTrustManager()};
-            SSLContext sslContext = SSLContext.getInstance("TLS");    // ("TLS", "SunJSSE");
+            SSLContext sslContext = SSLContext.getInstance("TLS");    // "TLS", "SunJSSE"
             sslContext.init(null, tm, new java.security.SecureRandom());
             return sslContext.getSocketFactory();
         } catch (Exception e) {

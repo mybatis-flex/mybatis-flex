@@ -13,12 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.core.row;
+package com.mybatisflex.core.query;
 
-public interface BatchArgsSetter {
+import com.mybatisflex.core.dialect.IDialect;
 
-    int getBatchSize();
+public interface WithDetail {
 
-    Object[] getSqlArgs(int index);
+    String toSql(IDialect dialect);
 
+    Object[] getParamValues();
 }

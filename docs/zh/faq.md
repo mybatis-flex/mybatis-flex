@@ -8,7 +8,7 @@ MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的。
 ## 阿里镜像找不到依赖？
 
 ```txt
-Could not find artifact com.mybatis-flex:mybatis-flex-spring-boot-starter:pom:1.4.0 
+Could not find artifact com.mybatis-flex:mybatis-flex-spring-boot-starter:pom:1.4.1 
 in alimaven (http://maven.aliyun.com/nexus/content/groups/public/)
 ```
 
@@ -43,9 +43,7 @@ in alimaven (http://maven.aliyun.com/nexus/content/groups/public/)
   HikariCP 的 5.x 版本。
 - 2、主动添加了 MyBatis 或者 `mybatis-spring-boot-starter` 的依赖，导致版本不匹配。使用 SpringBoot
   的情况下，应该引用 `mybatis-flex-spring-boot-starter` 就可以了，不需要再添加其他 MyBatis 依赖。
-- 3、使用了 `druid-spring-boot-starter` 依赖，导致 flex 的 DataSource 无法被接管。应该使用 `druid`
-  就可以了，不要用 `druid-spring-boot-starter`。
-- 4、使用了 `MyBatis-Plus` 或者 `pagehelper-spring-boot-starter` 而被这些框架优先初始化 MyBatis， MyBatis-Flex 未得到初始化。
+- 3、使用了 `MyBatis-Plus` 或者 `pagehelper-spring-boot-starter` 而被这些框架优先初始化 MyBatis， MyBatis-Flex 未得到初始化。
 
 ## SpringBoot 项目，启动报错 Property 'sqlSessionFactory' or 'sqlSessionTemplate' are required
 
@@ -125,31 +123,6 @@ spring:
 
 > 若把数据源配置到 `mybatis-flex.datasource` 下，使用 mybatis-flex 的数据源发现机制，
 > 使用 druid 则可以不用配置 type，更多文档参考：[多数据源章节](./core/multi-datasource.md)。
-
-## 使用 `druid-spring-boot-starter`，出现无法启动 或者 数据源识别错误的问题
-
-在 MyBatis-Flex 不能使用 "druid-spring-boot-starter" 依赖，只能使用 "druid" 。
-
-```xml
- <dependency>
-    <groupId>com.alibaba</groupId>
-    <artifactId>druid-spring-boot-starter</artifactId>
-    <version>${druid.version}</version>
-</dependency>
-```
-
-需要把以上的依赖，修改如下：
-
-```xml
- <dependency>
-    <groupId>com.alibaba</groupId>
-    <artifactId>druid</artifactId>
-    <version>${druid.version}</version>
-</dependency>
-```
-
-> 原因是：druid-spring-boot-starter 内的 DruidDataSourceAutoConfigure 会去自动加载 spring.datasource 下的配置，当使用 MyBatis-Flex 的多数据源时，
-> 这个配置已经不存在了。
 
 ## 与 PageHelper 集成出现错误
 

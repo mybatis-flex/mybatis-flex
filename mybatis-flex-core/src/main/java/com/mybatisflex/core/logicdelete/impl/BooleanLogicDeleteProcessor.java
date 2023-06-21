@@ -14,7 +14,32 @@
  *  limitations under the License.
  */
 
+package com.mybatisflex.core.logicdelete.impl;
+
+import com.mybatisflex.core.logicdelete.AbstractLogicDeleteProcessor;
+
 /**
- * 逻辑删除相关功能。
+ * {@link Boolean} 类型的属性对应的逻辑删除处理器。
+ *
+ * @author 王帅
+ * @since 2023-06-20
  */
-package com.mybatisflex.core.logicdelete;
+public class BooleanLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
+
+    /**
+     * 逻辑删除字段值为 {@code false} 表示数据未删除。
+     */
+    @Override
+    protected Object getLogicNormalValue() {
+        return false;
+    }
+
+    /**
+     * 逻辑删除字段值为 {@code true} 表示数据删除。
+     */
+    @Override
+    protected Object getLogicDeletedValue() {
+        return true;
+    }
+
+}

@@ -13,12 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.core.row;
 
-public interface BatchArgsSetter {
-
-    int getBatchSize();
-
-    Object[] getSqlArgs(int index);
-
-}
+/**
+ * 逻辑删除处理器实现。
+ */
+package com.mybatisflex.core.logicdelete.impl;

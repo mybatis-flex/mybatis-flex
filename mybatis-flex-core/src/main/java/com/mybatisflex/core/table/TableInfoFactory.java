@@ -101,7 +101,7 @@ public class TableInfoFactory {
     public static TableInfo ofEntityClass(Class<?> entityClass) {
         return MapUtil.computeIfAbsent(entityTableMap, entityClass, aClass -> {
             TableInfo tableInfo = createTableInfo(entityClass);
-            tableInfoMap.put(tableInfo.getTableName(), tableInfo);
+            tableInfoMap.put(tableInfo.getTableNameWithSchema(), tableInfo);
             return tableInfo;
         });
     }
@@ -221,9 +221,6 @@ public class TableInfoFactory {
                     if (genericType instanceof ParameterizedType) {
                         Class<?> actualTypeArgument = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
                         //需排除 List<String>  List<Long> 等场景
-                        /*if (!defaultSupportColumnTypes.contains(actualTypeArgument)) {
-                            tableInfo.addCollectionType(field, actualTypeArgument);
-                        }*/
                         tableInfo.addCollectionType(field, actualTypeArgument);
                     }
                 }

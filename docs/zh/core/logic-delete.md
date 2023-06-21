@@ -54,6 +54,51 @@ SELECT * FROM tb_account where id = ? and is_delete = 0
 - selectCountBy**
 - paginate
 
+同时，比如 Left Join 或者子查询等，若 **子表也设置了逻辑删除字段**， 那么子表也会添加相应的逻辑删除条件，例如：
+
+```java
+QueryWrapper query1 = QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .leftJoin(ARTICLE).as("a").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+    .where(ACCOUNT.AGE.ge(10));
+```
+其执行的 SQL 如下：
+
+```sql
+SELECT * FROM `tb_account` 
+    LEFT JOIN `tb_article` AS `a` ON `tb_account`.`id` = `a`.`account_id` 
+WHERE `tb_account`.`age` >= 10 
+  AND `tb_account`.`is_delete` = 0 AND `a`.`is_delete` = 0
+```
+自动添加上 `tb_account.is_delete = 0 AND a.is_delete = 0` 条件。
+
+示例 2：
+
+```java
+ QueryWrapper query2 = QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    .leftJoin(
+            //子查询
+            select().from(ARTICLE).where(ARTICLE.ID.ge(100))
+    ).as("a").on(
+            ACCOUNT.ID.eq(raw("a.id"))
+    )
+    .where(ACCOUNT.AGE.ge(10));
+```
+其执行的 SQL 如下：
+
+```sql
+SELECT * FROM `tb_account` 
+    LEFT JOIN (
+        SELECT * FROM `tb_article` WHERE `id` >= 100 AND `is_delete` = 0
+        ) AS `a` 
+    ON `tb_account`.`id` = a.id 
+WHERE `tb_account`.`age` >= 10 AND `tb_account`.`is_delete` = 0
+```
+
+
 ## 逻辑删除的默认值配置
 
 在某些场景下，我们可能希望数据库存入的逻辑删除中的值并非 0 和 1，比如可能是 true 和 false 等，那么，我们可以通过配置 `FlexGlobalConfig`
@@ -77,11 +122,29 @@ globalConfig.setDeletedValueOfLogicDelete("...");
 此时，我们可以使用 LogicDeleteManager.execWithoutLogicDelete() 方法处理，代码如下：
 
 ```java
-LogicDeleteManager.execWithoutLogicDelete(() -> 
-            accountMapper.deleteById(1)
+LogicDeleteManager.execWithoutLogicDelete(()->
+        accountMapper.deleteById(1)
         );
 ```
+
 以上代码中，`accountMapper` 会直接对 `Account` 数据进行物理删除，忽略逻辑删除字段配置。
+
+## 内置逻辑删除处理器
+
+MyBatis-Flex 提供了三种字段类型对应的逻辑删除处理器，用户可以根据逻辑删除字段的类型进行设置，它们分别是：
+
+| 处理器名称                        | 对应字段类型   | 数据正常时的值 | 数据被删除时的值 |
+|------------------------------|----------|---------|----------|
+| IntegerLogicDeleteProcessor  | integer  | 0       | 1        |
+| BooleanLogicDeleteProcessor  | tinyint  | false   | true     |
+| DateTimeLogicDeleteProcessor | datetime | null    | 被删除时间    |
+| TimeStampLogicDeleteProcessor     | bigint   | 0       | 被删除时的时间戳 |
+
+使用时，只需通过 `LogicDeleteManager` 来设置逻辑删除处理器即可，例如：
+
+```java
+LogicDeleteManager.setProcessor(new DateTimeLogicDeleteProcessor());
+```
 
 ## 自定义逻辑删除处理功能
 

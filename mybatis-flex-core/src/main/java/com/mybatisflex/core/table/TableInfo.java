@@ -128,6 +128,10 @@ public class TableInfo {
         return tableName;
     }
 
+    public String getTableNameWithSchema() {
+        return StringUtil.isNotBlank(schema) ? schema + "." + tableName : tableName;
+    }
+
     public String getWrapSchemaAndTableName(IDialect dialect) {
         if (StringUtil.isNotBlank(schema)) {
             return dialect.wrap(dialect.getRealSchema(schema)) + "." + dialect.wrap(dialect.getRealTable(tableName));
@@ -171,6 +175,7 @@ public class TableInfo {
     public String getLogicDeleteColumn() {
         return logicDeleteColumn;
     }
+
     public void setLogicDeleteColumn(String logicDeleteColumn) {
         this.logicDeleteColumn = logicDeleteColumn;
     }
@@ -670,9 +675,7 @@ public class TableInfo {
 
         //逻辑删除
         if (StringUtil.isNotBlank(getLogicDeleteColumnOrSkip())) {
-//            queryWrapper.and(QueryCondition.create(schema, tableName, logicDeleteColumn, SqlConsts.EQUALS
-//                    , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
-            LogicDeleteManager.getProcessor().buildQueryCondition(queryWrapper,this);
+            LogicDeleteManager.getProcessor().buildQueryCondition(queryWrapper, this);
         }
 
         //多租户
@@ -693,6 +696,32 @@ public class TableInfo {
             }
         }
 
+
+        //join
+        List<Join> joins = CPI.getJoins(queryWrapper);
+        if (CollectionUtil.isNotEmpty(joins)) {
+            for (Join join : joins) {
+                QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
+                if (joinQueryTable instanceof SelectQueryTable) {
+                    QueryWrapper childQuery = ((SelectQueryTable) joinQueryTable).getQueryWrapper();
+                    doAppendConditions(entity, childQuery);
+                } else {
+
+                    String nameWithSchema = joinQueryTable.getNameWithSchema();
+                    if (StringUtil.isNotBlank(nameWithSchema)) {
+                        TableInfo tableInfo = TableInfoFactory.ofTableName(nameWithSchema);
+                        if (tableInfo != null) {
+                            QueryCondition joinQueryCondition = CPI.getJoinQueryCondition(join);
+                            QueryWrapper newWrapper = QueryWrapper.create()
+                                    .where(joinQueryCondition);
+                            tableInfo.appendConditions(entity, newWrapper);
+                            CPI.setJoinQueryCondition(join, CPI.getWhereQueryCondition(newWrapper));
+                        }
+                    }
+                }
+            }
+        }
+
         //union
         List<UnionWrapper> unions = CPI.getUnions(queryWrapper);
         if (CollectionUtil.isNotEmpty(unions)) {
@@ -708,9 +737,17 @@ public class TableInfo {
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
         if (queryTables != null && !queryTables.isEmpty()) {
             for (QueryTable queryTable : queryTables) {
-                TableInfo tableInfo = TableInfoFactory.ofTableName(queryTable.getName());
-                if (tableInfo != null) {
-                    tableInfo.appendConditions(entity, queryWrapper);
+                if (queryTable instanceof SelectQueryTable) {
+                    QueryWrapper childQuery = ((SelectQueryTable) queryTable).getQueryWrapper();
+                    doAppendConditions(entity, childQuery);
+                } else {
+                    String nameWithSchema = queryTable.getNameWithSchema();
+                    if (StringUtil.isNotBlank(nameWithSchema)) {
+                        TableInfo tableInfo = TableInfoFactory.ofTableName(nameWithSchema);
+                        if (tableInfo != null) {
+                            tableInfo.appendConditions(entity, queryWrapper);
+                        }
+                    }
                 }
             }
         }
