@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 class ProviderUtil {
 
     private ProviderUtil() {}
@@ -44,6 +45,7 @@ class ProviderUtil {
         Object schemaNameObj = params.get(FlexConsts.SCHEMA_NAME);
         return schemaNameObj != null ? schemaNameObj.toString().trim() : null;
     }
+
     public static String getTableName(Map params) {
         Object tableNameObj = params.get(FlexConsts.TABLE_NAME);
         return tableNameObj != null ? tableNameObj.toString().trim() : null;
@@ -76,7 +78,13 @@ class ProviderUtil {
     }
 
     public static QueryWrapper getQueryWrapper(Map params) {
-        return (QueryWrapper) params.get(FlexConsts.QUERY);
+        Object obj = params.get(FlexConsts.QUERY);
+        // QueryWrapper 如果为 null 则创建空的对象
+        // 避免多次空判断，以及 NullPointerException
+        if (obj == null) {
+            return QueryWrapper.create();
+        }
+        return (QueryWrapper) obj;
     }
 
     public static Row getRow(Map params) {
