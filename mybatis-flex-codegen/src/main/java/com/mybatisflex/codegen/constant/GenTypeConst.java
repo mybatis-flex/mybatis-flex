@@ -23,6 +23,9 @@ package com.mybatisflex.codegen.constant;
  */
 public class GenTypeConst {
 
+    private GenTypeConst() {
+    }
+
     public static final String ENTITY = "entity";
     public static final String MAPPER = "mapper";
     public static final String SERVICE = "service";
@@ -31,9 +34,5 @@ public class GenTypeConst {
     public static final String TABLE_DEF = "tableDef";
     public static final String MAPPER_XML = "mapperXml";
     public static final String PACKAGE_INFO = "package-info";
-
-
-    private GenTypeConst() {
-    }
 
 }
