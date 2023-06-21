@@ -41,6 +41,12 @@ public class CPI {
         return queryWrapper.getChildSelect();
     }
 
+
+
+    public static With getWith(QueryWrapper queryWrapper) {
+        return queryWrapper.with;
+    }
+
     public static List<QueryTable> getQueryTables(QueryWrapper queryWrapper) {
         return queryWrapper.getQueryTables();
     }
