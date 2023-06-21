@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.spring.boot;
 
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.spring.FlexSqlSessionFactoryBean;
 import org.apache.ibatis.annotations.Mapper;
@@ -120,7 +121,10 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
+        // 检测 MyBatis 原生配置文件是否存在
         checkConfigFileExists();
+        // 添加 MyBatis-Flex 全局配置
+        this.properties.getGlobalConfig().applyTo(FlexGlobalConfig.getDefaultConfig());
     }
 
     private void checkConfigFileExists() {
