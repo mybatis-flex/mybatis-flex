@@ -1,20 +1,21 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.spring.boot;
 
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.spring.FlexSqlSessionFactoryBean;
 import org.apache.ibatis.annotations.Mapper;
@@ -67,17 +68,16 @@ import java.util.stream.Stream;
 
 
 /**
- * Mybatis-Flex 的核心配置
+ * Mybatis-Flex 的核心配置。
  * <p>
- * <p>
- * 参考 {@link <a href="https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisAutoConfiguration.java">
- * https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisAutoConfiguration.java</a>}
+ * 参考 <a href="https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisAutoConfiguration.java">
+ * MybatisAutoConfiguration.java</a>
  * <p>
  * 为 Mybatis-Flex 开启自动配置功能，主要修改以下几个方面:
  * <p>
- * 1、替换配置为 mybatis-flex 的配置前缀
- * 2、修改 SqlSessionFactory 为 FlexSqlSessionFactoryBean
- * 3、修改 Configuration 为 FlexConfiguration
+ * 1、替换配置为 mybatis-flex 的配置前缀<br>
+ * 2、修改 SqlSessionFactory 为 FlexSqlSessionFactoryBean<br>
+ * 3、修改 Configuration 为 FlexConfiguration<br>
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
@@ -121,7 +121,10 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
+        // 检测 MyBatis 原生配置文件是否存在
         checkConfigFileExists();
+        // 添加 MyBatis-Flex 全局配置
+        this.properties.getGlobalConfig().applyTo(FlexGlobalConfig.getDefaultConfig());
     }
 
     private void checkConfigFileExists() {
@@ -135,7 +138,6 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
-//    SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         SqlSessionFactoryBean factory = new FlexSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         if (properties.getConfiguration() == null || properties.getConfiguration().getVfsImpl() == null) {
@@ -191,7 +193,6 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
     protected void applyConfiguration(SqlSessionFactoryBean factory) {
         MybatisFlexProperties.CoreConfiguration coreConfiguration = this.properties.getConfiguration();
-//    Configuration configuration = null;
         FlexConfiguration configuration = null;
         if (coreConfiguration != null || !StringUtils.hasText(this.properties.getConfigLocation())) {
             configuration = new FlexConfiguration();
