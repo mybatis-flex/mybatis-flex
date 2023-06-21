@@ -7,7 +7,7 @@
     <groupId>com.mybatis-flex</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.4.1</version>
+    <version>${revision}</version>
 
     <name>mybatis-flex</name>
     <url>https://mybatis-flex.com</url>
@@ -51,6 +51,7 @@
     </modules>
 
     <properties>
+        <revision>1.4.1</revision>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
@@ -68,6 +69,7 @@
         <solon.version>2.3.1</solon.version>
 
         <junit.version>4.13.2</junit.version>
+        <maven_flatten_version>1.5.0</maven_flatten_version>
     </properties>
 
     <dependencyManagement>
@@ -214,7 +216,31 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${maven_flatten_version}</version>
+                <configuration>
+                </configuration>
+                <executions>
+                    <!-- enable flattening -->
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <!-- ensure proper cleanup -->
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -286,7 +312,31 @@
                             </execution>
                         </executions>
                     </plugin>
-
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>flatten-maven-plugin</artifactId>
+                        <version>${maven_flatten_version}</version>
+                        <configuration>
+                        </configuration>
+                        <executions>
+                            <!-- enable flattening -->
+                            <execution>
+                                <id>flatten</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>flatten</goal>
+                                </goals>
+                            </execution>
+                            <!-- ensure proper cleanup -->
+                            <execution>
+                                <id>flatten.clean</id>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
             <distributionManagement>
