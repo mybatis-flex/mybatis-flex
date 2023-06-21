@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.codegen.entity;
 
@@ -24,21 +24,50 @@ import com.mybatisflex.core.util.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 数据库表里面的列信息。
+ */
 public class Column {
 
+    /**
+     * 字段名称。
+     */
     private String name;
+
+    /**
+     * 属性名称。
+     */
     private String property;
+
+    /**
+     * 属性类型。
+     */
     private String propertyType;
 
+    /**
+     * 字段注释。
+     */
     private String comment;
 
+    /**
+     * 是否为主键。
+     */
     private boolean isPrimaryKey = false;
+
+    /**
+     * 是否自增。
+     */
     private Boolean isAutoIncrement;
 
+    /**
+     * 是否需要生成 @Column 注解。
+     */
     private boolean needGenColumnAnnotation = false;
 
+    /**
+     * 字段配置。
+     */
     private ColumnConfig columnConfig;
-
 
     public String getName() {
         return name;
@@ -106,7 +135,6 @@ public class Column {
         return "set" + StringUtil.firstCharToUpperCase(property);
     }
 
-
     public String buildComment() {
         if (StringUtil.isBlank(comment)) {
             return "";
@@ -117,7 +145,6 @@ public class Column {
             return sb.toString();
         }
     }
-
 
     public String buildPropertyName() {
         String entityJavaFileName = name;
@@ -285,7 +312,6 @@ public class Column {
         return importClasses;
     }
 
-
     @Override
     public String toString() {
         return "Column{" +
@@ -295,4 +321,5 @@ public class Column {
                 ", isAutoIncrement=" + isAutoIncrement +
                 '}';
     }
+
 }
