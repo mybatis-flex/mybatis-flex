@@ -19,19 +19,19 @@ package com.mybatisflex.core.logicdelete.impl;
 import com.mybatisflex.core.logicdelete.AbstractLogicDeleteProcessor;
 
 /**
- * {@link Long} 类型的属性对应的逻辑删除处理器。
+ * 时间戳类型的属性对应的逻辑删除处理器。
  *
  * @author 王帅
  * @since 2023-06-21
  */
-public class LongLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
+public class TimeStampLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 
     /**
      * 逻辑删除字段值为 {@code 0} 表示数据未删除。
      */
     @Override
     protected Object getLogicNormalValue() {
-        return "0";
+        return 0;
     }
 
     /**
@@ -39,7 +39,7 @@ public class LongLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      */
     @Override
     protected Object getLogicDeletedValue() {
-        return "NOW()";
+        return System.currentTimeMillis();
     }
 
 }

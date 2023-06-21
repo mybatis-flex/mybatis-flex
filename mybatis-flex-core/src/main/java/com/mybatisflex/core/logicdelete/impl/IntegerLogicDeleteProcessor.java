@@ -31,7 +31,7 @@ public class IntegerLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      */
     @Override
     protected Object getLogicNormalValue() {
-        return "0";
+        return 0;
     }
 
     /**
@@ -39,7 +39,7 @@ public class IntegerLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      */
     @Override
     protected Object getLogicDeletedValue() {
-        return "1";
+        return 1;
     }
 
 }

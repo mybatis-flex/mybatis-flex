@@ -632,7 +632,6 @@ public class TableInfo {
     }
 
     private static final String APPEND_CONDITIONS_FLAG = "appendConditions";
-    private static final String APPEND_JOIN_FLAG = "appendJoins";
 
     public void appendConditions(Object entity, QueryWrapper queryWrapper) {
 
@@ -699,23 +698,24 @@ public class TableInfo {
 
 
         //join
-        if (!Boolean.TRUE.equals(CPI.getContext(queryWrapper, APPEND_JOIN_FLAG))) {
-            List<Join> joins = CPI.getJoins(queryWrapper);
-            if (CollectionUtil.isNotEmpty(joins)) {
-                for (Join join : joins) {
-                    QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
-                    if (joinQueryTable instanceof SelectQueryTable) {
-                        QueryWrapper childQuery = ((SelectQueryTable) joinQueryTable).getQueryWrapper();
-                        doAppendConditions(entity, childQuery);
-                    } else {
-                        String nameWithSchema = joinQueryTable.getNameWithSchema();
-                        if (StringUtil.isNotBlank(nameWithSchema)) {
-                            TableInfo tableInfo = TableInfoFactory.ofTableName(nameWithSchema);
-                            if (tableInfo != null) {
-                                CPI.putContext(queryWrapper, APPEND_CONDITIONS_FLAG, Boolean.FALSE);
-                                CPI.putContext(queryWrapper, APPEND_JOIN_FLAG, Boolean.TRUE);
-                                tableInfo.appendConditions(entity, queryWrapper);
-                            }
+        List<Join> joins = CPI.getJoins(queryWrapper);
+        if (CollectionUtil.isNotEmpty(joins)) {
+            for (Join join : joins) {
+                QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
+                if (joinQueryTable instanceof SelectQueryTable) {
+                    QueryWrapper childQuery = ((SelectQueryTable) joinQueryTable).getQueryWrapper();
+                    doAppendConditions(entity, childQuery);
+                } else {
+
+                    String nameWithSchema = joinQueryTable.getNameWithSchema();
+                    if (StringUtil.isNotBlank(nameWithSchema)) {
+                        TableInfo tableInfo = TableInfoFactory.ofTableName(nameWithSchema);
+                        if (tableInfo != null) {
+                            QueryCondition joinQueryCondition = CPI.getJoinQueryCondition(join);
+                            QueryWrapper newWrapper = QueryWrapper.create()
+                                    .where(joinQueryCondition);
+                            tableInfo.appendConditions(entity, newWrapper);
+                            CPI.setJoinQueryCondition(join, CPI.getWhereQueryCondition(newWrapper));
                         }
                     }
                 }

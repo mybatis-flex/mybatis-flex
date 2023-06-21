@@ -34,6 +34,35 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
 
+    public WithBuilder with(String name) {
+        if (with == null) {
+            with = new With();
+        }
+        return new WithBuilder(this, with, name);
+    }
+
+    public WithBuilder with(String name, String... params) {
+        if (with == null) {
+            with = new With();
+        }
+        return new WithBuilder(this, with, name, Arrays.asList(params));
+    }
+
+    public WithBuilder withRecursive(String name) {
+        if (with == null) {
+            with = new With(true);
+        }
+        return new WithBuilder(this, with, name);
+    }
+
+    public WithBuilder withRecursive(String name, String... params) {
+        if (with == null) {
+            with = new With(true);
+        }
+        return new WithBuilder(this, with, name, Arrays.asList(params));
+    }
+
+
     public QueryWrapper select() {
         return this;
     }
@@ -556,6 +585,15 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     Object[] getValueArray() {
 
+        List<Object> withValues = null;
+        if (with != null) {
+            Object[] paramValues = with.getParamValues();
+            if (ArrayUtil.isNotEmpty(paramValues)) {
+                withValues = new ArrayList<>(Arrays.asList(paramValues));
+
+            }
+        }
+
         List<Object> columnValues = null;
         List<QueryColumn> selectColumns = getSelectColumns();
         if (CollectionUtil.isNotEmpty(selectColumns)) {
@@ -564,7 +602,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
                     Object[] paramValues = ((HasParamsColumn) selectColumn).getParamValues();
                     if (ArrayUtil.isNotEmpty(paramValues)) {
                         if (columnValues == null) {
-                            columnValues = new ArrayList<>();
+                            columnValues = new ArrayList<>(paramValues.length);
                         }
                         columnValues.addAll(Arrays.asList(paramValues));
                     }
@@ -580,7 +618,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
                 Object[] tableValueArray = queryTable.getValueArray();
                 if (tableValueArray.length > 0) {
                     if (tableValues == null) {
-                        tableValues = new ArrayList<>();
+                        tableValues = new ArrayList<>(tableValueArray.length);
                     }
                     tableValues.addAll(Arrays.asList(tableValueArray));
                 }
@@ -596,7 +634,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
                 Object[] valueArray = joinTable.getValueArray();
                 if (valueArray.length > 0) {
                     if (joinValues == null) {
-                        joinValues = new ArrayList<>();
+                        joinValues = new ArrayList<>(valueArray.length);
                     }
                     joinValues.addAll(Arrays.asList(valueArray));
                 }
@@ -604,7 +642,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
                 Object[] values = WrapperUtil.getValues(onCondition);
                 if (values.length > 0) {
                     if (joinValues == null) {
-                        joinValues = new ArrayList<>();
+                        joinValues = new ArrayList<>(values.length);
                     }
                     joinValues.addAll(Arrays.asList(values));
                 }
@@ -627,7 +665,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             }
         }
 
-        Object[] returnValues = columnValues == null ? FlexConsts.EMPTY_ARRAY : columnValues.toArray();
+        Object[] returnValues = withValues == null ? FlexConsts.EMPTY_ARRAY : withValues.toArray();
+        returnValues = columnValues != null ? ArrayUtil.concat(returnValues, columnValues.toArray()) : returnValues;
         returnValues = tableValues != null ? ArrayUtil.concat(returnValues, tableValues.toArray()) : returnValues;
         returnValues = joinValues != null ? ArrayUtil.concat(returnValues, joinValues.toArray()) : returnValues;
         returnValues = ArrayUtil.concat(returnValues, paramValues);

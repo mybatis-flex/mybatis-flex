@@ -40,7 +40,7 @@ public class LogicDeleteTest {
         print("BooleanLogicDeleteProcessor", new BooleanLogicDeleteProcessor());
         print("IntegerLogicDeleteProcessor", new IntegerLogicDeleteProcessor());
         print("DateTimeLogicDeleteProcessor", new DateTimeLogicDeleteProcessor());
-        print("LongLogicDeleteProcessor", new LongLogicDeleteProcessor());
+        print("TimeStampLogicDeleteProcessor", new TimeStampLogicDeleteProcessor());
     }
 
     public void print(String type, LogicDeleteProcessor processor) {

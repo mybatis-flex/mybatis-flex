@@ -229,7 +229,6 @@ public class StringUtil {
         }
     }
 
-
     /**
      * 合并字符串，优化 String.join() 方法
      *
@@ -247,6 +246,8 @@ public class StringUtil {
             return String.join(delimiter, elements);
         }
     }
+
+
 
     /**
      * 合并字符串，优化 String.join() 方法

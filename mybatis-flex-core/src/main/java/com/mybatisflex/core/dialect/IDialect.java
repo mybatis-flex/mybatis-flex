@@ -58,6 +58,8 @@ public interface IDialect {
 
     String buildSelectSql(QueryWrapper queryWrapper);
 
+    String buildNoSelectSql(QueryWrapper queryWrapper);
+
     String buildDeleteSql(QueryWrapper queryWrapper);
 
     String buildWhereConditionSql(QueryWrapper queryWrapper);
