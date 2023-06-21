@@ -30,7 +30,8 @@ import java.util.Map;
 
 public class CPI {
 
-    private CPI() {}
+    private CPI() {
+    }
 
     public static Object[] getValueArray(QueryWrapper queryWrapper) {
         return queryWrapper.getValueArray();
@@ -96,6 +97,15 @@ public class CPI {
     public static QueryTable getJoinQueryTable(Join join) {
         return join.getQueryTable();
     }
+
+    public static QueryCondition getJoinQueryCondition(Join join) {
+        return join.on;
+    }
+
+    public static void setJoinQueryCondition(Join join, QueryCondition queryCondition) {
+        join.on = queryCondition;
+    }
+
 
     public static List<QueryTable> getJoinTables(QueryWrapper queryWrapper) {
         return queryWrapper.getJoinTables();
