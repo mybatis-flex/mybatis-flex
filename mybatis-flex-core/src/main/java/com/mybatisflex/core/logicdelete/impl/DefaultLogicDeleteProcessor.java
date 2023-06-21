@@ -13,11 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.core.logicdelete;
+package com.mybatisflex.core.logicdelete.impl;
 
 import com.mybatisflex.core.FlexGlobalConfig;
-import com.mybatisflex.core.constant.SqlConsts;
-import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.logicdelete.AbstractLogicDeleteProcessor;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
@@ -25,27 +24,19 @@ import com.mybatisflex.core.table.TableInfo;
 import static com.mybatisflex.core.constant.SqlConsts.EQUALS;
 import static com.mybatisflex.core.constant.SqlConsts.SINGLE_QUOTE;
 
-public class DefaultLogicDeleteProcessorImpl implements LogicDeleteProcessor {
-
-    @Override
-    public String buildLogicNormalCondition(String logicColumn, IDialect dialect) {
-        return dialect.wrap(logicColumn) + EQUALS + getLogicNormalValue();
-    }
-
-
-    @Override
-    public String buildLogicDeletedSet(String logicColumn, IDialect dialect) {
-        return dialect.wrap(logicColumn) + EQUALS + getLogicDeletedValue();
-    }
+/**
+ * 默认逻辑删除处理器。
+ */
+public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 
     @Override
     public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo) {
         queryWrapper.and(QueryCondition.create(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getLogicDeleteColumn()
-                , SqlConsts.EQUALS
+                , EQUALS
                 , FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
     }
 
-
+    @Override
     protected Object getLogicNormalValue() {
         Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
         if (normalValueOfLogicDelete instanceof Number
@@ -55,7 +46,7 @@ public class DefaultLogicDeleteProcessorImpl implements LogicDeleteProcessor {
         return SINGLE_QUOTE + normalValueOfLogicDelete + SINGLE_QUOTE;
     }
 
-
+    @Override
     protected Object getLogicDeletedValue() {
         Object deletedValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete();
         if (deletedValueOfLogicDelete instanceof Number
@@ -64,6 +55,7 @@ public class DefaultLogicDeleteProcessorImpl implements LogicDeleteProcessor {
         }
         return SINGLE_QUOTE + deletedValueOfLogicDelete + SINGLE_QUOTE;
     }
+
 }
 
 

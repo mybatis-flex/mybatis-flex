@@ -122,11 +122,29 @@ globalConfig.setDeletedValueOfLogicDelete("...");
 此时，我们可以使用 LogicDeleteManager.execWithoutLogicDelete() 方法处理，代码如下：
 
 ```java
-LogicDeleteManager.execWithoutLogicDelete(() -> 
-            accountMapper.deleteById(1)
+LogicDeleteManager.execWithoutLogicDelete(()->
+        accountMapper.deleteById(1)
         );
 ```
+
 以上代码中，`accountMapper` 会直接对 `Account` 数据进行物理删除，忽略逻辑删除字段配置。
+
+## 内置逻辑删除处理器
+
+MyBatis-Flex 提供了三种字段类型对应的逻辑删除处理器，用户可以根据逻辑删除字段的类型进行设置，它们分别是：
+
+| 处理器名称                        | 对应字段类型   | 数据正常时的值 | 数据被删除时的值 |
+|------------------------------|----------|---------|----------|
+| IntegerLogicDeleteProcessor  | integer  | 0       | 1        |
+| BooleanLogicDeleteProcessor  | tinyint  | false   | true     |
+| DateTimeLogicDeleteProcessor | datetime | null    | 被删除时间    |
+| LongLogicDeleteProcessor     | bigint   | 0       | 被删除时的时间戳 |
+
+使用时，只需通过 `LogicDeleteManager` 来设置逻辑删除处理器即可，例如：
+
+```java
+LogicDeleteManager.setProcessor(new DateTimeLogicDeleteProcessor());
+```
 
 ## 自定义逻辑删除处理功能
 

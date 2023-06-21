@@ -15,6 +15,6 @@
  */
 
 /**
- * 逻辑删除相关功能。
+ * 逻辑删除处理器实现。
  */
-package com.mybatisflex.core.logicdelete;
+package com.mybatisflex.core.logicdelete.impl;
