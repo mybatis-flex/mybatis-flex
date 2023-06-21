@@ -142,7 +142,7 @@ MyBatis-Flex 提供了三种字段类型对应的逻辑删除处理器，用户�
 使用时，只需通过 `LogicDeleteManager` 来设置逻辑删除处理器即可，例如：
 
 ```java
-LogicDeleteManager.setProcessor(new DateTimeLogicDeleteProcessor);
+LogicDeleteManager.setProcessor(new DateTimeLogicDeleteProcessor());
 ```
 
 ## 自定义逻辑删除处理功能
