@@ -905,6 +905,11 @@ public class CommonsDialectImpl implements IDialect {
             } else if (!allowNoCondition) {
                 throw new IllegalArgumentException("Not allowed DELETE a table without where condition.");
             }
+        } else {
+            // whereQueryCondition == null
+            if (!allowNoCondition) {
+                throw new IllegalArgumentException("Not allowed DELETE a table without where condition.");
+            }
         }
     }
 
