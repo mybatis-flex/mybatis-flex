@@ -99,8 +99,6 @@ public class FlexConfiguration extends Configuration {
     @Override
     public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement
             , RowBounds rowBounds, ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
-//        ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler,
-//                resultHandler, boundSql, rowBounds);
         ResultSetHandler resultSetHandler = new FlexResultSetHandler(executor, mappedStatement, parameterHandler,
                 resultHandler, boundSql, rowBounds);
         return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);

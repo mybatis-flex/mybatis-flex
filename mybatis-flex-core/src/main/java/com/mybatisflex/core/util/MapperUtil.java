@@ -111,7 +111,6 @@ public class MapperUtil {
 
         // 获取 join 语句中使用到的表名
         List<String> joinTables = new ArrayList<>();
-//        Map<String, String> joinTables = new HashMap<>();
         joins.forEach(join -> {
             QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
             if (joinQueryTable != null && StringUtil.isNotBlank(joinQueryTable.getName())) {

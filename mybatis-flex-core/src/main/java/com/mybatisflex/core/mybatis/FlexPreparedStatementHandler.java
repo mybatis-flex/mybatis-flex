@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.mybatis;
 
@@ -41,20 +41,6 @@ public class FlexPreparedStatementHandler extends PreparedStatementHandler {
 
     @Override
     protected Statement instantiateStatement(Connection connection) throws SQLException {
-//    String sql = boundSql.getSql();
-//    if (mappedStatement.getKeyGenerator() instanceof Jdbc3KeyGenerator) {
-//      String[] keyColumnNames = mappedStatement.getKeyColumns();
-//      if (keyColumnNames == null) {
-//        return connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-//      } else {
-//        return connection.prepareStatement(sql, keyColumnNames);
-//      }
-//    } else if (mappedStatement.getResultSetType() == ResultSetType.DEFAULT) {
-//      return connection.prepareStatement(sql);
-//    } else {
-//      return connection.prepareStatement(sql, mappedStatement.getResultSetType().getValue(), ResultSet.CONCUR_READ_ONLY);
-//    }
-
         String sql = boundSql.getSql();
         KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
         if (keyGenerator instanceof Jdbc3KeyGenerator) {

@@ -107,7 +107,7 @@ public class MybatisKeyGeneratorUtil {
         //看到有的框架把 keyGenerator 添加到 mybatis 的当前配置里去，其实是完全没必要的
         //因为只有在 xml 解析的时候，才可能存在多一个 MappedStatement 拥有同一个 keyGenerator 的情况
         //当前每个方法都拥有一个自己的 keyGenerator 了，没必要添加
-        //this.addKeyGenerator(selectId, keyGenerator);
+        //addKeyGenerator(selectId, keyGenerator)
         return new SelectKeyGenerator(keyMappedStatement, isKeyBefore(idInfo, globalKeyConfig));
     }
 
