@@ -220,7 +220,6 @@ public class TableInfoFactory {
                     Type genericType = TypeParameterResolver.resolveFieldType(field, entityClass);
                     if (genericType instanceof ParameterizedType) {
                         Class<?> actualTypeArgument = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
-                        //需排除 List<String>  List<Long> 等场景
                         tableInfo.addCollectionType(field, actualTypeArgument);
                     }
                 }
