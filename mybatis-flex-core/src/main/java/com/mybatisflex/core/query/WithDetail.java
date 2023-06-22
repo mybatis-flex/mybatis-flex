@@ -17,7 +17,7 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
 
-public interface WithDetail {
+public interface WithDetail extends CloneSupport<WithDetail> {
 
     String toSql(IDialect dialect);
 

@@ -16,12 +16,14 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WithValuesDetail implements WithDetail{
+public class WithValuesDetail implements WithDetail {
 
     private List<Object> values;
     private QueryWrapper queryWrapper;
@@ -49,7 +51,7 @@ public class WithValuesDetail implements WithDetail{
             stringValues.add(String.valueOf(value));
         }
         StringBuilder sql = new StringBuilder("VALUES (")
-                .append(StringUtil.join(", ",stringValues)).append(") ");
+                .append(StringUtil.join(", ", stringValues)).append(") ");
         return sql.append(dialect.buildNoSelectSql(queryWrapper)).toString();
     }
 
@@ -57,4 +59,18 @@ public class WithValuesDetail implements WithDetail{
     public Object[] getParamValues() {
         return queryWrapper.getValueArray();
     }
+
+    @Override
+    public WithValuesDetail clone() {
+        try {
+            WithValuesDetail clone = (WithValuesDetail) super.clone();
+            // deep clone ...
+            clone.values = CollectionUtil.newArrayList(this.values);
+            clone.queryWrapper = this.queryWrapper.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw FlexExceptions.wrap(e);
+        }
+    }
+
 }

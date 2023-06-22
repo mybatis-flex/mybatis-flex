@@ -17,13 +17,16 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ArrayUtil;
+import com.mybatisflex.core.util.CollectionUtil;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class With implements Serializable {
+import static com.mybatisflex.core.constant.SqlConsts.*;
+
+public class With implements CloneSupport<With> {
 
     private boolean recursive;
     private List<WithItem> withItems;
@@ -59,17 +62,17 @@ public class With implements Serializable {
     }
 
     public String toSql(IDialect dialect) {
-        StringBuilder sql = new StringBuilder("WITH ");
+        StringBuilder sql = new StringBuilder(WITH);
         if (recursive) {
-            sql.append("RECURSIVE ");
+            sql.append(RECURSIVE);
         }
         for (int i = 0; i < withItems.size(); i++) {
             sql.append(withItems.get(i).toSql(dialect));
             if (i != withItems.size() - 1) {
-                sql.append(", ");
+                sql.append(DELIMITER);
             }
         }
-        return sql.append(" ").toString();
+        return sql.append(BLANK).toString();
     }
 
     public Object[] getParamValues() {
@@ -79,4 +82,17 @@ public class With implements Serializable {
         }
         return paramValues;
     }
+
+    @Override
+    public With clone() {
+        try {
+            With clone = (With) super.clone();
+            // deep clone ...
+            clone.withItems = CollectionUtil.cloneArrayList(this.withItems);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw FlexExceptions.wrap(e);
+        }
+    }
+
 }

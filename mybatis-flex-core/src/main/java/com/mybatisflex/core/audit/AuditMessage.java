@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.audit;
 
@@ -29,26 +29,75 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * SQL 审计详细消息。
+ */
 public class AuditMessage implements Serializable {
 
+    /**
+     * 平台，或者是运行的应用。
+     */
     private String platform;
-    private String module;
-    private String url;
-    private String bizId; //自定义业务ID
 
+    /**
+     * 应用模块。
+     */
+    private String module;
+
+    /**
+     * 执行这个 SQL 涉及的 URL 地址。
+     */
+    private String url;
+
+    /**
+     * 自定义业务 ID。
+     */
+    private String bizId;
+
+    /**
+     * 执行这个 SQL 涉及的平台用户。
+     */
     private String user;
+
+    /**
+     * 执行这个 SQL 的平台用户 IP 地址。
+     */
     private String userIp;
+
+    /**
+     * 执行这个 SQL 的服务器 IP 地址。
+     */
     private String hostIp;
 
+    /**
+     * SQL 内容。
+     */
     private String query;
+
+    /**
+     * SQL 参数。
+     */
     private List<Object> queryParams;
+
+    /**
+     * SQL 查询出来数据的数量。
+     */
     private int queryCount;
 
-    private long queryTime;     // Sql 执行的当前时间，单位毫秒
-    private long elapsedTime;   // Sql 执行消耗的时间，单位毫秒
+    /**
+     * SQL 执行的时间点（当前时间，毫秒）。
+     */
+    private long queryTime;
 
-    private Map<String, Object> metas; //其他信息，元信息
+    /**
+     * SQL 执行的消耗时间（毫秒）。
+     */
+    private long elapsedTime;
 
+    /**
+     * 其他扩展元信息。
+     */
+    private Map<String, Object> metas;
 
     public String getPlatform() {
         return platform;
@@ -148,7 +197,6 @@ public class AuditMessage implements Serializable {
         return SqlUtil.replaceSqlParams(getQuery(), queryParams == null ? null : queryParams.toArray());
     }
 
-
     private PreparedStatement createPreparedStatement() {
         return (PreparedStatement) Proxy.newProxyInstance(
                 AuditMessage.class.getClassLoader(),
@@ -217,4 +265,5 @@ public class AuditMessage implements Serializable {
                 ", metas=" + metas +
                 '}';
     }
+
 }
