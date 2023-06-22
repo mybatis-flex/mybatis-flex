@@ -16,13 +16,14 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.ObjectUtil;
 import com.mybatisflex.core.util.StringUtil;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class WithItem implements Serializable {
+public class WithItem implements CloneSupport<WithItem> {
 
     private String name;
     private List<String> params;
@@ -64,7 +65,7 @@ public class WithItem implements Serializable {
     public String toSql(IDialect dialect) {
         StringBuilder sql = new StringBuilder(name);
         if (CollectionUtil.isNotEmpty(params)){
-            sql.append("(").append(StringUtil.join(", ",params)).append(")");
+            sql.append("(").append(StringUtil.join(", ", params)).append(")");
         }
         sql.append(" AS (");
         sql.append(withDetail.toSql(dialect));
@@ -74,4 +75,18 @@ public class WithItem implements Serializable {
     public Object[] getParamValues() {
         return withDetail.getParamValues();
     }
+
+    @Override
+    public WithItem clone() {
+        try {
+            WithItem clone = (WithItem) super.clone();
+            // deep clone ...
+            clone.withDetail = ObjectUtil.clone(this.withDetail);
+            clone.params = CollectionUtil.newArrayList(this.params);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw FlexExceptions.wrap(e);
+        }
+    }
+
 }

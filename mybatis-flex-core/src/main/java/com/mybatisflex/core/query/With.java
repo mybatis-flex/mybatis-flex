@@ -17,13 +17,14 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ArrayUtil;
+import com.mybatisflex.core.util.CollectionUtil;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class With implements Serializable {
+public class With implements CloneSupport<With> {
 
     private boolean recursive;
     private List<WithItem> withItems;
@@ -79,4 +80,17 @@ public class With implements Serializable {
         }
         return paramValues;
     }
+
+    @Override
+    public With clone() {
+        try {
+            With clone = (With) super.clone();
+            // deep clone ...
+            clone.withItems = CollectionUtil.cloneArrayList(this.withItems);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw FlexExceptions.wrap(e);
+        }
+    }
+
 }

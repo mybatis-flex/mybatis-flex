@@ -16,8 +16,9 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
 
-public class WithSelectDetail implements WithDetail{
+public class WithSelectDetail implements WithDetail {
 
     private QueryWrapper queryWrapper;
 
@@ -45,4 +46,17 @@ public class WithSelectDetail implements WithDetail{
     public Object[] getParamValues() {
         return queryWrapper.getValueArray();
     }
+
+    @Override
+    public WithSelectDetail clone() {
+        try {
+            WithSelectDetail clone = (WithSelectDetail) super.clone();
+            // deep clone ...
+            clone.queryWrapper = this.queryWrapper.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw FlexExceptions.wrap(e);
+        }
+    }
+
 }
