@@ -16,7 +16,6 @@
 package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.codegen.template.ITemplate;
-import com.mybatisflex.core.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -501,7 +500,7 @@ public class GlobalConfig {
     }
 
     /**
-     * @see StrategyConfig#setTablePrefix(String)
+     * @see StrategyConfig#setTablePrefix(String...)
      */
     public void setTablePrefix(String... tablePrefix) {
         getStrategyConfig().setTablePrefix(tablePrefix);

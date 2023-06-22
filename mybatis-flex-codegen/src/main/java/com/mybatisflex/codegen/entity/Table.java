@@ -203,14 +203,27 @@ public class Table {
 
         tableAnnotation.append("@Table(value = \"").append(name).append("\"");
 
-        if (StringUtil.isNotBlank(schema)) {
-            tableAnnotation.append(", schema = \"").append(schema).append("\"");
+        String globalSchema;
+
+        if (tableConfig == null) {
+            // 未配置 tableConfig 以策略中的 schema 为主
+            globalSchema = schema;
+        } else if (StringUtil.isBlank(tableConfig.getSchema())) {
+            // 配置 tableConfig 但未指定 schema 还是以策略中的 schema 为主
+            globalSchema = schema;
+        } else {
+            // 以用户设置的 tableConfig 中的 schema 为主
+            globalSchema = null;
+        }
+
+        if (StringUtil.isNotBlank(globalSchema)) {
+            tableAnnotation.append(", schema = \"").append(globalSchema).append("\"");
         }
 
         if (tableConfig != null) {
-//            if (tableConfig.getSchema() != null) {
-//                tableAnnotation.append(", schema = \"").append(tableConfig.getSchema()).append("\"");
-//            }
+            if (StringUtil.isNotBlank(tableConfig.getSchema())) {
+                tableAnnotation.append(", schema = \"").append(tableConfig.getSchema()).append("\"");
+            }
             if (tableConfig.getCamelToUnderline() != null) {
                 tableAnnotation.append(", camelToUnderline = \"").append(tableConfig.getCamelToUnderline()).append("\"");
             }

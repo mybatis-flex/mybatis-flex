@@ -32,7 +32,7 @@ public class TableDefConfig {
     /**
      * TableDef 类的后缀。
      */
-    private String classSuffix = "Def";
+    private String classSuffix = "TableDef";
 
     /**
      * 是否覆盖之前生成的文件。
