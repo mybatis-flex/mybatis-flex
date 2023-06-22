@@ -7,13 +7,13 @@
 ### 原生方式：
 
 ```java
-FlexGlobalConfig defaultConfig=FlexGlobalConfig.getDefaultConfig();
-// use defaultConfig.setXxx(...);
+FlexGlobalConfig defaultConfig = FlexGlobalConfig.getDefaultConfig();
+// defaultConfig.setXxx(...);
 ```
 
 ### Spring MVC
 
-不支持
+同原生配置
 
 ### Spring Boot
 
@@ -108,7 +108,7 @@ TypeHandler 扫描路径，如果配置了该属性，SqlSessionFactoryBean 会�
 ## configuration
 
 本部分（Configuration）的配置都为 MyBatis
-原生支持的配置，有关配置请参考 [MyBatis Configuration](https://mybatis.net.cn/configuration.html#settings)。
+原生支持的配置，有关配置请参考 [MyBatis Configuration](https://mybatis.org/mybatis-3/zh/configuration.html#%E8%AE%BE%E7%BD%AE%EF%BC%88settings%EF%BC%89)。
 
 ## global-config
 
