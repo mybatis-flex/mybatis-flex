@@ -17,7 +17,6 @@ package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
-import com.mybatisflex.core.dialect.DbType;
 import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.mapping.ResultSetType;
@@ -733,10 +732,6 @@ public class MybatisFlexProperties {
          */
         private boolean printBanner = true;
 
-        /**
-         * 默认使用 Mysql 数据库类型。
-         */
-        private DbType dbType = DbType.MYSQL;
 
         /**
          * 全局的 ID 生成策略配置，当 @Id 未配置 或者 配置 KeyType 为 None 时
@@ -755,20 +750,13 @@ public class MybatisFlexProperties {
          */
         private Object deletedValueOfLogicDelete = FlexConsts.LOGIC_DELETE_DELETED;
 
+
         public boolean isPrintBanner() {
             return printBanner;
         }
 
         public void setPrintBanner(boolean printBanner) {
             this.printBanner = printBanner;
-        }
-
-        public DbType getDbType() {
-            return dbType;
-        }
-
-        public void setDbType(DbType dbType) {
-            this.dbType = dbType;
         }
 
         public FlexGlobalConfig.KeyConfig getKeyConfig() {
@@ -798,7 +786,6 @@ public class MybatisFlexProperties {
         void applyTo(FlexGlobalConfig target) {
             PropertyMapper mapper = PropertyMapper.get().alwaysApplyingWhenNonNull();
             mapper.from(isPrintBanner()).to(target::setPrintBanner);
-            mapper.from(getDbType()).to(target::setDbType);
             mapper.from(getKeyConfig()).to(target::setKeyConfig);
             mapper.from(getNormalValueOfLogicDelete()).to(target::setNormalValueOfLogicDelete);
             mapper.from(getDeletedValueOfLogicDelete()).to(target::setDeletedValueOfLogicDelete);

@@ -119,13 +119,6 @@ TypeHandler 扫描路径，如果配置了该属性，SqlSessionFactoryBean 会�
 
 是否控制台打印 MyBatis-Flex 的 LOGO 及版本号。
 
-### db-type
-
-- 类型：`DbType`
-- 默认值：`DbType.MYSQL`
-
-显示指定数据库类型。
-
 ### key-config
 
 - 类型：`com.mybatisflex.core.FlexGlobalConfig.KeyConfig`
