@@ -139,10 +139,9 @@ public class Column {
         if (StringUtil.isBlank(comment)) {
             return "";
         } else {
-            StringBuilder sb = new StringBuilder("/**\n")
-                    .append("     * ").append(comment).append("\n")
-                    .append("     */");
-            return sb.toString();
+            return "/**\n" +
+                    "     * " + comment + "\n" +
+                    "     */";
         }
     }
 
@@ -163,19 +162,19 @@ public class Column {
                 annotations.append("keyType = KeyType.Auto");
                 needComma = true;
             } else if (columnConfig.getKeyType() != null) {
-                annotations.append("keyType = KeyType." + columnConfig.getKeyType().name());
+                annotations.append("keyType = KeyType.").append(columnConfig.getKeyType().name());
                 needComma = true;
             }
 
             if (columnConfig.getKeyValue() != null) {
                 addComma(annotations, needComma);
-                annotations.append("value = \"" + columnConfig.getKeyValue() + "\"");
+                annotations.append("value = \"").append(columnConfig.getKeyValue()).append("\"");
                 needComma = true;
             }
 
             if (columnConfig.getKeyBefore() != null) {
                 addComma(annotations, needComma);
-                annotations.append("before = " + columnConfig.getKeyBefore());
+                annotations.append("before = ").append(columnConfig.getKeyBefore());
             }
 
             if (annotations.length() == 4) {
@@ -199,43 +198,43 @@ public class Column {
             annotations.append("@Column(");
             boolean needComma = false;
             if (needGenColumnAnnotation) {
-                annotations.append("value = \"" + name + "\"");
+                annotations.append("value = \"").append(name).append("\"");
                 needComma = true;
             }
 
             if (columnConfig.getOnInsertValue() != null) {
                 addComma(annotations, needComma);
-                annotations.append("onInsertValue = \"" + columnConfig.getOnInsertValue() + "\"");
+                annotations.append("onInsertValue = \"").append(columnConfig.getOnInsertValue()).append("\"");
                 needComma = true;
             }
             if (columnConfig.getOnUpdateValue() != null) {
                 addComma(annotations, needComma);
-                annotations.append("onUpdateValue = \"" + columnConfig.getOnUpdateValue() + "\"");
+                annotations.append("onUpdateValue = \"").append(columnConfig.getOnUpdateValue()).append("\"");
                 needComma = true;
             }
             if (columnConfig.getLarge() != null) {
                 addComma(annotations, needComma);
-                annotations.append("isLarge = " + columnConfig.getLarge());
+                annotations.append("isLarge = ").append(columnConfig.getLarge());
                 needComma = true;
             }
             if (columnConfig.getLogicDelete() != null) {
                 addComma(annotations, needComma);
-                annotations.append("isLogicDelete = " + columnConfig.getLogicDelete());
+                annotations.append("isLogicDelete = ").append(columnConfig.getLogicDelete());
                 needComma = true;
             }
             if (columnConfig.getVersion() != null) {
                 addComma(annotations, needComma);
-                annotations.append("version = " + columnConfig.getVersion());
+                annotations.append("version = ").append(columnConfig.getVersion());
                 needComma = true;
             }
             if (columnConfig.getJdbcType() != null) {
                 addComma(annotations, needComma);
-                annotations.append("jdbcType = JdbcType." + columnConfig.getJdbcType().name());
+                annotations.append("jdbcType = JdbcType.").append(columnConfig.getJdbcType().name());
                 needComma = true;
             }
             if (columnConfig.getTypeHandler() != null) {
                 addComma(annotations, needComma);
-                annotations.append("typeHandler = " + columnConfig.getTypeHandler().getSimpleName() + ".class");
+                annotations.append("typeHandler = ").append(columnConfig.getTypeHandler().getSimpleName()).append(".class");
                 needComma = true;
             }
             if (Boolean.TRUE.equals(columnConfig.getTenantId())) {
@@ -247,7 +246,7 @@ public class Column {
 
         //@ColumnMask 注解
         if (columnConfig.getMask() != null) {
-            annotations.append("@ColumnMask(\"" + columnConfig.getMask() + "\")");
+            annotations.append("@ColumnMask(\"").append(columnConfig.getMask()).append("\")");
         }
 
         String result = annotations.toString();
