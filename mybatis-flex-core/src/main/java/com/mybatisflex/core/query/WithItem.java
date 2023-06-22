@@ -23,6 +23,8 @@ import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
 
+import static com.mybatisflex.core.constant.SqlConsts.*;
+
 public class WithItem implements CloneSupport<WithItem> {
 
     private String name;
@@ -65,11 +67,11 @@ public class WithItem implements CloneSupport<WithItem> {
     public String toSql(IDialect dialect) {
         StringBuilder sql = new StringBuilder(name);
         if (CollectionUtil.isNotEmpty(params)){
-            sql.append("(").append(StringUtil.join(", ", params)).append(")");
+            sql.append(BRACKET_LEFT).append(StringUtil.join(DELIMITER, params)).append(BRACKET_RIGHT);
         }
-        sql.append(" AS (");
+        sql.append(AS).append(BRACKET_LEFT);
         sql.append(withDetail.toSql(dialect));
-        return sql.append(")").toString();
+        return sql.append(BRACKET_RIGHT).toString();
     }
 
     public Object[] getParamValues() {

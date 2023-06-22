@@ -24,6 +24,8 @@ import com.mybatisflex.core.util.CollectionUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mybatisflex.core.constant.SqlConsts.*;
+
 public class With implements CloneSupport<With> {
 
     private boolean recursive;
@@ -60,17 +62,17 @@ public class With implements CloneSupport<With> {
     }
 
     public String toSql(IDialect dialect) {
-        StringBuilder sql = new StringBuilder("WITH ");
+        StringBuilder sql = new StringBuilder(WITH);
         if (recursive) {
-            sql.append("RECURSIVE ");
+            sql.append(RECURSIVE);
         }
         for (int i = 0; i < withItems.size(); i++) {
             sql.append(withItems.get(i).toSql(dialect));
             if (i != withItems.size() - 1) {
-                sql.append(", ");
+                sql.append(DELIMITER);
             }
         }
-        return sql.append(" ").toString();
+        return sql.append(BLANK).toString();
     }
 
     public Object[] getParamValues() {

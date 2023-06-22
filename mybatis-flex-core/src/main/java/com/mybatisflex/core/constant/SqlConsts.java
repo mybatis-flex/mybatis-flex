@@ -67,6 +67,8 @@ public final class SqlConsts {
     public static final String ORDER_BY = " ORDER BY ";
     public static final String INSERT = "INSERT";
     public static final String INTO = " INTO ";
+    public static final String WITH = "WITH ";
+    public static final String RECURSIVE = "RECURSIVE ";
     public static final String INSERT_INTO = INSERT + INTO;
     public static final String DELETE_FROM = DELETE + FROM;
     public static final String SELECT_ALL_FROM = SELECT + ASTERISK + FROM;
