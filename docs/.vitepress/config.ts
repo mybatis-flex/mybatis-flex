@@ -95,6 +95,7 @@ export default defineConfig({
             {
                 text: '其他',
                 items: [
+                    {text: '配置选项', link: '/zh/others/configuration'},
                     {text: '代码生成器', link: '/zh/others/codegen'},
                     {text: 'APT 设置', link: '/zh/others/apt'},
                 ]
