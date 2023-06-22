@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.codegen.dialect;
 
@@ -23,6 +23,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.*;
 
+/**
+ * Sqlite 方言实现。
+ */
 public class SqliteDialect implements IDialect {
 
     @Override
@@ -48,12 +51,10 @@ public class SqliteDialect implements IDialect {
         }
     }
 
-
     @Override
     public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String schema, String[] types) throws SQLException {
         return dbMeta.getTables(conn.getCatalog(), schema, null, types);
     }
-
 
     private String type2ClassName(String type) {
         int indexOf = type.indexOf("(");
@@ -94,4 +95,5 @@ public class SqliteDialect implements IDialect {
                 return String.class.getName();
         }
     }
+
 }

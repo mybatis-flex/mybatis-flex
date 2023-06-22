@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.codegen.config;
 
@@ -22,34 +22,50 @@ import com.mybatisflex.annotation.UpdateListener;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 表的单独设置。
+ */
 public class TableConfig {
 
+    /**
+     * 表名。
+     */
     private String tableName;
 
     /**
-     * 数据库的 schema（模式）
+     * 数据库的 schema（模式）。
      */
     private String schema;
 
     /**
-     * 默认为 驼峰属性 转换为 下划线字段
+     * 默认为 驼峰属性 转换为 下划线字段。
      */
     private Boolean camelToUnderline;
 
-
+    /**
+     * 监听 entity 的 insert 行为。
+     */
     private Class<? extends InsertListener> insertListenerClass;
 
-
+    /**
+     * 监听 entity 的 update 行为。
+     */
     private Class<? extends UpdateListener> updateListenerClass;
 
-
+    /**
+     * 监听 entity 的查询数据的 set 行为。
+     */
     private Class<? extends SetListener> setListenerClass;
 
-
+    /**
+     * 对应列的配置。
+     */
     private Map<String, ColumnConfig> columnConfigMap;
 
+    /**
+     * 是否开启 Mapper 生成。
+     */
     private Boolean mapperGenerateEnable = Boolean.TRUE;
-
 
     public String getTableName() {
         return tableName;
@@ -125,6 +141,5 @@ public class TableConfig {
     public ColumnConfig getColumnConfig(String columnName) {
         return columnConfigMap == null ? null : columnConfigMap.get(columnName);
     }
-
 
 }
