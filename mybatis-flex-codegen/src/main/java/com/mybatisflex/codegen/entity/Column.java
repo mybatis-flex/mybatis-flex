@@ -57,7 +57,7 @@ public class Column {
     /**
      * 是否自增。
      */
-    private Boolean isAutoIncrement;
+    private boolean isAutoIncrement;
 
     /**
      * 是否需要生成 @Column 注解。
