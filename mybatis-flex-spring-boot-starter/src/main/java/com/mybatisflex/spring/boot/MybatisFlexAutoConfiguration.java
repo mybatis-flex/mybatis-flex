@@ -133,7 +133,9 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         // 检测 MyBatis 原生配置文件是否存在
         checkConfigFileExists();
         // 添加 MyBatis-Flex 全局配置
-        this.properties.getGlobalConfig().applyTo(FlexGlobalConfig.getDefaultConfig());
+        if (properties.getGlobalConfig() != null) {
+            properties.getGlobalConfig().applyTo(FlexGlobalConfig.getDefaultConfig());
+        }
     }
 
     private void checkConfigFileExists() {
