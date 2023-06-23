@@ -16,6 +16,8 @@
 
 package com.mybatisflex.processor.config;
 
+import com.mybatisflex.processor.util.FileUtil;
+
 import javax.annotation.processing.Filer;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
@@ -65,6 +67,15 @@ public class MybatisFlexConfig {
 
             if (inputStream == null && propertiesFile.exists()) {
                 inputStream = Files.newInputStream(propertiesFile.toPath());
+            }
+
+            // 兜底，如果还是没找到，就找项目根目录下的 mybatis-flex.properties
+            if (inputStream == null) {
+                final String projectRootPath = FileUtil.getProjectRootPath(propertiesFileObject.toUri().getPath());
+                final File filePath = new File(projectRootPath, MYBATIS_FLEX);
+                if (filePath.exists()) {
+                    inputStream = Files.newInputStream(filePath.toPath());
+                }
             }
 
             if (inputStream != null) {
