@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-package com.mybatisflex.test.entity;
+package com.mybatisflex.test.mapper;
 
-import com.mybatisflex.annotation.Table;
+import com.mybatisflex.core.BaseMapper;
+import com.mybatisflex.test.model.Account;
 
 /**
  * @author 王帅
- * @since 2023-06-16
+ * @since 2023-06-23
  */
-@Table("test")
-public class Test {
+public interface AccountMapper extends BaseMapper<Account> {
 }
