@@ -16,13 +16,13 @@ spring:
 mybatis-flex:
   mapper-locations:
     - classpath*:/mapper/*.xml
-  global-config:
-    print-banner: false
-    key-config:
-      key-type: generator
-      value: uuid
-  configuration:
-    use-generated-keys: true
+#  global-config:
+#    print-banner: false
+#    key-config:
+#      key-type: generator
+#      value: uuid
+#  configuration:
+#    use-generated-keys: true
 #  datasource:
 #    data-center:
 #      url: jdbc:mysql://localhost:3306/flex_test
