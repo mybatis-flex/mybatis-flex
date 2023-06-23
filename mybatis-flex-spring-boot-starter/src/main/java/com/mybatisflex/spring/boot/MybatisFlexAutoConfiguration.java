@@ -16,6 +16,8 @@
 package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.datasource.DataSourceDecipher;
+import com.mybatisflex.core.datasource.DataSourceManager;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.spring.FlexSqlSessionFactoryBean;
 import org.apache.ibatis.annotations.Mapper;
@@ -104,11 +106,15 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
     protected final List<SqlSessionFactoryBeanCustomizer> sqlSessionFactoryBeanCustomizers;
 
+    protected final DataSourceDecipher dataSourceDecipher;
+
+
     public MybatisFlexAutoConfiguration(MybatisFlexProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider,
                                         ObjectProvider<TypeHandler[]> typeHandlersProvider, ObjectProvider<LanguageDriver[]> languageDriversProvider,
                                         ResourceLoader resourceLoader, ObjectProvider<DatabaseIdProvider> databaseIdProvider,
                                         ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
-                                        ObjectProvider<List<SqlSessionFactoryBeanCustomizer>> sqlSessionFactoryBeanCustomizers) {
+                                        ObjectProvider<List<SqlSessionFactoryBeanCustomizer>> sqlSessionFactoryBeanCustomizers,
+                                        ObjectProvider<DataSourceDecipher> dataSourceDecipherProvider) {
         this.properties = properties;
         this.interceptors = interceptorsProvider.getIfAvailable();
         this.typeHandlers = typeHandlersProvider.getIfAvailable();
@@ -117,6 +123,9 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         this.databaseIdProvider = databaseIdProvider.getIfAvailable();
         this.configurationCustomizers = configurationCustomizersProvider.getIfAvailable();
         this.sqlSessionFactoryBeanCustomizers = sqlSessionFactoryBeanCustomizers.getIfAvailable();
+
+        //数据密码
+        this.dataSourceDecipher = dataSourceDecipherProvider.getIfAvailable();
     }
 
     @Override
@@ -138,6 +147,9 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+        if (dataSourceDecipher != null) {
+            DataSourceManager.setDecipher(dataSourceDecipher);
+        }
         SqlSessionFactoryBean factory = new FlexSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         if (properties.getConfiguration() == null || properties.getConfiguration().getVfsImpl() == null) {
