@@ -51,7 +51,7 @@
     </modules>
 
     <properties>
-        <revision>1.4.2</revision>
+        <revision>1.4.3</revision>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
@@ -69,6 +69,7 @@
         <solon.version>2.3.1</solon.version>
 
         <junit.version>4.13.2</junit.version>
+        <maven_flatten_version>1.5.0</maven_flatten_version>
     </properties>
 
     <dependencyManagement>
@@ -286,6 +287,33 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>flatten-maven-plugin</artifactId>
+                        <version>${maven_flatten_version}</version>
+                        <configuration>
+                            <updatePomFile>true</updatePomFile>
+                            <flattenMode>oss</flattenMode>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>flatten</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>flatten</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>flatten.clean</id>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                 </plugins>
             </build>
             <distributionManagement>
