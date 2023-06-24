@@ -224,6 +224,11 @@ public interface RowMapper {
             , @Param(FlexConsts.VALUE) Number value, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
+    default int updateNumberAddByQuery(String tableName, String fieldName, Number value, QueryWrapper queryWrapper) {
+        return updateNumberAddByQuery(null, tableName, fieldName, value, queryWrapper);
+    }
+
+
     ///////select /////
 
     /**

@@ -31,7 +31,8 @@ import java.util.Map;
 @SuppressWarnings({"rawtypes", "unchecked"})
 class ProviderUtil {
 
-    private ProviderUtil() {}
+    private ProviderUtil() {
+    }
 
     public static String getSqlString(Map params) {
         return (String) params.get(FlexConsts.SQL);
@@ -78,13 +79,11 @@ class ProviderUtil {
     }
 
     public static QueryWrapper getQueryWrapper(Map params) {
-        Object obj = params.get(FlexConsts.QUERY);
-        // QueryWrapper 如果为 null 则创建空的对象
-        // 避免多次空判断，以及 NullPointerException
-        if (obj == null) {
-            return QueryWrapper.create();
+        Object queryWrapper = params.get(FlexConsts.QUERY);
+        if (queryWrapper == null) {
+            throw new IllegalArgumentException("queryWrapper can not be null.");
         }
-        return (QueryWrapper) obj;
+        return (QueryWrapper) queryWrapper;
     }
 
     public static Row getRow(Map params) {
