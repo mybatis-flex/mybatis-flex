@@ -15,4 +15,3 @@ node_modules
 yarn.lock
 dist
 package-lock.json
-.flattened-pom.xml

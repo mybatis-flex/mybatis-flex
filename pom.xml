@@ -20,12 +20,12 @@
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
-            <url>http://apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
     <developers>
         <developer>
-            <name>yangfuhai</name>
+            <name>Michael Yang</name>
             <email>fuhai999@gmail.com</email>
             <roles>
                 <role>developer</role>
@@ -34,9 +34,9 @@
         </developer>
     </developers>
     <scm>
+        <url>https://github.com/mybatis-flex/mybatis-flex</url>
         <connection>scm:git:https://github.com/mybatis-flex/mybatis-flex.git</connection>
         <developerConnection>scm:git:https://github.com/mybatis-flex/mybatis-flex.git</developerConnection>
-        <url>https://github.com/mybatis-flex/mybatis-flex</url>
     </scm>
 
     <modules>
@@ -69,7 +69,6 @@
         <solon.version>2.3.1</solon.version>
 
         <junit.version>4.13.2</junit.version>
-        <maven_flatten_version>1.5.0</maven_flatten_version>
     </properties>
 
     <dependencyManagement>
@@ -216,31 +215,6 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>${maven_flatten_version}</version>
-                <configuration>
-                </configuration>
-                <executions>
-                    <!-- enable flattening -->
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <!-- ensure proper cleanup -->
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -308,31 +282,6 @@
                                 <id>sign-artifacts</id>
                                 <goals>
                                     <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>flatten-maven-plugin</artifactId>
-                        <version>${maven_flatten_version}</version>
-                        <configuration>
-                        </configuration>
-                        <executions>
-                            <!-- enable flattening -->
-                            <execution>
-                                <id>flatten</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>flatten</goal>
-                                </goals>
-                            </execution>
-                            <!-- ensure proper cleanup -->
-                            <execution>
-                                <id>flatten.clean</id>
-                                <phase>clean</phase>
-                                <goals>
-                                    <goal>clean</goal>
                                 </goals>
                             </execution>
                         </executions>

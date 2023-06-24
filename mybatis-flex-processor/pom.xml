@@ -10,14 +10,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-flex-processor</artifactId>
-    <dependencies>
 
+    <dependencies>
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-annotation</artifactId>
             <version>${revision}</version>
         </dependency>
-
     </dependencies>
 
 
