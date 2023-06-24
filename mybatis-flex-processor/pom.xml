@@ -15,7 +15,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-annotation</artifactId>
-            <version>1.4.1</version>
+            <version>${revision}</version>
         </dependency>
 
     </dependencies>
