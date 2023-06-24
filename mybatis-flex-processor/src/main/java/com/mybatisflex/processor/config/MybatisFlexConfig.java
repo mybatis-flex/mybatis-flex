@@ -16,17 +16,13 @@
 
 package com.mybatisflex.processor.config;
 
-import com.mybatisflex.processor.util.FileUtil;
-
 import javax.annotation.processing.Filer;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -40,7 +36,7 @@ public class MybatisFlexConfig {
     /**
      * 配置文件名。
      */
-    private static final String APT_FILE_NAME = "apt.config";
+    private static final String APT_FILE_NAME = "mybatis-flex.config";
 
     /**
      * mybatis-flex.properties
@@ -48,37 +44,45 @@ public class MybatisFlexConfig {
     protected final Properties properties = new Properties();
 
     public MybatisFlexConfig(Filer filer) {
-        InputStream inputStream = null;
         try {
-            //target/classes/apt.config
+            //target/classes/mybatis-flex.config
             FileObject aptConfigFileObject = filer.getResource(StandardLocation.CLASS_OUTPUT, "", APT_FILE_NAME);
-            String projectRootPath = FileUtil.getProjectRootPath(aptConfigFileObject.toUri().getPath());
 
-
-            File aptConfigFile = new File(aptConfigFileObject.toUri());
-            while (!aptConfigFile.exists() && !projectRootPath.equals(aptConfigFile.getParentFile().getAbsolutePath())) {
-                aptConfigFile = new File(aptConfigFile.getParentFile().getParentFile(), APT_FILE_NAME);
+            List<File> aptConfigFiles = new ArrayList<>();
+            File moduleRoot = new File(aptConfigFileObject.toUri()).getParentFile().getParentFile().getParentFile();
+            while (new File(moduleRoot, "pom.xml").exists()) {
+                File aptConfig = new File(moduleRoot, APT_FILE_NAME);
+                if (aptConfig.exists()) {
+                    aptConfigFiles.add(aptConfig);
+                }
+                moduleRoot = moduleRoot.getParentFile();
             }
 
-            if (aptConfigFile.exists()) {
-                inputStream = Files.newInputStream(aptConfigFile.toPath());
-            }
+            for (File aptConfigFile : aptConfigFiles) {
+                try (InputStream stream = new FileInputStream(aptConfigFile);
+                     Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
 
-            if (inputStream != null) {
-                try (InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-                    properties.load(reader);
+                    Properties config = new Properties();
+                    config.load(reader);
+
+                    boolean stopBubbling = false;
+                    for (Object key : config.keySet()) {
+                        if (!properties.containsKey(key)) {
+                            properties.put(key, config.getProperty((String) key));
+                        }
+                        if ("processor.stopBubbling".equalsIgnoreCase((String) key)
+                                && "true".equalsIgnoreCase(String.valueOf(config.getProperty((String) key)))) {
+                            stopBubbling = true;
+                        }
+                    }
+                    if (stopBubbling) {
+                        break;
+                    }
                 }
             }
+
         } catch (Exception ignored) {
             // do nothing here.
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException ignored) {
-                    // do nothing here.
-                }
-            }
         }
     }
 
