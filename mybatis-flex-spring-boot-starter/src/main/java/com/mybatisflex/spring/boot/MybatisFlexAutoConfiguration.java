@@ -121,6 +121,9 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
     //多租户
     protected final TenantFactory tenantFactory;
 
+    //初始化监听
+    protected final MyBatisFlexInitializer myBatisFlexInitializer;
+
 
     public MybatisFlexAutoConfiguration(MybatisFlexProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider,
                                         ObjectProvider<TypeHandler[]> typeHandlersProvider, ObjectProvider<LanguageDriver[]> languageDriversProvider,
@@ -130,7 +133,8 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
                                         ObjectProvider<DataSourceDecipher> dataSourceDecipherProvider,
                                         ObjectProvider<DynamicTableProcessor> dynamicTableProcessorProvider,
                                         ObjectProvider<DynamicSchemaProcessor> dynamicSchemaProcessorProvider,
-                                        ObjectProvider<TenantFactory> tenantFactoryProvider
+                                        ObjectProvider<TenantFactory> tenantFactoryProvider,
+                                        ObjectProvider<MyBatisFlexInitializer> myBatisFlexInitializerProvider
     ) {
         this.properties = properties;
         this.interceptors = interceptorsProvider.getIfAvailable();
@@ -150,6 +154,9 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
         //多租户
         this.tenantFactory = tenantFactoryProvider.getIfAvailable();
+
+        //初始化监听器
+        this.myBatisFlexInitializer = myBatisFlexInitializerProvider.getIfAvailable();
     }
 
     @Override
@@ -173,6 +180,11 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         //多租户
         if (tenantFactory != null) {
             TenantManager.setTenantFactory(tenantFactory);
+        }
+
+        //初始化监听器
+        if (myBatisFlexInitializer != null) {
+            myBatisFlexInitializer.onInitBefore();
         }
     }
 
