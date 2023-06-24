@@ -18,6 +18,7 @@ package com.mybatisflex.spring.boot;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.datasource.DataSourceDecipher;
 import com.mybatisflex.core.datasource.DataSourceManager;
+import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
@@ -70,6 +71,7 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 import java.beans.PropertyDescriptor;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -151,7 +153,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         this.configurationCustomizers = configurationCustomizersProvider.getIfAvailable();
         this.sqlSessionFactoryBeanCustomizers = sqlSessionFactoryBeanCustomizers.getIfAvailable();
 
-        //数据密码
+        //数据源解密器
         this.dataSourceDecipher = dataSourceDecipherProvider.getIfAvailable();
 
         //动态表名
@@ -176,6 +178,11 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         // 添加 MyBatis-Flex 全局配置
         if (properties.getGlobalConfig() != null) {
             properties.getGlobalConfig().applyTo(FlexGlobalConfig.getDefaultConfig());
+        }
+
+        //数据源解密器
+        if (dataSourceDecipher != null) {
+            DataSourceManager.setDecipher(dataSourceDecipher);
         }
 
         // 动态表名配置
@@ -213,9 +220,14 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
-        if (dataSourceDecipher != null) {
-            DataSourceManager.setDecipher(dataSourceDecipher);
+
+        if (dataSource instanceof FlexDataSource && DataSourceManager.getDecipher() != null) {
+            Map<String, DataSource> dataSourceMap = ((FlexDataSource) dataSource).getDataSourceMap();
+            for (DataSource ds : dataSourceMap.values()) {
+                DataSourceManager.decryptDataSource(ds);
+            }
         }
+
         SqlSessionFactoryBean factory = new FlexSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         if (properties.getConfiguration() == null || properties.getConfiguration().getVfsImpl() == null) {

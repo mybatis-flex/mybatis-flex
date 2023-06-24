@@ -16,12 +16,9 @@
 package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.datasource.DataSourceBuilder;
-import com.mybatisflex.core.datasource.DataSourceDecipher;
-import com.mybatisflex.core.datasource.DataSourceManager;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -41,26 +38,20 @@ import java.util.Map;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MybatisFlexProperties.class)
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
-@AutoConfigureBefore(value = DataSourceAutoConfiguration.class, name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
+@AutoConfigureBefore(value = DataSourceAutoConfiguration.class
+        , name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
 public class MultiDataSourceAutoConfiguration {
 
     private final Map<String, Map<String, String>> dataSourceProperties;
-    protected final DataSourceDecipher dataSourceDecipher;
 
-    public MultiDataSourceAutoConfiguration(MybatisFlexProperties properties
-            , ObjectProvider<DataSourceDecipher> dataSourceDecipherProvider) {
+    public MultiDataSourceAutoConfiguration(MybatisFlexProperties properties) {
         dataSourceProperties = properties.getDatasource();
-        dataSourceDecipher = dataSourceDecipherProvider.getIfAvailable();
     }
 
 
     @Bean
     @ConditionalOnMissingBean
     public DataSource dataSource() {
-
-        if (dataSourceDecipher != null) {
-            DataSourceManager.setDecipher(dataSourceDecipher);
-        }
 
         FlexDataSource flexDataSource = null;
 

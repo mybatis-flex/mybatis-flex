@@ -34,7 +34,7 @@ public class DataSourceManager {
     }
 
 
-    static void resetDataSource(DataSource dataSource) {
+    public static void decryptDataSource(DataSource dataSource) {
         if (decipher == null) {
             return;
         }
