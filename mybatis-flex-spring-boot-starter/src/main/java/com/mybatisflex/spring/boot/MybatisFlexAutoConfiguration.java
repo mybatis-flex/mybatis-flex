@@ -19,6 +19,9 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.datasource.DataSourceDecipher;
 import com.mybatisflex.core.datasource.DataSourceManager;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
+import com.mybatisflex.core.table.DynamicSchemaProcessor;
+import com.mybatisflex.core.table.DynamicTableProcessor;
+import com.mybatisflex.core.table.TableManager;
 import com.mybatisflex.spring.FlexSqlSessionFactoryBean;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
@@ -106,7 +109,12 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
     protected final List<SqlSessionFactoryBeanCustomizer> sqlSessionFactoryBeanCustomizers;
 
+    //数据源解密器
     protected final DataSourceDecipher dataSourceDecipher;
+
+    //动态表名
+    protected final DynamicTableProcessor dynamicTableProcessor;
+    protected final DynamicSchemaProcessor dynamicSchemaProcessor;
 
 
     public MybatisFlexAutoConfiguration(MybatisFlexProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider,
@@ -114,7 +122,10 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
                                         ResourceLoader resourceLoader, ObjectProvider<DatabaseIdProvider> databaseIdProvider,
                                         ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
                                         ObjectProvider<List<SqlSessionFactoryBeanCustomizer>> sqlSessionFactoryBeanCustomizers,
-                                        ObjectProvider<DataSourceDecipher> dataSourceDecipherProvider) {
+                                        ObjectProvider<DataSourceDecipher> dataSourceDecipherProvider,
+                                        ObjectProvider<DynamicTableProcessor> dynamicTableProcessorProvider,
+                                        ObjectProvider<DynamicSchemaProcessor> dynamicSchemaProcessorProvider
+    ) {
         this.properties = properties;
         this.interceptors = interceptorsProvider.getIfAvailable();
         this.typeHandlers = typeHandlersProvider.getIfAvailable();
@@ -126,15 +137,28 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
         //数据密码
         this.dataSourceDecipher = dataSourceDecipherProvider.getIfAvailable();
+
+        //动态表名
+        this.dynamicTableProcessor = dynamicTableProcessorProvider.getIfAvailable();
+        this.dynamicSchemaProcessor = dynamicSchemaProcessorProvider.getIfAvailable();
     }
 
     @Override
     public void afterPropertiesSet() {
         // 检测 MyBatis 原生配置文件是否存在
         checkConfigFileExists();
+
         // 添加 MyBatis-Flex 全局配置
         if (properties.getGlobalConfig() != null) {
             properties.getGlobalConfig().applyTo(FlexGlobalConfig.getDefaultConfig());
+        }
+
+        // 动态表名配置
+        if (dynamicTableProcessor != null) {
+            TableManager.setDynamicTableProcessor(dynamicTableProcessor);
+        }
+        if (dynamicSchemaProcessor != null) {
+            TableManager.setDynamicSchemaProcessor(dynamicSchemaProcessor);
         }
     }
 
