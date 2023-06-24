@@ -22,6 +22,8 @@ import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.table.DynamicSchemaProcessor;
 import com.mybatisflex.core.table.DynamicTableProcessor;
 import com.mybatisflex.core.table.TableManager;
+import com.mybatisflex.core.tenant.TenantFactory;
+import com.mybatisflex.core.tenant.TenantManager;
 import com.mybatisflex.spring.FlexSqlSessionFactoryBean;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
@@ -116,6 +118,9 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
     protected final DynamicTableProcessor dynamicTableProcessor;
     protected final DynamicSchemaProcessor dynamicSchemaProcessor;
 
+    //多租户
+    protected final TenantFactory tenantFactory;
+
 
     public MybatisFlexAutoConfiguration(MybatisFlexProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider,
                                         ObjectProvider<TypeHandler[]> typeHandlersProvider, ObjectProvider<LanguageDriver[]> languageDriversProvider,
@@ -124,7 +129,8 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
                                         ObjectProvider<List<SqlSessionFactoryBeanCustomizer>> sqlSessionFactoryBeanCustomizers,
                                         ObjectProvider<DataSourceDecipher> dataSourceDecipherProvider,
                                         ObjectProvider<DynamicTableProcessor> dynamicTableProcessorProvider,
-                                        ObjectProvider<DynamicSchemaProcessor> dynamicSchemaProcessorProvider
+                                        ObjectProvider<DynamicSchemaProcessor> dynamicSchemaProcessorProvider,
+                                        ObjectProvider<TenantFactory> tenantFactoryProvider
     ) {
         this.properties = properties;
         this.interceptors = interceptorsProvider.getIfAvailable();
@@ -141,6 +147,9 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         //动态表名
         this.dynamicTableProcessor = dynamicTableProcessorProvider.getIfAvailable();
         this.dynamicSchemaProcessor = dynamicSchemaProcessorProvider.getIfAvailable();
+
+        //多租户
+        this.tenantFactory = tenantFactoryProvider.getIfAvailable();
     }
 
     @Override
@@ -159,6 +168,11 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         }
         if (dynamicSchemaProcessor != null) {
             TableManager.setDynamicSchemaProcessor(dynamicSchemaProcessor);
+        }
+
+        //多租户
+        if (tenantFactory != null) {
+            TenantManager.setTenantFactory(tenantFactory);
         }
     }
 
