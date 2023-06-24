@@ -10,6 +10,7 @@
 
 	<artifactId>mybatis-flex-spring-cloud-test</artifactId>
 	<packaging>jar</packaging>
+	<name>${project.artifactId}</name>
 
 	<properties>
 		<java.version>1.8</java.version>
