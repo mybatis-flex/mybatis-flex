@@ -15,22 +15,34 @@
  */
 package com.mybatisflex.spring.boot;
 
+import com.mybatisflex.core.FlexGlobalConfig;
+
 /**
- * MyBatisFlex 初始化监听器
- * 一般可以用于去初始化：
+ * <p>MyBatis-Flex 配置。
  *
- * 1、自定义主键生成器
- * 2、FlexGlobalConfig 的全局配置
- * 3、多租户配置
- * 4、动态表名配置
- * 5、逻辑删除处理器配置
- * 6、自定义脱敏规则
- * 7、SQL 审计配置
- * 8、SQL 打印配置
- * 9、数据源解密器配置
- * 10、自定义数据方言配置
- * ...
+ * <p>一般可以用于去初始化：
+ *
+ * <ul>
+ *      <li>FlexGlobalConfig 的全局配置
+ *      <li>自定义主键生成器
+ *      <li>多租户配置
+ *      <li>动态表名配置
+ *      <li>逻辑删除处理器配置
+ *      <li>自定义脱敏规则
+ *      <li>SQL 审计配置
+ *      <li>SQL 打印配置
+ *      <li>数据源解密器配置
+ *      <li>自定义数据方言配置
+ *      <li>...
+ * </ul>
  */
-public interface MyBatisFlexInitializer {
-    void onInitBefore();
+public interface MyBatisFlexCustomizer {
+
+    /**
+     * 自定义 MyBatis-Flex 配置。
+     *
+     * @param globalConfig 全局配置
+     */
+    void customize(FlexGlobalConfig globalConfig);
+
 }
