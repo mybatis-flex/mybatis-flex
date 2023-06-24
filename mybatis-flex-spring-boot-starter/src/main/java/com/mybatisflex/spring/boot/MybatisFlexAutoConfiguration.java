@@ -129,7 +129,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
     protected final LogicDeleteProcessor logicDeleteProcessor;
 
     //初始化监听
-    protected final MyBatisFlexInitializer myBatisFlexInitializer;
+    protected final MyBatisFlexCustomizer mybatisFlexCustomizer;
 
 
     public MybatisFlexAutoConfiguration(MybatisFlexProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider,
@@ -142,7 +142,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
                                         ObjectProvider<DynamicSchemaProcessor> dynamicSchemaProcessorProvider,
                                         ObjectProvider<TenantFactory> tenantFactoryProvider,
                                         ObjectProvider<LogicDeleteProcessor> logicDeleteProcessorProvider,
-                                        ObjectProvider<MyBatisFlexInitializer> myBatisFlexInitializerProvider
+                                        ObjectProvider<MyBatisFlexCustomizer> mybatisFlexCustomizerProvider
     ) {
         this.properties = properties;
         this.interceptors = interceptorsProvider.getIfAvailable();
@@ -167,7 +167,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         this.logicDeleteProcessor = logicDeleteProcessorProvider.getIfAvailable();
 
         //初始化监听器
-        this.myBatisFlexInitializer = myBatisFlexInitializerProvider.getIfAvailable();
+        this.mybatisFlexCustomizer = mybatisFlexCustomizerProvider.getIfAvailable();
     }
 
     @Override
@@ -204,8 +204,8 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         }
 
         //初始化监听器
-        if (myBatisFlexInitializer != null) {
-            myBatisFlexInitializer.onInitBefore();
+        if (mybatisFlexCustomizer != null) {
+            mybatisFlexCustomizer.customize(FlexGlobalConfig.getDefaultConfig());
         }
     }
 
