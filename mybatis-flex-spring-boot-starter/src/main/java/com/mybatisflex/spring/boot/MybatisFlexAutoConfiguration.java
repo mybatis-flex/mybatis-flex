@@ -18,6 +18,8 @@ package com.mybatisflex.spring.boot;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.datasource.DataSourceDecipher;
 import com.mybatisflex.core.datasource.DataSourceManager;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
+import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.table.DynamicSchemaProcessor;
 import com.mybatisflex.core.table.DynamicTableProcessor;
@@ -121,6 +123,9 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
     //多租户
     protected final TenantFactory tenantFactory;
 
+    //自定义逻辑删除处理器
+    protected final LogicDeleteProcessor logicDeleteProcessor;
+
     //初始化监听
     protected final MyBatisFlexInitializer myBatisFlexInitializer;
 
@@ -134,6 +139,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
                                         ObjectProvider<DynamicTableProcessor> dynamicTableProcessorProvider,
                                         ObjectProvider<DynamicSchemaProcessor> dynamicSchemaProcessorProvider,
                                         ObjectProvider<TenantFactory> tenantFactoryProvider,
+                                        ObjectProvider<LogicDeleteProcessor> logicDeleteProcessorProvider,
                                         ObjectProvider<MyBatisFlexInitializer> myBatisFlexInitializerProvider
     ) {
         this.properties = properties;
@@ -154,6 +160,9 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
         //多租户
         this.tenantFactory = tenantFactoryProvider.getIfAvailable();
+
+        //逻辑删除处理器
+        this.logicDeleteProcessor = logicDeleteProcessorProvider.getIfAvailable();
 
         //初始化监听器
         this.myBatisFlexInitializer = myBatisFlexInitializerProvider.getIfAvailable();
@@ -180,6 +189,11 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         //多租户
         if (tenantFactory != null) {
             TenantManager.setTenantFactory(tenantFactory);
+        }
+
+        //逻辑删除处理器
+        if (logicDeleteProcessor != null) {
+            LogicDeleteManager.setProcessor(logicDeleteProcessor);
         }
 
         //初始化监听器
