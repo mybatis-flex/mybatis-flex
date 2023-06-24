@@ -1,3 +1,8 @@
+mybatis-flex v1.4.3 20230624:
+修复：紧急修复 v1.4.2 Push 到中央仓库无法同步的问题
+
+
+
 mybatis-flex v1.4.2 20230624:
 新增：新增数据源加密内容的解密器配置功能
 新增：QueryWrapper 添加 with 的 SQL 构建方法;  #I7E19B
