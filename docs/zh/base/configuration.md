@@ -1,25 +1,14 @@
-# 配置选项
+# SpringBoot 配置文件
 
-在使用 MyBatis-Flex 中，可能需要进行一些个性化配置，其中也包括 MyBatis 原生的配置。
+SpringBoot 配置文件（`application.yml` 等）主要是用于对 MyBatis 原生以及 MyBatis-Flex 的 `FlexGlobalConfig` 进行配置。
 
-## 使用配置
-
-### 原生方式：
-
-```java
-FlexGlobalConfig defaultConfig = FlexGlobalConfig.getDefaultConfig();
-// defaultConfig.setXxx(...);
-```
-
-### Spring MVC
-
-同原生配置
-
-### Spring Boot
+示例如下：
 
 ```yaml
 mybatis-flex:
   #......
+  datasource:
+    #......
   configuration:
     #......
   global-config:
