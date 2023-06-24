@@ -40,7 +40,7 @@ public class MybatisFlexConfig {
     /**
      * 配置文件名。
      */
-    private static final String MYBATIS_FLEX = "mybatis-flex.properties";
+    private static final String APT_FILE_NAME = "apt.config";
 
     /**
      * mybatis-flex.properties
@@ -50,32 +50,18 @@ public class MybatisFlexConfig {
     public MybatisFlexConfig(Filer filer) {
         InputStream inputStream = null;
         try {
-            FileObject propertiesFileObject = filer.getResource(StandardLocation.CLASS_OUTPUT, "", MYBATIS_FLEX);
+            //target/classes/apt.config
+            FileObject aptConfigFileObject = filer.getResource(StandardLocation.CLASS_OUTPUT, "", APT_FILE_NAME);
+            String projectRootPath = FileUtil.getProjectRootPath(aptConfigFileObject.toUri().getPath());
 
-            File propertiesFile = new File(propertiesFileObject.toUri());
 
-            if (propertiesFile.exists()) {
-                inputStream = propertiesFileObject.openInputStream();
-            } else if (getClass().getClassLoader().getResource(MYBATIS_FLEX) != null) {
-                inputStream = getClass().getClassLoader().getResourceAsStream(MYBATIS_FLEX);
-            } else {
-                File pomXmlFile = new File(propertiesFile.getParentFile().getParentFile().getParentFile(), "pom.xml");
-                if (pomXmlFile.exists()) {
-                    propertiesFile = new File(pomXmlFile.getParentFile(), "src/main/resources/mybatis-flex.properties");
-                }
+            File aptConfigFile = new File(aptConfigFileObject.toUri());
+            while (!aptConfigFile.exists() && !projectRootPath.equals(aptConfigFile.getParentFile().getAbsolutePath())) {
+                aptConfigFile = new File(aptConfigFile.getParentFile().getParentFile(), APT_FILE_NAME);
             }
 
-            if (inputStream == null && propertiesFile.exists()) {
-                inputStream = Files.newInputStream(propertiesFile.toPath());
-            }
-
-            // 兜底，如果还是没找到，就找项目根目录下的 mybatis-flex.properties
-            if (inputStream == null) {
-                final String projectRootPath = FileUtil.getProjectRootPath(propertiesFileObject.toUri().getPath());
-                final File filePath = new File(projectRootPath, MYBATIS_FLEX);
-                if (filePath.exists()) {
-                    inputStream = Files.newInputStream(filePath.toPath());
-                }
+            if (aptConfigFile.exists()) {
+                inputStream = Files.newInputStream(aptConfigFile.toPath());
             }
 
             if (inputStream != null) {
