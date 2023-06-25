@@ -40,7 +40,7 @@ public class DataSourceAdvice extends AbstractPointcutAdvisor {
 
     @Override
     public Pointcut getPointcut() {
-        AnnotationMatchingPointcut cpc = new AnnotationMatchingPointcut(UseDataSource.class/*, true*/);
+        AnnotationMatchingPointcut cpc = new AnnotationMatchingPointcut(UseDataSource.class, true);
         AnnotationMethodMatcher mpc = new AnnotationMethodMatcher(UseDataSource.class);
         return new ComposablePointcut(cpc).union(mpc);
     }
