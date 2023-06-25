@@ -22,6 +22,12 @@ import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.util.StringUtil;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.core.MethodClassKey;
+
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 多数据源切换拦截器。
@@ -39,7 +45,7 @@ public class DataSourceInterceptor implements MethodInterceptor {
             return invocation.proceed();
         }
 
-        dsKey = determineDataSourceKey(invocation);
+        dsKey = findDataSourceKey(invocation.getMethod(), invocation.getThis());
         if (StringUtil.isBlank(dsKey)) {
             return invocation.proceed();
         }
@@ -52,34 +58,47 @@ public class DataSourceInterceptor implements MethodInterceptor {
         }
     }
 
-    private String determineDataSourceKey(MethodInvocation invocation) {
+    /**
+     * 缓存方法对应的数据源。
+     */
+    private final Map<Object, String> dsCache = new ConcurrentHashMap<>();
+
+    private String findDataSourceKey(Method method, Object targetObject) {
+        Object cacheKey = new MethodClassKey(method, targetObject.getClass());
+        String dsKey = this.dsCache.get(cacheKey);
+        if (dsKey == null) {
+            dsKey = determineDataSourceKey(method, targetObject);
+            if (dsKey == null) {
+                dsKey = "";
+            }
+            this.dsCache.put(cacheKey, dsKey);
+        }
+        return dsKey;
+    }
+
+    private String determineDataSourceKey(Method method, Object targetObject) {
 
         // 方法上定义有 UseDataSource 注解
-        UseDataSource annotation = invocation.getMethod().getAnnotation(UseDataSource.class);
+        UseDataSource annotation = method.getAnnotation(UseDataSource.class);
         if (annotation != null) {
             return annotation.value();
         }
 
-        Object target = invocation.getThis();
+        // 类上定义有 UseDataSource 注解
+        Class<?> targetClass = targetObject.getClass();
+        annotation = targetClass.getAnnotation(UseDataSource.class);
+        if (annotation != null) {
+            return annotation.value();
+        }
 
-        if (target != null) {
-            // 类上定义有 UseDataSource 注解
-            Class<?> targetClass = target.getClass();
-            annotation = targetClass.getAnnotation(UseDataSource.class);
+        // 接口上定义有 UseDataSource 注解
+        Class<?>[] interfaces = targetClass.getInterfaces();
+        for (Class<?> anInterface : interfaces) {
+            annotation = anInterface.getAnnotation(UseDataSource.class);
             if (annotation != null) {
                 return annotation.value();
             }
-
-            // 接口上定义有 UseDataSource 注解
-            Class<?>[] interfaces = targetClass.getInterfaces();
-            for (Class<?> anInterface : interfaces) {
-                annotation = anInterface.getAnnotation(UseDataSource.class);
-                if (annotation != null) {
-                    return annotation.value();
-                }
-            }
         }
-
 
         return null;
     }
