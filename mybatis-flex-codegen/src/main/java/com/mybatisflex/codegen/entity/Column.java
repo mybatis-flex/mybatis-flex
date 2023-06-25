@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.codegen.entity;
 
@@ -24,21 +24,50 @@ import com.mybatisflex.core.util.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 数据库表里面的列信息。
+ */
 public class Column {
 
+    /**
+     * 字段名称。
+     */
     private String name;
+
+    /**
+     * 属性名称。
+     */
     private String property;
+
+    /**
+     * 属性类型。
+     */
     private String propertyType;
 
+    /**
+     * 字段注释。
+     */
     private String comment;
 
+    /**
+     * 是否为主键。
+     */
     private boolean isPrimaryKey = false;
-    private Boolean isAutoIncrement;
 
+    /**
+     * 是否自增。
+     */
+    private boolean isAutoIncrement;
+
+    /**
+     * 是否需要生成 @Column 注解。
+     */
     private boolean needGenColumnAnnotation = false;
 
+    /**
+     * 字段配置。
+     */
     private ColumnConfig columnConfig;
-
 
     public String getName() {
         return name;
@@ -106,18 +135,15 @@ public class Column {
         return "set" + StringUtil.firstCharToUpperCase(property);
     }
 
-
     public String buildComment() {
         if (StringUtil.isBlank(comment)) {
             return "";
         } else {
-            StringBuilder sb = new StringBuilder("/**\n")
-                    .append("     * ").append(comment).append("\n")
-                    .append("     */");
-            return sb.toString();
+            return "/**\n" +
+                    "     * " + comment + "\n" +
+                    "     */";
         }
     }
-
 
     public String buildPropertyName() {
         String entityJavaFileName = name;
@@ -136,19 +162,19 @@ public class Column {
                 annotations.append("keyType = KeyType.Auto");
                 needComma = true;
             } else if (columnConfig.getKeyType() != null) {
-                annotations.append("keyType = KeyType." + columnConfig.getKeyType().name());
+                annotations.append("keyType = KeyType.").append(columnConfig.getKeyType().name());
                 needComma = true;
             }
 
             if (columnConfig.getKeyValue() != null) {
                 addComma(annotations, needComma);
-                annotations.append("value = \"" + columnConfig.getKeyValue() + "\"");
+                annotations.append("value = \"").append(columnConfig.getKeyValue()).append("\"");
                 needComma = true;
             }
 
             if (columnConfig.getKeyBefore() != null) {
                 addComma(annotations, needComma);
-                annotations.append("before = " + columnConfig.getKeyBefore());
+                annotations.append("before = ").append(columnConfig.getKeyBefore());
             }
 
             if (annotations.length() == 4) {
@@ -172,43 +198,43 @@ public class Column {
             annotations.append("@Column(");
             boolean needComma = false;
             if (needGenColumnAnnotation) {
-                annotations.append("value = \"" + name + "\"");
+                annotations.append("value = \"").append(name).append("\"");
                 needComma = true;
             }
 
             if (columnConfig.getOnInsertValue() != null) {
                 addComma(annotations, needComma);
-                annotations.append("onInsertValue = \"" + columnConfig.getOnInsertValue() + "\"");
+                annotations.append("onInsertValue = \"").append(columnConfig.getOnInsertValue()).append("\"");
                 needComma = true;
             }
             if (columnConfig.getOnUpdateValue() != null) {
                 addComma(annotations, needComma);
-                annotations.append("onUpdateValue = \"" + columnConfig.getOnUpdateValue() + "\"");
+                annotations.append("onUpdateValue = \"").append(columnConfig.getOnUpdateValue()).append("\"");
                 needComma = true;
             }
             if (columnConfig.getLarge() != null) {
                 addComma(annotations, needComma);
-                annotations.append("isLarge = " + columnConfig.getLarge());
+                annotations.append("isLarge = ").append(columnConfig.getLarge());
                 needComma = true;
             }
             if (columnConfig.getLogicDelete() != null) {
                 addComma(annotations, needComma);
-                annotations.append("isLogicDelete = " + columnConfig.getLogicDelete());
+                annotations.append("isLogicDelete = ").append(columnConfig.getLogicDelete());
                 needComma = true;
             }
             if (columnConfig.getVersion() != null) {
                 addComma(annotations, needComma);
-                annotations.append("version = " + columnConfig.getVersion());
+                annotations.append("version = ").append(columnConfig.getVersion());
                 needComma = true;
             }
             if (columnConfig.getJdbcType() != null) {
                 addComma(annotations, needComma);
-                annotations.append("jdbcType = JdbcType." + columnConfig.getJdbcType().name());
+                annotations.append("jdbcType = JdbcType.").append(columnConfig.getJdbcType().name());
                 needComma = true;
             }
             if (columnConfig.getTypeHandler() != null) {
                 addComma(annotations, needComma);
-                annotations.append("typeHandler = " + columnConfig.getTypeHandler().getSimpleName() + ".class");
+                annotations.append("typeHandler = ").append(columnConfig.getTypeHandler().getSimpleName()).append(".class");
                 needComma = true;
             }
             if (Boolean.TRUE.equals(columnConfig.getTenantId())) {
@@ -220,7 +246,7 @@ public class Column {
 
         //@ColumnMask 注解
         if (columnConfig.getMask() != null) {
-            annotations.append("@ColumnMask(\"" + columnConfig.getMask() + "\")");
+            annotations.append("@ColumnMask(\"").append(columnConfig.getMask()).append("\")");
         }
 
         String result = annotations.toString();
@@ -285,7 +311,6 @@ public class Column {
         return importClasses;
     }
 
-
     @Override
     public String toString() {
         return "Column{" +
@@ -295,4 +320,5 @@ public class Column {
                 ", isAutoIncrement=" + isAutoIncrement +
                 '}';
     }
+
 }

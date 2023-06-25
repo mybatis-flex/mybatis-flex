@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.spring.boot;
 
+import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.FlexGlobalConfig;
 import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.mapping.ResultSetType;
@@ -23,6 +25,7 @@ import org.apache.ibatis.session.*;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -36,19 +39,26 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
- * Mybatis-Flex 的配置属性
- * 设置 mapUnderscoreToCamelCase 默认值为 true
+ * Mybatis-Flex 的配置属性。
  */
 @ConfigurationProperties(prefix = "mybatis-flex")
 public class MybatisFlexProperties {
 
-
     private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 
-    //多数据源的配置
-    //mybatis-flex.datasource.ds1.url=***
-    //mybatis-flex.datasource.ds2.url=***
+    /**
+     * <p>多数据源的配置。
+     *
+     * <p>
+     * mybatis-flex.datasource.ds1.url=***<br>
+     * mybatis-flex.datasource.ds2.url=***
+     */
     private Map<String, Map<String, String>> datasource;
+
+    /**
+     * 全局配置。
+     */
+    private GlobalConfig globalConfig;
 
     /**
      * Location of MyBatis xml config file.
@@ -108,6 +118,14 @@ public class MybatisFlexProperties {
 
     public void setDatasource(Map<String, Map<String, String>> datasource) {
         this.datasource = datasource;
+    }
+
+    public GlobalConfig getGlobalConfig() {
+        return globalConfig;
+    }
+
+    public void setGlobalConfig(GlobalConfig globalConfig) {
+        this.globalConfig = globalConfig;
     }
 
     /**
@@ -697,6 +715,80 @@ public class MybatisFlexProperties {
             mapper.from(getDefaultSqlProviderType()).to(target::setDefaultSqlProviderType);
             mapper.from(getConfigurationFactory()).to(target::setConfigurationFactory);
             mapper.from(getDefaultEnumTypeHandler()).to(target::setDefaultEnumTypeHandler);
+        }
+
+    }
+
+    /**
+     * {@link com.mybatisflex.core.FlexGlobalConfig} 配置。
+     *
+     * @author 王帅
+     * @since 2023-06-21
+     */
+    public static class GlobalConfig {
+
+        /**
+         * 启动是否打印 banner 和 版本号。
+         */
+        private boolean printBanner = true;
+
+
+        /**
+         * 全局的 ID 生成策略配置，当 @Id 未配置 或者 配置 KeyType 为 None 时
+         * 使用当前全局配置。
+         */
+        @NestedConfigurationProperty
+        private FlexGlobalConfig.KeyConfig keyConfig;
+
+        /**
+         * 逻辑删除数据存在标记值。
+         */
+        private Object normalValueOfLogicDelete = FlexConsts.LOGIC_DELETE_NORMAL;
+
+        /**
+         * 逻辑删除数据删除标记值，
+         */
+        private Object deletedValueOfLogicDelete = FlexConsts.LOGIC_DELETE_DELETED;
+
+
+        public boolean isPrintBanner() {
+            return printBanner;
+        }
+
+        public void setPrintBanner(boolean printBanner) {
+            this.printBanner = printBanner;
+        }
+
+        public FlexGlobalConfig.KeyConfig getKeyConfig() {
+            return keyConfig;
+        }
+
+        public void setKeyConfig(FlexGlobalConfig.KeyConfig keyConfig) {
+            this.keyConfig = keyConfig;
+        }
+
+        public Object getNormalValueOfLogicDelete() {
+            return normalValueOfLogicDelete;
+        }
+
+        public void setNormalValueOfLogicDelete(Object normalValueOfLogicDelete) {
+            this.normalValueOfLogicDelete = normalValueOfLogicDelete;
+        }
+
+        public Object getDeletedValueOfLogicDelete() {
+            return deletedValueOfLogicDelete;
+        }
+
+        public void setDeletedValueOfLogicDelete(Object deletedValueOfLogicDelete) {
+            this.deletedValueOfLogicDelete = deletedValueOfLogicDelete;
+        }
+
+        void applyTo(FlexGlobalConfig target) {
+            PropertyMapper mapper = PropertyMapper.get().alwaysApplyingWhenNonNull();
+            mapper.from(isPrintBanner()).to(target::setPrintBanner);
+            mapper.from(getKeyConfig()).to(target::setKeyConfig);
+            mapper.from(getNormalValueOfLogicDelete()).to(target::setNormalValueOfLogicDelete);
+            mapper.from(getDeletedValueOfLogicDelete()).to(target::setDeletedValueOfLogicDelete);
         }
 
     }

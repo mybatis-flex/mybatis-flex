@@ -44,3 +44,26 @@ TableManager.setDynamicSchemaProcessor(new DynamicSchemaProcessor() {
 ```
 
 动态 Schema 的配置，只对使用了注解 `@Table(schema="xxx")` 的 Entity 有效。
+
+## SpringBoot 支持
+在 SpringBoot 项目下，直接通过 `@Configuration` 即可使用：
+
+```java
+@Configuration
+public class MyConfiguration {
+
+    @Bean
+    public DynamicTableProcessor dynamicTableProcessor(){
+        DynamicTableProcessor processor = new ....;
+        return processor;
+    }
+    
+    
+    @Bean
+    public DynamicSchemaProcessor dynamicSchemaProcessor(){
+        DynamicSchemaProcessor processor = new ....;
+        return processor;
+    }
+    
+}
+```

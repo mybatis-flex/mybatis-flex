@@ -14,14 +14,7 @@
  *  limitations under the License.
  */
 
-package com.mybatisflex.test.entity;
-
-import com.mybatisflex.annotation.Table;
-
 /**
- * @author 王帅
- * @since 2023-06-16
+ * 数据库表与列信息。
  */
-@Table("test")
-public class Test {
-}
+package com.mybatisflex.codegen.entity;

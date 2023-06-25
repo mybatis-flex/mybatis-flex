@@ -945,7 +945,12 @@ public class CommonsDialectImpl implements IDialect {
             if (StringUtil.isNotBlank(whereSql)) {
                 sqlBuilder.append(WHERE).append(whereSql);
             } else if (!allowNoCondition) {
-                throw new IllegalArgumentException("Not allowed DELETE a table without where condition.");
+                throw new IllegalArgumentException("Not allowed DELETE or UPDATE a table without where condition.");
+            }
+        } else {
+            // whereQueryCondition == null
+            if (!allowNoCondition) {
+                throw new IllegalArgumentException("Not allowed DELETE or UPDATE a table without where condition.");
             }
         }
     }

@@ -66,6 +66,8 @@ export default defineConfig({
                     {text: 'QueryWrapper', link: '/zh/base/querywrapper'},
                     {text: 'Db + Row', link: '/zh/base/db-row'},
                     {text: 'IService', link: '/zh/base/service'},
+                    {text: 'SpringBoot 配置文件', link: '/zh/base/configuration'},
+                    {text: 'MyBatisFlexCustomizer', link: '/zh/base/mybatis-flex-customizer'},
                 ]
             },
             {
@@ -82,6 +84,7 @@ export default defineConfig({
                     {text: 'SQL 审计', link: '/zh/core/audit'},
                     {text: 'SQL 打印', link: '/zh/core/sql-print'},
                     {text: '多数据源', link: '/zh/core/multi-datasource'},
+                    {text: '数据源加密', link: '/zh/core/datasource-encryption'},
                     {text: '动态表名', link: '/zh/core/dynamic-table'},
                     {text: '事务管理', link: '/zh/core/tx'},
                     {text: '数据权限', link: '/zh/core/data-permission'},

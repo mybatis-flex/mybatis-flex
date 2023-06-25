@@ -16,8 +16,9 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.exception.FlexExceptions;
 
-public class WithStringDetail implements WithDetail{
+public class WithStringDetail implements WithDetail {
 
     private String rawSQL;
     private Object[] params;
@@ -52,4 +53,14 @@ public class WithStringDetail implements WithDetail{
     public Object[] getParamValues() {
         return params;
     }
+
+    @Override
+    public WithStringDetail clone() {
+        try {
+            return (WithStringDetail) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw FlexExceptions.wrap(e);
+        }
+    }
+
 }

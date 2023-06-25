@@ -1,3 +1,34 @@
+mybatis-flex v1.4.3 20230624:
+修复：紧急修复 v1.4.2 Push 到中央仓库无法同步的问题
+
+
+
+mybatis-flex v1.4.2 20230624:
+新增：新增数据源加密内容的解密器配置功能
+新增：QueryWrapper 添加 with 的 SQL 构建方法;  #I7E19B
+新增：新增 MyBatisFlexCustomizer.java 方便用户对 MyBatisFlex 进行初始化配置
+新增：AbstractLogicDeleteProcessor 接口，方便用户自定义逻辑删除处理器，感谢 @Suomm
+新增：添加 Boolean/Integer/Datetime/TimeStamp 类型的逻辑删除功能，感谢 @Suomm
+新增：FlexGlobalConfig 支持通过 Spring 的 application.yml 进行配置的功能，感谢 @Suomm
+新增：动态表名添加对 Spring @Configuration 自动配置的支持
+新增：多租户 TenantFactory 添加对 Spring @Configuration 自动配置的支持
+新增：逻辑删除处理器添加对 Spring @Configuration 自动配置的支持
+优化：APT 功能的配置文件由 `mybatis-flex.properties` 移动到根目录下的 `mybatis-flex.config`, !!!破坏性更新
+优化：移除部分无用的、注释掉的代码块以及一些未使用的常量等，感谢 @Suomm
+优化：完善接口、类或方法相关注释，感谢 @Suomm
+优化：maven 编辑添加 latten-maven-plugin + reversion 机制
+优化：代码生成器生成辅助类与 APT 生成的类名保持一致，感谢 @Suomm
+优化：重构 apt 功能，以及修复可能存在的 NPE 问题，感谢 @Suomm
+修复：逻辑删除、多租户等子表过滤应该在 join 不应该在 where 的问题，#I7F03L
+修复：禁止全表更新失效的问题，感谢 @Suomm
+修复：代码生成器生成策略中的 schema 和 tableConfig 中的 schema 冲突问题，感谢 @Suomm
+文档：使用 Spring Boot 项目构建快速开始示例。
+文档：更新 pagehelper 配合 mybatis-flex 使用的相关文档，感谢 @Suomm
+文档：添加关于 SpringBoot 配置的相关文档，感谢 @Suomm
+文档：添加关于数据源加密使用的相关文档
+
+
+
 mybatis-flex v1.4.1 20230620:
 新增：分页查询 Page 对象添加否优化 count 查询的选项，感谢 @王帅
 新增：添加 LogicDeleteProcessor.java 用于构建自定义的逻辑删除功能

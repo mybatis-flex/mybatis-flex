@@ -22,16 +22,45 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * 数据库表信息。
+ */
 public class Table {
 
-    private String schema;
+    /**
+     * 表名。
+     */
     private String name;
+
+    /**
+     * schema（模式）。
+     */
+    private String schema;
+
+    /**
+     * 表注释。
+     */
     private String comment;
+
+    /**
+     * 主键。
+     */
     private Set<String> primaryKeys;
+
+    /**
+     * 所包含的列。
+     */
     private List<Column> columns = new ArrayList<>();
 
-    private GlobalConfig globalConfig;
+    /**
+     * 表配置。
+     */
     private TableConfig tableConfig;
+
+    /**
+     * 全局配置。
+     */
+    private GlobalConfig globalConfig;
 
     public String getSchema() {
         return schema;
@@ -69,7 +98,6 @@ public class Table {
                 .orElse(null);
     }
 
-
     public Set<String> getPrimaryKeys() {
         return primaryKeys;
     }
@@ -98,10 +126,8 @@ public class Table {
         //主键
         if (primaryKeys != null && primaryKeys.contains(column.getName())) {
             column.setPrimaryKey(true);
-            if (column.getAutoIncrement() == null) {
-                if (column.getPropertyType().equals(Integer.class.getName()) || column.getPropertyType().equals(BigInteger.class.getName())) {
-                    column.setAutoIncrement(true);
-                }
+            if (column.getAutoIncrement() == null && (column.getPropertyType().equals(Integer.class.getName()) || column.getPropertyType().equals(BigInteger.class.getName()))) {
+                column.setAutoIncrement(true);
             }
         }
 
@@ -130,9 +156,13 @@ public class Table {
         this.tableConfig = tableConfig;
     }
 
+    // ===== 构建实体类文件 =====
+
+    /**
+     * 构建 import 导包。
+     */
     public List<String> buildImports() {
         Set<String> imports = new HashSet<>();
-//        imports.add(com.mybatisflex.annotation.Table.class.getName());
         imports.add("com.mybatisflex.annotation.Table");
         for (Column column : columns) {
             imports.addAll(column.getImportClasses());
@@ -165,129 +195,35 @@ public class Table {
         return imports.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
     }
 
-    public String getEntityJavaFileName() {
-        String entityJavaFileName = name;
-        String tablePrefix = globalConfig.getStrategyConfig().getTablePrefix();
-        if (tablePrefix != null) {
-            String[] tablePrefixes = tablePrefix.split(",");
-            for (String prefix : tablePrefixes) {
-                String trimPrefix = prefix.trim();
-                if (trimPrefix.length() > 0 && name.startsWith(trimPrefix)) {
-                    entityJavaFileName = name.substring(trimPrefix.length());
-                    break;
-                }
-            }
-        }
-        return StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(entityJavaFileName));
-    }
-
     /**
-     * 构建 entity 的 Class 名称
-     *
-     * @return className
-     */
-    public String buildEntityClassName() {
-        String entityJavaFileName = getEntityJavaFileName();
-        EntityConfig entityConfig = globalConfig.getEntityConfig();
-        return entityConfig.getClassPrefix()
-                + entityJavaFileName
-                + entityConfig.getClassSuffix();
-    }
-
-    /**
-     * 构建 tableDef 的 Class 名称
-     *
-     * @return className
-     */
-    public String buildTableDefClassName() {
-        String tableDefJavaFileName = getEntityJavaFileName();
-        TableDefConfig tableDefConfig = globalConfig.getTableDefConfig();
-        return tableDefConfig.getClassPrefix()
-                + tableDefJavaFileName
-                + tableDefConfig.getClassSuffix();
-    }
-
-    /**
-     * 构建 MapperXml 的文件名称
-     *
-     * @return fileName
-     */
-    public String buildMapperXmlFileName() {
-        String tableDefJavaFileName = getEntityJavaFileName();
-        MapperXmlConfig mapperXmlConfig = globalConfig.getMapperXmlConfig();
-        return mapperXmlConfig.getFilePrefix()
-                + tableDefJavaFileName
-                + mapperXmlConfig.getFileSuffix();
-    }
-
-    public String buildExtends() {
-        EntityConfig entityConfig = globalConfig.getEntityConfig();
-        if (entityConfig.getSupperClass() != null) {
-            return " extends " + entityConfig.getSupperClass().getSimpleName();
-        } else {
-            return "";
-        }
-    }
-
-    public String buildImplements() {
-        Class<?>[] entityInterfaces = globalConfig.getEntityConfig().getImplInterfaces();
-        if (entityInterfaces != null && entityInterfaces.length > 0) {
-            return " implements " + StringUtil.join(", ", Arrays.stream(entityInterfaces)
-                    .map(Class::getSimpleName).collect(Collectors.toList()));
-        } else {
-            return "";
-        }
-    }
-
-
-    public String buildMapperClassName() {
-        String entityJavaFileName = getEntityJavaFileName();
-        MapperConfig mapperConfig = globalConfig.getMapperConfig();
-        return mapperConfig.getClassPrefix()
-                + entityJavaFileName
-                + mapperConfig.getClassSuffix();
-    }
-
-    public String buildServiceClassName() {
-        String entityJavaFileName = getEntityJavaFileName();
-        ServiceConfig serviceConfig = globalConfig.getServiceConfig();
-        return serviceConfig.getClassPrefix()
-                + entityJavaFileName
-                + serviceConfig.getClassSuffix();
-    }
-
-    public String buildServiceImplClassName() {
-        String entityJavaFileName = getEntityJavaFileName();
-        ServiceImplConfig serviceImplConfig = globalConfig.getServiceImplConfig();
-        return serviceImplConfig.getClassPrefix()
-                + entityJavaFileName
-                + serviceImplConfig.getClassSuffix();
-    }
-
-    public String buildControllerClassName() {
-        String entityJavaFileName = getEntityJavaFileName();
-        ControllerConfig controllerConfig = globalConfig.getControllerConfig();
-        return controllerConfig.getClassPrefix()
-                + entityJavaFileName
-                + controllerConfig.getClassSuffix();
-    }
-
-    /**
-     * 构建 @Table(...) 注解
+     * 构建 @Table(...) 注解。
      */
     public String buildTableAnnotation() {
         StringBuilder tableAnnotation = new StringBuilder();
 
         tableAnnotation.append("@Table(value = \"").append(name).append("\"");
 
-        if (StringUtil.isNotBlank(schema)) {
-            tableAnnotation.append(", schema = \"").append(schema).append("\"");
+        String globalSchema;
+
+        if (tableConfig == null) {
+            // 未配置 tableConfig 以策略中的 schema 为主
+            globalSchema = schema;
+        } else if (StringUtil.isBlank(tableConfig.getSchema())) {
+            // 配置 tableConfig 但未指定 schema 还是以策略中的 schema 为主
+            globalSchema = schema;
+        } else {
+            // 以用户设置的 tableConfig 中的 schema 为主
+            globalSchema = null;
+        }
+
+        if (StringUtil.isNotBlank(globalSchema)) {
+            tableAnnotation.append(", schema = \"").append(globalSchema).append("\"");
         }
 
         if (tableConfig != null) {
-//            if (tableConfig.getSchema() != null) {
-//                tableAnnotation.append(", schema = \"").append(tableConfig.getSchema()).append("\"");
-//            }
+            if (StringUtil.isNotBlank(tableConfig.getSchema())) {
+                tableAnnotation.append(", schema = \"").append(tableConfig.getSchema()).append("\"");
+            }
             if (tableConfig.getCamelToUnderline() != null) {
                 tableAnnotation.append(", camelToUnderline = \"").append(tableConfig.getCamelToUnderline()).append("\"");
             }
@@ -307,6 +243,129 @@ public class Table {
         return tableAnnotation.append(")").toString();
     }
 
+    /**
+     * 构建 extends 继承。
+     */
+    public String buildExtends() {
+        EntityConfig entityConfig = globalConfig.getEntityConfig();
+        if (entityConfig.getSupperClass() != null) {
+            return " extends " + entityConfig.getSupperClass().getSimpleName();
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * 构建 implements 实现。
+     */
+    public String buildImplements() {
+        Class<?>[] entityInterfaces = globalConfig.getEntityConfig().getImplInterfaces();
+        if (entityInterfaces != null && entityInterfaces.length > 0) {
+            return " implements " + StringUtil.join(", ", Arrays.stream(entityInterfaces)
+                    .map(Class::getSimpleName).collect(Collectors.toList()));
+        } else {
+            return "";
+        }
+    }
+
+    // ===== 构建相关类名 =====
+
+    /**
+     * 获取生成 Java 文件名。
+     */
+    public String getEntityJavaFileName() {
+        String entityJavaFileName = name;
+        String tablePrefix = globalConfig.getStrategyConfig().getTablePrefix();
+        if (tablePrefix != null) {
+            String[] tablePrefixes = tablePrefix.split(",");
+            for (String prefix : tablePrefixes) {
+                String trimPrefix = prefix.trim();
+                if (trimPrefix.length() > 0 && name.startsWith(trimPrefix)) {
+                    entityJavaFileName = name.substring(trimPrefix.length());
+                    break;
+                }
+            }
+        }
+        return StringUtil.firstCharToUpperCase(StringUtil.underlineToCamel(entityJavaFileName));
+    }
+
+    /**
+     * 构建 entity 的 Class 名称。
+     */
+    public String buildEntityClassName() {
+        String entityJavaFileName = getEntityJavaFileName();
+        EntityConfig entityConfig = globalConfig.getEntityConfig();
+        return entityConfig.getClassPrefix()
+                + entityJavaFileName
+                + entityConfig.getClassSuffix();
+    }
+
+    /**
+     * 构建 tableDef 的 Class 名称。
+     */
+    public String buildTableDefClassName() {
+        String tableDefJavaFileName = getEntityJavaFileName();
+        TableDefConfig tableDefConfig = globalConfig.getTableDefConfig();
+        return tableDefConfig.getClassPrefix()
+                + tableDefJavaFileName
+                + tableDefConfig.getClassSuffix();
+    }
+
+    /**
+     * 构建 mapper 的 Class 名称。
+     */
+    public String buildMapperClassName() {
+        String entityJavaFileName = getEntityJavaFileName();
+        MapperConfig mapperConfig = globalConfig.getMapperConfig();
+        return mapperConfig.getClassPrefix()
+                + entityJavaFileName
+                + mapperConfig.getClassSuffix();
+    }
+
+    /**
+     * 构建 service 的 Class 名称。
+     */
+    public String buildServiceClassName() {
+        String entityJavaFileName = getEntityJavaFileName();
+        ServiceConfig serviceConfig = globalConfig.getServiceConfig();
+        return serviceConfig.getClassPrefix()
+                + entityJavaFileName
+                + serviceConfig.getClassSuffix();
+    }
+
+    /**
+     * 构建 serviceImpl 的 Class 名称。
+     */
+    public String buildServiceImplClassName() {
+        String entityJavaFileName = getEntityJavaFileName();
+        ServiceImplConfig serviceImplConfig = globalConfig.getServiceImplConfig();
+        return serviceImplConfig.getClassPrefix()
+                + entityJavaFileName
+                + serviceImplConfig.getClassSuffix();
+    }
+
+    /**
+     * 构建 controller 的 Class 名称。
+     */
+    public String buildControllerClassName() {
+        String entityJavaFileName = getEntityJavaFileName();
+        ControllerConfig controllerConfig = globalConfig.getControllerConfig();
+        return controllerConfig.getClassPrefix()
+                + entityJavaFileName
+                + controllerConfig.getClassSuffix();
+    }
+
+    /**
+     * 构建 MapperXml 的文件名称。
+     */
+    public String buildMapperXmlFileName() {
+        String tableDefJavaFileName = getEntityJavaFileName();
+        MapperXmlConfig mapperXmlConfig = globalConfig.getMapperXmlConfig();
+        return mapperXmlConfig.getFilePrefix()
+                + tableDefJavaFileName
+                + mapperXmlConfig.getFileSuffix();
+    }
+
     @Override
     public String toString() {
         return "Table{" +
@@ -317,6 +376,5 @@ public class Table {
                 ", columns=" + columns +
                 '}';
     }
-
 
 }

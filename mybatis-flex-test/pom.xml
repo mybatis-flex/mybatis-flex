@@ -5,12 +5,13 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.4.1</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-flex-test</artifactId>
     <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
 
     <modules>
         <module>mybatis-flex-native-test</module>
@@ -60,7 +61,7 @@
                         <path>
                             <groupId>com.mybatis-flex</groupId>
                             <artifactId>mybatis-flex-processor</artifactId>
-                            <version>1.4.1</version>
+                            <version>${revision}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

@@ -5,11 +5,13 @@
     <parent>
         <artifactId>mybatis-flex-test</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.4.1</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-flex-native-test</artifactId>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -20,7 +22,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-core</artifactId>
-            <version>1.4.1</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
@@ -110,6 +112,12 @@
             <artifactId>assertj-core</artifactId>
             <version>3.22.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.18</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

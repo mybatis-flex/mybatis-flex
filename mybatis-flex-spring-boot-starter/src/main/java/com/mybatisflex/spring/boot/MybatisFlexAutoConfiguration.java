@@ -1,21 +1,32 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.spring.boot;
 
+import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.datasource.DataSourceDecipher;
+import com.mybatisflex.core.datasource.DataSourceManager;
+import com.mybatisflex.core.datasource.FlexDataSource;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
+import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
+import com.mybatisflex.core.table.DynamicSchemaProcessor;
+import com.mybatisflex.core.table.DynamicTableProcessor;
+import com.mybatisflex.core.table.TableManager;
+import com.mybatisflex.core.tenant.TenantFactory;
+import com.mybatisflex.core.tenant.TenantManager;
 import com.mybatisflex.spring.FlexSqlSessionFactoryBean;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
@@ -60,6 +71,7 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 import java.beans.PropertyDescriptor;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -67,17 +79,16 @@ import java.util.stream.Stream;
 
 
 /**
- * Mybatis-Flex 的核心配置
+ * Mybatis-Flex 的核心配置。
  * <p>
- * <p>
- * 参考 {@link <a href="https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisAutoConfiguration.java">
- * https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisAutoConfiguration.java</a>}
+ * 参考 <a href="https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisAutoConfiguration.java">
+ * MybatisAutoConfiguration.java</a>
  * <p>
  * 为 Mybatis-Flex 开启自动配置功能，主要修改以下几个方面:
  * <p>
- * 1、替换配置为 mybatis-flex 的配置前缀
- * 2、修改 SqlSessionFactory 为 FlexSqlSessionFactoryBean
- * 3、修改 Configuration 为 FlexConfiguration
+ * 1、替换配置为 mybatis-flex 的配置前缀<br>
+ * 2、修改 SqlSessionFactory 为 FlexSqlSessionFactoryBean<br>
+ * 3、修改 Configuration 为 FlexConfiguration<br>
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
@@ -104,11 +115,35 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
     protected final List<SqlSessionFactoryBeanCustomizer> sqlSessionFactoryBeanCustomizers;
 
+    //数据源解密器
+    protected final DataSourceDecipher dataSourceDecipher;
+
+    //动态表名
+    protected final DynamicTableProcessor dynamicTableProcessor;
+    protected final DynamicSchemaProcessor dynamicSchemaProcessor;
+
+    //多租户
+    protected final TenantFactory tenantFactory;
+
+    //自定义逻辑删除处理器
+    protected final LogicDeleteProcessor logicDeleteProcessor;
+
+    //初始化监听
+    protected final MyBatisFlexCustomizer mybatisFlexCustomizer;
+
+
     public MybatisFlexAutoConfiguration(MybatisFlexProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider,
                                         ObjectProvider<TypeHandler[]> typeHandlersProvider, ObjectProvider<LanguageDriver[]> languageDriversProvider,
                                         ResourceLoader resourceLoader, ObjectProvider<DatabaseIdProvider> databaseIdProvider,
                                         ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
-                                        ObjectProvider<List<SqlSessionFactoryBeanCustomizer>> sqlSessionFactoryBeanCustomizers) {
+                                        ObjectProvider<List<SqlSessionFactoryBeanCustomizer>> sqlSessionFactoryBeanCustomizers,
+                                        ObjectProvider<DataSourceDecipher> dataSourceDecipherProvider,
+                                        ObjectProvider<DynamicTableProcessor> dynamicTableProcessorProvider,
+                                        ObjectProvider<DynamicSchemaProcessor> dynamicSchemaProcessorProvider,
+                                        ObjectProvider<TenantFactory> tenantFactoryProvider,
+                                        ObjectProvider<LogicDeleteProcessor> logicDeleteProcessorProvider,
+                                        ObjectProvider<MyBatisFlexCustomizer> mybatisFlexCustomizerProvider
+    ) {
         this.properties = properties;
         this.interceptors = interceptorsProvider.getIfAvailable();
         this.typeHandlers = typeHandlersProvider.getIfAvailable();
@@ -117,11 +152,61 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         this.databaseIdProvider = databaseIdProvider.getIfAvailable();
         this.configurationCustomizers = configurationCustomizersProvider.getIfAvailable();
         this.sqlSessionFactoryBeanCustomizers = sqlSessionFactoryBeanCustomizers.getIfAvailable();
+
+        //数据源解密器
+        this.dataSourceDecipher = dataSourceDecipherProvider.getIfAvailable();
+
+        //动态表名
+        this.dynamicTableProcessor = dynamicTableProcessorProvider.getIfAvailable();
+        this.dynamicSchemaProcessor = dynamicSchemaProcessorProvider.getIfAvailable();
+
+        //多租户
+        this.tenantFactory = tenantFactoryProvider.getIfAvailable();
+
+        //逻辑删除处理器
+        this.logicDeleteProcessor = logicDeleteProcessorProvider.getIfAvailable();
+
+        //初始化监听器
+        this.mybatisFlexCustomizer = mybatisFlexCustomizerProvider.getIfAvailable();
     }
 
     @Override
     public void afterPropertiesSet() {
+        // 检测 MyBatis 原生配置文件是否存在
         checkConfigFileExists();
+
+        // 添加 MyBatis-Flex 全局配置
+        if (properties.getGlobalConfig() != null) {
+            properties.getGlobalConfig().applyTo(FlexGlobalConfig.getDefaultConfig());
+        }
+
+        //数据源解密器
+        if (dataSourceDecipher != null) {
+            DataSourceManager.setDecipher(dataSourceDecipher);
+        }
+
+        // 动态表名配置
+        if (dynamicTableProcessor != null) {
+            TableManager.setDynamicTableProcessor(dynamicTableProcessor);
+        }
+        if (dynamicSchemaProcessor != null) {
+            TableManager.setDynamicSchemaProcessor(dynamicSchemaProcessor);
+        }
+
+        //多租户
+        if (tenantFactory != null) {
+            TenantManager.setTenantFactory(tenantFactory);
+        }
+
+        //逻辑删除处理器
+        if (logicDeleteProcessor != null) {
+            LogicDeleteManager.setProcessor(logicDeleteProcessor);
+        }
+
+        //初始化监听器
+        if (mybatisFlexCustomizer != null) {
+            mybatisFlexCustomizer.customize(FlexGlobalConfig.getDefaultConfig());
+        }
     }
 
     private void checkConfigFileExists() {
@@ -135,7 +220,14 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
-//    SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
+
+        if (dataSource instanceof FlexDataSource && DataSourceManager.getDecipher() != null) {
+            Map<String, DataSource> dataSourceMap = ((FlexDataSource) dataSource).getDataSourceMap();
+            for (DataSource ds : dataSourceMap.values()) {
+                DataSourceManager.decryptDataSource(ds);
+            }
+        }
+
         SqlSessionFactoryBean factory = new FlexSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         if (properties.getConfiguration() == null || properties.getConfiguration().getVfsImpl() == null) {
@@ -191,7 +283,6 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
     protected void applyConfiguration(SqlSessionFactoryBean factory) {
         MybatisFlexProperties.CoreConfiguration coreConfiguration = this.properties.getConfiguration();
-//    Configuration configuration = null;
         FlexConfiguration configuration = null;
         if (coreConfiguration != null || !StringUtils.hasText(this.properties.getConfigLocation())) {
             configuration = new FlexConfiguration();

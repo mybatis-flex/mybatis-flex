@@ -8,7 +8,7 @@ MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的。
 ## 阿里镜像找不到依赖？
 
 ```txt
-Could not find artifact com.mybatis-flex:mybatis-flex-spring-boot-starter:pom:1.4.1 
+Could not find artifact com.mybatis-flex:mybatis-flex-spring-boot-starter:pom:1.4.3 
 in alimaven (http://maven.aliyun.com/nexus/content/groups/public/)
 ```
 
@@ -126,8 +126,9 @@ spring:
 
 ## 与 PageHelper 集成出现错误
 
-在社区中，一些老的项目在使用到了开源项目 PageHelper，用于解决 xml 的分页问题，在和 MyBatis-flex 整合使用中，出现了一些错误，
-需要把 `pagehelper-spring-boot-starter` 依赖替换为 `pagehelper`;
+在社区中，一些老的项目在使用到了开源项目 PageHelper，用于解决 xml 的分页问题，在和 MyBatis-flex
+整合使用中，出现了一些错误，原因是 `pagehelper-spring-boot-starter` 依赖了 `mybatis-spring-boot-starter`，
+此时需要把 `pagehelper-spring-boot-starter` 依赖替换为 `pagehelper`，然后手动添加 `PageInterceptor`。
 
 
 ```xml

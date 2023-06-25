@@ -5,24 +5,20 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.4.1</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-flex-processor</artifactId>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+
     <dependencies>
-
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-annotation</artifactId>
-            <version>1.4.1</version>
+            <version>${revision}</version>
         </dependency>
-
     </dependencies>
 
 

@@ -4,6 +4,8 @@
 
 - 熟悉 Java 环境配置及其开发
 - 熟悉 关系型 数据库，比如 MySQL
+- 熟悉 Spring Boot 及相关框架
+- 熟悉 Java 构建工具，比如 Maven
 
 ## Hello World
 
@@ -14,51 +16,82 @@ CREATE TABLE IF NOT EXISTS `tb_account`
 (
     `id`        INTEGER PRIMARY KEY auto_increment,
     `user_name` VARCHAR(100),
-    `age`       Integer,
+    `age`       INTEGER,
     `birthday`  DATETIME
 );
+
+INSERT INTO tb_account(id, user_name, age, birthday)
+VALUES (1, '张三', 18, '2020-01-11'),
+       (2, '李四', 19, '2021-03-21');
 ```
 
-**第 2 步：创建 java 项目，并添加 Maven/Gradle 依赖**
+**第 2 步：创建 Spring Boot 项目，并添加 Maven 依赖**
 
-Maven示例：
+::: tip
+可以使用 [Spring Initializer](https://start.spring.io/) 快速初始化一个 Spring Boot 工程。
+:::
+
+需要添加的 Maven 主要依赖示例：
 
 ```xml
-<dependency>
-    <groupId>com.mybatis-flex</groupId>
-    <artifactId>mybatis-flex-core</artifactId>
-    <version>1.4.1</version>
-</dependency>
-<dependency>
-    <groupId>com.mybatis-flex</groupId>
-    <artifactId>mybatis-flex-processor</artifactId>
-    <version>1.4.1</version>
-    <scope>provided</scope>
-</dependency>
+
+<dependencies>
+    <dependency>
+        <groupId>com.mybatis-flex</groupId>
+        <artifactId>mybatis-flex-spring-boot-starter</artifactId>
+        <version>1.4.3</version>
+    </dependency>
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.zaxxer</groupId>
+        <artifactId>HikariCP</artifactId>
+    </dependency>
+    <!-- for test only -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
 ```
 
-> 如果配置了annotationProcessorPaths，此处可以省略mybatis-flex-processor的依赖
->
-> 参考：[APT 设置章节](../others/apt.md)
+**第 3 步：对 Spring Boot 项目进行配置**
 
-Gradle示例：
+在 application.yml 中配置数据源：
 
-```groovy
-// file: build.gradle
-ext {
-    mybatis_flex_version = '1.4.1'
-}
-dependencies {
-    implementation("com.mybatis-flex:mybatis-flex-core:${mybatis_flex_version}")
-    
-    // 启用APT
-    annotationProcessor("com.mybatis-flex:mybatis-flex-processor:${mybatis_flex_version}")
-}
+```yaml
+# DataSource Config
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/flex_test
+    username: root
+    password: 12345678
 ```
 
-**第 3 步：编写实体类和 Mapper**
+在 Spring Boot 启动类中添加 `@MapperScan` 注解，扫描 Mapper 文件夹：
 
 ```java
+@SpringBootApplication
+@MapperScan("com.mybatisflex.test.mapper")
+public class MybatisFlexTestApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(MybatisFlexTestApplication.class, args);
+    }
+
+}
+```
+
+**第 4 步：编写实体类和 Mapper 接口**
+
+这里使用了 [Lombok](https://www.projectlombok.org/) 来简化代码。
+
+```java
+@Data
 @Table("tb_account")
 public class Account {
 
@@ -68,13 +101,14 @@ public class Account {
     private Integer age;
     private Date birthday;
     
-    //getter setter
 }
 ```
+
 - 使用 `@Table("tb_account")` 设置实体类与表名的映射关系
 - 使用 `@Id(keyType = KeyType.Auto)` 标识主键为自增
 
 Mapper 接口继承 BaseMapper 接口：
+
 ```java
 public interface AccountMapper extends BaseMapper<Account> {
     
@@ -84,62 +118,41 @@ public interface AccountMapper extends BaseMapper<Account> {
 > 这部分也可以使用 MyBatis-Flex 的代码生成器来生，功能非常强大的。详情进入：[代码生成器章节](../others/codegen.md) 了解。
 
 
-**第4步：编译项目，自动生成查询辅助类**
+**第 5 步：开始使用**
 
-MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编译的时，会自动生成辅助操作类。
-
-- Maven 编译： `mvn clean package`
-- Gradle 编译： `gradlew classes`
-
-
-更多信息请参考：[APT 设置章节](../others/apt.md)
-
-
-
-**第 5 步：通过 main 方法开始使用 MyBatis-Flex（无 Spring 的场景）**
+添加测试类，进行功能测试：
 
 ```java
-public class HelloWorld {
-    public static void main(String... args) {
+import static com.mybatisflex.test.entity.table.AccountTableDef.ACCOUNT;
 
-        //创建数据源
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/mybatis-flex");
-        dataSource.setUsername("username");
-        dataSource.setPassword("password");
+@SpringBootTest
+class MybatisFlexTestApplicationTests {
 
-        //配置数据源
-        MybatisFlexBootstrap.getInstance()
-                .setDataSource(dataSource)
-                .addMapper(AccountMapper.class)
-                .start();
+    @Autowired
+    private AccountMapper accountMapper;
 
-        //获取 mapper
-        AccountMapper mapper = MybatisFlexBootstrap.getInstance()
-                .getMapper(AccountMapper.class);
-        
-        //示例1：查询 id=1 的数据
-        Account account = mapper.selectOneById(1);
-        
-        
-        //示例2：根据 QueryWrapper 查询 id >= 100 的数据列表
-        QueryWrapper query = QueryWrapper.create()
-                .where(ACCOUNT.ID.ge(100));
-        List<Account> accounts = mapper.selectListByQuery(query);
-        
-        
-        //示例3：者使用 Db + Row 查询
-        String sql = "select * from tb_account where age > ?";
-        List<Row> rows = Db.selectListBySql(sql, 18);
+    @Test
+    void contextLoads() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select()
+                .where(ACCOUNT.AGE.eq(18));
+        Account account = accountMapper.selectOneByQuery(queryWrapper);
+        System.out.println(account);
     }
+
 }
 ```
 
-> 以上的示例中， `ACCOUNT` 为 MyBatis-Flex 通过 APT 自动生成，无需手动编码。更多查看 [APT 文档](../others/apt.md)。
-> 
->若觉得 APT 使用不习惯，
-> 也可以使用代码生成器来生成。点击 [代码生成器文档](../others/codegen.md) 了解。
+控制台输出：
 
+```txt
+Account(id=1, userName=张三, age=18, birthday=Sat Jan 11 00:00:00 CST 2020)
+```
+
+> 以上的 [示例](https://gitee.com/Suomm/mybatis-flex-test) 中， `ACCOUNT` 为 MyBatis-Flex 通过 APT
+> 自动生成，只需通过静态导入即可，无需手动编码。更多查看 [APT 文档](../others/apt.md)。
+>
+> 若觉得 APT 使用不习惯，也可以使用代码生成器来生成。点击 [代码生成器文档](../others/codegen.md) 了解。
 
 ## 更多示例
 

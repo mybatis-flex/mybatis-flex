@@ -17,6 +17,8 @@ package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.datasource.DataSourceBuilder;
 import com.mybatisflex.core.datasource.FlexDataSource;
+import com.mybatisflex.spring.datasource.DataSourceAdvice;
+import com.mybatisflex.spring.datasource.DataSourceInterceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -38,11 +40,11 @@ import java.util.Map;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MybatisFlexProperties.class)
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
-@AutoConfigureBefore(value = DataSourceAutoConfiguration.class, name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
+@AutoConfigureBefore(value = DataSourceAutoConfiguration.class
+        , name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
 public class MultiDataSourceAutoConfiguration {
 
     private final Map<String, Map<String, String>> dataSourceProperties;
-
 
     public MultiDataSourceAutoConfiguration(MybatisFlexProperties properties) {
         dataSourceProperties = properties.getDatasource();
@@ -69,5 +71,10 @@ public class MultiDataSourceAutoConfiguration {
         return flexDataSource;
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public DataSourceAdvice dataSourceAdvice() {
+        return new DataSourceAdvice(new DataSourceInterceptor());
+    }
 
 }

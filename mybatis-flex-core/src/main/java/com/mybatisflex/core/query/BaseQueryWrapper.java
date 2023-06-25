@@ -267,6 +267,7 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
         try {
             T clone = (T) super.clone();
             // deep clone ...
+            clone.with = ObjectUtil.clone(this.with);
             clone.queryTables = CollectionUtil.cloneArrayList(this.queryTables);
             clone.selectColumns = CollectionUtil.cloneArrayList(this.selectColumns);
             clone.joins = CollectionUtil.cloneArrayList(this.joins);

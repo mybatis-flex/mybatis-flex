@@ -180,3 +180,21 @@ public interface LogicDeleteProcessor {
 ```
 
 具体实现可以参考：[DefaultLogicDeleteProcessorImpl](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/logicdelete/DefaultLogicDeleteProcessorImpl.java)
+
+
+## SpringBoot 支持
+
+在 SpringBoot 项目下，直接通过 `@Configuration` 即可使用：
+
+```java
+@Configuration
+public class MyConfiguration {
+
+    @Bean
+    public LogicDeleteProcessor logicDeleteProcessor(){
+        LogicDeleteProcessor processor = new ....;
+        return processor;
+    }
+    
+}
+```

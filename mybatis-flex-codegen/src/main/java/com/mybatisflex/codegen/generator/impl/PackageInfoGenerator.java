@@ -98,6 +98,9 @@ public class PackageInfoGenerator implements IGenerator {
         this.templatePath = templatePath;
     }
 
+    /**
+     * 内置类，用于存放数据。
+     */
     private static class Data {
 
         String packageName;

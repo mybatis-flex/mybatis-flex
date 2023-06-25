@@ -60,6 +60,26 @@ public interface TenantFactory {
 除了显示租户自己的数据以外，还包含下级租户的数据，这种场景则要求 `getTenantIds` 返回多个值。
 - **场景3**：忽略租户条件，由代码自定义条件查询，此项要求 `getTenantIds` 返回 null 或者 空数组。
 
+
+
+
+## SpringBoot 支持
+在 SpringBoot 项目下，直接通过 `@Configuration` 即可使用：
+
+```java
+@Configuration
+public class MyConfiguration {
+
+    @Bean
+    public TenantFactory tenantFactory(){
+        TenantFactory tenantFactory = new ....;
+        return tenantFactory;
+    }
+    
+}
+```
+
+
 ## 注意事项
 
 ### 新增数据时

@@ -28,9 +28,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 class ProviderUtil {
 
-    private ProviderUtil() {}
+    private ProviderUtil() {
+    }
 
     public static String getSqlString(Map params) {
         return (String) params.get(FlexConsts.SQL);
@@ -44,6 +46,7 @@ class ProviderUtil {
         Object schemaNameObj = params.get(FlexConsts.SCHEMA_NAME);
         return schemaNameObj != null ? schemaNameObj.toString().trim() : null;
     }
+
     public static String getTableName(Map params) {
         Object tableNameObj = params.get(FlexConsts.TABLE_NAME);
         return tableNameObj != null ? tableNameObj.toString().trim() : null;
@@ -76,7 +79,11 @@ class ProviderUtil {
     }
 
     public static QueryWrapper getQueryWrapper(Map params) {
-        return (QueryWrapper) params.get(FlexConsts.QUERY);
+        Object queryWrapper = params.get(FlexConsts.QUERY);
+        if (queryWrapper == null) {
+            throw new IllegalArgumentException("queryWrapper can not be null.");
+        }
+        return (QueryWrapper) queryWrapper;
     }
 
     public static Row getRow(Map params) {

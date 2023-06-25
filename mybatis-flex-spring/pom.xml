@@ -5,11 +5,13 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.4.1</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-flex-spring</artifactId>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -20,7 +22,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-core</artifactId>
-            <version>1.4.1</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>

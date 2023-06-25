@@ -47,11 +47,11 @@ public class FlexDataSource extends AbstractDataSource {
     public FlexDataSource(String dataSourceKey, DataSource dataSource) {
         this.defaultDataSourceKey = dataSourceKey;
         this.defaultDataSource = dataSource;
-        dataSourceMap.put(dataSourceKey, dataSource);
-        dbTypeHashMap.put(dataSourceKey, DbTypeUtil.getDbType(dataSource));
+        addDataSource(dataSourceKey, dataSource);
     }
 
     public void addDataSource(String dataSourceKey, DataSource dataSource) {
+        DataSourceManager.decryptDataSource(dataSource);
         dataSourceMap.put(dataSourceKey, dataSource);
         dbTypeHashMap.put(dataSourceKey, DbTypeUtil.getDbType(dataSource));
     }
@@ -61,6 +61,21 @@ public class FlexDataSource extends AbstractDataSource {
         dbTypeHashMap.remove(dataSourceKey);
     }
 
+    public Map<String, DataSource> getDataSourceMap() {
+        return dataSourceMap;
+    }
+
+    public Map<String, DbType> getDbTypeHashMap() {
+        return dbTypeHashMap;
+    }
+
+    public String getDefaultDataSourceKey() {
+        return defaultDataSourceKey;
+    }
+
+    public DataSource getDefaultDataSource() {
+        return defaultDataSource;
+    }
 
     public DbType getDbType(String dataSourceKey) {
         return dbTypeHashMap.get(dataSourceKey);

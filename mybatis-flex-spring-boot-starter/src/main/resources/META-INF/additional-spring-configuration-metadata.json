@@ -31,6 +31,34 @@
       "name": "mybatis-flex.datasource",
       "description": "多数据源配置",
       "type": "java.util.Map<java.lang.String,com.mybatisflex.spring.boot.DataSourceProperty>"
+    },
+    {
+      "defaultValue": 0,
+      "name": "mybatis-flex.global-config.normal-value-of-logic-delete",
+      "description": "逻辑删除未删除值标记",
+      "type": "java.lang.Object"
+    },
+    {
+      "defaultValue": 1,
+      "name": "mybatis-flex.global-config.deleted-value-of-logic-delete",
+      "description": "逻辑删除已删除值标记",
+      "type": "java.lang.Object"
+    },
+    {
+      "name": "mybatis-flex.global-config.key-config.value",
+      "description": "使用的 ID 生成器名称 或者 Sequence 执行的 SQL 内容",
+      "type": "java.lang.String"
+    },
+    {
+      "defaultValue": true,
+      "name": "mybatis-flex.global-config.key-config.before",
+      "description": "是否在数据插入之前执行，只在非自增上配置有效",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "name": "mybatis-flex.global-config.key-config.key-type",
+      "description": "ID 生成策略",
+      "type": "com.mybatisflex.annotation.KeyType"
     }
   ]
 }

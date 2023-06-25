@@ -4,10 +4,11 @@ spring:
   #    console:
   #      enabled: true
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+#    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/flex_test
     username: root
     password: 12345678
+    driver-class-name:
 #  sql:
 #    init:
 #      schema-locations: classpath:schema.sql
@@ -15,6 +16,13 @@ spring:
 mybatis-flex:
   mapper-locations:
     - classpath*:/mapper/*.xml
+#  global-config:
+#    print-banner: false
+#    key-config:
+#      key-type: generator
+#      value: uuid
+#  configuration:
+#    use-generated-keys: true
 #  datasource:
 #    data-center:
 #      url: jdbc:mysql://localhost:3306/flex_test
