@@ -198,5 +198,21 @@ HikariDataSource newDataSource = new HikariDataSource();
 flexDataSource.addDataSource("newKey", newDataSource);
 ```
 
-> 需要注意的是：通过 FlexGlobalConfig 去获取 FlexDataSource 时，需等待应用完全启动成功后，才能正常获取 FlexDataSource，
-> 否则将会得到 null 值。
+**需要注意的是：** 通过 FlexGlobalConfig 去获取 FlexDataSource 时，需等待应用完全启动成功后，才能正常获取 FlexDataSource，
+否则将会得到 null 值。
+
+Spring 用户可以通过 `ApplicationListener` 去监听 `ContextRefreshedEvent` 事件，然后再去添加新的数据源，如下代码所示：
+
+```java
+public class DataSourceInitListener implements ApplicationListener<ContextRefreshedEvent> {
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        FlexDataSource dataSource = (FlexDataSource) FlexGlobalConfig.getDefaultConfig()
+                .getConfiguration().getEnvironment().getDataSource();
+
+        dataSource.addDataSource("....", new DruidDataSource("..."));
+    }
+
+}
+```
