@@ -9,7 +9,7 @@ MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 
 ## 配置文件和选项
 
-要对 MyBatis-Flex 的 APT 细节选项进行配置，你需要在项目的 **根目录** 下创建名为 `mybatis-flex.config` 的文件。
+要对 MyBatis-Flex 的 APT 细节选项进行配置，你需要在项目的 **根目录** （ `pom.xml` 所在的目录）下创建名为 `mybatis-flex.config` 的文件。
 
 支持的配置选项如下：
 

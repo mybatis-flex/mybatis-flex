@@ -72,6 +72,9 @@ MyBatis-Flex 提供了 4 种方式来配置数据源：
 - 3、`@UseDataSource("dataSourceName")` 在 Mapper 方法上，添加注解，用于指定使用哪个数据源。
 - 4、`@Table(dataSource="dataSourceName")` 在 Entity 类上添加注解，该 Entity 的增删改查请求默认使用该数据源。
 
+> 在 SpringBoot 项目上，`@UseDataSource("dataSourceName")` 也可用于在 Controller 或者 Service 上。若是 Spring 项目（非 SpringBoot）,
+> 用户需要参考 `MultiDataSourceAutoConfiguration` 进行配置后才能使用。
+
 
 `DataSourceKey.use` 示例：
 ```java 2,6
