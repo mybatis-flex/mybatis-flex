@@ -78,7 +78,7 @@ import static org.springframework.util.StringUtils.tokenizeToStringArray;
  * 此代码主要是用于修改 {@link FlexSqlSessionFactoryBean#buildSqlSessionFactory()} 部分
  */
 public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
-        implements FactoryBean<SqlSessionFactory>, InitializingBean, ApplicationListener<ApplicationEvent> {
+        implements FactoryBean<SqlSessionFactory>, InitializingBean, ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlSessionFactoryBean.class);
 
@@ -653,8 +653,8 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * {@inheritDoc}
      */
     @Override
-    public void onApplicationEvent(ApplicationEvent event) {
-        if (failFast && event instanceof ContextRefreshedEvent) {
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        if (failFast) {
             // fail-fast -> check all statements are completed
             this.sqlSessionFactory.getConfiguration().getMappedStatementNames();
         }
