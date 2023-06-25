@@ -17,6 +17,8 @@ package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.datasource.DataSourceBuilder;
 import com.mybatisflex.core.datasource.FlexDataSource;
+import com.mybatisflex.spring.datasource.DataSourceAdvice;
+import com.mybatisflex.spring.datasource.DataSourceInterceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -69,5 +71,10 @@ public class MultiDataSourceAutoConfiguration {
         return flexDataSource;
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public DataSourceAdvice dataSourceAdvice() {
+        return new DataSourceAdvice(new DataSourceInterceptor());
+    }
 
 }
