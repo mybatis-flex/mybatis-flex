@@ -38,6 +38,7 @@ export default defineConfig({
                     {text: 'Github', link: 'https://github.com/mybatis-flex/mybatis-flex'},
                     {text: '示例代码', link: 'https://gitee.com/mybatis-flex/mybatis-flex-samples'},
                     {text: '性能测试代码', link: 'https://gitee.com/mybatis-flex/mybatis-benchmark'},
+                    {text: 'ChangeLog', link: 'https://gitee.com/mybatis-flex/mybatis-flex/blob/main/changes.md'},
                 ]
             },
         ],
