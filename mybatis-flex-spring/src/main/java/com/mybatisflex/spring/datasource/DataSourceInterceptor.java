@@ -26,7 +26,6 @@ import org.springframework.core.MethodClassKey;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -45,7 +44,7 @@ public class DataSourceInterceptor implements MethodInterceptor {
             return invocation.proceed();
         }
 
-        dsKey = findDataSourceKey(invocation.getMethod(), invocation.getThis());
+        dsKey = findDataSourceKey(invocation.getMethod(), invocation.getThis().getClass());
         if (StringUtil.isBlank(dsKey)) {
             return invocation.proceed();
         }
@@ -63,20 +62,17 @@ public class DataSourceInterceptor implements MethodInterceptor {
      */
     private final Map<Object, String> dsCache = new ConcurrentHashMap<>();
 
-    private String findDataSourceKey(Method method, Object targetObject) {
-        Object cacheKey = new MethodClassKey(method, targetObject.getClass());
+    private String findDataSourceKey(Method method, Class<?> targetClass) {
+        Object cacheKey = new MethodClassKey(method, targetClass);
         String dsKey = this.dsCache.get(cacheKey);
         if (dsKey == null) {
-            dsKey = determineDataSourceKey(method, targetObject);
-            if (dsKey == null) {
-                dsKey = "";
-            }
+            dsKey = determineDataSourceKey(method, targetClass);
             this.dsCache.put(cacheKey, dsKey);
         }
         return dsKey;
     }
 
-    private String determineDataSourceKey(Method method, Object targetObject) {
+    private String determineDataSourceKey(Method method, Class<?> targetClass) {
 
         // 方法上定义有 UseDataSource 注解
         UseDataSource annotation = method.getAnnotation(UseDataSource.class);
@@ -85,7 +81,6 @@ public class DataSourceInterceptor implements MethodInterceptor {
         }
 
         // 类上定义有 UseDataSource 注解
-        Class<?> targetClass = targetObject.getClass();
         annotation = targetClass.getAnnotation(UseDataSource.class);
         if (annotation != null) {
             return annotation.value();
@@ -100,7 +95,7 @@ public class DataSourceInterceptor implements MethodInterceptor {
             }
         }
 
-        return null;
+        return "";
     }
 
 }
