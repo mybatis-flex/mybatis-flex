@@ -5,14 +5,15 @@
     --vp-c-brand-dark: #FF9933;
     --vp-c-brand-darker: #CC6600;
 
-    --vp-custom-block-tip-border:#FFCC99;
-    --vp-custom-block-tip-text:#F06C33;
+    --vp-custom-block-tip-border: #FFCC99;
+    --vp-custom-block-tip-text: #F06C33;
 }
 
-/*.VPNavBarTitle>.title{*/
-/*    color: #F06C33;*/
-/*}*/
-
 .vp-doc .custom-block p {
-    font-size: 16px;
+    font-size: 15px;
+}
+
+.custom-block.tip code {
+    background-color: #f0f0f0;
+    font-weight: 600;
 }
