@@ -128,12 +128,24 @@ public interface BaseMapper<T> {
      * @return 返回影响的行数
      */
     default int insertOrUpdate(T entity) {
+        return insertOrUpdate(entity, false);
+    }
+
+
+    /**
+     * 新增 或者 更新，若主键有值，则更新，若没有主键值，则插入
+     *
+     * @param entity      实体类
+     * @param ignoreNulls 是否忽略 null 值
+     * @return 返回影响的行数
+     */
+    default int insertOrUpdate(T entity, boolean ignoreNulls) {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
         Object[] pkArgs = tableInfo.buildPkSqlArgs(entity);
         if (pkArgs.length == 0 || pkArgs[0] == null) {
-            return insert(entity);
+            return insert(entity, ignoreNulls);
         } else {
-            return update(entity);
+            return update(entity, ignoreNulls);
         }
     }
 

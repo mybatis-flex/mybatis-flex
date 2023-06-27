@@ -70,7 +70,7 @@ public interface IService<T> {
      * @apiNote 如果实体类对象主键有值，则更新数据，若没有值，则保存数据。
      */
     default boolean saveOrUpdate(T entity) {
-        return SqlUtil.toBool(getMapper().insertOrUpdate(entity));
+        return SqlUtil.toBool(getMapper().insertOrUpdate(entity, true));
     }
 
     /**
@@ -229,10 +229,15 @@ public interface IService<T> {
      */
     default boolean updateBatch(Collection<T> entities, int batchSize) {
         return Db.tx(() -> {
-            final List<T> entityList = CollectionUtil.toList(entities);
+            List<T> entityList = CollectionUtil.toList(entities);
             // BaseMapper 是经过 Mybatis 动态代理处理过的对象，需要获取原始 BaseMapper 类型
-            final Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
-            return SqlUtil.toBool(Arrays.stream(Db.executeBatch(entityList.size(), batchSize, usefulClass, (mapper, index) -> mapper.update(entityList.get(index)))).sum());
+            Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
+            return SqlUtil.toBool(Arrays.stream(Db.executeBatch(
+                    entityList.size()
+                    , batchSize
+                    , usefulClass
+                    , (mapper, index) -> mapper.update(entityList.get(index)))
+            ).sum());
         });
     }
 
