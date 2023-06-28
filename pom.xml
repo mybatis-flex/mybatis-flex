@@ -51,7 +51,7 @@
     </modules>
 
     <properties>
-        <revision>1.4.3</revision>
+        <revision>1.4.4</revision>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
