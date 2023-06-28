@@ -96,7 +96,7 @@ public class ArithmeticQueryColumn extends QueryColumn {
             sql.append(arithmeticInfos.get(i).toSql(queryTables, dialect, i));
         }
         if (StringUtil.isNotBlank(alias)) {
-            return WrapperUtil.withAlias(sql.toString(), dialect.wrap(alias), dialect);
+            return WrapperUtil.withAlias(sql.toString(), alias, dialect);
         }
         return sql.toString();
     }
