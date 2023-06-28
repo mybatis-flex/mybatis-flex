@@ -25,10 +25,7 @@ import java.lang.reflect.Proxy;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * SQL 审计详细消息。
@@ -189,14 +186,17 @@ public class AuditMessage implements Serializable {
     }
 
     private void doAddParam(Statement statement, Object object) {
-        if (object instanceof TypeHandlerObject) {
-            try {
+        try {
+            if (object instanceof TypeHandlerObject) {
                 ((TypeHandlerObject) object).setParameter(createPreparedStatement(statement), 0);
-            } catch (SQLException e) {
-                //ignore
+            } else if (object instanceof java.sql.Array) {
+                Object array = ((java.sql.Array) object).getArray();
+                queryParams.add(array);
+            } else {
+                queryParams.add(object);
             }
-        } else {
-            queryParams.add(object);
+        } catch (SQLException e) {
+            //ignore
         }
     }
 

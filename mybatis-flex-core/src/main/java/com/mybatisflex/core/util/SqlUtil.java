@@ -15,8 +15,10 @@
  */
 package com.mybatisflex.core.util;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 
 public class SqlUtil {
@@ -81,7 +83,8 @@ public class SqlUtil {
 
     /**
      * 替换 sql 中的问号 ？
-     * @param sql sql 内容
+     *
+     * @param sql    sql 内容
      * @param params 参数
      * @return 完整的 sql
      */
@@ -95,6 +98,14 @@ public class SqlUtil {
                 // number
                 else if (value instanceof Number || value instanceof Boolean) {
                     sql = sql.replaceFirst("\\?", value.toString());
+                }
+                // array
+                else if (ClassUtil.isArray(value.getClass())) {
+                    StringJoiner joiner = new StringJoiner(",");
+                    for (int i = 0; i < Array.getLength(value); i++) {
+                        joiner.add(String.valueOf(Array.get(value, i)));
+                    }
+                    sql = sql.replaceFirst("\\?", "[" + joiner + "]");
                 }
                 // other
                 else {
@@ -114,7 +125,6 @@ public class SqlUtil {
         }
         return sql;
     }
-
 
 
 }
