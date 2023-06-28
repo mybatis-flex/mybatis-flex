@@ -36,6 +36,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DataSourceInterceptor implements MethodInterceptor {
 
+    /**
+     * 缓存方法对应的数据源。
+     */
+    private final Map<Object, String> dsCache = new ConcurrentHashMap<>();
+
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
 
@@ -56,11 +61,6 @@ public class DataSourceInterceptor implements MethodInterceptor {
             DataSourceKey.clear();
         }
     }
-
-    /**
-     * 缓存方法对应的数据源。
-     */
-    private final Map<Object, String> dsCache = new ConcurrentHashMap<>();
 
     private String findDataSourceKey(Method method, Class<?> targetClass) {
         Object cacheKey = new MethodClassKey(method, targetClass);
