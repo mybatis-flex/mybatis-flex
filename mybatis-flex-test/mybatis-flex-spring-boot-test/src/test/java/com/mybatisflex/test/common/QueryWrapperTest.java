@@ -16,7 +16,10 @@
 
 package com.mybatisflex.test.common;
 
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -69,6 +72,23 @@ class QueryWrapperTest {
                 .having(ROLE.ROLE_ID.ge(7))
                 .orderBy(ROLE.ROLE_NAME.asc());
         System.out.println(queryWrapper.toSQL());
+    }
+
+    @Test
+    void test03() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select()
+                .from(USER.as("u"))
+                .leftJoin(USER_ROLE).as("ur").on(USER.USER_ID.eq(USER_ROLE.USER_ID))
+                .where(QueryCondition.createEmpty())
+                .and(USER.USER_ID.eq(1).or(USER.USER_ID.in(
+                        QueryWrapper.create().select(USER_ROLE.USER_ID).from(USER_ROLE)))
+                )
+                .and(USER_ROLE.USER_ID.eq(1));
+        System.out.println(queryWrapper.toSQL());
+        QueryCondition whereQueryCondition = CPI.getWhereQueryCondition(queryWrapper);
+        boolean contained = CPI.containsTable(whereQueryCondition, "tb_user_role");
+        Assertions.assertTrue(contained);
     }
 
 }

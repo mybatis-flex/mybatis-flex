@@ -103,7 +103,10 @@ public class Brackets extends QueryCondition {
 
     @Override
     boolean containsTable(String... tables) {
-        return childCondition != null && childCondition.containsTable(tables);
+        if (childCondition != null && childCondition.containsTable(tables)) {
+            return true;
+        }
+        return nextContainsTable(tables);
     }
 
     @Override
