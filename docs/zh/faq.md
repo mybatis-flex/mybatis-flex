@@ -8,7 +8,7 @@ MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的。
 ## 阿里镜像找不到依赖？
 
 ```txt
-Could not find artifact com.mybatis-flex:mybatis-flex-spring-boot-starter:pom:1.4.3 
+Could not find artifact com.mybatis-flex:mybatis-flex-spring-boot-starter:pom:1.x.x
 in alimaven (http://maven.aliyun.com/nexus/content/groups/public/)
 ```
 

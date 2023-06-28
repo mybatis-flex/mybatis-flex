@@ -1,5 +1,16 @@
 # ChangeLog
 
+
+### v1.4.4 20230628:
+- 新增：在 SpringBoot 下添加 `@UseDataSource` 对 IService 和 Controller 支持的功能，感谢 @Suomm
+- 优化：IService 中的 saveOrUpdate 保存逻辑应该与同类 save 逻辑保持一致； #I7G8MC
+- 优化：为更多的 Java 代码完善代码注释已经添加  package-info.java，感谢 @Suomm
+- 修复：当使用 ArrayTypeHandler 配置时，出现 NPE 的问题
+- 修复：Brackets 的 containsTable 方法验证错误，导致分页时 count 优化不准确的问题，感谢 @Suomm
+- 文档：优化多数据源的相关文档
+
+
+
 ### v1.4.3 20230624:
 - 修复：紧急修复 v1.4.2 Push 到中央仓库无法同步的问题
 
