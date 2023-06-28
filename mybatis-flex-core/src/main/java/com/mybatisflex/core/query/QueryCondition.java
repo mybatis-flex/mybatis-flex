@@ -268,7 +268,7 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         return nextContainsTable(tables);
     }
 
-    private boolean nextContainsTable(String... tables) {
+    boolean nextContainsTable(String... tables) {
         if (next == null) {
             return false;
         }
