@@ -34,7 +34,7 @@ import java.util.Map;
 
 
 /**
- * 多数据源的配置支持
+ * MyBatis-Flex 多数据源的配置支持。
  */
 @ConditionalOnMybatisFlexDatasource()
 @Configuration(proxyBeanMethods = false)
@@ -49,7 +49,6 @@ public class MultiDataSourceAutoConfiguration {
     public MultiDataSourceAutoConfiguration(MybatisFlexProperties properties) {
         dataSourceProperties = properties.getDatasource();
     }
-
 
     @Bean
     @ConditionalOnMissingBean
@@ -71,6 +70,9 @@ public class MultiDataSourceAutoConfiguration {
         return flexDataSource;
     }
 
+    /**
+     * {@link com.mybatisflex.annotation.UseDataSource} 注解切换数据源切面。
+     */
     @Bean
     @ConditionalOnMissingBean
     public DataSourceAdvice dataSourceAdvice() {

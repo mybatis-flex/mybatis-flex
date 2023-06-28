@@ -13,23 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.spring.boot;
-
-import org.mybatis.spring.SqlSessionFactoryBean;
 
 /**
- * 为 FlexSqlSessionFactoryBean 做自定义的配置支持。
- *
- * @see com.mybatisflex.spring.FlexSqlSessionFactoryBean
+ * IService 实现。
  */
-@FunctionalInterface
-public interface SqlSessionFactoryBeanCustomizer {
-
-    /**
-     * 自定义 {@link SqlSessionFactoryBean}。
-     *
-     * @param factoryBean FlexSqlSessionFactoryBean
-     */
-    void customize(SqlSessionFactoryBean factoryBean);
-
-}
+package com.mybatisflex.spring.service.impl;
