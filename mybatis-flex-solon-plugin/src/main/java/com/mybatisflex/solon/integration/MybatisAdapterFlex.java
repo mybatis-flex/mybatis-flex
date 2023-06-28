@@ -1,3 +1,19 @@
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package com.mybatisflex.solon.integration;
 
 import com.mybatisflex.core.FlexGlobalConfig;
@@ -17,14 +33,18 @@ import org.noear.solon.core.event.EventBus;
 import javax.sql.DataSource;
 
 /**
- * 适配器 for mybatis-flex
+ * MyBatis-Flex 适配器。
  *
  * @author noear
  * @since 2.2
  */
 public class MybatisAdapterFlex extends MybatisAdapterDefault {
+
     FlexSqlSessionFactoryBuilder factoryBuilderPlus;
+
     FlexGlobalConfig globalConfig;
+
+    RowMapperInvoker rowMapperInvoker;
 
     protected MybatisAdapterFlex(BeanWrap dsWrap) {
         super(dsWrap);
@@ -107,25 +127,23 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
         return factory;
     }
 
-    RowMapperInvoker rowMapperInvoker;
-
     @Override
     public void injectTo(VarHolder varH) {
         super.injectTo(varH);
 
-        //@Db("db1") FlexGlobalConfig globalConfig;
+        // @Db("db1") FlexGlobalConfig globalConfig
         if (FlexGlobalConfig.class.isAssignableFrom(varH.getType())) {
             varH.setValue(this.getGlobalConfig());
             return;
         }
 
-        //@Db("db1") RowMapperInvoker rowMapper;
+        // @Db("db1") RowMapperInvoker rowMapper
         if (RowMapperInvoker.class.equals(varH.getType())) {
             if (rowMapperInvoker == null) {
                 rowMapperInvoker = new RowMapperInvoker(getFactory());
             }
             varH.setValue(rowMapperInvoker);
-            return;
         }
     }
+
 }
