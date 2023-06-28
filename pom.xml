@@ -69,7 +69,7 @@
         <solon.version>2.3.1</solon.version>
 
         <junit.version>4.13.2</junit.version>
-        <maven_flatten_version>1.5.0</maven_flatten_version>
+        <maven-flatten.version>1.5.0</maven-flatten.version>
     </properties>
 
     <dependencyManagement>
@@ -291,7 +291,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>flatten-maven-plugin</artifactId>
-                        <version>${maven_flatten_version}</version>
+                        <version>${maven-flatten.version}</version>
                         <configuration>
                             <updatePomFile>true</updatePomFile>
                             <flattenMode>oss</flattenMode>
