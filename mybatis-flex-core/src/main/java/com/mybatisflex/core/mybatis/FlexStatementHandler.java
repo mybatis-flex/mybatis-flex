@@ -83,7 +83,7 @@ public class FlexStatementHandler implements StatementHandler {
             AuditManager.startAudit(() -> {
                 delegate.batch(statement);
                 return null;
-            }, boundSql, configuration);
+            }, statement, boundSql, configuration);
         } else {
             delegate.batch(statement);
         }
@@ -91,19 +91,19 @@ public class FlexStatementHandler implements StatementHandler {
 
     @Override
     public int update(Statement statement) throws SQLException {
-        return auditEnable ? AuditManager.startAudit(() -> delegate.update(statement), boundSql,configuration)
+        return auditEnable ? AuditManager.startAudit(() -> delegate.update(statement), statement, boundSql, configuration)
                 : delegate.update(statement);
     }
 
     @Override
     public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
-        return auditEnable ? AuditManager.startAudit(() -> delegate.query(statement, resultHandler), boundSql, configuration)
+        return auditEnable ? AuditManager.startAudit(() -> delegate.query(statement, resultHandler), statement, boundSql, configuration)
                 : delegate.query(statement, resultHandler);
     }
 
     @Override
     public <E> Cursor<E> queryCursor(Statement statement) throws SQLException {
-        return auditEnable ? AuditManager.startAudit(() -> delegate.queryCursor(statement), boundSql, configuration)
+        return auditEnable ? AuditManager.startAudit(() -> delegate.queryCursor(statement), statement, boundSql, configuration)
                 : delegate.queryCursor(statement);
     }
 

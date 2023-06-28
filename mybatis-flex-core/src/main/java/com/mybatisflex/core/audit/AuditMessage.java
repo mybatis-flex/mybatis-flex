@@ -24,6 +24,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Proxy;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -171,24 +172,31 @@ public class AuditMessage implements Serializable {
         this.queryParams = queryParams;
     }
 
-    public void addParams(Object... objects) {
+    public void addParams(Statement statement, Object... objects) {
         if (queryParams == null) {
             queryParams = new ArrayList<>();
         }
+
         for (Object object : objects) {
             if (object != null && ClassUtil.isArray(object.getClass())) {
                 for (int i = 0; i < Array.getLength(object); i++) {
-                    addParams(Array.get(object, i));
-                }
-            } else if (object instanceof TypeHandlerObject) {
-                try {
-                    ((TypeHandlerObject) object).setParameter(createPreparedStatement(), 0);
-                } catch (SQLException e) {
-                    //ignore
+                    doAddParam(statement, Array.get(object, i));
                 }
             } else {
-                queryParams.add(object);
+                doAddParam(statement, object);
             }
+        }
+    }
+
+    private void doAddParam(Statement statement, Object object) {
+        if (object instanceof TypeHandlerObject) {
+            try {
+                ((TypeHandlerObject) object).setParameter(createPreparedStatement(statement), 0);
+            } catch (SQLException e) {
+                //ignore
+            }
+        } else {
+            queryParams.add(object);
         }
     }
 
@@ -197,12 +205,14 @@ public class AuditMessage implements Serializable {
         return SqlUtil.replaceSqlParams(getQuery(), queryParams == null ? null : queryParams.toArray());
     }
 
-    private PreparedStatement createPreparedStatement() {
+    private PreparedStatement createPreparedStatement(Statement statement) {
         return (PreparedStatement) Proxy.newProxyInstance(
                 AuditMessage.class.getClassLoader(),
                 new Class[]{PreparedStatement.class}, (proxy, method, args) -> {
-                    if (args != null && args.length == 2) {
-                        addParams(args[1]);
+                    if (args != null && (args.length == 2 || args.length == 3)) {
+                        doAddParam(statement, args[1]);
+                    } else if ("getConnection".equals(method.getName())) {
+                        return statement.getConnection();
                     }
                     return null;
                 });

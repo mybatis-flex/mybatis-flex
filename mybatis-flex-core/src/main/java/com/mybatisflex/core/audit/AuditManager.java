@@ -25,6 +25,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +94,7 @@ public class AuditManager {
     }
 
     @SuppressWarnings("rawtypes")
-    public static <T> T startAudit(AuditRunnable<T> supplier, BoundSql boundSql, Configuration configuration) throws SQLException {
+    public static <T> T startAudit(AuditRunnable<T> supplier, Statement statement, BoundSql boundSql, Configuration configuration) throws SQLException {
         AuditMessage auditMessage = messageFactory.create();
         if (auditMessage == null) {
             return supplier.execute();
@@ -118,12 +119,12 @@ public class AuditManager {
             if (parameter instanceof Map) {
                 TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
                 if (((Map<?, ?>) parameter).containsKey(FlexConsts.SQL_ARGS)) {
-                    auditMessage.addParams(((Map<?, ?>) parameter).get(FlexConsts.SQL_ARGS));
+                    auditMessage.addParams(statement, ((Map<?, ?>) parameter).get(FlexConsts.SQL_ARGS));
                 } else if (((Map<?, ?>) parameter).containsKey("collection")) {
                     Collection collection = (Collection) ((Map<?, ?>) parameter).get("collection");
-                    auditMessage.addParams(collection.toArray());
+                    auditMessage.addParams(statement, collection.toArray());
                 } else if (((Map<?, ?>) parameter).containsKey("array")) {
-                    auditMessage.addParams(((Map<?, ?>) parameter).get("array"));
+                    auditMessage.addParams(statement, ((Map<?, ?>) parameter).get("array"));
                 } else {
                     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
                     for (ParameterMapping parameterMapping : parameterMappings) {
@@ -138,7 +139,7 @@ public class AuditManager {
                                 MetaObject metaObject = configuration.newMetaObject(parameter);
                                 value = metaObject.getValue(propertyName);
                             }
-                            auditMessage.addParams(value);
+                            auditMessage.addParams(statement, value);
                         }
                     }
                 }
