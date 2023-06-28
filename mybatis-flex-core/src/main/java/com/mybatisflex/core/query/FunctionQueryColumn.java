@@ -25,6 +25,7 @@ import com.mybatisflex.core.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -120,6 +121,7 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
         }
 
         String sql = columns.stream()
+                .filter(Objects::nonNull)
                 .map(c -> c.toSelectSql(queryTables, dialect))
                 .collect(Collectors.joining(SqlConsts.DELIMITER));
 
