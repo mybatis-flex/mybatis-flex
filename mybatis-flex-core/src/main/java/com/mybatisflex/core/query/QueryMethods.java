@@ -18,6 +18,9 @@ package com.mybatisflex.core.query;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.mybatisflex.core.constant.SqlConsts.*;
 
 public class QueryMethods {
@@ -161,6 +164,15 @@ public class QueryMethods {
     //CONVERT ( data_type [ ( length ) ] , expression [ , style ] )
     public static StringFunctionQueryColumn convert(String... params) {
         return new StringFunctionQueryColumn(CONVERT, params);
+    }
+
+    ///CONCAT
+    public static FunctionQueryColumn concat(String str1, String str2, String... more) {
+        List<String> args = Arrays.asList(str1, str2);
+        args.addAll(Arrays.asList(more));
+        String[] columns = new String[args.size()];
+        args.toArray(columns);
+        return new FunctionQueryColumn("CONCAT", columns);
     }
 
     public static StringQueryColumn column(String column) {
