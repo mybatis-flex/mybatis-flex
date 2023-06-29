@@ -571,6 +571,18 @@ public interface BaseMapper<T> {
         return MapperUtil.getSelectOneResult(selectObjectListByQuery(queryWrapper));
     }
 
+    /**
+     * 根据 queryWrapper 1 条数据
+     * queryWrapper 执行的结果应该只有 1 列，例如 QueryWrapper.create().select(ACCOUNT.id).where...
+     *
+     * @param queryWrapper 查询包装器
+     * @param asType       转换成的数据类型
+     * @return 数据量
+     */
+    default <R> R selectObjectByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
+        return MapperUtil.getSelectOneResult(selectObjectListByQueryAs(queryWrapper, asType));
+    }
+
 
     /**
      * 根据 queryWrapper 来查询数据列表
