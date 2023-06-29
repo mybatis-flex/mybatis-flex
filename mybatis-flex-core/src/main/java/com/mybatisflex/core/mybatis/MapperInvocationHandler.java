@@ -28,6 +28,7 @@ import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.session.Configuration;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class MapperInvocationHandler implements InvocationHandler {
@@ -72,6 +73,8 @@ public class MapperInvocationHandler implements InvocationHandler {
                 clearDbType = true;
             }
             return method.invoke(mapper, args);
+        } catch (InvocationTargetException e1) {
+            throw e1.getCause();
         } finally {
             if (clearDbType) {
                 DialectFactory.clearHintDbType();
