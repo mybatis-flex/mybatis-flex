@@ -156,7 +156,7 @@ QueryWrapper query = new QueryWrapper()
 
 String sql = query.toSQL();
 ```
-> 列运算的 **加减乘除** 对应的方法分别为：add / subtract / multiply / divide
+> 列计算的 **加减乘除** 对应的方法分别为：add / subtract / multiply / divide
 
 其查询生成的 Sql 如下：
 
@@ -262,7 +262,7 @@ WHERE `user_name` LIKE  ?
 
 ::: tip 提示
 在以上示例中，由于 `case` 和 `else` 属于 Java 关键字，无法使用其进行方法命名，因此会添加一个下划线小尾巴 `"_"` 变成 `case_` 和 `else_`，这是无奈之举。
-在以后的 QueryWrapper 构建中，遇到 java 关键字也会采用类型的解决方法。
+在以后的 QueryWrapper 构建中，遇到 java 关键字也会采用类似的解决方法。
 :::
 
 
