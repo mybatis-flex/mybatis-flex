@@ -134,6 +134,7 @@ FROM tb_account
 - month
 - day
 - convert
+- concat
 
 更多的函数，用户可以参考 [QueryMethods](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/query/QueryMethods.java)
 ，然后再自己的项目里进行自定义扩展。
