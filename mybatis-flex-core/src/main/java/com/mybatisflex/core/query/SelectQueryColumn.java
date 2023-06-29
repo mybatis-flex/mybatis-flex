@@ -45,7 +45,7 @@ public class SelectQueryColumn extends QueryColumn implements HasParamsColumn {
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String selectSql = dialect.forSelectByQuery(queryWrapper);
         if (StringUtil.isNotBlank(selectSql) && StringUtil.isNotBlank(alias)) {
-            selectSql = WrapperUtil.withAlias(selectSql, dialect.wrap(alias), dialect);
+            selectSql = WrapperUtil.withAlias(selectSql, alias, dialect);
         }
         return selectSql;
     }

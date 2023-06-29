@@ -18,11 +18,15 @@ package com.mybatisflex.core.query;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
-import com.mybatisflex.core.util.ObjectUtil;
+import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 数据库 聚合函数，例如 count(id) ，max(account.age) 等等
@@ -30,19 +34,25 @@ import java.util.List;
 public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn {
 
     protected String fnName;
-    protected QueryColumn column;
+    protected List<QueryColumn> columns;
 
-    public FunctionQueryColumn(String fnName, String column) {
+    public FunctionQueryColumn(String fnName) {
         SqlUtil.keepColumnSafely(fnName);
-        SqlUtil.keepColumnSafely(column);
         this.fnName = fnName;
-        this.column = new QueryColumn(column);
+        this.columns = new ArrayList<>();
     }
 
-    public FunctionQueryColumn(String fnName, QueryColumn column) {
-        SqlUtil.keepColumnSafely(fnName);
-        this.fnName = fnName;
-        this.column = column;
+    public FunctionQueryColumn(String fnName, String... columns) {
+        this(fnName);
+        for (String column : columns) {
+            // SqlUtil.keepColumnSafely(column)
+            this.columns.add(new QueryColumn(column));
+        }
+    }
+
+    public FunctionQueryColumn(String fnName, QueryColumn... columns) {
+        this(fnName);
+        this.columns.addAll(Arrays.asList(columns));
     }
 
     public String getFnName() {
@@ -53,41 +63,73 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
         this.fnName = fnName;
     }
 
-    public QueryColumn getColumn() {
-        return column;
+    public List<QueryColumn> getColumns() {
+        return columns;
     }
 
-    public void setColumn(QueryColumn column) {
-        this.column = column;
+    public void setColumns(List<QueryColumn> columns) {
+        this.columns = columns;
     }
 
     @Override
     public Object[] getParamValues() {
-        if (column instanceof HasParamsColumn) {
-            return ((HasParamsColumn) column).getParamValues();
+        if (CollectionUtil.isEmpty(columns)) {
+            return FlexConsts.EMPTY_ARRAY;
         }
-        return FlexConsts.EMPTY_ARRAY;
+
+        List<Object> params = new ArrayList<>();
+
+        for (QueryColumn queryColumn : columns) {
+            if (queryColumn instanceof HasParamsColumn) {
+                Object[] paramValues = ((HasParamsColumn) queryColumn).getParamValues();
+                params.addAll(Arrays.asList(paramValues));
+            }
+        }
+
+        return params.toArray();
     }
 
     @Override
     public String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
-        String sql = column.toSelectSql(queryTables, dialect);
-        if (StringUtil.isBlank(sql)) {
-            return SqlConsts.EMPTY;
-        }
+        String sql = getSql(queryTables, dialect);
         if (StringUtil.isBlank(alias)) {
             return fnName + WrapperUtil.withBracket(sql);
         }
-        return fnName + WrapperUtil.withAlias(sql, dialect.wrap(alias), dialect);
+        return fnName + WrapperUtil.withAlias(sql, alias, dialect);
     }
 
     @Override
     String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
-        String sql = column.toSelectSql(queryTables, dialect);
+        String sql = getSql(queryTables, dialect);
+        return fnName + WrapperUtil.withBracket(sql);
+    }
+
+    /**
+     * <p>获取函数括号里面的 SQL 内容。
+     *
+     * <p>如果函数括号里面没有内容，就返回空字符串，这样构建出来就是函数名加括号。
+     *
+     * <p>例如，NOW() 函数的构建：
+     * <pre>{@code
+     * FunctionQueryColumn c1 = new FunctionQueryColumn("NOW");
+     * FunctionQueryColumn c2 = new FunctionQueryColumn("NOW", new StringQueryColumn(""));
+     * }</pre>
+     */
+    private String getSql(List<QueryTable> queryTables, IDialect dialect) {
+        if (CollectionUtil.isEmpty(columns)) {
+            return SqlConsts.EMPTY;
+        }
+
+        String sql = columns.stream()
+                .filter(Objects::nonNull)
+                .map(c -> c.toSelectSql(queryTables, dialect))
+                .collect(Collectors.joining(SqlConsts.DELIMITER));
+
         if (StringUtil.isBlank(sql)) {
             return SqlConsts.EMPTY;
         }
-        return fnName + WrapperUtil.withBracket(sql);
+
+        return sql;
     }
 
     @Override
@@ -101,7 +143,7 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
     public String toString() {
         return "FunctionQueryColumn{" +
                 "fnName='" + fnName + '\'' +
-                ", column=" + column +
+                ", columns=" + columns +
                 '}';
     }
 
@@ -109,7 +151,7 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
     public FunctionQueryColumn clone() {
         FunctionQueryColumn clone = (FunctionQueryColumn) super.clone();
         // deep clone ...
-        clone.column = ObjectUtil.clone(this.column);
+        clone.columns = CollectionUtil.cloneArrayList(this.columns);
         return clone;
     }
 
