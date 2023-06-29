@@ -184,7 +184,7 @@ SELECT SUM(`id` * `age`) AS `total_x` FROM `tb_account`
 
 ```java
 QueryWrapper query = new QueryWrapper()
-    .select(ACCOUNT.ID.add(ACCOUNT.ID.add(100)).as("x100"))
+    .select(ACCOUNT.ID.add(ACCOUNT.AGE.add(100)).as("x100"))
     .from(ACCOUNT);
 
 String sql = query.toSQL();
