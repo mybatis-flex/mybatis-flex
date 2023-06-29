@@ -373,7 +373,7 @@ public interface BaseMapper<T> {
         if (map == null || map.isEmpty()) {
             throw FlexExceptions.wrap("map can not be null or empty.");
         }
-        return selectOneByQuery(QueryWrapper.create().where(map));
+        return selectOneByQuery(QueryWrapper.create().where(map).limit(1));
     }
 
 
@@ -387,7 +387,7 @@ public interface BaseMapper<T> {
         if (condition == null) {
             throw FlexExceptions.wrap("condition can not be null.");
         }
-        return selectOneByQuery(QueryWrapper.create().where(condition));
+        return selectOneByQuery(QueryWrapper.create().where(condition).limit(1));
     }
 
 
