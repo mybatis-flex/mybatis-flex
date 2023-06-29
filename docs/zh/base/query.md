@@ -7,7 +7,7 @@
 - **selectOneById(id)**：根据主键 id 查询数据
 - **selectOneByMap(map)**：根据 `map<字段名，值>` 组成的条件查询 1 条数据，若命中多条数据，则只返回第一条数据。
 - **selectOneByCondition(condition)**：根据 condition 组成的条件查询 1 条数据，若命中多条数据，则只返回第一条数据。
-- **selectOneByQuery(query)**：根据 QueryWrapper 组成的条件查询 1 条数据，若命中多条数据，则只返回第一条数据。
+- **selectOneByQuery(query)**：根据 QueryWrapper 组成的条件查询 1 条数据，若命中多条数据，**则抛出错误!!!**。一般情况下，用户可以主动添加 `limit(1)` 来阻止返回多条的情况。
 - **selectOneByQueryAs(query, asType)**：和 `selectOneByQuery` 方法类似，但是在某些场景下，`query` 可能包含了 `left join` 等多表查询，返回的数据和 entity 字段不一致时，
 可以通过 `asType` 参数来指定接收的数据类型（通常是 dto、vo 等）。
 - **selectListByIds(idList)**：根据多个 id 查询，返回多条数据

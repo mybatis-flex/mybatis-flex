@@ -38,7 +38,7 @@ public class ArithmeticQueryColumnTest {
                 .select(ACCOUNT.ID.add(100).as("x100"))
                 .from(ACCOUNT);
 
-        String sql = toSql(query);
+        String sql = query.toSQL();
         System.out.println(sql);
 
         Assert.assertEquals(sql,"SELECT (`id` + 100) AS `x100` FROM `tb_account`");
@@ -50,7 +50,7 @@ public class ArithmeticQueryColumnTest {
                 .select(ACCOUNT.ID.add(100).add(200).add(300).as("x100"))
                 .from(ACCOUNT);
 
-        String sql = toSql(query);
+        String sql = query.toSQL();
         System.out.println(sql);
 
         Assert.assertEquals(sql,"SELECT (`id` + 100 + 200 + 300) AS `x100` FROM `tb_account`");
@@ -59,25 +59,25 @@ public class ArithmeticQueryColumnTest {
     @Test
     public void testAdd2() {
         QueryWrapper query = new QueryWrapper()
-                .select(ACCOUNT.ID.add(ACCOUNT.ID).as("x100"))
+                .select(ACCOUNT.ID.add(ACCOUNT.AGE).as("x100"))
                 .from(ACCOUNT);
 
         String sql = toSql(query);
         System.out.println(sql);
 
-        Assert.assertEquals(sql,"SELECT (`id` + `id`) AS `x100` FROM `tb_account`");
+        Assert.assertEquals(sql,"SELECT (`id` + `age`) AS `x100` FROM `tb_account`");
     }
 
     @Test
     public void testAdd3() {
         QueryWrapper query = new QueryWrapper()
-                .select(ACCOUNT.ID.add(ACCOUNT.ID.add(100)).as("x100"))
+                .select(ACCOUNT.ID.add(ACCOUNT.AGE.add(100)).as("x100"))
                 .from(ACCOUNT);
 
-        String sql = toSql(query);
+        String sql = query.toSQL();
         System.out.println(sql);
 
-        Assert.assertEquals(sql,"SELECT (`id` + (`id` + 100)) AS `x100` FROM `tb_account`");
+        Assert.assertEquals(sql,"SELECT (`id` + (`age` + 100)) AS `x100` FROM `tb_account`");
     }
 
     @Test

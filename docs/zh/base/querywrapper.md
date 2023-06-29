@@ -106,6 +106,8 @@ WHERE a.id = b.account_id
 
 ## select function（SQL 函数）
 
+示例 ：
+
 ```java
 QueryWrapper query=new QueryWrapper()
     .select(
@@ -123,6 +125,8 @@ SELECT id, user_name, MAX(birthday), AVG(sex) AS sex_avg
 FROM tb_account
 ```
 
+
+
 目前，MyBatis-Flex 内置的函数支持如下：
 
 - count
@@ -138,6 +142,59 @@ FROM tb_account
 
 更多的函数，用户可以参考 [QueryMethods](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/query/QueryMethods.java)
 ，然后再自己的项目里进行自定义扩展。
+
+
+## select 列计算
+
+
+#### 示例 1：
+
+```java
+QueryWrapper query = new QueryWrapper()
+    .select(ACCOUNT.ID.add(100).as("x100"))
+    .from(ACCOUNT);
+
+String sql = query.toSQL();
+```
+> 列运算的 **加减乘除** 对应的方法分别为：add / subtract / multiply / divide
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT (`id` + 100) AS `x100` FROM `tb_account`
+```
+
+
+#### 示例 2：
+
+```java
+QueryWrapper query = new QueryWrapper()
+    .select(sum(ACCOUNT.ID.multiply(ACCOUNT.AGE)).as("total_x"))
+    .from(ACCOUNT);
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT SUM(`id` * `age`) AS `total_x` FROM `tb_account`
+```
+
+
+#### 示例 3：
+
+```java
+QueryWrapper query = new QueryWrapper()
+    .select(ACCOUNT.ID.add(ACCOUNT.ID.add(100)).as("x100"))
+    .from(ACCOUNT);
+
+String sql = query.toSQL();
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT (`id` + (`age` + 100)) AS `x100` FROM `tb_account`
+```
 
 
 ## select case...when
@@ -207,6 +264,112 @@ WHERE `user_name` LIKE  ?
 在以上示例中，由于 `case` 和 `else` 属于 Java 关键字，无法使用其进行方法命名，因此会添加一个下划线小尾巴 `"_"` 变成 `case_` 和 `else_`，这是无奈之举。
 在以后的 QueryWrapper 构建中，遇到 java 关键字也会采用类型的解决方法。
 :::
+
+
+## with...select
+
+示例 1：
+
+```java
+QueryWrapper query = new QueryWrapper()
+        .with("CTE").asSelect(
+                select().from(ARTICLE).where(ARTICLE.ID.ge(100))
+        )
+        .select()
+        .from(ACCOUNT)
+        .where(ACCOUNT.SEX.eq(1));
+
+System.out.println(query.toSQL());
+```
+
+生成的 SQL 如下：
+
+```sql
+WITH CTE AS (SELECT * FROM `tb_article` WHERE `id` >= 100) 
+SELECT * FROM `tb_account` WHERE `sex` = 1
+```
+
+
+示例 2：
+
+```java
+QueryWrapper query = new QueryWrapper()
+    .with("xxx", "id", "name").asValues(
+        Arrays.asList("a", "b"),
+        union(
+            select().from(ARTICLE).where(ARTICLE.ID.ge(200))
+        )
+    )
+    .from(ACCOUNT)
+    .where(ACCOUNT.SEX.eq(1));
+
+System.out.println(query.toSQL());
+```
+
+生成的 SQL 如下：
+
+```sql
+WITH xxx(id, name) 
+    AS (VALUES (a, b) UNION (SELECT * FROM `tb_article` WHERE `id` >= 200)) 
+SELECT * FROM `tb_account` WHERE `sex` = 1
+```
+
+
+
+
+## with recursive...select
+
+示例 1：
+
+```java
+QueryWrapper query = new QueryWrapper()
+    .withRecursive("CTE").asSelect(
+        select().from(ARTICLE).where(ARTICLE.ID.ge(100))
+    )
+    .from(ACCOUNT)
+    .where(ACCOUNT.SEX.eq(1));
+
+System.out.println(query.toSQL());
+```
+
+生成的 SQL 如下：
+
+```sql
+WITH RECURSIVE CTE AS (SELECT * FROM `tb_article` WHERE `id` >= 100) 
+SELECT * FROM `tb_account` WHERE `sex` = 1
+```
+
+
+示例 2：
+
+```java
+QueryWrapper query = new QueryWrapper()
+    .withRecursive("CTE").asSelect(
+        select().from(ARTICLE).where(ARTICLE.ID.ge(100))
+    )
+    .with("xxx", "id", "name").asValues(
+        Arrays.asList("a", "b"),
+        union(
+            select().from(ARTICLE).where(ARTICLE.ID.ge(200))
+        )
+    )
+    .from(ACCOUNT)
+    .where(ACCOUNT.SEX.eq(1));
+
+System.out.println(query.toSQL());
+```
+
+生成的 SQL 如下：
+
+```sql
+WITH RECURSIVE 
+     CTE AS (SELECT * FROM `tb_article` WHERE `id` >= 100), 
+     xxx(id, name) AS (VALUES (a, b)  UNION (SELECT * FROM `tb_article` WHERE `id` >= 200)) 
+SELECT * FROM `tb_account` WHERE `sex` = 1
+```
+
+
+
 
 ## where
 
