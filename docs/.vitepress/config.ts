@@ -77,6 +77,7 @@ export default defineConfig({
                     {text: '@Table 注解', link: '/zh/core/table'},
                     {text: '@Id 注解', link: '/zh/core/id'},
                     {text: '@Column 注解', link: '/zh/core/column'},
+                    {text: '@As 注解', link: '/zh/core/as'},
                     {text: '逻辑删除', link: '/zh/core/logic-delete'},
                     {text: '乐观锁', link: '/zh/core/version'},
                     {text: '数据填充', link: '/zh/core/fill'},
