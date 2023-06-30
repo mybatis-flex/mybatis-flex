@@ -31,6 +31,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Date;
 import java.util.List;
 
+import static com.mybatisflex.core.query.QueryMethods.column;
+import static com.mybatisflex.core.query.QueryMethods.concat;
 import static com.mybatisflex.test.model.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.model.table.RoleTableDef.ROLE;
 import static com.mybatisflex.test.model.table.UserRoleTableDef.USER_ROLE;
@@ -119,9 +121,9 @@ class AccountMapperTest {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(ACCOUNT.ID.as("account_id"),
                         ACCOUNT.AGE,
-                        ACCOUNT.USER_NAME.as("account_name"),
+                        concat(column("'account name: '"), ACCOUNT.USER_NAME).as("user_name"),
                         USER.USER_ID,
-                        USER.USER_NAME)
+                        concat(column("'user name: '"), USER.USER_NAME).as("1_account_name"))
                 .from(ACCOUNT.as("a"), USER.as("u"))
                 .where(ACCOUNT.ID.eq(1))
                 .limit(1);

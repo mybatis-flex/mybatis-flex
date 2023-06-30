@@ -26,6 +26,7 @@ public class AccountVO2 extends IdEntity<Long> {
 
     private Integer age;
     @As("account_name")
+    @As("1_account_name")
     private String userName;
     private UserVO4 user;
 
