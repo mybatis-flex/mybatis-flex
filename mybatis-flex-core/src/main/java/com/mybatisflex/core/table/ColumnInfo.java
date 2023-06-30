@@ -31,7 +31,7 @@ public class ColumnInfo {
     /**
      * 列的别名。
      */
-    protected String alias;
+    protected String[] alias;
 
     /**
      * java entity 定义的属性名称。
@@ -67,11 +67,11 @@ public class ColumnInfo {
         this.column = column;
     }
 
-    public String getAlias() {
+    public String[] getAlias() {
         return alias;
     }
 
-    public void setAlias(String alias) {
+    public void setAlias(String[] alias) {
         this.alias = alias;
     }
 
