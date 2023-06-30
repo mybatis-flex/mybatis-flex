@@ -57,10 +57,7 @@ public class IdInfo extends ColumnInfo {
         }
     }
 
-    public IdInfo(String column, String property, Class<?> propertyType, Id id) {
-        this.column = column;
-        this.property = property;
-        this.propertyType = propertyType;
+    public IdInfo(Id id) {
         this.keyType = id.keyType();
         this.value = id.value();
         this.before = id.before();

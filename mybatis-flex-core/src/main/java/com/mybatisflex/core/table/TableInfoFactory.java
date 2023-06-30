@@ -280,7 +280,7 @@ public class TableInfoFactory {
             Id id = field.getAnnotation(Id.class);
             ColumnInfo columnInfo;
             if (id != null) {
-                columnInfo = new IdInfo(columnName, field.getName(), fieldType, id);
+                columnInfo = new IdInfo(id);
                 idInfos.add((IdInfo) columnInfo);
             } else {
                 columnInfo = new ColumnInfo();
