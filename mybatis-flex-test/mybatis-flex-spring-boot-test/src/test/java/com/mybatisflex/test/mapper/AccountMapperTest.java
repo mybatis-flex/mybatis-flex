@@ -21,6 +21,7 @@ import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.test.model.Account;
 import com.mybatisflex.test.model.AccountVO;
+import com.mybatisflex.test.model.AccountVO2;
 import com.mybatisflex.test.model.Gender;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,7 @@ import java.util.List;
 import static com.mybatisflex.test.model.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.model.table.RoleTableDef.ROLE;
 import static com.mybatisflex.test.model.table.UserRoleTableDef.USER_ROLE;
+import static com.mybatisflex.test.model.table.UserTableDef.USER;
 
 /**
  * @author 王帅
@@ -110,6 +112,21 @@ class AccountMapperTest {
     void testDeleteAll() {
         Assertions.assertThrows(Exception.class, () ->
                 accountMapper.deleteByQuery(QueryWrapper.create()));
+    }
+
+    @Test
+    void testAs() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(ACCOUNT.ID.as("account_id"),
+                        ACCOUNT.AGE,
+                        ACCOUNT.USER_NAME.as("account_name"),
+                        USER.USER_ID,
+                        USER.USER_NAME)
+                .from(ACCOUNT.as("a"), USER.as("u"))
+                .where(ACCOUNT.ID.eq(1))
+                .limit(1);
+        AccountVO2 account = accountMapper.selectOneByQueryAs(queryWrapper, AccountVO2.class);
+        System.out.println(account);
     }
 
 }
