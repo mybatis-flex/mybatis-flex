@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.table;
 
@@ -24,31 +24,38 @@ import org.apache.ibatis.type.TypeHandler;
 public class ColumnInfo {
 
     /**
-     * 数据库列名
+     * 数据库列名。
      */
     protected String column;
 
     /**
-     * java entity 定义的属性名称
+     * 列的别名。
+     */
+    protected String alias;
+
+    /**
+     * java entity 定义的属性名称。
      */
     protected String property;
 
     /**
-     * 属性类型
+     * 属性类型。
      */
     protected Class<?> propertyType;
 
     /**
-     * 该列对应的 jdbcType
+     * 该列对应的 jdbcType。
      */
     protected JdbcType jdbcType;
 
     /**
-     * 自定义 TypeHandler
+     * 自定义 TypeHandler。
      */
     protected TypeHandler typeHandler;
 
-
+    /**
+     * 数据脱敏类型。
+     */
     protected String maskType;
 
 
@@ -58,6 +65,14 @@ public class ColumnInfo {
 
     public void setColumn(String column) {
         this.column = column;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getProperty() {
