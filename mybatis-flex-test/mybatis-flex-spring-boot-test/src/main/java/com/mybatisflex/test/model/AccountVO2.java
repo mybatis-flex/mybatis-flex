@@ -31,8 +31,8 @@ public class AccountVO2 extends IdEntity<Long> {
 
     @Override
     @As("account_id")
-    public Long getId() {
-        return super.getId();
+    public void setId(Long id) {
+        super.setId(id);
     }
 
     public Integer getAge() {

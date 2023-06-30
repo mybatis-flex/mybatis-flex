@@ -292,10 +292,10 @@ public class TableInfoFactory {
 
             // 属性上没有别名，查找 getter 方法上有没有别名
             if (asType == null) {
-                Method getterMethod = ClassUtil.getFirstMethod(entityClass,
-                        m -> m.getName().contains(StringUtil.firstCharToUpperCase(field.getName())));
-                if (getterMethod != null) {
-                    asType = getterMethod.getAnnotation(As.class);
+                String setterMethodName = "set" + StringUtil.firstCharToUpperCase(field.getName());
+                Method setterMethod = ClassUtil.getFirstMethod(entityClass, m -> m.getName().equals(setterMethodName));
+                if (setterMethod != null) {
+                    asType = setterMethod.getAnnotation(As.class);
                 }
             }
 
