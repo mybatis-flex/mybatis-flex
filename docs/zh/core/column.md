@@ -187,10 +187,10 @@ public class Tables {
 一般的场景中，我们查询内容应该如下：
 ```java
 QueryWrapper.create()
-        //使用的是 DEFAULT_COLUMNS
-        .select(ARTICLE.DEFAULT_COLUMNS)
-        .form(DEFAULT_COLUMNS)
-        .where(...)
+    //使用的是 DEFAULT_COLUMNS
+    .select(ARTICLE.DEFAULT_COLUMNS)
+    .from(DEFAULT_COLUMNS)
+    .where(...)
 ```
 
 ## isLogicDelete

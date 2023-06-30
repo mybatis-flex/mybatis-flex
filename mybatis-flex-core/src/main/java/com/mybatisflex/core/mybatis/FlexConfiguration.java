@@ -44,7 +44,10 @@ import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.util.MapUtil;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -305,6 +308,27 @@ public class FlexConfiguration extends Configuration {
             return TableInfoFactory.ofMapperClass(mapperClass);
         } catch (ClassNotFoundException e) {
             return null;
+        }
+    }
+
+
+    @Override
+    public <T> void addMapper(Class<T> type) {
+        Type[] genericInterfaces = type.getGenericInterfaces();
+        boolean isGenericInterface = false;
+        for (Type genericInterface : genericInterfaces) {
+            if (genericInterface instanceof ParameterizedType) {
+                Type actualTypeArgument = ((ParameterizedType) genericInterface).getActualTypeArguments()[0];
+                if (actualTypeArgument instanceof TypeVariable) {
+                    isGenericInterface = true;
+                    break;
+                }
+            }
+        }
+
+        //不支持泛型类添加
+        if (!isGenericInterface) {
+            super.addMapper(type);
         }
     }
 
