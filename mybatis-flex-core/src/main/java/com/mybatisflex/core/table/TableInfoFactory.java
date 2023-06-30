@@ -33,10 +33,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.apache.ibatis.util.MapUtil;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
@@ -288,6 +285,22 @@ public class TableInfoFactory {
             } else {
                 columnInfo = new ColumnInfo();
                 columnInfoList.add(columnInfo);
+            }
+
+            // 优先使用属性上的别名
+            As asType = field.getAnnotation(As.class);
+
+            // 属性上没有别名，查找 getter 方法上有没有别名
+            if (asType == null) {
+                Method getterMethod = ClassUtil.getFirstMethod(entityClass,
+                        m -> m.getName().contains(StringUtil.firstCharToUpperCase(field.getName())));
+                if (getterMethod != null) {
+                    asType = getterMethod.getAnnotation(As.class);
+                }
+            }
+
+            if (asType != null) {
+                columnInfo.setAlias(asType.value());
             }
 
             columnInfo.setColumn(columnName);
