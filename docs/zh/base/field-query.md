@@ -23,7 +23,7 @@ public class Article {
 
 ```java {9-13}
 QueryWrapper queryWrapper = QueryWrapper.create()
-        .select().form(ARTICLE)
+        .select().from(ARTICLE)
         .where(ARTICLE.id.ge(100));
 
 List<Article> articles = mapper.selectListByQuery(queryWrapper

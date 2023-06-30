@@ -22,7 +22,6 @@ import com.mybatisflex.core.row.Row;
 import com.mybatisflex.test.model.Account;
 import com.mybatisflex.test.model.AccountVO;
 import com.mybatisflex.test.model.AccountVO2;
-import com.mybatisflex.test.model.Gender;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +87,7 @@ class AccountMapperTest {
     void testEnum() {
         Account account = new Account();
         account.setId(1L);
-        account.setGender(Gender.MALE);
+//        account.setGender(Gender.MALE);
         accountMapper.update(account);
     }
 

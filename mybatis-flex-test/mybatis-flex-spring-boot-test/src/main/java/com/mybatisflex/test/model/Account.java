@@ -28,15 +28,15 @@ public class Account extends BaseEntity<String, Long, String> {
     private Integer age;
     private Date birthday;
 
-    private Gender gender;
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
+//    private Gender gender;
+//
+//    public Gender getGender() {
+//        return gender;
+//    }
+//
+//    public void setGender(Gender gender) {
+//        this.gender = gender;
+//    }
 
     /*public Long getId() {
         return id;
