@@ -76,3 +76,39 @@ class UserMapperTest {
 
 }
 ```
+
+## 与 `@Column` 的区别
+
+`@As` 注解设置的别名 **只对** 查询有效。
+
+`@Column` 注解设置的 `value` 是确切的列名，不仅对查询有效，而且对插入、更新都有效。
+
+## 其他功能
+
+用于拓展 `<resultMap>` 映射，自定义列别名映射，例如：
+
+```java
+public class Entity {
+
+    @As("role_id")
+    @As("user_id")
+    private String id;
+
+}
+```
+
+这样 `SELECT` 查询的时候，只要用 `AS` 指定 `role_id`、`user_id` 别名，都会映射到 `id` 属性上。
+
+```java
+QueryWrapper qw1=QueryWrapper.create()
+        .select(USER.ID.as("user_id"))
+        .from(USER);
+
+        Entity e1=userMapper.selectOneByQueryAs(qw1,Entity.class);
+
+        QueryWrapper qw2=QueryWrapper.create()
+        .select(ROLE.ID.as("role_id"))
+        .from(ROLE);
+
+        Entity e2=roleMapper.selectOneByQueryAs(qw2,Entity.class);
+```
