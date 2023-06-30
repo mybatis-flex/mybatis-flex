@@ -3,16 +3,20 @@ spring:
   #  h2:
   #    console:
   #      enabled: true
+#  datasource:
+##    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/flex_test
+#    username: root
+#    password: 12345678
+#    driver-class-name:
   datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/flex_test
+    driver-class-name: org.h2.Driver
     username: root
-    password: 12345678
-    driver-class-name:
-#  sql:
-#    init:
-#      schema-locations: classpath:schema.sql
-#      data-locations: classpath:data.sql
+    password: test
+  sql:
+    init:
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
 mybatis-flex:
   mapper-locations:
     - classpath*:/mapper/*.xml
