@@ -14,59 +14,49 @@
  *  limitations under the License.
  */
 
-package com.mybatisflex.test.model;
+package com.mybatisflex.test.entity;
 
 import com.mybatisflex.annotation.As;
+import com.mybatisflex.annotation.Table;
+import com.mybatisflex.test.model.IdEntity;
 
 /**
  * @author 王帅
- * @since 2023-06-30
+ * @since 2023-06-16
  */
-public class AccountVO2 extends IdEntity<Long> {
+@Table("tb_outer")
+public class Outer extends IdEntity<Integer> {
 
-    private Integer age;
-    @As("account_name")
-    private String userName;
-    private UserVO4 user;
+    private String name;
+    private Inner inner;
 
     @Override
-    @As("account_id")
-    public void setId(Long id) {
+    @As("test_id")
+    public void setId(Integer id) {
         super.setId(id);
     }
 
-    public Integer getAge() {
-        return age;
+    public String getName() {
+        return name;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getUserName() {
-        return userName;
+    public Inner getInner() {
+        return inner;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public UserVO4 getUser() {
-        return user;
-    }
-
-    public void setUser(UserVO4 user) {
-        this.user = user;
+    public void setInner(Inner inner) {
+        this.inner = inner;
     }
 
     @Override
     public String toString() {
-        return "AccountVO2{" +
-                "id=" + id +
-                ", age=" + age +
-                ", userName='" + userName + '\'' +
-                ", user='" + user + '\'' +
+        return "Outer{" +
+                "name='" + name + '\'' +
+                ", inner=" + inner +
                 '}';
     }
-
 }
