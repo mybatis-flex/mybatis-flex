@@ -288,23 +288,19 @@ public class TableInfoFactory {
             }
 
             // 优先使用属性上的别名
-            As[] asType = field.getAnnotationsByType(As.class);
+            As asType = field.getAnnotation(As.class);
 
             // 属性上没有别名，查找 getter 方法上有没有别名
-            if (asType.length == 0) {
+            if (asType != null) {
                 String setterMethodName = "set" + StringUtil.firstCharToUpperCase(field.getName());
                 Method setterMethod = ClassUtil.getFirstMethod(entityClass, m -> m.getName().equals(setterMethodName));
                 if (setterMethod != null) {
-                    asType = setterMethod.getAnnotationsByType(As.class);
+                    asType = setterMethod.getAnnotation(As.class);
                 }
             }
 
-            if (asType.length > 0) {
-                columnInfo.setAlias(
-                        Arrays.stream(asType)
-                                .map(As::value)
-                                .toArray(String[]::new)
-                );
+            if (asType != null) {
+                columnInfo.setAlias(asType.value());
             }
 
             columnInfo.setColumn(columnName);

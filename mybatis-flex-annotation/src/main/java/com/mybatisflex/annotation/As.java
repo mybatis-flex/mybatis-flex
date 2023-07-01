@@ -25,7 +25,6 @@ import java.lang.annotation.*;
  * @since 2023-06-30
  */
 @Inherited
-@Repeatable(As.AsList.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface As {
@@ -36,22 +35,5 @@ public @interface As {
      * @return 别名
      */
     String value();
-
-    /**
-     * 支持多个别名。
-     */
-    @Inherited
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.FIELD, ElementType.METHOD})
-    @interface AsList {
-
-        /**
-         * 全部别名。
-         *
-         * @return 别名
-         */
-        As[] value();
-
-    }
 
 }

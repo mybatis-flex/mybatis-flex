@@ -810,14 +810,12 @@ public class TableInfo {
 
             if (columnInfo.alias != null) {
                 // add alias mapping
-                for (String alias : columnInfo.alias) {
-                    ResultMapping aliasMapping = new ResultMapping.Builder(configuration, columnInfo.property,
-                            alias, columnInfo.propertyType)
-                            .jdbcType(columnInfo.getJdbcType())
-                            .typeHandler(columnInfo.buildTypeHandler())
-                            .build();
-                    resultMappings.add(aliasMapping);
-                }
+                ResultMapping aliasMapping = new ResultMapping.Builder(configuration, columnInfo.property,
+                        columnInfo.alias, columnInfo.propertyType)
+                        .jdbcType(columnInfo.getJdbcType())
+                        .typeHandler(columnInfo.buildTypeHandler())
+                        .build();
+                resultMappings.add(aliasMapping);
             }
 
             // add property mapper for sql: select xxx as property ...
@@ -843,15 +841,13 @@ public class TableInfo {
 
             if (idInfo.alias != null) {
                 // add alias mapping
-                for (String alias : idInfo.alias) {
-                    ResultMapping aliasMapping = new ResultMapping.Builder(configuration, idInfo.property,
-                            alias, idInfo.propertyType)
-                            .flags(CollectionUtil.newArrayList(ResultFlag.ID))
-                            .jdbcType(idInfo.getJdbcType())
-                            .typeHandler(idInfo.buildTypeHandler())
-                            .build();
-                    resultMappings.add(aliasMapping);
-                }
+                ResultMapping aliasMapping = new ResultMapping.Builder(configuration, idInfo.property,
+                        idInfo.alias, idInfo.propertyType)
+                        .flags(CollectionUtil.newArrayList(ResultFlag.ID))
+                        .jdbcType(idInfo.getJdbcType())
+                        .typeHandler(idInfo.buildTypeHandler())
+                        .build();
+                resultMappings.add(aliasMapping);
             }
         }
 
