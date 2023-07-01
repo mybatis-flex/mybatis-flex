@@ -317,13 +317,9 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 // 遍历查找所有的方法
                 if (ElementKind.METHOD == methodElement.getKind()) {
                     String methodName = methodElement.toString();
-                    Iterator<String> iterator = setterProperty.iterator();
-                    while (iterator.hasNext()) {
-                        String property = iterator.next();
+                    for (String property : setterProperty) {
                         // 查找到 property 对应到的 setter 方法
                         if (methodName.contains("set".concat(StrUtil.firstCharToUpperCase(property)))) {
-                            // 删除元素，减小大小
-                            iterator.remove();
                             // 获取 setter 方法上的 @As 注解
                             As asType = methodElement.getAnnotation(As.class);
                             // setter 方法上有 @As 注解，设置别名。
