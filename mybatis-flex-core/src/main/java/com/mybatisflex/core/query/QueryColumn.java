@@ -102,7 +102,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     }
 
     public <T> QueryColumn as(LambdaGetter<T> fn) {
-        return as(LambdaUtil.getAsName(fn));
+        return as(LambdaUtil.getAliasName(fn));
     }
 
     public QueryColumn as(String alias) {

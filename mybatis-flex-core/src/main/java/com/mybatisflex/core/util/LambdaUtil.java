@@ -43,11 +43,10 @@ public class LambdaUtil {
     }
 
 
-    public static <T> String getAsName(LambdaGetter<T> getter) {
+    public static <T> String getAliasName(LambdaGetter<T> getter) {
         QueryColumn queryColumn = getQueryColumn(getter);
         return queryColumn.getAlias();
     }
-
 
 
     public static <T> QueryColumn getQueryColumn(LambdaGetter<T> getter) {

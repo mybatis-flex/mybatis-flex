@@ -833,6 +833,7 @@ public class TableInfo {
 
         // <resultMap> 标签下的 <id> 标签映射
         for (IdInfo idInfo : primaryKeyList) {
+
             ResultMapping mapping = new ResultMapping.Builder(configuration, idInfo.property,
                     idInfo.column, idInfo.propertyType)
                     .flags(CollectionUtil.newArrayList(ResultFlag.ID))
@@ -840,6 +841,7 @@ public class TableInfo {
                     .typeHandler(idInfo.buildTypeHandler())
                     .build();
             resultMappings.add(mapping);
+
 
             if (ArrayUtil.isNotEmpty(idInfo.alias)) {
                 // add alias mapping
@@ -852,7 +854,17 @@ public class TableInfo {
                             .build();
                     resultMappings.add(aliasMapping);
                 }
+            }
 
+            // add property mapper for sql: select xxx as property ...
+            if (!Objects.equals(idInfo.getColumn(), idInfo.getProperty())) {
+                ResultMapping propertyMapping = new ResultMapping.Builder(configuration, idInfo.property,
+                        idInfo.property, idInfo.propertyType)
+                        .flags(CollectionUtil.newArrayList(ResultFlag.ID))
+                        .jdbcType(idInfo.getJdbcType())
+                        .typeHandler(idInfo.buildTypeHandler())
+                        .build();
+                resultMappings.add(propertyMapping);
             }
         }
 
