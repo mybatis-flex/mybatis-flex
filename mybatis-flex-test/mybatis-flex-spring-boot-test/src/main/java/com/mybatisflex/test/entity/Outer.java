@@ -31,9 +31,9 @@ public class Outer extends IdEntity<Integer> {
     private Inner inner;
 
     @Override
-    @ColumnAlias("test_id")
-    public void setId(Integer id) {
-        super.setId(id);
+    @ColumnAlias("outer_id")
+    public Integer getId() {
+        return super.getId();
     }
 
     public String getName() {
