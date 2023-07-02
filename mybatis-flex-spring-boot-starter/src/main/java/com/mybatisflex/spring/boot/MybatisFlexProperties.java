@@ -61,6 +61,11 @@ public class MybatisFlexProperties {
     private GlobalConfig globalConfig;
 
     /**
+     * MyBatis-Flex-Admin 配置。
+     */
+    private AdminConfig adminConfig;
+
+    /**
      * Location of MyBatis xml config file.
      */
     private String configLocation;
@@ -126,6 +131,14 @@ public class MybatisFlexProperties {
 
     public void setGlobalConfig(GlobalConfig globalConfig) {
         this.globalConfig = globalConfig;
+    }
+
+    public AdminConfig getAdminConfig() {
+        return adminConfig;
+    }
+
+    public void setAdminConfig(AdminConfig adminConfig) {
+        this.adminConfig = adminConfig;
     }
 
     /**
@@ -791,6 +804,54 @@ public class MybatisFlexProperties {
             mapper.from(getDeletedValueOfLogicDelete()).to(target::setDeletedValueOfLogicDelete);
         }
 
+    }
+
+    /**
+     * MyBatis Flex Admin 配置。
+     *
+     * @author 王帅
+     * @since 2023-07-02
+     */
+    public static class AdminConfig {
+
+        /**
+         * 启用服务。
+         */
+        private boolean enable;
+
+        /**
+         * 连接端点。
+         */
+        private String endpoint;
+
+        /**
+         * 秘密密钥。
+         */
+        private String secretKey;
+
+        public boolean isEnable() {
+            return enable;
+        }
+
+        public void setEnable(boolean enable) {
+            this.enable = enable;
+        }
+
+        public String getEndpoint() {
+            return endpoint;
+        }
+
+        public void setEndpoint(String endpoint) {
+            this.endpoint = endpoint;
+        }
+
+        public String getSecretKey() {
+            return secretKey;
+        }
+
+        public void setSecretKey(String secretKey) {
+            this.secretKey = secretKey;
+        }
     }
 
 }
