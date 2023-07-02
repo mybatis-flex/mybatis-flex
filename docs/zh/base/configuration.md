@@ -145,7 +145,7 @@ TypeHandler 扫描路径，如果配置了该属性，SqlSessionFactoryBean 会�
 
 MyBatis-Flex-Admin 连接端点。
 
-### secretKey
+### secret-key
 
 - 类型：`String`
 - 默认值：`null`
