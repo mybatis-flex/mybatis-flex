@@ -53,7 +53,7 @@ XML 中调用的时候不用包含包名）。
 - 类型：`Class<?>`
 - 默认值：`null`
 
-该配置请和 [typeAliasesPackage](#typealiasespackage) 一起使用，如果配置了该属性，则仅仅会扫描路径下以该类作为父类的域对象。
+该配置请和 [typeAliasesPackage](#type-aliases-package) 一起使用，如果配置了该属性，则仅仅会扫描路径下以该类作为父类的域对象。
 
 ### type-handlers-package
 
