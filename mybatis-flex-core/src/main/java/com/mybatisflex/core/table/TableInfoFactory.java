@@ -33,10 +33,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.apache.ibatis.util.MapUtil;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
@@ -283,11 +280,27 @@ public class TableInfoFactory {
             Id id = field.getAnnotation(Id.class);
             ColumnInfo columnInfo;
             if (id != null) {
-                columnInfo = new IdInfo(columnName, field.getName(), fieldType, id);
+                columnInfo = new IdInfo(id);
                 idInfos.add((IdInfo) columnInfo);
             } else {
                 columnInfo = new ColumnInfo();
                 columnInfoList.add(columnInfo);
+            }
+
+            // 优先使用属性上的别名
+            As asType = field.getAnnotation(As.class);
+
+            // 属性上没有别名，查找 getter 方法上有没有别名
+            if (asType != null) {
+                String setterMethodName = "set" + StringUtil.firstCharToUpperCase(field.getName());
+                Method setterMethod = ClassUtil.getFirstMethod(entityClass, m -> m.getName().equals(setterMethodName));
+                if (setterMethod != null) {
+                    asType = setterMethod.getAnnotation(As.class);
+                }
+            }
+
+            if (asType != null) {
+                columnInfo.setAlias(asType.value());
             }
 
             columnInfo.setColumn(columnName);

@@ -21,6 +21,7 @@ import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.test.model.Account;
 import com.mybatisflex.test.model.AccountVO;
+import com.mybatisflex.test.model.AccountVO2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Date;
 import java.util.List;
 
+import static com.mybatisflex.core.query.QueryMethods.column;
+import static com.mybatisflex.core.query.QueryMethods.concat;
 import static com.mybatisflex.test.model.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.model.table.RoleTableDef.ROLE;
 import static com.mybatisflex.test.model.table.UserRoleTableDef.USER_ROLE;
+import static com.mybatisflex.test.model.table.UserTableDef.USER;
 
 /**
  * @author 王帅
@@ -109,6 +113,21 @@ class AccountMapperTest {
     void testDeleteAll() {
         Assertions.assertThrows(Exception.class, () ->
                 accountMapper.deleteByQuery(QueryWrapper.create()));
+    }
+
+    @Test
+    void testAs() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(ACCOUNT.ID.as("account_id"),
+                        ACCOUNT.AGE,
+                        concat(column("'account name: '"), ACCOUNT.USER_NAME).as("user_name"),
+                        USER.USER_ID,
+                        concat(column("'user name: '"), USER.USER_NAME).as("1_account_name"))
+                .from(ACCOUNT.as("a"), USER.as("u"))
+                .where(ACCOUNT.ID.eq(1))
+                .limit(1);
+        AccountVO2 account = accountMapper.selectOneByQueryAs(queryWrapper, AccountVO2.class);
+        System.out.println(account);
     }
 
 }

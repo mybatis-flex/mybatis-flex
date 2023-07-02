@@ -17,10 +17,10 @@
 package com.mybatisflex.processor.builder;
 
 import com.mybatisflex.annotation.Table;
+import com.mybatisflex.processor.entity.ColumnInfo;
 import com.mybatisflex.processor.util.StrUtil;
 
 import java.util.List;
-import java.util.Map;
 import java.util.StringJoiner;
 
 /**
@@ -56,7 +56,7 @@ public class ContentBuilder {
     public static String buildTableDef(Table table, String entityClass, String entityClassName, boolean allInTables,
                                        String tableDefPackage, String tableDefClassName,
                                        String tablesNameStyle, String tablesDefSuffix,
-                                       Map<String, String> propertyAndColumns, List<String> defaultColumns) {
+                                       List<ColumnInfo> columnInfoList, List<String> defaultColumns) {
         StringBuilder content = new StringBuilder("package ");
         content.append(tableDefPackage).append(";\n\n");
         content.append("import com.mybatisflex.core.query.QueryColumn;\n");
@@ -73,15 +73,21 @@ public class ContentBuilder {
             content.append("    public static final ").append(tableDefClassName).append(' ').append(StrUtil.buildFieldName(entityClassName.concat(tablesDefSuffix != null ? tablesDefSuffix.trim() : ""), tablesNameStyle))
                     .append(" = new ").append(tableDefClassName).append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n\n");
         }
-        propertyAndColumns.forEach((property, column) -> content.append("    public QueryColumn ")
-                .append(StrUtil.buildFieldName(property, tablesNameStyle))
-                .append(" = new QueryColumn(this, \"")
-                .append(column).append("\");\n"));
+        columnInfoList.forEach((columnInfo) -> {
+            content.append("    public QueryColumn ")
+                    .append(StrUtil.buildFieldName(columnInfo.getProperty(), tablesNameStyle))
+                    .append(" = new QueryColumn(this, \"")
+                    .append(columnInfo.getColumn()).append("\"");
+            if (columnInfo.getAlias() != null) {
+                content.append(", \"").append(columnInfo.getAlias()).append("\"");
+            }
+            content.append(");\n");
+        });
         content.append("    public QueryColumn ").append(StrUtil.buildFieldName("allColumns", tablesNameStyle)).append(" = new QueryColumn(this, \"*\");\n");
         StringJoiner defaultColumnJoiner = new StringJoiner(", ");
-        propertyAndColumns.forEach((property, column) -> {
-            if (defaultColumns.contains(column)) {
-                defaultColumnJoiner.add(StrUtil.buildFieldName(property, tablesNameStyle));
+        columnInfoList.forEach((columnInfo) -> {
+            if (defaultColumns.contains(columnInfo.getColumn())) {
+                defaultColumnJoiner.add(StrUtil.buildFieldName(columnInfo.getProperty(), tablesNameStyle));
             }
         });
         content.append("    public QueryColumn[] ").append(StrUtil.buildFieldName("defaultColumns", tablesNameStyle)).append(" = new QueryColumn[]{").append(defaultColumnJoiner).append("};\n\n");

@@ -16,11 +16,13 @@
 
 package com.mybatisflex.processor;
 
+import com.mybatisflex.annotation.As;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.processor.builder.ContentBuilder;
 import com.mybatisflex.processor.config.ConfigurationKey;
 import com.mybatisflex.processor.config.MybatisFlexConfig;
+import com.mybatisflex.processor.entity.ColumnInfo;
 import com.mybatisflex.processor.util.FileUtil;
 import com.mybatisflex.processor.util.StrUtil;
 
@@ -140,14 +142,23 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 assert table != null;
 
                 // 类属性
-                Map<String, String> propertyAndColumns = new LinkedHashMap<>();
+                List<ColumnInfo> columnInfoList = new LinkedList<>();
                 // 默认查询的属性，非 isLarge 字段
                 List<String> defaultColumns = new ArrayList<>();
+                // 需要查找 setter 方法 @As 注解的属性
+                List<String> setterProperty = new LinkedList<>();
 
                 TypeElement classElement = (TypeElement) entityClassElement;
                 do {
                     // 获取类属性和默认查询字段
-                    fillPropertyAndColumns(propertyAndColumns, defaultColumns, classElement, table.camelToUnderline());
+                    fillColumnInfoList(columnInfoList, defaultColumns, setterProperty, classElement, table.camelToUnderline());
+                    classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
+                } while (classElement != null);
+
+                classElement = (TypeElement) entityClassElement;
+                do {
+                    // 获取 setter 方法上的 @As 注解
+                    fillColumnAlias(setterProperty, columnInfoList, classElement);
                     classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
                 } while (classElement != null);
 
@@ -166,7 +177,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 // 生成 TableDef 文件
                 String tableDefPackage = StrUtil.buildTableDefPackage(entityClass);
                 String tableDefClassName = entityClassName.concat("TableDef");
-                String tableDefContent = ContentBuilder.buildTableDef(table, entityClass, entityClassName, allInTables, tableDefPackage, tableDefClassName, tablesNameStyle, tablesDefSuffix, propertyAndColumns, defaultColumns);
+                String tableDefContent = ContentBuilder.buildTableDef(table, entityClass, entityClassName, allInTables, tableDefPackage, tableDefClassName, tablesNameStyle, tablesDefSuffix, columnInfoList, defaultColumns);
                 processGenClass(genPath, tableDefPackage, tableDefClassName, tableDefContent);
 
                 if (allInTables) {
@@ -209,7 +220,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
 
-    private void fillPropertyAndColumns(Map<String, String> propertyAndColumns, List<String> defaultColumns, TypeElement classElement, boolean camelToUnderline) {
+    private void fillColumnInfoList(List<ColumnInfo> columnInfoList, List<String> defaultColumns, List<String> setterProperty, TypeElement classElement, boolean camelToUnderline) {
         for (Element fieldElement : classElement.getEnclosedElements()) {
 
             // all fields
@@ -260,22 +271,68 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     continue;
                 }
 
+                String property = fieldElement.toString();
 
                 String columnName;
                 if (column != null && !StrUtil.isBlank(column.value())) {
                     columnName = column.value();
                 } else {
                     if (camelToUnderline) {
-                        columnName = StrUtil.camelToUnderline(fieldElement.toString());
+                        columnName = StrUtil.camelToUnderline(property);
                     } else {
-                        columnName = fieldElement.toString();
+                        columnName = property;
                     }
                 }
 
-                propertyAndColumns.put(fieldElement.toString(), columnName);
+                As asType = fieldElement.getAnnotation(As.class);
+
+                String alias = null;
+
+                if (asType != null) {
+                    alias = asType.value();
+                } else {
+                    // 属性上没有 @As 注解，查找 setter 方法上的注解。
+                    setterProperty.add(property);
+                }
+
+                ColumnInfo columnInfo = new ColumnInfo();
+                columnInfo.setProperty(property);
+                columnInfo.setColumn(columnName);
+                columnInfo.setAlias(alias);
+
+                columnInfoList.add(columnInfo);
 
                 if (column == null || (!column.isLarge() && !column.isLogicDelete())) {
                     defaultColumns.add(columnName);
+                }
+            }
+
+        }
+
+    }
+
+    private void fillColumnAlias(List<String> setterProperty, List<ColumnInfo> columnInfoList, TypeElement classElement) {
+        if (!setterProperty.isEmpty()) {
+            for (Element methodElement : classElement.getEnclosedElements()) {
+                // 遍历查找所有的方法
+                if (ElementKind.METHOD == methodElement.getKind()) {
+                    String methodName = methodElement.toString();
+                    for (String property : setterProperty) {
+                        // 查找到 property 对应到的 setter 方法
+                        if (methodName.contains("set".concat(StrUtil.firstCharToUpperCase(property)))) {
+                            // 获取 setter 方法上的 @As 注解
+                            As asType = methodElement.getAnnotation(As.class);
+                            // setter 方法上有 @As 注解，设置别名。
+                            if (asType != null) {
+                                for (ColumnInfo columnInfo : columnInfoList) {
+                                    if (columnInfo.getProperty().equals(property)) {
+                                        columnInfo.setAlias(asType.value());
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
                 }
             }
         }

@@ -184,7 +184,7 @@ public class QueryMethods {
     }
 
     public static QueryColumn column(String table, String column) {
-        return new QueryColumn(null, table, column);
+        return new QueryColumn(table, column);
     }
 
     public static QueryColumn column(String schema, String table, String column) {

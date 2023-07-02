@@ -228,4 +228,30 @@ VALUES (4, 4);
 INSERT INTO `tb_user_role`
 VALUES (5, 1);
 
+-- ----------------------------
+-- Table structure for tb_outer
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_outer`;
+CREATE TABLE `tb_outer`
+(
+    `id`   int                                NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for tb_inner
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_inner`;
+CREATE TABLE `tb_inner`
+(
+    `id`   int                                NOT NULL AUTO_INCREMENT,
+    `type` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  ROW_FORMAT = Dynamic;
+
 SET FOREIGN_KEY_CHECKS = 1;
