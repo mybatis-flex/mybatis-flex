@@ -111,4 +111,15 @@ public class StrUtil {
         }
     }
 
+
+    public static boolean isGetterMethod(String methodName, String property) {
+        if (methodName.startsWith("get") && methodName.length() > 3) {
+            return firstCharToUpperCase(property).equals(methodName.substring(3));
+        } else if (methodName.startsWith("is") && methodName.length() > 2) {
+            return firstCharToUpperCase(property).equals(methodName.substring(2));
+        } else {
+            return false;
+        }
+    }
+
 }

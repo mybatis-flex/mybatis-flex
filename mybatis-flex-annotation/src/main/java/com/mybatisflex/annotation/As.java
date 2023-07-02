@@ -34,6 +34,6 @@ public @interface As {
      *
      * @return 别名
      */
-    String value();
+    String[] value();
 
 }

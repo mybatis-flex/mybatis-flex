@@ -145,20 +145,15 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 List<ColumnInfo> columnInfoList = new LinkedList<>();
                 // 默认查询的属性，非 isLarge 字段
                 List<String> defaultColumns = new ArrayList<>();
-                // 需要查找 setter 方法 @As 注解的属性
-                List<String> setterProperty = new LinkedList<>();
-
                 TypeElement classElement = (TypeElement) entityClassElement;
                 do {
                     // 获取类属性和默认查询字段
-                    fillColumnInfoList(columnInfoList, defaultColumns, setterProperty, classElement, table.camelToUnderline());
+                    fillColumnInfoList(columnInfoList, defaultColumns, classElement, table.camelToUnderline());
                     classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
                 } while (classElement != null);
 
                 classElement = (TypeElement) entityClassElement;
                 do {
-                    // 获取 setter 方法上的 @As 注解
-                    fillColumnAlias(setterProperty, columnInfoList, classElement);
                     classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
                 } while (classElement != null);
 
@@ -220,8 +215,11 @@ public class MybatisFlexProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
 
-    private void fillColumnInfoList(List<ColumnInfo> columnInfoList, List<String> defaultColumns, List<String> setterProperty, TypeElement classElement, boolean camelToUnderline) {
-        for (Element fieldElement : classElement.getEnclosedElements()) {
+    private void fillColumnInfoList(List<ColumnInfo> columnInfoList, List<String> defaultColumns, TypeElement classElement, boolean camelToUnderline) {
+
+        List<? extends Element> enclosedElements = classElement.getEnclosedElements();
+
+        for (Element fieldElement : enclosedElements) {
 
             // all fields
             if (ElementKind.FIELD == fieldElement.getKind()) {
@@ -284,15 +282,13 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     }
                 }
 
-                As asType = fieldElement.getAnnotation(As.class);
 
-                String alias = null;
-
-                if (asType != null) {
-                    alias = asType.value();
-                } else {
-                    // 属性上没有 @As 注解，查找 setter 方法上的注解。
-                    setterProperty.add(property);
+                String[] alias = getColumnAliasByGetterMethod(enclosedElements, property);
+                if (alias == null || alias.length == 0) {
+                    As asType = fieldElement.getAnnotation(As.class);
+                    if (asType != null) {
+                        alias = asType.value();
+                    }
                 }
 
                 ColumnInfo columnInfo = new ColumnInfo();
@@ -306,37 +302,27 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     defaultColumns.add(columnName);
                 }
             }
-
         }
-
     }
 
-    private void fillColumnAlias(List<String> setterProperty, List<ColumnInfo> columnInfoList, TypeElement classElement) {
-        if (!setterProperty.isEmpty()) {
-            for (Element methodElement : classElement.getEnclosedElements()) {
-                // 遍历查找所有的方法
-                if (ElementKind.METHOD == methodElement.getKind()) {
-                    String methodName = methodElement.toString();
-                    for (String property : setterProperty) {
-                        // 查找到 property 对应到的 setter 方法
-                        if (methodName.contains("set".concat(StrUtil.firstCharToUpperCase(property)))) {
-                            // 获取 setter 方法上的 @As 注解
-                            As asType = methodElement.getAnnotation(As.class);
-                            // setter 方法上有 @As 注解，设置别名。
-                            if (asType != null) {
-                                for (ColumnInfo columnInfo : columnInfoList) {
-                                    if (columnInfo.getProperty().equals(property)) {
-                                        columnInfo.setAlias(asType.value());
-                                    }
-                                }
-                            }
-                            break;
-                        }
+
+    private String[] getColumnAliasByGetterMethod(List<? extends Element> enclosedElements, String property) {
+        for (Element enclosedElement : enclosedElements) {
+            if (ElementKind.METHOD == enclosedElement.getKind()) {
+                String methodName = enclosedElement.toString();
+                if (StrUtil.isGetterMethod(methodName, property)) {
+                    As asType = enclosedElement.getAnnotation(As.class);
+                    if (asType != null) {
+                        return asType.value();
                     }
+                    break;
                 }
             }
         }
+        return null;
     }
+
+
 
     private void processGenClass(String genBasePath, String genPackageName, String className, String genContent) {
         Writer writer = null;

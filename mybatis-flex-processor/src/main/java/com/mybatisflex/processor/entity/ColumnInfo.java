@@ -37,7 +37,7 @@ public class ColumnInfo {
     /**
      * 别名。
      */
-    private String alias;
+    private String[] alias;
 
     public String getProperty() {
         return property;
@@ -55,11 +55,11 @@ public class ColumnInfo {
         this.column = column;
     }
 
-    public String getAlias() {
+    public String[] getAlias() {
         return alias;
     }
 
-    public void setAlias(String alias) {
+    public void setAlias(String[] alias) {
         this.alias = alias;
     }
 

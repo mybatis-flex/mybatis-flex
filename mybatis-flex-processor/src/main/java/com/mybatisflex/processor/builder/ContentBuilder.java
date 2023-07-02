@@ -78,8 +78,8 @@ public class ContentBuilder {
                     .append(StrUtil.buildFieldName(columnInfo.getProperty(), tablesNameStyle))
                     .append(" = new QueryColumn(this, \"")
                     .append(columnInfo.getColumn()).append("\"");
-            if (columnInfo.getAlias() != null) {
-                content.append(", \"").append(columnInfo.getAlias()).append("\"");
+            if (columnInfo.getAlias() != null && columnInfo.getAlias().length > 0) {
+                content.append(", \"").append(columnInfo.getAlias()[0]).append("\"");
             }
             content.append(");\n");
         });

@@ -277,4 +277,16 @@ public class ClassUtil {
         return (Class<T>) proxyClass.getInterfaces()[0];
     }
 
+
+    public static boolean isGetterMethod(Method method, String property) {
+        String methodName = method.getName();
+        if (methodName.startsWith("get") && methodName.length() > 3) {
+            return StringUtil.firstCharToUpperCase(property).equals(methodName.substring(3));
+        } else if (methodName.startsWith("is") && methodName.length() > 2) {
+            return StringUtil.firstCharToUpperCase(property).equals(methodName.substring(2));
+        } else {
+            return false;
+        }
+    }
+
 }

@@ -287,16 +287,15 @@ public class TableInfoFactory {
                 columnInfoList.add(columnInfo);
             }
 
-            // 优先使用属性上的别名
-            As asType = field.getAnnotation(As.class);
-
+            As asType = null;
             // 属性上没有别名，查找 getter 方法上有没有别名
-            if (asType != null) {
-                String setterMethodName = "set" + StringUtil.firstCharToUpperCase(field.getName());
-                Method setterMethod = ClassUtil.getFirstMethod(entityClass, m -> m.getName().equals(setterMethodName));
-                if (setterMethod != null) {
-                    asType = setterMethod.getAnnotation(As.class);
-                }
+            Method getterMethod = ClassUtil.getFirstMethod(entityClass, m -> ClassUtil.isGetterMethod(m, field.getName()));
+            if (getterMethod != null) {
+                asType = getterMethod.getAnnotation(As.class);
+            }
+
+            if (asType == null) {
+                asType = field.getAnnotation(As.class);
             }
 
             if (asType != null) {
