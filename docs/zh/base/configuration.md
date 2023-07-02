@@ -128,3 +128,26 @@ TypeHandler 扫描路径，如果配置了该属性，SqlSessionFactoryBean 会�
 - 默认值：`1`
 
 逻辑删除数据删除标记值，
+
+## admin-config
+
+### enable
+
+- 类型：`boolean`
+- 默认值：`false`
+
+是否启用 MyBatis-Flex-Admin 连接。
+
+### endpoint
+
+- 类型：`String`
+- 默认值：`null`
+
+MyBatis-Flex-Admin 连接端点。
+
+### secretKey
+
+- 类型：`String`
+- 默认值：`null`
+
+MyBatis-Flex-Admin 连接密钥。
