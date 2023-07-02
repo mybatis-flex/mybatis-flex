@@ -91,6 +91,9 @@ public class TableInfo {
 
     //column 和 java 属性的称的关系映射
     private final Map<String, ColumnInfo> columnInfoMapping = new HashMap<>();
+    private final Map<String, QueryColumn> columnQueryMapping = new HashMap<>();
+
+    //property:column
     private final Map<String, String> propertyColumnMapping = new HashMap<>();
 
     private List<InsertListener> onInsertListeners;
@@ -336,6 +339,9 @@ public class TableInfo {
             columns[i] = columnInfo.getColumn();
             columnInfoMapping.put(columnInfo.column, columnInfo);
             propertyColumnMapping.put(columnInfo.property, columnInfo.column);
+
+            String[] alias = columnInfo.getAlias();
+            columnQueryMapping.put(columnInfo.column, new QueryColumn(schema, tableName, columnInfo.column, alias != null && alias.length > 0 ? alias[0] : null));
         }
     }
 
@@ -359,6 +365,9 @@ public class TableInfo {
 
             columnInfoMapping.put(idInfo.column, idInfo);
             propertyColumnMapping.put(idInfo.property, idInfo.column);
+
+            String[] alias = idInfo.getAlias();
+            columnQueryMapping.put(idInfo.column, new QueryColumn(schema, tableName, idInfo.column, alias != null && alias.length > 0 ? alias[0] : null));
         }
         this.insertPrimaryKeys = insertIdFields.toArray(new String[0]);
     }
@@ -773,7 +782,7 @@ public class TableInfo {
 
     public List<QueryColumn> getDefaultQueryColumn() {
         return Arrays.stream(defaultColumns)
-                .map(name -> new QueryColumn(schema, getTableName(), name))
+                .map(name -> columnQueryMapping.get(name))
                 .collect(Collectors.toList());
     }
 
@@ -1126,6 +1135,7 @@ public class TableInfo {
     }
 
     public QueryColumn getQueryColumnByProperty(String property) {
-        return new QueryColumn(schema, tableName, propertyColumnMapping.get(property));
+        String column = getColumnByProperty(property);
+        return columnQueryMapping.get(column);
     }
 }

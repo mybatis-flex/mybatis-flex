@@ -130,4 +130,19 @@ class AccountMapperTest {
         System.out.println(account);
     }
 
+    @Test
+    void testAs1() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(ACCOUNT.ID.as(AccountVO2::getId),
+                        ACCOUNT.AGE,
+                        concat(column("'account name: '"), ACCOUNT.USER_NAME).as(AccountVO2::getUserName),
+                        USER.USER_ID,
+                        concat(column("'user name: '"), USER.USER_NAME).as("1_account_name"))
+                .from(ACCOUNT.as("a"), USER.as("u"))
+                .where(ACCOUNT.ID.eq(1))
+                .limit(1);
+        AccountVO2 account = accountMapper.selectOneByQueryAs(queryWrapper, AccountVO2.class);
+        System.out.println(account);
+    }
+
 }

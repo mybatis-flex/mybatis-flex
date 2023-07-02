@@ -53,9 +53,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     }
 
     public QueryColumn(String schema, String tableName, String name) {
+        this(schema, tableName, name, null);
+    }
+
+    public QueryColumn(String schema, String tableName, String name, String alias) {
         SqlUtil.keepColumnSafely(name);
         this.table = new QueryTable(schema, tableName);
         this.name = name;
+        this.alias = alias;
     }
 
     public QueryColumn(QueryTable queryTable, String name) {
@@ -65,14 +70,15 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     }
 
     public QueryColumn(TableDef tableDef, String name) {
-        SqlUtil.keepColumnSafely(name);
-        this.returnCopyByAsMethod = true;
-        this.table = new QueryTable(tableDef);
-        this.name = name;
+        this(tableDef, name, null);
     }
 
     public QueryColumn(TableDef tableDef, String name, String alias) {
-        this(tableDef, name);
+        SqlUtil.keepColumnSafely(name);
+
+        this.returnCopyByAsMethod = true;
+        this.table = new QueryTable(tableDef);
+        this.name = name;
         this.alias = alias;
     }
 
@@ -107,7 +113,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
 
     public QueryColumn as(String alias) {
         SqlUtil.keepColumnSafely(alias);
-        if (returnCopyByAsMethod) {
+        if (returnCopyByAsMethod || StringUtil.isNotBlank(this.alias)) {
             QueryColumn newColumn = new QueryColumn();
             newColumn.table = this.table;
             newColumn.name = this.name;

@@ -25,14 +25,16 @@ import com.mybatisflex.annotation.As;
 public class AccountVO2 extends IdEntity<Long> {
 
     private Integer age;
+
     @As("account_name")
     private String userName;
     private UserVO4 user;
 
+
     @Override
     @As("account_id")
-    public void setId(Long id) {
-        super.setId(id);
+    public Long getId() {
+        return super.getId();
     }
 
     public Integer getAge() {
