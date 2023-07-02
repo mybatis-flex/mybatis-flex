@@ -5,7 +5,7 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>${revision}</version>
+        <version>1.4.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -43,29 +43,15 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <annotationProcessorPaths>
-                        <!--                        <path>-->
-                        <!--                            <groupId>org.projectlombok</groupId>-->
-                        <!--                            <artifactId>lombok</artifactId>-->
-                        <!--                            <version>${org.projectlombok.version}</version>-->
-                        <!--                        </path>-->
-                        <!--                        <path>-->
-                        <!--                            <groupId>org.projectlombok</groupId>-->
-                        <!--                            <artifactId>lombok-mapstruct-binding</artifactId>-->
-                        <!--                            <version>${lombok-mapstruct-binding.version}</version>-->
-                        <!--                        </path>-->
-                        <!--                        <path>-->
-                        <!--                            <groupId>org.mapstruct</groupId>-->
-                        <!--                            <artifactId>mapstruct-processor</artifactId>-->
-                        <!--                            <version>${org.mapstruct.version}</version>-->
-                        <!--                        </path>-->
                         <path>
                             <groupId>com.mybatis-flex</groupId>
                             <artifactId>mybatis-flex-processor</artifactId>
-                            <version>${revision}</version>
+                            <version>${mybatis-flex.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>

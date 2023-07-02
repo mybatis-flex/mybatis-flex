@@ -7,7 +7,7 @@
     <groupId>com.mybatis-flex</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>${revision}</version>
+    <version>1.4.4</version>
 
     <name>mybatis-flex</name>
     <url>https://mybatis-flex.com</url>
@@ -51,9 +51,10 @@
     </modules>
 
     <properties>
-        <revision>1.4.4</revision>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+
+        <mybatis-flex.version>1.4.4</mybatis-flex.version>
 
         <mybatis.version>3.5.13</mybatis.version>
         <mybatis-spring.version>2.1.0</mybatis-spring.version>
@@ -283,32 +284,6 @@
                                 <id>sign-artifacts</id>
                                 <goals>
                                     <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>flatten-maven-plugin</artifactId>
-                        <version>${maven-flatten.version}</version>
-                        <configuration>
-                            <updatePomFile>true</updatePomFile>
-                            <flattenMode>oss</flattenMode>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>flatten</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>flatten</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>flatten.clean</id>
-                                <phase>clean</phase>
-                                <goals>
-                                    <goal>clean</goal>
                                 </goals>
                             </execution>
                         </executions>

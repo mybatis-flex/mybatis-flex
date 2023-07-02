@@ -22,10 +22,11 @@ MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 | processor.allInTables           | 是否所有的类都生成在 Tables 类里 | true/false                                                | false              |
 | processor.tablesPackage         | Tables 类名              | 合法的包名                                               | ${entityPackage}.table               |
 | processor.tablesClassName       | Tables 类名              | 合法的类名                                               | Tables                               |
-| processor.baseMapperClass       | 自定义 Mapper 的父类     | 全路径类名                                               | com.mybatisflex.core.BaseMapper      |
-| processor.mappersPackage        | 自定义 Mapper 生成的包名 | 合法的包名                                               | ${entityPackage}.mapper              |
-| processor.tablesNameStyle       | 生成辅助类的字段风格     | upperCase, lowerCase<br />upperCamelCase, lowerCamelCase | upperCase                            |
-| processor.tablesDefSuffix       | 生成的表对应的变量后缀    | string                                                  | 空字符串                            |
+| processor.baseMapperClass       | 自定义 Mapper 的父类      | 全路径类名                                               | com.mybatisflex.core.BaseMapper      |
+| processor.mappersPackage        | 自定义 Mapper 生成的包名  | 合法的包名                                               | ${entityPackage}.mapper              |
+| processor.tableDef.propertiesNameStyle   | 生成辅助类的字段风格       | upperCase, lowerCase<br />upperCamelCase, lowerCamelCase | upperCase                            |
+| processor.tableDef.instanceSuffix        | 生成的表对应的变量后缀     | string                                                  | 空字符串                            |
+| processor.tableDef.classSuffix        | 生成的表对应的变量后缀     | string                                                  | 空字符串                            |
 | processor.entity.ignoreSuffixes | 过滤 Entity 后缀         | string                                                   | -                                    |
 
 

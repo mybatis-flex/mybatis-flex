@@ -5,13 +5,18 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>${revision}</version>
+        <version>1.4.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-flex-solon-plugin</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -23,7 +28,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-core</artifactId>
-            <version>${revision}</version>
+            <version>${mybatis-flex.version}</version>
         </dependency>
     </dependencies>
 

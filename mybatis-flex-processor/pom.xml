@@ -5,7 +5,7 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>${revision}</version>
+        <version>1.4.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,19 +13,19 @@
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.mybatis-flex</groupId>
-            <artifactId>mybatis-flex-annotation</artifactId>
-            <version>${revision}</version>
-        </dependency>
-    </dependencies>
-
-
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-annotation</artifactId>
+            <version>${mybatis-flex.version}</version>
+        </dependency>
+    </dependencies>
+
 
     <build>
         <resources>
