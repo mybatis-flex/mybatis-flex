@@ -154,11 +154,10 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 List<String> defaultColumns = new ArrayList<>();
 
                 TypeElement classElement = (TypeElement) entityClassElement;
-                List<? extends Element> enclosedElements = classElement.getEnclosedElements();
 
                 do {
                     // 获取类属性和默认查询字段
-                    fillColumnInfoList(columnInfoList, defaultColumns, enclosedElements, classElement, table.camelToUnderline());
+                    fillColumnInfoList(columnInfoList, defaultColumns, (TypeElement) entityClassElement, classElement, table.camelToUnderline());
                     classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
                 } while (classElement != null);
 
@@ -221,7 +220,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
 
-    private void fillColumnInfoList(List<ColumnInfo> columnInfoList, List<String> defaultColumns, List<? extends Element> enclosedElements, TypeElement classElement, boolean camelToUnderline) {
+    private void fillColumnInfoList(List<ColumnInfo> columnInfoList, List<String> defaultColumns, TypeElement baseElement, TypeElement classElement, boolean camelToUnderline) {
         for (Element fieldElement : classElement.getEnclosedElements()) {
 
             // all fields
@@ -285,8 +284,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     }
                 }
 
-
-                String[] alias = getColumnAliasByGetterMethod(enclosedElements, property);
+                String[] alias = getColumnAliasByGetterMethod(baseElement, property);
                 if (alias == null || alias.length == 0) {
                     ColumnAlias columnAlias = fieldElement.getAnnotation(ColumnAlias.class);
                     if (columnAlias != null) {
@@ -309,8 +307,8 @@ public class MybatisFlexProcessor extends AbstractProcessor {
     }
 
 
-    private String[] getColumnAliasByGetterMethod(List<? extends Element> enclosedElements, String property) {
-        for (Element enclosedElement : enclosedElements) {
+    private String[] getColumnAliasByGetterMethod(TypeElement baseElement, String property) {
+        for (Element enclosedElement : baseElement.getEnclosedElements()) {
             if (ElementKind.METHOD == enclosedElement.getKind()) {
                 String methodName = enclosedElement.toString();
                 if (StrUtil.isGetterMethod(methodName, property)) {
