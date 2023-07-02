@@ -23,24 +23,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
+/**
+ * Http 工具类。
+ */
 public class HttpUtil {
 
     private HttpUtil() {}
 
     private static final String POST = "POST";
-
 
     private static String CHARSET = "UTF-8";
     private static int connectTimeout = 15000;    // 连接超时，单位毫秒
@@ -49,6 +49,26 @@ public class HttpUtil {
     private static final SSLSocketFactory sslSocketFactory = initSSLSocketFactory();
 
     private static final TrustAnyHostnameVerifier trustAnyHostnameVerifier = new TrustAnyHostnameVerifier();
+
+    public static String getHostIp() {
+        try {
+            for (Enumeration<NetworkInterface> net = NetworkInterface.getNetworkInterfaces(); net.hasMoreElements(); ) {
+                NetworkInterface networkInterface = net.nextElement();
+                if (networkInterface.isLoopback() || networkInterface.isVirtual() || !networkInterface.isUp()) {
+                    continue;
+                }
+                for (Enumeration<InetAddress> addrs = networkInterface.getInetAddresses(); addrs.hasMoreElements(); ) {
+                    InetAddress addr = addrs.nextElement();
+                    if (addr instanceof Inet4Address) {
+                        return addr.getHostAddress();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        return "127.0.0.1";
+    }
 
     /**
      * https 域名校验
