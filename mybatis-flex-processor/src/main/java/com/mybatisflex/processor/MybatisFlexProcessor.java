@@ -16,7 +16,7 @@
 
 package com.mybatisflex.processor;
 
-import com.mybatisflex.annotation.As;
+import com.mybatisflex.annotation.ColumnAlias;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.processor.builder.ContentBuilder;
@@ -293,9 +293,9 @@ public class MybatisFlexProcessor extends AbstractProcessor {
 
                 String[] alias = getColumnAliasByGetterMethod(enclosedElements, property);
                 if (alias == null || alias.length == 0) {
-                    As asType = fieldElement.getAnnotation(As.class);
-                    if (asType != null) {
-                        alias = asType.value();
+                    ColumnAlias columnAlias = fieldElement.getAnnotation(ColumnAlias.class);
+                    if (columnAlias != null) {
+                        alias = columnAlias.value();
                     }
                 }
 
@@ -319,7 +319,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
             if (ElementKind.METHOD == enclosedElement.getKind()) {
                 String methodName = enclosedElement.toString();
                 if (StrUtil.isGetterMethod(methodName, property)) {
-                    As asType = enclosedElement.getAnnotation(As.class);
+                    ColumnAlias asType = enclosedElement.getAnnotation(ColumnAlias.class);
                     if (asType != null) {
                         return asType.value();
                     }

@@ -22,7 +22,7 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
     @ColumnMask(Masks.CHINESE_NAME)
     private String userName;
 
-    @As("my_age")
+    @ColumnAlias("my_age")
     private int age;
 
     @NotBlank

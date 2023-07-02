@@ -16,7 +16,7 @@
 
 package com.mybatisflex.test.model;
 
-import com.mybatisflex.annotation.As;
+import com.mybatisflex.annotation.ColumnAlias;
 
 /**
  * @author 王帅
@@ -26,13 +26,15 @@ public class AccountVO2 extends IdEntity<Long> {
 
     private Integer age;
 
-    @As("account_name")
+    @ColumnAlias("account_name")
     private String userName;
-    private UserVO4 user;
+
+
+    private User user;
 
 
     @Override
-    @As("account_id")
+    @ColumnAlias("account_id")
     public Long getId() {
         return super.getId();
     }
@@ -53,11 +55,11 @@ public class AccountVO2 extends IdEntity<Long> {
         this.userName = userName;
     }
 
-    public UserVO4 getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(UserVO4 user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

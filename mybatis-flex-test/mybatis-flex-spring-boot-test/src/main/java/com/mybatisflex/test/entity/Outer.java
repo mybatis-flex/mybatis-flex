@@ -16,7 +16,7 @@
 
 package com.mybatisflex.test.entity;
 
-import com.mybatisflex.annotation.As;
+import com.mybatisflex.annotation.ColumnAlias;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.test.model.IdEntity;
 
@@ -31,7 +31,7 @@ public class Outer extends IdEntity<Integer> {
     private Inner inner;
 
     @Override
-    @As("test_id")
+    @ColumnAlias("test_id")
     public void setId(Integer id) {
         super.setId(id);
     }

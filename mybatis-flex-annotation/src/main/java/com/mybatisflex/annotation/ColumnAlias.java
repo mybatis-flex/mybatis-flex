@@ -27,10 +27,10 @@ import java.lang.annotation.*;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
-public @interface As {
+public @interface ColumnAlias {
 
     /**
-     * 列的别名。
+     * 列的别名，在查询的时候，查询 sql 会自动添加 as ...
      *
      * @return 别名
      */

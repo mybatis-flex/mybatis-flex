@@ -788,19 +788,20 @@ public class TableInfo {
 
 
     public ResultMap buildResultMap(Configuration configuration) {
-        return doBuildResultMap(configuration, new HashSet<>());
+        return doBuildResultMap(configuration, new HashSet<>(), new HashSet<>(), false);
     }
 
-    private ResultMap doBuildResultMap(Configuration configuration, Set<String> context) {
+    private ResultMap doBuildResultMap(Configuration configuration, Set<String> resultMapIds, Set<String> existMappingColumns, boolean isNested) {
+
+        String resultMapId = isNested ? "nested:" + entityClass.getName() : entityClass.getName();
 
         //是否有循环引用
-        boolean withCircularReference = context.contains(entityClass.getName());
+        boolean withCircularReference = resultMapIds.contains(resultMapId);
         if (withCircularReference) {
             return null;
         }
 
-        String resultMapId = entityClass.getName();
-        context.add(resultMapId);
+        resultMapIds.add(resultMapId);
 
         if (configuration.hasResultMap(resultMapId)) {
             return configuration.getResultMap(resultMapId);
@@ -810,70 +811,88 @@ public class TableInfo {
         // <resultMap> 标签下的 <result> 标签映射
         for (ColumnInfo columnInfo : columnInfoList) {
             // add column mapping
-            ResultMapping mapping = new ResultMapping.Builder(configuration, columnInfo.property,
-                    columnInfo.column, columnInfo.propertyType)
+            ResultMapping mapping = new ResultMapping.Builder(configuration
+                    , columnInfo.property
+                    , isNested && existMappingColumns.contains(columnInfo.column) ? tableName + "$" + columnInfo.column : columnInfo.column
+                    , columnInfo.propertyType)
                     .jdbcType(columnInfo.getJdbcType())
                     .typeHandler(columnInfo.buildTypeHandler())
                     .build();
+
             resultMappings.add(mapping);
+            existMappingColumns.add(mapping.getColumn());
 
             if (ArrayUtil.isNotEmpty(columnInfo.alias)) {
                 // add alias mapping
                 for (String alias : columnInfo.alias) {
-                    ResultMapping aliasMapping = new ResultMapping.Builder(configuration, columnInfo.property,
-                            alias, columnInfo.propertyType)
+                    ResultMapping aliasMapping = new ResultMapping.Builder(configuration
+                            , columnInfo.property
+                            , isNested && existMappingColumns.contains(alias) ? tableName + "$" + alias : alias
+                            , columnInfo.propertyType)
                             .jdbcType(columnInfo.getJdbcType())
                             .typeHandler(columnInfo.buildTypeHandler())
                             .build();
                     resultMappings.add(aliasMapping);
+                    existMappingColumns.add(aliasMapping.getColumn());
                 }
             }
 
             // add property mapper for sql: select xxx as property ...
             if (!Objects.equals(columnInfo.getColumn(), columnInfo.getProperty())) {
-                ResultMapping propertyMapping = new ResultMapping.Builder(configuration, columnInfo.property,
-                        columnInfo.property, columnInfo.propertyType)
+                ResultMapping propertyMapping = new ResultMapping.Builder(configuration
+                        , columnInfo.property
+                        , isNested && existMappingColumns.contains(columnInfo.property) ? tableName + "$" + columnInfo.property : columnInfo.property
+                        , columnInfo.propertyType)
                         .jdbcType(columnInfo.getJdbcType())
                         .typeHandler(columnInfo.buildTypeHandler())
                         .build();
                 resultMappings.add(propertyMapping);
+                existMappingColumns.add(propertyMapping.getColumn());
             }
         }
 
         // <resultMap> 标签下的 <id> 标签映射
         for (IdInfo idInfo : primaryKeyList) {
-
-            ResultMapping mapping = new ResultMapping.Builder(configuration, idInfo.property,
-                    idInfo.column, idInfo.propertyType)
+            ResultMapping mapping = new ResultMapping.Builder(configuration
+                    , idInfo.property
+                    , isNested && existMappingColumns.contains(idInfo.column) ? tableName + "$" + idInfo.column : idInfo.column
+                    , idInfo.propertyType)
                     .flags(CollectionUtil.newArrayList(ResultFlag.ID))
                     .jdbcType(idInfo.getJdbcType())
                     .typeHandler(idInfo.buildTypeHandler())
                     .build();
             resultMappings.add(mapping);
+            existMappingColumns.add(mapping.getColumn());
 
 
             if (ArrayUtil.isNotEmpty(idInfo.alias)) {
                 // add alias mapping
                 for (String alias : idInfo.alias) {
-                    ResultMapping aliasMapping = new ResultMapping.Builder(configuration, idInfo.property,
-                            alias, idInfo.propertyType)
+                    ResultMapping aliasMapping = new ResultMapping.Builder(configuration
+                            , idInfo.property
+                            , isNested && existMappingColumns.contains(alias) ? tableName + "$" + alias : alias
+                            , idInfo.propertyType)
                             .flags(CollectionUtil.newArrayList(ResultFlag.ID))
                             .jdbcType(idInfo.getJdbcType())
                             .typeHandler(idInfo.buildTypeHandler())
                             .build();
                     resultMappings.add(aliasMapping);
+                    existMappingColumns.add(aliasMapping.getColumn());
                 }
             }
 
             // add property mapper for sql: select xxx as property ...
             if (!Objects.equals(idInfo.getColumn(), idInfo.getProperty())) {
-                ResultMapping propertyMapping = new ResultMapping.Builder(configuration, idInfo.property,
-                        idInfo.property, idInfo.propertyType)
+                ResultMapping propertyMapping = new ResultMapping.Builder(configuration
+                        , idInfo.property
+                        , isNested && existMappingColumns.contains(idInfo.property) ? tableName + "$" + idInfo.property : idInfo.property
+                        , idInfo.propertyType)
                         .flags(CollectionUtil.newArrayList(ResultFlag.ID))
                         .jdbcType(idInfo.getJdbcType())
                         .typeHandler(idInfo.buildTypeHandler())
                         .build();
                 resultMappings.add(propertyMapping);
+                existMappingColumns.add(propertyMapping.getColumn());
             }
         }
 
@@ -883,7 +902,7 @@ public class TableInfo {
                 // 获取嵌套类型的信息，也就是 javaType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(fieldType);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <association> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
+                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, existMappingColumns, true);
                 if (nestedResultMap != null) {
                     resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
                             .javaType(fieldType)
@@ -916,7 +935,7 @@ public class TableInfo {
                     // 获取集合泛型类型的信息，也就是 ofType 属性
                     TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
                     // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
-                    ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, context);
+                    ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, existMappingColumns, true);
                     if (nestedResultMap != null) {
                         resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
                                 .javaType(field.getType())
@@ -929,7 +948,7 @@ public class TableInfo {
 
         ResultMap resultMap = new ResultMap.Builder(configuration, resultMapId, entityClass, resultMappings).build();
         configuration.addResultMap(resultMap);
-        context.add(resultMapId);
+        resultMapIds.add(resultMapId);
         return resultMap;
     }
 

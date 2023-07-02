@@ -287,19 +287,19 @@ public class TableInfoFactory {
                 columnInfoList.add(columnInfo);
             }
 
-            As asType = null;
+            ColumnAlias columnAlias = null;
             // 属性上没有别名，查找 getter 方法上有没有别名
             Method getterMethod = ClassUtil.getFirstMethod(entityClass, m -> ClassUtil.isGetterMethod(m, field.getName()));
             if (getterMethod != null) {
-                asType = getterMethod.getAnnotation(As.class);
+                columnAlias = getterMethod.getAnnotation(ColumnAlias.class);
             }
 
-            if (asType == null) {
-                asType = field.getAnnotation(As.class);
+            if (columnAlias == null) {
+                columnAlias = field.getAnnotation(ColumnAlias.class);
             }
 
-            if (asType != null) {
-                columnInfo.setAlias(asType.value());
+            if (columnAlias != null) {
+                columnInfo.setAlias(columnAlias.value());
             }
 
             columnInfo.setColumn(columnName);
@@ -362,6 +362,7 @@ public class TableInfoFactory {
         if (!largeColumns.isEmpty()) {
             tableInfo.setLargeColumns(largeColumns.toArray(new String[0]));
         }
+
         if (!defaultColumns.isEmpty()) {
             tableInfo.setDefaultColumns(defaultColumns.toArray(new String[0]));
         }
