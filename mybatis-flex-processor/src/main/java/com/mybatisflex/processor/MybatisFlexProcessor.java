@@ -90,20 +90,21 @@ public class MybatisFlexProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         if (!roundEnv.processingOver()) {
-            System.out.println("mybatis flex processor run start...");
 
             // 不启用 APT 功能
             if ("false".equalsIgnoreCase(configuration.get(ConfigurationKey.ENABLE))) {
                 return true;
             }
 
+            System.out.println("mybatis flex processor run start...");
+
             // 是否所有的类常量都生成在 Tables 类里
-            boolean allInTables = "true".equalsIgnoreCase(configuration.get(ConfigurationKey.ALL_IN_TABLES));
+            boolean allInTablesEnable = "true".equalsIgnoreCase(configuration.get(ConfigurationKey.ALL_IN_TABLES_ENABLE));
 
             StringBuilder importBuilder;
             StringBuilder fieldBuilder;
 
-            if (allInTables) {
+            if (allInTablesEnable) {
                 importBuilder = new StringBuilder();
                 fieldBuilder = new StringBuilder();
             } else {
@@ -113,15 +114,21 @@ public class MybatisFlexProcessor extends AbstractProcessor {
 
             // 其他配置选项
             String genPath = configuration.get(ConfigurationKey.GEN_PATH);
-            String tablesPackage = configuration.get(ConfigurationKey.TABLES_PACKAGE);
-            String mappersPackage = configuration.get(ConfigurationKey.MAPPERS_PACKAGE);
-            String baseMapperClass = configuration.get(ConfigurationKey.BASE_MAPPER_CLASS);
-            String tablesDefSuffix = configuration.get(ConfigurationKey.TABLES_DEF_SUFFIX);
-            String tablesNameStyle = configuration.get(ConfigurationKey.TABLE_NAME_STYLE);
-            String tablesClassName = configuration.get(ConfigurationKey.TABLES_CLASS_NAME);
-            String mappersGenerateEnable = configuration.get(ConfigurationKey.MAPPERS_GENERATE_ENABLE);
 
-            String[] entityIgnoreSuffixes = configuration.get(ConfigurationKey.IGNORE_SUFFIXES).split(",");
+            // all in Tables 配置
+            String allInTablesPackage = configuration.get(ConfigurationKey.ALL_IN_TABLES_PACKAGE);
+            String allInTablesClassName = configuration.get(ConfigurationKey.ALL_IN_TABLES_CLASS_NAME);
+
+            // mapper 配置
+            String mapperGenerateEnable = configuration.get(ConfigurationKey.MAPPER_GENERATE_ENABLE);
+            String mapperPackage = configuration.get(ConfigurationKey.MAPPER_PACKAGE);
+            String mapperBaseClass = configuration.get(ConfigurationKey.MAPPER_BASE_CLASS);
+
+            // tableDef 配置
+            String tableDefClassSuffix = configuration.get(ConfigurationKey.TABLE_DEF_CLASS_SUFFIX);
+            String tableDefInstanceSuffix = configuration.get(ConfigurationKey.TABLE_DEF_INSTANCE_SUFFIX);
+            String tableDefPropertiesNameStyle = configuration.get(ConfigurationKey.TABLE_DEF_PROPERTIES_NAME_STYLE);
+            String[] tableDefIgnoreEntitySuffixes = configuration.get(ConfigurationKey.TABLE_DEF_IGNORE_ENTITY_SUFFIXES).split(",");
 
             // 如果不指定 Tables 生成包，那么 Tables 文件就会和最后一个 entity 文件在同一个包
             String entityClassReference = null;
@@ -162,7 +169,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 String entityClassName = StrUtil.getClassName(entityClass);
 
                 // 处理 entity 后缀
-                for (String entityIgnoreSuffix : entityIgnoreSuffixes) {
+                for (String entityIgnoreSuffix : tableDefIgnoreEntitySuffixes) {
                     if (entityClassName.endsWith(entityIgnoreSuffix.trim())) {
                         entityClassName = entityClassName.substring(0, entityClassName.length() - entityIgnoreSuffix.length());
                         break;
@@ -171,31 +178,32 @@ public class MybatisFlexProcessor extends AbstractProcessor {
 
                 // 生成 TableDef 文件
                 String tableDefPackage = StrUtil.buildTableDefPackage(entityClass);
-                String tableDefClassName = entityClassName.concat("TableDef");
-                String tableDefContent = ContentBuilder.buildTableDef(table, entityClass, entityClassName, allInTables, tableDefPackage, tableDefClassName, tablesNameStyle, tablesDefSuffix, columnInfoList, defaultColumns);
+                String tableDefClassName = entityClassName.concat(tableDefClassSuffix);
+                String tableDefContent = ContentBuilder.buildTableDef(table, entityClass, entityClassName, allInTablesEnable, tableDefPackage, tableDefClassName
+                        , tableDefPropertiesNameStyle, tableDefInstanceSuffix, columnInfoList, defaultColumns);
                 processGenClass(genPath, tableDefPackage, tableDefClassName, tableDefContent);
 
-                if (allInTables) {
+                if (allInTablesEnable) {
                     // 标记 entity 类，如果没有配置 Tables 生成位置，以 entity 位置为准
                     entityClassReference = entityClass;
                     // 构建 Tables 常量属性及其导包
-                    ContentBuilder.buildTablesField(importBuilder, fieldBuilder, table, entityClass, entityClassName, tablesNameStyle, tablesDefSuffix);
+                    ContentBuilder.buildTablesField(importBuilder, fieldBuilder, table, entityClass, entityClassName, tableDefClassSuffix, tableDefPropertiesNameStyle, tableDefInstanceSuffix);
                 }
 
                 // 是否生成 Mapper 文件
-                if ("true".equalsIgnoreCase(mappersGenerateEnable) && table.mapperGenerateEnable()) {
-                    String realMapperPackage = StrUtil.isBlank(mappersPackage) ? StrUtil.buildMapperPackage(entityClass) : mappersPackage;
+                if ("true".equalsIgnoreCase(mapperGenerateEnable) && table.mapperGenerateEnable()) {
+                    String realMapperPackage = StrUtil.isBlank(mapperPackage) ? StrUtil.buildMapperPackage(entityClass) : mapperPackage;
                     String mapperClassName = entityClassName.concat("Mapper");
-                    String mapperClassContent = ContentBuilder.buildMapper(entityClass, entityClassName, realMapperPackage, mapperClassName, baseMapperClass);
+                    String mapperClassContent = ContentBuilder.buildMapper(entityClass, entityClassName, realMapperPackage, mapperClassName, mapperBaseClass);
                     processGenClass(genPath, realMapperPackage, mapperClassName, mapperClassContent);
                 }
 
                 // handle NPE, ensure TableDef already generate.
-                if (index == size && allInTables) {
+                if (index == size && allInTablesEnable) {
                     // 生成 Tables 文件
-                    String realTablesPackage = StrUtil.isBlank(tablesPackage) ? StrUtil.buildTableDefPackage(entityClassReference) : tablesPackage;
-                    String realTablesClassName = StrUtil.isBlank(tablesClassName) ? "Tables" : tablesClassName;
-                    String tablesContent = ContentBuilder.buildTables(importBuilder, fieldBuilder, realTablesPackage, tablesClassName);
+                    String realTablesPackage = StrUtil.isBlank(allInTablesPackage) ? StrUtil.buildTableDefPackage(entityClassReference) : allInTablesPackage;
+                    String realTablesClassName = StrUtil.isBlank(allInTablesClassName) ? "Tables" : allInTablesClassName;
+                    String tablesContent = ContentBuilder.buildTables(importBuilder, fieldBuilder, realTablesPackage, allInTablesClassName);
                     processGenClass(genPath, realTablesPackage, realTablesClassName, tablesContent);
                 }
             }
@@ -321,7 +329,6 @@ public class MybatisFlexProcessor extends AbstractProcessor {
         }
         return null;
     }
-
 
 
     private void processGenClass(String genBasePath, String genPackageName, String className, String genContent) {

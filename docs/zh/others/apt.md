@@ -17,17 +17,17 @@ MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 | ------------------------------- | ------------------------ | -------------------------------------------------------- | ------------------------------------ |
 | processor.enable                | 全局启用apt开关          | true/false                                               | true                                 |
 | processor.stopBubbling          | 是否停止向上级合并配      | true/false                                               | false                                |
-| processor.mappersGenerateEnable | 开启 Mapper 自动生成     | true/false                                               | false                                |
 | processor.genPath               | APT 代码生成路径         | 合法的绝对或相对路径                                     | target/generated-sources/annotations |
-| processor.allInTables           | 是否所有的类都生成在 Tables 类里 | true/false                                                | false              |
-| processor.tablesPackage         | Tables 类名              | 合法的包名                                               | ${entityPackage}.table               |
-| processor.tablesClassName       | Tables 类名              | 合法的类名                                               | Tables                               |
-| processor.baseMapperClass       | 自定义 Mapper 的父类      | 全路径类名                                               | com.mybatisflex.core.BaseMapper      |
-| processor.mappersPackage        | 自定义 Mapper 生成的包名  | 合法的包名                                               | ${entityPackage}.mapper              |
+| processor.allInTables.enable           | 是否所有的类都生成在 Tables 类里 | true/false                                                | false              |
+| processor.allInTables.tablesPackage         | Tables 类名              | 合法的包名                                               | ${entityPackage}.table               |
+| processor.allInTables.tablesClassName       | Tables 类名              | 合法的类名                                               | Tables                               |
+| processor.mapper.generateEnable | 开启 Mapper 自动生成     | true/false                                               | false                                |
+| processor.mapper.baseClass       | 自定义 Mapper 的父类      | 全路径类名                                               | com.mybatisflex.core.BaseMapper      |
+| processor.mapper.package        | 自定义 Mapper 生成的包名  | 合法的包名                                               | ${entityPackage}.mapper              |
 | processor.tableDef.propertiesNameStyle   | 生成辅助类的字段风格       | upperCase, lowerCase<br />upperCamelCase, lowerCamelCase | upperCase                            |
 | processor.tableDef.instanceSuffix        | 生成的表对应的变量后缀     | string                                                  | 空字符串                            |
-| processor.tableDef.classSuffix        | 生成的表对应的变量后缀     | string                                                  | 空字符串                            |
-| processor.entity.ignoreSuffixes | 过滤 Entity 后缀         | string                                                   | -                                    |
+| processor.tableDef.classSuffix        | 生成的 TableDef 类的后缀     | string                                                  | TableDef                            |
+| processor.tableDef.ignoreEntitySuffixes | 过滤 Entity 后缀         | string                                                   | -                                    |
 
 
 

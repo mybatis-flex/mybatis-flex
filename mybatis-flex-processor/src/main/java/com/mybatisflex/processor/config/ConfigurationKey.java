@@ -34,50 +34,59 @@ public enum ConfigurationKey {
      */
     GEN_PATH("processor.genPath", ""),
 
-    /**
-     * 自定义 Tables 生成的包名。
-     */
-    TABLES_PACKAGE("processor.tablesPackage", null),
-
-    /**
-     * 自定义 Mapper 的父类。
-     */
-    BASE_MAPPER_CLASS("processor.baseMapperClass", "com.mybatisflex.core.BaseMapper"),
-
-    /**
-     * 开启 Mapper 自动生成。
-     */
-    MAPPERS_GENERATE_ENABLE("processor.mappersGenerateEnable", "false"),
-
-    /**
-     * 自定义 Mapper 生成的包名。
-     */
-    MAPPERS_PACKAGE("processor.mappersPackage", null),
 
     /**
      * 是否所有的类都生成在 Tables 类里。
      */
-    ALL_IN_TABLES("processor.allInTables", "false"),
+    ALL_IN_TABLES_ENABLE("processor.allInTables.enable", "false"),
 
     /**
      * Tables 类名。
      */
-    TABLES_CLASS_NAME("processor.tablesClassName", "Tables"),
+    ALL_IN_TABLES_CLASS_NAME("processor.allInTables.className", "Tables"),
 
     /**
-     * 生成辅助类的字段风格。
+     * 自定义 Tables 生成的包名。
      */
-    TABLE_NAME_STYLE("processor.tablesNameStyle", "upperCase"),
+    ALL_IN_TABLES_PACKAGE("processor.allInTables.package", null),
+
+
+    /**
+     * 开启 Mapper 自动生成。
+     */
+    MAPPER_GENERATE_ENABLE("processor.mapper.generateEnable", "false"),
+
+    /**
+     * 自定义 Mapper 的父类。
+     */
+    MAPPER_BASE_CLASS("processor.mapper.baseClass", "com.mybatisflex.core.BaseMapper"),
+
+    /**
+     * 自定义 Mapper 生成的包名。
+     */
+    MAPPER_PACKAGE("processor.mapper.package", null),
+
+
+    /**
+     * 生成的 Class 的后缀。
+     */
+    TABLE_DEF_CLASS_SUFFIX("processor.tableDef.classSuffix", "TableDef"),
 
     /**
      * 生成的表对应的变量后缀。
      */
-    TABLES_DEF_SUFFIX("processor.tablesDefSuffix", ""),
+    TABLE_DEF_INSTANCE_SUFFIX("processor.tableDef.instanceSuffix", ""),
+
+    /**
+     * 生成辅助类的字段风格。
+     */
+    TABLE_DEF_PROPERTIES_NAME_STYLE("processor.tableDef.propertiesNameStyle", "upperCase"),
 
     /**
      * 过滤 Entity 后缀。
      */
-    IGNORE_SUFFIXES("processor.entity.ignoreSuffixes", "");
+    TABLE_DEF_IGNORE_ENTITY_SUFFIXES("processor.tableDef.ignoreEntitySuffixes", "");
+
 
     private final String configKey;
     private final String defaultValue;

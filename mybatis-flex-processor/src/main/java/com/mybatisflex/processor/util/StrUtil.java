@@ -75,12 +75,12 @@ public class StrUtil {
         return str;
     }
 
-    public static String buildFieldName(String name, String style) {
-        if ("upperCase".equalsIgnoreCase(style)) {
+    public static String buildFieldName(String name, String tableDefPropertiesNameStyle) {
+        if ("upperCase".equalsIgnoreCase(tableDefPropertiesNameStyle)) {
             return camelToUnderline(name).toUpperCase();
-        } else if ("lowerCase".equalsIgnoreCase(style)) {
+        } else if ("lowerCase".equalsIgnoreCase(tableDefPropertiesNameStyle)) {
             return camelToUnderline(name).toLowerCase();
-        } else if ("upperCamelCase".equalsIgnoreCase(style)) {
+        } else if ("upperCamelCase".equalsIgnoreCase(tableDefPropertiesNameStyle)) {
             return firstCharToUpperCase(name);
         } else {
             //lowerCamelCase
