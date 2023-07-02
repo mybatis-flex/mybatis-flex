@@ -18,9 +18,13 @@ package com.mybatisflex.core.audit.http;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
+/**
+ * Hash 工具类。
+ */
 public class HashUtil {
 
-    private HashUtil() {}
+    private HashUtil() {
+    }
 
     private static final char[] HEX_DIGITS = "0123456789abcdef".toCharArray();
 

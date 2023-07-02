@@ -18,6 +18,10 @@ spring:
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
 mybatis-flex:
+  admin-config:
+    enable: true
+    endpoint: http://localhost/admin
+    secret-key: secretKey
   mapper-locations:
     - classpath*:/mapper/*.xml
 #  global-config:
