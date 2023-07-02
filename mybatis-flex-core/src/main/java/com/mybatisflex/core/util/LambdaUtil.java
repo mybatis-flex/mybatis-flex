@@ -42,9 +42,10 @@ public class LambdaUtil {
     }
 
 
-    public static <T> String getAliasName(LambdaGetter<T> getter) {
+    public static <T> String getAliasName(LambdaGetter<T> getter, boolean withPrefix) {
         QueryColumn queryColumn = getQueryColumn(getter);
-        return StringUtil.isNotBlank(queryColumn.getAlias()) ? queryColumn.getAlias() : queryColumn.getName();
+        String alias = StringUtil.isNotBlank(queryColumn.getAlias()) ? queryColumn.getAlias() : queryColumn.getName();
+        return withPrefix ? queryColumn.getTable().getName() + "$" + alias : alias;
     }
 
 

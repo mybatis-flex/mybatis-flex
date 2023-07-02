@@ -231,4 +231,8 @@ public class CPI {
     public static QueryWrapper getQueryWrapper(SelectQueryColumn selectQueryColumn) {
         return selectQueryColumn.getQueryWrapper();
     }
+
+    public static boolean isSameTable(QueryTable queryTable,QueryTable otherTable){
+        return queryTable.isSameTable(otherTable);
+    }
 }
