@@ -38,11 +38,6 @@ public class FieldQueryBuilder<T> implements Serializable {
         return field(LambdaUtil.getFieldName(fn));
     }
 
-//    public FieldQueryBuilder<T> type(Class<?> mappingType){
-//        fieldQuery.setMappingType(mappingType);
-//        return this;
-//    }
-
     public FieldQueryBuilder<T> queryWrapper(QueryBuilder<T> fun){
         fieldQuery.setQueryWrapper(fun.build(entity));
         return this;

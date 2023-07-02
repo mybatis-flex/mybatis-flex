@@ -43,6 +43,13 @@ public class LambdaUtil {
     }
 
 
+    public static <T> String getAsName(LambdaGetter<T> getter) {
+        QueryColumn queryColumn = getQueryColumn(getter);
+        return queryColumn.getAlias();
+    }
+
+
+
     public static <T> QueryColumn getQueryColumn(LambdaGetter<T> getter) {
         SerializedLambda lambda = getSerializedLambda(getter);
         String methodName = lambda.getImplMethodName();

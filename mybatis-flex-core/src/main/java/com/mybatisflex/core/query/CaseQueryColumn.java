@@ -78,12 +78,6 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
     }
 
     @Override
-    public QueryColumn as(String alias) {
-        this.alias = alias;
-        return this;
-    }
-
-    @Override
     public Object[] getParamValues() {
         Object[] values = FlexConsts.EMPTY_ARRAY;
         for (When when : whens) {

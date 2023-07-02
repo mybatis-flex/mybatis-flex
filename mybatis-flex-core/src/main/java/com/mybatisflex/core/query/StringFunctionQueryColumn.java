@@ -77,12 +77,6 @@ public class StringFunctionQueryColumn extends QueryColumn {
         return fnName + WrapperUtil.withBracket(sql);
     }
 
-    @Override
-    public QueryColumn as(String alias) {
-        SqlUtil.keepColumnSafely(alias);
-        this.alias = alias;
-        return this;
-    }
 
     @Override
     public String toString() {

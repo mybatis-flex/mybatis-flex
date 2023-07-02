@@ -17,7 +17,6 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.ObjectUtil;
-import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
@@ -30,12 +29,6 @@ public class SelectQueryColumn extends QueryColumn implements HasParamsColumn {
         this.queryWrapper = queryWrapper;
     }
 
-    @Override
-    public SelectQueryColumn as(String alias) {
-        SqlUtil.keepColumnSafely(alias);
-        this.alias = alias;
-        return this;
-    }
 
     QueryWrapper getQueryWrapper() {
         return queryWrapper;

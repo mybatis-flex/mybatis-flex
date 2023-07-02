@@ -132,12 +132,7 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
         return sql;
     }
 
-    @Override
-    public QueryColumn as(String alias) {
-        SqlUtil.keepColumnSafely(alias);
-        this.alias = alias;
-        return this;
-    }
+
 
     @Override
     public String toString() {

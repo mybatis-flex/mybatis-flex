@@ -35,6 +35,8 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     protected String name;
     protected String alias;
 
+    private boolean returnCopyByAsMethod = false;
+
 
     public QueryColumn() {
     }
@@ -56,8 +58,15 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         this.name = name;
     }
 
+    public QueryColumn(QueryTable queryTable, String name) {
+        SqlUtil.keepColumnSafely(name);
+        this.table = queryTable;
+        this.name = name;
+    }
+
     public QueryColumn(TableDef tableDef, String name) {
         SqlUtil.keepColumnSafely(name);
+        this.returnCopyByAsMethod = true;
         this.table = new QueryTable(tableDef);
         this.name = name;
     }
@@ -65,12 +74,6 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     public QueryColumn(TableDef tableDef, String name, String alias) {
         this(tableDef, name);
         this.alias = alias;
-    }
-
-    public QueryColumn(QueryTable queryTable, String name) {
-        SqlUtil.keepColumnSafely(name);
-        this.table = queryTable;
-        this.name = name;
     }
 
 
@@ -99,16 +102,21 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     }
 
     public <T> QueryColumn as(LambdaGetter<T> fn) {
-        return as(LambdaUtil.getFieldName(fn));
+        return as(LambdaUtil.getAsName(fn));
     }
 
     public QueryColumn as(String alias) {
         SqlUtil.keepColumnSafely(alias);
-        QueryColumn newColumn = new QueryColumn();
-        newColumn.table = this.table;
-        newColumn.name = this.name;
-        newColumn.alias = alias;
-        return newColumn;
+        if (returnCopyByAsMethod) {
+            QueryColumn newColumn = new QueryColumn();
+            newColumn.table = this.table;
+            newColumn.name = this.name;
+            newColumn.alias = alias;
+            return newColumn;
+        } else {
+            this.alias = alias;
+            return this;
+        }
     }
 
 

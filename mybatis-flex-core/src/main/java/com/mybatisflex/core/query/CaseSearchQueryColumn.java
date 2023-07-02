@@ -79,12 +79,6 @@ public class CaseSearchQueryColumn extends QueryColumn implements HasParamsColum
         whens.add(when);
     }
 
-    @Override
-    public QueryColumn as(String alias) {
-        this.alias = alias;
-        return this;
-    }
-
 
     @Override
     public Object[] getParamValues() {

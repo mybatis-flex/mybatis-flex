@@ -83,11 +83,6 @@ public class ArithmeticQueryColumn extends QueryColumn {
         return this;
     }
 
-    @Override
-    public QueryColumn as(String alias) {
-        this.alias = alias;
-        return this;
-    }
 
     @Override
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {

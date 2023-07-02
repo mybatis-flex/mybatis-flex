@@ -22,7 +22,6 @@ import java.io.Serializable;
 public class FieldQuery implements Serializable {
 
     private String field;
-//    private Class<?> mappingType;
     private QueryWrapper queryWrapper;
 
     public String getField() {
@@ -32,14 +31,6 @@ public class FieldQuery implements Serializable {
     public void setField(String field) {
         this.field = field;
     }
-
-//    public Class<?> getMappingType() {
-//        return mappingType;
-//    }
-//
-//    public void setMappingType(Class<?> mappingType) {
-//        this.mappingType = mappingType;
-//    }
 
     public QueryWrapper getQueryWrapper() {
         return queryWrapper;
