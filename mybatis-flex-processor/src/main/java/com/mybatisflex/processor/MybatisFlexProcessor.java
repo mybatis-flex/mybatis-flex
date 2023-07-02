@@ -16,8 +16,8 @@
 
 package com.mybatisflex.processor;
 
-import com.mybatisflex.annotation.ColumnAlias;
 import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.ColumnAlias;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.processor.builder.ContentBuilder;
 import com.mybatisflex.processor.config.ConfigurationKey;
@@ -152,15 +152,12 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 List<ColumnInfo> columnInfoList = new LinkedList<>();
                 // 默认查询的属性，非 isLarge 字段
                 List<String> defaultColumns = new ArrayList<>();
+
                 TypeElement classElement = (TypeElement) entityClassElement;
+
                 do {
                     // 获取类属性和默认查询字段
-                    fillColumnInfoList(columnInfoList, defaultColumns, classElement, table.camelToUnderline());
-                    classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
-                } while (classElement != null);
-
-                classElement = (TypeElement) entityClassElement;
-                do {
+                    fillColumnInfoList(columnInfoList, defaultColumns, (TypeElement) entityClassElement, classElement, table.camelToUnderline());
                     classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
                 } while (classElement != null);
 
@@ -223,11 +220,8 @@ public class MybatisFlexProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
 
-    private void fillColumnInfoList(List<ColumnInfo> columnInfoList, List<String> defaultColumns, TypeElement classElement, boolean camelToUnderline) {
-
-        List<? extends Element> enclosedElements = classElement.getEnclosedElements();
-
-        for (Element fieldElement : enclosedElements) {
+    private void fillColumnInfoList(List<ColumnInfo> columnInfoList, List<String> defaultColumns, TypeElement baseElement, TypeElement classElement, boolean camelToUnderline) {
+        for (Element fieldElement : classElement.getEnclosedElements()) {
 
             // all fields
             if (ElementKind.FIELD == fieldElement.getKind()) {
@@ -290,8 +284,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     }
                 }
 
-
-                String[] alias = getColumnAliasByGetterMethod(enclosedElements, property);
+                String[] alias = getColumnAliasByGetterMethod(baseElement, property);
                 if (alias == null || alias.length == 0) {
                     ColumnAlias columnAlias = fieldElement.getAnnotation(ColumnAlias.class);
                     if (columnAlias != null) {
@@ -314,14 +307,14 @@ public class MybatisFlexProcessor extends AbstractProcessor {
     }
 
 
-    private String[] getColumnAliasByGetterMethod(List<? extends Element> enclosedElements, String property) {
-        for (Element enclosedElement : enclosedElements) {
+    private String[] getColumnAliasByGetterMethod(TypeElement baseElement, String property) {
+        for (Element enclosedElement : baseElement.getEnclosedElements()) {
             if (ElementKind.METHOD == enclosedElement.getKind()) {
                 String methodName = enclosedElement.toString();
                 if (StrUtil.isGetterMethod(methodName, property)) {
-                    ColumnAlias asType = enclosedElement.getAnnotation(ColumnAlias.class);
-                    if (asType != null) {
-                        return asType.value();
+                    ColumnAlias columnAlias = enclosedElement.getAnnotation(ColumnAlias.class);
+                    if (columnAlias != null) {
+                        return columnAlias.value();
                     }
                     break;
                 }
