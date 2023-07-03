@@ -148,12 +148,8 @@ public class MybatisFlexProcessor extends AbstractProcessor {
 
                 assert table != null;
 
-                // 类属性
-                //修改bug https://gitee.com/mybatis-flex/mybatis-flex/issues/I7I08X
-                //会执行 subClass subClass
-                //再执行 superClass superClass
-                //按照顺序使用，子类有的属性，父类放不进去，也就形成了子类覆盖父类
-                Collection<ColumnInfo> columnInfoList = new HashSet<>();
+                // 类属性 fix: https://gitee.com/mybatis-flex/mybatis-flex/issues/I7I08X
+                Set<ColumnInfo> columnInfos = new HashSet<>();
                 // 默认查询的属性，非 isLarge 字段
                 List<String> defaultColumns = new ArrayList<>();
 
@@ -161,7 +157,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
 
                 do {
                     // 获取类属性和默认查询字段
-                    fillColumnInfoList(columnInfoList, defaultColumns, (TypeElement) entityClassElement, classElement, table.camelToUnderline());
+                    fillColumnInfoList(columnInfos, defaultColumns, (TypeElement) entityClassElement, classElement, table.camelToUnderline());
                     classElement = (TypeElement) typeUtils.asElement(classElement.getSuperclass());
                 } while (classElement != null);
 
@@ -181,7 +177,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 String tableDefPackage = StrUtil.buildTableDefPackage(entityClass);
                 String tableDefClassName = entityClassName.concat(tableDefClassSuffix);
                 String tableDefContent = ContentBuilder.buildTableDef(table, entityClass, entityClassName, allInTablesEnable, tableDefPackage, tableDefClassName
-                        , tableDefPropertiesNameStyle, tableDefInstanceSuffix, columnInfoList, defaultColumns);
+                        , tableDefPropertiesNameStyle, tableDefInstanceSuffix, columnInfos, defaultColumns);
                 processGenClass(genPath, tableDefPackage, tableDefClassName, tableDefContent);
 
                 if (allInTablesEnable) {
@@ -224,7 +220,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
 
-    private void fillColumnInfoList(Collection<ColumnInfo> columnInfoList, List<String> defaultColumns, TypeElement baseElement, TypeElement classElement, boolean camelToUnderline) {
+    private void fillColumnInfoList(Set<ColumnInfo> columnInfos, List<String> defaultColumns, TypeElement baseElement, TypeElement classElement, boolean camelToUnderline) {
         for (Element fieldElement : classElement.getEnclosedElements()) {
 
             // all fields
@@ -300,9 +296,8 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 columnInfo.setProperty(property);
                 columnInfo.setColumn(columnName);
                 columnInfo.setAlias(alias);
-                columnInfo.setFullClassName(baseElement.getQualifiedName().toString());
 
-                columnInfoList.add(columnInfo);
+                columnInfos.add(columnInfo);
 
                 if (column == null || (!column.isLarge() && !column.isLogicDelete())) {
                     defaultColumns.add(columnName);
@@ -313,6 +308,9 @@ public class MybatisFlexProcessor extends AbstractProcessor {
 
 
     private String[] getColumnAliasByGetterMethod(TypeElement baseElement, String property) {
+        if (baseElement == null) {
+            return null;
+        }
         for (Element enclosedElement : baseElement.getEnclosedElements()) {
             if (ElementKind.METHOD == enclosedElement.getKind()) {
                 String methodName = enclosedElement.toString();
@@ -325,7 +323,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 }
             }
         }
-        return null;
+        return getColumnAliasByGetterMethod((TypeElement) typeUtils.asElement(baseElement.getSuperclass()), property);
     }
 
 

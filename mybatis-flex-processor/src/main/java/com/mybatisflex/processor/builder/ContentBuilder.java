@@ -57,7 +57,7 @@ public class ContentBuilder {
     public static String buildTableDef(Table table, String entityClass, String entityClassName, boolean allInTablesEnable,
                                        String tableDefPackage, String tableDefClassName,
                                        String tableDefPropertiesNameStyle, String tableDefInstanceSuffix,
-                                       Collection<ColumnInfo> columnInfoList, List<String> defaultColumns) {
+                                       Collection<ColumnInfo> columnInfos, List<String> defaultColumns) {
         StringBuilder content = new StringBuilder("package ");
         content.append(tableDefPackage).append(";\n\n");
         content.append("import com.mybatisflex.core.query.QueryColumn;\n");
@@ -74,7 +74,7 @@ public class ContentBuilder {
             content.append("    public static final ").append(tableDefClassName).append(' ').append(StrUtil.buildFieldName(entityClassName.concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
                     .append(" = new ").append(tableDefClassName).append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n\n");
         }
-        columnInfoList.forEach((columnInfo) -> {
+        columnInfos.forEach((columnInfo) -> {
             content.append("    public QueryColumn ")
                     .append(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle))
                     .append(" = new QueryColumn(this, \"")
@@ -86,7 +86,7 @@ public class ContentBuilder {
         });
         content.append("    public QueryColumn ").append(StrUtil.buildFieldName("allColumns", tableDefPropertiesNameStyle)).append(" = new QueryColumn(this, \"*\");\n");
         StringJoiner defaultColumnJoiner = new StringJoiner(", ");
-        columnInfoList.forEach((columnInfo) -> {
+        columnInfos.forEach((columnInfo) -> {
             if (defaultColumns.contains(columnInfo.getColumn())) {
                 defaultColumnJoiner.add(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle));
             }
