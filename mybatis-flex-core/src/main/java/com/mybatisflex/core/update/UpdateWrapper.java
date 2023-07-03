@@ -34,7 +34,7 @@ public interface UpdateWrapper extends Serializable {
 
 
     default UpdateWrapper set(String property, Object value) {
-        if (value instanceof QueryWrapper || value instanceof QueryCondition) {
+        if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
             setRaw(property, value);
         } else {
             getUpdates().put(property, value);
@@ -44,8 +44,8 @@ public interface UpdateWrapper extends Serializable {
 
 
     default <T> UpdateWrapper set(LambdaGetter<T> getter, Object value) {
-        if (value instanceof QueryWrapper || value instanceof QueryCondition) {
-            seRaw(getter, value);
+        if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
+            setRaw(getter, value);
         } else {
             getUpdates().put(LambdaUtil.getFieldName(getter), value);
         }
@@ -55,8 +55,8 @@ public interface UpdateWrapper extends Serializable {
 
 
     default <T> UpdateWrapper set(QueryColumn queryColumn, Object value) {
-        if (value instanceof QueryWrapper || value instanceof QueryCondition) {
-            seRaw(queryColumn, value);
+        if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
+            setRaw(queryColumn, value);
         } else {
             getUpdates().put(queryColumn.getName(), value);
         }
@@ -69,12 +69,12 @@ public interface UpdateWrapper extends Serializable {
     }
 
 
-    default <T> UpdateWrapper seRaw(LambdaGetter<T> getter, Object value) {
+    default <T> UpdateWrapper setRaw(LambdaGetter<T> getter, Object value) {
         getUpdates().put(LambdaUtil.getFieldName(getter), new RawValue(value));
         return this;
     }
 
-    default <T> UpdateWrapper seRaw(QueryColumn queryColumn, Object value) {
+    default <T> UpdateWrapper setRaw(QueryColumn queryColumn, Object value) {
         getUpdates().put(queryColumn.getName(), new RawValue(value));
         return this;
     }

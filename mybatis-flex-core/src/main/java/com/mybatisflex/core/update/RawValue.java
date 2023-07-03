@@ -16,6 +16,8 @@
 package com.mybatisflex.core.update;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 
@@ -41,6 +43,11 @@ public class RawValue implements Serializable {
 
         if (object instanceof QueryCondition) {
             return ((QueryCondition) object).toSql(null, dialect);
+        }
+
+        if (object instanceof QueryColumn){
+            String s = CPI.toSelectSql((QueryColumn) object, null, dialect);
+            return s;
         }
 
         return object.toString();

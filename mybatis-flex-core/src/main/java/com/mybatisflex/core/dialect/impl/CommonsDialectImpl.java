@@ -718,7 +718,7 @@ public class CommonsDialectImpl implements IDialect {
 
         for (String modifyAttr : updateColumns) {
             if (rawValueMap.containsKey(modifyAttr)) {
-                stringJoiner.add(wrap(modifyAttr)).add(EQUALS).add(rawValueMap.get(modifyAttr).toSql(this));
+                stringJoiner.add(wrap(modifyAttr) + EQUALS + rawValueMap.get(modifyAttr).toSql(this));
             } else {
                 stringJoiner.add(wrap(modifyAttr) + EQUALS_PLACEHOLDER);
             }
@@ -789,7 +789,7 @@ public class CommonsDialectImpl implements IDialect {
 
         for (String modifyAttr : updateColumns) {
             if (rawValueMap.containsKey(modifyAttr)) {
-                stringJoiner.add(wrap(modifyAttr)).add(EQUALS).add(rawValueMap.get(modifyAttr).toSql(this));
+                stringJoiner.add(wrap(modifyAttr) + EQUALS + rawValueMap.get(modifyAttr).toSql(this));
             } else {
                 stringJoiner.add(wrap(modifyAttr) + EQUALS_PLACEHOLDER);
             }

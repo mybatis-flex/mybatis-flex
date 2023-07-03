@@ -105,7 +105,7 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
 
         SqlUtil.keepColumnSafely(column);
 
-        if (value instanceof QueryWrapper || value instanceof QueryCondition) {
+        if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
             setRaw(column, value);
         } else {
             super.put(column, value);
@@ -116,8 +116,8 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
 
     @Override
     public Row set(QueryColumn queryColumn, Object value) {
-        if (value instanceof QueryWrapper || value instanceof QueryCondition) {
-            seRaw(queryColumn, value);
+        if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
+            setRaw(queryColumn, value);
         } else {
             super.put(queryColumn.getName(), value);
         }
@@ -317,7 +317,7 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
         this.primaryKeys = primaryKeys;
     }
 
-     Set<String> getModifyAttrs() {
+    Set<String> getModifyAttrs() {
         int pkCount = primaryKeys != null ? primaryKeys.length : 0;
         if (pkCount == 0) {
             return keySet();
@@ -328,10 +328,10 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
         return attrs;
     }
 
-    Map<String,RawValue> getRawValueMap(){
-        Map<String,RawValue> map = new HashMap<>();
+    Map<String, RawValue> getRawValueMap() {
+        Map<String, RawValue> map = new HashMap<>();
         forEach((s, o) -> {
-            if (o instanceof RawValue){
+            if (o instanceof RawValue) {
                 map.put(s, (RawValue) o);
             }
         });
@@ -339,9 +339,7 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
     }
 
 
-
-
-     void resetByAttrs(Set<String> resetAttrs) {
+    void resetByAttrs(Set<String> resetAttrs) {
         keySet().removeIf(s -> !resetAttrs.contains(s));
     }
 

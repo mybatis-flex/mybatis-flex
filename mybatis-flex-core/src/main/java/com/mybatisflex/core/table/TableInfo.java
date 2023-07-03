@@ -513,7 +513,6 @@ public class TableInfo {
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
         Set<String> columns = new LinkedHashSet<>(); //需使用 LinkedHashSet 保证 columns 的顺序
         if (entity instanceof UpdateWrapper) {
-//            Set<String> properties = ((UpdateWrapper) entity).getModifyAttrs();
             Map<String, Object> updates = ((UpdateWrapper) entity).getUpdates();
             if (updates.isEmpty()) {
                 return Collections.emptySet();
