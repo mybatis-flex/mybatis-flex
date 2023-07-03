@@ -318,8 +318,10 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     ColumnAlias columnAlias = enclosedElement.getAnnotation(ColumnAlias.class);
                     if (columnAlias != null) {
                         return columnAlias.value();
+                    } else {
+                        // 重写方法，忽略别名
+                        return null;
                     }
-                    break;
                 }
             }
         }
