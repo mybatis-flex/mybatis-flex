@@ -1,5 +1,30 @@
 # ChangeLog
 
+### v1.4.5 20230703:
+- 新增：添加 sql "CONCAT" 函数的使用支持，感谢 @Suomm
+- 新增：添加 BaseMapper.selectObjectByQueryAs 方法，感谢 @Suomm
+- 新增：添加 @ColumnAlias 注解，并解决在 join query 下可能出现的错误赋值的问题，感谢 @Suomm
+- 新增：添加 MybatisFlexAdminAutoConfiguration 对自动进行 SQL 审计发送的支持，感谢 @Suomm
+- 优化：BaseMapper.selectOne 添加对 map、condition 等自动添加 limit 1 的支持
+- 优化：重构 FunctionQueryColumn 已适配更多的函数，感谢 @Suomm
+- 优化：在某些情况下，执行 SQL 出错没有抛出原生错误的问题
+- 优化：移动 DefaultMessageFactory.getHostIp 到 HttpUtil，感谢 @Suomm
+- 优化：重构 APT 的配置名称。 !!! 破坏性更新
+- 文档：优化由于版本造成的一些错误文档
+- 文档：添加列计算的使用文档和示例
+- 文档：修改某些细节错别字
+
+**APT 配置名称修改如下：**
+- processor.allInTables ---> processor.allInTables.enable
+- processor.tablesPackage ---> processor.allInTables.package
+- processor.tablesClassName ----> processor.allInTables.className
+- processor.mappersGenerateEnable ----> processor.mapper.generateEnable
+- processor.baseMapperClass ---> processor.mapper.baseClass
+- processor.mappersPackage ---> processor.mapper.package
+- processor.tablesNameStyle ---> processor.tableDef.propertiesNameStyle
+- processor.tablesDefSuffix ---> processor.tableDef.instanceSuffix
+- processor.entity.ignoreSuffixes ---> processor.tableDef.ignoreEntitySuffixes
+
 
 ### v1.4.4 20230628:
 - 新增：在 SpringBoot 下添加 `@UseDataSource` 对 IService 和 Controller 支持的功能，感谢 @Suomm
