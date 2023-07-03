@@ -20,8 +20,8 @@ import com.mybatisflex.annotation.Table;
 
 import java.io.Serializable;
 
-@Table(value = "tb_account_2")
-public class Account3 extends AccountVV implements Serializable {
+@Table(value = "tb_account_3")
+public class Account3 extends Account2 implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
