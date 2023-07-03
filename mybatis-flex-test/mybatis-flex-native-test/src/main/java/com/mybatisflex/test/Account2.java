@@ -21,7 +21,7 @@ import com.mybatisflex.annotation.Table;
 import java.io.Serializable;
 
 @Table(value = "tb_account_2")
-public class Account2 extends AccountVV implements Serializable {
+public class Account2 extends Account1 implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

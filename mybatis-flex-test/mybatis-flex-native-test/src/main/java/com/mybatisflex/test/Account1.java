@@ -23,8 +23,8 @@ import com.mybatisflex.annotation.Table;
 
 import java.io.Serializable;
 
-@Table(value = "tb_account_vv", dataSource = "ds2", onSet = AccountOnSetListener.class)
-public class AccountVV extends Account implements Serializable {
+@Table(value = "tb_account_1")
+public class Account1 extends Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,7 +37,7 @@ public class AccountVV extends Account implements Serializable {
     private int ageVV;
 
     @Override
-    @ColumnAlias("account_v_v_id")
+    @ColumnAlias("account_1_id")
     public Long getId() {
         return id;
     }
