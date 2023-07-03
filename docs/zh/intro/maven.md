@@ -12,12 +12,12 @@
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-core</artifactId>
-    <version>1.4.4</version>
+    <version>1.4.5</version>
 </dependency>
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-processor</artifactId>
-    <version>1.4.4</version>
+    <version>1.4.5</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -28,12 +28,12 @@
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-spring</artifactId>
-    <version>1.4.4</version>
+    <version>1.4.5</version>
 </dependency>
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-processor</artifactId>
-    <version>1.4.4</version>
+    <version>1.4.5</version>
     <scope>provided</scope>
 </dependency>
 ``````
@@ -44,12 +44,12 @@
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-spring-boot-starter</artifactId>
-    <version>1.4.4</version>
+    <version>1.4.5</version>
 </dependency>
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-processor</artifactId>
-    <version>1.4.4</version>
+    <version>1.4.5</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -70,7 +70,7 @@
             <path>
                 <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-processor</artifactId>
-                <version>1.4.4</version>
+                <version>1.4.5</version>
             </path>
         </annotationProcessorPaths>
     </configuration>
