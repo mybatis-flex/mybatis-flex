@@ -11,7 +11,7 @@
 
     <artifactId>mybatis-flex-spring-boot-test</artifactId>
     <packaging>jar</packaging>
-    <name>${project.artifactId}</name>
+
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
