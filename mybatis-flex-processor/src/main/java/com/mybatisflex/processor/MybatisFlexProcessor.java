@@ -300,6 +300,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 columnInfo.setProperty(property);
                 columnInfo.setColumn(columnName);
                 columnInfo.setAlias(alias);
+                columnInfo.setFullClassName(baseElement.getQualifiedName().toString());
 
                 columnInfoList.add(columnInfo);
 
