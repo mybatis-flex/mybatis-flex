@@ -161,24 +161,13 @@ public class UserVO {
 这个操作只需要联表查询即可完成，对于联表查询的结果映射，MyBatis-Flex 会自动帮您完成：
 
 ```java
-@SpringBootTest
-class UserMapperTest {
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Test
-    void testSelectList() {
-        QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(USER.USER_ID, USER.USER_NAME, ROLE.ALL_COLUMNS)
-                .from(USER.as("u"))
-                .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
-                .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID));
-        List<UserVO> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO.class);
-        userVOS.forEach(System.err::println);
-    }
-
-}
+QueryWrapper queryWrapper = QueryWrapper.create()
+        .select(USER.USER_ID, USER.USER_NAME, ROLE.ALL_COLUMNS)
+        .from(USER.as("u"))
+        .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+        .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID));
+List<UserVO> userVOS = userMapper.selectListByQueryAs(queryWrapper, UserVO.class);
+userVOS.forEach(System.err::println);
 ```
 
 构建的联表查询 SQL 语句为：
