@@ -19,6 +19,7 @@ import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.row.RowCPI;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
@@ -150,7 +151,7 @@ public class OracleDialect extends CommonsDialectImpl {
          */
         StringBuilder fields = new StringBuilder();
         Row firstRow = rows.get(0);
-        Set<String> attrs = firstRow.obtainModifyAttrs();
+        Set<String> attrs = RowCPI.getModifyAttrs(firstRow);
         int index = 0;
         for (String column : attrs) {
             fields.append(wrap(column));

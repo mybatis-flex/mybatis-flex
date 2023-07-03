@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.core.util;
 
-import com.mybatisflex.core.javassist.ModifyAttrsRecordProxyFactory;
+import com.mybatisflex.core.update.ModifyAttrsRecordProxyFactory;
 import com.mybatisflex.core.table.IdInfo;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;

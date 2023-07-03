@@ -21,12 +21,13 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.javassist.ModifyAttrsRecord;
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.tenant.TenantManager;
+import com.mybatisflex.core.update.RawValue;
+import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.*;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
@@ -298,7 +299,8 @@ public class TableInfo {
     }
 
     public String getColumnByProperty(String property) {
-        return propertyColumnMapping.get(property);
+        String column = propertyColumnMapping.get(property);
+        return StringUtil.isNotBlank(column) ? column : property;
     }
 
     public Map<String, Class<?>> getAssociationType() {
@@ -479,6 +481,28 @@ public class TableInfo {
         }
     }
 
+
+    public Map<String, RawValue> obtainUpdateRawValueMap(Object entity) {
+        if (!(entity instanceof UpdateWrapper)) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, Object> updates = ((UpdateWrapper) entity).getUpdates();
+        if (updates.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, RawValue> map = new HashMap<>();
+        updates.forEach((key, value) -> {
+            if (value instanceof RawValue) {
+                String column = getColumnByProperty(key);
+                map.put(column, (RawValue) value);
+            }
+        });
+
+        return map;
+    }
+
     /**
      * 获取要修改的值
      *
@@ -488,13 +512,14 @@ public class TableInfo {
     public Set<String> obtainUpdateColumns(Object entity, boolean ignoreNulls, boolean includePrimary) {
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
         Set<String> columns = new LinkedHashSet<>(); //需使用 LinkedHashSet 保证 columns 的顺序
-        if (entity instanceof ModifyAttrsRecord) {
-            Set<String> properties = ((ModifyAttrsRecord) entity).obtainModifyAttrs();
-            if (properties.isEmpty()) {
+        if (entity instanceof UpdateWrapper) {
+//            Set<String> properties = ((UpdateWrapper) entity).getModifyAttrs();
+            Map<String, Object> updates = ((UpdateWrapper) entity).getUpdates();
+            if (updates.isEmpty()) {
                 return Collections.emptySet();
             }
-            for (String property : properties) {
-                String column = propertyColumnMapping.get(property);
+            for (String property : updates.keySet()) {
+                String column = getColumnByProperty(property);
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
                     continue;
                 }
@@ -508,6 +533,7 @@ public class TableInfo {
                     continue;
                 }
 
+//                Object value = updates.get(property);
                 // ModifyAttrsRecord 忽略 ignoreNulls 的设置
                 // Object value = getPropertyValue(metaObject, property);
                 // if (ignoreNulls && value == null) {
@@ -557,15 +583,19 @@ public class TableInfo {
      * @return 数组
      */
     public Object[] buildUpdateSqlArgs(Object entity, boolean ignoreNulls, boolean includePrimary) {
-        MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
+
         List<Object> values = new ArrayList<>();
-        if (entity instanceof ModifyAttrsRecord) {
-            Set<String> properties = ((ModifyAttrsRecord) entity).obtainModifyAttrs();
-            if (properties.isEmpty()) {
-                return values.toArray();
+        if (entity instanceof UpdateWrapper) {
+            Map<String, Object> updates = ((UpdateWrapper) entity).getUpdates();
+            if (updates.isEmpty()) {
+                return FlexConsts.EMPTY_ARRAY;
             }
-            for (String property : properties) {
-                String column = propertyColumnMapping.get(property);
+//            Set<String> properties = (Set<String>) updates;
+//            if (properties.isEmpty()) {
+//                return values.toArray();
+//            }
+            for (String property : updates.keySet()) {
+                String column = getColumnByProperty(property);
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
                     continue;
                 }
@@ -578,7 +608,19 @@ public class TableInfo {
                     continue;
                 }
 
-                Object value = buildColumnSqlArg(metaObject, column);
+                Object value = updates.get(property);
+                if (value instanceof RawValue) {
+                    continue;
+                }
+
+                if (value != null) {
+                    ColumnInfo columnInfo = columnInfoMapping.get(column);
+                    TypeHandler typeHandler = columnInfo.buildTypeHandler();
+                    if (typeHandler != null) {
+                        value = new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
+                    }
+                }
+
                 // ModifyAttrsRecord 忽略 ignoreNulls 的设置，
                 // 当使用 ModifyAttrsRecord 时，可以理解为要对字段进行 null 值进行更新，否则没必要使用 ModifyAttrsRecord
                 // if (ignoreNulls && value == null) {
@@ -589,6 +631,8 @@ public class TableInfo {
         }
         // normal entity. not ModifyAttrsRecord
         else {
+            MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
+
             for (String column : this.columns) {
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
                     continue;
@@ -914,6 +958,20 @@ public class TableInfo {
         }
     }
 
+
+//    private Object buildColumnSqlArg(Object value, String column) {
+//        ColumnInfo columnInfo = columnInfoMapping.get(column);
+////        Object value = getPropertyValue(metaObject, columnInfo.property);
+//
+//        if (value != null) {
+//            TypeHandler typeHandler = columnInfo.buildTypeHandler();
+//            if (typeHandler != null) {
+//                return new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
+//            }
+//        }
+//
+//        return value;
+//    }
 
     private Object buildColumnSqlArg(MetaObject metaObject, String column) {
         ColumnInfo columnInfo = columnInfoMapping.get(column);

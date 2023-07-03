@@ -15,15 +15,21 @@
  */
 package com.mybatisflex.core.row;
 
+import com.mybatisflex.core.update.RawValue;
+
+import java.util.Map;
+import java.util.Set;
+
 /**
  * cross package invoker
  */
 public class RowCPI {
 
-    private RowCPI() {}
+    private RowCPI() {
+    }
 
     public static Object[] obtainModifyValues(Row row) {
-        return row.obtainModifyValues();
+        return row.obtainModifyValuesWithoutPk();
     }
 
     public static String[] obtainsPrimaryKeyStrings(Row row) {
@@ -40,6 +46,17 @@ public class RowCPI {
 
     public static Object[] obtainAllModifyValues(Row row) {
         return row.obtainAllModifyValues();
+    }
+
+    public static Set<String> getModifyAttrs(Row row) {
+        return row.getModifyAttrs();
+    }
+
+    public static Map<String, RawValue> getRawValueMap(Row row){
+        return row.getRawValueMap();
+    }
+    public static void resetByAttrs(Row row, Set<String> resetAttrs) {
+        row.resetByAttrs(resetAttrs);
     }
 
 }

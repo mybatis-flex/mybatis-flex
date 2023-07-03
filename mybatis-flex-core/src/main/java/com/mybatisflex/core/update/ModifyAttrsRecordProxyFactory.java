@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mybatisflex.core.javassist;
+package com.mybatisflex.core.update;
 
 import org.apache.ibatis.javassist.util.proxy.ProxyFactory;
 import org.apache.ibatis.javassist.util.proxy.ProxyObject;
@@ -37,7 +37,7 @@ public class ModifyAttrsRecordProxyFactory {
         factory.setSuperclass(target);
 
         Class<?>[] interfaces = Arrays.copyOf(target.getInterfaces(), target.getInterfaces().length + 1);
-        interfaces[interfaces.length - 1] = ModifyAttrsRecord.class;
+        interfaces[interfaces.length - 1] = UpdateWrapper.class;
         factory.setInterfaces(interfaces);
 
 

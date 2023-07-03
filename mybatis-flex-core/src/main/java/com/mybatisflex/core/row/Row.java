@@ -16,8 +16,11 @@
 package com.mybatisflex.core.row;
 
 import com.mybatisflex.core.FlexConsts;
-import com.mybatisflex.core.javassist.ModifyAttrsRecord;
 import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.update.RawValue;
+import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.ConvertUtil;
 import com.mybatisflex.core.util.SqlUtil;
@@ -30,7 +33,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRecord {
+public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper {
 
     //主键，多个主键用英文逗号隔开
     private RowKey[] primaryKeys;
@@ -40,14 +43,10 @@ public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRec
         return row.set(key, value);
     }
 
-
-    private final Set<String> modifyAttrs = new LinkedHashSet<>();
-
     @Override
-    public Set<String> getModifyAttrs() {
-        return modifyAttrs;
+    public Map<String, Object> getUpdates() {
+        return this;
     }
-
 
     public static Row ofKey(String primaryKey, Object value) {
         Row row = new Row();
@@ -98,6 +97,7 @@ public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRec
     }
 
 
+    @Override
     public Row set(String column, Object value) {
         if (StringUtil.isBlank(column)) {
             throw new IllegalArgumentException("key column not be null or empty.");
@@ -105,28 +105,23 @@ public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRec
 
         SqlUtil.keepColumnSafely(column);
 
-        //覆盖 put
-        super.put(column, value);
-
-        boolean isPrimaryKey = false;
-        if (this.primaryKeys != null) {
-            for (RowKey rowKey : primaryKeys) {
-                if (rowKey.getKeyColumn().equals(column)) {
-                    isPrimaryKey = true;
-                    break;
-                }
-            }
-        }
-
-        if (!isPrimaryKey) {
-            addModifyAttr(column);
+        if (value instanceof QueryWrapper || value instanceof QueryCondition) {
+            setRaw(column, value);
+        } else {
+            super.put(column, value);
         }
 
         return this;
     }
 
+    @Override
     public Row set(QueryColumn queryColumn, Object value) {
-        return set(queryColumn.getName(), value);
+        if (value instanceof QueryWrapper || value instanceof QueryCondition) {
+            seRaw(queryColumn, value);
+        } else {
+            super.put(queryColumn.getName(), value);
+        }
+        return this;
     }
 
 
@@ -287,7 +282,6 @@ public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRec
 
     @Override
     public Object remove(Object key) {
-        removeModifyAttr(key.toString());
         return super.remove(key);
     }
 
@@ -315,57 +309,54 @@ public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRec
         return ret;
     }
 
-    public void prepareAttrsByKeySet(){
-        this.modifyAttrs.clear();
-        this.modifyAttrs.addAll(keySet());
-
-        if (this.primaryKeys != null){
-            for (RowKey primaryKey : primaryKeys) {
-                this.modifyAttrs.removeIf(s -> s.equalsIgnoreCase(primaryKey.getKeyColumn()));
-            }
-        }
-    }
-
-
-    public void prepareAttrsByKeySet(RowKey ... primaryKeys){
-        this.modifyAttrs.clear();
-        this.modifyAttrs.addAll(keySet());
-        this.primaryKeys = primaryKeys;
-
-        for (RowKey primaryKey : primaryKeys) {
-            this.modifyAttrs.removeIf(s -> s.equalsIgnoreCase(primaryKey.getKeyColumn()));
-        }
-    }
-
-    public void prepareAttrs(Collection<String> attrs) {
-        if (attrs == null) {
-            throw new NullPointerException("attrs is null.");
-        }
-        clearModifyFlag();
-        modifyAttrs.addAll(attrs);
-    }
-
     public RowKey[] getPrimaryKeys() {
         return primaryKeys;
     }
 
     public void setPrimaryKeys(RowKey... primaryKeys) {
         this.primaryKeys = primaryKeys;
-        for (RowKey primaryKey : primaryKeys) {
-            this.modifyAttrs.removeIf(s -> s.equalsIgnoreCase(primaryKey.getKeyColumn()));
+    }
+
+     Set<String> getModifyAttrs() {
+        int pkCount = primaryKeys != null ? primaryKeys.length : 0;
+        if (pkCount == 0) {
+            return keySet();
         }
+
+        Set<String> attrs = new LinkedHashSet<>(keySet());
+        attrs.removeIf(this::isPk);
+        return attrs;
+    }
+
+    Map<String,RawValue> getRawValueMap(){
+        Map<String,RawValue> map = new HashMap<>();
+        forEach((s, o) -> {
+            if (o instanceof RawValue){
+                map.put(s, (RawValue) o);
+            }
+        });
+        return map;
+    }
+
+
+
+
+     void resetByAttrs(Set<String> resetAttrs) {
+        keySet().removeIf(s -> !resetAttrs.contains(s));
     }
 
     /**
      * 获取修改的值，值需要保持顺序，返回的内容不包含主键的值
      */
-    Object[] obtainModifyValues() {
-        Object[] values = new Object[modifyAttrs.size()];
-        int index = 0;
-        for (String modifyAttr : modifyAttrs) {
-            values[index++] = get(modifyAttr);
+    Object[] obtainModifyValuesWithoutPk() {
+        List<Object> values = new ArrayList<>();
+        for (String key : keySet()) {
+            Object value = get(key);
+            if (!isPk(key) && !(value instanceof RawValue)) {
+                values.add(value);
+            }
         }
-        return values;
+        return values.toArray();
     }
 
 
@@ -396,9 +387,20 @@ public class Row extends LinkedHashMap<String, Object> implements ModifyAttrsRec
 
 
     Object[] obtainAllModifyValues() {
-        return ArrayUtil.concat(obtainModifyValues(), obtainsPrimaryValues());
+        return ArrayUtil.concat(obtainModifyValuesWithoutPk(), obtainsPrimaryValues());
     }
 
+
+    private boolean isPk(String attr) {
+        if (primaryKeys != null && primaryKeys.length > 0) {
+            for (RowKey primaryKey : primaryKeys) {
+                if (primaryKey.keyColumn.equalsIgnoreCase(attr)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 
 }

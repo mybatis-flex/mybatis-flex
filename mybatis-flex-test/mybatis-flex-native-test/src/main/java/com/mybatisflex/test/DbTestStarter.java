@@ -92,11 +92,11 @@ public class DbTestStarter {
 //        }
 
 //        rows.forEach(row2 -> row2.setPrimaryKeys(RowKey.AUTO));
-        rows.forEach(r -> {
-            r.prepareAttrsByKeySet();
-            r.setPrimaryKeys(RowKey.AUTO);
-        });
-        Db.insertBatch(null,"tb_account", rows, 100);
+//        rows.forEach(r -> {
+//            r.prepareAttrsByKeySet();
+//            r.setPrimaryKeys(RowKey.AUTO);
+//        });
+//        Db.insertBatch(null,"tb_account", rows, 100);
 
         //再次查询全部数据
         rows = Db.selectAll(null,"tb_account");

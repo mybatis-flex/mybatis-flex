@@ -17,4 +17,4 @@
 /**
  * 处理部分字段更新。
  */
-package com.mybatisflex.core.javassist;
+package com.mybatisflex.core.update;

@@ -87,8 +87,8 @@ public class RowSqlProvider {
 
         // 让所有 row 的列顺序和值的数量与第条数据保持一致
         // 这个必须 new 一个 LinkedHashSet，因为 keepModifyAttrs 会清除 row 所有的 modifyAttrs
-        Set<String> modifyAttrs = new LinkedHashSet<>(rows.get(0).obtainModifyAttrs());
-        rows.forEach(row -> row.prepareAttrs(modifyAttrs));
+        Set<String> modifyAttrs = new LinkedHashSet<>(RowCPI.getModifyAttrs(rows.get(0)));
+        rows.forEach(row -> RowCPI.resetByAttrs(row, modifyAttrs));
 
 
         Object[] values = new Object[]{};

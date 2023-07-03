@@ -44,6 +44,7 @@ public class MapperProxyCacheTestStarter {
                 .addMapper(AccountMapper.class)
                 .start();
 
+
         //开启审计功能
         AuditManager.setAuditEnable(true);
 

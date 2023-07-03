@@ -13,37 +13,40 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.core.javassist;
+package com.mybatisflex.core.update;
 
 
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.javassist.util.proxy.MethodHandler;
 
 import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+class ModifyAttrsRecordHandler implements MethodHandler {
 
-public class ModifyAttrsRecordHandler implements MethodHandler {
+    //更新内容
+    private final Map<String, Object> updates = new LinkedHashMap<>();
 
-    private final Set<String>  modifyAttrs = new LinkedHashSet<>();
-
-    public Set<String> getModifyAttrs() {
-        return modifyAttrs;
+    public Map<String, Object> getUpdates() {
+        return updates;
     }
 
 
     @Override
     public Object invoke(Object self, Method originalMethod, Method proxyMethod, Object[] args) throws Throwable {
 
-        if (originalMethod.getName().startsWith("set")){
+        String methodName = originalMethod.getName();
+        if (methodName.startsWith("set")
+                && methodName.length() > 3
+                && Character.isUpperCase(methodName.charAt(3))
+                && originalMethod.getParameterCount() == 1) {
             String property = StringUtil.firstCharToLowerCase(originalMethod.getName().substring(3));
-            modifyAttrs.add(property);
+            updates.put(property, args[0]);
         }
 
         return proxyMethod.invoke(self, args);
     }
-
 
 
 }
