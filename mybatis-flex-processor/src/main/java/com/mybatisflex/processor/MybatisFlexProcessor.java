@@ -149,7 +149,11 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 assert table != null;
 
                 // 类属性
-                List<ColumnInfo> columnInfoList = new LinkedList<>();
+                //修改bug https://gitee.com/mybatis-flex/mybatis-flex/issues/I7I08X
+                //会执行 subClass subClass
+                //再执行 superClass superClass
+                //按照顺序使用，子类有的属性，父类放不进去，也就形成了子类覆盖父类
+                Collection<ColumnInfo> columnInfoList = new HashSet<>();
                 // 默认查询的属性，非 isLarge 字段
                 List<String> defaultColumns = new ArrayList<>();
 
@@ -220,7 +224,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
 
-    private void fillColumnInfoList(List<ColumnInfo> columnInfoList, List<String> defaultColumns, TypeElement baseElement, TypeElement classElement, boolean camelToUnderline) {
+    private void fillColumnInfoList(Collection<ColumnInfo> columnInfoList, List<String> defaultColumns, TypeElement baseElement, TypeElement classElement, boolean camelToUnderline) {
         for (Element fieldElement : classElement.getEnclosedElements()) {
 
             // all fields
@@ -296,6 +300,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 columnInfo.setProperty(property);
                 columnInfo.setColumn(columnName);
                 columnInfo.setAlias(alias);
+                columnInfo.setFullClassName(baseElement.getQualifiedName().toString());
 
                 columnInfoList.add(columnInfo);
 
