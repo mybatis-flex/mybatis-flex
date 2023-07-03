@@ -189,7 +189,6 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
         return r != null ? r : defaultValue;
     }
 
-
     public Float getFloat(String key, Float defaultValue) {
         Float r = ConvertUtil.toFloat(super.get(key));
         return r != null ? r : defaultValue;
@@ -282,7 +281,12 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
 
     @Override
     public Object remove(Object key) {
-        return super.remove(key);
+        for (String innerKey : keySet()) {
+            if (innerKey.equalsIgnoreCase((String) key)) {
+                return super.remove(innerKey);
+            }
+        }
+        return null;
     }
 
     public <T> T toEntity(Class<T> entityClass) {
@@ -317,6 +321,16 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
         this.primaryKeys = primaryKeys;
     }
 
+    public void keep(String... columns) {
+        entrySet().removeIf(entry -> !ArrayUtil.contains(columns, entry.getKey()));
+    }
+
+
+    public void keep(Set<String> columns) {
+        entrySet().removeIf(entry -> !columns.contains(entry.getKey()));
+    }
+
+
     Set<String> getModifyAttrs() {
         int pkCount = primaryKeys != null ? primaryKeys.length : 0;
         if (pkCount == 0) {
@@ -338,10 +352,6 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
         return map;
     }
 
-
-    void resetByAttrs(Set<String> resetAttrs) {
-        keySet().removeIf(s -> !resetAttrs.contains(s));
-    }
 
     /**
      * 获取修改的值，值需要保持顺序，返回的内容不包含主键的值

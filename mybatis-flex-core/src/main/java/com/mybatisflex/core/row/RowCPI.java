@@ -55,8 +55,5 @@ public class RowCPI {
     public static Map<String, RawValue> getRawValueMap(Row row){
         return row.getRawValueMap();
     }
-    public static void resetByAttrs(Row row, Set<String> resetAttrs) {
-        row.resetByAttrs(resetAttrs);
-    }
 
 }

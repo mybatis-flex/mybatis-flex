@@ -18,8 +18,6 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
-import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowKey;
@@ -30,6 +28,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 
@@ -50,8 +49,8 @@ public class RowTestStarter {
         AuditManager.setAuditEnable(true);
         AuditManager.setMessageCollector(new ConsoleMessageCollector());
 
-        Page<Row> rowPage = Db.paginate("flex","tb_account", 1, 10, QueryWrapper.create().hint("USE_MERGE"));
-        System.out.println(rowPage);
+//        Page<Row> rowPage = Db.paginate("flex","tb_account", 1, 10, QueryWrapper.create().hint("USE_MERGE"));
+//        System.out.println(rowPage);
 
 
         //查询 ID 为 1 的数据
@@ -76,102 +75,44 @@ public class RowTestStarter {
         List<Row> rowList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Row row = Row.ofKey(RowKey.AUTO);
-            row.set(ACCOUNT.USER_NAME,"zhang" + i);
-            row.set(ACCOUNT.AGE,18);
-//            row.set(ACCOUNT.BIRTHDAY,new Date());
-
+            row.set(ACCOUNT.USER_NAME, "zhang" + i);
+            row.set(ACCOUNT.AGE, 18);
             rowList.add(row);
         }
 
-        Db.insertBatch(null,"tb_account",rowList);
+        Db.insertBatch("tb_account", rowList);
 
         for (Row row : rowList) {
             System.out.println(">>>>>>>id: " + row.get("id"));
         }
 
-        List<Row> rows1 = Db.selectAll(null,"tb_account");
+        List<Row> rows1 = Db.selectAll("tb_account");
         RowUtil.printPretty(rows1);
 
-//        //新增一条数据，自增
-//        Row newRow = Row.ofKey(RowKey.ID_AUTO) // id 自增
-//                .set("user_name", "lisi")
-//                .set("age", 22)
-//                .set("birthday", new Date());
-//
-//        Db.insert("tb_account", newRow);
+        System.out.println("//////update....");
 
-//
-//        //新增后，查看newRow 的 id，会自动被赋值
-//        System.out.println(">>>>>>newRow.id: " + newRow.get("id"));
-//
-//
-//        bootstrap.execute(RowMapper.class, rowMapper ->
-//                rowMapper.insertBySql("insert into tb_account(user_name,age,birthday) values (?,?,?)"
-//                        , "张三"
-//                        , 18
-//                        , new Date()));
-//
-//
-//        List<Row> newRowList = new ArrayList<>();
-//        for (int i = 0; i < 5; i++) {
-//            Row insert = Row.ofKey(RowKey.ID_AUTO) //id 自增
-//                    .set("user_name", "new_user_" + i)
-//                    .set("age", 22)
-//                    .set("birthday", new Date());
-//            newRowList.add(insert);
-//        }
-//
-//        //批量插入数据
-//        bootstrap.execute(RowMapper.class, rowMapper ->
-//                rowMapper.insertBatchWithFirstRowColumns("tb_account", newRowList));
-//
-//
-//        //根据主键 ID 删除数据
-//        bootstrap.execute(RowMapper.class, rowMapper ->
-//                rowMapper.deleteById("tb_account", Row.ofKey(RowKey.ID_AUTO, 1)));
-//
-//
-//        //根据原生 SQL 删除数据
-//        bootstrap.execute(RowMapper.class, rowMapper ->
-//                rowMapper.deleteBySql("delete from tb_account where id  = ? ", 2));
-//
-//
-//        //根据主键 列表 删除数据
-//        bootstrap.execute(RowMapper.class, rowMapper ->
-//                rowMapper.deleteBatchByIds("tb_account", "id", Arrays.asList(2, 3, 4)));
-//
-//
-//        Map<String, Object> where = new HashMap<>();
-//        where.put("id", 2);
-//        //根据 map 删除数据
-//        bootstrap.execute(RowMapper.class, rowMapper ->
-//                rowMapper.deleteByMap("tb_account", where));
-//
-//
-//        //更新数据
-//        Row updateRow = Row.ofKey(RowKey.ID_AUTO, 6)
-//                .set("user_name", "newNameTest");
-//        bootstrap.execute(RowMapper.class, rowMapper ->
-//                rowMapper.updateById("tb_account", updateRow));
-//
-//
-//        //更新数据
-//        bootstrap.execute(RowMapper.class, rowMapper ->
-//                rowMapper.updateBySql("update tb_account set user_name = ? where id = ?", "李四", 7));
-//
-//
-//        //查询全部数据
-//        List<Row> rows = bootstrap.execute(RowMapper.class, rowMapper ->
-//                rowMapper.selectAll("tb_account"));
-//
-//
-//        System.out.println("rows count: " + rows.size()); // 7
-//        System.out.println(rows);
-//
-//
-//        //分页查询，第 2 页，每页 4 条数据
-//        Page<Row> rowPage = bootstrap.execute(RowMapper.class, rowMapper ->
-//                rowMapper.paginate("tb_account", 2, 4, QueryWrapper.create()));
-//        System.out.println(rowPage);
+        Row row = Row.ofKey("id", 5);
+        row.setRaw("age", "age + 5");
+        Db.updateById("tb_account", row);
+
+        Row row1 = Db.selectOneById("tb_account", "id", 5);
+        RowUtil.printPretty(row1);
+
+
+        System.out.println("////////////insert");
+        List<Row> rowList1 = Db.selectAll("tb_account");
+        rowList1.forEach(new Consumer<Row>() {
+            @Override
+            public void accept(Row row) {
+                row.remove("ID");
+            }
+        });
+
+        Db.insertBatch("tb_account", rowList1);
+
+        List<Row> rowList2 = Db.selectAll("tb_account");
+        RowUtil.printPretty(rowList2);
+
+
     }
 }
