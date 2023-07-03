@@ -16,29 +16,15 @@
 
 package com.mybatisflex.test;
 
-import com.mybatisflex.annotation.ColumnAlias;
-import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 
 import java.io.Serializable;
 
-@Table(value = "tb_account_vv", dataSource = "ds2", onSet = AccountOnSetListener.class)
-public class AccountVV extends Account implements Serializable {
+@Table(value = "tb_account_2")
+public class Account2 extends AccountVV implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id(keyType = KeyType.Auto)
-    private Long id;
-
-    private String userName;
-
     private int age;
-    private int ageVV;
 
-    @Override
-    @ColumnAlias("account_v_v_id")
-    public Long getId() {
-        return id;
-    }
 }
