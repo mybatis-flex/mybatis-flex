@@ -109,3 +109,78 @@ Account account = UpdateEntity.of(Account.class);
 account.setId(100);
 ```
 
+## 部分字段更新（增强）
+
+在以上的部分字段更新中，只能更新为用户传入的数据，但是有些时候我们想更新为数据库计算的数据，比如 SQL：
+
+```sql
+update tb_account
+set user_name = ?, age = age + 1 where id = ? 
+```
+此时，我们可以直接把 `Account` 强转为 `UpdateWrapper` 然后进行更新，例如：
+
+```java
+Account account = UpdateEntity.of(Account.class, 100);
+
+account.setUserName(null);
+
+// 通过 UpdateWrapper 操作 account 数据
+UpdateWrapper wrapper = (UpdateWrapper)account;
+wrapper.setRaw("age", "age + 1")
+
+accountMapper.update(account);
+```
+
+其执行的 SQL 为：
+
+```sql
+update tb_account
+set user_name = null, age = age + 1 where id = 100
+```
+
+**更高级的用法**
+
+示例1：
+
+
+```java
+Account account = UpdateEntity.of(Account.class, 100);
+
+account.setUserName("Michael");
+
+// 通过 UpdateWrapper 操作 account 数据
+UpdateWrapper wrapper = (UpdateWrapper)account;
+wrapper.set(ACCOUNT.AGE, ACCOUNT.AGE.add(1))
+
+accountMapper.update(account);
+```
+
+其执行的 SQL 为：
+
+```sql
+update tb_account
+set user_name = "michael", age = age + 1 where id = 100
+```
+
+
+示例2：
+
+```java
+Account account = UpdateEntity.of(Account.class, 100);
+
+account.setUserName("Michael");
+
+// 通过 UpdateWrapper 操作 account 数据
+UpdateWrapper wrapper = (UpdateWrapper)account;
+wrapper.set(ACCOUNT.AGE, select().from(...))
+
+accountMapper.update(account);
+```
+
+其执行的 SQL 为：
+
+```sql
+update tb_account
+set user_name = "michael", age = (select ... from ... ) 
+where id = 100
+```
