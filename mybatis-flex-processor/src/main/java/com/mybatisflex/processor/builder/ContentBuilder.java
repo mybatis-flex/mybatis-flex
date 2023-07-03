@@ -20,6 +20,7 @@ import com.mybatisflex.annotation.Table;
 import com.mybatisflex.processor.entity.ColumnInfo;
 import com.mybatisflex.processor.util.StrUtil;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -56,7 +57,7 @@ public class ContentBuilder {
     public static String buildTableDef(Table table, String entityClass, String entityClassName, boolean allInTablesEnable,
                                        String tableDefPackage, String tableDefClassName,
                                        String tableDefPropertiesNameStyle, String tableDefInstanceSuffix,
-                                       List<ColumnInfo> columnInfoList, List<String> defaultColumns) {
+                                       Collection<ColumnInfo> columnInfoList, List<String> defaultColumns) {
         StringBuilder content = new StringBuilder("package ");
         content.append(tableDefPackage).append(";\n\n");
         content.append("import com.mybatisflex.core.query.QueryColumn;\n");
