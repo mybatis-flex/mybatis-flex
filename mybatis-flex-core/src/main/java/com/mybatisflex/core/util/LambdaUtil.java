@@ -22,6 +22,7 @@ import com.mybatisflex.core.table.TableInfoFactory;
 import org.apache.ibatis.reflection.property.PropertyNamer;
 import org.apache.ibatis.util.MapUtil;
 
+import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class LambdaUtil {
     }
 
 
-    private static <T> SerializedLambda getSerializedLambda(LambdaGetter<T> getter) {
+    private static SerializedLambda getSerializedLambda(Serializable getter) {
         return MapUtil.computeIfAbsent(lambdaMap, getter.getClass(), aClass -> {
             try {
                 Method method = getter.getClass().getDeclaredMethod("writeReplace");

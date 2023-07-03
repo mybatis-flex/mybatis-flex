@@ -811,7 +811,7 @@ public class TableInfo {
 
         // <resultMap> 标签下的 <result> 标签映射
         for (ColumnInfo columnInfo : columnInfoList) {
-            doBuildColumnResultMapping(configuration, existMappingColumns, resultMappings, columnInfo, Collections.EMPTY_LIST, isNested);
+            doBuildColumnResultMapping(configuration, existMappingColumns, resultMappings, columnInfo, Collections.emptyList(), isNested);
         }
 
 
