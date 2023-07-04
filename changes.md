@@ -1,6 +1,22 @@
 # ChangeLog
 
-### v1.4.5 20230703:
+## v1.4.6 20230704:
+- 新增：新增 UpdateWrapper 类，可以通过 entity 转换为 UpdateWrapper 进行数据更新
+- 新增：添加 QueryWrapper.select(QueryColumn[]... queryColumns) 方法
+- 新增：添加 BaseMapper.updateNumberAddByQuery 重载方法，感谢 @Suomm
+- 新增：添加 110+ SQL 常见的函数构建，满足日常开发所需，感谢 @Suomm
+- 优化：对分页查询的 groupby 和 distinct 进一步优化，感谢 @Suomm
+- 优化：对 Row 进行优化，使之更加简单、好用
+- 修复：有父子继承时，如果有相同属性，生成的类中也会有相同的2个属性的问题，感谢 @piggsoft 
+- 修复：在某些极端的情况下，由于 MappedStatement 缓存造成的类型转换异常的问题
+- 修复：逻辑删除有 groupBy 和 join 的分页查询时，计算的总量包含已删除数据的问题 #I7HVXT
+- 文档：优化 Field Query 的相关文档
+- 文档：添加关于 UpdateWrapper 使用的相关文档
+- 文档：更新关于 SQL 函数的相关文档
+
+
+
+## v1.4.5 20230703:
 - 新增：添加 sql "CONCAT" 函数的使用支持，感谢 @Suomm
 - 新增：添加 BaseMapper.selectObjectByQueryAs 方法，感谢 @Suomm
 - 新增：添加 @ColumnAlias 注解，并解决在 join query 下可能出现的错误赋值的问题，感谢 @Suomm
@@ -26,7 +42,7 @@
 - processor.entity.ignoreSuffixes ---> processor.tableDef.ignoreEntitySuffixes
 
 
-### v1.4.4 20230628:
+## v1.4.4 20230628:
 - 新增：在 SpringBoot 下添加 `@UseDataSource` 对 IService 和 Controller 支持的功能，感谢 @Suomm
 - 优化：IService 中的 saveOrUpdate 保存逻辑应该与同类 save 逻辑保持一致； #I7G8MC
 - 优化：为更多的 Java 代码完善代码注释已经添加  package-info.java，感谢 @Suomm
@@ -36,12 +52,12 @@
 
 
 
-### v1.4.3 20230624:
+## v1.4.3 20230624:
 - 修复：紧急修复 v1.4.2 Push 到中央仓库无法同步的问题
 
 
 
-### v1.4.2 20230624:
+## v1.4.2 20230624:
 - 新增：新增数据源加密内容的解密器配置功能
 - 新增：QueryWrapper 添加 with 的 SQL 构建方法;  #I7E19B
 - 新增：新增 MyBatisFlexCustomizer.java 方便用户对 MyBatisFlex 进行初始化配置
@@ -67,7 +83,7 @@
 
 
 
-### v1.4.1 20230620:
+## v1.4.1 20230620:
 - 新增：分页查询 Page 对象添加否优化 count 查询的选项，感谢 @王帅
 - 新增：添加 LogicDeleteProcessor.java 用于构建自定义的逻辑删除功能
 - 优化：完善后添加类的相关注释、版权信息等内容，感谢 @王帅
@@ -82,7 +98,7 @@
 
 
 
-### v1.4.0 20230618:
+## v1.4.0 20230618:
 - 新增：LogicDeleteManager，用于处理跳过逻辑删除的场景
 - 新增：BaseMapper 新增 insertWithPk 方法，用于插入带有主键的 Entity 数据
 - 新增：left join 等添加对基本类型集合属性的支持，感谢 @王帅
@@ -94,7 +110,7 @@
 
 
 
-### v1.3.9 20230617:
+## v1.3.9 20230617:
 - 新增：Db.txWithResult 方法，用于执行有返回结果的事务
 - 优化：更新 OracleDialect 的相关关键字
 - 优化：Page.java 允许传入小于 0 TotalRow 数据
@@ -108,7 +124,7 @@
 
 
 
-### v1.3.8 20230614:
+## v1.3.8 20230614:
 - 新增：添加 FlexDataSource.removeDatasource() 方法，#I7CQU9
 - 新增：代码生成器添加 Schema 配置的支持，感谢 @Font_C
 - 新增：SQL 构建添加 year/month/day 等更多的函数方法 #I7A7ZA
@@ -131,7 +147,7 @@
 
 
 
-### v1.3.7 20230612:
+## v1.3.7 20230612:
 - 新增：添加 QueryWrapper.select(String) 和 QueryWrapper.select(lambda) 方法
 - 新增：添加 UseDataSource 注解对 mapper 类作用的支持
 - 新增：QueryWrapper 的 clone() 方法，方便用于深度复制当前的 QueryWrapper，感谢 @王帅
@@ -152,7 +168,7 @@
 
 
 
-### v1.3.6 20230609:
+## v1.3.6 20230609:
 - 新增：QueryWrapper 添加对 Lambda 构建的支持
 - 新增：APT 添加 processor.tablesDefSuffix 配置 Table 后缀的支持
 - 新增：多表查询支持自动映射实体类中的 association 和 collection 类型，感谢 @王帅
@@ -169,7 +185,7 @@
 
 
 
-### v1.3.5 20230606:
+## v1.3.5 20230606:
 - 新增：代码生成器添加生成 spring-cache 缓存模板配置。感谢 @王帅
 - 新增：Db + Row 添加 schema 的支持。感谢 @Font_C
 - 新增：IService 添加 pageAs 方法。感谢 @王帅
@@ -191,7 +207,7 @@
 
 
 
-### v1.3.4 20230601:
+## v1.3.4 20230601:
 - 新增：添加 Spring 下的 CacheableServiceImpl 实现类，方便用户缓存。感谢 @王帅
 - 优化：重构 IService，使之有更好的方法服用。感谢 @王帅
 - 优化：重命名 QueryWrapper 的 "toDebugSQL()" 方法名为 "toSQL()"
@@ -202,7 +218,7 @@
 
 
 
-### v1.3.3 20230530:
+## v1.3.3 20230530:
 - 新增：添加动态表名和动态 Schema 的支持 #I6VRMF #I6WS3E #I72X21
 - 新增：添加 @Table(schema=xxx) 配置的支持 #I6VD6U
 - 新增：Left join 等关联查询时，支持直接赋值对象属性的功能
@@ -220,7 +236,7 @@
 
 
 
-### v1.3.2 20230528:
+## v1.3.2 20230528:
 - 新增：select (field1 * field2 * 100) as xxx from ... 的 SQL 构建场景
 - 优化：ClassUtil.wrap 方法修改为 getWrapType
 - 优化：重构 BaseMapper.selectListByQueryAs() 方法，使其更加通用
@@ -232,7 +248,7 @@
 
 
 
-### v1.3.1 20230526:
+## v1.3.1 20230526:
 - 新增：分页查询添加关联字段查询功能；
 - 新增：Mapper 添加 updateNumberAddByQuery 方法，用于 update table set xxx = xxx + 1 的场景；
 - 优化：添加 FieldWrapper 使得关联字段查询拥有更高的性能
@@ -252,7 +268,7 @@
 
 
 
-### v1.3.0 20230525:
+## v1.3.0 20230525:
 - 新增：新增 一对多、多对一 查询功能
 - 新增：为 SqlServer 添加独立的 LimitOffset 处理器
 - 新增：QueryWrapper 新增 "for update" 的 SQL 构建支持
@@ -267,7 +283,7 @@
 
 
 
-### v1.2.9 20230523:
+## v1.2.9 20230523:
 - 新增：字段添加对 Byte.class 类型的支持 #I76GNW
 - 修复："select * ,(select ...) from ..." 第二个 select 有参数时出错的问题
 - 修复：QueryCondition 在 left join 查询是出现 NPE 的问题
@@ -282,7 +298,7 @@
 
 
 
-### v1.2.8 20230522:
+## v1.2.8 20230522:
 - 新增：新增 select id,(select...) from 的支持
 - 优化：Solon 插件增加 RowMapperInvoker 注入和 FlexGlobalConfig 可事件扩展的支持，感谢 @西东
 - 优化：分页的 count 查询默认去掉 left join 和 order by 等
@@ -293,7 +309,7 @@
 
 
 
-### v1.2.7 20230520:
+## v1.2.7 20230520:
 - 新增：添加 solon 关于 ServiceImpl 的实现
 - 新增：left join 等 join 查询添加 as(lambda) 的支持
 - 优化：优化 EnumWrapper.java 使之具有更高的性能
@@ -305,7 +321,7 @@
 
 
 
-### v1.2.6 20230518:
+## v1.2.6 20230518:
 - 新增：IService 添加 updateBatch 方法，感谢 @Saoforest
 - 优化：findById 默认返回 isLarge 的字段 #I73SJY
 - 优化：WrapperUtil.getValues() 并直接读取枚举内容
@@ -315,7 +331,7 @@
 
 
 
-### v1.2.5 20230517:
+## v1.2.5 20230517:
 - 新增：Db.executeBatch 方法，用于批量操作
 - 新增：Db 工具类添加基于 Entity 的 updateBatch 方法，感谢 @黄沐鸿
 - 新增：KeyGenerators.java 方便进行主键生成策略配置
@@ -329,7 +345,7 @@
 
 
 
-### v1.2.4 20230515:
+## v1.2.4 20230515:
 - 新增：Db.updateBatch() 方法，用于批量修改或者插入等场景
 - 新增：通过雪花算法生成数据库主键，内置雪花算法，感谢 @王帅
 - 新增：QueryCondition 可以直接传入枚举变量，自动读取 @EnumValue
@@ -353,7 +369,7 @@
 
 
 
-### v1.2.3 20230511:
+## v1.2.3 20230511:
 - 新增：MaskManager 添加 withoutMask 模板方法，感谢 @pengpeng
 - 新增：TenantManager 添加 withoutTenantCondition 模板方法，感谢 @pengpeng
 - 新增：代码生成器添加 GlobalConfig.others 属性，方便自定义 generator 的配置
@@ -363,7 +379,7 @@
 
 
 
-### v1.2.2 20230510:
+## v1.2.2 20230510:
 - 新增：增强 Service 及其实现类，感谢 @王帅
 - 修复：where子句无任何符合的条件时，逻辑删除字段处理错误 #I70OIA
 - 修复：在使用事务的情况下，无法切换数据源的问题 #I70QWU
@@ -374,7 +390,7 @@
 
 
 
-### v1.2.1 20230506:
+## v1.2.1 20230506:
 - 新增：代码生成器添加 tableDef 的生成功能；感谢 @笨小孩
 - 新增：增指定批次批量删除的方法，防止请求时间过长异常；感谢 @笨小孩
 - 优化：Mapper 配置所对应的 XML 文件 增加默认值；感谢 @lhzsdnu
@@ -395,7 +411,7 @@
 
 
 
-### v1.2.0 20230426:
+## v1.2.0 20230426:
 - 新增：FlexGlobalConfig.setDefaultConfig 方法，使其扩展更加灵活，用于适配 solon
 - 新增：BaseMapper.insertBatch(entities,size) 方法，自定义分批插入；感谢 @庄佳彬
 - 新增：Entity 的监听器可以配置为父类 BaseEntity 的支持
@@ -410,7 +426,7 @@
 
 
 
-### v1.1.9 20230424:
+## v1.1.9 20230424:
 - 新增：根据 id 查询数据时，返回默认字段而非全部字段；感谢 @wnp
 - 新增：APT 添加忽略 entity 后缀的配置支持
 - 修复：where 中第一个括号处理不正确的问题  #I6XXWR
@@ -426,7 +442,7 @@
 
 
 
-### v1.1.8 20230422:
+## v1.1.8 20230422:
 - 新增：添加 RowUtil.printPretty() 方法，用于调试
 - 新增：代码生成器生成代码默认添加注释的功能
 - 新增：添加 BaseEntity.insertSelective() 方法  #I6XS9Z
@@ -442,7 +458,7 @@
 
 
 
-### v1.1.7 20230421:
+## v1.1.7 20230421:
 - 优化：将 ConsoleMessageCollector 的 getFullSql 方法移入 AuditMessage，方便重用 感谢 @pengpeng
 - 修复：配置 mybatis-flex.mapper-locations 在某些场景下会出现 NPE 的问题 #I6X59V
 - 修复：子查询时，子 SQL 的逻辑删除字段未添加 #I6X4U8
@@ -452,7 +468,7 @@
 
 
 
-### v1.1.6 20230419:
+## v1.1.6 20230419:
 - 新增：QueryCondition 添加 when(Predicate) 方法，感谢 @落羽er
 - 新增：代码生成器 ColumnConfig 添加 tenantId 字段配置，用于代码生成时添加 @Column(tenantId=true) 注解，感谢 @pengpeng
 - 新增：代码生成器 TableConfig 添加 mapperGenerateEnable 配置，感谢 @pengpeng
@@ -465,7 +481,7 @@
 
 
 
-### v1.1.5 20230418:
+## v1.1.5 20230418:
 - 新增：增加对 @Table 自动生成 Mapper 的控制属性 mapperGenerateEnable。感谢 @草语
 - 新增：QueryCondition 自动忽略 null 值的功能 #I6WCS9
 - 新增：增加 APT Mapper 自动生成时，可通过 mybatis-flex.properties 自定义父类的支持。感谢 @草语
@@ -484,7 +500,7 @@
 
 
 
-### v1.1.4 20230417:
+## v1.1.4 20230417:
 - 新增：添加逻辑删除的自定义内容配置功能
 - 新增：Entity 添加枚举属性的支持
 - 新增：BaseMapper 新增 insertOrUpdate() 方法
@@ -498,7 +514,7 @@
 
 
 
-### v1.1.3 20230414:
+## v1.1.3 20230414:
 - 新增：代码生成器生成的 entity 可以支持配置父类和实现的接口
 - 修复：在某些场景下出现 Recursive update 错误的问题
 - 修复：Entity 继承父类，但是 APT 生成的代码没有父类字段的问题
@@ -507,7 +523,7 @@
 
 
 
-### v1.1.2 20230413:
+## v1.1.2 20230413:
 - 新增：QueryCondition 的 and(string) 和 or(string) 方法
 - 新增：Page.map() 方法用于 Page 数据转换
 - 新增：SQL 审计新增数据返回行数和自定义业务ID的支持
@@ -530,7 +546,7 @@
 
 
 
-### v1.1.0 20230412:
+## v1.1.0 20230412:
 - 新增：Entity 的 onSet、onUpdate、onInsert 添加全局监听器的配置
 - 优化：移除 QueryColumn.isNull 和 isNotNull 的参数
 - 优化：重构 CustomKeyGenerator 的部分代码
@@ -540,7 +556,7 @@
 
 
 
-### v1.0.9 20230410:
+## v1.0.9 20230410:
 - 新增：新增 多租户 使用的相关模块
 - 新增：BaseMapper 添加 deleteByCondition 和 updateByCondition 方法
 - 新增：添加 paginate 的更简单易用的相关方法
@@ -563,7 +579,7 @@
 
 
 
-### v1.0.7 20230406:
+## v1.0.7 20230406:
 - 新增：BaseMapper 添加可以直接根据 Condition 查询的方法，更加方便
 - 新增：Db 添加可以直接根据 Condition 查询的方法，更加方便
 - 新增：代码生成器添加 @Table(onSet) 的配置
@@ -578,7 +594,7 @@
 
 
 
-### v1.0.6 20230403:
+## v1.0.6 20230403:
 - 新增：新增多数据源的支持
 - 新增：Db.tx() 的事务提交方法
 - 新增：RawValue 类，用于一些不需要进行 Sql 编译的场景
@@ -597,7 +613,7 @@
 
 
 
-### v1.0.5 20230330:
+## v1.0.5 20230330:
 - 新增：新增 SQL 审计模块，默认关闭
 - 新增：代码生成器新增 lombok 配置的支持
 - 新增：代码生成器新增可以配置多个表前缀的支持
@@ -615,7 +631,7 @@
 
 
 
-### v1.0.4 20230326:
+## v1.0.4 20230326:
 - 新增：@ColumnMask() 注解用于数据脱敏，内置 9 中脱敏方式
 - 新增：BaseMapper.selectAll() 方法
 - 新增：BaseMapper.selectListByMap(Map whereConditions, int count) 方法
@@ -626,7 +642,7 @@
 
 
 
-### v1.0.3 20230321:
+## v1.0.3 20230321:
 - 新增：APT 自动生成 Mapper 代码的功能，无需在手动编写
 - 新增：APT 新增 "processer.mappersGenerateEnable" 配置，用于开启是否自动生成 Mapper 类
 - 修复：condition.when(flag) 的 value 值有返回的问题
@@ -634,7 +650,7 @@
 
 
 
-### v1.0.2 20230317:
+## v1.0.2 20230317:
 - 新增：添加自定义字段 typeHandler @Column(typeHandler=xxx) 的配置
 - 新增：内置默认的  fastjson fastjson2 gson jackson 的 TypeHandler，方便开发者直接使用
 - 增强：entity 查询支持通过 QueryWrapper 传入表名以实现更灵活的需求
@@ -646,12 +662,12 @@
 
 
 
-### v1.0.0 20230312:
+## v1.0.0 20230312:
 主要对 beta 和 rc 版本进行大量的重构和测试
 
 
 
-### v1.0.0-rc.1 20230306:
+## v1.0.0-rc.1 20230306:
 - 优化：对 RowSqlProvider.java 的一些方法名进行重构
 - 优化：QueryEntityProcesser 添加对 DEFAULT_COLUMNS 属性的生成
 - 优化：RowKey.java 移除其 set 方法
@@ -664,7 +680,7 @@
 
 
 
-### v1.0.0-beta.2 20230303:
+## v1.0.0-beta.2 20230303:
 - 优化：当只查询一张表时，SQL生成的字段不添加表前缀
 - 优化：完善对 @Column(onUpdateValue=xxx,onInsertValue=xxx) 的支持
 - 优化：完善对 @Column(version = true) 的支持
@@ -676,5 +692,5 @@
 
 
 
-### v1.0.0-beta.1:
+## v1.0.0-beta.1:
 init mybatis-flex
