@@ -197,7 +197,7 @@ public class MapperUtil {
                 "Expected one result (or null) to be returned by selectOne(), but found: " + size);
     }
 
-    public static long getLongNumber(List<Object> objects,QueryWrapper queryWrapper){
+    public static long getLongNumber(List<Object> objects, QueryWrapper queryWrapper) {
         Object object = objects == null || objects.isEmpty() ? null : objects.get(0);
         if (object == null) {
             return 0;

@@ -364,13 +364,7 @@ public class EntitySqlProvider {
     public static String selectListByQuery(Map params, ProviderContext context) {
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
 
-        List<TableInfo> tableInfos = getTableInfos(context, queryWrapper);
-        for (TableInfo tableInfo : tableInfos) {
-            tableInfo.appendConditions(null, queryWrapper);
-
-            CPI.setSelectColumnsIfNecessary(queryWrapper, tableInfo.getDefaultQueryColumn());
-            CPI.setFromIfNecessary(queryWrapper, tableInfo.getSchema(), tableInfo.getTableName());
-        }
+        appendTableConditions(context, queryWrapper, true);
 
         //优先构建 sql，再构建参数
         String sql = DialectFactory.getDialect().forSelectByQuery(queryWrapper);
@@ -380,6 +374,7 @@ public class EntitySqlProvider {
 
         return sql;
     }
+
 
     /**
      * selectCountByQuery 的 sql 构建
@@ -392,12 +387,7 @@ public class EntitySqlProvider {
     public static String selectObjectByQuery(Map params, ProviderContext context) {
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
 
-        List<TableInfo> tableInfos = getTableInfos(context, queryWrapper);
-
-        for (TableInfo tableInfo : tableInfos) {
-            tableInfo.appendConditions(null, queryWrapper);
-            CPI.setFromIfNecessary(queryWrapper, tableInfo.getSchema(), tableInfo.getTableName());
-        }
+        appendTableConditions(context, queryWrapper, false);
 
         //优先构建 sql，再构建参数
         String sql = DialectFactory.getDialect().forSelectByQuery(queryWrapper);
@@ -409,10 +399,31 @@ public class EntitySqlProvider {
     }
 
 
+    private static void appendTableConditions(ProviderContext context, QueryWrapper queryWrapper, boolean setSelectColumns) {
+        List<TableInfo> tableInfos = getTableInfos(context, queryWrapper);
+        if (!CollectionUtil.isEmpty(tableInfos)) {
+            for (TableInfo tableInfo : tableInfos) {
+                tableInfo.appendConditions(null, queryWrapper);
+                if (setSelectColumns) {
+                    CPI.setSelectColumnsIfNecessary(queryWrapper, tableInfo.getDefaultQueryColumn());
+                }
+                CPI.setFromIfNecessary(queryWrapper, tableInfo.getSchema(), tableInfo.getTableName());
+            }
+        } else {
+            List<QueryWrapper> childQueryWrappers = CPI.getChildSelect(queryWrapper);
+            if (!CollectionUtil.isEmpty(childQueryWrappers)) {
+                for (QueryWrapper childQueryWrapper : childQueryWrappers) {
+                    appendTableConditions(context, childQueryWrapper, setSelectColumns);
+                }
+            }
+        }
+    }
+
+
     private static List<TableInfo> getTableInfos(ProviderContext context, QueryWrapper queryWrapper) {
         List<TableInfo> tableInfos;
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
-        if (CollectionUtil.isNotEmpty(queryTables)) {
+        if (!CollectionUtil.isEmpty(queryTables)) {
             tableInfos = new ArrayList<>();
             for (QueryTable queryTable : queryTables) {
                 String tableNameWithSchema = queryTable.getNameWithSchema();

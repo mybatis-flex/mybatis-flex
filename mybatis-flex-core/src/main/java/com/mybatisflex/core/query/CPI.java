@@ -232,7 +232,7 @@ public class CPI {
         return selectQueryColumn.getQueryWrapper();
     }
 
-    public static boolean isSameTable(QueryTable queryTable,QueryTable otherTable){
+    public static boolean isSameTable(QueryTable queryTable, QueryTable otherTable) {
         return queryTable.isSameTable(otherTable);
     }
 }

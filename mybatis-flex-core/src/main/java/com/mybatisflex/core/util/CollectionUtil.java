@@ -31,7 +31,6 @@ public class CollectionUtil {
         return collection == null || collection.isEmpty();
     }
 
-
     public static boolean isNotEmpty(Collection<?> collection) {
         return !isEmpty(collection);
     }
@@ -40,7 +39,6 @@ public class CollectionUtil {
     public static boolean isEmpty(Map<?, ?> map) {
         return map == null || map.isEmpty();
     }
-
 
     public static boolean isNotEmpty(Map<?, ?> map) {
         return !isEmpty(map);
