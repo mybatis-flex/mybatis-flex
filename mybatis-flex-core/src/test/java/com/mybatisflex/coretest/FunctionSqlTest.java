@@ -21,6 +21,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.StringQueryColumn;
 import org.junit.Test;
 
+import static com.mybatisflex.core.query.QueryMethods.*;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 
 /**
@@ -36,6 +37,17 @@ public class FunctionSqlTest {
                 .select(new FunctionQueryColumn("NOW", new StringQueryColumn("")).as("n2"))
                 .select(new FunctionQueryColumn("CONCAT", ACCOUNT.USER_NAME, ACCOUNT.AGE).as("c1"))
                 .from(ACCOUNT)
+                .toSQL();
+        System.out.println(sql);
+    }
+
+    @Test
+    public void test02() {
+        String sql = QueryWrapper.create()
+                .select(concatWs(string("abc"), ACCOUNT.USER_NAME, ACCOUNT.BIRTHDAY))
+                .select(abs(number(-3)))
+                .from(ACCOUNT)
+                .where(not(ACCOUNT.ID.eq(1)))
                 .toSQL();
         System.out.println(sql);
     }

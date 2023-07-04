@@ -41,8 +41,6 @@ public class ColumnInfo {
      */
     private String[] alias;
 
-    private String fullClassName;
-
     public String getProperty() {
         return property;
     }
@@ -67,24 +65,21 @@ public class ColumnInfo {
         this.alias = alias;
     }
 
-    public String getFullClassName() {
-        return fullClassName;
-    }
-
-    public void setFullClassName(String fullClassName) {
-        this.fullClassName = fullClassName;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ColumnInfo that = (ColumnInfo) o;
-        return Objects.equals(property, that.property) && Objects.equals(fullClassName, that.fullClassName);
+        return Objects.equals(property, that.property);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(property, fullClassName);
+        return property != null ? property.hashCode() : 0;
     }
+
 }
