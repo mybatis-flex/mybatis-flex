@@ -370,7 +370,7 @@ public class CommonsDialectImpl implements IDialect {
         buildOrderBySql(sqlBuilder, queryWrapper, allTables);
 
         List<UnionWrapper> unions = CPI.getUnions(queryWrapper);
-        if (!CollectionUtil.isEmpty(unions)) {
+        if (CollectionUtil.isNotEmpty(unions)) {
             sqlBuilder.insert(0, BRACKET_LEFT).append(BRACKET_RIGHT);
             for (UnionWrapper unionWrapper : unions) {
                 unionWrapper.buildSql(sqlBuilder, this);
@@ -384,7 +384,7 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
-        if (!CollectionUtil.isEmpty(endFragments)) {
+        if (CollectionUtil.isNotEmpty(endFragments)) {
             for (String endFragment : endFragments) {
                 sqlBuilder.append(BLANK).append(endFragment);
             }
@@ -404,7 +404,7 @@ public class CommonsDialectImpl implements IDialect {
         buildOrderBySql(sqlBuilder, queryWrapper, Collections.EMPTY_LIST);
 
         List<UnionWrapper> unions = CPI.getUnions(queryWrapper);
-        if (!CollectionUtil.isEmpty(unions)) {
+        if (CollectionUtil.isNotEmpty(unions)) {
             if (sqlBuilder.length() > 0) {
                 sqlBuilder.insert(0, BRACKET_LEFT).append(BRACKET_RIGHT);
             }
@@ -420,7 +420,7 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
-        if (!CollectionUtil.isEmpty(endFragments)) {
+        if (CollectionUtil.isNotEmpty(endFragments)) {
             for (String endFragment : endFragments) {
                 sqlBuilder.append(BLANK).append(endFragment);
             }
@@ -472,7 +472,7 @@ public class CommonsDialectImpl implements IDialect {
         //buildLimitSql(sqlBuilder, queryWrapper)
 
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
-        if (!CollectionUtil.isEmpty(endFragments)) {
+        if (CollectionUtil.isNotEmpty(endFragments)) {
             for (String endFragment : endFragments) {
                 sqlBuilder.append(BLANK).append(endFragment);
             }
@@ -829,7 +829,7 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(WHERE).append(whereConditionSql);
 
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
-        if (!CollectionUtil.isEmpty(endFragments)) {
+        if (CollectionUtil.isNotEmpty(endFragments)) {
             for (String endFragment : endFragments) {
                 sql.append(BLANK).append(endFragment);
             }
@@ -859,7 +859,7 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(WHERE).append(whereConditionSql);
 
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
-        if (!CollectionUtil.isEmpty(endFragments)) {
+        if (CollectionUtil.isNotEmpty(endFragments)) {
             for (String endFragment : endFragments) {
                 sql.append(BLANK).append(endFragment);
             }

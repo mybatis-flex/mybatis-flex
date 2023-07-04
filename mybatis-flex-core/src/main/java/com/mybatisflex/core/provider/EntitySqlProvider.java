@@ -401,7 +401,7 @@ public class EntitySqlProvider {
 
     private static void appendTableConditions(ProviderContext context, QueryWrapper queryWrapper, boolean setSelectColumns) {
         List<TableInfo> tableInfos = getTableInfos(context, queryWrapper);
-        if (!CollectionUtil.isEmpty(tableInfos)) {
+        if (CollectionUtil.isNotEmpty(tableInfos)) {
             for (TableInfo tableInfo : tableInfos) {
                 tableInfo.appendConditions(null, queryWrapper);
                 if (setSelectColumns) {
@@ -411,7 +411,7 @@ public class EntitySqlProvider {
             }
         } else {
             List<QueryWrapper> childQueryWrappers = CPI.getChildSelect(queryWrapper);
-            if (!CollectionUtil.isEmpty(childQueryWrappers)) {
+            if (CollectionUtil.isNotEmpty(childQueryWrappers)) {
                 for (QueryWrapper childQueryWrapper : childQueryWrappers) {
                     appendTableConditions(context, childQueryWrapper, setSelectColumns);
                 }
@@ -423,7 +423,7 @@ public class EntitySqlProvider {
     private static List<TableInfo> getTableInfos(ProviderContext context, QueryWrapper queryWrapper) {
         List<TableInfo> tableInfos;
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
-        if (!CollectionUtil.isEmpty(queryTables)) {
+        if (CollectionUtil.isNotEmpty(queryTables)) {
             tableInfos = new ArrayList<>();
             for (QueryTable queryTable : queryTables) {
                 String tableNameWithSchema = queryTable.getNameWithSchema();
