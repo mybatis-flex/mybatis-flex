@@ -645,14 +645,7 @@ public interface BaseMapper<T> {
                 queryWrapper.select(count());
             }
             List<Object> objects = selectObjectListByQuery(queryWrapper);
-            Object object = objects == null || objects.isEmpty() ? null : objects.get(0);
-            if (object == null) {
-                return 0;
-            } else if (object instanceof Number) {
-                return ((Number) object).longValue();
-            } else {
-                throw FlexExceptions.wrap("selectCountByQuery error, Can not get number value for queryWrapper: %s", queryWrapper);
-            }
+            return MapperUtil.getLongNumber(objects, queryWrapper);
         } finally {
             //fixed https://github.com/mybatis-flex/mybatis-flex/issues/49
             CPI.setSelectColumns(queryWrapper, selectColumns);

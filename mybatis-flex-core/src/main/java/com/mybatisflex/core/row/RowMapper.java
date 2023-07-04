@@ -417,14 +417,7 @@ public interface RowMapper {
         }
 
         List<Object> objects = selectObjectListByQuery(schema, tableName, queryWrapper);
-        Object object = objects == null || objects.isEmpty() ? null : objects.get(0);
-        if (object == null) {
-            return 0;
-        } else if (object instanceof Number) {
-            return ((Number) object).longValue();
-        } else {
-            throw FlexExceptions.wrap("selectCountByQuery error, Can not get number value for queryWrapper: %s", queryWrapper);
-        }
+        return MapperUtil.getLongNumber(objects, queryWrapper);
     }
 
 

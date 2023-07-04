@@ -17,6 +17,7 @@ package com.mybatisflex.core.util;
 
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.constant.SqlConsts;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.field.FieldQuery;
 import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.query.*;
@@ -194,5 +195,16 @@ public class MapperUtil {
         }
         throw new TooManyResultsException(
                 "Expected one result (or null) to be returned by selectOne(), but found: " + size);
+    }
+
+    public static long getLongNumber(List<Object> objects,QueryWrapper queryWrapper){
+        Object object = objects == null || objects.isEmpty() ? null : objects.get(0);
+        if (object == null) {
+            return 0;
+        } else if (object instanceof Number) {
+            return ((Number) object).longValue();
+        } else {
+            throw FlexExceptions.wrap("selectCountByQuery error, Can not get number value for queryWrapper: %s", queryWrapper);
+        }
     }
 }
