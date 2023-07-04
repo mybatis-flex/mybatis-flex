@@ -39,7 +39,7 @@ VALUES (1, '张三', 18, '2020-01-11'),
     <dependency>
         <groupId>com.mybatis-flex</groupId>
         <artifactId>mybatis-flex-spring-boot-starter</artifactId>
-        <version>1.4.5</version>
+        <version>1.4.6</version>
     </dependency>
     <dependency>
         <groupId>com.mysql</groupId>
