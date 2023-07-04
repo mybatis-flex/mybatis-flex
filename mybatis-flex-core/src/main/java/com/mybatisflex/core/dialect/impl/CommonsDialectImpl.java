@@ -316,6 +316,11 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String buildSelectSql(QueryWrapper queryWrapper) {
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+
+        if (CollectionUtil.isEmpty(queryTables)) {
+            throw FlexExceptions.wrap("You must use the 'FROM' clause to select the table.");
+        }
+
         List<QueryTable> joinTables = CPI.getJoinTables(queryWrapper);
         List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
 
@@ -331,6 +336,11 @@ public class CommonsDialectImpl implements IDialect {
                 for (int i = 0; i < selectColumns.size(); i++) {
                     QueryColumn selectColumn = selectColumns.get(i);
                     QueryTable selectColumnTable = selectColumn.getTable();
+
+                    // function 等没有对应的 selectColumnTable
+                    if (selectColumnTable == null) {
+                        continue;
+                    }
 
                     //用户未配置别名的情况下，自动未用户添加别名
                     if (StringUtil.isBlank(selectColumn.getAlias())
