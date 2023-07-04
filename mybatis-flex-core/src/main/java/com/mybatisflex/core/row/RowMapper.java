@@ -417,7 +417,7 @@ public interface RowMapper {
         }
 
         List<Object> objects = selectObjectListByQuery(schema, tableName, queryWrapper);
-        return MapperUtil.getLongNumber(objects, queryWrapper);
+        return MapperUtil.getLongNumber(objects);
     }
 
 

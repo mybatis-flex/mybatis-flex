@@ -645,7 +645,7 @@ public interface BaseMapper<T> {
                 queryWrapper.select(count());
             }
             List<Object> objects = selectObjectListByQuery(queryWrapper);
-            return MapperUtil.getLongNumber(objects, queryWrapper);
+            return MapperUtil.getLongNumber(objects);
         } finally {
             //fixed https://github.com/mybatis-flex/mybatis-flex/issues/49
             CPI.setSelectColumns(queryWrapper, selectColumns);

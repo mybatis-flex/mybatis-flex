@@ -197,14 +197,14 @@ public class MapperUtil {
                 "Expected one result (or null) to be returned by selectOne(), but found: " + size);
     }
 
-    public static long getLongNumber(List<Object> objects, QueryWrapper queryWrapper) {
+    public static long getLongNumber(List<Object> objects) {
         Object object = objects == null || objects.isEmpty() ? null : objects.get(0);
         if (object == null) {
             return 0;
         } else if (object instanceof Number) {
             return ((Number) object).longValue();
         } else {
-            throw FlexExceptions.wrap("selectCountByQuery error, Can not get number value for queryWrapper: %s", queryWrapper);
+            throw FlexExceptions.wrap("selectCountByQuery error, can not get number value of result: \"" + object + "\"");
         }
     }
 }
