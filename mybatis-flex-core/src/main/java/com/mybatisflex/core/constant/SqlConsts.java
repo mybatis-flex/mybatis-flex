@@ -113,7 +113,6 @@ public final class SqlConsts {
     public static final String GE = " >= ";
     public static final String LT = " < ";
     public static final String LE = " <= ";
-    public static final String NOT = " NOT ";
     public static final String LIKE = " LIKE ";
     public static final String EQUALS = " = ";
     public static final String NOT_EQUALS = " != ";
@@ -123,8 +122,6 @@ public final class SqlConsts {
     public static final String NOT_IN = " NOT IN ";
     public static final String BETWEEN = " BETWEEN ";
     public static final String NOT_BETWEEN = " NOT BETWEEN ";
-    public static final String EXISTS = " EXISTS ";
-    public static final String NOT_EXISTS = " NOT EXISTS ";
 
 
     // === 排序相关关键字 ===
@@ -133,19 +130,6 @@ public final class SqlConsts {
     public static final String DESC = " DESC";
     public static final String NULLS_FIRST = " NULLS FIRST";
     public static final String NULLS_LAST = " NULLS LAST";
-
-
-    // === SQL 函数名 ===
-
-    public static final String SUM = "SUM";
-    public static final String MAX = "MAX";
-    public static final String MIN = "MIN";
-    public static final String AVG = "AVG";
-    public static final String DAY = "DAY";
-    public static final String YEAR = "YEAR";
-    public static final String MONTH = "MONTH";
-    public static final String COUNT = "COUNT";
-    public static final String CONVERT = "CONVERT";
 
 
     // === 数学运算符 ===
