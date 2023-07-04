@@ -24,6 +24,7 @@ import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowCPI;
 import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.update.RawValue;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
@@ -332,18 +333,24 @@ public class CommonsDialectImpl implements IDialect {
         //多表查询时，自动映射
         if (queryTablesCount + joinTablesCount > 1) {
             QueryTable firstTable = queryTables.get(0);
-            if (selectColumns != null && !selectColumns.isEmpty()) {
-                for (int i = 0; i < selectColumns.size(); i++) {
-                    QueryColumn selectColumn = selectColumns.get(i);
-                    QueryTable selectColumnTable = selectColumn.getTable();
+            if (!(firstTable instanceof SelectQueryTable)) {
+                TableInfo tableInfo = TableInfoFactory.ofTableName(firstTable.getName());
+                if (tableInfo != null && selectColumns != null && !selectColumns.isEmpty()) {
+                    String[] firstTableColumns = tableInfo.getColumns();
+                    for (int i = 0; i < selectColumns.size(); i++) {
+                        QueryColumn selectColumn = selectColumns.get(i);
+                        QueryTable selectColumnTable = selectColumn.getTable();
 
-                    //用户未配置别名的情况下，自动未用户添加别名
-                    if (selectColumnTable != null
-                            && StringUtil.isBlank(selectColumn.getAlias())
-                            && !(selectColumnTable instanceof SelectQueryTable)
-                            && !CPI.isSameTable(firstTable, selectColumnTable)) {
-                        QueryColumn newSelectColumn = selectColumn.as(selectColumnTable.getName() + "$" + selectColumn.getName());
-                        selectColumns.set(i, newSelectColumn);
+                        //用户未配置别名的情况下，自动未用户添加别名
+                        if (selectColumnTable != null
+                                && StringUtil.isBlank(selectColumn.getAlias())
+                                && !(selectColumnTable instanceof SelectQueryTable)
+                                && !CPI.isSameTable(firstTable, selectColumnTable)
+                                && ArrayUtil.contains(firstTableColumns, selectColumn.getName())
+                        ) {
+                            QueryColumn newSelectColumn = selectColumn.as(selectColumnTable.getName() + "$" + selectColumn.getName());
+                            selectColumns.set(i, newSelectColumn);
+                        }
                     }
                 }
             }
