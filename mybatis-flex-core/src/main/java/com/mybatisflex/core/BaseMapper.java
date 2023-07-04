@@ -332,6 +332,20 @@ public interface BaseMapper<T> {
     @UpdateProvider(type = EntitySqlProvider.class, method = "updateNumberAddByQuery")
     int updateNumberAddByQuery(@Param(FlexConsts.FIELD_NAME) String fieldName, @Param(FlexConsts.VALUE) Number value, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
+    /**
+     * 执行类似 update table set field=field+1 where ... 的场景
+     *
+     * @param column       字段名
+     * @param value        值（ >=0 加，小于 0 减）
+     * @param queryWrapper 条件
+     * @see EntitySqlProvider#updateNumberAddByQuery(Map, ProviderContext)
+     */
+    default int updateNumberAddByQuery(QueryColumn column, Number value, QueryWrapper queryWrapper) {
+        if (value == null) {
+            throw FlexExceptions.wrap("value can not be null.");
+        }
+        return updateNumberAddByQuery(column.getName(), value, queryWrapper);
+    }
 
     /**
      * 执行类似 update table set field=field+1 where ... 的场景
