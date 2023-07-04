@@ -80,7 +80,7 @@ public class MapperUtil {
         return clone;
     }
 
-    private static boolean hasDistinct(List<QueryColumn> selectColumns) {
+    public static boolean hasDistinct(List<QueryColumn> selectColumns) {
         if (CollectionUtil.isEmpty(selectColumns)) {
             return false;
         }

@@ -31,7 +31,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.mybatisflex.core.query.QueryMethods.column;
-import static com.mybatisflex.core.query.QueryMethods.concat;
 import static com.mybatisflex.test.model.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.model.table.RoleTableDef.ROLE;
 import static com.mybatisflex.test.model.table.UserRoleTableDef.USER_ROLE;
@@ -47,6 +46,26 @@ class AccountMapperTest {
 
     @Autowired
     private AccountMapper accountMapper;
+
+    @Test
+    void testCount() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select()
+                .from(ACCOUNT)
+                .groupBy(ACCOUNT.AGE);
+
+        long count = accountMapper.selectCountByQuery(queryWrapper);
+
+        Assertions.assertEquals(2, count);
+
+        queryWrapper = QueryWrapper.create()
+                .select(distinct(ACCOUNT.AGE))
+                .from(ACCOUNT);
+
+        count = accountMapper.selectCountByQuery(queryWrapper);
+
+        Assertions.assertEquals(2, count);
+    }
 
     @Test
     void testInsert() {

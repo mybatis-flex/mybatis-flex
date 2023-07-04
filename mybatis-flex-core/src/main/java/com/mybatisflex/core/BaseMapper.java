@@ -20,10 +20,7 @@ import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.mybatis.MappedStatementTypes;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.EntitySqlProvider;
-import com.mybatisflex.core.query.CPI;
-import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.query.QueryCondition;
-import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.*;
@@ -641,10 +638,27 @@ public interface BaseMapper<T> {
     default long selectCountByQuery(QueryWrapper queryWrapper) {
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
         try {
+            List<Object> objects;
             if (CollectionUtil.isEmpty(selectColumns)) {
+                // 未设置 COUNT(...) 列，默认使用 COUNT(*) 查询
                 queryWrapper.select(count());
+                objects = selectObjectListByQuery(queryWrapper);
+            } else if (selectColumns.get(0) instanceof CountQueryColumn) {
+                // 自定义 COUNT 函数，COUNT 函数必须在第一列
+                // 可以使用 COUNT(1)、COUNT(列名) 代替默认的 COUNT(*)
+                objects = selectObjectListByQuery(queryWrapper);
+            } else {
+                // 查询列中的第一列不是 COUNT 函数
+                if (MapperUtil.hasDistinct(selectColumns)) {
+                    // 查询列中包含 DISTINCT 去重
+                    // 使用子查询 SELECT COUNT(*) FROM (SELECT DISTINCT ...) AS `t`
+                    objects = selectObjectListByQuery(MapperUtil.rawCountQueryWrapper(queryWrapper));
+                } else {
+                    // 使用 COUNT(*) 替换所有的查询列
+                    queryWrapper.select(count());
+                    objects = selectObjectListByQuery(queryWrapper);
+                }
             }
-            List<Object> objects = selectObjectListByQuery(queryWrapper);
             return MapperUtil.getLongNumber(objects);
         } finally {
             //fixed https://github.com/mybatis-flex/mybatis-flex/issues/49

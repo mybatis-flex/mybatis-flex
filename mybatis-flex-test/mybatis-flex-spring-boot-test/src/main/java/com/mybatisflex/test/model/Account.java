@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.test.model;
 
+import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Table;
 
 import java.util.Date;
@@ -27,6 +28,8 @@ public class Account extends BaseEntity<String, Long, String> {
     //private String userName;
     private Integer age;
     private Date birthday;
+    @Column(isLogicDelete = true)
+    private Boolean isDelete;
 
 //    private Gender gender;
 //
@@ -70,6 +73,14 @@ public class Account extends BaseEntity<String, Long, String> {
         this.birthday = birthday;
     }
 
+    public Boolean getDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(Boolean delete) {
+        isDelete = delete;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
@@ -77,7 +88,8 @@ public class Account extends BaseEntity<String, Long, String> {
                 ", userName='" + userName + '\'' +
                 ", age=" + age +
                 ", birthday=" + birthday +
-                ", roles=" + roles +
+                ", isDelete=" + isDelete +
+//                ", roles=" + roles +
                 '}';
     }
 }
