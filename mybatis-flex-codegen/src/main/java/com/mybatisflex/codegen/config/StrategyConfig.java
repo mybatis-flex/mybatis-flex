@@ -107,11 +107,12 @@ public class StrategyConfig {
     /**
      * 设置表配置。
      */
-    public void setTableConfig(TableConfig tableConfig) {
+    public StrategyConfig setTableConfig(TableConfig tableConfig) {
         if (tableConfigMap == null) {
             tableConfigMap = new HashMap<>();
         }
         tableConfigMap.put(tableConfig.getTableName(), tableConfig);
+        return this;
     }
 
     /**
@@ -150,17 +151,18 @@ public class StrategyConfig {
     /**
      * 设置列配置。
      */
-    public void setColumnConfig(ColumnConfig columnConfig) {
+    public StrategyConfig setColumnConfig(ColumnConfig columnConfig) {
         if (columnConfigMap == null) {
             columnConfigMap = new HashMap<>();
         }
         columnConfigMap.put(columnConfig.getColumnName(), columnConfig);
+        return this;
     }
 
     /**
      * 设置列配置。
      */
-    public void setColumnConfig(String tableName, ColumnConfig columnConfig) {
+    public StrategyConfig setColumnConfig(String tableName, ColumnConfig columnConfig) {
         TableConfig tableConfig = getTableConfig(tableName);
         if (tableConfig == null) {
             tableConfig = new TableConfig();
@@ -169,12 +171,14 @@ public class StrategyConfig {
         }
 
         tableConfig.addColumnConfig(columnConfig);
+
+        return this;
     }
 
     /**
      * 设置生成哪些表。
      */
-    public void setGenerateTable(String... tables) {
+    public StrategyConfig setGenerateTable(String... tables) {
         if (generateTables == null) {
             generateTables = new HashSet<>();
         }
@@ -184,12 +188,14 @@ public class StrategyConfig {
                 generateTables.add(table.trim());
             }
         }
+
+        return this;
     }
 
     /**
      * 设置不生成哪些表。
      */
-    public void setUnGenerateTable(String... tables) {
+    public StrategyConfig setUnGenerateTable(String... tables) {
         if (unGenerateTables == null) {
             unGenerateTables = new HashSet<>();
         }
@@ -199,6 +205,8 @@ public class StrategyConfig {
                 unGenerateTables.add(table.trim());
             }
         }
+
+        return this;
     }
 
     public boolean isSupportGenerate(String table) {
