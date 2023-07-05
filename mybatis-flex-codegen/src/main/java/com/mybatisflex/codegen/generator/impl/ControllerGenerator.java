@@ -59,7 +59,7 @@ public class ControllerGenerator implements IGenerator {
                 table.buildControllerClassName() + ".java");
 
 
-        if (controllerJavaFile.exists() && controllerConfig.isOverwriteEnable()) {
+        if (controllerJavaFile.exists() && !controllerConfig.isOverwriteEnable()) {
             return;
         }
 
