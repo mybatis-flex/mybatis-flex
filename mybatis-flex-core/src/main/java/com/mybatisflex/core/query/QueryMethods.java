@@ -194,6 +194,27 @@ public class QueryMethods {
     }
 
     /**
+     * 返回数值 x 保留到小数点后 y 位的值。
+     */
+    public static QueryColumn truncate(String columnX, Integer y) {
+        return new FunctionQueryColumn(TRUNCATE, new QueryColumn(columnX), number(y));
+    }
+
+    /**
+     * 返回数值 x 保留到小数点后 y 位的值。
+     */
+    public static QueryColumn truncate(QueryColumn columnX, Integer y) {
+        return new FunctionQueryColumn(TRUNCATE, columnX, number(y));
+    }
+
+    /**
+     * 返回数值 x 保留到小数点后 y 位的值。
+     */
+    public static <T> QueryColumn truncate(LambdaGetter<T> columnX, Integer y) {
+        return new FunctionQueryColumn(TRUNCATE, LambdaUtil.getQueryColumn(columnX), number(y));
+    }
+
+    /**
      * 返回离 x 最近的整数（四舍五入）。
      */
     public static QueryColumn round(String columnX) {
@@ -236,6 +257,27 @@ public class QueryMethods {
     }
 
     /**
+     * 保留 x 小数点后 y 位的值，但截断时要四舍五入。
+     */
+    public static QueryColumn round(String columnX, Integer y) {
+        return new FunctionQueryColumn(ROUND, new QueryColumn(columnX), number(y));
+    }
+
+    /**
+     * 保留 x 小数点后 y 位的值，但截断时要四舍五入。
+     */
+    public static QueryColumn round(QueryColumn columnX, Integer y) {
+        return new FunctionQueryColumn(ROUND, columnX, number(y));
+    }
+
+    /**
+     * 保留 x 小数点后 y 位的值，但截断时要四舍五入。
+     */
+    public static <T> QueryColumn round(LambdaGetter<T> columnX, Integer y) {
+        return new FunctionQueryColumn(ROUND, LambdaUtil.getQueryColumn(columnX), number(y));
+    }
+
+    /**
      * 返回 x 的 y 次方。
      */
     public static QueryColumn pow(String columnX, String columnY) {
@@ -259,6 +301,27 @@ public class QueryMethods {
     /**
      * 返回 x 的 y 次方。
      */
+    public static QueryColumn pow(String columnX, Integer y) {
+        return new FunctionQueryColumn(POW, new QueryColumn(columnX), number(y));
+    }
+
+    /**
+     * 返回 x 的 y 次方。
+     */
+    public static QueryColumn pow(QueryColumn columnX, Integer y) {
+        return new FunctionQueryColumn(POW, columnX, number(y));
+    }
+
+    /**
+     * 返回 x 的 y 次方。
+     */
+    public static <T> QueryColumn pow(LambdaGetter<T> columnX, Integer y) {
+        return new FunctionQueryColumn(POW, LambdaUtil.getQueryColumn(columnX), number(y));
+    }
+
+    /**
+     * 返回 x 的 y 次方。
+     */
     public static QueryColumn power(String columnX, String columnY) {
         return new FunctionQueryColumn(POWER, columnX, columnY);
     }
@@ -275,6 +338,27 @@ public class QueryMethods {
      */
     public static <X, Y> QueryColumn power(LambdaGetter<X> columnX, LambdaGetter<Y> columnY) {
         return new FunctionQueryColumn(POWER, LambdaUtil.getQueryColumn(columnX), LambdaUtil.getQueryColumn(columnY));
+    }
+
+    /**
+     * 返回 x 的 y 次方。
+     */
+    public static QueryColumn power(String columnX, Integer y) {
+        return new FunctionQueryColumn(POWER, new QueryColumn(columnX), number(y));
+    }
+
+    /**
+     * 返回 x 的 y 次方。
+     */
+    public static QueryColumn power(QueryColumn columnX, Integer y) {
+        return new FunctionQueryColumn(POWER, columnX, number(y));
+    }
+
+    /**
+     * 返回 x 的 y 次方。
+     */
+    public static <T> QueryColumn power(LambdaGetter<T> columnX, Integer y) {
+        return new FunctionQueryColumn(POWER, LambdaUtil.getQueryColumn(columnX), number(y));
     }
 
     /**
@@ -338,6 +422,27 @@ public class QueryMethods {
      */
     public static <X, Y> QueryColumn mod(LambdaGetter<X> columnX, LambdaGetter<Y> columnY) {
         return new FunctionQueryColumn(MOD, LambdaUtil.getQueryColumn(columnX), LambdaUtil.getQueryColumn(columnY));
+    }
+
+    /**
+     * 返回 x 除以 y 以后的余数。
+     */
+    public static QueryColumn mod(String columnX, Integer y) {
+        return new FunctionQueryColumn(MOD, new QueryColumn(columnX), number(y));
+    }
+
+    /**
+     * 返回 x 除以 y 以后的余数。
+     */
+    public static QueryColumn mod(QueryColumn columnX, Integer y) {
+        return new FunctionQueryColumn(MOD, columnX, number(y));
+    }
+
+    /**
+     * 返回 x 除以 y 以后的余数。
+     */
+    public static <T> QueryColumn mod(LambdaGetter<T> columnX, Integer y) {
+        return new FunctionQueryColumn(MOD, LambdaUtil.getQueryColumn(columnX), number(y));
     }
 
     /**
@@ -721,6 +826,27 @@ public class QueryMethods {
     }
 
     /**
+     * 返回字符串 s 的前 n 个字符。
+     */
+    public static QueryColumn left(String columnX, Integer n) {
+        return new FunctionQueryColumn(LEFT, new QueryColumn(columnX), number(n));
+    }
+
+    /**
+     * 返回字符串 s 的前 n 个字符。
+     */
+    public static QueryColumn left(QueryColumn columnX, Integer n) {
+        return new FunctionQueryColumn(LEFT, columnX, number(n));
+    }
+
+    /**
+     * 返回字符串 s 的前 n 个字符。
+     */
+    public static <T> QueryColumn left(LambdaGetter<T> columnX, Integer n) {
+        return new FunctionQueryColumn(LEFT, LambdaUtil.getQueryColumn(columnX), number(n));
+    }
+
+    /**
      * 返回字符串 s 的后 n 个字符。
      */
     public static QueryColumn right(String columnS, String columnN) {
@@ -739,6 +865,27 @@ public class QueryMethods {
      */
     public static <S, N> QueryColumn right(LambdaGetter<S> columnS, LambdaGetter<N> columnN) {
         return new FunctionQueryColumn(RIGHT, LambdaUtil.getQueryColumn(columnS), LambdaUtil.getQueryColumn(columnN));
+    }
+
+    /**
+     * 返回字符串 s 的后 n 个字符。
+     */
+    public static QueryColumn right(String columnX, Integer n) {
+        return new FunctionQueryColumn(RIGHT, new QueryColumn(columnX), number(n));
+    }
+
+    /**
+     * 返回字符串 s 的后 n 个字符。
+     */
+    public static QueryColumn right(QueryColumn columnX, Integer n) {
+        return new FunctionQueryColumn(RIGHT, columnX, number(n));
+    }
+
+    /**
+     * 返回字符串 s 的后 n 个字符。
+     */
+    public static <T> QueryColumn right(LambdaGetter<T> columnX, Integer n) {
+        return new FunctionQueryColumn(RIGHT, LambdaUtil.getQueryColumn(columnX), number(n));
     }
 
     /**
@@ -851,6 +998,27 @@ public class QueryMethods {
      */
     public static <S, N> QueryColumn repeat(LambdaGetter<S> columnS, LambdaGetter<N> columnN) {
         return new FunctionQueryColumn(REPEAT, LambdaUtil.getQueryColumn(columnS), LambdaUtil.getQueryColumn(columnN));
+    }
+
+    /**
+     * 将字符串 s 重复 n 次。
+     */
+    public static QueryColumn repeat(String columnX, Integer n) {
+        return new FunctionQueryColumn(REPEAT, new QueryColumn(columnX), number(n));
+    }
+
+    /**
+     * 将字符串 s 重复 n 次。
+     */
+    public static QueryColumn repeat(QueryColumn columnX, Integer n) {
+        return new FunctionQueryColumn(REPEAT, columnX, number(n));
+    }
+
+    /**
+     * 将字符串 s 重复 n 次。
+     */
+    public static <T> QueryColumn repeat(LambdaGetter<T> columnX, Integer n) {
+        return new FunctionQueryColumn(REPEAT, LambdaUtil.getQueryColumn(columnX), number(n));
     }
 
     /**
@@ -2158,28 +2326,28 @@ public class QueryMethods {
      * 返回指定列的总行数。
      */
     public static FunctionQueryColumn count() {
-        return new CountQueryColumn();
+        return new FunctionQueryColumn(COUNT);
     }
 
     /**
      * 返回指定列的总行数。
      */
     public static FunctionQueryColumn count(String column) {
-        return new CountQueryColumn(column);
+        return new FunctionQueryColumn(COUNT, column);
     }
 
     /**
      * 返回指定列的总行数。
      */
     public static FunctionQueryColumn count(QueryColumn column) {
-        return new CountQueryColumn(column);
+        return new FunctionQueryColumn(COUNT, column);
     }
 
     /**
      * 返回指定列的总行数。
      */
     public static <T> FunctionQueryColumn count(LambdaGetter<T> column) {
-        return new CountQueryColumn(LambdaUtil.getQueryColumn(column));
+        return new FunctionQueryColumn(COUNT, LambdaUtil.getQueryColumn(column));
     }
 
 

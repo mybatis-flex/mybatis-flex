@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core;
 
+import com.mybatisflex.core.constant.FuncName;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.mybatis.MappedStatementTypes;
@@ -643,9 +644,15 @@ public interface BaseMapper<T> {
                 // 未设置 COUNT(...) 列，默认使用 COUNT(*) 查询
                 queryWrapper.select(count());
                 objects = selectObjectListByQuery(queryWrapper);
-            } else if (selectColumns.get(0) instanceof CountQueryColumn) {
-                // 自定义 COUNT 函数，COUNT 函数必须在第一列
-                // 可以使用 COUNT(1)、COUNT(列名) 代替默认的 COUNT(*)
+            } else if (selectColumns.get(0) instanceof FunctionQueryColumn) {
+                // COUNT 函数必须在第一列
+                if (!FuncName.COUNT.equalsIgnoreCase(
+                        ((FunctionQueryColumn) selectColumns.get(0)).getFnName()
+                )) {
+                    // 第一个查询列不是 COUNT 函数，使用 COUNT(*) 替换所有的查询列
+                    queryWrapper.select(count());
+                }
+                // 第一个查询列是 COUNT 函数，可以使用 COUNT(1)、COUNT(列名) 代替默认的 COUNT(*)
                 objects = selectObjectListByQuery(queryWrapper);
             } else {
                 // 查询列中的第一列不是 COUNT 函数
@@ -748,6 +755,7 @@ public interface BaseMapper<T> {
      * @param queryWrapper 查询条件
      * @return page 数据
      */
+    @SuppressWarnings("unchecked")
     default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
         return paginateAs(page, queryWrapper, null, consumers);
     }

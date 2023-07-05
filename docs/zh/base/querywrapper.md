@@ -100,22 +100,25 @@ QueryWrapper query = new QueryWrapper()
 
 ```sql
 SELECT a.id, a.user_name, b.id AS articleId, b.title
-FROM tb_account AS a, tb_article AS b
+FROM tb_account AS a,
+     tb_article AS b
 WHERE a.id = b.account_id
 ```
 
 ## select function（SQL 函数）
 
+所有函数均在 `QueryMethods` 类中，以下示例皆为静态导入方法，省略了类名。
+
 示例 ：
 
 ```java
 QueryWrapper query=new QueryWrapper()
-    .select(
+        .select(
         ACCOUNT.ID,
         ACCOUNT.USER_NAME,
         max(ACCOUNT.BIRTHDAY),
         avg(ACCOUNT.SEX).as("sex_avg")
-    ).from(ACCOUNT);
+        ).from(ACCOUNT);
 ```
 
 其查询生成的 Sql 如下：
@@ -125,7 +128,19 @@ SELECT id, user_name, MAX(birthday), AVG(sex) AS sex_avg
 FROM tb_account
 ```
 
+在使用函数时，一些数字、字符串常量需要通过特定的方法去构造，例如：
 
+- number()：构建数字常量
+- string()：构建字符串常量
+- column()：构建自定义列
+
+示例：
+
+```text
+select(number(1)) --> SELECT 1
+select(string("str")) --> SELECT 'str'
+select(column("abc")) --> SELECT abc
+```
 
 目前，MyBatis-Flex 已支持 110+ 个常见的 SQL
 函数，查看已支持的 [所有函数](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/constant/FuncName.java)。
@@ -254,7 +269,6 @@ FROM tb_account
 
 
 ## select 列计算
-
 
 #### 示例 1：
 
