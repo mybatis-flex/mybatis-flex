@@ -133,6 +133,126 @@ FROM tb_account
 ，然后在自己的项目里进行自定义扩展。
 
 
+| 支持的函数 | 函数说明  |   
+| -------- | -------- |
+| count | 查询数据总量  |
+| distinct | 对指定列进行去重  |
+| sum | 返回指定字段值的和  |
+| avg | 返回指定列的平均值  |
+| min | 返回指定列的最小值  |
+| max | 返回指定列的最大值  |
+| abs | 返回绝对值 |
+| ceil | 返回大于或等于 x 的最小整数（向上取整） |
+| ceiling | 返回大于或等于 x 的最小整数（向上取整） |
+| floor |  返回小于或等于 x 的最大整数（向下取整） |
+| rand |  返回 0~1 的随机数 |
+| sign |  返回 x 的符号，x 是负数、0、正数分别返回 -1、0、1 |
+| pi |  返回圆周率 |
+| truncate |  返回数值 x 保留到小数点后 y 位的值 |
+| round |  返回离 x 最近的整数（四舍五入） |
+| pow |  返回 x 的 y 次方 |
+| power |  返回 x 的 y 次方 |
+| sqrt |  返回 x 的平方根 |
+| exp |  返回 e 的 x 次方 |
+| mod |  返回 x 除以 y 以后的余数 |
+| log |   返回自然对数（以 e 为底的对数） |
+| log10 |   返回以 10 为底的对数 |
+| radians |   将角度转换为弧度 |
+| degrees |   将弧度转换为角度 |
+| sin |   求正弦值 |
+| asin |   求反正弦值 |
+| cos |   求余弦值 |
+| acos |   求反余弦值 |
+| tan |   求正切值 |
+| atan |   求反正切值 |
+| cot |   求余切值 |
+| charLength |   返回字符串 s 的字符数 |
+| length |   返回字符串 s 的长度 |
+| concat |   将字符串 s1，s2 等多个字符串合并为一个字符串 |
+| concatWs |   同 CONCAT(s1, s2, ...)，但是每个字符串之间要加上 x |
+| insert |  将字符串 s2 替换 s1 的 x 位置开始长度为 len 的字符串 |
+| upper |  将字符串 s 的所有字符都变成大写字母 |
+| lower |  将字符串 s 的所有字符都变成小写字母 |
+| left |  返回字符串 s 的前 n 个字符 |
+| right |  返回字符串 s 的后 n 个字符 |
+| lpad |  字符串 s2 来填充 s1 的开始处，使字符串长度达到 len |
+| rpad |  字符串 s2 来填充 s1 的结尾处，使字符串长度达到 len |
+| trim |  去掉字符串 s 开始处和结尾处的空格 |
+| ltrim |  去掉字符串 s 开始处的空格 |
+| rtrim |   去掉字符串 s 结尾处的空格 |
+| repeat |   将字符串 s 重复 n 次 |
+| space |   返回 n 个空格 |
+| replace |   用字符串 s2 代替字符串 s 中的字符串 s1 |
+| strcmp |   比较字符串 s1 和 s2 |
+| substring |   获取从字符串 s 中的第 n 个位置开始长度为 len 的字符串 |
+| instr |   从字符串 s 中获取 s1 的开始位置 |
+| reverse |  将字符串 s 的顺序反过来 |
+| elt |  返回第 n 个字符串 |
+| field |  返回第一个与字符串 s 匹配的字符串的位置 |
+| findInSet |  返回在字符串 s2 中与 s1 匹配的字符串的位置 |
+| curDate |  返回当前日期 |
+| currentDate |  返回当前日期 |
+| curTime |  返回当前时间 |
+| currentTime |  返回当前时间 |
+| now |  返回当前日期和时间 |
+| currentTimestamp |  返回当前日期和时间 |
+| localTime |  返回当前日期和时间 |
+| sysDate |  返回当前日期和时间 |
+| localTimestamp |  返回当前日期和时间 |
+| unixTimestamp |  以 UNIX 时间戳的形式返回当前时间 |
+| fromUnixTime |   把 UNIX 时间戳的时间转换为普通格式的时间 |
+| utcDate |   返回 UTC（国际协调时间）日期 |
+| utcTime |   返回 UTC 时间 |
+| month |    返回日期 d 中的月份值，范围是 1~12 |
+| monthName |    返回日期 d 中的月份名称，如 january |
+| dayName |    返回日期 d 是星期几，如 Monday |
+| dayOfWeek |    返回日期 d 是星期几，1 表示星期日，2 表示星期二 |
+| weekday |    返回日期 d 是星期几，0 表示星期一，1 表示星期二 |
+| week |  计算日期 d 是本年的第几个星期，范围是 0-53 |
+| weekOfYear |  计算日期 d 是本年的第几个星期，范围是 1-53 |
+| dayOfYear |  计算日期 d 是本年的第几天 |
+| dayOfMonth |  计算日期 d 是本月的第几天 |
+| year |  返回日期 d 中的年份值 |
+| day |  返回日期 d 中的天数值 |
+| quarter |  返回日期 d 是第几季度，范围 1-4 |
+| hour |  返回时间 t 中的小时值 |
+| minute |  返回时间 t 中的分钟值 |
+| second |  返回时间 t 中的秒钟值 |
+| timeToSec |  将时间 t 转换为秒 |
+| secToTime |  将以秒为单位的时间 s 转换为时分秒的格式 |
+| toDays |  计算日期 d 到 0000 年 1 月 1 日的天数 |
+| fromDays |  计算从 0000 年 1 月 1 日开始 n 天后的日期 |
+| dateDiff |  计算日期 d1 到 d2 之间相隔的天数 |
+| addDate |  计算开始日期 d 加上 n 天的日期 |
+| subDate |  计算起始日期 d 减去 n 天的日期 |
+| addTime |  计算起始时间 t 加上 n 秒的时间 |
+| subTime |  计算起始时间 t 加上 n 秒的时间 |
+| dateFormat |  按照表达式 f 的要求显示日期 d |
+| timeFormat |  按照表达式 f 的要求显示时间 t |
+| getFormat |  根据字符串 s 获取 type 类型数据的显示格式 |
+| version |  返回数据库的版本号 |
+| connectionId |  返回服务器的连接数 |
+| database |  返回当前数据库名 |
+| schema |  返回当前数据库 schema |
+| user |  返回当前用户的名称 |
+| charset |  返回字符串 str 的字符集 |
+| collation |  返回字符串 str 的字符排列方式 |
+| lastInsertId |  返回最后生成的 auto_increment 值 |
+| password |  对字符串 str 进行加密 |
+| md5 |  对字符串 str 进行 md5 加密 |
+| encode |  使用字符串 pswd_str 来加密字符串 str，加密结果是一个二进制数，必须使用 BLOB 类型来保持它 |
+| decode |   解密函数，使用字符串 pswd_str 来为 crypt_str 解密 |
+| format |   格式化函数，可以将数字 x 进行格式化，将 x 保留到小数点后 n 位，这个过程需要进行四舍五入 |
+| ascii |   返回字符串 s 的第一个字符的 ASSCII 码 |
+| bin |   返回 x 的二进制编码 |
+| hex |   返回 x 的十六进制编码 |
+| oct |   返回 x 的八进制编 |
+| conv |    将 x 从 f1 进制数变成 f2 进制数 |
+| inetAton |   将 IP 地址转换为数字表示，IP 值需要加上引号 |
+| inetNtoa |   将数字 n 转换成 IP 的形式 |
+
+
+
 ## select 列计算
 
 
