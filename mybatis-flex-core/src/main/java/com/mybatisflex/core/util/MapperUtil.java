@@ -76,7 +76,7 @@ public class MapperUtil {
             CPI.setJoins(clone, null);
         }
         // 将 select 里面的列换成 COUNT(*) AS `total`
-        CPI.setSelectColumns(clone, Collections.singletonList(count().as("total")));
+        CPI.setSelectColumns(clone, Collections.singletonList(count(selectColumns.get(0).getName()).as("total")));
         return clone;
     }
 
