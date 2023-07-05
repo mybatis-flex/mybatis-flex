@@ -336,15 +336,18 @@ public class CommonsDialectImpl implements IDialect {
                     for (int i = 0; i < selectColumns.size(); i++) {
                         QueryColumn selectColumn = selectColumns.get(i);
                         QueryTable selectColumnTable = selectColumn.getTable();
+                        String selectColumnName = selectColumn.getName();
 
                         //用户未配置别名的情况下，自动未用户添加别名
                         if (selectColumnTable != null
+                                && selectColumnName != null
+                                && !"*".equals(selectColumnName)
                                 && StringUtil.isBlank(selectColumn.getAlias())
                                 && !(selectColumnTable instanceof SelectQueryTable)
                                 && !CPI.isSameTable(firstTable, selectColumnTable)
-                                && ArrayUtil.contains(firstTableColumns, selectColumn.getName())
+                                && ArrayUtil.contains(firstTableColumns, selectColumnName)
                         ) {
-                            QueryColumn newSelectColumn = selectColumn.as(selectColumnTable.getName() + "$" + selectColumn.getName());
+                            QueryColumn newSelectColumn = selectColumn.as(selectColumnTable.getName() + "$" + selectColumnName);
                             selectColumns.set(i, newSelectColumn);
                         }
                     }

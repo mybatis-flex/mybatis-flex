@@ -22,7 +22,8 @@ import java.util.regex.Pattern;
 
 public class StringUtil {
 
-    private StringUtil() {}
+    private StringUtil() {
+    }
 
 
     /**
@@ -248,7 +249,6 @@ public class StringUtil {
     }
 
 
-
     /**
      * 合并字符串，优化 String.join() 方法
      *
@@ -271,6 +271,10 @@ public class StringUtil {
             }
             return String.join(delimiter, strings);
         }
+    }
+
+    public static String tryTrim(String string) {
+        return string != null ? string.trim() : null;
     }
 
 

@@ -43,33 +43,33 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
 
     public QueryColumn(String name) {
         SqlUtil.keepColumnSafely(name);
-        this.name = name;
+        this.name = StringUtil.tryTrim(name);
     }
 
     public QueryColumn(String tableName, String name) {
         SqlUtil.keepColumnSafely(name);
         this.table = new QueryTable(tableName);
-        this.name = name;
+        this.name = StringUtil.tryTrim(name);
     }
 
     public QueryColumn(String schema, String tableName, String name) {
         SqlUtil.keepColumnSafely(name);
         this.table = new QueryTable(schema, tableName);
-        this.name = name;
+        this.name = StringUtil.tryTrim(name);
     }
 
     public QueryColumn(String schema, String tableName, String name, String alias) {
         SqlUtil.keepColumnSafely(name);
         this.returnCopyByAsMethod = true;
         this.table = new QueryTable(schema, tableName);
-        this.name = name;
-        this.alias = alias;
+        this.name = StringUtil.tryTrim(name);
+        this.alias = StringUtil.tryTrim(alias);
     }
 
     public QueryColumn(QueryTable queryTable, String name) {
         SqlUtil.keepColumnSafely(name);
         this.table = queryTable;
-        this.name = name;
+        this.name = StringUtil.tryTrim(name);
     }
 
     public QueryColumn(TableDef tableDef, String name) {
