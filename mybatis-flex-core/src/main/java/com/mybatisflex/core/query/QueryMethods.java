@@ -2326,28 +2326,28 @@ public class QueryMethods {
      * 返回指定列的总行数。
      */
     public static FunctionQueryColumn count() {
-        return new CountQueryColumn();
+        return new FunctionQueryColumn(COUNT);
     }
 
     /**
      * 返回指定列的总行数。
      */
     public static FunctionQueryColumn count(String column) {
-        return new CountQueryColumn(column);
+        return new FunctionQueryColumn(COUNT, column);
     }
 
     /**
      * 返回指定列的总行数。
      */
     public static FunctionQueryColumn count(QueryColumn column) {
-        return new CountQueryColumn(column);
+        return new FunctionQueryColumn(COUNT, column);
     }
 
     /**
      * 返回指定列的总行数。
      */
     public static <T> FunctionQueryColumn count(LambdaGetter<T> column) {
-        return new CountQueryColumn(LambdaUtil.getQueryColumn(column));
+        return new FunctionQueryColumn(COUNT, LambdaUtil.getQueryColumn(column));
     }
 
 
