@@ -1,5 +1,8 @@
 package #(packageConfig.mapperPackage);
 
+#if(mapperConfig.isMapperAnnotation())
+import org.apache.ibatis.annotations.Mapper;
+#end
 import #(mapperConfig.buildSuperClassImport());
 import #(packageConfig.entityPackage).#(table.buildEntityClassName());
 
@@ -9,6 +12,9 @@ import #(packageConfig.entityPackage).#(table.buildEntityClassName());
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())
  */
+#if(mapperConfig.isMapperAnnotation())
+@Mapper
+#end
 public interface #(table.buildMapperClassName()) extends #(mapperConfig.buildSuperClassName())<#(table.buildEntityClassName())> {
 
 }

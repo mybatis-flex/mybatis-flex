@@ -945,6 +945,20 @@ public class GlobalConfig {
         getMapperConfig().setSupperClass(mapperSupperClass);
     }
 
+    /**
+     * @see MapperConfig#isMapperAnnotation()
+     */
+    public boolean isMapperAnnotation() {
+        return getMapperConfig().isMapperAnnotation();
+    }
+
+    /**
+     * @see MapperConfig#setMapperAnnotation(boolean)
+     */
+    public void setMapperAnnotation(boolean mapperAnnotation) {
+        getMapperConfig().setMapperAnnotation(mapperAnnotation);
+    }
+
     public boolean isServiceGenerateEnable() {
         return serviceGenerateEnable;
     }
@@ -1229,6 +1243,34 @@ public class GlobalConfig {
      */
     public void setTableDefClassSuffix(String tableDefClassSuffix) {
         getTableDefConfig().setClassSuffix(tableDefClassSuffix);
+    }
+
+    /**
+     * @see TableDefConfig#getPropertiesNameStyle()
+     */
+    public TableDefConfig.NameStyle getPropertiesNameStyle() {
+        return getTableDefConfig().getPropertiesNameStyle();
+    }
+
+    /**
+     * @see TableDefConfig#setPropertiesNameStyle(TableDefConfig.NameStyle)
+     */
+    public void setPropertiesNameStyle(TableDefConfig.NameStyle propertiesNameStyle) {
+        getTableDefConfig().setPropertiesNameStyle(propertiesNameStyle);
+    }
+
+    /**
+     * @see TableDefConfig#getInstanceSuffix()
+     */
+    public String getInstanceSuffix() {
+        return getTableDefConfig().getInstanceSuffix();
+    }
+
+    /**
+     * @see TableDefConfig#setInstanceSuffix(String)
+     */
+    public void setInstanceSuffix(String instanceSuffix) {
+        getTableDefConfig().setInstanceSuffix(instanceSuffix);
     }
 
     public boolean isMapperXmlGenerateEnable() {

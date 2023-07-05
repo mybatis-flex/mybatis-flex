@@ -16,17 +16,22 @@
 
 package com.mybatisflex.codegen.test;
 
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.codegen.Generator;
+import com.mybatisflex.codegen.config.ColumnConfig;
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.TableConfig;
+import com.mybatisflex.codegen.config.TableDefConfig;
 import com.mybatisflex.spring.service.impl.CacheableServiceImpl;
 import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Test;
 
 import java.util.function.UnaryOperator;
 
 public class GeneratorTest {
 
 
-//    @Test
+    //    @Test
     public void testCodeGen1() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -82,7 +87,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-//    @Test
+    //    @Test
     public void testCodeGen2() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -137,6 +142,68 @@ public class GeneratorTest {
         globalConfig.enableMapperXml();
         //配置生成 package-info.java
         globalConfig.enablePackageInfo();
+
+        //通过 datasource 和 globalConfig 创建代码生成器
+        Generator generator = new Generator(dataSource, globalConfig);
+
+        //开始生成代码
+        generator.generate();
+    }
+
+    @Test
+    public void testCodeGen3() {
+        //配置数据源
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
+        dataSource.setUsername("root");
+        dataSource.setPassword("12345678");
+
+        GlobalConfig globalConfig = new GlobalConfig();
+
+        //用户信息表，用于存放用户信息。 -> 用户信息
+        UnaryOperator<String> tableFormat = (e) -> e.split("，")[0].replace("表", "");
+
+        //设置注解生成配置
+        globalConfig.getJavadocConfig()
+                .setAuthor("王帅")
+                .setTableCommentFormat(tableFormat);
+
+        //设置生成文件目录和根包
+        globalConfig.getPackageConfig()
+                .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
+                .setMapperXmlPath(System.getProperty("user.dir") + "/src/test/java/resources/mapper")
+                .setBasePackage("com.test");
+
+        ColumnConfig columnConfig = new ColumnConfig();
+        columnConfig.setColumnName("phonenumber");
+        columnConfig.setLarge(true);
+        columnConfig.setKeyType(KeyType.None);
+
+        TableConfig tableConfig = new TableConfig();
+        tableConfig.setTableName("sys_user");
+        tableConfig.addColumnConfig(columnConfig);
+
+        //设置表前缀和只生成哪些表
+        globalConfig.getStrategyConfig()
+                .setTablePrefix("sys_")
+                .setGenerateTable("sys_user")
+                .setTableConfig(tableConfig);
+
+        //配置生成 tableDef
+        globalConfig.enableTableDef()
+                .setInstanceSuffix("Def")
+                .setPropertiesNameStyle(TableDefConfig.NameStyle.LOWER_CAMEL_CASE)
+                .setOverwriteEnable(true);
+
+        // 配置生成 entity
+        globalConfig.enableEntity()
+                .setOverwriteEnable(true)
+                .setWithLombok(true);
+
+        // 配置生成 mapper
+        globalConfig.enableMapper()
+                .setOverwriteEnable(true)
+                .setMapperAnnotation(true);
 
         //通过 datasource 和 globalConfig 创建代码生成器
         Generator generator = new Generator(dataSource, globalConfig);

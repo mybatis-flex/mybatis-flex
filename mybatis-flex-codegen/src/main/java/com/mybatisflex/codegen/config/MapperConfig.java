@@ -46,6 +46,11 @@ public class MapperConfig {
      */
     private boolean overwriteEnable;
 
+    /**
+     * 是否添加 {@code @Mapper} 注解。
+     */
+    private boolean mapperAnnotation;
+
     public String buildSuperClassImport() {
         return supperClass.getName();
     }
@@ -111,6 +116,21 @@ public class MapperConfig {
      */
     public MapperConfig setOverwriteEnable(boolean overwriteEnable) {
         this.overwriteEnable = overwriteEnable;
+        return this;
+    }
+
+    /**
+     * 是否添加 {@code @Mapper} 注解。
+     */
+    public boolean isMapperAnnotation() {
+        return mapperAnnotation;
+    }
+
+    /**
+     * 设置是否添加 {@code @Mapper} 注解。
+     */
+    public MapperConfig setMapperAnnotation(boolean mapperAnnotation) {
+        this.mapperAnnotation = mapperAnnotation;
         return this;
     }
 

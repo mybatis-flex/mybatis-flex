@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.codegen.config;
 
+import com.mybatisflex.core.util.StringUtil;
+
 /**
  * 生成 TableDef 的配置。
  *
@@ -38,6 +40,30 @@ public class TableDefConfig {
      * 是否覆盖之前生成的文件。
      */
     private boolean overwriteEnable;
+
+    /**
+     * 生成辅助类的字段风格。
+     */
+    private NameStyle propertiesNameStyle = NameStyle.UPPER_CASE;
+
+    /**
+     * 生成的表对应的变量后缀。
+     */
+    private String instanceSuffix = "";
+
+    public String buildFieldName(String property) {
+        switch (propertiesNameStyle) {
+            case UPPER_CASE:
+                return StringUtil.camelToUnderline(property).toUpperCase();
+            case LOWER_CASE:
+                return StringUtil.camelToUnderline(property).toLowerCase();
+            case UPPER_CAMEL_CASE:
+                return StringUtil.firstCharToUpperCase(property);
+            case LOWER_CAMEL_CASE:
+            default:
+                return StringUtil.firstCharToLowerCase(property);
+        }
+    }
 
     /**
      * 获取类前缀。
@@ -82,6 +108,45 @@ public class TableDefConfig {
     public TableDefConfig setOverwriteEnable(boolean overwriteEnable) {
         this.overwriteEnable = overwriteEnable;
         return this;
+    }
+
+    /**
+     * 获取生成辅助类的字段风格。
+     */
+    public NameStyle getPropertiesNameStyle() {
+        return propertiesNameStyle;
+    }
+
+    /**
+     * 设置生成辅助类的字段风格。
+     */
+    public TableDefConfig setPropertiesNameStyle(NameStyle propertiesNameStyle) {
+        this.propertiesNameStyle = propertiesNameStyle;
+        return this;
+    }
+
+    /**
+     * 获取生成的表对应的变量后缀。
+     */
+    public String getInstanceSuffix() {
+        return instanceSuffix;
+    }
+
+    /**
+     * 设置生成的表对应的变量后缀。
+     */
+    public TableDefConfig setInstanceSuffix(String instanceSuffix) {
+        this.instanceSuffix = instanceSuffix;
+        return this;
+    }
+
+    public enum NameStyle {
+
+        UPPER_CASE,
+        LOWER_CASE,
+        UPPER_CAMEL_CASE,
+        LOWER_CAMEL_CASE
+
     }
 
 }
