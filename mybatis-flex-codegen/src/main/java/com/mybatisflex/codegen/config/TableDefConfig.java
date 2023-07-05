@@ -110,19 +110,31 @@ public class TableDefConfig {
         return this;
     }
 
+    /**
+     * 获取生成辅助类的字段风格。
+     */
     public NameStyle getPropertiesNameStyle() {
         return propertiesNameStyle;
     }
 
+    /**
+     * 设置生成辅助类的字段风格。
+     */
     public TableDefConfig setPropertiesNameStyle(NameStyle propertiesNameStyle) {
         this.propertiesNameStyle = propertiesNameStyle;
         return this;
     }
 
+    /**
+     * 获取生成的表对应的变量后缀。
+     */
     public String getInstanceSuffix() {
         return instanceSuffix;
     }
 
+    /**
+     * 设置生成的表对应的变量后缀。
+     */
     public TableDefConfig setInstanceSuffix(String instanceSuffix) {
         this.instanceSuffix = instanceSuffix;
         return this;
