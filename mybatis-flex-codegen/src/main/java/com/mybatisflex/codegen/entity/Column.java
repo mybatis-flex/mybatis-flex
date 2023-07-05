@@ -311,6 +311,14 @@ public class Column {
         return importClasses;
     }
 
+    public boolean isLarge() {
+        if (columnConfig != null && columnConfig.getLarge() != null) {
+            return columnConfig.getLarge();
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public String toString() {
         return "Column{" +
