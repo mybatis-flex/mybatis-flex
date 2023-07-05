@@ -119,10 +119,16 @@ public class MapperConfig {
         return this;
     }
 
+    /**
+     * 是否添加 {@code @Mapper} 注解。
+     */
     public boolean isMapperAnnotation() {
         return mapperAnnotation;
     }
 
+    /**
+     * 设置是否添加 {@code @Mapper} 注解。
+     */
     public MapperConfig setMapperAnnotation(boolean mapperAnnotation) {
         this.mapperAnnotation = mapperAnnotation;
         return this;
