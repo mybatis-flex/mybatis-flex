@@ -22,6 +22,7 @@ import com.mybatisflex.core.mybatis.MappedStatementTypes;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.EntitySqlProvider;
 import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.*;
@@ -527,6 +528,15 @@ public interface BaseMapper<T> {
     @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
     Cursor<T> selectCursorByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
+    /**
+     * 根据 query 来构建条件查询 Row
+     *
+     * @param queryWrapper 查询条件
+     * @return Row
+     */
+    @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
+    List<Row> selectRowsByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+
 
     /**
      * 根据 query 来构建条件查询数据列表，要求返回的数据为 asType
@@ -541,6 +551,11 @@ public interface BaseMapper<T> {
                 || String.class == asType) {
             return selectObjectListByQueryAs(queryWrapper, asType);
         }
+
+        if(Map.class.isAssignableFrom(asType)){
+            return (List<R>) selectRowsByQuery(queryWrapper);
+        }
+
         try {
             MappedStatementTypes.setCurrentType(asType);
             return (List<R>) selectListByQuery(queryWrapper);
