@@ -13,20 +13,20 @@ MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 
 支持的配置选项如下：
 
-| 属性名                          | 含义                     | 约束                                                     | 默认值                               |
-| ------------------------------- | ------------------------ | -------------------------------------------------------- | ------------------------------------ |
-| processor.enable                | 全局启用apt开关          | true/false                                               | true                                 |
-| processor.stopBubbling          | 是否停止向上级合并配      | true/false                                               | false                                |
-| processor.genPath               | APT 代码生成路径         | 合法的绝对或相对路径                                     | target/generated-sources/annotations |
-| processor.allInTables.enable           | 是否所有的类都生成在 Tables 类里 | true/false                                                | false              |
-| processor.allInTables.tablesPackage         | Tables 类名              | 合法的包名                                               | ${entityPackage}.table               |
-| processor.allInTables.tablesClassName       | Tables 类名              | 合法的类名                                               | Tables                               |
-| processor.mapper.generateEnable | 开启 Mapper 自动生成     | true/false                                               | false                                |
-| processor.mapper.baseClass       | 自定义 Mapper 的父类      | 全路径类名                                               | com.mybatisflex.core.BaseMapper      |
-| processor.mapper.package        | 自定义 Mapper 生成的包名  | 合法的包名                                               | ${entityPackage}.mapper              |
-| processor.tableDef.propertiesNameStyle   | 生成辅助类的字段风格       | upperCase, lowerCase<br />upperCamelCase, lowerCamelCase | upperCase                            |
-| processor.tableDef.instanceSuffix        | 生成的表对应的变量后缀     | string                                                  | 空字符串                            |
-| processor.tableDef.classSuffix        | 生成的 TableDef 类的后缀     | string                                                  | TableDef                            |
+| 属性名                                     | 含义                   | 约束                                                       | 默认值                                  |
+|-----------------------------------------|----------------------|----------------------------------------------------------|--------------------------------------|
+| processor.enable                        | 全局启用apt开关            | true/false                                               | true                                 |
+| processor.stopBubbling                  | 是否停止向上级合并配           | true/false                                               | false                                |
+| processor.genPath                       | APT 代码生成路径           | 合法的绝对或相对路径                                               | target/generated-sources/annotations |
+| processor.allInTables.enable            | 是否所有的类都生成在 Tables 类里 | true/false                                               | false                                |
+| processor.allInTables.package           | Tables 类名            | 合法的包名                                                    | ${entityPackage}.table               |
+| processor.allInTables.className         | Tables 类名            | 合法的类名                                                    | Tables                               |
+| processor.mapper.generateEnable         | 开启 Mapper 自动生成       | true/false                                               | false                                |
+| processor.mapper.baseClass              | 自定义 Mapper 的父类       | 全路径类名                                                    | com.mybatisflex.core.BaseMapper      |
+| processor.mapper.package                | 自定义 Mapper 生成的包名     | 合法的包名                                                    | ${entityPackage}.mapper              |
+| processor.tableDef.propertiesNameStyle  | 生成辅助类的字段风格           | upperCase, lowerCase<br />upperCamelCase, lowerCamelCase | upperCase                            |
+| processor.tableDef.instanceSuffix       | 生成的表对应的变量后缀          | string                                                   | 空字符串                                 |
+| processor.tableDef.classSuffix          | 生成的 TableDef 类的后缀    | string                                                   | TableDef                             |
 | processor.tableDef.ignoreEntitySuffixes | 过滤 Entity 后缀         | string                                                   | -                                    |
 
 
@@ -54,36 +54,38 @@ genPath 可以是绝对路径，也可以是相对路径，如果填写的是相
 添加如下配置，自定义生成的类名和包名。
 
 ```properties
-processor.tablesPackage = com.your-package
-processor.tablesClassName = your-class-name
+processor.allInTables.enable=true
+processor.allInTables.package=com.your-package
+processor.allInTables.className=your-class-name
 ```
 
-## 自定义 Tables 的字段风格
+## 自定义 TableDef 的字段风格
 
-默认情况下，APT 生成的 Tables 生成的默认内容如下：
+默认情况下，APT 生成的 TableDef 生成的默认内容如下：
 
 ```java
-public class Tables {
+public class AccountTableDef extends TableDef {
 
-    public static final UserTableDef USER = new UserTableDef("sys_user");
+    public static final AccountTableDef ACCOUNT = new AccountTableDef("", "tb_account");
 
-    public static class UserTableDef extends TableDef {
+    public QueryColumn ID = new QueryColumn(this, "id");
+    public QueryColumn USER_NAME = new QueryColumn(this, "user_name");
+    
+    public QueryColumn ALL_COLUMNS = new QueryColumn(this, "*");
+    public QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, USER_NAME};
 
-        public QueryColumn ID = new QueryColumn(this, "id");
-        public QueryColumn USER_NAME = new QueryColumn(this, "user_name");
-
-        public UserTableDef(String tableName) {
-            super(tableName);
-        }
+    public AccountTableDef(String schema, String tableName) {
+        super(schema, tableName);
     }
+
 }
 ```
 
-在生成的内容中，`USER`、`ID`、`USER_NAME` 等都是 **"大写 + 下划线"** 的风格，修改风格需要添加入配置：
+在生成的内容中，`ACCOUNT`、`ID`、`USER_NAME` 等都是 **"大写 + 下划线"** 的风格，修改风格需要添加入配置：
 
 ```properties
 #upperCase, lowerCase, upperCamelCase, lowerCamelCase
-processor.tablesNameStyle=upperCase
+processor.tableDef.propertiesNameStyle = upperCase
 ```
 风格支持 4 中配置，默认（未配置时）为 upperCase，支持的配置分别为：
 
@@ -99,7 +101,7 @@ processor.tablesNameStyle=upperCase
 不包含 `Model` `Dto` 等后缀，可以添加如下的配置：
 
 ```properties
-processor.entity.ignoreSuffixes = Model, Dto
+processor.tableDef.ignoreEntitySuffixes = Model, Dto
 ```
 
 
@@ -108,7 +110,7 @@ processor.entity.ignoreSuffixes = Model, Dto
 从 v1.1.9 开始， APT 的 Mapper 功能是关闭的，若需要开启 Mapper 的自动生成功能，需要添加以下配置。
 
 ```properties
-processor.mappersGenerateEnable = true
+processor.mapper.generateEnable = true
 ```
 
 以上的配置，会关闭整个项目的 APT 生成，若我们只想关闭某一个 Entity 的 APT 生成，那么可以通过配置注解 `@Table(mapperGenerateEnable = false)` 进行关闭。
@@ -122,7 +124,7 @@ processor.mappersGenerateEnable = true
 添加如下配置，自定义 Mapper 生成的包名。
 
 ```properties
-processor.mappersPackage = com.your-package
+processor.mapper.package = com.your-package
 ```
 
 ## 自定义 Mapper 的父类
@@ -131,7 +133,7 @@ processor.mappersPackage = com.your-package
 `BaseMapper`，然后通过 APT 配置生成。
 
 ```properties
-processor.baseMapperClass=com.domain.mapper.MyBaseMapper
+processor.mapper.baseClass = com.domain.mapper.MyBaseMapper
 ```
 
 ## 实体类不在一个包中
@@ -154,18 +156,18 @@ com.example.entityPackage2.table
     └─ Entity2TableDef
 ```
 
-但是，如果您设置了 `processor.allInTables=true` 的话，`Tables` 文件将会生成在最后一个包中，例如：
+但是，如果您设置了 `processor.allInTables.enable` 的话，`Tables` 文件将会生成在最后一个包中，例如：
 
 ```txt
 com.example.entityPackage2.table
     └─ Tables
 ```
 
-所以，如果您的实体类在多个包中，又指定了 `processor.allInTables=true` 选项，推荐设置 `Tables` 文件的位置，例如：
+所以，如果您的实体类在多个包中，又指定了 `processor.allInTables.enable = true` 选项，推荐设置 `Tables` 文件的位置，例如：
 
 ```properties
-processor.allInTables=true
-processor.tablesPackage=com.example.entity.table
+processor.allInTables.enable=true
+processor.allInTables.package=com.example.entity.table
 ```
 
 ## 和 Lombok、Mapstruct 整合
