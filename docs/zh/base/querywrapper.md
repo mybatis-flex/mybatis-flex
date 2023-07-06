@@ -136,7 +136,7 @@ FROM tb_account
 
 示例：
 
-```text
+```txt
 select(number(1)) --> SELECT 1
 select(string("str")) --> SELECT 'str'
 select(column("abc")) --> SELECT abc
