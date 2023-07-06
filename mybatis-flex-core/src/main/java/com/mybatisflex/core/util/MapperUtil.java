@@ -21,6 +21,7 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.field.FieldQuery;
 import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.relation.RelationManager;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
@@ -165,7 +166,18 @@ public class MapperUtil {
     }
 
 
-    private static Class<?> getWrapType(Class<?> type) {
+    public static <Entity> Entity queryRelations(BaseMapper<?> mapper, Entity entity) {
+        queryRelations(mapper,Collections.singletonList(entity));
+        return entity;
+    }
+
+    public static <Entity> List<Entity> queryRelations(BaseMapper<?> mapper, List<Entity> entities) {
+        RelationManager.queryRelations(mapper, entities);
+        return entities;
+    }
+
+
+    public static Class<?> getWrapType(Class<?> type) {
         if (ClassUtil.canInstance(type.getModifiers())) {
             return type;
         }

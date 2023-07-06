@@ -151,7 +151,7 @@ public class FlexConfiguration extends Configuration {
         Class<?> asType = MappedStatementTypes.getCurrentType();
         if (asType != null) {
             return MapUtil.computeIfAbsent(dynamicMappedStatementCache, id + ":" + asType.getName(),
-                    aClass -> replaceResultMap(ms, TableInfoFactory.ofEntityClass(asType))
+                    clazz -> replaceResultMap(ms, TableInfoFactory.ofEntityClass(asType))
             );
         }
 

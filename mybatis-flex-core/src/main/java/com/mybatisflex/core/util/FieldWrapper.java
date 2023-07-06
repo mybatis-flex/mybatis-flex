@@ -26,6 +26,7 @@ public class FieldWrapper {
 
     private Class<?> fieldType;
     private Class<?> mappingType;
+    private Method getterMethod;
     private Method setterMethod;
 
     public static FieldWrapper of(Class<?> clazz, String fieldName) {
@@ -49,10 +50,11 @@ public class FieldWrapper {
                         throw new IllegalStateException("Can not find field \"" + fieldName + "\" in class: " + clazz);
                     }
 
+                    String setterName = "set" + StringUtil.firstCharToUpperCase(fieldName);
                     Method setter = ClassUtil.getFirstMethod(clazz, method ->
                             method.getParameterCount() == 1
                                     && Modifier.isPublic(method.getModifiers())
-                                    && method.getName().equals("set" + StringUtil.firstCharToUpperCase(fieldName)));
+                                    && method.getName().equals(setterName));
 
                     if (setter == null) {
                         throw new IllegalStateException("Can not find method \"set" + StringUtil.firstCharToUpperCase(fieldName) + "\" in class: " + clazz);
@@ -62,6 +64,11 @@ public class FieldWrapper {
                     fieldWrapper.fieldType = findField.getType();
                     fieldWrapper.mappingType = parseMappingType(findField);
                     fieldWrapper.setterMethod = setter;
+
+                    String[] getterNames = new String[]{"get" + StringUtil.firstCharToUpperCase(fieldName), "is" + StringUtil.firstCharToUpperCase(fieldName)};
+                    fieldWrapper.getterMethod = ClassUtil.getFirstMethod(clazz, method -> method.getParameterCount() == 0
+                            && Modifier.isPublic(method.getModifiers())
+                            && ArrayUtil.contains(getterNames, method.getName()));
 
                     wrapperMap.put(fieldName, fieldWrapper);
                 }
@@ -92,6 +99,14 @@ public class FieldWrapper {
     public void set(Object value, Object to) {
         try {
             setterMethod.invoke(to, value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Object get(Object target) {
+        try {
+            return getterMethod.invoke(target);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

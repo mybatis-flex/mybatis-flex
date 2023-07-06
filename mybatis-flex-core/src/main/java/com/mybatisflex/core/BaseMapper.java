@@ -426,6 +426,58 @@ public interface BaseMapper<T> {
         return MapperUtil.getSelectOneResult(selectListByQueryAs(queryWrapper, asType));
     }
 
+
+    /**
+     * 根据 map 构建的条件来查询数据
+     *
+     * @param map where 条件
+     * @return entity 数据
+     */
+    default T selectOneWithRelationsByMap(Map<String, Object> map) {
+        if (map == null || map.isEmpty()) {
+            throw FlexExceptions.wrap("map can not be null or empty.");
+        }
+        return selectOneWithRelationsByQuery(QueryWrapper.create().where(map).limit(1));
+    }
+
+
+    /**
+     * 根据 condition 来查询数据
+     *
+     * @param condition 条件
+     * @return 1 条数据
+     */
+    default T selectOneWithRelationsByCondition(QueryCondition condition) {
+        if (condition == null) {
+            throw FlexExceptions.wrap("condition can not be null.");
+        }
+        return selectOneWithRelationsByQuery(QueryWrapper.create().where(condition).limit(1));
+    }
+
+
+    /**
+     * 根据 queryWrapper 构建的条件来查询 1 条数据
+     *
+     * @param queryWrapper query 条件
+     * @return entity 数据
+     */
+    default T selectOneWithRelationsByQuery(QueryWrapper queryWrapper) {
+        return MapperUtil.queryRelations(this, MapperUtil.getSelectOneResult(selectListByQuery(queryWrapper)));
+    }
+
+
+    /**
+     * 根据 queryWrapper 构建的条件来查询 1 条数据
+     *
+     * @param queryWrapper query 条件
+     * @param asType       接收类型
+     * @return 数据内容
+     */
+    default <R> R selectOneWithRelationsByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
+        return MapperUtil.queryRelations(this, MapperUtil.getSelectOneResult(selectListByQueryAs(queryWrapper, asType)));
+    }
+
+
     /**
      * 根据多个主键来查询多条数据
      *
@@ -552,7 +604,7 @@ public interface BaseMapper<T> {
             return selectObjectListByQueryAs(queryWrapper, asType);
         }
 
-        if(Map.class.isAssignableFrom(asType)){
+        if (Map.class.isAssignableFrom(asType)) {
             return (List<R>) selectRowsByQuery(queryWrapper);
         }
 
@@ -565,6 +617,14 @@ public interface BaseMapper<T> {
     }
 
 
+    /**
+     * 根据 query 来构建条件查询数据列表，要求返回的数据为 asType
+     *
+     * @param queryWrapper 查询条件
+     * @param asType       接收的数据类型
+     * @param consumers    字段查询
+     * @return 数据列表
+     */
     default <R> List<R> selectListByQueryAs(QueryWrapper queryWrapper, Class<R> asType
             , Consumer<FieldQueryBuilder<R>>... consumers) {
         List<R> list = selectListByQueryAs(queryWrapper, asType);
@@ -578,12 +638,79 @@ public interface BaseMapper<T> {
 
 
     /**
+     * 查询 entity 及其 relation 注解字段
+     *
+     * @param queryWrapper 查询条件
+     */
+    default List<T> selectListWithRelationsByQuery(QueryWrapper queryWrapper) {
+        return MapperUtil.queryRelations(this, selectListByQuery(queryWrapper));
+    }
+
+
+    /**
+     * 查询 entity 及其 relation 注解字段
+     *
+     * @param queryWrapper 查询条件
+     * @param asType       要求返回的数据类型
+     * @return 数据列表
+     */
+    default <R> List<R> selectListWithRelationsByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
+        if (Number.class.isAssignableFrom(asType)
+                || String.class == asType) {
+            return selectObjectListByQueryAs(queryWrapper, asType);
+        }
+
+        if (Map.class.isAssignableFrom(asType)) {
+            return (List<R>) selectRowsByQuery(queryWrapper);
+        }
+
+        try {
+            MappedStatementTypes.setCurrentType(asType);
+            return MapperUtil.queryRelations(this, (List<R>) selectListByQuery(queryWrapper));
+        } finally {
+            MappedStatementTypes.clear();
+        }
+    }
+
+
+    /**
+     * 查询 entity 及其 relation 注解字段
+     *
+     * @param queryWrapper 查询条件
+     * @param asType       返回的类型
+     * @param consumers    字段查询
+     * @return 数据列表
+     */
+    default <R> List<R> selectListWithRelationsByQueryAs(QueryWrapper queryWrapper, Class<R> asType
+            , Consumer<FieldQueryBuilder<R>>... consumers) {
+        List<R> list = selectListByQueryAs(queryWrapper, asType);
+        if (list == null || list.isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            MapperUtil.queryRelations(this, list);
+            MapperUtil.queryFields(this, list, consumers);
+            return list;
+        }
+    }
+
+
+    /**
      * 查询全部数据
      *
      * @return 数据列表
      */
     default List<T> selectAll() {
         return selectListByQuery(new QueryWrapper());
+    }
+
+
+    /**
+     * 查询全部数据，及其 relation 字段内容
+     *
+     * @return 数据列表
+     */
+    default List<T> selectAllWithRelations() {
+        return MapperUtil.queryRelations(this, selectListByQuery(new QueryWrapper()));
     }
 
 

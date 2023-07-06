@@ -130,6 +130,21 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
         return result != null ? result : defaultValue;
     }
 
+    public Object getIgnoreCase(String key){
+        for (String innerKey : keySet()) {
+            if (innerKey.equalsIgnoreCase(key)){
+                return super.get(innerKey);
+            }
+        }
+        return null;
+    }
+
+
+    public Object getIgnoreCase(String key, Object defaultValue){
+        Object result = getIgnoreCase(key);
+        return result != null ? result : defaultValue;
+    }
+
 
     @Override
     public Object put(String key, Object value) {
