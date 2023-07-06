@@ -43,12 +43,12 @@ public enum ConfigurationKey {
     /**
      * Tables 类名。
      */
-    ALL_IN_TABLES_CLASS_NAME("processor.allInTables.tablesClassName", "Tables"),
+    ALL_IN_TABLES_CLASS_NAME("processor.allInTables.className", "Tables"),
 
     /**
      * 自定义 Tables 生成的包名。
      */
-    ALL_IN_TABLES_PACKAGE("processor.allInTables.tablesPackage", null),
+    ALL_IN_TABLES_PACKAGE("processor.allInTables.package", null),
 
 
     /**
