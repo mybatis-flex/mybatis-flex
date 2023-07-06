@@ -24,8 +24,6 @@ import java.util.List;
 @Table(value = "tb_account")
 public class Account implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Id(keyType = KeyType.Auto)
     private Long id;
 
@@ -33,10 +31,10 @@ public class Account implements Serializable {
 
     private int age;
 
-//    @RelationOneToOne(selfField = "id", targetField = "accountId")
+    @RelationOneToOne(selfField = "id", targetField = "accountId")
     private IDCard idCard;
 
-//    @RelationOneToMany(selfField = "id", targetField = "accountId")
+    @RelationOneToMany(selfField = "id", targetField = "accountId")
     private List<Book> books;
 
     @RelationManyToMany(

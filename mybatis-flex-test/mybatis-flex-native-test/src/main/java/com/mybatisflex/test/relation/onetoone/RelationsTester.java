@@ -64,10 +64,8 @@ public class RelationsTester {
 
     @Test
     public void testOneToOne() {
-        List<Account> accounts = accountMapper.selectAll();
+        List<Account> accounts = accountMapper.selectAllWithRelations();
         System.out.println(">>>>>>1: " + accounts);
-        RelationManager.queryRelations(accountMapper, accounts);
-        System.out.println(">>>>>>2: " + accounts);
     }
 
 
