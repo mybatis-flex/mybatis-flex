@@ -15,13 +15,11 @@
  */
 package com.mybatisflex.core.util;
 
-import com.mybatisflex.core.update.ModifyAttrsRecordProxyFactory;
 import com.mybatisflex.core.table.IdInfo;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import org.apache.ibatis.reflection.DefaultReflectorFactory;
+import com.mybatisflex.core.update.ModifyAttrsRecordProxyFactory;
 import org.apache.ibatis.reflection.Reflector;
-import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.reflection.invoker.Invoker;
 
 import java.lang.reflect.Array;
@@ -30,8 +28,6 @@ import java.util.List;
 public class UpdateEntity {
 
     private UpdateEntity() {}
-
-    private static final ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
 
 
     public static <T> T of(Class<T> clazz) {
@@ -43,7 +39,7 @@ public class UpdateEntity {
         T newEntity = ModifyAttrsRecordProxyFactory.getInstance().get(clazz);
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(clazz);
         List<IdInfo> primaryKeyList = tableInfo.getPrimaryKeyList();
-        Reflector reflector = reflectorFactory.findForClass(clazz);
+        Reflector reflector = Reflectors.of(clazz);
 
         if (primaryKeyList != null && !primaryKeyList.isEmpty()) {
             for (int i = 0; i < primaryKeyList.size(); i++) {
@@ -82,7 +78,7 @@ public class UpdateEntity {
 
         T newEntity = (T) of(usefulClass);
 
-        Reflector reflector = reflectorFactory.findForClass(usefulClass);
+        Reflector reflector = Reflectors.of(usefulClass);
         String[] propertyNames = reflector.getGetablePropertyNames();
 
         for (String propertyName : propertyNames) {

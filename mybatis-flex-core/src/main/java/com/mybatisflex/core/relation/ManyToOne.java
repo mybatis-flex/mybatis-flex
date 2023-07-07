@@ -28,8 +28,9 @@ import static com.mybatisflex.core.query.QueryMethods.column;
 class ManyToOne<SelfEntity> extends Relation<SelfEntity> {
 
     public ManyToOne(RelationManyToOne annotation, Class<SelfEntity> entityClass, Field relationField) {
-        super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationOneToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\""),
-                annotation.targetField(), entityClass, relationField);
+        super(annotation.selfField(),
+                getDefaultPrimaryProperty(annotation.targetField(), getTargetEntityClass(entityClass, relationField), "@RelationManyToOne.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
+                , entityClass, relationField);
     }
 
     @Override

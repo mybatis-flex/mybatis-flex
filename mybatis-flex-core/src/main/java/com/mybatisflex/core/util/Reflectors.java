@@ -13,17 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.annotation;
+package com.mybatisflex.core.util;
 
-import java.lang.annotation.*;
+import org.apache.ibatis.reflection.Reflector;
+import org.apache.ibatis.util.MapUtil;
 
-@Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
-public @interface RelationManyToOne {
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-    String selfField();
+public class Reflectors {
 
-    String targetField() default "";
+    private final static ConcurrentMap<Class<?>, Reflector> reflectorMap = new ConcurrentHashMap<>();
 
+    public static Reflector of(Class<?> type){
+        return  MapUtil.computeIfAbsent(reflectorMap, type, Reflector::new);
+    }
 }

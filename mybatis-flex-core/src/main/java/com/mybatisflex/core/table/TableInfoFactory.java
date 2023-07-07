@@ -22,6 +22,7 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.Reflectors;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.io.ResolverUtil;
 import org.apache.ibatis.reflection.Reflector;
@@ -131,7 +132,7 @@ public class TableInfoFactory {
 
         TableInfo tableInfo = new TableInfo();
         tableInfo.setEntityClass(entityClass);
-        Reflector reflector = new Reflector(entityClass);
+        Reflector reflector = Reflectors.of(entityClass);
         tableInfo.setReflector(reflector);
 
         //初始化表名

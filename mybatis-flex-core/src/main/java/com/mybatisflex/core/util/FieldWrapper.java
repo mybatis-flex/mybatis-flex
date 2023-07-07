@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.core.util;
 
+import org.apache.ibatis.reflection.Reflector;
+
 import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.Map;
@@ -62,7 +64,7 @@ public class FieldWrapper {
 
                     fieldWrapper = new FieldWrapper();
                     fieldWrapper.fieldType = findField.getType();
-                    fieldWrapper.mappingType = parseMappingType(findField);
+                    fieldWrapper.mappingType = parseMappingType(clazz, findField);
                     fieldWrapper.setterMethod = setter;
 
                     String[] getterNames = new String[]{"get" + StringUtil.firstCharToUpperCase(fieldName), "is" + StringUtil.firstCharToUpperCase(fieldName)};
@@ -78,18 +80,16 @@ public class FieldWrapper {
         return fieldWrapper;
     }
 
-    private static Class<?> parseMappingType(Field field) {
-        Class<?> fieldType = field.getType();
+    private static Class<?> parseMappingType(Class<?> clazz, Field field) {
+        Reflector reflector = Reflectors.of(clazz);
+        Class<?> fieldType = reflector.getGetterType(field.getName());
+
         if (Collection.class.isAssignableFrom(fieldType)) {
             Type genericType = field.getGenericType();
             if (genericType instanceof ParameterizedType) {
                 Type actualTypeArgument = ((ParameterizedType) genericType).getActualTypeArguments()[0];
                 return (Class<?>) actualTypeArgument;
             }
-        }
-
-        if (fieldType.isArray()) {
-            return field.getType().getComponentType();
         }
 
         return fieldType;
