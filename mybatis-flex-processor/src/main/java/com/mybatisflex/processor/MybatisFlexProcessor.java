@@ -149,7 +149,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 assert table != null;
 
                 // 类属性 fix: https://gitee.com/mybatis-flex/mybatis-flex/issues/I7I08X
-                Set<ColumnInfo> columnInfos = new HashSet<>();
+                Set<ColumnInfo> columnInfos = new TreeSet<>();
                 // 默认查询的属性，非 isLarge 字段
                 List<String> defaultColumns = new ArrayList<>();
 

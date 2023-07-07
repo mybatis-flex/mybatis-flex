@@ -65,17 +65,11 @@ public class ContentBuilder {
         content.append("// Auto generate by mybatis-flex, do not modify it.\n");
         content.append("public class ").append(tableDefClassName).append(" extends TableDef {\n\n");
         if (!allInTablesEnable) {
-            String schema = !StrUtil.isBlank(table.schema())
-                    ? table.schema()
-                    : "";
-            String tableName = !StrUtil.isBlank(table.value())
-                    ? table.value()
-                    : StrUtil.firstCharToLowerCase(entityClassName);
             content.append("    public static final ").append(tableDefClassName).append(' ').append(StrUtil.buildFieldName(entityClassName.concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
-                    .append(" = new ").append(tableDefClassName).append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n\n");
+                    .append(" = new ").append(tableDefClassName).append("();\n\n");
         }
         columnInfos.forEach((columnInfo) -> {
-            content.append("    public QueryColumn ")
+            content.append("    public final QueryColumn ")
                     .append(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle))
                     .append(" = new QueryColumn(this, \"")
                     .append(columnInfo.getColumn()).append("\"");
@@ -84,16 +78,22 @@ public class ContentBuilder {
             }
             content.append(");\n");
         });
-        content.append("    public QueryColumn ").append(StrUtil.buildFieldName("allColumns", tableDefPropertiesNameStyle)).append(" = new QueryColumn(this, \"*\");\n");
+        content.append("\n    public final QueryColumn ").append(StrUtil.buildFieldName("allColumns", tableDefPropertiesNameStyle)).append(" = new QueryColumn(this, \"*\");\n");
         StringJoiner defaultColumnJoiner = new StringJoiner(", ");
         columnInfos.forEach((columnInfo) -> {
             if (defaultColumns.contains(columnInfo.getColumn())) {
                 defaultColumnJoiner.add(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle));
             }
         });
-        content.append("    public QueryColumn[] ").append(StrUtil.buildFieldName("defaultColumns", tableDefPropertiesNameStyle)).append(" = new QueryColumn[]{").append(defaultColumnJoiner).append("};\n\n");
-        content.append("    public ").append(tableDefClassName).append("(String schema, String tableName) {\n")
-                .append("       super(schema, tableName);\n")
+        content.append("    public final QueryColumn[] ").append(StrUtil.buildFieldName("defaultColumns", tableDefPropertiesNameStyle)).append(" = new QueryColumn[]{").append(defaultColumnJoiner).append("};\n\n");
+        String schema = !StrUtil.isBlank(table.schema())
+                ? table.schema()
+                : "";
+        String tableName = !StrUtil.isBlank(table.value())
+                ? table.value()
+                : StrUtil.firstCharToLowerCase(entityClassName);
+        content.append("    public ").append(tableDefClassName).append("() {\n")
+                .append("        super").append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n")
                 .append("    }\n\n}\n");
         return content.toString();
     }
@@ -107,8 +107,8 @@ public class ContentBuilder {
                 importBuilder.toString() +
                 "\n// Auto generate by mybatis-flex, do not modify it.\n" +
                 "public class " + tablesClassName + " {\n\n" +
-                "   private " + tablesClassName + "() {\n" +
-                "   }\n\n" +
+                "    private " + tablesClassName + "() {\n" +
+                "    }\n\n" +
                 fieldBuilder.toString() +
                 "\n}\n";
     }
@@ -121,15 +121,9 @@ public class ContentBuilder {
         String tableDefPackage = StrUtil.buildTableDefPackage(entityClass);
         String tableDefClassName = entityClassName.concat(tableDefClassSuffix);
         importBuilder.append("import ").append(tableDefPackage).append('.').append(tableDefClassName).append(";\n");
-        String schema = !StrUtil.isBlank(table.schema())
-                ? table.schema()
-                : "";
-        String tableName = !StrUtil.isBlank(table.value())
-                ? table.value()
-                : StrUtil.firstCharToLowerCase(entityClassName);
-        fieldBuilder.append("   public static final ").append(tableDefClassName).append(' ')
+        fieldBuilder.append("    public static final ").append(tableDefClassName).append(' ')
                 .append(StrUtil.buildFieldName(entityClassName.concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
-                .append(" = new ").append(tableDefClassName).append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n");
+                .append(" = new ").append(tableDefClassName).append("();\n");
     }
 
 }
