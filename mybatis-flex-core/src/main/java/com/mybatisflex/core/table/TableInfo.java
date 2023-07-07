@@ -831,15 +831,15 @@ public class TableInfo {
 
 
     public ResultMap buildResultMap(Configuration configuration) {
-        return doBuildResultMap(configuration, new HashSet<>(), new HashSet<>(), false);
+        return doBuildResultMap(configuration, new HashSet<>(), new HashSet<>(), false, getTableNameWithSchema());
     }
 
-    private ResultMap doBuildResultMap(Configuration configuration, Set<String> resultMapIds, Set<String> existMappingColumns, boolean isNested) {
+    private ResultMap doBuildResultMap(Configuration configuration, Set<String> resultMapIds, Set<String> existMappingColumns, boolean isNested, String nestedPrefix) {
 
-        String resultMapId = isNested ? "nested:" + entityClass.getName() : entityClass.getName();
+        String resultMapId = isNested ? "nested-" + nestedPrefix + ":" + entityClass.getName() : entityClass.getName();
 
         //是否有循环引用
-        boolean withCircularReference = resultMapIds.contains(resultMapId);
+        boolean withCircularReference = resultMapIds.contains(resultMapId) || resultMapIds.contains(entityClass.getName());
         if (withCircularReference) {
             return null;
         }
@@ -869,7 +869,7 @@ public class TableInfo {
                 // 获取嵌套类型的信息，也就是 javaType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(fieldType);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <association> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, existMappingColumns, true);
+                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, existMappingColumns, true, nestedPrefix);
                 if (nestedResultMap != null) {
                     resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
                             .javaType(fieldType)
@@ -902,7 +902,7 @@ public class TableInfo {
                     // 获取集合泛型类型的信息，也就是 ofType 属性
                     TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
                     // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
-                    ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, existMappingColumns, true);
+                    ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, existMappingColumns, true, nestedPrefix);
                     if (nestedResultMap != null) {
                         resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
                                 .javaType(field.getType())
