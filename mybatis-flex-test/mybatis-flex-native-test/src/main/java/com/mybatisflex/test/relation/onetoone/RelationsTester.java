@@ -20,6 +20,7 @@ import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
+import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.relation.RelationManager;
 import com.mybatisflex.test.relation.mapper.AccountMapper;
@@ -100,6 +101,12 @@ public class RelationsTester {
 
         List<Menu> menus = menuMapper.selectListWithRelationsByQuery(qw);
         System.out.println( JSON.toJSONString(menus));
+    }
+
+    @Test
+    public void testPaginate() {
+        Page<Account> accountPage = accountMapper.paginateWithRelations(1, 2, QueryWrapper.create());
+        System.out.println(accountPage);
     }
 
 
