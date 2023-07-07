@@ -1,5 +1,21 @@
 # ChangeLog
 
+
+## v1.4.7 20230707:
+新增：`@RelationManyToMany` `@RelationManyToOne` `@RelationOneToMany` `@RelationOneToOne` 4 个注解用于关联查询
+新增：为 QueryMethods 添加更多的 SQL 函数重载，感谢 @Suomm
+新增：代码生成器添加 @Mapper 主键的启用配置，感谢 @Suomm
+新增：BaseMapper 添加 selectRowsByQuery() 方法
+优化：重构 selectCountByQuery 方法，移除不必要的实现类，感谢 @Suomm
+优化：重构 TableInfo.buildResultMap()，防止在某些极端情况出现赋值错误的问题
+修复：代码生成器 ControllerGenerator 的 OverwriteEnable 配置不生效的问题
+文档：添加关于 QueryMethods 的一些用法和示例，感谢 @Suomm
+文档：修改 apt 配置错误的问题，感谢 @Suomm
+文档：添加关于 sql 函数的一些函数说明
+文档：添加关于关联查询注解的相关文档
+
+
+
 ## v1.4.6 20230704:
 - 新增：新增 UpdateWrapper 类，可以通过 entity 转换为 UpdateWrapper 进行数据更新
 - 新增：添加 QueryWrapper.select(QueryColumn[]... queryColumns) 方法
