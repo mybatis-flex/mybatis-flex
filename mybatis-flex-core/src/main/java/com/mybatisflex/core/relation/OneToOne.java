@@ -28,7 +28,8 @@ import static com.mybatisflex.core.query.QueryMethods.column;
 class OneToOne<SelfEntity> extends Relation<SelfEntity> {
 
     public OneToOne(RelationOneToOne annotation, Class<SelfEntity> entityClass, Field relationField) {
-        super(annotation.selfField(), annotation.targetField(), entityClass, relationField);
+        super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationOneToOne.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\""),
+                annotation.targetField(), entityClass, relationField);
     }
 
 

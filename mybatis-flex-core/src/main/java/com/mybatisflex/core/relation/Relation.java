@@ -16,11 +16,14 @@
 package com.mybatisflex.core.relation;
 
 import com.mybatisflex.core.BaseMapper;
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.table.IdInfo;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.FieldWrapper;
+import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.TypeParameterResolver;
 
@@ -166,5 +169,20 @@ abstract class Relation<SelfEntity> {
 
     public Class<?> getMappingType() {
         return relationFieldWrapper.getMappingType();
+    }
+
+
+    protected static String getDefaultPrimaryProperty(String key,Class<?> entityClass,String message){
+        if (StringUtil.isNotBlank(key)){
+            return key;
+        }
+
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
+        List<IdInfo> primaryKeyList = tableInfo.getPrimaryKeyList();
+        if (primaryKeyList == null || primaryKeyList.size() != 1){
+            throw FlexExceptions.wrap(message);
+        }
+
+        return primaryKeyList.get(0).getProperty();
     }
 }

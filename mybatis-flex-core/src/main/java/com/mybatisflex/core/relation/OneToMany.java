@@ -36,7 +36,8 @@ class OneToMany<SelfEntity> extends Relation<SelfEntity> {
 
 
     public OneToMany(RelationOneToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
-        super(annotation.selfField(), annotation.targetField(), entityClass, relationField);
+        super(getDefaultPrimaryProperty(annotation.selfField(),entityClass,"@RelationOneToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\""),
+                annotation.targetField(), entityClass, relationField);
         this.orderBy = annotation.orderBy();
         this.limit = annotation.limit();
     }

@@ -38,7 +38,9 @@ class ManyToMany<SelfEntity> extends Relation<SelfEntity> {
     private String orderBy;
 
     public ManyToMany(RelationManyToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
-        super(annotation.selfField(), annotation.targetField(), entityClass, relationField);
+        super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationOneToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\""),
+                getDefaultPrimaryProperty(annotation.targetField(), entityClass, "@RelationOneToMany.targetField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\""),
+                entityClass, relationField);
 
         this.joinTable = annotation.joinTable();
         this.joinSelfColumn = annotation.joinSelfColumn();

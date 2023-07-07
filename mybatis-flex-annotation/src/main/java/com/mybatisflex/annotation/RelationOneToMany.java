@@ -22,7 +22,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 public @interface RelationOneToMany {
 
-    String selfField();
+    String selfField() default "";
 
     String targetField();
 

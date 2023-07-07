@@ -31,17 +31,24 @@ public class Account implements Serializable {
 
     private int age;
 
-//    @RelationOneToOne(selfField = "id", targetField = "accountId")
+    //    @RelationOneToOne(selfField = "id", targetField = "accountId")
+//    @RelationOneToOne(targetField = "accountId")
     private IDCard idCard;
 
-    @RelationOneToMany(selfField = "id", targetField = "accountId")
+    //    @RelationOneToMany(selfField = "id", targetField = "accountId")
+//    @RelationOneToMany(targetField = "accountId")
     private List<Book> books;
 
-//    @RelationManyToMany(
+    //    @RelationManyToMany(
 //            joinTable = "tb_role_mapping",
 //            selfField = "id", joinSelfColumn = "account_id",
 //            targetField = "id", joinTargetColumn = "role_id"
 //    )
+    @RelationManyToMany(
+            joinTable = "tb_role_mapping",
+            joinSelfColumn = "account_id",
+            joinTargetColumn = "role_id"
+    )
     private List<Role> roles;
 
 

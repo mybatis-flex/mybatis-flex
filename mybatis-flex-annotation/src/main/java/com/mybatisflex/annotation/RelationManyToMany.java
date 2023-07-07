@@ -22,9 +22,9 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 public @interface RelationManyToMany {
 
-    String selfField();
+    String selfField() default "";
 
-    String targetField();
+    String targetField() default "";
 
     String joinTable();
 

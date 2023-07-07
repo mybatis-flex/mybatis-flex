@@ -587,7 +587,7 @@ public class CommonsDialectImpl implements IDialect {
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         //正常删除
         if (StringUtil.isBlank(logicDeleteColumn)) {
-            String deleteByIdSql = forDeleteById(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryKeys());
+            String deleteByIdSql = forDeleteById(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryColumns());
 
             if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
                 deleteByIdSql += AND + wrap(tableInfo.getTenantIdColumn()) + IN + buildQuestion(tenantIdArgs.length);
@@ -597,7 +597,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //逻辑删除
         StringBuilder sql = new StringBuilder();
-        String[] primaryKeys = tableInfo.getPrimaryKeys();
+        String[] primaryKeys = tableInfo.getPrimaryColumns();
 
         sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this));
         sql.append(SET).append(buildLogicDeletedSet(logicDeleteColumn));
@@ -627,7 +627,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //正常删除
         if (StringUtil.isBlank(logicDeleteColumn)) {
-            String deleteSQL = forDeleteBatchByIds(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryKeys(), primaryValues);
+            String deleteSQL = forDeleteBatchByIds(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryColumns(), primaryValues);
 
             //多租户
             if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
@@ -644,7 +644,7 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(WHERE);
         sql.append(BRACKET_LEFT);
 
-        String[] primaryKeys = tableInfo.getPrimaryKeys();
+        String[] primaryKeys = tableInfo.getPrimaryColumns();
 
         //多主键的场景
         if (primaryKeys.length > 1) {
@@ -722,7 +722,7 @@ public class CommonsDialectImpl implements IDialect {
 
         Set<String> updateColumns = tableInfo.obtainUpdateColumns(entity, ignoreNulls, false);
         Map<String, RawValue> rawValueMap = tableInfo.obtainUpdateRawValueMap(entity);
-        String[] primaryKeys = tableInfo.getPrimaryKeys();
+        String[] primaryKeys = tableInfo.getPrimaryColumns();
 
         sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this)).append(SET);
 
@@ -907,7 +907,7 @@ public class CommonsDialectImpl implements IDialect {
         buildSelectColumnSql(sql, null, null, null);
         sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this));
         sql.append(WHERE);
-        String[] pKeys = tableInfo.getPrimaryKeys();
+        String[] pKeys = tableInfo.getPrimaryColumns();
         for (int i = 0; i < pKeys.length; i++) {
             if (i > 0) {
                 sql.append(AND);
@@ -937,7 +937,7 @@ public class CommonsDialectImpl implements IDialect {
         buildSelectColumnSql(sql, null, tableInfo.getDefaultQueryColumn(), null);
         sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this));
         sql.append(WHERE);
-        String[] primaryKeys = tableInfo.getPrimaryKeys();
+        String[] primaryKeys = tableInfo.getPrimaryColumns();
 
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();

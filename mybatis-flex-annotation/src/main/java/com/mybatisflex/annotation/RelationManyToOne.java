@@ -22,8 +22,8 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 public @interface RelationManyToOne {
 
-    String selfField();
+    String selfField() default "";
 
     String targetField();
-   
+
 }
