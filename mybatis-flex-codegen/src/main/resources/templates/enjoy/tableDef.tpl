@@ -20,7 +20,7 @@ public class #(tableDefClassName) extends TableDef {
 #end
 
     public final QueryColumn #(tableDefConfig.buildFieldName("allColumns")) = new QueryColumn(this, "*");
-    public final QueryColumn[] #(tableDefConfig.buildFieldName("defaultColumns")) = new QueryColumn[]{#for(column: table.columns)#if(!column.isLarge())#(tableDefConfig.buildFieldName(column.property))#if(for.index + 1 != for.size), #end#end#end};
+    public final QueryColumn[] #(tableDefConfig.buildFieldName("defaultColumns")) = new QueryColumn[]{#for(column: table.columns)#if(column.isDefaultColumn())#(tableDefConfig.buildFieldName(column.property))#if(for.index + 1 != for.size), #end#end#end};
 
     public #(tableDefClassName)() {
         super("#(schema)", "#(table.name)");

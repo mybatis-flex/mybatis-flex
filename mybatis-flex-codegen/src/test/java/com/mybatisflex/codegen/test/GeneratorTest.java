@@ -16,7 +16,6 @@
 
 package com.mybatisflex.codegen.test;
 
-import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.codegen.Generator;
 import com.mybatisflex.codegen.config.ColumnConfig;
 import com.mybatisflex.codegen.config.GlobalConfig;
@@ -24,6 +23,7 @@ import com.mybatisflex.codegen.config.TableConfig;
 import com.mybatisflex.codegen.config.TableDefConfig;
 import com.mybatisflex.spring.service.impl.CacheableServiceImpl;
 import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Test;
 
 import java.util.function.UnaryOperator;
 
@@ -149,7 +149,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-//    @Test
+    @Test
     public void testCodeGen3() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -176,16 +176,20 @@ public class GeneratorTest {
         ColumnConfig columnConfig = new ColumnConfig();
         columnConfig.setColumnName("phonenumber");
         columnConfig.setLarge(true);
-        columnConfig.setKeyType(KeyType.None);
 
         TableConfig tableConfig = new TableConfig();
         tableConfig.setTableName("sys_user");
         tableConfig.addColumnConfig(columnConfig);
 
+        ColumnConfig logicDelete = new ColumnConfig();
+        logicDelete.setColumnName("del_flag");
+        logicDelete.setLogicDelete(true);
+
         //设置表前缀和只生成哪些表
         globalConfig.getStrategyConfig()
                 .setTablePrefix("sys_")
                 .setGenerateTable("sys_user")
+                .setColumnConfig(logicDelete)
                 .setTableConfig(tableConfig);
 
         //配置生成 tableDef

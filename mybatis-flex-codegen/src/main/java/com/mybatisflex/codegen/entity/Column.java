@@ -311,12 +311,13 @@ public class Column {
         return importClasses;
     }
 
-    public boolean isLarge() {
-        if (columnConfig != null && columnConfig.getLarge() != null) {
-            return columnConfig.getLarge();
-        } else {
-            return false;
+    public boolean isDefaultColumn() {
+        if (columnConfig == null) {
+            return true;
         }
+        boolean isLarge = columnConfig.getLarge() != null && columnConfig.getLarge();
+        boolean isLogicDelete = columnConfig.getLogicDelete() != null && columnConfig.getLogicDelete();
+        return !isLarge && !isLogicDelete;
     }
 
     @Override
