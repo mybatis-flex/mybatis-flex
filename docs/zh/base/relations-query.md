@@ -54,8 +54,36 @@ public class IDCard implements Serializable {
 
 `@RelationOneToOne` 配置描述：
 
-- selfField 当前实体类的属性
+- selfField 当前实体类的属性（selfField 是主键属性，且当前实体类对应的表只有 1 个主键时，可以不填写）
 - targetField 目标对象的关系实体类的属性
+
+假设数据库 5 条 Account 数据，然后进行查询：
+
+```java
+List<Account> accounts = accountMapper.selectAllWithRelations();
+System.out.println(accounts);
+```
+
+其执行的 SQL 如下：
+
+```sql
+SELECT `id`, `user_name`, `age` FROM `tb_account`
+
+SELECT `account_id`, `card_no`, `content` FROM `tb_idcard` 
+WHERE account_id IN (1, 2, 3, 4, 5)
+```
+
+查询打印的结果如下：
+
+```txt
+ [
+ Account{id=1, userName='孙悟空', age=18, idCard=IDCard{accountId=1, cardNo='0001', content='内容1'}}, 
+ Account{id=2, userName='猪八戒', age=19, idCard=IDCard{accountId=2, cardNo='0002', content='内容2'}}, 
+ Account{id=3, userName='沙和尚', age=19, idCard=IDCard{accountId=3, cardNo='0003', content='内容3'}}, 
+ Account{id=4, userName='六耳猕猴', age=19, idCard=IDCard{accountId=4, cardNo='0004', content='内容4'}}, 
+ Account{id=5, userName='王麻子叔叔', age=19, idCard=IDCard{accountId=5, cardNo='0005', content='内容5'}}
+ ]
+```
 
 
 ## 一对多 `@RelationOneToMany`
@@ -97,6 +125,23 @@ public class Book implements Serializable {
 
 - selfField 当前实体类的属性
 - targetField 目标对象的关系实体类的属性
+
+
+假设数据库 5 条 Account 数据，然后进行查询：
+
+```java
+List<Account> accounts = accountMapper.selectAllWithRelations();
+System.out.println(accounts);
+```
+
+其执行的 SQL 如下：
+
+```sql
+SELECT `id`, `user_name`, `age` FROM `tb_account`
+
+SELECT `id`, `account_id`, `title`, `content` FROM `tb_book` 
+WHERE account_id IN (1, 2, 3, 4, 5)
+```
 
 
 
@@ -207,6 +252,111 @@ public class Role implements Serializable {
 - joinTargetColumn 目标表和中间表的关系字段
 
 > 注意：selfField 和 targetField 配置的是类的属性名，joinSelfColumn 和 joinTargetColumn 配置的是中间表的字段名。
+
+## 父子关系查询
+
+比如在一些系统中，比如菜单会有一些父子关系，例如菜单表如下：
+
+```sql
+CREATE TABLE `tb_menu`
+(
+    `id`        INTEGER auto_increment,
+    `parent_id`        INTEGER, 
+    `name`      VARCHAR(100)
+);
+```
+
+Menu.java 定义如下：
+
+```java
+@Table(value = "tb_menu")
+public class Menu implements Serializable {
+
+    private Long id;
+
+    private Long parentId;
+
+    private String name;
+
+    @RelationManyToOne(selfField = "parentId", targetField = "id")
+    private Menu parent;
+
+    @RelationOneToMany(selfField = "id", targetField = "parentId")
+    private List<Menu> children;
+
+    //getter setter
+}
+```
+
+查询顶级菜单：
+
+```java
+QueryWrapper qw = QueryWrapper.create();
+qw.where(MENU.PARENT_ID.eq(0));
+
+List<Menu> menus = menuMapper.selectListWithRelationsByQuery(qw);
+System.out.println(JSON.toJSONString(menus));
+```
+
+SQL 执行如下：
+
+```sql
+SELECT `id`, `parent_id`, `name` FROM `tb_menu` WHERE `parent_id` = 0
+SELECT `id`, `parent_id`, `name` FROM `tb_menu` WHERE id = 0
+SELECT `id`, `parent_id`, `name` FROM `tb_menu` WHERE parent_id IN (1, 2, 3)
+```
+
+JSON 输出内容如下：
+
+```json
+[
+  {
+    "children": [
+      {
+        "id": 4,
+        "name": "子菜单",
+        "parentId": 1
+      },
+      {
+        "id": 5,
+        "name": "子菜单",
+        "parentId": 1
+      }
+    ],
+    "id": 1,
+    "name": "顶级菜单1",
+    "parentId": 0
+  },
+  {
+    "children": [],
+    "id": 2,
+    "name": "顶级菜单2",
+    "parentId": 0
+  },
+  {
+    "children": [
+      {
+        "id": 6,
+        "name": "子菜单",
+        "parentId": 3
+      },
+      {
+        "id": 7,
+        "name": "子菜单",
+        "parentId": 3
+      },
+      {
+        "id": 8,
+        "name": "子菜单",
+        "parentId": 3
+      }
+    ],
+    "id": 3,
+    "name": "顶级菜单3",
+    "parentId": 0
+  }
+]
+```
 
 
 

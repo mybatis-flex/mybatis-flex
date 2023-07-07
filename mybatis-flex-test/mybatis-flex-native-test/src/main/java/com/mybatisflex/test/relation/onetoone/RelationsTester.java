@@ -15,13 +15,16 @@
  */
 package com.mybatisflex.test.relation.onetoone;
 
+import com.alibaba.fastjson.JSON;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.relation.RelationManager;
 import com.mybatisflex.test.relation.mapper.AccountMapper;
 import com.mybatisflex.test.relation.mapper.BookMapper;
+import com.mybatisflex.test.relation.mapper.MenuMapper;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -30,11 +33,14 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import javax.sql.DataSource;
 import java.util.List;
 
+import static com.mybatisflex.test.relation.onetoone.table.MenuTableDef.MENU;
+
 
 public class RelationsTester {
 
     static AccountMapper accountMapper;
     static BookMapper bookMapper;
+    static MenuMapper menuMapper;
 
     @BeforeClass
     public static void init() {
@@ -48,6 +54,7 @@ public class RelationsTester {
                 .setDataSource(dataSource)
                 .addMapper(AccountMapper.class)
                 .addMapper(BookMapper.class)
+                .addMapper(MenuMapper.class)
                 .start();
 
         //开启审计功能
@@ -59,13 +66,14 @@ public class RelationsTester {
 
         accountMapper = bootstrap.getMapper(AccountMapper.class);
         bookMapper = bootstrap.getMapper(BookMapper.class);
+        menuMapper = bootstrap.getMapper(MenuMapper.class);
     }
 
 
     @Test
     public void testOneToOne() {
         List<Account> accounts = accountMapper.selectAllWithRelations();
-        System.out.println(">>>>>>1: " + accounts);
+        System.out.println(JSON.toJSONString(accounts));
     }
 
 
@@ -83,6 +91,15 @@ public class RelationsTester {
         System.out.println(">>>>>>1: " + accounts);
         RelationManager.queryRelations(accountMapper, accounts);
         System.out.println(">>>>>>2: " + accounts);
+    }
+
+    @Test
+    public void testMenu() {
+        QueryWrapper qw = QueryWrapper.create();
+        qw.where(MENU.PARENT_ID.eq(0));
+
+        List<Menu> menus = menuMapper.selectListWithRelationsByQuery(qw);
+        System.out.println( JSON.toJSONString(menus));
     }
 
 

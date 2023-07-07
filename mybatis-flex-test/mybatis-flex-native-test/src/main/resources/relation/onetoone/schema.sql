@@ -33,3 +33,10 @@ CREATE TABLE IF NOT EXISTS `tb_role_mapping`
     `account_id`        INTEGER ,
     `role_id`      INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS `tb_menu`
+(
+    `id`        INTEGER auto_increment,
+    `parent_id`        INTEGER,
+    `name`      VARCHAR(100)
+);
