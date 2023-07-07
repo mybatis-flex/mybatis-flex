@@ -24,7 +24,7 @@ import java.util.Objects;
  * @author 王帅
  * @since 2023-07-01
  */
-public class ColumnInfo {
+public class ColumnInfo implements Comparable<ColumnInfo> {
 
     /**
      * 属性名。
@@ -80,6 +80,14 @@ public class ColumnInfo {
     @Override
     public int hashCode() {
         return property != null ? property.hashCode() : 0;
+    }
+
+    @Override
+    public int compareTo(ColumnInfo o) {
+        // 先根据属性长度排序，属性名短的在上
+        int compare = Integer.compare(property.length(), o.property.length());
+        // 属性名长度一样，再按字母排序
+        return compare == 0 ? property.compareTo(o.property) : compare;
     }
 
 }
