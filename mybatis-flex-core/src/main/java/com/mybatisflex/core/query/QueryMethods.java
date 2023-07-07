@@ -2326,7 +2326,7 @@ public class QueryMethods {
      * 返回指定列的总行数。
      */
     public static FunctionQueryColumn count() {
-        return new FunctionQueryColumn(COUNT);
+        return new FunctionQueryColumn(COUNT, new StringQueryColumn("*"));
     }
 
     /**
