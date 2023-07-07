@@ -54,8 +54,10 @@ public class IDCard implements Serializable {
 
 `@RelationOneToOne` 配置描述：
 
-- selfField 当前实体类的属性（selfField 是主键属性，且当前实体类对应的表只有 1 个主键时，可以不填写）
-- targetField 目标对象的关系实体类的属性
+- **selfField** 当前实体类的属性
+- **targetField** 目标对象的关系实体类的属性
+
+> PS: 若 **selfField** 是主键，且当前表只有 1 个主键时，可以不填写。
 
 假设数据库 5 条 Account 数据，然后进行查询：
 
@@ -123,8 +125,11 @@ public class Book implements Serializable {
 
 `@RelationOneToMany` 配置描述：
 
-- selfField 当前实体类的属性
-- targetField 目标对象的关系实体类的属性
+- **selfField** 当前实体类的属性
+- **targetField** 目标对象的关系实体类的属性
+
+> PS: 若 **selfField** 是主键，且当前表只有 1 个主键时，可以不填写。
+
 
 
 假设数据库 5 条 Account 数据，然后进行查询：
@@ -183,10 +188,12 @@ public class Book implements Serializable {
 }
 ```
 
-`@RelationOneToMany` 和  `@RelationManyToOne` 配置描述：
+`@RelationManyToOne` 配置描述：
 
-- selfField 当前实体类的属性
-- targetField 目标对象的关系实体类的属性
+- **selfField** 当前实体类的属性
+- **targetField** 目标对象的关系实体类的属性
+
+> PS: 若 **targetField** 目标对象的是主键，且目标对象的表只有 1 个主键时，可以不填写。
 
 
 
@@ -252,6 +259,8 @@ public class Role implements Serializable {
 - joinTargetColumn 目标表和中间表的关系字段
 
 > 注意：selfField 和 targetField 配置的是类的属性名，joinSelfColumn 和 joinTargetColumn 配置的是中间表的字段名。
+> 
+> 若 **selfField** 和 **targetField** 分别是两张关系表的主键，且表只有 1 个主键时，可以不填写。
 
 ## 父子关系查询
 
