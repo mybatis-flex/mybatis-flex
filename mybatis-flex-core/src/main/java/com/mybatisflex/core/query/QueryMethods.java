@@ -2436,6 +2436,15 @@ public class QueryMethods {
         return new SelectQueryColumn(queryWrapper);
     }
 
+    // === IF 函数 ===
+
+    /**
+     * IF 函数。
+     */
+    public static QueryColumn if_(QueryCondition condition, QueryColumn trueValue, QueryColumn falseValue) {
+        return new IfFunctionQueryColumn(condition, trueValue, falseValue);
+    }
+
     // === 构建 QueryCondition 查询条件 ===
 
     /**
