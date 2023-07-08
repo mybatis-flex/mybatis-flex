@@ -22,6 +22,7 @@ import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowCPI;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
@@ -167,7 +168,7 @@ public class OracleDialect extends CommonsDialectImpl {
         String tableNameWrap = StringUtil.isNotBlank(schema)
                 ? wrap(getRealSchema(schema)) + REFERENCE + wrap(getRealTable(tableName))
                 : wrap(getRealTable(tableName));
-        String questionStrings = buildQuestion(attrs.size());
+        String questionStrings = SqlUtil.buildSqlParamPlaceholder(attrs.size());
 
         for (int i = 0; i < rows.size(); i++) {
             sql.append(INTO).append(tableNameWrap);
