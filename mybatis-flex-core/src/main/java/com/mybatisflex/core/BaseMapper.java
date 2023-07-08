@@ -85,10 +85,21 @@ public interface BaseMapper<T> {
     /**
      * 插入带有主键的实体类。
      *
-     * @param entity 实体类
+     * @param entity 实体类，不忽略  {@code null} 值
      * @return 受影响的行数
      */
     default int insertWithPk(T entity) {
+        return insertWithPk(entity, false);
+    }
+
+
+    /**
+     * 插入带有主键的实体类。
+     *
+     * @param entity 实体类，忽略  {@code null} 值
+     * @return 受影响的行数
+     */
+    default int insertSelectiveWithPk(T entity) {
         return insertWithPk(entity, true);
     }
 
