@@ -2388,6 +2388,13 @@ public class QueryMethods {
     // === 构建 column 列 ===
 
     /**
+     * 构建 NULL 常量。
+     */
+    public static QueryColumn null_() {
+        return new StringQueryColumn("NULL");
+    }
+
+    /**
      * 构建数字常量。
      */
     public static QueryColumn number(Number n) {
