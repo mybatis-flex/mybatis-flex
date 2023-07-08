@@ -56,4 +56,12 @@ public class IfFunctionTest {
         System.out.println(queryWrapper.toSQL());
     }
 
+    @Test
+    public void test04() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(ifNull(null_(), number(0)))
+                .from(ACCOUNT);
+        System.out.println(queryWrapper.toSQL());
+    }
+
 }
