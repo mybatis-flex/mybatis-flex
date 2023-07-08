@@ -2445,6 +2445,13 @@ public class QueryMethods {
         return new IfFunctionQueryColumn(condition, trueValue, falseValue);
     }
 
+    /**
+     * IFNULL 函数。
+     */
+    public static QueryColumn ifNull(QueryColumn nullValue, QueryColumn elseValue) {
+        return new FunctionQueryColumn("IFNULL", nullValue, elseValue);
+    }
+
     // === 构建 QueryCondition 查询条件 ===
 
     /**
