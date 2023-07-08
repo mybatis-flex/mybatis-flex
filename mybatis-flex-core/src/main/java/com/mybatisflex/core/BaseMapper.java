@@ -51,7 +51,14 @@ import static com.mybatisflex.core.query.QueryMethods.count;
 public interface BaseMapper<T> {
 
     /**
-     * 插入实体类数据。
+     * 默认批量处理切片数量。
+     */
+    int DEFAULT_BATCH_SIZE = 1000;
+
+    // === 增（insert） ===
+
+    /**
+     * 插入实体类数据，不忽略 {@code null} 值。
      *
      * @param entity 实体类
      * @return 受影响的行数
@@ -83,20 +90,19 @@ public interface BaseMapper<T> {
     int insert(@Param(FlexConsts.ENTITY) T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls);
 
     /**
-     * 插入带有主键的实体类。
+     * 插入带有主键的实体类，不忽略 {@code null} 值。
      *
-     * @param entity 实体类，不忽略  {@code null} 值
+     * @param entity 实体类
      * @return 受影响的行数
      */
     default int insertWithPk(T entity) {
         return insertWithPk(entity, false);
     }
 
-
     /**
-     * 插入带有主键的实体类。
+     * 插入带有主键的实体类，忽略 {@code null} 值。
      *
-     * @param entity 实体类，忽略  {@code null} 值
+     * @param entity 实体类
      * @return 受影响的行数
      */
     default int insertSelectiveWithPk(T entity) {
@@ -134,8 +140,7 @@ public interface BaseMapper<T> {
      */
     default int insertBatch(List<T> entities, int size) {
         if (size <= 0) {
-            // 默认 1000
-            size = 1000;
+            size = DEFAULT_BATCH_SIZE;
         }
         int sum = 0;
         int entitiesSize = entities.size();
@@ -148,7 +153,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 新增 或者 更新，若主键有值，则更新，若没有主键值，则插入。
+     * 插入或者更新，若主键有值，则更新，若没有主键值，则插入，插入或者更新都不会忽略 {@code null} 值。
      *
      * @param entity 实体类
      * @return 受影响的行数
@@ -158,7 +163,17 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 新增 或者 更新，若主键有值，则更新，若没有主键值，则插入。
+     * 插入或者更新，若主键有值，则更新，若没有主键值，则插入，插入或者更新都会忽略 {@code null} 值。
+     *
+     * @param entity 实体类
+     * @return 受影响的行数
+     */
+    default int insertOrUpdateSelective(T entity) {
+        return insertOrUpdate(entity, true);
+    }
+
+    /**
+     * 插入或者更新，若主键有值，则更新，若没有主键值，则插入。
      *
      * @param entity      实体类
      * @param ignoreNulls 是否忽略 {@code null} 值
@@ -173,6 +188,8 @@ public interface BaseMapper<T> {
             return update(entity, ignoreNulls);
         }
     }
+
+    // === 删（delete） ===
 
     /**
      * 根据主键删除数据。如果是多个主键的情况下，需要传入数组，例如：{@code new Integer[]{100,101}}。
@@ -204,7 +221,7 @@ public interface BaseMapper<T> {
      */
     default int deleteBatchByIds(List<? extends Serializable> ids, int size) {
         if (size <= 0) {
-            size = 1000;//默认1000
+            size = DEFAULT_BATCH_SIZE;
         }
         int sum = 0;
         int entitiesSize = ids.size();
@@ -247,6 +264,8 @@ public interface BaseMapper<T> {
      */
     @DeleteProvider(type = EntitySqlProvider.class, method = "deleteByQuery")
     int deleteByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+
+    // === 改（update） ===
 
     /**
      * 根据主键来更新数据，若实体类属性数据为 {@code null}，该属性不会新到数据库。
@@ -323,6 +342,7 @@ public interface BaseMapper<T> {
      * @param entity       实体类
      * @param ignoreNulls  是否忽略空值
      * @param queryWrapper 条件
+     * @return 受影响的行数
      * @see com.mybatisflex.core.provider.EntitySqlProvider#updateByQuery(Map, ProviderContext)
      */
     @UpdateProvider(type = EntitySqlProvider.class, method = "updateByQuery")
@@ -334,6 +354,7 @@ public interface BaseMapper<T> {
      * @param fieldName    字段名
      * @param value        值（大于等于 0 加，小于 0 减）
      * @param queryWrapper 条件
+     * @return 受影响的行数
      * @see EntitySqlProvider#updateNumberAddByQuery(Map, ProviderContext)
      */
     @UpdateProvider(type = EntitySqlProvider.class, method = "updateNumberAddByQuery")
@@ -345,6 +366,7 @@ public interface BaseMapper<T> {
      * @param column       字段名
      * @param value        值（大于等于 0 加，小于 0 减）
      * @param queryWrapper 条件
+     * @return 受影响的行数
      * @see EntitySqlProvider#updateNumberAddByQuery(Map, ProviderContext)
      */
     default int updateNumberAddByQuery(QueryColumn column, Number value, QueryWrapper queryWrapper) {
@@ -358,6 +380,7 @@ public interface BaseMapper<T> {
      * @param fn           字段名
      * @param value        值（大于等于 0 加，小于 0 减）
      * @param queryWrapper 条件
+     * @return 受影响的行数
      * @see EntitySqlProvider#updateNumberAddByQuery(Map, ProviderContext)
      */
     default int updateNumberAddByQuery(LambdaGetter<T> fn, Number value, QueryWrapper queryWrapper) {
@@ -366,6 +389,8 @@ public interface BaseMapper<T> {
         String column = tableInfo.getColumnByProperty(LambdaUtil.getFieldName(fn));
         return updateNumberAddByQuery(column, value, queryWrapper);
     }
+
+    // === 查（select） ===
 
     /**
      * 根据主键查询数据。
@@ -414,14 +439,14 @@ public interface BaseMapper<T> {
      *
      * @param queryWrapper 条件
      * @param asType       接收数据类型
-     * @return 数据内容
+     * @return 实体类数据
      */
     default <R> R selectOneByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
         return MapperUtil.getSelectOneResult(selectListByQueryAs(queryWrapper, asType));
     }
 
     /**
-     * 根据 Map 构建的条件来查询数据。
+     * 根据 Map 构建的条件来查询 1 条数据。
      *
      * @param whereConditions 条件
      * @return 实体类数据
@@ -432,7 +457,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 根据查询条件查询数据。
+     * 根据查询条件查询 1 条数据。
      *
      * @param whereConditions 条件
      * @return 实体类数据
@@ -457,7 +482,7 @@ public interface BaseMapper<T> {
      *
      * @param queryWrapper 条件
      * @param asType       接收数据类型
-     * @return 数据内容
+     * @return 实体类数据
      */
     default <R> R selectOneWithRelationsByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
         return MapperUtil.queryRelations(this, MapperUtil.getSelectOneResult(selectListByQueryAs(queryWrapper, asType)));
@@ -497,7 +522,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 根据查询条件查询数据。
+     * 根据查询条件查询多条数据。
      *
      * @param whereConditions 条件
      * @return 数据列表
@@ -508,7 +533,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 根据查询条件查询数据。
+     * 根据查询条件查询多条数据。
      *
      * @param whereConditions 条件
      * @param count           数据量
@@ -565,7 +590,7 @@ public interface BaseMapper<T> {
 
     /**
      * 根据查询条件查询数据列表，要求返回的数据为 asType。这种场景一般用在 left join 时，
-     * 有多出了实体类本身的字段内容，可以转换为 dto、vo 等场景时。
+     * 有多出了实体类本身的字段内容，可以转换为 dto、vo 等场景。
      *
      * @param queryWrapper 条件
      * @param asType       接收数据类型
@@ -608,7 +633,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 查询实体类及其 relation 注解字段。
+     * 查询实体类及其 Relation 注解字段。
      *
      * @param queryWrapper 条件
      */
@@ -617,7 +642,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 查询实体类及其 relation 注解字段。
+     * 查询实体类及其 Relation 注解字段。
      *
      * @param queryWrapper 条件
      * @param asType       要求返回的数据类型
@@ -642,7 +667,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 查询实体类及其 relation 注解字段。
+     * 查询实体类及其 Relation 注解字段。
      *
      * @param queryWrapper 条件
      * @param asType       返回的类型
@@ -670,7 +695,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 查询全部数据，及其 relation 字段内容。
+     * 查询全部数据，及其 Relation 字段内容。
      *
      * @return 数据列表
      */
@@ -800,7 +825,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 分页查询，及其 relation 字段内容。
+     * 分页查询，及其 Relation 字段内容。
      *
      * @param pageNumber   当前页码
      * @param pageSize     每页的数据量
@@ -826,7 +851,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 分页查询，及其 relation 字段内容。
+     * 分页查询，及其 Relation 字段内容。
      *
      * @param pageNumber      当前页码
      * @param pageSize        每页的数据量
@@ -853,7 +878,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 分页查询，及其 relation 字段内容。
+     * 分页查询，及其 Relation 字段内容。
      *
      * @param pageNumber   当前页码
      * @param pageSize     每页的数据量
@@ -882,7 +907,7 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 分页查询。
+     * 分页查询，及其 Relation 字段内容。
      *
      * @param pageNumber      当前页码
      * @param pageSize        每页的数据量
@@ -901,11 +926,10 @@ public interface BaseMapper<T> {
      *
      * @param page         包含了页码、每页的数据量，可能包含数据总量
      * @param queryWrapper 条件
-     * @param consumers    字段查询
      * @return page 数据
      */
-    default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
-        return paginateAs(page, queryWrapper, null, consumers);
+    default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper) {
+        return paginateAs(page, queryWrapper, null);
     }
 
     /**
@@ -914,10 +938,74 @@ public interface BaseMapper<T> {
      * @param page         包含了页码、每页的数据量，可能包含数据总量
      * @param queryWrapper 条件
      * @param consumers    字段查询
+     * @return page 数据
+     */
+    default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
+        return paginateAs(page, queryWrapper, null, consumers);
+    }
+
+    /**
+     * 分页查询，及其 Relation 字段内容。
+     *
+     * @param page         包含了页码、每页的数据量，可能包含数据总量
+     * @param queryWrapper 条件
+     * @return 分页数据
+     */
+    default Page<T> paginateWithRelations(Page<T> page, QueryWrapper queryWrapper) {
+        return paginateWithRelationsAs(page, queryWrapper, null);
+    }
+
+    /**
+     * 分页查询，及其 Relation 字段内容。
+     *
+     * @param page         包含了页码、每页的数据量，可能包含数据总量
+     * @param queryWrapper 条件
+     * @param consumers    字段查询
      * @return 分页数据
      */
     default Page<T> paginateWithRelations(Page<T> page, QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
         return paginateWithRelationsAs(page, queryWrapper, null, consumers);
+    }
+
+    /**
+     * 分页查询。
+     *
+     * @param pageNumber   当前页码
+     * @param pageSize     每页的数据量
+     * @param queryWrapper 条件
+     * @param asType       接收数据类型
+     * @return 分页数据
+     */
+    default <R> Page<R> paginateAs(int pageNumber, int pageSize, QueryWrapper queryWrapper, Class<R> asType) {
+        Page<R> page = new Page<>(pageNumber, pageSize);
+        return MapperUtil.doPaginate(this, page, queryWrapper, asType, false);
+    }
+
+    /**
+     * 分页查询。
+     *
+     * @param pageNumber   当前页码
+     * @param pageSize     每页的数据量
+     * @param totalRow     数据总量
+     * @param queryWrapper 条件
+     * @param asType       接收数据类型
+     * @return 分页数据
+     */
+    default <R> Page<R> paginateAs(int pageNumber, int pageSize, int totalRow, QueryWrapper queryWrapper, Class<R> asType) {
+        Page<R> page = new Page<>(pageNumber, pageSize, totalRow);
+        return MapperUtil.doPaginate(this, page, queryWrapper, asType, false);
+    }
+
+    /**
+     * 分页查询。
+     *
+     * @param page         包含了页码、每页的数据量，可能包含数据总量
+     * @param queryWrapper 条件
+     * @param asType       接收数据类型
+     * @return 分页数据
+     */
+    default <R> Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
+        return MapperUtil.doPaginate(this, page, queryWrapper, asType, false);
     }
 
     /**
@@ -934,7 +1022,48 @@ public interface BaseMapper<T> {
     }
 
     /**
-     * 分页查询。
+     * 分页查询，及其 Relation 字段内容。
+     *
+     * @param pageNumber   当前页码
+     * @param pageSize     每页的数据量
+     * @param queryWrapper 条件
+     * @param asType       接收数据类型
+     * @return 分页数据
+     */
+    default <R> Page<R> paginateWithRelationsAs(int pageNumber, int pageSize, QueryWrapper queryWrapper, Class<R> asType) {
+        Page<R> page = new Page<>(pageNumber, pageSize);
+        return MapperUtil.doPaginate(this, page, queryWrapper, asType, true);
+    }
+
+    /**
+     * 分页查询，及其 Relation 字段内容。
+     *
+     * @param pageNumber   当前页码
+     * @param pageSize     每页的数据量
+     * @param totalRow     数据总量
+     * @param queryWrapper 条件
+     * @param asType       接收数据类型
+     * @return 分页数据
+     */
+    default <R> Page<R> paginateWithRelationsAs(int pageNumber, int pageSize, int totalRow, QueryWrapper queryWrapper, Class<R> asType) {
+        Page<R> page = new Page<>(pageNumber, pageSize, totalRow);
+        return MapperUtil.doPaginate(this, page, queryWrapper, asType, true);
+    }
+
+    /**
+     * 分页查询，及其 Relation 字段内容。
+     *
+     * @param page         包含了页码、每页的数据量，可能包含数据总量
+     * @param queryWrapper 条件
+     * @param asType       接收数据类型
+     * @return 分页数据
+     */
+    default <R> Page<R> paginateWithRelationsAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
+        return MapperUtil.doPaginate(this, page, queryWrapper, asType, true);
+    }
+
+    /**
+     * 分页查询，及其 Relation 字段内容。
      *
      * @param page         包含了页码、每页的数据量，可能包含数据总量
      * @param queryWrapper 条件
