@@ -263,6 +263,9 @@ public class EntitySqlProvider {
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
+        //执行 onUpdate 监听器
+        tableInfo.invokeOnUpdateListener(entity);
+
         //处理逻辑删除 和 多租户等
         tableInfo.appendConditions(entity, queryWrapper);
 
