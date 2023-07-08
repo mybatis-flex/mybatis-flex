@@ -261,13 +261,13 @@ public interface BaseMapper<T> {
     /**
      * 根据 Map 构建的条件来更新数据。
      *
-     * @param entity 实体类
-     * @param map    条件
+     * @param entity          实体类
+     * @param whereConditions 条件
      * @return 受影响的行数
      */
-    default int updateByMap(T entity, Map<String, Object> map) {
-        FlexAssert.notEmpty(map, "updateByMap is not allow empty map.");
-        return updateByQuery(entity, QueryWrapper.create().where(map));
+    default int updateByMap(T entity, Map<String, Object> whereConditions) {
+        FlexAssert.notEmpty(whereConditions, "updateByMap is not allow empty map.");
+        return updateByQuery(entity, QueryWrapper.create().where(whereConditions));
     }
 
     /**
