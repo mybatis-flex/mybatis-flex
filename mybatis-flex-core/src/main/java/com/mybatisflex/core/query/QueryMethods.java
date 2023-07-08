@@ -2388,6 +2388,13 @@ public class QueryMethods {
     // === 构建 column 列 ===
 
     /**
+     * 构建 NULL 常量。
+     */
+    public static QueryColumn null_() {
+        return new StringQueryColumn("NULL");
+    }
+
+    /**
      * 构建数字常量。
      */
     public static QueryColumn number(Number n) {
@@ -2434,6 +2441,50 @@ public class QueryMethods {
      */
     public static QueryColumn column(QueryWrapper queryWrapper) {
         return new SelectQueryColumn(queryWrapper);
+    }
+
+    // === IF 函数 ===
+
+    /**
+     * IF 函数。
+     */
+    public static QueryColumn if_(QueryCondition condition, String trueColumn, String falseColumn) {
+        return new IfFunctionQueryColumn(condition, new QueryColumn(trueColumn), new QueryColumn(falseColumn));
+    }
+
+    /**
+     * IF 函数。
+     */
+    public static QueryColumn if_(QueryCondition condition, QueryColumn trueColumn, QueryColumn falseColumn) {
+        return new IfFunctionQueryColumn(condition, trueColumn, falseColumn);
+    }
+
+    /**
+     * IF 函数。
+     */
+    public static <T, F> QueryColumn if_(QueryCondition condition, LambdaGetter<T> trueColumn, LambdaGetter<F> falseColumn) {
+        return new IfFunctionQueryColumn(condition, LambdaUtil.getQueryColumn(trueColumn), LambdaUtil.getQueryColumn(falseColumn));
+    }
+
+    /**
+     * IFNULL 函数。
+     */
+    public static QueryColumn ifNull(String nullColumn, String elseColumn) {
+        return new FunctionQueryColumn("IFNULL", new QueryColumn(nullColumn), new QueryColumn(elseColumn));
+    }
+
+    /**
+     * IFNULL 函数。
+     */
+    public static QueryColumn ifNull(QueryColumn nullColumn, QueryColumn elseColumn) {
+        return new FunctionQueryColumn("IFNULL", nullColumn, elseColumn);
+    }
+
+    /**
+     * IFNULL 函数。
+     */
+    public static <N, E> QueryColumn ifNull(LambdaGetter<N> nullColumn, LambdaGetter<E> elseColumn) {
+        return new FunctionQueryColumn("IFNULL", LambdaUtil.getQueryColumn(nullColumn), LambdaUtil.getQueryColumn(elseColumn));
     }
 
     // === 构建 QueryCondition 查询条件 ===
