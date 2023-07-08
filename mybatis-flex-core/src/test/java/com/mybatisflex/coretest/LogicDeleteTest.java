@@ -45,8 +45,8 @@ public class LogicDeleteTest {
 
     public void print(String type, LogicDeleteProcessor processor) {
         System.out.println("===== " + type + " =====");
-        System.out.println(processor.buildLogicDeletedSet(logicColumn, dialect));
-        System.out.println(processor.buildLogicNormalCondition(logicColumn, dialect));
+        System.out.println(processor.buildLogicDeletedSet(logicColumn, null, dialect));
+        System.out.println(processor.buildLogicNormalCondition(logicColumn, null, dialect));
     }
 
 }

@@ -31,7 +31,7 @@ import com.mybatisflex.core.table.TableInfo;
 public class DateTimeLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 
     @Override
-    public String buildLogicNormalCondition(String logicColumn, IDialect dialect) {
+    public String buildLogicNormalCondition(String logicColumn, TableInfo tableInfo, IDialect dialect) {
         return dialect.wrap(logicColumn) + " IS NULL";
     }
 

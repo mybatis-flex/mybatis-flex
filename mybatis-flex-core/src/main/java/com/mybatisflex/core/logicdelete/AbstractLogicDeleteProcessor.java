@@ -31,12 +31,12 @@ import static com.mybatisflex.core.constant.SqlConsts.EQUALS;
 public abstract class AbstractLogicDeleteProcessor implements LogicDeleteProcessor {
 
     @Override
-    public String buildLogicNormalCondition(String logicColumn, IDialect dialect) {
+    public String buildLogicNormalCondition(String logicColumn, TableInfo tableInfo, IDialect dialect) {
         return dialect.wrap(logicColumn) + EQUALS + getLogicNormalValue();
     }
 
     @Override
-    public String buildLogicDeletedSet(String logicColumn, IDialect dialect) {
+    public String buildLogicDeletedSet(String logicColumn, TableInfo tableInfo, IDialect dialect) {
         return dialect.wrap(logicColumn) + EQUALS + getLogicDeletedValue();
     }
 
