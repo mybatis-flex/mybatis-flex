@@ -68,6 +68,15 @@ public class AccountTester {
         System.out.println(queryWrapper.toSQL());
     }
 
+    @Test
+    public void testTenant() {
+        QueryWrapper queryWrapper = QueryWrapper.create();
+        queryWrapper.where(Account::getId).ge(1);
+        List<Account> accounts = accountMapper.selectListByQuery(queryWrapper);
+        System.out.println(accounts);
+    }
+
+
 
     @Test
     public void testSelectAsToDTO() {

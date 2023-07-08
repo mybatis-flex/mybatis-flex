@@ -48,6 +48,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static com.mybatisflex.core.constant.SqlConsts.*;
+
 public class TableInfo {
 
     private String schema; //schema
@@ -683,6 +685,42 @@ public class TableInfo {
         return TenantManager.getTenantIds();
     }
 
+
+    public String buildTenantCondition(String sql, Object[] tenantIdArgs, IDialect dialect) {
+        if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
+            if (tenantIdArgs.length == 1) {
+                return sql + AND + dialect.wrap(tenantIdColumn) + EQUALS_PLACEHOLDER;
+            } else {
+                return sql + AND + dialect.wrap(tenantIdColumn) + IN + SqlUtil.buildSqlParamPlaceholder(tenantIdArgs.length);
+            }
+        } else {
+            return sql;
+        }
+    }
+
+    public void buildTenantCondition(StringBuilder sql, Object[] tenantIdArgs, IDialect dialect) {
+        if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
+            if (tenantIdArgs.length == 1) {
+                sql.append(AND).append(dialect.wrap(tenantIdColumn)).append(EQUALS_PLACEHOLDER);
+            } else {
+                sql.append(AND).append(dialect.wrap(tenantIdColumn)).append(IN).append(SqlUtil.buildSqlParamPlaceholder(tenantIdArgs.length));
+            }
+        }
+    }
+
+
+    public void buildTenantCondition(QueryWrapper queryWrapper) {
+        Object[] tenantIdArgs = buildTenantIdArgs();
+        if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
+            if (tenantIdArgs.length == 1) {
+                queryWrapper.where(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.EQUALS, tenantIdArgs[0]));
+            } else {
+                queryWrapper.where(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.IN, tenantIdArgs));
+            }
+        }
+    }
+
+
     private static final String APPEND_CONDITIONS_FLAG = "appendConditions";
 
     public void appendConditions(Object entity, QueryWrapper queryWrapper) {
@@ -731,14 +769,8 @@ public class TableInfo {
         }
 
         //多租户
-        Object[] tenantIdArgs = buildTenantIdArgs();
-        if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
-            if (tenantIdArgs.length == 1) {
-                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.EQUALS, tenantIdArgs[0]));
-            } else {
-                queryWrapper.and(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.IN, tenantIdArgs));
-            }
-        }
+        buildTenantCondition(queryWrapper);
+
 
         //子查询
         List<QueryWrapper> childSelects = CPI.getChildSelect(queryWrapper);
