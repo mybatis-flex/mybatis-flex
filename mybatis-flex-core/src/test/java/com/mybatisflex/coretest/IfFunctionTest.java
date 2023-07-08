@@ -19,8 +19,7 @@ package com.mybatisflex.coretest;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.Test;
 
-import static com.mybatisflex.core.query.QueryMethods.if_;
-import static com.mybatisflex.core.query.QueryMethods.string;
+import static com.mybatisflex.core.query.QueryMethods.*;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 
 /**
@@ -43,6 +42,15 @@ public class IfFunctionTest {
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(if_(ACCOUNT.AGE.ge(18), string("成年人"),
                         if_(ACCOUNT.AGE.le(8), string("未上学"), string("已上学"))).as("type"))
+                .from(ACCOUNT)
+                .where(ACCOUNT.ID.eq(1));
+        System.out.println(queryWrapper.toSQL());
+    }
+
+    @Test
+    public void test03() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select(ifNull(ACCOUNT.ID, number(0)))
                 .from(ACCOUNT)
                 .where(ACCOUNT.ID.eq(1));
         System.out.println(queryWrapper.toSQL());
