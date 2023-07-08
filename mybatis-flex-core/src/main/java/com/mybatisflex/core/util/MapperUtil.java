@@ -20,6 +20,7 @@ import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.field.FieldQuery;
 import com.mybatisflex.core.field.FieldQueryBuilder;
+import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.relation.RelationManager;
 import org.apache.ibatis.exceptions.TooManyResultsException;
@@ -127,6 +128,53 @@ public class MapperUtil {
         return !CPI.containsTable(where, CollectionUtil.toArrayString(joinTables));
     }
 
+    @SafeVarargs
+    public static <T, R> Page<R> doPaginate(BaseMapper<T> mapper, Page<R> page, QueryWrapper queryWrapper, Class<R> asType, boolean withRelations, Consumer<FieldQueryBuilder<R>>... consumers) {
+        try {
+            // 只有 totalRow 小于 0 的时候才会去查询总量
+            // 这样方便用户做总数缓存，而非每次都要去查询总量
+            // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
+            if (page.getTotalRow() < 0) {
+                QueryWrapper countQueryWrapper;
+                if (page.needOptimizeCountQuery()) {
+                    countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
+                } else {
+                    countQueryWrapper = MapperUtil.rawCountQueryWrapper(queryWrapper);
+                }
+                page.setTotalRow(mapper.selectCountByQuery(countQueryWrapper));
+            }
+
+            if (page.isEmpty()) {
+                return page;
+            }
+
+            queryWrapper.limit(page.offset(), page.getPageSize());
+
+            List<R> records;
+            if (asType != null) {
+                records = mapper.selectListByQueryAs(queryWrapper, asType);
+            } else {
+                // noinspection unchecked
+                records = (List<R>) mapper.selectListByQuery(queryWrapper);
+            }
+
+            if (withRelations) {
+                queryRelations(mapper, records);
+            }
+
+            queryFields(mapper, records, consumers);
+            page.setRecords(records);
+
+            return page;
+
+        } finally {
+            // 将之前设置的 limit 清除掉
+            // 保险起见把重置代码放到 finally 代码块中
+            CPI.setLimitRows(queryWrapper, null);
+            CPI.setLimitOffset(queryWrapper, null);
+        }
+    }
+
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static <R> void queryFields(BaseMapper<?> mapper, List<R> list, Consumer<FieldQueryBuilder<R>>[] consumers) {
@@ -166,12 +214,12 @@ public class MapperUtil {
     }
 
 
-    public static <Entity> Entity queryRelations(BaseMapper<?> mapper, Entity entity) {
-        queryRelations(mapper,Collections.singletonList(entity));
+    public static <E> E queryRelations(BaseMapper<?> mapper, E entity) {
+        queryRelations(mapper, Collections.singletonList(entity));
         return entity;
     }
 
-    public static <Entity> List<Entity> queryRelations(BaseMapper<?> mapper, List<Entity> entities) {
+    public static <E> List<E> queryRelations(BaseMapper<?> mapper, List<E> entities) {
         RelationManager.queryRelations(mapper, entities);
         return entities;
     }
@@ -219,4 +267,5 @@ public class MapperUtil {
             throw FlexExceptions.wrap("selectCountByQuery error, can not get number value of result: \"" + object + "\"");
         }
     }
+
 }
