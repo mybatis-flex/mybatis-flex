@@ -110,7 +110,7 @@ public class RowSqlProvider {
     public static String deleteById(Map params) {
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
-        FlexAssert.notNull(primaryValues, "primaryValue can not be null");
+        FlexAssert.notEmpty(primaryValues, "primaryValue can not be null or empty.");
 
         String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
