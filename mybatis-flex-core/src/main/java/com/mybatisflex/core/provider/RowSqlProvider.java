@@ -1,22 +1,23 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.provider;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
+import com.mybatisflex.core.exception.FlexAssert;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -26,12 +27,11 @@ import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ArrayUtil;
-import com.mybatisflex.core.util.CollectionUtil;
 
 import java.util.*;
 
+@SuppressWarnings({"rawtypes", "DuplicatedCode"})
 public class RowSqlProvider {
-
 
     public static final String METHOD_RAW_SQL = "providerRawSql";
 
@@ -45,8 +45,8 @@ public class RowSqlProvider {
     /**
      * 执行原生 sql 的方法
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#insertBySql(String, Object...)
      * @see RowMapper#deleteBySql(String, Object...)
      * @see RowMapper#updateBySql(String, Object...)
@@ -56,10 +56,10 @@ public class RowSqlProvider {
     }
 
     /**
-     * insert 的 sql 构建
+     * insert 的 SQL 构建。
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#insert(String, String, Row)
      */
     public static String insert(Map params) {
@@ -71,25 +71,24 @@ public class RowSqlProvider {
     }
 
     /**
-     * insertBatch 的 sql 构建
+     * insertBatch 的 SQL 构建。
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#insertBatchWithFirstRowColumns(String, String, List)
      */
     public static String insertBatchWithFirstRowColumns(Map params) {
+        List<Row> rows = ProviderUtil.getRows(params);
+
+        FlexAssert.notEmpty(rows, "rows can not be null or empty.");
+
         String tableName = ProviderUtil.getTableName(params);
         String schema = ProviderUtil.getSchemaName(params);
-        List<Row> rows = ProviderUtil.getRows(params);
-        if (rows == null || rows.isEmpty()) {
-            throw FlexExceptions.wrap("rows can not be null or empty.");
-        }
 
         // 让所有 row 的列顺序和值的数量与第条数据保持一致
         // 这个必须 new 一个 LinkedHashSet，因为 keepModifyAttrs 会清除 row 所有的 modifyAttrs
         Set<String> modifyAttrs = new LinkedHashSet<>(RowCPI.getModifyAttrs(rows.get(0)));
         rows.forEach(row -> row.keep(modifyAttrs));
-
 
         Object[] values = new Object[]{};
         for (Row row : rows) {
@@ -102,32 +101,31 @@ public class RowSqlProvider {
     }
 
     /**
-     * deleteById 的 sql 构建
+     * deleteById 的 SQL 构建。
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#deleteById(String, String, String, Object)
      */
     public static String deleteById(Map params) {
+        Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
+
+        FlexAssert.notEmpty(primaryValues, "primaryValue can not be null or empty.");
+
         String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         String[] primaryKeys = ProviderUtil.getPrimaryKeys(params);
-        Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
-        if (primaryValues.length == 0) {
-            throw FlexExceptions.wrap("primaryValue can not be null");
-        } else {
-            ProviderUtil.setSqlArgs(params, primaryValues);
-        }
+        ProviderUtil.setSqlArgs(params, primaryValues);
 
         return DialectFactory.getDialect().forDeleteById(schema, tableName, primaryKeys);
     }
 
     /**
-     * deleteBatchByIds 的 sql 构建
+     * deleteBatchByIds 的 SQL 构建。
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#deleteBatchByIds(String, String, String, Collection)
      */
     public static String deleteBatchByIds(Map params) {
@@ -140,12 +138,11 @@ public class RowSqlProvider {
         return DialectFactory.getDialect().forDeleteBatchByIds(schema, tableName, primaryKeys, primaryValues);
     }
 
-
     /**
-     * deleteByQuery 的 sql 构建
+     * deleteByQuery 的 SQL 构建。
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#deleteByQuery(String, String, QueryWrapper)
      */
     public static String deleteByQuery(Map params) {
@@ -164,10 +161,10 @@ public class RowSqlProvider {
     }
 
     /**
-     * updateById 的 sql 构建
+     * updateById 的 SQL 构建。
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#updateById(String, String, Row)
      */
     public static String updateById(Map params) {
@@ -178,12 +175,11 @@ public class RowSqlProvider {
         return DialectFactory.getDialect().forUpdateById(schema, tableName, row);
     }
 
-
     /**
-     * updateByQuery 的 sql 构建
+     * updateByQuery 的 SQL 构建。
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#updateByQuery(String, String, Row, QueryWrapper)
      */
     public static String updateByQuery(Map params) {
@@ -205,22 +201,21 @@ public class RowSqlProvider {
         return sql;
     }
 
-
     /**
-     * updateBatchById 的 sql 构建
+     * updateBatchById 的 SQL 构建。
      * mysql 等链接配置需要开启 allowMultiQueries=true
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#updateBatchById(String, String, List)
      */
     public static String updateBatchById(Map params) {
+        List<Row> rows = ProviderUtil.getRows(params);
+
+        FlexAssert.notEmpty(rows, "rows can not be null or empty.");
+
         String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
-        List<Row> rows = ProviderUtil.getRows(params);
-        if (CollectionUtil.isEmpty(rows)) {
-            throw FlexExceptions.wrap("rows can not be null or empty.");
-        }
 
         Object[] values = FlexConsts.EMPTY_ARRAY;
         for (Row row : rows) {
@@ -231,17 +226,16 @@ public class RowSqlProvider {
     }
 
     /**
-     * updateEntity 的 sql 构建
+     * updateEntity 的 SQL 构建。
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#updateEntity(Object entities)
      */
     public static String updateEntity(Map params) {
         Object entity = ProviderUtil.getEntity(params);
-        if (entity == null) {
-            throw FlexExceptions.wrap("entity can not be null");
-        }
+
+        FlexAssert.notNull(entity, "entity can not be null");
 
         // 该 Mapper 是通用 Mapper  无法通过 ProviderContext 获取，直接使用 TableInfoFactory
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
@@ -263,12 +257,11 @@ public class RowSqlProvider {
     /**
      * 执行类似 update table set field=field+1 where ... 的场景
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#updateNumberAddByQuery(String, String, String, Number, QueryWrapper)
      */
     public static String updateNumberAddByQuery(Map params) {
-
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
         String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
@@ -284,12 +277,11 @@ public class RowSqlProvider {
         return sql;
     }
 
-
     /**
-     * selectOneById 的 sql 构建
+     * selectOneById 的 SQL 构建。
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#selectOneById(String, String, String, Object)
      */
     public static String selectOneById(Map params) {
@@ -303,12 +295,11 @@ public class RowSqlProvider {
         return DialectFactory.getDialect().forSelectOneById(schema, tableName, primaryKeys, primaryValues);
     }
 
-
     /**
-     * selectListByQuery 的 sql 构建
+     * selectListByQuery 的 SQL 构建。
      *
-     * @param params
-     * @return sql
+     * @param params 方法参数
+     * @return SQL 语句
      * @see RowMapper#selectListByQuery(String, String, QueryWrapper)
      */
     public static String selectListByQuery(Map params) {
@@ -326,6 +317,5 @@ public class RowSqlProvider {
 
         return sql;
     }
-
 
 }

@@ -60,6 +60,7 @@ public interface RowMapper {
      * @param args 参数
      * @return 执行影响的行数
      * @see Db#insertBySql(String, Object...)
+     * @see RowSqlProvider#providerRawSql(Map)
      */
     @InsertProvider(value = RowSqlProvider.class, method = RowSqlProvider.METHOD_RAW_SQL)
     int insertBySql(@Param(FlexConsts.SQL) String sql, @Param(FlexConsts.SQL_ARGS) Object... args);
@@ -87,6 +88,7 @@ public interface RowMapper {
      * @param sql  delete sql 语句
      * @param args 参数
      * @return 执行影响的行数
+     * @see RowSqlProvider#providerRawSql(Map)
      */
     @DeleteProvider(value = RowSqlProvider.class, method = RowSqlProvider.METHOD_RAW_SQL)
     int deleteBySql(@Param(FlexConsts.SQL) String sql, @Param(FlexConsts.SQL_ARGS) Object... args);
@@ -152,6 +154,7 @@ public interface RowMapper {
      * @param sql  sql 语句
      * @param args 参数内容
      * @return 执行影响的行数
+     * @see RowSqlProvider#providerRawSql(Map)
      */
     @UpdateProvider(value = RowSqlProvider.class, method = RowSqlProvider.METHOD_RAW_SQL)
     int updateBySql(@Param(FlexConsts.SQL) String sql, @Param(FlexConsts.SQL_ARGS) Object... args);
