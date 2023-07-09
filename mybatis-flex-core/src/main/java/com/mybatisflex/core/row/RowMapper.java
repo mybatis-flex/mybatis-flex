@@ -396,10 +396,11 @@ public interface RowMapper {
      *
      * @param queryWrapper 查询包装器
      * @return 数据列表
-     * @see RowSqlProvider#selectObjectByQuery(Map)
+     * @see RowSqlProvider#selectListByQuery(Map)
      */
-    @SelectProvider(type = RowSqlProvider.class, method = "selectObjectByQuery")
-    List<Object> selectObjectListByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+    @SelectProvider(type = RowSqlProvider.class, method = "selectListByQuery")
+    List<Object> selectObjectListByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema
+            , @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
     /**

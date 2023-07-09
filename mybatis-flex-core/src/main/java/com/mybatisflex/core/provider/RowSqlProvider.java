@@ -314,28 +314,6 @@ public class RowSqlProvider {
     public static String selectListByQuery(Map params) {
         String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
-        QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        CPI.setFromIfNecessary(queryWrapper, schema, tableName);
-
-        //优先构建 sql，再构建参数
-        String sql = DialectFactory.getDialect().forSelectByQuery(queryWrapper);
-
-        Object[] valueArray = CPI.getValueArray(queryWrapper);
-        ProviderUtil.setSqlArgs(params, valueArray);
-
-        return sql;
-    }
-
-    /**
-     * selectCountByQuery 的 sql 构建
-     *
-     * @param params
-     * @return sql
-     * @see RowMapper#selectCountByQuery(String, String, QueryWrapper)
-     */
-    public static String selectObjectByQuery(Map params) {
-        String schema = ProviderUtil.getSchemaName(params);
-        String tableName = ProviderUtil.getTableName(params);
 
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
         CPI.setFromIfNecessary(queryWrapper, schema, tableName);
