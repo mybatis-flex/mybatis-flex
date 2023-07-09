@@ -1,0 +1,6 @@
+- **`deleteById(id)`**: 根据主键删除数据。如果是多个主键的情况下，需要传入数组，例如：`new Integer[]{100,101``。
+- **`deleteBatchByIds(ids)`**: 根据多个主键批量删除数据。
+- **`deleteBatchByIds(ids, size)`**: 根据多个主键批量删除数据。
+- **`deleteByMap(Map<String, whereConditions)`**: 根据 Map 构建的条件来删除数据。
+- **`deleteByCondition(whereConditions)`**: 根据查询条件来删除数据。
+- **`deleteByQuery(queryWrapper)`**: 根据查询条件来删除数据。

@@ -8,30 +8,16 @@ MyBatis-Flex 内置了一个名为 `BaseMapper` 的接口，它实现了基本�
 
 `BaseMapper` 的接口提供了 insert 和 insertBatch 方法，用于新增数据；
 
-- **insert(entity)**：新增 1 条数据，不忽略 null 值的字段
-- **insertSelective(entity)**：新增 1 条数据，忽略 null 值的字段
-- **insert(entity, ignoreNulls)**：插入实体类数据，并设置是否忽略 null 值字段。
-- **insertWithPk(entity)**：插入带有主键的实体类，不忽略 null 值字段。
-- **insertSelectiveWithPk(entity)**：插入带有主键的实体类，忽略 null 值字段。
-- **insertWithPk(entity, ignoreNulls)**：带有主键的插入，并设置是否忽略 null 值字段。
-- **insertBatch(entities)**：新增多条数据
-- **insertBatch(entities, size)**：批量插入 entity 数据，按 size 切分
-- **insertOrUpdate(entity)**：插入或者更新，若主键有值，则更新，若没有主键值，则插入，插入或者更新都不会忽略 null 值字段。
-- **insertOrUpdateSelective(entity)**：插入或者更新，若主键有值，则更新，若没有主键值，则插入，插入或者更新都会忽略 null 值字段。
-- **insertOrUpdate(entity, ignoreNulls)**：插入或者更新，若主键有值，则更新，若没有主键值，则插入，并设置是否忽略 null 值字段。
+<!--@include: ./parts/base-mapper-insert-methods.md-->
+
+
 
 
 ## 删除数据
 
 `BaseMapper` 的接口提供了 deleteById、deleteBatchByIds、deleteByMap、deleteByQuery 方法，用于删除数据；
 
-- **deleteById(id)**：根据主键 id 删除数据，复合主键需要传入一个数组，例如 [1,100]
-- **deleteBatchByIds(ids)**：根据主键的 集合，批量删除多条数据
-- **deleteBatchByIds(ids, size)**：根据多个主键批量删除数据，并按 size 切分。
-- **deleteByMap(map)**：根据 `map<字段名，值>` 组成的条件删除数据，字段名和值的关系为相等的关系，同时，防止 "不小心" 全表
-  删除数据，map 的值不允许为 null 或者 空数据。
-- **deleteByCondition(condition)**：根据 QueryCondition 构建的条件来删除数据
-- **deleteByQuery(queryWrapper)**：根据 QueryWrapper 组成的条件删除数据。
+<!--@include: ./parts/base-mapper-delete-methods.md-->
 
 
 **deleteByQuery(queryWrapper)** 方法示例：
@@ -64,27 +50,7 @@ delete from tb_account where id >= 100;
 
 `BaseMapper` 的接口提供了 update、updateByMap、updateByQuery 方法，用于更新数据；
 
-- **update(entity)**：根据主键更新到 entity 到数据库，要求主键值不能为空，否则会抛出异常。同时，数据为 null 的字段 **不会**
-  更新到数据库。
-- **update(entity, ignoreNulls)**：根据主键更新到 entity 到数据库，要求主键值不能为空。ignoreNulls 为是否忽略 null 字段，如果为
-  false，所有 null 字段都会更新到数据库。
-- **updateByMap(entity, map)**：根据 `map<字段名，值>` 组成的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）,
-  entity 的 null 属性，会自动被忽略。
-- **updateByCondition(entity, condition)**：根据 condition 构建的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）,
-  entity 的 null 属性，会自动被忽略。
-- **updateByCondition(entity, ignoreNulls, condition)**：ignoreNulls 是否忽略 null 值，默认为 true，如果为 false，所有 null
-  字段都会更新到数据库。
-- **updateByQuery(entity, queryWrapper)**：根据 queryWrapper 组成的条件更新到 entity 到数据库，entity 可以没有主键（如果有也会被忽略）,
-  entity 的 null 属性，会自动被忽略。
-- **updateByQuery(entity, ignoreNulls, queryWrapper)**：据 queryWrapper 组成的条件更新到 entity 到数据库，entity
-  可以没有主键（如果有也会被忽略）。 ignoreNulls 用于是否忽略 entity 的 null 属性
-  ， 若 ignoreNulls 为 false，entity 的所有 null 属性都会被更新到数据库。
-- **updateNumberAddByQuery(fieldName,value,queryWrapper)**：通过 `update table set field = field + 1 where ... `
-  的这种方向更新数据库某个字段内容。
-- **updateNumberAddByQuery(column,value,queryWrapper)**：通过 `update table set field = field + 1 where ... `
-  的这种方向更新数据库某个字段内容。
-- **updateNumberAddByQuery(fn,value,queryWrapper)**：通过 `update table set field = field + 1 where ... `
-  的这种方向更新数据库某个字段内容。
+<!--@include: ./parts/base-mapper-update-methods.md-->
 
 
 ## 部分字段更新
