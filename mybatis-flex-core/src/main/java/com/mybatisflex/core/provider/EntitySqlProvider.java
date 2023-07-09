@@ -17,6 +17,7 @@ package com.mybatisflex.core.provider;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
+import com.mybatisflex.core.exception.FlexAssert;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryTable;
@@ -31,6 +32,7 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 import java.io.Serializable;
 import java.util.*;
 
+@SuppressWarnings({"rawtypes", "DuplicatedCode"})
 public class EntitySqlProvider {
 
     /**
@@ -40,20 +42,18 @@ public class EntitySqlProvider {
     private EntitySqlProvider() {
     }
 
-
     /**
-     * insert 的 sql 构建
+     * insert 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#insert(Object)
      */
     public static String insert(Map params, ProviderContext context) {
         Object entity = ProviderUtil.getEntity(params);
-        if (entity == null) {
-            throw FlexExceptions.wrap("entity can not be null.");
-        }
+
+        FlexAssert.notNull(entity, "entity can not be null.");
 
         boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
 
@@ -78,11 +78,18 @@ public class EntitySqlProvider {
     }
 
 
+    /**
+     * insertWithPk 的 SQL 构建。
+     *
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
+     * @see com.mybatisflex.core.BaseMapper#insertWithPk(Object, boolean)
+     */
     public static String insertWithPk(Map params, ProviderContext context) {
         Object entity = ProviderUtil.getEntity(params);
-        if (entity == null) {
-            throw FlexExceptions.wrap("entity can not be null.");
-        }
+
+        FlexAssert.notNull(entity, "entity can not be null.");
 
         boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
 
@@ -108,19 +115,18 @@ public class EntitySqlProvider {
 
 
     /**
-     * insertBatch 的 sql 构建
+     * insertBatch 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#insertBatch(List)
      * @see com.mybatisflex.core.FlexConsts#METHOD_INSERT_BATCH
      */
     public static String insertBatch(Map params, ProviderContext context) {
         List<Object> entities = ProviderUtil.getEntities(params);
-        if (CollectionUtil.isEmpty(entities)) {
-            throw FlexExceptions.wrap("entities can not be null or empty.");
-        }
+
+        FlexAssert.notEmpty(entities, "entities can not be null or empty.");
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
         for (Object entity : entities) {
@@ -145,18 +151,17 @@ public class EntitySqlProvider {
 
 
     /**
-     * deleteById 的 sql 构建
+     * deleteById 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#deleteById(Serializable)
      */
     public static String deleteById(Map params, ProviderContext context) {
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
-        if (ArrayUtil.isEmpty(primaryValues)) {
-            throw FlexExceptions.wrap("primaryValues can not be null or empty.");
-        }
+
+        FlexAssert.notEmpty(primaryValues, "primaryValues can not be null or empty.");
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
@@ -168,18 +173,17 @@ public class EntitySqlProvider {
 
 
     /**
-     * deleteBatchByIds 的 sql 构建
+     * deleteBatchByIds 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#deleteBatchByIds(Collection)
      */
     public static String deleteBatchByIds(Map params, ProviderContext context) {
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
-        if (ArrayUtil.isEmpty(primaryValues)) {
-            throw FlexExceptions.wrap("primaryValues can not be null or empty.");
-        }
+
+        FlexAssert.notEmpty(primaryValues, "primaryValues can not be null or empty.");
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
@@ -191,11 +195,11 @@ public class EntitySqlProvider {
 
 
     /**
-     * deleteByQuery 的 sql 构建
+     * deleteByQuery 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#deleteByQuery(QueryWrapper)
      */
     public static String deleteByQuery(Map params, ProviderContext context) {
@@ -213,18 +217,17 @@ public class EntitySqlProvider {
 
 
     /**
-     * update 的 sql 构建
+     * update 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#update(Object, boolean)
      */
     public static String update(Map params, ProviderContext context) {
         Object entity = ProviderUtil.getEntity(params);
-        if (entity == null) {
-            throw FlexExceptions.wrap("entity can not be null");
-        }
+
+        FlexAssert.notNull(entity, "entity can not be null");
 
         boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
 
@@ -246,18 +249,18 @@ public class EntitySqlProvider {
 
 
     /**
-     * updateByQuery 的 sql 构建
+     * updateByQuery 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#updateByQuery(Object, boolean, QueryWrapper)
      */
     public static String updateByQuery(Map params, ProviderContext context) {
         Object entity = ProviderUtil.getEntity(params);
-        if (entity == null) {
-            throw FlexExceptions.wrap("entity can not be null");
-        }
+
+        FlexAssert.notNull(entity, "entity can not be null");
+
         boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
 
@@ -280,11 +283,11 @@ public class EntitySqlProvider {
     }
 
     /**
-     * updateNumberByQuery 的 sql 构建
+     * updateNumberByQuery 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#updateNumberAddByQuery(String, Number, QueryWrapper)
      */
     public static String updateNumberAddByQuery(Map params, ProviderContext context) {
@@ -310,18 +313,17 @@ public class EntitySqlProvider {
 
 
     /**
-     * selectOneById 的 sql 构建
+     * selectOneById 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#selectOneById(Serializable)
      */
     public static String selectOneById(Map params, ProviderContext context) {
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
-        if (ArrayUtil.isEmpty(primaryValues)) {
-            throw FlexExceptions.wrap("primaryValues can not be null or empty.");
-        }
+
+        FlexAssert.notEmpty(primaryValues, "primaryValues can not be null or empty.");
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
@@ -334,18 +336,17 @@ public class EntitySqlProvider {
 
 
     /**
-     * selectListByIds 的 sql 构建
+     * selectListByIds 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#selectListByIds(Collection)
      */
     public static String selectListByIds(Map params, ProviderContext context) {
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
-        if (ArrayUtil.isEmpty(primaryValues)) {
-            throw FlexExceptions.wrap("primaryValues can not be null or empty.");
-        }
+
+        FlexAssert.notEmpty(primaryValues, "primaryValues can not be null or empty.");
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
@@ -357,11 +358,11 @@ public class EntitySqlProvider {
 
 
     /**
-     * selectListByQuery 的 sql 构建
+     * selectListByQuery 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#selectListByQuery(QueryWrapper)
      */
     public static String selectListByQuery(Map params, ProviderContext context) {
@@ -380,11 +381,11 @@ public class EntitySqlProvider {
 
 
     /**
-     * selectCountByQuery 的 sql 构建
+     * selectCountByQuery 的 SQL 构建。
      *
-     * @param params
-     * @param context
-     * @return sql
+     * @param params  方法参数
+     * @param context 上下文对象
+     * @return SQL 语句
      * @see com.mybatisflex.core.BaseMapper#selectObjectByQuery(QueryWrapper)
      */
     public static String selectObjectByQuery(Map params, ProviderContext context) {
