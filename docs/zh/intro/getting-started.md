@@ -39,7 +39,7 @@ VALUES (1, '张三', 18, '2020-01-11'),
     <dependency>
         <groupId>com.mybatis-flex</groupId>
         <artifactId>mybatis-flex-spring-boot-starter</artifactId>
-        <version>1.4.7</version>
+        <version>1.4.8</version>
     </dependency>
     <dependency>
         <groupId>com.mysql</groupId>
@@ -100,7 +100,7 @@ public class Account {
     private String userName;
     private Integer age;
     private Date birthday;
-    
+
 }
 ```
 
@@ -111,7 +111,7 @@ Mapper 接口继承 BaseMapper 接口：
 
 ```java
 public interface AccountMapper extends BaseMapper<Account> {
-    
+
 }
 ```
 

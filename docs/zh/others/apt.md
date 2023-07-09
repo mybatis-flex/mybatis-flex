@@ -70,7 +70,7 @@ public class AccountTableDef extends TableDef {
 
     public QueryColumn ID = new QueryColumn(this, "id");
     public QueryColumn USER_NAME = new QueryColumn(this, "user_name");
-    
+
     public QueryColumn ALL_COLUMNS = new QueryColumn(this, "*");
     public QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, USER_NAME};
 
@@ -218,7 +218,7 @@ pom.xml 添加 `annotationProcessorPaths` 配置，
 ```
 dependencies {
     ...
-    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:<version>1.4.7</version>'
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:<version>1.4.8</version>'
 }
 ```
 
