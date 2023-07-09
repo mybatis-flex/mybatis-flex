@@ -87,7 +87,7 @@ public class ArticleDTO {
     private Long accountId;
     private String title;
     private String content;
-    
+
     //以下用户相关字段
     private String userName;
     private int age;
@@ -141,7 +141,7 @@ QueryWrapper query = QueryWrapper.create()
     .where(ACCOUNT.ID.ge(0));
 
 List<ArticleDTO> results = mapper.selectListByQueryAs(query, ArticleDTO.class);
-System.out.println(results);    
+System.out.println(results);
 ```
 
 ### 方式 3 <Badge type="tip" text="^ v1.3.3" />
@@ -155,7 +155,7 @@ public class ArticleDTO {
     private Long accountId;
     private String title;
     private String content;
-    
+
     //直接定义 Account 对象
     private Account account;
 }

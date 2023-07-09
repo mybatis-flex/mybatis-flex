@@ -61,7 +61,7 @@ delete from tb_account where id >= 100;
 Account account = UpdateEntity.of(Account.class, 100);
 //Account account = UpdateEntity.of(Account.class);
 //account.setId(100);
-        
+
 account.setUserName(null);
 account.setAge(10);
 
@@ -79,7 +79,7 @@ accountMapper.update(account);
 
 ```sql
 update tb_account
-set user_name = ?, age = ? where id = ? 
+set user_name = ?, age = ? where id = ?
 #参数: null,10,100
 ```
 
@@ -101,7 +101,7 @@ account.setId(100);
 
 ```sql
 update tb_account
-set user_name = ?, age = age + 1 where id = ? 
+set user_name = ?, age = age + 1 where id = ?
 ```
 此时，我们可以直接把 `Account` 强转为 `UpdateWrapper` 然后进行更新，例如：
 
@@ -167,6 +167,6 @@ accountMapper.update(account);
 
 ```sql
 update tb_account
-set user_name = "michael", age = (select ... from ... ) 
+set user_name = "michael", age = (select ... from ... )
 where id = 100
 ```
