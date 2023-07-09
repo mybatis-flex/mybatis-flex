@@ -57,8 +57,19 @@ public class AccountTest implements WithAssertions {
 
     @Test
     public void testSelectOneByRow() {
-        Row row = Db.selectOneById(null,"tb_account", "id", 1);
+        Row row = Db.selectOneById(null, "tb_account", "id", 1);
         System.out.println(row);
+    }
+
+    @Test
+    public void testLambda() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select()
+                .from(ACCOUNT)
+                .where(Account::getAge).in(
+                        QueryWrapper.create().select(ACCOUNT.AGE).from(ACCOUNT).where(ACCOUNT.AGE.ge(18))
+                );
+        System.out.println(queryWrapper.toSQL());
     }
 
 }
