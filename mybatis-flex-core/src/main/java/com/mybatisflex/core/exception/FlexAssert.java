@@ -16,6 +16,7 @@
 
 package com.mybatisflex.core.exception;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -32,26 +33,52 @@ public final class FlexAssert {
     /**
      * 断言对象不为空，如果为空抛出异常，并指明哪个对象为空。
      *
-     * @param obj 对象
-     * @param msg 错误消息
+     * @param obj     对象
+     * @param message 错误消息
      * @throws MybatisFlexException 如果对象为空，抛出此异常。
      */
-    public static void notNull(Object obj, String msg) {
+    public static void notNull(Object obj, String message) {
         if (obj == null) {
-            throw FlexExceptions.wrap(msg);
+            throw FlexExceptions.wrap(message);
         }
     }
 
     /**
      * 断言 Map 集合不为 {@code null} 或者空集合，如果为空则抛出异常，并指明为什么不允许为空集合。
      *
-     * @param map Map 集合
-     * @param msg 错误消息
+     * @param map     Map 集合
+     * @param message 错误消息
      * @throws MybatisFlexException 如果集合为空，抛出此异常。
      */
-    public static void notEmpty(Map<?, ?> map, String msg) {
+    public static void notEmpty(Map<?, ?> map, String message) {
         if (map == null || map.isEmpty()) {
-            throw FlexExceptions.wrap(msg);
+            throw FlexExceptions.wrap(message);
+        }
+    }
+
+    /**
+     * 断言集合不为 {@code null} 或者空集合，如果为空则抛出异常，并指明为什么不允许为空集合。
+     *
+     * @param collection 集合
+     * @param message    错误消息
+     * @throws MybatisFlexException 如果集合为空，抛出此异常。
+     */
+    public static void notEmpty(Collection<?> collection, String message) {
+        if (collection == null || collection.isEmpty()) {
+            throw FlexExceptions.wrap(message);
+        }
+    }
+
+    /**
+     * 断言数组不为 {@code null} 或者空数组，如果为空则抛出异常，并指明为什么不允许为空数组。
+     *
+     * @param array   数组
+     * @param message 错误消息
+     * @throws MybatisFlexException 如果数组为空，抛出此异常。
+     */
+    public static <T> void notEmpty(T[] array, String message) {
+        if (array == null || array.length == 0) {
+            throw FlexExceptions.wrap(message);
         }
     }
 
