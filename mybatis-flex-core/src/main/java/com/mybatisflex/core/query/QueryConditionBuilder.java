@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.query;
 
@@ -318,16 +318,16 @@ public class QueryConditionBuilder {
      */
     public QueryWrapper in(QueryWrapper queryWrapper) {
         if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.in(queryWrapper), connector);
+            this.queryWrapper.addWhereQueryCondition(queryColumn.in(queryWrapper), connector);
         }
-        return queryWrapper;
+        return this.queryWrapper;
     }
 
     public <T> QueryWrapper in(QueryWrapper queryWrapper, Predicate<T> when) {
         if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.in(queryWrapper, when), connector);
+            this.queryWrapper.addWhereQueryCondition(queryColumn.in(queryWrapper, when), connector);
         }
-        return queryWrapper;
+        return this.queryWrapper;
     }
 
 
@@ -399,16 +399,16 @@ public class QueryConditionBuilder {
      */
     public QueryWrapper notIn(QueryWrapper queryWrapper) {
         if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.notIn(queryWrapper), connector);
+            this.queryWrapper.addWhereQueryCondition(queryColumn.notIn(queryWrapper), connector);
         }
-        return queryWrapper;
+        return this.queryWrapper;
     }
 
     public <T> QueryWrapper notIn(QueryWrapper queryWrapper, Predicate<T> when) {
         if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.notIn(queryWrapper, when), connector);
+            this.queryWrapper.addWhereQueryCondition(queryColumn.notIn(queryWrapper, when), connector);
         }
-        return queryWrapper;
+        return this.queryWrapper;
     }
 
 
