@@ -56,7 +56,7 @@ public class RowSqlProvider {
     }
 
     /**
-     * insert 的 sql 构建
+     * insert 的 SQL 构建。
      *
      * @param params 方法参数
      * @return SQL 语句
@@ -71,7 +71,7 @@ public class RowSqlProvider {
     }
 
     /**
-     * insertBatch 的 sql 构建
+     * insertBatch 的 SQL 构建。
      *
      * @param params 方法参数
      * @return SQL 语句
@@ -101,7 +101,7 @@ public class RowSqlProvider {
     }
 
     /**
-     * deleteById 的 sql 构建
+     * deleteById 的 SQL 构建。
      *
      * @param params 方法参数
      * @return SQL 语句
@@ -122,7 +122,7 @@ public class RowSqlProvider {
     }
 
     /**
-     * deleteBatchByIds 的 sql 构建
+     * deleteBatchByIds 的 SQL 构建。
      *
      * @param params 方法参数
      * @return SQL 语句
@@ -139,7 +139,7 @@ public class RowSqlProvider {
     }
 
     /**
-     * deleteByQuery 的 sql 构建
+     * deleteByQuery 的 SQL 构建。
      *
      * @param params 方法参数
      * @return SQL 语句
@@ -161,7 +161,7 @@ public class RowSqlProvider {
     }
 
     /**
-     * updateById 的 sql 构建
+     * updateById 的 SQL 构建。
      *
      * @param params 方法参数
      * @return SQL 语句
@@ -176,7 +176,7 @@ public class RowSqlProvider {
     }
 
     /**
-     * updateByQuery 的 sql 构建
+     * updateByQuery 的 SQL 构建。
      *
      * @param params 方法参数
      * @return SQL 语句
@@ -202,7 +202,7 @@ public class RowSqlProvider {
     }
 
     /**
-     * updateBatchById 的 sql 构建
+     * updateBatchById 的 SQL 构建。
      * mysql 等链接配置需要开启 allowMultiQueries=true
      *
      * @param params 方法参数
@@ -226,7 +226,7 @@ public class RowSqlProvider {
     }
 
     /**
-     * updateEntity 的 sql 构建
+     * updateEntity 的 SQL 构建。
      *
      * @param params 方法参数
      * @return SQL 语句
@@ -278,7 +278,7 @@ public class RowSqlProvider {
     }
 
     /**
-     * selectOneById 的 sql 构建
+     * selectOneById 的 SQL 构建。
      *
      * @param params 方法参数
      * @return SQL 语句
@@ -296,7 +296,7 @@ public class RowSqlProvider {
     }
 
     /**
-     * selectListByQuery 的 sql 构建
+     * selectListByQuery 的 SQL 构建。
      *
      * @param params 方法参数
      * @return SQL 语句
