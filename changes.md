@@ -1,6 +1,23 @@
 # ChangeLog
 
 
+## v1.4.8 20230709:
+- 新增：`@RelationXXX` 相关注解添加可以指定 dataSource 的配置功能
+- 新增：添加 BaseMapper.insertSelectiveWithPk() 方法
+- 新增：QueryWrapper 构建的 SQL 添加 If, IfNull 支持，感谢 @Suomm
+- 新增：添加 FlexAssert 类，用于常见的异常条件断言，感谢 @Suomm
+- 优化：为 APT 添加 final 关键字以及字段排序的功能，感谢 @Suomm
+- 优化：APT 的 large 字段或者 logicDelete 字段不应被添加在 default_column 中，感谢 @Suomm
+- 优化：移动 BaseMapper.doPaginate 到 MapperUtil，感谢 @Suomm
+- 优化：完善 EntitySqlProvider、RowSqlProvider 等的相关 javadoc 内容，感谢 @Suomm
+- 优化：重构逻辑删除和多租户代码，在必要时其条件应该往前移动 #I7IVCR
+- 优化：移除 RowSqlProvider 不必要的重复的方法
+- 修复：执行 updateByQuery() 未调用 Entity 的 OnUpdate 监听的问题 #I7JDJ2
+- 修复：QueryWrapper 在构建 `属性.in(select from...)` 时出错的问题
+- 文档：补充增删改查新添加的 BaseMapper 的相关方法
+
+
+
 ## v1.4.7 20230707:
 - 新增：`@RelationManyToMany` `@RelationManyToOne` `@RelationOneToMany` `@RelationOneToOne` 4 个注解用于关联查询
 - 新增：为 QueryMethods 添加更多的 SQL 函数重载，感谢 @Suomm
@@ -23,7 +40,7 @@
 - 新增：添加 110+ SQL 常见的函数构建，满足日常开发所需，感谢 @Suomm
 - 优化：对分页查询的 groupby 和 distinct 进一步优化，感谢 @Suomm
 - 优化：对 Row 进行优化，使之更加简单、好用
-- 修复：有父子继承时，如果有相同属性，生成的类中也会有相同的2个属性的问题，感谢 @piggsoft 
+- 修复：有父子继承时，如果有相同属性，生成的类中也会有相同的2个属性的问题，感谢 @piggsoft
 - 修复：在某些极端的情况下，由于 MappedStatement 缓存造成的类型转换异常的问题
 - 修复：逻辑删除有 groupBy 和 join 的分页查询时，计算的总量包含已删除数据的问题 #I7HVXT
 - 文档：优化 Field Query 的相关文档
