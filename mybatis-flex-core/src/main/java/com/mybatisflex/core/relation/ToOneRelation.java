@@ -15,31 +15,20 @@
  */
 package com.mybatisflex.core.relation;
 
-import com.mybatisflex.annotation.RelationOneToMany;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.util.ClassUtil;
-import com.mybatisflex.core.util.MapperUtil;
-import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import static com.mybatisflex.core.query.QueryMethods.column;
 
-class OneToMany<SelfEntity> extends AbstractRelation<SelfEntity> {
-
-	private String orderBy;
-	private int limit;
+class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
 
-	public OneToMany(RelationOneToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
-		super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationOneToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
-			, annotation.targetField(), annotation.dataSource(), entityClass, relationField);
-		this.orderBy = annotation.orderBy();
-		this.limit = annotation.limit();
+	public ToOneRelation(String selfField, String targetField, String dataSource, Class<SelfEntity> selfEntityClass, Field relationField) {
+		super(selfField, targetField, dataSource, selfEntityClass, relationField);
 	}
 
 	@Override
@@ -55,32 +44,22 @@ class OneToMany<SelfEntity> extends AbstractRelation<SelfEntity> {
 		} else {
 			queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).eq(selfFieldValues.iterator().next()));
 		}
-
-		if (StringUtil.isNotBlank(orderBy)) {
-			queryWrapper.orderBy(orderBy);
-		}
-
-		if (limit > 0) {
-			queryWrapper.limit(limit);
-		}
-
 		return queryWrapper;
 	}
+
 
 	@Override
 	public void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper) {
 		selfEntities.forEach(selfEntity -> {
 			Object selfValue = selfFieldWrapper.get(selfEntity);
 			if (selfValue != null) {
-				Class<?> wrapType = MapperUtil.getWrapType(relationFieldWrapper.getFieldType());
-				Collection<Object> collection = (Collection) ClassUtil.newInstance(wrapType);
 				for (Object targetObject : targetObjectList) {
 					Object targetValue = targetFieldWrapper.get(targetObject);
 					if (selfValue.equals(targetValue)) {
-						collection.add(targetObject);
+						relationFieldWrapper.set(targetObject, selfEntity);
+						break;
 					}
 				}
-				relationFieldWrapper.set(collection, selfEntity);
 			}
 		});
 	}

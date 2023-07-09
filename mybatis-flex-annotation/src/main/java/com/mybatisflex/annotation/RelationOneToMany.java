@@ -17,17 +17,45 @@ package com.mybatisflex.annotation;
 
 import java.lang.annotation.*;
 
+/**
+ * @author michael
+ */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 public @interface RelationOneToMany {
 
-    String selfField() default "";
+	/**
+	 * 当前 entity 的属性
+	 *
+	 * @return 属性名称
+	 */
+	String selfField() default "";
 
-    String targetField();
+	/**
+	 * 目标对象的关联属性
+	 *
+	 * @return 属性名称
+	 */
+	String targetField();
 
-    String orderBy() default "";
+	/**
+	 * 查询排序
+	 *
+	 * @return 排序方式
+	 */
+	String orderBy() default "";
 
-    int limit() default 0;
+	/**
+	 * 现在查询的数据量
+	 *
+	 * @return 数据量
+	 */
+	int limit() default 0;
+
+	/**
+	 * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源。
+	 */
+	String dataSource() default "";
 
 }

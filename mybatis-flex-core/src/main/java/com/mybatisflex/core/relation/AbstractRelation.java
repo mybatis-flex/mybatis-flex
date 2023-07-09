@@ -31,7 +31,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-abstract class Relation<SelfEntity> {
+abstract class AbstractRelation<SelfEntity> {
 
     protected Class<SelfEntity> selfEntityClass;
     protected Field relationField;
@@ -45,10 +45,14 @@ abstract class Relation<SelfEntity> {
     protected TableInfo targetTableInfo;
     protected FieldWrapper targetFieldWrapper;
 
-    public Relation(String selfField, String targetField, Class<SelfEntity> entityClass, Field relationField) {
+    protected String dataSource;
+
+    public AbstractRelation(String selfField, String targetField, String dataSource, Class<SelfEntity> entityClass, Field relationField) {
         this.selfEntityClass = entityClass;
         this.relationField = relationField;
         this.relationFieldWrapper = FieldWrapper.of(entityClass, relationField.getName());
+
+        this.dataSource = dataSource;
 
         this.selfField = ClassUtil.getFirstField(entityClass, field -> field.getName().equals(selfField));
         this.selfFieldWrapper = FieldWrapper.of(entityClass, selfField);
@@ -150,16 +154,20 @@ abstract class Relation<SelfEntity> {
         return values;
     }
 
-    public abstract QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities);
-
-    public abstract void map(List<SelfEntity> selfEntities, List<?> mappedObjectList, BaseMapper<?> mapper);
 
     public Class<?> getMappingType() {
         return relationFieldWrapper.getMappingType();
     }
 
+	public String getDataSource() {
+		return dataSource;
+	}
 
-    protected static Class<?> getTargetEntityClass(Class<?> entityClass, Field relationField) {
+	public void setDataSource(String dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	protected static Class<?> getTargetEntityClass(Class<?> entityClass, Field relationField) {
         return FieldWrapper.of(entityClass, relationField.getName()).getMappingType();
     }
 
@@ -176,4 +184,22 @@ abstract class Relation<SelfEntity> {
 
         return primaryKeyList.get(0).getProperty();
     }
+
+
+
+	/**
+	 * 把 Relations 的配置转换为查询的 QueryWrapper
+	 * @param selfEntities 当前的实体类
+	 * @return QueryWrapper
+	 */
+	public abstract QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities);
+
+
+	/**
+	 * 通过 {@link AbstractRelation#toQueryWrapper(List)} 查询到的结果，通过此方法进行内存 join
+	 * @param selfEntities 当前的实体类列表
+	 * @param targetObjectList 查询到的结果
+	 * @param mapper 查询的 Mapper
+	 */
+	public abstract void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper);
 }

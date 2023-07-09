@@ -17,21 +17,61 @@ package com.mybatisflex.annotation;
 
 import java.lang.annotation.*;
 
+/**
+ * @author michael
+ */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 public @interface RelationManyToMany {
 
-    String selfField() default "";
+	/**
+	 * 当前 entity 的属性
+	 *
+	 * @return 属性名称
+	 */
+	String selfField() default "";
 
-    String targetField() default "";
+	/**
+	 * 目标对象的关联属性
+	 *
+	 * @return 属性名称
+	 */
+	String targetField() default "";
 
-    String joinTable();
+	/**
+	 * 中间表
+	 *
+	 * @return 中间表名称
+	 */
+	String joinTable();
 
-    String joinSelfColumn();
+	/**
+	 * 中间表与当前表的关联字段
+	 *
+	 * @return 字段名称，列名
+	 */
+	String joinSelfColumn();
 
-    String joinTargetColumn();
 
-    String orderBy() default "";
+	/**
+	 * 目标表的关联字段名称
+	 *
+	 * @return 字段名称和表
+	 */
+	String joinTargetColumn();
+
+	/**
+	 * 查询排序
+	 *
+	 * @return 排序方式
+	 */
+	String orderBy() default "";
+
+
+	/**
+	 * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源。
+	 */
+	String dataSource() default "";
 
 }

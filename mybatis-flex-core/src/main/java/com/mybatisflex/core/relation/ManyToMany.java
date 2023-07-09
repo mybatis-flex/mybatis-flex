@@ -29,109 +29,109 @@ import java.util.*;
 
 import static com.mybatisflex.core.query.QueryMethods.column;
 
-class ManyToMany<SelfEntity> extends Relation<SelfEntity> {
+class ManyToMany<SelfEntity> extends AbstractRelation<SelfEntity> {
 
-    private String joinTable;
-    private String joinSelfColumn;
-    private String joinTargetColumn;
+	private String joinTable;
+	private String joinSelfColumn;
+	private String joinTargetColumn;
 
-    private String orderBy;
+	private String orderBy;
 
-    public ManyToMany(RelationManyToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
-        super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationManyToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\""),
-                getDefaultPrimaryProperty(annotation.targetField(), getTargetEntityClass(entityClass, relationField), "@RelationManyToMany.targetField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\""),
-                entityClass, relationField);
+	public ManyToMany(RelationManyToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
+		super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationManyToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\""),
+			getDefaultPrimaryProperty(annotation.targetField(), getTargetEntityClass(entityClass, relationField), "@RelationManyToMany.targetField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\""),
+			annotation.dataSource(), entityClass, relationField);
 
-        this.joinTable = annotation.joinTable();
-        this.joinSelfColumn = annotation.joinSelfColumn();
-        this.joinTargetColumn = annotation.joinTargetColumn();
+		this.joinTable = annotation.joinTable();
+		this.joinSelfColumn = annotation.joinSelfColumn();
+		this.joinTargetColumn = annotation.joinTargetColumn();
 
-        this.orderBy = annotation.orderBy();
-    }
+		this.orderBy = annotation.orderBy();
+	}
 
-    @Override
-    public Class<?> getMappingType() {
-        return Row.class;
-    }
-
-
-    @Override
-    public QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities) {
-        Set<Object> selfFieldValues = getSelfFieldValues(selfEntities);
-        if (selfFieldValues.isEmpty()) {
-            return null;
-        }
-
-        QueryWrapper queryWrapper = QueryWrapper.create().select()
-                .from(joinTable);
-        if (selfFieldValues.size() > 1) {
-            queryWrapper.where(column(joinSelfColumn).in(selfFieldValues));
-        } else {
-            queryWrapper.where(column(joinSelfColumn).eq(selfFieldValues.iterator().next()));
-        }
-
-        return queryWrapper;
-    }
+	@Override
+	public Class<?> getMappingType() {
+		return Row.class;
+	}
 
 
-    @Override
-    public void map(List<SelfEntity> selfEntities, List<?> mappingObjectList, BaseMapper<?> mapper) {
-        List<Row> mappingRows = (List<Row>) mappingObjectList;
-        Set<Object> targetValues = new LinkedHashSet<>();
-        for (Row row : mappingRows) {
-            Object targetValue = row.getIgnoreCase(joinTargetColumn);
-            if (targetValue != null) {
-                targetValues.add(targetValue);
-            }
-        }
+	@Override
+	public QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities) {
+		Set<Object> selfFieldValues = getSelfFieldValues(selfEntities);
+		if (selfFieldValues.isEmpty()) {
+			return null;
+		}
 
-        if (targetValues.isEmpty()) {
-            return;
-        }
+		QueryWrapper queryWrapper = QueryWrapper.create().select()
+			.from(joinTable);
+		if (selfFieldValues.size() > 1) {
+			queryWrapper.where(column(joinSelfColumn).in(selfFieldValues));
+		} else {
+			queryWrapper.where(column(joinSelfColumn).eq(selfFieldValues.iterator().next()));
+		}
 
-        QueryWrapper queryWrapper = QueryWrapper.create().select()
-                .from(targetTableInfo.getTableNameWithSchema());
-        if (targetValues.size() > 1) {
-            queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).in(targetValues));
-        } else {
-            queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).eq(targetValues.iterator().next()));
-        }
-
-        if (StringUtil.isNotBlank(orderBy)) {
-            queryWrapper.orderBy(orderBy);
-        }
+		return queryWrapper;
+	}
 
 
-        List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, relationFieldWrapper.getMappingType());
+	@Override
+	public void join(List<SelfEntity> selfEntities, List<?> mappingObjectList, BaseMapper<?> mapper) {
+		List<Row> mappingRows = (List<Row>) mappingObjectList;
+		Set<Object> targetValues = new LinkedHashSet<>();
+		for (Row row : mappingRows) {
+			Object targetValue = row.getIgnoreCase(joinTargetColumn);
+			if (targetValue != null) {
+				targetValues.add(targetValue);
+			}
+		}
 
-        if (CollectionUtil.isNotEmpty(targetObjectList)) {
-            selfEntities.forEach(selfEntity -> {
-                Object selfValue = selfFieldWrapper.get(selfEntity);
-                if (selfValue != null) {
-                    selfValue = selfValue.toString();
-                    Set<String> targetMappingValues = new HashSet<>();
-                    for (Row mappingRow : mappingRows) {
-                        if (selfValue.equals(String.valueOf(mappingRow.getIgnoreCase(joinSelfColumn)))) {
-                            Object joinValue = mappingRow.getIgnoreCase(joinTargetColumn);
-                            if (joinValue != null) {
-                                targetMappingValues.add(joinValue.toString());
-                            }
-                        }
-                    }
+		if (targetValues.isEmpty()) {
+			return;
+		}
 
-                    if (!targetMappingValues.isEmpty()) {
-                        Class<?> wrapType = MapperUtil.getWrapType(relationFieldWrapper.getFieldType());
-                        Collection<Object> collection = (Collection) ClassUtil.newInstance(wrapType);
-                        for (Object targetObject : targetObjectList) {
-                            Object targetValue = targetFieldWrapper.get(targetObject);
-                            if (targetValue != null && targetMappingValues.contains(targetValue.toString())) {
-                                collection.add(targetObject);
-                            }
-                        }
-                        relationFieldWrapper.set(collection, selfEntity);
-                    }
-                }
-            });
-        }
-    }
+		QueryWrapper queryWrapper = QueryWrapper.create().select()
+			.from(targetTableInfo.getTableNameWithSchema());
+		if (targetValues.size() > 1) {
+			queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).in(targetValues));
+		} else {
+			queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).eq(targetValues.iterator().next()));
+		}
+
+		if (StringUtil.isNotBlank(orderBy)) {
+			queryWrapper.orderBy(orderBy);
+		}
+
+
+		List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, relationFieldWrapper.getMappingType());
+
+		if (CollectionUtil.isNotEmpty(targetObjectList)) {
+			selfEntities.forEach(selfEntity -> {
+				Object selfValue = selfFieldWrapper.get(selfEntity);
+				if (selfValue != null) {
+					selfValue = selfValue.toString();
+					Set<String> targetMappingValues = new HashSet<>();
+					for (Row mappingRow : mappingRows) {
+						if (selfValue.equals(String.valueOf(mappingRow.getIgnoreCase(joinSelfColumn)))) {
+							Object joinValue = mappingRow.getIgnoreCase(joinTargetColumn);
+							if (joinValue != null) {
+								targetMappingValues.add(joinValue.toString());
+							}
+						}
+					}
+
+					if (!targetMappingValues.isEmpty()) {
+						Class<?> wrapType = MapperUtil.getWrapType(relationFieldWrapper.getFieldType());
+						Collection<Object> collection = (Collection) ClassUtil.newInstance(wrapType);
+						for (Object targetObject : targetObjectList) {
+							Object targetValue = targetFieldWrapper.get(targetObject);
+							if (targetValue != null && targetMappingValues.contains(targetValue.toString())) {
+								collection.add(targetObject);
+							}
+						}
+						relationFieldWrapper.set(collection, selfEntity);
+					}
+				}
+			});
+		}
+	}
 }

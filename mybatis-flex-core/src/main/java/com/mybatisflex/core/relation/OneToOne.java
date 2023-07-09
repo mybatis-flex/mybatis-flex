@@ -16,53 +16,18 @@
 package com.mybatisflex.core.relation;
 
 import com.mybatisflex.annotation.RelationOneToOne;
-import com.mybatisflex.core.BaseMapper;
-import com.mybatisflex.core.query.QueryWrapper;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Set;
 
-import static com.mybatisflex.core.query.QueryMethods.column;
+class OneToOne<SelfEntity> extends ToOneRelation<SelfEntity> {
 
-class OneToOne<SelfEntity> extends Relation<SelfEntity> {
+	public OneToOne(RelationOneToOne annotation, Class<SelfEntity> entityClass, Field relationField) {
+		super(getDefaultPrimaryProperty(annotation.selfField(), entityClass
+				, "@RelationOneToOne.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
+			, annotation.targetField()
+			, annotation.dataSource()
+			, entityClass
+			, relationField);
+	}
 
-    public OneToOne(RelationOneToOne annotation, Class<SelfEntity> entityClass, Field relationField) {
-        super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationOneToOne.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\""),
-                annotation.targetField(), entityClass, relationField);
-    }
-
-
-    @Override
-    public QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities) {
-        Set<Object> selfFieldValues = getSelfFieldValues(selfEntities);
-        if (selfFieldValues.isEmpty()) {
-            return null;
-        }
-        QueryWrapper queryWrapper = QueryWrapper.create().select()
-                .from(targetTableInfo.getTableNameWithSchema());
-        if (selfFieldValues.size() > 1) {
-            queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).in(selfFieldValues));
-        } else {
-            queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).eq(selfFieldValues.iterator().next()));
-        }
-        return queryWrapper;
-    }
-
-
-    @Override
-    public void map(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper) {
-        selfEntities.forEach(selfEntity -> {
-            Object selfValue = selfFieldWrapper.get(selfEntity);
-            if (selfValue != null) {
-                for (Object targetObject : targetObjectList) {
-                    Object targetValue = targetFieldWrapper.get(targetObject);
-                    if (selfValue.equals(targetValue)) {
-                        relationFieldWrapper.set(targetObject, selfEntity);
-                        break;
-                    }
-                }
-            }
-        });
-    }
 }
