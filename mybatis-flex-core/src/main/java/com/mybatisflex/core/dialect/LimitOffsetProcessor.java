@@ -111,26 +111,7 @@ public interface LimitOffsetProcessor {
             }
 
             List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
-
-//            String selectColumnString;
-//            List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
-//            if (selectColumns == null || selectColumns.isEmpty()){
-//                selectColumnString = "*";
-//            }else {
-//                StringBuilder columnsSql = new StringBuilder();
-//                int index = 0;
-//                for (QueryColumn selectColumn : selectColumns) {
-//                    String selectColumnSql = CPI.toSelectSql(selectColumn, queryTables, dialect);
-//                    columnsSql.append(selectColumnSql);
-//                    if (index != selectColumns.size() - 1) {
-//                        columnsSql.append(DELIMITER);
-//                    }
-//                    index++;
-//                }
-//                selectColumnString = columnsSql.toString();
-//            }
-
-
+            String originalSQL = sql.toString();
             String orderByString;
             List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
             if (orderBys == null || orderBys.isEmpty()) {
@@ -145,11 +126,12 @@ public interface LimitOffsetProcessor {
                     }
                     index++;
                 }
+                originalSQL = originalSQL.substring(0, sql.lastIndexOf(ORDER_BY));
                 orderByString = orderBySql.toString();
             }
 
             StringBuilder newSql = new StringBuilder("WITH temp_datas AS(");
-            newSql.append("SELECT ROW_NUMBER() OVER (").append(orderByString).append(") as __rn,").append(sql.substring(6));
+            newSql.append("SELECT ROW_NUMBER() OVER (").append(orderByString).append(") as __rn,").append(originalSQL.substring(6));
             newSql.append(")");
             newSql.append(" SELECT * FROM temp_datas WHERE __rn BETWEEN ").append(limitOffset + 1).append(" AND ").append(limitOffset + limitRows);
             newSql.append(" ORDER BY __rn");
