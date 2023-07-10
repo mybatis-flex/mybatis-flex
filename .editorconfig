@@ -1,5 +1,3 @@
-
-# 告诉EditorConfig插件，这是根文件，不用继续往上查找
 root = true
 
 # 匹配全部文件
@@ -13,7 +11,7 @@ trim_trailing_whitespace = true
 # 设置字符集
 charset = utf-8
 # 缩进风格，可选"space"、"tab"
-indent_style = tab
+indent_style = space
 # 缩进的空格数
 indent_size = 4
 
