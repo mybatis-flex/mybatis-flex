@@ -6,3 +6,13 @@
 - **`selectListWithRelationsByQueryAs(queryWrapper, asType)`**: 查询实体类及其 Relation 注解字段。
 - **`selectListWithRelationsByQueryAs(queryWrapper, asType, consumers)`**: 查询实体类及其 Relation 注解字段。
 - **`selectAllWithRelations()`**: 查询全部数据，及其 Relation 字段内容。
+- **`paginateWithRelations(pageNumber, pageSize, queryWrapper)`**: 分页查询，及其 Relation 字段内容。
+- **`paginateWithRelations(pageNumber, pageSize, whereConditions)`**: 分页查询，及其 Relation 字段内容。
+- **`paginateWithRelations(pageNumber, pageSize, totalRow, queryWrapper)`**: 分页查询，及其 Relation 字段内容。
+- **`paginateWithRelations(pageNumber, pageSize, totalRow, whereConditions)`**: 分页查询，及其 Relation 字段内容。
+- **`paginateWithRelations(page, queryWrapper)`**: 分页查询，及其 Relation 字段内容。
+- **`paginateWithRelations(page, queryWrapper, consumers)`**: 分页查询，及其 Relation 字段内容。
+- **`paginateWithRelationsAs(pageNumber, pageSize, queryWrapper, asType)`**: 分页查询，及其 Relation 字段内容。
+- **`paginateWithRelationsAs(pageNumber, pageSize, totalRow, queryWrapper, asType)`**: 分页查询，及其 Relation 字段内容。
+- **`paginateWithRelationsAs(page, queryWrapper, asType)`**: 分页查询，及其 Relation 字段内容。
+- **`paginateWithRelationsAs(page, queryWrapper, asType, consumers)`**: 分页查询，及其 Relation 字段内容。

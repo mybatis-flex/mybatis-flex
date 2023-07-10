@@ -35,6 +35,9 @@ public class BaseMapperDocsGen {
                 }
             }else  if (methodInfo.name.startsWith("paginate")) {
                 paginateMethods.append("- **`").append(methodInfo.getName()).append("`**: ").append(methodInfo.desc).append("\n");
+				if (methodInfo.name.contains("WithRelation")){
+					relationMethods.append("- **`").append(methodInfo.getName()).append("`**: ").append(methodInfo.desc).append("\n");
+				}
             }
         }
 
