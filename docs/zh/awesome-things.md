@@ -26,3 +26,5 @@
 - [MyBatis-Flex 视频教程 - 02 MyBatis-Flex 简介](https://www.bilibili.com/video/BV1GW4y1f7vt)
 - [MyBatis-Flex 视频教程 - 03 为什么使用 MyBatis-Flex](https://www.bilibili.com/video/BV1us4y167gk)
 - [MyBatis-Flex 视频教程 - 04 基于 SpringBoot 的快速开始](https://www.bilibili.com/video/BV1yW4y1Z74j)
+- [MyBatis-Flex 视频教程 - 05自动生成类的介绍](https://www.bilibili.com/video/BV1XF411R7pQ)
+- [MyBatis-Flex 视频教程 - 06 MyBatis-Flex 的配置选项](https://www.bilibili.com/video/BV1ys4y1676q)
