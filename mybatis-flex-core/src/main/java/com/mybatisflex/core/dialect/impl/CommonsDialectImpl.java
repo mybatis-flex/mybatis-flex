@@ -128,8 +128,8 @@ public class CommonsDialectImpl implements IDialect {
         }
         sql.append(wrap(getRealTable(tableName)));
         sql.append(BLANK).append(BRACKET_LEFT)
-                .append(fields)
-                .append(BRACKET_RIGHT).append(BLANK);
+            .append(fields)
+            .append(BRACKET_RIGHT).append(BLANK);
         sql.append(VALUES).append(questions);
         return sql.toString();
     }
@@ -341,12 +341,12 @@ public class CommonsDialectImpl implements IDialect {
 
                         //用户未配置别名的情况下，自动未用户添加别名
                         if (selectColumnTable != null
-                                && selectColumnName != null
-                                && !"*".equals(selectColumnName)
-                                && StringUtil.isBlank(selectColumn.getAlias())
-                                && !(selectColumnTable instanceof SelectQueryTable)
-                                && !CPI.isSameTable(firstTable, selectColumnTable)
-                                && ArrayUtil.contains(firstTableColumns, selectColumnName)
+                            && selectColumnName != null
+                            && !"*".equals(selectColumnName)
+                            && StringUtil.isBlank(selectColumn.getAlias())
+                            && !(selectColumnTable instanceof SelectQueryTable)
+                            && !CPI.isSameTable(firstTable, selectColumnTable)
+                            && ArrayUtil.contains(firstTableColumns, selectColumnName)
                         ) {
                             QueryColumn newSelectColumn = selectColumn.as(selectColumnTable.getName() + "$" + selectColumnName);
                             selectColumns.set(i, newSelectColumn);
@@ -514,9 +514,9 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         return sql.append(BRACKET_LEFT).append(sqlFields).append(BRACKET_RIGHT)
-                .append(VALUES)
-                .append(BRACKET_LEFT).append(sqlValues).append(BRACKET_RIGHT)
-                .toString();
+            .append(VALUES)
+            .append(BRACKET_LEFT).append(sqlValues).append(BRACKET_RIGHT)
+            .toString();
     }
 
 
@@ -542,9 +542,9 @@ public class CommonsDialectImpl implements IDialect {
         }
 
         return sql.append(BRACKET_LEFT).append(sqlFields).append(BRACKET_RIGHT)
-                .append(VALUES)
-                .append(BRACKET_LEFT).append(sqlValues).append(BRACKET_RIGHT)
-                .toString();
+            .append(VALUES)
+            .append(BRACKET_LEFT).append(sqlValues).append(BRACKET_RIGHT)
+            .toString();
     }
 
 
@@ -558,8 +558,8 @@ public class CommonsDialectImpl implements IDialect {
             warpedInsertColumns[i] = wrap(insertColumns[i]);
         }
         sql.append(BRACKET_LEFT)
-                .append(StringUtil.join(DELIMITER, warpedInsertColumns))
-                .append(BRACKET_RIGHT);
+            .append(StringUtil.join(DELIMITER, warpedInsertColumns))
+            .append(BRACKET_RIGHT);
         sql.append(VALUES);
 
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
@@ -782,7 +782,7 @@ public class CommonsDialectImpl implements IDialect {
         Map<String, RawValue> rawValueMap = tableInfo.obtainUpdateRawValueMap(entity);
 
         sql.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)))
-                .append(tableInfo.getWrapSchemaAndTableName(this)).append(SET);
+            .append(tableInfo.getWrapSchemaAndTableName(this)).append(SET);
 
         StringJoiner stringJoiner = new StringJoiner(DELIMITER);
 
@@ -1051,7 +1051,7 @@ public class CommonsDialectImpl implements IDialect {
      * 构建 limit 和 offset 的参数
      */
     protected StringBuilder buildLimitOffsetSql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, Integer limitRows, Integer limitOffset) {
-        return limitOffsetProcessor.process(sqlBuilder, queryWrapper, limitRows, limitOffset);
+        return limitOffsetProcessor.process(this, sqlBuilder, queryWrapper, limitRows, limitOffset);
     }
 
 
