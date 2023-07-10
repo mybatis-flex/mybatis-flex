@@ -15,10 +15,7 @@
  */
 package com.mybatisflex.core.dialect;
 
-import com.mybatisflex.core.query.CPI;
-import com.mybatisflex.core.query.QueryOrderBy;
-import com.mybatisflex.core.query.QueryTable;
-import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.CollectionUtil;
 
 import java.util.List;
@@ -112,6 +109,28 @@ public interface LimitOffsetProcessor {
             if (limitOffset == null) {
                 limitOffset = 0;
             }
+
+            List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+
+//            String selectColumnString;
+//            List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
+//            if (selectColumns == null || selectColumns.isEmpty()){
+//                selectColumnString = "*";
+//            }else {
+//                StringBuilder columnsSql = new StringBuilder();
+//                int index = 0;
+//                for (QueryColumn selectColumn : selectColumns) {
+//                    String selectColumnSql = CPI.toSelectSql(selectColumn, queryTables, dialect);
+//                    columnsSql.append(selectColumnSql);
+//                    if (index != selectColumns.size() - 1) {
+//                        columnsSql.append(DELIMITER);
+//                    }
+//                    index++;
+//                }
+//                selectColumnString = columnsSql.toString();
+//            }
+
+
             String orderByString;
             List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
             if (orderBys == null || orderBys.isEmpty()) {
@@ -119,7 +138,6 @@ public interface LimitOffsetProcessor {
             } else {
                 StringBuilder orderBySql = new StringBuilder(ORDER_BY);
                 int index = 0;
-                List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
                 for (QueryOrderBy orderBy : orderBys) {
                     orderBySql.append(orderBy.toSql(queryTables, dialect));
                     if (index != orderBys.size() - 1) {
@@ -129,8 +147,12 @@ public interface LimitOffsetProcessor {
                 }
                 orderByString = orderBySql.toString();
             }
-            StringBuilder newSql = new StringBuilder("SELECT * FROM (SELECT TEMP_DATAS.*, ROW_NUMBER() OVER(").append(orderByString).append(") AS RN FROM (");
-            newSql.append(sql).append(") AS TEMP_DATAS) WHERE RN > ").append(limitOffset).append(" AND RN <= ").append(limitRows + limitRows);
+
+            StringBuilder newSql = new StringBuilder("WITH temp_datas AS(");
+            newSql.append("SELECT ROW_NUMBER() OVER (").append(orderByString).append(") as __rn,").append(sql.substring(6));
+            newSql.append(")");
+            newSql.append(" SELECT * FROM temp_datas WHERE __rn BETWEEN ").append(limitOffset + 1).append(" AND ").append(limitOffset + limitRows);
+            newSql.append(" ORDER BY __rn");
             return newSql;
         }
         return sql;
