@@ -27,40 +27,41 @@ import static com.mybatisflex.core.query.QueryMethods.column;
 class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
 
-	public ToOneRelation(String selfField, String targetField, String dataSource, Class<SelfEntity> selfEntityClass, Field relationField) {
-		super(selfField, targetField, dataSource, selfEntityClass, relationField);
-	}
+    public ToOneRelation(String selfField, String targetField, String dataSource, Class<SelfEntity> selfEntityClass, Field relationField) {
+        super(selfField, targetField, dataSource, selfEntityClass, relationField);
+    }
 
-	@Override
-	public QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities) {
-		Set<Object> selfFieldValues = getSelfFieldValues(selfEntities);
-		if (selfFieldValues.isEmpty()) {
-			return null;
-		}
-		QueryWrapper queryWrapper = QueryWrapper.create().select()
-			.from(targetTableInfo.getTableNameWithSchema());
-		if (selfFieldValues.size() > 1) {
-			queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).in(selfFieldValues));
-		} else {
-			queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).eq(selfFieldValues.iterator().next()));
-		}
-		return queryWrapper;
-	}
+    @Override
+    public QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities) {
+        Set<Object> selfFieldValues = getSelfFieldValues(selfEntities);
+        if (selfFieldValues.isEmpty()) {
+            return null;
+        }
+        QueryWrapper queryWrapper = QueryWrapper.create().select()
+            .from(targetTableInfo.getTableNameWithSchema());
+        if (selfFieldValues.size() > 1) {
+            queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).in(selfFieldValues));
+        } else {
+            queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).eq(selfFieldValues.iterator().next()));
+        }
+        return queryWrapper;
+    }
 
 
-	@Override
-	public void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper) {
-		selfEntities.forEach(selfEntity -> {
-			Object selfValue = selfFieldWrapper.get(selfEntity);
-			if (selfValue != null) {
-				for (Object targetObject : targetObjectList) {
-					Object targetValue = targetFieldWrapper.get(targetObject);
-					if (selfValue.equals(targetValue)) {
-						relationFieldWrapper.set(targetObject, selfEntity);
-						break;
-					}
-				}
-			}
-		});
-	}
+    @Override
+    public void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper) {
+        selfEntities.forEach(selfEntity -> {
+            Object selfValue = selfFieldWrapper.get(selfEntity);
+            if (selfValue != null) {
+                selfValue = selfValue.toString();
+                for (Object targetObject : targetObjectList) {
+                    Object targetValue = targetFieldWrapper.get(targetObject);
+                    if (targetValue != null && selfValue.equals(targetValue.toString())) {
+                        relationFieldWrapper.set(targetObject, selfEntity);
+                        break;
+                    }
+                }
+            }
+        });
+    }
 }

@@ -67,16 +67,18 @@ class OneToMany<SelfEntity> extends AbstractRelation<SelfEntity> {
 		return queryWrapper;
 	}
 
+
 	@Override
 	public void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper) {
 		selfEntities.forEach(selfEntity -> {
 			Object selfValue = selfFieldWrapper.get(selfEntity);
 			if (selfValue != null) {
+			    selfValue = selfValue.toString();
 				Class<?> wrapType = MapperUtil.getWrapType(relationFieldWrapper.getFieldType());
 				Collection<Object> collection = (Collection) ClassUtil.newInstance(wrapType);
 				for (Object targetObject : targetObjectList) {
 					Object targetValue = targetFieldWrapper.get(targetObject);
-					if (selfValue.equals(targetValue)) {
+					if (targetValue != null && selfValue.equals(targetValue.toString())) {
 						collection.add(targetObject);
 					}
 				}
