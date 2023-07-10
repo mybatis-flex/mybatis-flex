@@ -1,11 +1,12 @@
-- **`insert(entity)`**: 插入实体类数据，不忽略 `null` 值。
-- **`insertSelective(entity)`**: 插入实体类数据，但是忽略 `null` 的数据，只对有值的内容进行插入。这样的好处是数据库已经配置了一些默认值，这些默认值才会生效。
-- **`insert(entity, ignoreNulls)`**: 插入实体类数据。
-- **`insertWithPk(entity)`**: 插入带有主键的实体类，不忽略 `null` 值。
-- **`insertSelectiveWithPk(entity)`**: 插入带有主键的实体类，忽略 `null` 值。
-- **`insertWithPk(entity, ignoreNulls)`**: 带有主键的插入，此时实体类不会经过主键生成器生成主键。
-- **`insertBatch(entities)`**: 批量插入实体类数据，只会根据第一条数据来构建插入的字段内容。
-- **`insertBatch(entities, size)`**: 批量插入实体类数据，按 size 切分。
-- **`insertOrUpdate(entity)`**: 插入或者更新，若主键有值，则更新，若没有主键值，则插入，插入或者更新都不会忽略 `null` 值。
-- **`insertOrUpdateSelective(entity)`**: 插入或者更新，若主键有值，则更新，若没有主键值，则插入，插入或者更新都会忽略 `null` 值。
-- **`insertOrUpdate(entity, ignoreNulls)`**: 插入或者更新，若主键有值，则更新，若没有主键值，则插入。
+- **`insert(entity)`**：插入实体类数据，不忽略 `null` 值。
+- **`insertSelective(entity)`**：插入实体类数据，但是忽略 `null` 的数据，只对有值的内容进行插入。这样的好处是数据库已经配置了一些默认值，这些默认值才会生效。
+- **`insert(entity, ignoreNulls)`**：插入实体类数据。
+- **`insertWithPk(entity)`**：插入带有主键的实体类，不忽略 `null` 值。
+- **`insertSelectiveWithPk(entity)`**：插入带有主键的实体类，忽略 `null` 值。
+- **`insertWithPk(entity, ignoreNulls)`**：带有主键的插入，此时实体类不会经过主键生成器生成主键。
+- **`insertBatch(entities)`**：批量插入实体类数据，只会根据第一条数据来构建插入的字段内容。
+- **`insertBatch(entities, size)`**：批量插入实体类数据，按 size 切分。
+- **`insertOrUpdate(entity)`**：插入或者更新，若主键有值，则更新，若没有主键值，则插入，插入或者更新都不会忽略 `null` 值。
+- **`insertOrUpdateSelective(entity)`**：插入或者更新，若主键有值，则更新，若没有主键值，则插入，插入或者更新都会忽略 `null`
+  值。
+- **`insertOrUpdate(entity, ignoreNulls)`**：插入或者更新，若主键有值，则更新，若没有主键值，则插入。
