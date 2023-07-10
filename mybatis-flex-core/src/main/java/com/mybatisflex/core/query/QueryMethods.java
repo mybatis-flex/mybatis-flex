@@ -2388,6 +2388,20 @@ public class QueryMethods {
     // === 构建 column 列 ===
 
     /**
+     * 构建 TRUE 常量。
+     */
+    public static QueryColumn true_() {
+        return new StringQueryColumn("TRUE");
+    }
+
+    /**
+     * 构建 FALSE 常量。
+     */
+    public static QueryColumn false_() {
+        return new StringQueryColumn("FALSE");
+    }
+
+    /**
      * 构建 NULL 常量。
      */
     public static QueryColumn null_() {
