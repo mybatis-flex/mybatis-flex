@@ -57,8 +57,8 @@ export default defineConfig({
                 text: '基础功能',
                 items: [
                     {text: '增、删、改', link: '/zh/base/add-delete-update'},
-                    {text: '查询（多表和分页）', link: '/zh/base/query'},
-                    {text: '一对多、多对一', link: '/zh/base/relations-query'},
+                    {text: '基础查询', link: '/zh/base/query'},
+                    {text: '关联查询', link: '/zh/base/relations-query'},
                     {text: '批量操作', link: '/zh/base/batch'},
                     {text: 'QueryWrapper', link: '/zh/base/querywrapper'},
                     {text: 'Db + Row', link: '/zh/base/db-row'},
@@ -119,7 +119,7 @@ export default defineConfig({
       (function() {
         var hm = document.createElement("script");
         hm.src = "https://hm.baidu.com/hm.js?3f50d5fbe3bf955411748b5616b24a24";
-        var s = document.getElementsByTagName("script")[0]; 
+        var s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(hm, s);
       })();
         `

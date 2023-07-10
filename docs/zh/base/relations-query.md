@@ -1,12 +1,12 @@
-# 一对多、多对一
+# 关联查询
 
-在 MyBatis-Flex 中，我们内置了 3 种方式，帮助用户进行关联查询，比如 `一对多`、`一对一`、`多对一`、`多对多`等场景，他们分别是：
+在 MyBatis-Flex 中，我们内置了 3 种方案，帮助用户进行关联查询，比如 `一对多`、`一对一`、`多对一`、`多对多`等场景，他们分别是：
 
-- Relations 注解
-- Field Query
-- Join Query
+- 方案1：Relations 注解
+- 方案2：Field Query
+- 方案3：Join Query
 
-## Relations 注解
+## 方案 1：Relations 注解
 
 在 MyBatis-Flex 中，提供了 4 个 Relations 注解，他们分别是：
 
@@ -18,11 +18,13 @@
 添加了以上配置的实体类，在通过 `BaseMapper` 的方法查询数据时，需要调用 select*****WithRelations**() 方法，Relations 注解才能生效。
 否则 MyBatis-Flex 自动忽略 Relations 注解。
 
+BaseMapper 提供的 withRelations 方法列表，详情点击[这里](/zh/base/query.html#relations-注解查询)。
+
 ## 一对一 `@RelationOneToOne`
 
 假设有一个账户，账户有身份证，账户和身份证的关系是一对一的关系，代码如下所示：
 
-Account.java : 
+Account.java :
 ```java 8
 public class Account implements Serializable {
 
@@ -33,21 +35,21 @@ public class Account implements Serializable {
 
     @RelationOneToOne(selfField = "id", targetField = "accountId")
     private IDCard idCard;
-    
+
     //getter setter
 }
 ```
 
 IDCard.java :
 
-```java 
+```java
 @Table(value = "tb_idcard")
 public class IDCard implements Serializable {
 
     private Long accountId;
     private String cardNo;
     private String content;
-    
+
     //getter setter
 }
 ```
@@ -57,7 +59,7 @@ public class IDCard implements Serializable {
 - **selfField** 当前实体类的属性
 - **targetField** 目标对象的关系实体类的属性
 
-> PS: 若 **selfField** 是主键，且当前表只有 1 个主键时，可以不填写。
+> PS: 若 **selfField** 是主键，且当前表只有 1 个主键时，可以不填写。因此，以上的配置可以简化为 `@RelationOneToOne(targetField = "accountId")`
 
 假设数据库 5 条 Account 数据，然后进行查询：
 
@@ -71,7 +73,7 @@ System.out.println(accounts);
 ```sql
 SELECT `id`, `user_name`, `age` FROM `tb_account`
 
-SELECT `account_id`, `card_no`, `content` FROM `tb_idcard` 
+SELECT `account_id`, `card_no`, `content` FROM `tb_idcard`
 WHERE account_id IN (1, 2, 3, 4, 5)
 ```
 
@@ -79,10 +81,10 @@ WHERE account_id IN (1, 2, 3, 4, 5)
 
 ```txt
  [
- Account{id=1, userName='孙悟空', age=18, idCard=IDCard{accountId=1, cardNo='0001', content='内容1'}}, 
- Account{id=2, userName='猪八戒', age=19, idCard=IDCard{accountId=2, cardNo='0002', content='内容2'}}, 
- Account{id=3, userName='沙和尚', age=19, idCard=IDCard{accountId=3, cardNo='0003', content='内容3'}}, 
- Account{id=4, userName='六耳猕猴', age=19, idCard=IDCard{accountId=4, cardNo='0004', content='内容4'}}, 
+ Account{id=1, userName='孙悟空', age=18, idCard=IDCard{accountId=1, cardNo='0001', content='内容1'}},
+ Account{id=2, userName='猪八戒', age=19, idCard=IDCard{accountId=2, cardNo='0002', content='内容2'}},
+ Account{id=3, userName='沙和尚', age=19, idCard=IDCard{accountId=3, cardNo='0003', content='内容3'}},
+ Account{id=4, userName='六耳猕猴', age=19, idCard=IDCard{accountId=4, cardNo='0004', content='内容4'}},
  Account{id=5, userName='王麻子叔叔', age=19, idCard=IDCard{accountId=5, cardNo='0005', content='内容5'}}
  ]
 ```
@@ -103,14 +105,14 @@ public class Account implements Serializable {
 
     @RelationOneToMany(selfField = "id", targetField = "accountId")
     private List<Book> books;
-    
+
     //getter setter
 }
 ```
 
 Book.java :
 
-```java 
+```java
 @Table(value = "tb_book")
 public class Book implements Serializable {
 
@@ -118,7 +120,7 @@ public class Book implements Serializable {
     private Long id;
     private Long accountId;
     private String title;
-    
+
     //getter setter
 }
 ```
@@ -128,7 +130,7 @@ public class Book implements Serializable {
 - **selfField** 当前实体类的属性
 - **targetField** 目标对象的关系实体类的属性
 
-> PS: 若 **selfField** 是主键，且当前表只有 1 个主键时，可以不填写。
+> PS: 若 **selfField** 是主键，且当前表只有 1 个主键时，可以不填写。因此，以上的配置可以简化为 `@RelationOneToOne(targetField = "accountId")`
 
 
 
@@ -144,7 +146,7 @@ System.out.println(accounts);
 ```sql
 SELECT `id`, `user_name`, `age` FROM `tb_account`
 
-SELECT `id`, `account_id`, `title`, `content` FROM `tb_book` 
+SELECT `id`, `account_id`, `title`, `content` FROM `tb_book`
 WHERE account_id IN (1, 2, 3, 4, 5)
 ```
 
@@ -154,7 +156,7 @@ WHERE account_id IN (1, 2, 3, 4, 5)
 
 假设一个账户有很多本书籍，一本书只能归属一个账户所有；账户和书籍的关系是一对多的关系，书籍和账户的关系为多对一的关系，代码如下：
 
-Account.java 一对多的配置:
+Account.java:
 ```java 8
 public class Account implements Serializable {
 
@@ -163,9 +165,6 @@ public class Account implements Serializable {
 
     private String userName;
 
-    @RelationOneToMany(selfField = "id", targetField = "accountId")
-    private List<Book> books;
-    
     //getter setter
 }
 ```
@@ -180,10 +179,10 @@ public class Book implements Serializable {
     private Long id;
     private Long accountId;
     private String title;
-    
+
     @RelationManyToOne(selfField = "accountId", targetField = "id")
     private Account account;
-    
+
     //getter setter
 }
 ```
@@ -193,7 +192,8 @@ public class Book implements Serializable {
 - **selfField** 当前实体类的属性
 - **targetField** 目标对象的关系实体类的属性
 
-> PS: 若 **targetField** 目标对象的是主键，且目标对象的表只有 1 个主键时，可以不填写。
+> PS: 若 **targetField** 目标对象的是主键，且目标对象的表只有 1 个主键时，可以不填写。因此，以上的配置可以简化为
+> `@RelationManyToOne(selfField = "accountId")`
 
 
 
@@ -225,7 +225,7 @@ public class Account implements Serializable {
             targetField = "id", joinTargetColumn = "role_id"
     )
     private List<Role> roles;
-    
+
     //getter setter
 }
 ```
@@ -239,13 +239,6 @@ public class Role implements Serializable {
     private Long id;
     private String name;
 
-    @RelationManyToMany(
-            joinTable = "tb_role_mapping",
-            selfField = "id", joinSelfColumn = "role_id",
-            targetField = "id", joinTargetColumn = "account_id"
-    )
-    private List<Account> accounts;
-    
     //getter setter
 }
 ```
@@ -259,8 +252,25 @@ public class Role implements Serializable {
 - joinTargetColumn 目标表和中间表的关系字段
 
 > 注意：selfField 和 targetField 配置的是类的属性名，joinSelfColumn 和 joinTargetColumn 配置的是中间表的字段名。
-> 
-> 若 **selfField** 和 **targetField** 分别是两张关系表的主键，且表只有 1 个主键时，可以不填写。
+>
+> 若 **selfField** 和 **targetField** 分别是两张关系表的主键，且表只有 1 个主键时，可以不填写。因此，以上配置可以简化如下：
+```java {7-11}
+public class Account implements Serializable {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+    private String userName;
+
+    @RelationManyToMany(
+            joinTable = "tb_role_mapping", // 中间表
+            joinSelfColumn = "account_id",
+            joinTargetColumn = "role_id"
+    )
+    private List<Role> roles;
+
+    //getter setter
+}
+```
 
 ## 父子关系查询
 
@@ -270,7 +280,7 @@ public class Role implements Serializable {
 CREATE TABLE `tb_menu`
 (
     `id`        INTEGER auto_increment,
-    `parent_id`        INTEGER, 
+    `parent_id`        INTEGER,
     `name`      VARCHAR(100)
 );
 ```
@@ -369,7 +379,7 @@ JSON 输出内容如下：
 
 
 
-## Field Query
+## 方案 2：Field Query
 
 以下是文章的 `多对多` 示例，一篇文章可能归属于多个分类，一个分类可能有多篇文章，需要用到中间表 `article_category_mapping`。
 
@@ -417,7 +427,7 @@ List<Article> articles = mapper.selectListByQuery(queryWrapper
 select * from tb_article where id  >= 100;
 
 -- 以上 SQL 得到结果后，再执行查询分类的 SQL，如下：
-select * from tb_category where id in 
+select * from tb_category where id in
 (select category_id from article_category_mapping where article_id = 100);
 
 select * from tb_category where id in
@@ -469,7 +479,7 @@ List<Article> articles = mapper.selectListByQuery(query
 这些不仅仅只适用于  `一对多`、`一对一`、`多对一`、`多对多`等场景。任何 `Article` 对象里的属性，需要二次查询赋值的，都是可以通过这种方式进行，比如一些统计的场景。
 
 
-## Join Query 
+## 方案 3：Join Query
 
 Join Query 是通过 QueryWrapper 构建 `Left Join` 等方式进行查询，其原理是 MyBatis-Flex 自动构建了 MyBatis 的 `<resultMap>`
 ，我们只需要关注 MyBatis-Flex 的 SQL 构建即可。
