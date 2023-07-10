@@ -52,7 +52,7 @@ public class SqlUtil {
     /**
      * 仅支持字母、数字、下划线、空格、逗号、小数点（支持多个字段排序）
      */
-    private static String SQL_ORDER_BY_PATTERN = "[a-zA-Z0-9_\\ \\,\\.]+";
+    private static final String SQL_ORDER_BY_PATTERN = "[a-zA-Z0-9_\\ \\,\\.]+";
 
     public static void keepOrderBySqlSafely(String value) {
         if (!value.matches(SQL_ORDER_BY_PATTERN)) {

@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class Reflectors {
 
-    private final static ConcurrentMap<Class<?>, Reflector> reflectorMap = new ConcurrentHashMap<>();
+    private static final  ConcurrentMap<Class<?>, Reflector> reflectorMap = new ConcurrentHashMap<>();
 
     public static Reflector of(Class<?> type){
         return  MapUtil.computeIfAbsent(reflectorMap, type, Reflector::new);
