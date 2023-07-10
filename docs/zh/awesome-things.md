@@ -2,11 +2,11 @@
 
 ## 开源项目或作品
 
-| 项目名称 |  描述  | 开源网址    |
-| -------- | -------- | -------- |
-| hh-vue   | 这是基于ruoyi-vue改造的项目，对flex完整封装可以参考此项项目  | https://gitee.com/min290/hh-vue |
-| youcan-solon  | 基于solon框架做的一个类似Rouyi的项目，使用flex自带的mybatis-flex-solon-plugin插件做集成，集成方式非常简单，属于即拿即用  | https://gitee.com/gollyhu/youcan-solon |
-| Ruoyi-Flex  | Ruoyi-Flex是基于RuoYi-Vue v3.8.6进行的扩展，集成MyBatis-Flex、JDK17、lombok、Sa-Token、PowerJob、Hutool、OSS、ureport-keep、Flowable、vue3、TypeScript等优秀开源软件。  | https://gitee.com/dataprince/ruoyi-flex |
+| 项目名称         | 描述                                                                                                                                        | 开源网址                                    |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|
+| hh-vue       | 这是基于ruoyi-vue改造的项目，对flex完整封装可以参考此项项目                                                                                                      | https://gitee.com/min290/hh-vue         |
+| youcan-solon | 基于solon框架做的一个类似Rouyi的项目，使用flex自带的mybatis-flex-solon-plugin插件做集成，集成方式非常简单，属于即拿即用                                                           | https://gitee.com/gollyhu/youcan-solon  |
+| Ruoyi-Flex   | Ruoyi-Flex是基于RuoYi-Vue v3.8.6进行的扩展，集成MyBatis-Flex、JDK17、lombok、Sa-Token、PowerJob、Hutool、OSS、ureport-keep、Flowable、vue3、TypeScript等优秀开源软件。 | https://gitee.com/dataprince/ruoyi-flex |
 
 ## 开发插件
 
@@ -26,5 +26,6 @@
 - [MyBatis-Flex 视频教程 - 02 MyBatis-Flex 简介](https://www.bilibili.com/video/BV1GW4y1f7vt)
 - [MyBatis-Flex 视频教程 - 03 为什么使用 MyBatis-Flex](https://www.bilibili.com/video/BV1us4y167gk)
 - [MyBatis-Flex 视频教程 - 04 基于 SpringBoot 的快速开始](https://www.bilibili.com/video/BV1yW4y1Z74j)
-- [MyBatis-Flex 视频教程 - 05自动生成类的介绍](https://www.bilibili.com/video/BV1XF411R7pQ)
+- [MyBatis-Flex 视频教程 - 05 自动生成类的介绍](https://www.bilibili.com/video/BV1XF411R7pQ)
 - [MyBatis-Flex 视频教程 - 06 MyBatis-Flex 的配置选项](https://www.bilibili.com/video/BV1ys4y1676q)
+- [MyBatis-Flex 视频教程 - 07 初识 BaseMapper 接口](https://www.bilibili.com/video/BV1Pm4y1E7PV)
