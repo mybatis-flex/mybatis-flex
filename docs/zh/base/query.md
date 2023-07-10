@@ -175,13 +175,6 @@ List<ArticleDTO> results = mapper.selectListByQueryAs(query, ArticleDTO.class);
 System.out.println(results);
 ```
 
-::: tip 方式 3 特别注意事项
-- 1、在 `ArticleDTO` 和  `Account` 这两个类中，如果他们有相同的字段，`Account` 中的字段将和 `ArticleDTO` 中的字段拥有一样的值。
-- 2、假设在 `ArticleDTO` 中有多个类似 `Account` 的对象，且他们有相同的字段（字段和 `ArticleDTO`
-  中的不相同），所有相同属性名的值与优先定义的属性的值相同。
-- 3、解决这种情况需要在重名的属性上添加 `@ColumnAlias` 注解指定别名（如果是继承的属性，需要把 `@ColumnAlias` 注解放到对应的 `getter`
-  方法上），这样在查询的时候就会为重名字段自动添加 `AS` 别名。
-  :::
 
 
 **其他注意事项：**
