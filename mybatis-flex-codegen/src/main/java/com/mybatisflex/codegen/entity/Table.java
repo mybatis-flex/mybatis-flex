@@ -234,7 +234,7 @@ public class Table {
                 tableAnnotation.append(", onUpdate = ").append(tableConfig.getUpdateListenerClass().getSimpleName()).append(".class");
             }
             if (tableConfig.getSetListenerClass() != null) {
-                tableAnnotation.append(", onSet = ").append(tableConfig.getUpdateListenerClass().getSimpleName()).append(".class");
+                tableAnnotation.append(", onSet = ").append(tableConfig.getSetListenerClass().getSimpleName()).append(".class");
             }
             if (Boolean.FALSE.equals(tableConfig.getMapperGenerateEnable())) {
                 tableAnnotation.append(", mapperGenerateEnable = false");
