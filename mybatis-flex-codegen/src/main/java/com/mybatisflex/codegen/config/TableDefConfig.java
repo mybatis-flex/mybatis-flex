@@ -47,7 +47,7 @@ public class TableDefConfig {
     private NameStyle propertiesNameStyle = NameStyle.UPPER_CASE;
 
     /**
-     * 生成的表对应的变量后缀。
+     * 生成辅助类的引用常量名后缀。
      */
     private String instanceSuffix = "";
 
@@ -118,7 +118,7 @@ public class TableDefConfig {
     }
 
     /**
-     * 设置生成辅助类的字段风格。
+     * 设置生成辅助类的引用常量名后缀。
      */
     public TableDefConfig setPropertiesNameStyle(NameStyle propertiesNameStyle) {
         this.propertiesNameStyle = propertiesNameStyle;
@@ -126,7 +126,7 @@ public class TableDefConfig {
     }
 
     /**
-     * 获取生成的表对应的变量后缀。
+     * 获取生成辅助类的引用常量名后缀。
      */
     public String getInstanceSuffix() {
         return instanceSuffix;
