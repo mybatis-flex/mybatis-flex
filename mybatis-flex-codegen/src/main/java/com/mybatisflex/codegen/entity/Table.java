@@ -114,6 +114,9 @@ public class Table {
     }
 
     public List<Column> getColumns() {
+        // 生成字段排序
+        columns.sort(Comparator.comparingInt((Column c) -> c.getProperty().length())
+            .thenComparing(Column::getProperty));
         return columns;
     }
 
