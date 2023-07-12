@@ -36,6 +36,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RelationManager {
 
+    private RelationManager() {
+    }
+
     private static Map<Class<?>, List<AbstractRelation>> classRelations = new ConcurrentHashMap<>();
 
     private static List<AbstractRelation> getRelations(Class<?> clazz) {
