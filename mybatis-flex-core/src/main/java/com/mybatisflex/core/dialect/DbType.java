@@ -166,7 +166,7 @@ public enum DbType {
     /**
      * sinodb
      */
-    SINODB("sinodb", "Informix 数据库"),
+    SINODB("sinodb", "星瑞格数据库"),
     /**
      * uxdb
      */
