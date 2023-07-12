@@ -38,15 +38,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RelationManager {
 
-	private static Map<Class<?>, List<AbstractRelation>> classRelations = new ConcurrentHashMap<>();
+    private RelationManager() {
+    }
 
-	private static List<AbstractRelation> getRelations(Class<?> clazz) {
-		return MapUtil.computeIfAbsent(classRelations, clazz, RelationManager::doGetRelations);
-	}
+    private static Map<Class<?>, List<AbstractRelation>> classRelations = new ConcurrentHashMap<>();
 
-	private static List<AbstractRelation> doGetRelations(Class<?> entityClass) {
-		List<Field> allFields = ClassUtil.getAllFields(entityClass);
-		List<AbstractRelation> relations = new ArrayList<>();
+    private static List<AbstractRelation> getRelations(Class<?> clazz) {
+        return MapUtil.computeIfAbsent(classRelations, clazz, RelationManager::doGetRelations);
+    }
+
+    private static List<AbstractRelation> doGetRelations(Class<?> entityClass) {
+        List<Field> allFields = ClassUtil.getAllFields(entityClass);
+        List<AbstractRelation> relations = new ArrayList<>();
 		for (Field field : allFields) {
 			RelationManyToMany manyToManyAnnotation = field.getAnnotation(RelationManyToMany.class);
 			if (manyToManyAnnotation != null) {
