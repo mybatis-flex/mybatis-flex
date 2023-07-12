@@ -16,7 +16,11 @@
 
 package com.mybatisflex.test.model;
 
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.RelationManyToMany;
+
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 用户信息。
@@ -29,8 +33,26 @@ public class UserInfo {
     private Integer userId;
     private String userName;
     private String password;
+    @Column(ignore = true)
+    private String idNumber;
 
+    @RelationManyToMany(
+        selfField = "userId",
+        targetField = "roleId",
+        joinTable = "tb_user_role",
+        joinSelfColumn = "user_id",
+        joinTargetColumn = "role_id"
+    )
     private List<Role> roleList;
+
+    @RelationManyToMany(
+        selfField = "userId",
+        targetField = "orderId",
+        targetTable = "tb_order",
+        joinTable = "tb_user_order",
+        joinSelfColumn = "user_id",
+        joinTargetColumn = "order_id"
+    )
     private List<OrderInfo> orderInfoList;
 
     public Integer getUserId() {
@@ -57,6 +79,14 @@ public class UserInfo {
         this.password = password;
     }
 
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
     public List<Role> getRoleList() {
         return roleList;
     }
@@ -76,11 +106,53 @@ public class UserInfo {
     @Override
     public String toString() {
         return "UserInfo{" +
-                "userId=" + userId +
-                ", userName='" + userName + '\'' +
-                ", password='" + password + '\'' +
-                ", roleList=" + roleList +
-                ", orderInfoList=" + orderInfoList +
-                '}';
+            "userId=" + userId +
+            ", userName='" + userName + '\'' +
+            ", password='" + password + '\'' +
+            ", idNumber='" + idNumber + '\'' +
+            ", roleList=" + roleList +
+            ", orderInfoList=" + orderInfoList +
+            '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        UserInfo userInfo = (UserInfo) o;
+
+        if (!Objects.equals(userId, userInfo.userId)) {
+            return false;
+        }
+        if (!Objects.equals(userName, userInfo.userName)) {
+            return false;
+        }
+        if (!Objects.equals(password, userInfo.password)) {
+            return false;
+        }
+        if (!Objects.equals(idNumber, userInfo.idNumber)) {
+            return false;
+        }
+        if (!Objects.equals(roleList, userInfo.roleList)) {
+            return false;
+        }
+        return Objects.equals(orderInfoList, userInfo.orderInfoList);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId != null ? userId.hashCode() : 0;
+        result = 31 * result + (userName != null ? userName.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (idNumber != null ? idNumber.hashCode() : 0);
+        result = 31 * result + (roleList != null ? roleList.hashCode() : 0);
+        result = 31 * result + (orderInfoList != null ? orderInfoList.hashCode() : 0);
+        return result;
+    }
+
 }

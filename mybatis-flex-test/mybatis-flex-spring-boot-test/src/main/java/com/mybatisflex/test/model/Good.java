@@ -19,6 +19,8 @@ package com.mybatisflex.test.model;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 
+import java.util.Objects;
+
 /**
  * 商品。
  *
@@ -60,9 +62,41 @@ public class Good {
     @Override
     public String toString() {
         return "Good{" +
-                "goodId=" + goodId +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                '}';
+            "goodId=" + goodId +
+            ", name='" + name + '\'' +
+            ", price=" + price +
+            '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Good good = (Good) o;
+
+        if (Double.compare(good.price, price) != 0) {
+            return false;
+        }
+        if (!Objects.equals(goodId, good.goodId)) {
+            return false;
+        }
+        return Objects.equals(name, good.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = goodId != null ? goodId.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        temp = Double.doubleToLongBits(price);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
 }

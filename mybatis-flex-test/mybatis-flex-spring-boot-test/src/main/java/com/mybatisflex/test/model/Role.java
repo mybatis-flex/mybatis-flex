@@ -20,6 +20,7 @@ import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 角色。
@@ -72,14 +73,47 @@ public class Role implements Comparable<Role> {
     @Override
     public String toString() {
         return "Role{" +
-                "roleId=" + roleId +
-                ", roleKey='" + roleKey + '\'' +
-                ", roleName='" + roleName + '\'' +
-                '}';
+            "roleId=" + roleId +
+            ", roleKey='" + roleKey + '\'' +
+            ", roleName='" + roleName + '\'' +
+            '}';
     }
 
     @Override
     public int compareTo(Role o) {
         return Integer.compare(this.roleId, o.roleId);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Role role = (Role) o;
+
+        if (!Objects.equals(roleId, role.roleId)) {
+            return false;
+        }
+        if (!Objects.equals(roleKey, role.roleKey)) {
+            return false;
+        }
+        if (!Objects.equals(roleName, role.roleName)) {
+            return false;
+        }
+        return Objects.equals(userVOS, role.userVOS);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = roleId != null ? roleId.hashCode() : 0;
+        result = 31 * result + (roleKey != null ? roleKey.hashCode() : 0);
+        result = 31 * result + (roleName != null ? roleName.hashCode() : 0);
+        result = 31 * result + (userVOS != null ? userVOS.hashCode() : 0);
+        return result;
+    }
+
 }
