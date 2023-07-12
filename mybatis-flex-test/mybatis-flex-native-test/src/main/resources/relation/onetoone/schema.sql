@@ -14,6 +14,15 @@ CREATE TABLE IF NOT EXISTS `tb_idcard`
 );
 
 
+CREATE TABLE IF NOT EXISTS `tb_idcard_mapping`
+(
+    `account_id` Integer,
+    `idcard_id`      Integer
+);
+
+
+
+
 CREATE TABLE IF NOT EXISTS `tb_book`
 (
     `id`        INTEGER auto_increment,

@@ -16,15 +16,13 @@
 
 package com.mybatisflex.test.relation.onetoone;
 
-import com.mybatisflex.annotation.*;
+import com.mybatisflex.annotation.RelationManyToMany;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Table(value = "tb_account")
-public class Account implements Serializable {
+public class AccountDTO implements Serializable {
 
-    @Id(keyType = KeyType.Auto)
     private Long id;
 
     private String userName;
@@ -32,9 +30,7 @@ public class Account implements Serializable {
     private int age;
 
     //    @RelationOneToOne(selfField = "id", targetField = "accountId")
-    @RelationOneToOne(targetField = "accountId")
-//    @RelationManyToOne(joinTable = "tb_idcard_mapping",joinSelfColumn = "account_id",joinTargetColumn = "idcard_id"
-//    ,selfField = "id",targetField = "accountId")
+//    @RelationOneToOne(targetField = "accountId")
     private IDCard idCard;
 
     //    @RelationOneToMany(selfField = "id", targetField = "accountId")
@@ -46,11 +42,11 @@ public class Account implements Serializable {
 //            selfField = "id", joinSelfColumn = "account_id",
 //            targetField = "id", joinTargetColumn = "role_id"
 //    )
-//    @RelationManyToMany(
-//            joinTable = "tb_role_mapping",
-//            joinSelfColumn = "account_id",
-//            joinTargetColumn = "role_id"
-//    )
+    @RelationManyToMany(
+            joinTable = "tb_role_mapping",
+            joinSelfColumn = "account_id",
+            joinTargetColumn = "role_id"
+    )
     private List<Role> roles;
 
 
@@ -104,7 +100,7 @@ public class Account implements Serializable {
 
     @Override
     public String toString() {
-        return "Account{" +
+        return "AccountDTO{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", age=" + age +
