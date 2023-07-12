@@ -40,6 +40,8 @@ abstract class AbstractRelation<SelfEntity> {
     protected Field selfField;
     protected FieldWrapper selfFieldWrapper;
 
+    protected String targetSchema;
+    protected String targetTable;
     protected Field targetField;
     protected Class<?> targetEntityClass;
     protected TableInfo targetTableInfo;
@@ -47,7 +49,8 @@ abstract class AbstractRelation<SelfEntity> {
 
     protected String dataSource;
 
-    public AbstractRelation(String selfField, String targetField, String dataSource, Class<SelfEntity> entityClass, Field relationField) {
+    public AbstractRelation(String selfField, String targetSchema, String targetTable, String targetField,
+                            String dataSource, Class<SelfEntity> entityClass, Field relationField) {
         this.selfEntityClass = entityClass;
         this.relationField = relationField;
         this.relationFieldWrapper = FieldWrapper.of(entityClass, relationField.getName());
@@ -59,6 +62,8 @@ abstract class AbstractRelation<SelfEntity> {
 
 
         this.targetEntityClass = relationFieldWrapper.getMappingType();
+        this.targetSchema = targetSchema;
+        this.targetTable = targetTable;
 
         this.targetField = ClassUtil.getFirstField(targetEntityClass, field -> field.getName().equals(targetField));
         this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
@@ -159,15 +164,24 @@ abstract class AbstractRelation<SelfEntity> {
         return relationFieldWrapper.getMappingType();
     }
 
-	public String getDataSource() {
-		return dataSource;
-	}
+    public String getDataSource() {
+        return dataSource;
+    }
 
-	public void setDataSource(String dataSource) {
-		this.dataSource = dataSource;
-	}
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
+    }
 
-	protected static Class<?> getTargetEntityClass(Class<?> entityClass, Field relationField) {
+    public String getTargetTableWithSchema() {
+        if (StringUtil.isNotBlank(targetTable)) {
+            return StringUtil.isNotBlank(targetSchema) ? targetSchema + "." + targetTable : targetTable;
+        } else {
+            return targetTableInfo.getTableNameWithSchema();
+        }
+    }
+
+
+    protected static Class<?> getTargetEntityClass(Class<?> entityClass, Field relationField) {
         return FieldWrapper.of(entityClass, relationField.getName()).getMappingType();
     }
 
@@ -186,20 +200,21 @@ abstract class AbstractRelation<SelfEntity> {
     }
 
 
+    /**
+     * 把 Relations 的配置转换为查询的 QueryWrapper
+     *
+     * @param selfEntities 当前的实体类
+     * @return QueryWrapper
+     */
+    public abstract QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities);
 
-	/**
-	 * 把 Relations 的配置转换为查询的 QueryWrapper
-	 * @param selfEntities 当前的实体类
-	 * @return QueryWrapper
-	 */
-	public abstract QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities);
 
-
-	/**
-	 * 通过 {@link AbstractRelation#toQueryWrapper(List)} 查询到的结果，通过此方法进行内存 join
-	 * @param selfEntities 当前的实体类列表
-	 * @param targetObjectList 查询到的结果
-	 * @param mapper 查询的 Mapper
-	 */
-	public abstract void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper);
+    /**
+     * 通过 {@link AbstractRelation#toQueryWrapper(List)} 查询到的结果，通过此方法进行内存 join
+     *
+     * @param selfEntities     当前的实体类列表
+     * @param targetObjectList 查询到的结果
+     * @param mapper           查询的 Mapper
+     */
+    public abstract void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper);
 }

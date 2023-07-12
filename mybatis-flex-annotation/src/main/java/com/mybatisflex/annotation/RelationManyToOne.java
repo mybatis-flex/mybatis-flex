@@ -35,6 +35,20 @@ public @interface RelationManyToOne {
     String selfField();
 
     /**
+     * 目标实体类对应的表的 schema，一般关联数据不是 entity，而是 vo、dto 等需要配置此项
+     *
+     * @return schema 名称
+     */
+    String targetSchema() default "";
+
+    /**
+     * 目标实体类对应的表，一般关联数据不是 entity，而是 vo、dto 等需要配置此项
+     *
+     * @return 表名
+     */
+    String targetTable() default "";
+
+    /**
      * 目标实体类的关联属性。
      *
      * @return 属性名称

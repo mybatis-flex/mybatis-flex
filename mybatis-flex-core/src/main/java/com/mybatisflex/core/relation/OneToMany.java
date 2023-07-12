@@ -37,6 +37,8 @@ class OneToMany<SelfEntity> extends AbstractRelation<SelfEntity> {
 
 	public OneToMany(RelationOneToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
 		super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationOneToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
+            , annotation.targetSchema()
+            , annotation.targetTable()
 			, annotation.targetField(), annotation.dataSource(), entityClass, relationField);
 		this.orderBy = annotation.orderBy();
 		this.limit = annotation.limit();
@@ -49,7 +51,7 @@ class OneToMany<SelfEntity> extends AbstractRelation<SelfEntity> {
 			return null;
 		}
 		QueryWrapper queryWrapper = QueryWrapper.create().select()
-			.from(targetTableInfo.getTableNameWithSchema());
+			.from(getTargetTableWithSchema());
 		if (selfFieldValues.size() > 1) {
 			queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).in(selfFieldValues));
 		} else {

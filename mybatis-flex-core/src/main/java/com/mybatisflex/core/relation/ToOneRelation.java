@@ -27,9 +27,11 @@ import static com.mybatisflex.core.query.QueryMethods.column;
 class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
 
-    public ToOneRelation(String selfField, String targetField, String dataSource, Class<SelfEntity> selfEntityClass, Field relationField) {
-        super(selfField, targetField, dataSource, selfEntityClass, relationField);
+    public ToOneRelation(String selfField, String targetSchema, String targetTable, String targetField,
+                         String dataSource, Class<SelfEntity> selfEntityClass, Field relationField) {
+        super(selfField, targetSchema, targetTable, targetField, dataSource, selfEntityClass, relationField);
     }
+
 
     @Override
     public QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities) {
@@ -38,7 +40,7 @@ class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
             return null;
         }
         QueryWrapper queryWrapper = QueryWrapper.create().select()
-            .from(targetTableInfo.getTableNameWithSchema());
+            .from(getTargetTableWithSchema());
         if (selfFieldValues.size() > 1) {
             queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).in(selfFieldValues));
         } else {

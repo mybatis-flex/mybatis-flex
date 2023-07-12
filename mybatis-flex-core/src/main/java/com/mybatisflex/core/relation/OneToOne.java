@@ -24,6 +24,8 @@ class OneToOne<SelfEntity> extends ToOneRelation<SelfEntity> {
 	public OneToOne(RelationOneToOne annotation, Class<SelfEntity> entityClass, Field relationField) {
 		super(getDefaultPrimaryProperty(annotation.selfField(), entityClass
 				, "@RelationOneToOne.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
+            , annotation.targetSchema()
+            , annotation.targetTable()
 			, annotation.targetField()
 			, annotation.dataSource()
 			, entityClass
