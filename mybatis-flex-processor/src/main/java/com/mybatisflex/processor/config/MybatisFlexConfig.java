@@ -16,11 +16,17 @@
 
 package com.mybatisflex.processor.config;
 
+import com.mybatisflex.processor.util.FileUtil;
+
 import javax.annotation.processing.Filer;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -49,8 +55,16 @@ public class MybatisFlexConfig {
             FileObject aptConfigFileObject = filer.getResource(StandardLocation.CLASS_OUTPUT, "", APT_FILE_NAME);
 
             List<File> aptConfigFiles = new ArrayList<>();
+
             File moduleRoot = new File(aptConfigFileObject.toUri()).getParentFile().getParentFile().getParentFile();
-            while (new File(moduleRoot, "pom.xml").exists()) {
+
+            // pom.xml      -> Maven 项目
+            // build.gradle -> Gradle 项目
+            if (new File(moduleRoot, "build.gradle").exists()) {
+                FileUtil.setBuildFile("build.gradle");
+            }
+
+            while (FileUtil.existsBuildFile(moduleRoot)) {
                 File aptConfig = new File(moduleRoot, APT_FILE_NAME);
                 if (aptConfig.exists()) {
                     aptConfigFiles.add(aptConfig);
@@ -59,7 +73,7 @@ public class MybatisFlexConfig {
             }
 
             for (File aptConfigFile : aptConfigFiles) {
-                try (InputStream stream = new FileInputStream(aptConfigFile);
+                try (InputStream stream = Files.newInputStream(aptConfigFile.toPath());
                      Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
 
                     Properties config = new Properties();
@@ -71,7 +85,7 @@ public class MybatisFlexConfig {
                             properties.put(key, config.getProperty((String) key));
                         }
                         if ("processor.stopBubbling".equalsIgnoreCase((String) key)
-                                && "true".equalsIgnoreCase(String.valueOf(config.getProperty((String) key)))) {
+                            && "true".equalsIgnoreCase(String.valueOf(config.getProperty((String) key)))) {
                             stopBubbling = true;
                         }
                     }

@@ -29,6 +29,16 @@ public class FileUtil {
     private FileUtil() {
     }
 
+    private static String buildFile = "pom.xml";
+
+    public static void setBuildFile(String buildFile) {
+        FileUtil.buildFile = buildFile;
+    }
+
+    public static boolean existsBuildFile(File file) {
+        return new File(file, buildFile).exists();
+    }
+
     public static boolean isFromTestSource(String path) {
         return path.contains("test-sources") || path.contains("test-annotations");
     }
@@ -53,7 +63,7 @@ public class FileUtil {
         if (file.isFile()) {
             return getProjectRootPath(file.getParentFile(), --count);
         } else {
-            if (new File(file, "pom.xml").exists() && !new File(file.getParentFile(), "pom.xml").exists()) {
+            if (new File(file, buildFile).exists() && !new File(file.getParentFile(), buildFile).exists()) {
                 return file.getAbsolutePath();
             } else {
                 return getProjectRootPath(file.getParentFile(), --count);
