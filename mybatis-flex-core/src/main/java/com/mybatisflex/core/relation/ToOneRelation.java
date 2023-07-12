@@ -51,7 +51,7 @@ class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
 
     @Override
-    public void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper) {
+    public void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper, Set<Class<?>> queriedClasses) {
         selfEntities.forEach(selfEntity -> {
             Object selfValue = selfFieldWrapper.get(selfEntity);
             if (selfValue != null) {

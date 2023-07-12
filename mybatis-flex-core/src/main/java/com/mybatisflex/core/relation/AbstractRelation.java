@@ -215,6 +215,7 @@ abstract class AbstractRelation<SelfEntity> {
      * @param selfEntities     当前的实体类列表
      * @param targetObjectList 查询到的结果
      * @param mapper           查询的 Mapper
+     * @param queriedClasses
      */
-    public abstract void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper);
+    public abstract void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper, Set<Class<?>> queriedClasses);
 }

@@ -77,7 +77,7 @@ class ManyToMany<SelfEntity> extends AbstractRelation<SelfEntity> {
 
 
     @Override
-    public void join(List<SelfEntity> selfEntities, List<?> mappingObjectList, BaseMapper<?> mapper) {
+    public void join(List<SelfEntity> selfEntities, List<?> mappingObjectList, BaseMapper<?> mapper, Set<Class<?>> queriedClasses) {
         List<Row> mappingRows = (List<Row>) mappingObjectList;
         Set<Object> targetValues = new LinkedHashSet<>();
         for (Row row : mappingRows) {
@@ -105,6 +105,8 @@ class ManyToMany<SelfEntity> extends AbstractRelation<SelfEntity> {
 
 
         List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, relationFieldWrapper.getMappingType());
+
+        RelationManager.doQueryRelations(mapper, targetObjectList, queriedClasses);
 
         if (CollectionUtil.isNotEmpty(targetObjectList)) {
             selfEntities.forEach(selfEntity -> {

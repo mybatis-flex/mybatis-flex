@@ -22,6 +22,7 @@ import com.mybatisflex.annotation.RelationOneToOne;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
@@ -79,15 +80,15 @@ public class RelationManager {
 
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static <Entity> void doQueryRelations(BaseMapper<?> mapper, List<Entity> entities, Set<Class<?>> queriedClass) {
+    static <Entity> void doQueryRelations(BaseMapper<?> mapper, List<Entity> entities, Set<Class<?>> queriedClasses) {
         if (CollectionUtil.isEmpty(entities)) {
             return;
         }
         Class<Entity> objectClass = (Class<Entity>) entities.get(0).getClass();
-        if (queriedClass.contains(objectClass)) {
+        if (queriedClasses.contains(objectClass)) {
             return;
         } else {
-            queriedClass.add(objectClass);
+            queriedClasses.add(objectClass);
         }
         List<AbstractRelation> relations = getRelations(objectClass);
         if (relations.isEmpty()) {
@@ -111,10 +112,12 @@ public class RelationManager {
                     }
 
                     List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, mappingType);
-                    doQueryRelations(mapper, targetObjectList, queriedClass);
+                    if (mappingType != Row.class) {
+                        doQueryRelations(mapper, targetObjectList, queriedClasses);
+                    }
 
                     if (CollectionUtil.isNotEmpty(targetObjectList)) {
-                        relation.join(entities, targetObjectList, mapper);
+                        relation.join(entities, targetObjectList, mapper, queriedClasses);
                     }
                 } finally {
                     if (StringUtil.isNotBlank(dataSource)) {
