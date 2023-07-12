@@ -164,6 +164,10 @@ public enum DbType {
      */
     INFORMIX("informix", "Informix 数据库"),
     /**
+     * sinodb
+     */
+    SINODB("sinodb", "星瑞格数据库"),
+    /**
      * uxdb
      */
     UXDB("uxdb", "优炫数据库"),

@@ -156,6 +156,21 @@ public interface LimitOffsetProcessor {
         return sql;
     };
 
+
+    /**
+     * SINODB 的处理器
+     * 适合  {@link DbType#INFORMIX}
+     */
+    LimitOffsetProcessor SINODB = (dialect, sql, queryWrapper, limitRows, limitOffset) -> {
+        if (limitRows != null && limitOffset != null) {
+            // SELECT SKIP 2 FIRST 1 * FROM
+            sql.insert(6, SKIP + limitOffset + FIRST + limitRows);
+        } else if (limitRows != null) {
+            sql.insert(6, FIRST + limitRows);
+        }
+        return sql;
+    };
+
     /**
      * Firebird 的处理器
      * 适合  {@link DbType#FIREBIRD}

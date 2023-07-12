@@ -160,6 +160,8 @@ public class DbTypeUtil {
             return DbType.TDENGINE;
         } else if (jdbcUrl.contains(":informix")) {
             return DbType.INFORMIX;
+        }else if (jdbcUrl.contains(":sinodb")) {
+            return DbType.SINODB;
         } else if (jdbcUrl.contains(":uxdb:")) {
             return DbType.UXDB;
         } else if (jdbcUrl.contains(":greenplum:")) {
