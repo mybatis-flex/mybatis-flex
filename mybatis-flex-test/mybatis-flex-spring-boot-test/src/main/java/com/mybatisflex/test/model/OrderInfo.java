@@ -16,8 +16,11 @@
 
 package com.mybatisflex.test.model;
 
+import com.mybatisflex.annotation.RelationManyToMany;
+
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 订单信息。
@@ -30,6 +33,13 @@ public class OrderInfo {
     private Integer orderId;
     private LocalDateTime createTime;
 
+    @RelationManyToMany(
+        selfField = "orderId",
+        targetField = "goodId",
+        joinTable = "tb_order_good",
+        joinSelfColumn = "order_id",
+        joinTargetColumn = "good_id"
+    )
     private List<Good> goodList;
 
     public Integer getOrderId() {
@@ -59,9 +69,38 @@ public class OrderInfo {
     @Override
     public String toString() {
         return "OrderInfo{" +
-                "orderId=" + orderId +
-                ", createTime=" + createTime +
-                ", goodList=" + goodList +
-                '}';
+            "orderId=" + orderId +
+            ", createTime=" + createTime +
+            ", goodList=" + goodList +
+            '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        OrderInfo orderInfo = (OrderInfo) o;
+
+        if (!Objects.equals(orderId, orderInfo.orderId)) {
+            return false;
+        }
+        if (!Objects.equals(createTime, orderInfo.createTime)) {
+            return false;
+        }
+        return Objects.equals(goodList, orderInfo.goodList);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = orderId != null ? orderId.hashCode() : 0;
+        result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
+        result = 31 * result + (goodList != null ? goodList.hashCode() : 0);
+        return result;
+    }
+
 }
