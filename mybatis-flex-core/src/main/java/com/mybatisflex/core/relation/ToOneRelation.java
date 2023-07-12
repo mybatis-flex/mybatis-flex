@@ -28,7 +28,9 @@ class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                          String dataSource, Class<SelfEntity> selfEntityClass, Field relationField) {
         super(selfField, targetSchema, targetTable, targetField,
             joinTable, joinSelfColumn, joinTargetColumn,
-            dataSource, selfEntityClass, relationField);
+            dataSource, selfEntityClass, relationField,
+            null
+        );
     }
 
 
@@ -65,7 +67,7 @@ class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
             if (selfValue.equals(String.valueOf(mappingRow.getIgnoreCase(joinSelfColumn)))) {
                 Object joinValue = mappingRow.getIgnoreCase(joinTargetColumn);
                 if (joinValue != null) {
-                   return joinValue.toString();
+                    return joinValue.toString();
                 }
             }
         }

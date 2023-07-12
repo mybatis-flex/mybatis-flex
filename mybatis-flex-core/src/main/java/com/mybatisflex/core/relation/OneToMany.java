@@ -23,31 +23,32 @@ import java.lang.reflect.Field;
 
 class OneToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
 
-	private String orderBy;
-	private int limit;
+    private String orderBy;
+    private int limit;
 
 
-	public OneToMany(RelationOneToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
-		super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationOneToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
+    public OneToMany(RelationOneToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
+        super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationOneToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
             , annotation.targetSchema()
             , annotation.targetTable()
-			, annotation.targetField()
+            , annotation.targetField()
             , annotation.joinTable()
             , annotation.joinSelfColumn()
             , annotation.joinTargetColumn()
-            , annotation.dataSource(), entityClass, relationField);
-		this.orderBy = annotation.orderBy();
-		this.limit = annotation.limit();
-	}
+            , annotation.dataSource(), entityClass, relationField
+            , buildConditions(annotation.extraConditions()));
+        this.orderBy = annotation.orderBy();
+        this.limit = annotation.limit();
+    }
 
 
     @Override
     public void customizeQueryWrapper(QueryWrapper queryWrapper) {
-        if (StringUtil.isNotBlank(orderBy)){
+        if (StringUtil.isNotBlank(orderBy)) {
             queryWrapper.orderBy(orderBy);
         }
 
-        if (limit > 0){
+        if (limit > 0) {
             queryWrapper.limit(limit);
         }
     }

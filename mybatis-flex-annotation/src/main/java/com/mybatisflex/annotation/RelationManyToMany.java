@@ -77,6 +77,11 @@ public @interface RelationManyToMany {
 	String joinTargetColumn();
 
     /**
+     * 查询时，追加的额外条件
+     */
+	Condition[] extraConditions() default {};
+
+    /**
      * 查询排序。
      *
      * @return 排序方式
@@ -89,5 +94,6 @@ public @interface RelationManyToMany {
      * @return 数据源
 	 */
 	String dataSource() default "";
+
 
 }

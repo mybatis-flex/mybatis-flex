@@ -26,10 +26,7 @@ import com.mybatisflex.core.util.FieldWrapper;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.mybatisflex.core.query.QueryMethods.column;
 
@@ -54,10 +51,13 @@ abstract class AbstractRelation<SelfEntity> {
     protected String joinTargetColumn;
 
     protected String dataSource;
+    protected List<Condition> extraConditions;
 
     public AbstractRelation(String selfField, String targetSchema, String targetTable, String targetField,
                             String joinTable, String joinSelfColumn, String joinTargetColumn,
-                            String dataSource, Class<SelfEntity> entityClass, Field relationField) {
+                            String dataSource, Class<SelfEntity> entityClass, Field relationField,
+                            List<Condition> extraConditions
+    ) {
         this.selfEntityClass = entityClass;
         this.relationField = relationField;
         this.relationFieldWrapper = FieldWrapper.of(entityClass, relationField.getName());
@@ -80,6 +80,7 @@ abstract class AbstractRelation<SelfEntity> {
         this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
 
         this.targetTableInfo = TableInfoFactory.ofEntityClass(targetEntityClass);
+        this.extraConditions = extraConditions;
     }
 
 
@@ -209,6 +210,13 @@ abstract class AbstractRelation<SelfEntity> {
         return values;
     }
 
+    public List<Condition> getExtraConditions() {
+        return extraConditions;
+    }
+
+    public void setExtraConditions(List<Condition> extraConditions) {
+        this.extraConditions = extraConditions;
+    }
 
     public Class<?> getMappingType() {
         return relationFieldWrapper.getMappingType();
@@ -253,6 +261,17 @@ abstract class AbstractRelation<SelfEntity> {
         return primaryKeyList.get(0).getProperty();
     }
 
+    protected static List<Condition> buildConditions(com.mybatisflex.annotation.Condition[] conditions){
+        if (conditions == null || conditions.length == 0){
+            return null;
+        }
+        List<Condition>  conditionList = new ArrayList<>();
+        for (com.mybatisflex.annotation.Condition condition : conditions) {
+            conditionList.add(new Condition(condition));
+        }
+        return conditionList;
+    }
+
 
     /**
      * 构建查询目标对象的 QueryWrapper
@@ -264,10 +283,17 @@ abstract class AbstractRelation<SelfEntity> {
         QueryWrapper queryWrapper = QueryWrapper.create()
             .select()
             .from(getTargetTableWithSchema());
+
         if (targetValues.size() > 1) {
             queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).in(targetValues));
         } else {
             queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).eq(targetValues.iterator().next()));
+        }
+
+        if (extraConditions != null) {
+            for (Condition extraCondition : extraConditions) {
+                queryWrapper.and(extraCondition.toQueryCondition());
+            }
         }
 
         customizeQueryWrapper(queryWrapper);

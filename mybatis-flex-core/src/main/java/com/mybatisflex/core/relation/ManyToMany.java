@@ -33,14 +33,15 @@ class ManyToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
             , annotation.joinTable()
             , annotation.joinSelfColumn()
             , annotation.joinTargetColumn()
-            , annotation.dataSource(), entityClass, relationField);
+            , annotation.dataSource(), entityClass, relationField
+            , buildConditions(annotation.extraConditions()));
         this.orderBy = annotation.orderBy();
     }
 
 
     @Override
     public void customizeQueryWrapper(QueryWrapper queryWrapper) {
-        if (StringUtil.isNotBlank(orderBy)){
+        if (StringUtil.isNotBlank(orderBy)) {
             queryWrapper.orderBy(orderBy);
         }
     }

@@ -32,7 +32,7 @@ public class Account implements Serializable {
     private int age;
 
     //    @RelationOneToOne(selfField = "id", targetField = "accountId")
-    @RelationOneToOne(targetField = "accountId")
+//    @RelationOneToOne(targetField = "accountId")
 //    @RelationManyToOne(joinTable = "tb_idcard_mapping",joinSelfColumn = "account_id",joinTargetColumn = "idcard_id"
 //    ,selfField = "id",targetField = "accountId")
     private IDCard idCard;
@@ -46,11 +46,14 @@ public class Account implements Serializable {
 //            selfField = "id", joinSelfColumn = "account_id",
 //            targetField = "id", joinTargetColumn = "role_id"
 //    )
-//    @RelationManyToMany(
-//            joinTable = "tb_role_mapping",
-//            joinSelfColumn = "account_id",
-//            joinTargetColumn = "role_id"
-//    )
+    @RelationManyToMany(
+        joinTable = "tb_role_mapping",
+        joinSelfColumn = "account_id",
+        joinTargetColumn = "role_id",
+        extraConditions = {
+            @Condition(column = "name", logic = "is not null"),
+        }
+    )
     private List<Role> roles;
 
 
@@ -105,12 +108,12 @@ public class Account implements Serializable {
     @Override
     public String toString() {
         return "Account{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", age=" + age +
-                ", idCard=" + idCard +
-                ", books=" + books +
-                ", roles=" + roles +
-                '}';
+            "id=" + id +
+            ", userName='" + userName + '\'' +
+            ", age=" + age +
+            ", idCard=" + idCard +
+            ", books=" + books +
+            ", roles=" + roles +
+            '}';
     }
 }

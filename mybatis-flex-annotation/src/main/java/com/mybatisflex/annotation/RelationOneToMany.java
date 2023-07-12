@@ -77,6 +77,11 @@ public @interface RelationOneToMany {
     String joinTargetColumn() default "";
 
     /**
+     * 查询时，追加的额外条件
+     */
+    Condition[] extraConditions() default {};
+
+    /**
      * 查询排序。
      *
      * @return 排序方式
