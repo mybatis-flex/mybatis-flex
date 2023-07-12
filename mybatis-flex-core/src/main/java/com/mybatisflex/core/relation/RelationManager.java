@@ -28,9 +28,7 @@ import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -38,83 +36,93 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RelationManager {
 
-	private static Map<Class<?>, List<AbstractRelation>> classRelations = new ConcurrentHashMap<>();
+    private static Map<Class<?>, List<AbstractRelation>> classRelations = new ConcurrentHashMap<>();
 
-	private static List<AbstractRelation> getRelations(Class<?> clazz) {
-		return MapUtil.computeIfAbsent(classRelations, clazz, RelationManager::doGetRelations);
-	}
+    private static List<AbstractRelation> getRelations(Class<?> clazz) {
+        return MapUtil.computeIfAbsent(classRelations, clazz, RelationManager::doGetRelations);
+    }
 
-	private static List<AbstractRelation> doGetRelations(Class<?> entityClass) {
-		List<Field> allFields = ClassUtil.getAllFields(entityClass);
-		List<AbstractRelation> relations = new ArrayList<>();
-		for (Field field : allFields) {
-			RelationManyToMany manyToManyAnnotation = field.getAnnotation(RelationManyToMany.class);
-			if (manyToManyAnnotation != null) {
-				relations.add(new ManyToMany<>(manyToManyAnnotation, entityClass, field));
-			}
+    private static List<AbstractRelation> doGetRelations(Class<?> entityClass) {
+        List<Field> allFields = ClassUtil.getAllFields(entityClass);
+        List<AbstractRelation> relations = new ArrayList<>();
+        for (Field field : allFields) {
+            RelationManyToMany manyToManyAnnotation = field.getAnnotation(RelationManyToMany.class);
+            if (manyToManyAnnotation != null) {
+                relations.add(new ManyToMany<>(manyToManyAnnotation, entityClass, field));
+            }
 
-			RelationManyToOne manyToOneAnnotation = field.getAnnotation(RelationManyToOne.class);
-			if (manyToOneAnnotation != null) {
-				relations.add(new ManyToOne<>(manyToOneAnnotation, entityClass, field));
-			}
+            RelationManyToOne manyToOneAnnotation = field.getAnnotation(RelationManyToOne.class);
+            if (manyToOneAnnotation != null) {
+                relations.add(new ManyToOne<>(manyToOneAnnotation, entityClass, field));
+            }
 
-			RelationOneToMany oneToManyAnnotation = field.getAnnotation(RelationOneToMany.class);
-			if (oneToManyAnnotation != null) {
-				relations.add(new OneToMany<>(oneToManyAnnotation, entityClass, field));
-			}
+            RelationOneToMany oneToManyAnnotation = field.getAnnotation(RelationOneToMany.class);
+            if (oneToManyAnnotation != null) {
+                relations.add(new OneToMany<>(oneToManyAnnotation, entityClass, field));
+            }
 
-			RelationOneToOne oneToOneAnnotation = field.getAnnotation(RelationOneToOne.class);
-			if (oneToOneAnnotation != null) {
-				relations.add(new OneToOne<>(oneToOneAnnotation, entityClass, field));
-			}
-		}
-		return relations;
-	}
+            RelationOneToOne oneToOneAnnotation = field.getAnnotation(RelationOneToOne.class);
+            if (oneToOneAnnotation != null) {
+                relations.add(new OneToOne<>(oneToOneAnnotation, entityClass, field));
+            }
+        }
+        return relations;
+    }
 
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	public static <Entity> void queryRelations(BaseMapper<?> mapper, List<Entity> entities) {
-		if (CollectionUtil.isEmpty(entities)) {
-			return;
-		}
+    public static <Entity> void queryRelations(BaseMapper<?> mapper, List<Entity> entities) {
+        doQueryRelations(mapper, entities, new HashSet<>());
+    }
 
-		Class<Entity> objectClass = (Class<Entity>) entities.get(0).getClass();
-		List<AbstractRelation> relations = getRelations(objectClass);
-		if (relations.isEmpty()) {
-			return;
-		}
 
-		String currentDsKey = DataSourceKey.get();
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static <Entity> void doQueryRelations(BaseMapper<?> mapper, List<Entity> entities, Set<Class<?>> queriedClass) {
+        if (CollectionUtil.isEmpty(entities)) {
+            return;
+        }
+        Class<Entity> objectClass = (Class<Entity>) entities.get(0).getClass();
+        if (queriedClass.contains(objectClass)) {
+            return;
+        } else {
+            queriedClass.add(objectClass);
+        }
+        List<AbstractRelation> relations = getRelations(objectClass);
+        if (relations.isEmpty()) {
+            return;
+        }
+        String currentDsKey = DataSourceKey.get();
+        try {
+            relations.forEach(relation -> {
 
-		try {
-			relations.forEach(relation -> {
+                QueryWrapper queryWrapper = relation.toQueryWrapper(entities);
+                Class<?> mappingType = relation.getMappingType();
 
-				QueryWrapper queryWrapper = relation.toQueryWrapper(entities);
-				Class<?> mappingType = relation.getMappingType();
+                String dataSource = relation.getDataSource();
+                if (StringUtil.isBlank(dataSource) && currentDsKey != null) {
+                    dataSource = currentDsKey;
+                }
 
-				String dataSource = relation.getDataSource();
-				if (StringUtil.isBlank(dataSource) && currentDsKey != null) {
-					dataSource = currentDsKey;
-				}
+                try {
+                    if (StringUtil.isNotBlank(dataSource)) {
+                        DataSourceKey.use(dataSource);
+                    }
 
-				try {
-					if (StringUtil.isNotBlank(dataSource)) {
-						DataSourceKey.use(dataSource);
-					}
-					List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, mappingType);
-					if (CollectionUtil.isNotEmpty(targetObjectList)) {
-						relation.join(entities, targetObjectList, mapper);
-					}
-				} finally {
-					if (StringUtil.isNotBlank(dataSource)) {
-						DataSourceKey.clear();
-					}
-				}
-			});
-		} finally {
-			if (currentDsKey != null) {
-				DataSourceKey.use(currentDsKey);
-			}
-		}
-	}
+                    List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, mappingType);
+                    doQueryRelations(mapper, targetObjectList, queriedClass);
+
+                    if (CollectionUtil.isNotEmpty(targetObjectList)) {
+                        relation.join(entities, targetObjectList, mapper);
+                    }
+                } finally {
+                    if (StringUtil.isNotBlank(dataSource)) {
+                        DataSourceKey.clear();
+                    }
+                }
+            });
+        } finally {
+            if (currentDsKey != null) {
+                DataSourceKey.use(currentDsKey);
+            }
+        }
+    }
 }

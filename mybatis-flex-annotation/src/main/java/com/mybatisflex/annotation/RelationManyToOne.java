@@ -32,7 +32,6 @@ public @interface RelationManyToOne {
 	 */
     String selfField();
 
-
 	/**
 	 * 目标对象的关联属性
 	 *

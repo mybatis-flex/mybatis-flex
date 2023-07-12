@@ -68,7 +68,6 @@ public @interface RelationManyToMany {
 	 */
 	String orderBy() default "";
 
-
 	/**
 	 * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源。
 	 */
