@@ -671,12 +671,14 @@ public interface BaseMapper<T> {
             return (List<R>) selectRowsByQuery(queryWrapper);
         }
 
+        List<T> result;
         try {
             MappedStatementTypes.setCurrentType(asType);
-            return MapperUtil.queryRelations(this, (List<R>) selectListByQuery(queryWrapper));
+            result = selectListByQuery(queryWrapper);
         } finally {
             MappedStatementTypes.clear();
         }
+        return MapperUtil.queryRelations(this, (List<R>) result);
     }
 
     /**
