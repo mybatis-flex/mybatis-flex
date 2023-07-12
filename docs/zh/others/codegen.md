@@ -68,7 +68,7 @@ public class Codegen {
 
         //设置生成 entity 并启用 Lombok
         globalConfig.setEntityGenerateEnable(true);
-        globalConfig.setWithLombok(true);
+        globalConfig.setEntityWithLombok(true);
 
         //设置生成 mapper
         globalConfig.setMapperGenerateEnable(true);
