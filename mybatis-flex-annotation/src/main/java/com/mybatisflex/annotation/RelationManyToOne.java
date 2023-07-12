@@ -18,6 +18,8 @@ package com.mybatisflex.annotation;
 import java.lang.annotation.*;
 
 /**
+ * 多对一映射。
+ *
  * @author michael
  */
 @Inherited
@@ -25,23 +27,24 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 public @interface RelationManyToOne {
 
-	/**
-	 * 当前 entity 的属性
-	 *
-	 * @return 属性名称
-	 */
+    /**
+     * 当前实体类的属性。
+     *
+     * @return 属性名称
+     */
     String selfField();
 
-
-	/**
-	 * 目标对象的关联属性
-	 *
-	 * @return 属性名称
+    /**
+     * 目标实体类的关联属性。
+     *
+     * @return 属性名称
 	 */
     String targetField() default "";
 
-	/**
-	 * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源。
+    /**
+     * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源。
+     *
+     * @return 数据源
 	 */
 	String dataSource() default "";
 
