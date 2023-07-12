@@ -20,6 +20,7 @@ import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
+import com.mybatisflex.core.util.UpdateEntity;
 import org.apache.ibatis.javassist.util.proxy.ProxyObject;
 
 import java.io.Serializable;
@@ -77,6 +78,15 @@ public interface UpdateWrapper extends Serializable {
     default <T> UpdateWrapper setRaw(QueryColumn queryColumn, Object value) {
         getUpdates().put(queryColumn.getName(), new RawValue(value));
         return this;
+    }
+
+
+    static UpdateWrapper of(Object entity) {
+        if (entity instanceof UpdateWrapper) {
+            return (UpdateWrapper) entity;
+        } else {
+            return (UpdateWrapper) UpdateEntity.ofNotNull(entity);
+        }
     }
 
 }

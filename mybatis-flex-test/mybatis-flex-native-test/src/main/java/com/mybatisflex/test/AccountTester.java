@@ -21,6 +21,8 @@ import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
 import com.mybatisflex.core.query.If;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.update.UpdateWrapper;
+import com.mybatisflex.core.util.UpdateEntity;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -82,6 +84,27 @@ public class AccountTester {
     public void testSelectAsToDTO() {
         List<AccountDTO> accountDTOS = accountMapper.selectListByQueryAs(QueryWrapper.create(), AccountDTO.class);
         System.out.println(accountDTOS);
+    }
+
+
+
+    @Test
+    public void testUpdate() {
+        List<Account> accounts = accountMapper.selectAll();
+        System.out.println(accounts);
+
+
+        Account account = UpdateEntity.of(Account.class,1);
+        account.setUserName("lisi");
+
+        UpdateWrapper.of(account)
+            .setRaw("age","age + 1");
+        accountMapper.update(account);
+
+
+        accounts = accountMapper.selectAll();
+        System.out.println(accounts);
+
     }
 
 
