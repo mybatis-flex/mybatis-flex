@@ -1,6 +1,31 @@
 # ChangeLog
 
 
+## v1.4.9 20230713:
+- 新增：Relation 注解支持递归查询的功能及递归深度设置的功能
+- 新增：Relation 注解添加对 vo、dto 等进行关联查询时，可以指定表的配置支持
+- 新增：Relation 注解支持通过中间表进行 join 场景的支持
+- 新增：Relation 注解添加自定义条件 extraCondition 配置的支持
+- 新增：Relation 注解添加可以忽略某个注解查询的支持
+- 新增：数据方言新增对 星瑞格数据库 的支持，感谢 @wujl
+- 新增：BaseMapper.updateByMap() 方法，感谢 @Suomm
+- 新增：QueryWrapper 构建添加 ture、false 常量函数，感谢 @Suomm
+- 优化：静态常量使用 final 修饰，感谢 @meng.liu3
+- 优化：为项目添加 .editorconfig 文件，统一不同作者协助的代码格式化
+- 优化：UpdateWrapper 添加 of 方法，用于替代强转更新
+- 优化：重构 BaseMapper 的文档生成器，感谢 @Suomm
+- 优化：添加码生成器 tableDef 字段排序，感谢 @Suomm
+- 修复：使用 SqlServer 2005 方言查询时出错的问题
+- 修复：selectListWithRelationsByQueryAs 出现数据类型转换异常的问题
+- 修复：Relations 注解在用户定义包装类型时可能导致结果出错的问题
+- 修复：代码生成器配置 setListenerClass 时，结果不正确的问题，感谢 @cainiao3853
+- 修复：APT 功能在使用 gradle 时无法读取配置文件的问题，感谢 @Suomm
+- 文档：更新 Relations 注解的相关文档
+- 文档：调整 ChangeLog 放到首页菜单
+- 文档：完善代码生成器的相关配置文档，感谢 @Suomm
+
+
+
 ## v1.4.8 20230709:
 - 新增：`@RelationXXX` 相关注解添加可以指定 dataSource 的配置功能
 - 新增：添加 BaseMapper.insertSelectiveWithPk() 方法
