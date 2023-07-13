@@ -42,7 +42,13 @@ public @interface RelationManyToMany {
     String targetSchema() default "";
 
     /**
-     * 目标实体类对应的表，一般情况下，关联数据不是 entity，而是 vo、dto 等需要配置此项
+     * <p>
+     * 目标实体类对应的表名。
+     *
+     * <p>
+     * 如果目标实体类没有使用 {@code @Table(value = "...")} 指定表名时，
+     * 需要在这里指定对应表的表名。一般关联数据不是 entity 对象，而是 vo、dto
+     * 等需要配置此项。
      *
      * @return 表名
      */
@@ -77,7 +83,7 @@ public @interface RelationManyToMany {
 	String joinTargetColumn();
 
     /**
-     * 查询时，追加的额外条件
+     * 查询时，追加的额外条件。
      */
 	Condition[] extraConditions() default {};
 
@@ -94,6 +100,5 @@ public @interface RelationManyToMany {
      * @return 数据源
 	 */
 	String dataSource() default "";
-
 
 }
