@@ -33,6 +33,7 @@ import static com.mybatisflex.core.query.QueryMethods.column;
 abstract class AbstractRelation<SelfEntity> {
 
     protected String name;
+    protected String simpleName;
     protected Class<SelfEntity> selfEntityClass;
     protected Field relationField;
     protected FieldWrapper relationFieldWrapper;
@@ -62,6 +63,7 @@ abstract class AbstractRelation<SelfEntity> {
                             String extraCondition
     ) {
         this.name = entityClass.getSimpleName()+"."+relationField.getName();
+        this.simpleName = relationField.getName();
         this.selfEntityClass = entityClass;
         this.relationField = relationField;
         this.relationFieldWrapper = FieldWrapper.of(entityClass, relationField.getName());
@@ -139,8 +141,8 @@ abstract class AbstractRelation<SelfEntity> {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getSimpleName() {
+        return simpleName;
     }
 
     public Class<SelfEntity> getSelfEntityClass() {

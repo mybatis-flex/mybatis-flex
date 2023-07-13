@@ -104,6 +104,16 @@ public class RelationsTester {
     }
 
     @Test
+    public void testMenuIgnoreParent() {
+        QueryWrapper qw = QueryWrapper.create();
+        qw.where(MENU.PARENT_ID.eq(0));
+
+        RelationManager.addIgnoreRelations("parent");
+        List<Menu> menus = menuMapper.selectListWithRelationsByQuery(qw);
+        System.out.println( JSON.toJSONString(menus));
+    }
+
+    @Test
     public void testPaginate() {
         Page<Account> accountPage = accountMapper.paginateWithRelations(1, 2, QueryWrapper.create());
         System.out.println(accountPage);

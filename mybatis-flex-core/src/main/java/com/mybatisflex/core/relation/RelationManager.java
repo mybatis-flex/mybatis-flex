@@ -56,6 +56,12 @@ public class RelationManager {
     private static ThreadLocal<Map<String, Object>> extraConditionParams = new ThreadLocal<>();
 
 
+    /**
+     * 查询时，可忽略某些已经添加 Relation 注解的属性
+     */
+    private static ThreadLocal<Set<String>> ignoreRelations = new ThreadLocal<>();
+
+
     private static List<AbstractRelation> getRelations(Class<?> clazz) {
         return MapUtil.computeIfAbsent(classRelations, clazz, RelationManager::doGetRelations);
     }
@@ -112,6 +118,23 @@ public class RelationManager {
         return extraConditionParams.get();
     }
 
+    public static void setIgnoreRelations(Set<String> ignoreRelations) {
+        RelationManager.ignoreRelations.set(ignoreRelations);
+    }
+
+    public static void addIgnoreRelations(String... ignoreRelations) {
+        Set<String> relations = RelationManager.ignoreRelations.get();
+        if (relations == null) {
+            relations = new HashSet<>();
+            setIgnoreRelations(relations);
+        }
+        relations.addAll(Arrays.asList(ignoreRelations));
+    }
+
+    public static Set<String> getIgnoreRelations() {
+        return ignoreRelations.get();
+    }
+
 
     static Object[] getExtraConditionParams(List<String> keys) {
         if (keys == null || keys.isEmpty()) {
@@ -132,12 +155,12 @@ public class RelationManager {
 
 
     public static <Entity> void queryRelations(BaseMapper<?> mapper, List<Entity> entities) {
-        doQueryRelations(mapper, entities, 0, depthThreadLocal.get());
+        doQueryRelations(mapper, entities, 0, depthThreadLocal.get(), ignoreRelations.get());
     }
 
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    static <Entity> void doQueryRelations(BaseMapper<?> mapper, List<Entity> entities, int currentDepth, int maxDepth) {
+    static <Entity> void doQueryRelations(BaseMapper<?> mapper, List<Entity> entities, int currentDepth, int maxDepth, Set<String> ignoreRelations) {
         if (CollectionUtil.isEmpty(entities)) {
             return;
         }
@@ -154,6 +177,12 @@ public class RelationManager {
         String currentDsKey = DataSourceKey.get();
         try {
             relations.forEach(relation -> {
+
+                //ignore
+                if (ignoreRelations != null && (ignoreRelations.contains(relation.getSimpleName())
+                    || ignoreRelations.contains(relation.getName()))) {
+                    return;
+                }
 
                 Set<Object> targetValues;
                 List<Row> mappingRows = null;
@@ -205,7 +234,7 @@ public class RelationManager {
                     QueryWrapper queryWrapper = relation.buildQueryWrapper(targetValues);
                     List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, relation.getMappingType());
                     if (CollectionUtil.isNotEmpty(targetObjectList)) {
-                        doQueryRelations(mapper, targetObjectList, currentDepth + 1, maxDepth);
+                        doQueryRelations(mapper, targetObjectList, currentDepth + 1, maxDepth, ignoreRelations);
                         relation.join(entities, targetObjectList, mappingRows);
                     }
                 } finally {
