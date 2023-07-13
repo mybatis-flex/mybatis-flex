@@ -877,6 +877,20 @@ public class GlobalConfig {
         getEntityConfig().setWithLombok(entityWithLombok);
     }
 
+    /**
+     * @see EntityConfig#getDataSource()
+     */
+    public String getEntityDataSource() {
+        return getEntityConfig().getDataSource();
+    }
+
+    /**
+     * @see EntityConfig#setDataSource(String)
+     */
+    public void setEntityDataSource(String dataSource) {
+        getEntityConfig().setDataSource(dataSource);
+    }
+
     public boolean isMapperGenerateEnable() {
         return mapperGenerateEnable;
     }
