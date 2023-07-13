@@ -55,19 +55,7 @@ public class MybatisFlexConfig {
             FileObject aptConfigFileObject = filer.getResource(StandardLocation.CLASS_OUTPUT, "", APT_FILE_NAME);
 
             List<File> aptConfigFiles = new ArrayList<>();
-
             File moduleRoot = new File(aptConfigFileObject.toUri()).getParentFile().getParentFile().getParentFile();
-
-            // pom.xml          -> Maven  项目
-            // build.gradle     -> Gradle 项目
-            // build.gradle.kts -> Gradle 项目
-            if (new File(moduleRoot, "pom.xml").exists()) {
-                FileUtil.setBuildFile("pom.xml");
-            } else if (new File(moduleRoot, "build.gradle").exists()) {
-                FileUtil.setBuildFile("build.gradle");
-            } else if (new File(moduleRoot, "build.gradle.kts").exists()) {
-                FileUtil.setBuildFile("build.gradle.kts");
-            }
 
             while (FileUtil.existsBuildFile(moduleRoot)) {
                 File aptConfig = new File(moduleRoot, APT_FILE_NAME);
