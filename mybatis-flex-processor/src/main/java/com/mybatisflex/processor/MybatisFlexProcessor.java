@@ -60,19 +60,19 @@ import java.util.function.BiConsumer;
 public class MybatisFlexProcessor extends AbstractProcessor {
 
     private static final List<String> DEFAULT_SUPPORT_COLUMN_TYPES = Arrays.asList(
-            int.class.getName(), Integer.class.getName(),
-            short.class.getName(), Short.class.getName(),
-            long.class.getName(), Long.class.getName(),
-            float.class.getName(), Float.class.getName(),
-            double.class.getName(), Double.class.getName(),
-            boolean.class.getName(), Boolean.class.getName(),
-            Date.class.getName(), java.sql.Date.class.getName(), Time.class.getName(), Timestamp.class.getName(),
-            Instant.class.getName(), LocalDate.class.getName(), LocalDateTime.class.getName(), LocalTime.class.getName(),
-            OffsetDateTime.class.getName(), OffsetTime.class.getName(), ZonedDateTime.class.getName(),
-            Year.class.getName(), Month.class.getName(), YearMonth.class.getName(), JapaneseDate.class.getName(),
-            byte[].class.getName(), Byte[].class.getName(), Byte.class.getName(),
-            BigInteger.class.getName(), BigDecimal.class.getName(),
-            char.class.getName(), String.class.getName(), Character.class.getName()
+        int.class.getName(), Integer.class.getName(),
+        short.class.getName(), Short.class.getName(),
+        long.class.getName(), Long.class.getName(),
+        float.class.getName(), Float.class.getName(),
+        double.class.getName(), Double.class.getName(),
+        boolean.class.getName(), Boolean.class.getName(),
+        Date.class.getName(), java.sql.Date.class.getName(), Time.class.getName(), Timestamp.class.getName(),
+        Instant.class.getName(), LocalDate.class.getName(), LocalDateTime.class.getName(), LocalTime.class.getName(),
+        OffsetDateTime.class.getName(), OffsetTime.class.getName(), ZonedDateTime.class.getName(),
+        Year.class.getName(), Month.class.getName(), YearMonth.class.getName(), JapaneseDate.class.getName(),
+        byte[].class.getName(), Byte[].class.getName(), Byte.class.getName(),
+        BigInteger.class.getName(), BigDecimal.class.getName(),
+        char.class.getName(), String.class.getName(), Character.class.getName()
     );
 
     private Filer filer;
@@ -177,7 +177,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 String tableDefPackage = StrUtil.buildTableDefPackage(entityClass);
                 String tableDefClassName = entityClassName.concat(tableDefClassSuffix);
                 String tableDefContent = ContentBuilder.buildTableDef(table, entityClass, entityClassName, allInTablesEnable, tableDefPackage, tableDefClassName
-                        , tableDefPropertiesNameStyle, tableDefInstanceSuffix, columnInfos, defaultColumns);
+                    , tableDefPropertiesNameStyle, tableDefInstanceSuffix, columnInfos, defaultColumns);
                 processGenClass(genPath, tableDefPackage, tableDefClassName, tableDefContent);
 
                 if (allInTablesEnable) {
@@ -265,8 +265,8 @@ public class MybatisFlexProcessor extends AbstractProcessor {
 
                 // 未配置 typeHandler 的情况下，只支持基本数据类型，不支持比如 list set 或者自定义的类等
                 if ((column == null || "org.apache.ibatis.type.UnknownTypeHandler".equals(typeHandlerClass[0]))
-                        && !DEFAULT_SUPPORT_COLUMN_TYPES.contains(typeString)
-                        && (typeElement != null && ElementKind.ENUM != typeElement.getKind())
+                    && !DEFAULT_SUPPORT_COLUMN_TYPES.contains(typeString)
+                    && (typeElement != null && ElementKind.ENUM != typeElement.getKind())
                 ) {
                     continue;
                 }
