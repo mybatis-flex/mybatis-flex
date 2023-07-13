@@ -57,6 +57,11 @@ public class EntityConfig {
     private boolean withLombok;
 
     /**
+     * 实体类数据源。
+     */
+    private String dataSource;
+
+    /**
      * 获取类前缀。
      */
     public String getClassPrefix() {
@@ -143,6 +148,21 @@ public class EntityConfig {
      */
     public EntityConfig setWithLombok(boolean withLombok) {
         this.withLombok = withLombok;
+        return this;
+    }
+
+    /**
+     * 获取实体类数据源。
+     */
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    /**
+     * 设置实体类数据源。
+     */
+    public EntityConfig setDataSource(String dataSource) {
+        this.dataSource = dataSource;
         return this;
     }
 
