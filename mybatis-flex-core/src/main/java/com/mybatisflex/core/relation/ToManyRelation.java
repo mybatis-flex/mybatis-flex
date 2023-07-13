@@ -31,11 +31,11 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
     public ToManyRelation(String selfField, String targetSchema, String targetTable, String targetField,
                           String joinTable, String joinSelfColumn, String joinTargetColumn,
                           String dataSource, Class<SelfEntity> selfEntityClass, Field relationField,
-                          List<Condition> extraConditions) {
+                          String extraCondition) {
         super(selfField, targetSchema, targetTable, targetField,
             joinTable, joinSelfColumn, joinTargetColumn,
             dataSource, selfEntityClass, relationField,
-            extraConditions
+            extraCondition
         );
     }
 

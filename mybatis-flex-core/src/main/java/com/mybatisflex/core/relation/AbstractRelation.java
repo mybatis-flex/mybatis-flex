@@ -32,6 +32,7 @@ import static com.mybatisflex.core.query.QueryMethods.column;
 
 abstract class AbstractRelation<SelfEntity> {
 
+    protected String name;
     protected Class<SelfEntity> selfEntityClass;
     protected Field relationField;
     protected FieldWrapper relationFieldWrapper;
@@ -51,13 +52,16 @@ abstract class AbstractRelation<SelfEntity> {
     protected String joinTargetColumn;
 
     protected String dataSource;
-    protected List<Condition> extraConditions;
+
+    protected String extraConditionSql;
+    protected List<String> extraConditionParamKeys;
 
     public AbstractRelation(String selfField, String targetSchema, String targetTable, String targetField,
                             String joinTable, String joinSelfColumn, String joinTargetColumn,
                             String dataSource, Class<SelfEntity> entityClass, Field relationField,
-                            List<Condition> extraConditions
+                            String extraCondition
     ) {
+        this.name = entityClass.getSimpleName()+"."+relationField.getName();
         this.selfEntityClass = entityClass;
         this.relationField = relationField;
         this.relationFieldWrapper = FieldWrapper.of(entityClass, relationField.getName());
@@ -80,9 +84,64 @@ abstract class AbstractRelation<SelfEntity> {
         this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
 
         this.targetTableInfo = TableInfoFactory.ofEntityClass(targetEntityClass);
-        this.extraConditions = extraConditions;
+
+        initExtraCondition(extraCondition);
     }
 
+    protected void initExtraCondition(String extraCondition) {
+        if (StringUtil.isBlank(extraCondition)) {
+            return;
+        }
+
+
+        List<String> sqlParamKeys = null;
+        char[] chars = extraCondition.toCharArray();
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append(chars[0]);
+        char prev, current;
+        boolean keyStart = false;
+        StringBuilder currentKey = null;
+        for (int i = 1; i < chars.length; i++) {
+            prev = chars[i - 1];
+            current = chars[i];
+            if (prev == ' ' && current == ':') {
+                keyStart = true;
+                currentKey = new StringBuilder();
+            } else if (keyStart) {
+                if (current != ' ' && current != ')') {
+                    currentKey.append(current);
+                } else {
+                    if (sqlParamKeys == null) {
+                        sqlParamKeys = new ArrayList<>();
+                    }
+                    sqlParamKeys.add(currentKey.toString());
+                    sqlBuilder.append("?").append(current);
+                    keyStart = false;
+                    currentKey = null;
+                }
+            } else {
+                sqlBuilder.append(current);
+            }
+        }
+        if (keyStart && currentKey != null && currentKey.length() > 0) {
+            if (sqlParamKeys == null) {
+                sqlParamKeys = new ArrayList<>();
+            }
+            sqlParamKeys.add(currentKey.toString());
+            sqlBuilder.append(" ?");
+        }
+
+        this.extraConditionSql = sqlBuilder.toString();
+        this.extraConditionParamKeys = sqlParamKeys != null ? sqlParamKeys : Collections.emptyList();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Class<SelfEntity> getSelfEntityClass() {
         return selfEntityClass;
@@ -210,13 +269,6 @@ abstract class AbstractRelation<SelfEntity> {
         return values;
     }
 
-    public List<Condition> getExtraConditions() {
-        return extraConditions;
-    }
-
-    public void setExtraConditions(List<Condition> extraConditions) {
-        this.extraConditions = extraConditions;
-    }
 
     public Class<?> getMappingType() {
         return relationFieldWrapper.getMappingType();
@@ -261,17 +313,6 @@ abstract class AbstractRelation<SelfEntity> {
         return primaryKeyList.get(0).getProperty();
     }
 
-    protected static List<Condition> buildConditions(com.mybatisflex.annotation.Condition[] conditions){
-        if (conditions == null || conditions.length == 0){
-            return null;
-        }
-        List<Condition>  conditionList = new ArrayList<>();
-        for (com.mybatisflex.annotation.Condition condition : conditions) {
-            conditionList.add(new Condition(condition));
-        }
-        return conditionList;
-    }
-
 
     /**
      * 构建查询目标对象的 QueryWrapper
@@ -290,10 +331,8 @@ abstract class AbstractRelation<SelfEntity> {
             queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).eq(targetValues.iterator().next()));
         }
 
-        if (extraConditions != null) {
-            for (Condition extraCondition : extraConditions) {
-                queryWrapper.and(extraCondition.toQueryCondition());
-            }
+        if (StringUtil.isNotBlank(extraConditionSql)) {
+            queryWrapper.and(extraConditionSql, RelationManager.getExtraConditionParams(extraConditionParamKeys));
         }
 
         customizeQueryWrapper(queryWrapper);

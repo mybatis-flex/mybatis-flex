@@ -20,6 +20,7 @@ import com.mybatisflex.annotation.RelationManyToOne;
 import com.mybatisflex.annotation.RelationOneToMany;
 import com.mybatisflex.annotation.RelationOneToOne;
 import com.mybatisflex.core.BaseMapper;
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
@@ -43,7 +44,17 @@ public class RelationManager {
     }
 
     private static Map<Class<?>, List<AbstractRelation>> classRelations = new ConcurrentHashMap<>();
-    private static ThreadLocal<Integer> depthThreadLocal = ThreadLocal.withInitial(() -> 3);
+
+    /**
+     * 递归查询深度，默认为 2，在一些特殊场景下可以修改这个值
+     */
+    private static ThreadLocal<Integer> depthThreadLocal = ThreadLocal.withInitial(() -> 2);
+
+    /**
+     * 附加条件的查询参数
+     */
+    private static ThreadLocal<Map<String, Object>> extraConditionParams = new ThreadLocal<>();
+
 
     private static List<AbstractRelation> getRelations(Class<?> clazz) {
         return MapUtil.computeIfAbsent(classRelations, clazz, RelationManager::doGetRelations);
@@ -76,12 +87,47 @@ public class RelationManager {
         return relations;
     }
 
-    public static void setMaxDepth(int maxDepth){
+    public static void setMaxDepth(int maxDepth) {
         depthThreadLocal.set(maxDepth);
     }
 
-    public static int getMaxDepth(){
+    public static int getMaxDepth() {
         return depthThreadLocal.get();
+    }
+
+    public static void setExtraConditionParams(Map<String, Object> params) {
+        extraConditionParams.set(params);
+    }
+
+    public static void addExtraConditionParam(String key, String value) {
+        Map<String, Object> params = extraConditionParams.get();
+        if (params == null) {
+            params = new HashMap<>();
+            extraConditionParams.set(params);
+        }
+        params.put(key, value);
+    }
+
+    public static Map<String, Object> getExtraConditionParams() {
+        return extraConditionParams.get();
+    }
+
+
+    static Object[] getExtraConditionParams(List<String> keys) {
+        if (keys == null || keys.isEmpty()) {
+            return FlexConsts.EMPTY_ARRAY;
+        }
+        Map<String, Object> paramMap = extraConditionParams.get();
+        if (paramMap == null || paramMap.isEmpty()) {
+            return new Object[keys.size()];
+        }
+
+        Object[] params = new Object[keys.size()];
+        for (int i = 0; i < keys.size(); i++) {
+            params[i] = paramMap.get(keys.get(i));
+        }
+
+        return params;
     }
 
 
@@ -108,8 +154,6 @@ public class RelationManager {
         String currentDsKey = DataSourceKey.get();
         try {
             relations.forEach(relation -> {
-
-                Class mappingType = relation.getMappingType();
 
                 Set<Object> targetValues;
                 List<Row> mappingRows = null;
@@ -159,7 +203,7 @@ public class RelationManager {
                     }
 
                     QueryWrapper queryWrapper = relation.buildQueryWrapper(targetValues);
-                    List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, mappingType);
+                    List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, relation.getMappingType());
                     if (CollectionUtil.isNotEmpty(targetObjectList)) {
                         doQueryRelations(mapper, targetObjectList, currentDepth + 1, maxDepth);
                         relation.join(entities, targetObjectList, mappingRows);

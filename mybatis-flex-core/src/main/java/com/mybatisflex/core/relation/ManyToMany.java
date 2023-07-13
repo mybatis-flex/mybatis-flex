@@ -34,7 +34,7 @@ class ManyToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
             , annotation.joinSelfColumn()
             , annotation.joinTargetColumn()
             , annotation.dataSource(), entityClass, relationField
-            , buildConditions(annotation.extraConditions()));
+            , annotation.extraCondition());
         this.orderBy = annotation.orderBy();
     }
 

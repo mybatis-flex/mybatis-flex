@@ -91,7 +91,7 @@ public @interface RelationManyToMany {
     /**
      * 查询时，追加的额外条件。
      */
-    Condition[] extraConditions() default {};
+    String extraCondition() default "";
 
     /**
      * 查询排序。

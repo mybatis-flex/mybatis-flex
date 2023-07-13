@@ -50,9 +50,7 @@ public class Account implements Serializable {
         joinTable = "tb_role_mapping",
         joinSelfColumn = "account_id",
         joinTargetColumn = "role_id",
-        extraConditions = {
-            @Condition(column = "name", logic = "is not null"),
-        }
+        extraCondition = "(name like '%2%' or id > 1)"
     )
     private List<Role> roles;
 
