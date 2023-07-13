@@ -66,13 +66,13 @@ public class ContentBuilder {
         content.append("public class ").append(tableDefClassName).append(" extends TableDef {\n\n");
         if (!allInTablesEnable) {
             content.append("    public static final ").append(tableDefClassName).append(' ').append(StrUtil.buildFieldName(entityClassName.concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
-                    .append(" = new ").append(tableDefClassName).append("();\n\n");
+                .append(" = new ").append(tableDefClassName).append("();\n\n");
         }
         columnInfos.forEach((columnInfo) -> {
             content.append("    public final QueryColumn ")
-                    .append(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle))
-                    .append(" = new QueryColumn(this, \"")
-                    .append(columnInfo.getColumn()).append("\"");
+                .append(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle))
+                .append(" = new QueryColumn(this, \"")
+                .append(columnInfo.getColumn()).append("\"");
             if (columnInfo.getAlias() != null && columnInfo.getAlias().length > 0) {
                 content.append(", \"").append(columnInfo.getAlias()[0]).append("\"");
             }
@@ -87,14 +87,14 @@ public class ContentBuilder {
         });
         content.append("    public final QueryColumn[] ").append(StrUtil.buildFieldName("defaultColumns", tableDefPropertiesNameStyle)).append(" = new QueryColumn[]{").append(defaultColumnJoiner).append("};\n\n");
         String schema = !StrUtil.isBlank(table.schema())
-                ? table.schema()
-                : "";
+            ? table.schema()
+            : "";
         String tableName = !StrUtil.isBlank(table.value())
-                ? table.value()
-                : StrUtil.firstCharToLowerCase(entityClassName);
+            ? table.value()
+            : StrUtil.firstCharToLowerCase(entityClassName);
         content.append("    public ").append(tableDefClassName).append("() {\n")
-                .append("        super").append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n")
-                .append("    }\n\n}\n");
+            .append("        super").append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n")
+            .append("    }\n\n}\n");
         return content.toString();
     }
 
@@ -104,13 +104,13 @@ public class ContentBuilder {
     public static String buildTables(StringBuilder importBuilder, StringBuilder fieldBuilder,
                                      String tablesPackage, String tablesClassName) {
         return "package " + tablesPackage + ";\n\n" +
-                importBuilder.toString() +
-                "\n// Auto generate by mybatis-flex, do not modify it.\n" +
-                "public class " + tablesClassName + " {\n\n" +
-                "    private " + tablesClassName + "() {\n" +
-                "    }\n\n" +
-                fieldBuilder.toString() +
-                "\n}\n";
+            importBuilder.toString() +
+            "\n// Auto generate by mybatis-flex, do not modify it.\n" +
+            "public class " + tablesClassName + " {\n\n" +
+            "    private " + tablesClassName + "() {\n" +
+            "    }\n\n" +
+            fieldBuilder.toString() +
+            "\n}\n";
     }
 
     /**
@@ -122,8 +122,8 @@ public class ContentBuilder {
         String tableDefClassName = entityClassName.concat(tableDefClassSuffix);
         importBuilder.append("import ").append(tableDefPackage).append('.').append(tableDefClassName).append(";\n");
         fieldBuilder.append("    public static final ").append(tableDefClassName).append(' ')
-                .append(StrUtil.buildFieldName(entityClassName.concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
-                .append(" = new ").append(tableDefClassName).append("();\n");
+            .append(StrUtil.buildFieldName(entityClassName.concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
+            .append(" = new ").append(tableDefClassName).append("();\n");
     }
 
 }
