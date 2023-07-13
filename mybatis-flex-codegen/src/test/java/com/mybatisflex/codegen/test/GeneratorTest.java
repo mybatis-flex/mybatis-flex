@@ -23,6 +23,7 @@ import com.mybatisflex.codegen.config.TableConfig;
 import com.mybatisflex.codegen.config.TableDefConfig;
 import com.mybatisflex.spring.service.impl.CacheableServiceImpl;
 import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Test;
 
 import java.util.function.UnaryOperator;
 
@@ -100,19 +101,19 @@ public class GeneratorTest {
 
         //设置注解生成配置
         globalConfig.getJavadocConfig()
-                .setAuthor("王帅")
-                .setTableCommentFormat(tableFormat);
+            .setAuthor("王帅")
+            .setTableCommentFormat(tableFormat);
 
         //设置生成文件目录和根包
         globalConfig.getPackageConfig()
-                .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
-                .setMapperXmlPath(System.getProperty("user.dir") + "/src/test/java/resources/mapper")
-                .setBasePackage("com.test");
+            .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
+            .setMapperXmlPath(System.getProperty("user.dir") + "/src/test/java/resources/mapper")
+            .setBasePackage("com.test");
 
         //设置表前缀和只生成哪些表
         globalConfig.getStrategyConfig()
-                .setTablePrefix("sys_")
-                .setGenerateTable("sys_user");
+            .setTablePrefix("sys_")
+            .setGenerateTable("sys_user");
 
         //设置模板路径
         //globalConfig.getTemplateConfig()
@@ -120,9 +121,9 @@ public class GeneratorTest {
 
         //配置生成 entity
         globalConfig.enableEntity()
-                .setOverwriteEnable(true)
-                .setWithLombok(true)
-                .setSupperClass(BaseEntity.class);
+            .setOverwriteEnable(true)
+            .setWithLombok(true)
+            .setSupperClass(BaseEntity.class);
 
         //配置生成 mapper
         globalConfig.enableMapper();
@@ -130,8 +131,8 @@ public class GeneratorTest {
         globalConfig.enableService();
         //配置生成 serviceImpl
         globalConfig.enableServiceImpl()
-                .setSupperClass(CacheableServiceImpl.class)
-                .setCacheExample(true);
+            .setSupperClass(CacheableServiceImpl.class)
+            .setCacheExample(true);
         //配置生成 controller
         globalConfig.enableController();
         //配置生成 tableDef
@@ -148,7 +149,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-//    @Test
+    @Test
     public void testCodeGen3() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -163,14 +164,14 @@ public class GeneratorTest {
 
         //设置注解生成配置
         globalConfig.getJavadocConfig()
-                .setAuthor("王帅")
-                .setTableCommentFormat(tableFormat);
+            .setAuthor("王帅")
+            .setTableCommentFormat(tableFormat);
 
         //设置生成文件目录和根包
         globalConfig.getPackageConfig()
-                .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
-                .setMapperXmlPath(System.getProperty("user.dir") + "/src/test/java/resources/mapper")
-                .setBasePackage("com.test");
+            .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
+            .setMapperXmlPath(System.getProperty("user.dir") + "/src/test/java/resources/mapper")
+            .setBasePackage("com.test");
 
         ColumnConfig columnConfig = new ColumnConfig();
         columnConfig.setColumnName("phonenumber");
@@ -186,26 +187,27 @@ public class GeneratorTest {
 
         //设置表前缀和只生成哪些表
         globalConfig.getStrategyConfig()
-                .setTablePrefix("sys_")
-                .setGenerateTable("sys_user")
-                .setColumnConfig(logicDelete)
-                .setTableConfig(tableConfig);
+            .setTablePrefix("sys_")
+            .setGenerateTable("sys_user")
+            .setColumnConfig(logicDelete)
+            .setTableConfig(tableConfig);
 
         //配置生成 tableDef
         globalConfig.enableTableDef()
-                .setInstanceSuffix("Def")
-                .setPropertiesNameStyle(TableDefConfig.NameStyle.LOWER_CAMEL_CASE)
-                .setOverwriteEnable(true);
+            .setInstanceSuffix("Def")
+            .setPropertiesNameStyle(TableDefConfig.NameStyle.LOWER_CAMEL_CASE)
+            .setOverwriteEnable(true);
 
         // 配置生成 entity
         globalConfig.enableEntity()
-                .setOverwriteEnable(true)
-                .setWithLombok(true);
+            .setOverwriteEnable(true)
+            .setDataSource("ds1")
+            .setWithLombok(true);
 
         // 配置生成 mapper
         globalConfig.enableMapper()
-                .setOverwriteEnable(true)
-                .setMapperAnnotation(true);
+            .setOverwriteEnable(true)
+            .setMapperAnnotation(true);
 
         //通过 datasource 和 globalConfig 创建代码生成器
         Generator generator = new Generator(dataSource, globalConfig);
