@@ -62,6 +62,12 @@ public class RelationManager {
     private static ThreadLocal<Set<String>> ignoreRelations = new ThreadLocal<>();
 
 
+    /**
+     * 每次查询是否自动清除 depth  extraConditionParams ignoreRelations 的配置
+     */
+    private static ThreadLocal<Boolean> autoClearConfig = ThreadLocal.withInitial(() -> true);
+
+
     private static List<AbstractRelation> getRelations(Class<?> clazz) {
         return MapUtil.computeIfAbsent(classRelations, clazz, RelationManager::doGetRelations);
     }
@@ -101,6 +107,11 @@ public class RelationManager {
         return depthThreadLocal.get();
     }
 
+    public static void clearMaxDepth() {
+        extraConditionParams.remove();
+    }
+
+
     public static void setExtraConditionParams(Map<String, Object> params) {
         extraConditionParams.set(params);
     }
@@ -118,6 +129,11 @@ public class RelationManager {
         return extraConditionParams.get();
     }
 
+    public static void clearExtraConditionParams() {
+        extraConditionParams.remove();
+    }
+
+
     public static void setIgnoreRelations(Set<String> ignoreRelations) {
         RelationManager.ignoreRelations.set(ignoreRelations);
     }
@@ -133,6 +149,23 @@ public class RelationManager {
 
     public static Set<String> getIgnoreRelations() {
         return ignoreRelations.get();
+    }
+
+    public static void clearIgnoreRelations() {
+        ignoreRelations.remove();
+    }
+
+
+    public static void setAutoClearConfig(boolean enable) {
+        autoClearConfig.set(enable);
+    }
+
+    public static boolean getAutoClearConfig() {
+        return autoClearConfig.get();
+    }
+
+    public static void clearAutoClearConfig() {
+        autoClearConfig.remove();
     }
 
 
@@ -155,7 +188,17 @@ public class RelationManager {
 
 
     public static <Entity> void queryRelations(BaseMapper<?> mapper, List<Entity> entities) {
+
         doQueryRelations(mapper, entities, 0, depthThreadLocal.get(), ignoreRelations.get());
+
+        Boolean autoClearEnable = autoClearConfig.get();
+
+        //自动清除用户配置
+        if (autoClearEnable != null && autoClearEnable) {
+            depthThreadLocal.remove();
+            extraConditionParams.remove();
+            ignoreRelations.remove();
+        }
     }
 
 
