@@ -35,14 +35,26 @@ public @interface RelationManyToMany {
 	String selfField() default "";
 
     /**
-     * 目标实体类对应的表的 schema，一般关联数据不是 entity，而是 vo、dto 等需要配置此项
+     * <p>
+     * 目标实体类对应的表的 schema 模式。
+     *
+     * <p>
+     * 如果目标实体类没有使用 {@code @Table(schema = "...")} 指定 schema 时，
+     * 需要在这里指定对应表的 schema 值。一般关联数据不是 entity 对象，而是 vo、dto
+     * 等需要配置此项。
      *
      * @return schema 名称
      */
     String targetSchema() default "";
 
     /**
-     * 目标实体类对应的表，一般关联数据不是 entity，而是 vo、dto 等需要配置此项
+     * <p>
+     * 目标实体类对应的表名。
+     *
+     * <p>
+     * 如果目标实体类没有使用 {@code @Table(value = "...")} 指定表名时，
+     * 需要在这里指定对应表的表名。一般关联数据不是 entity 对象，而是 vo、dto
+     * 等需要配置此项。
      *
      * @return 表名
      */
