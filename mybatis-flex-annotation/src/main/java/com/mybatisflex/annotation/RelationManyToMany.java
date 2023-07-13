@@ -32,7 +32,7 @@ public @interface RelationManyToMany {
      *
      * @return 属性名称
      */
-	String selfField() default "";
+    String selfField() default "";
 
     /**
      * <p>
@@ -64,47 +64,47 @@ public @interface RelationManyToMany {
      * 目标实体类的关联属性。
      *
      * @return 属性名称
-	 */
-	String targetField() default "";
+     */
+    String targetField() default "";
 
     /**
      * 中间表名称。
      *
      * @return 中间表名称
-	 */
-	String joinTable();
+     */
+    String joinTable();
 
     /**
      * 中间表与当前表的关联字段。
      *
      * @return 字段名称，列名
-	 */
-	String joinSelfColumn();
+     */
+    String joinSelfColumn();
 
     /**
      * 目标表的关联字段名称。
      *
      * @return 字段名称和表
-	 */
-	String joinTargetColumn();
+     */
+    String joinTargetColumn();
 
     /**
      * 查询时，追加的额外条件。
      */
-	Condition[] extraConditions() default {};
+    Condition[] extraConditions() default {};
 
     /**
      * 查询排序。
      *
      * @return 排序方式
-	 */
-	String orderBy() default "";
+     */
+    String orderBy() default "";
 
     /**
      * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源。
      *
      * @return 数据源
-	 */
-	String dataSource() default "";
+     */
+    String dataSource() default "";
 
 }

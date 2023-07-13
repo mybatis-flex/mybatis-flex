@@ -64,7 +64,7 @@ public @interface RelationManyToOne {
      * 目标实体类的关联属性。
      *
      * @return 属性名称
-	 */
+     */
     String targetField() default "";
 
     /**
@@ -92,7 +92,7 @@ public @interface RelationManyToOne {
      * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源。
      *
      * @return 数据源
-	 */
-	String dataSource() default "";
+     */
+    String dataSource() default "";
 
 }

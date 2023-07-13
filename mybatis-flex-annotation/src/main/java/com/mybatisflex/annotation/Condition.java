@@ -30,7 +30,7 @@ public @interface Condition {
     /**
      * 列名。
      */
-	String column();
+    String column();
 
     /**
      * 逻辑值，> , >= , = ,  IS NULL, IS NOT NULL 等。

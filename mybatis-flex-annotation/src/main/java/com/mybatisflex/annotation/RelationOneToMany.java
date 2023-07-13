@@ -32,7 +32,7 @@ public @interface RelationOneToMany {
      *
      * @return 属性名称
      */
-	String selfField() default "";
+    String selfField() default "";
 
     /**
      * <p>
@@ -64,8 +64,8 @@ public @interface RelationOneToMany {
      * 目标实体类的关联属性。
      *
      * @return 属性名称
-	 */
-	String targetField();
+     */
+    String targetField();
 
     /**
      * 中间表名称，一对一的关系是通过通过中间表维护时，需要添加此项配置。
@@ -97,21 +97,21 @@ public @interface RelationOneToMany {
      * 查询排序。
      *
      * @return 排序方式
-	 */
-	String orderBy() default "";
+     */
+    String orderBy() default "";
 
     /**
      * 现在查询的数据量。
      *
      * @return 数据量
-	 */
-	int limit() default 0;
+     */
+    int limit() default 0;
 
     /**
      * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源。
      *
      * @return 数据源
-	 */
-	String dataSource() default "";
+     */
+    String dataSource() default "";
 
 }
