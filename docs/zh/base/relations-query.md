@@ -441,7 +441,7 @@ RelationManager.setMaxDepth(10);
 List<Menu> menus = menuMapper.selectListWithRelationsByQuery(qw);
 ```
 
->`RelationManager.setMaxDepth(10)` 的配置，只在当前线程有效。
+>`RelationManager.setMaxDepth(10)` 的配置，只在当前第一次查询有效，查询后会清除设置。
 
 ## 忽略部分 Relation 注解
 
@@ -467,8 +467,7 @@ public class Account implements Serializable {
     @RelationManyToMany(
             joinTable = "tb_role_mapping",
             joinSelfColumn = "account_id",
-            joinTargetColumn = "role_id",
-            extraCondition = "name like '%2%' or id > 1"
+            joinTargetColumn = "role_id"
     )
     private List<Role> roles;
 
@@ -485,7 +484,7 @@ RelationManager.addIgnoreRelations("idCard","books");
 List<Account> accounts = accountMapper.selectAllWithRelations();
 ```
 
->`addIgnoreRelations()` 方法的配置，只在当前线程有效。
+>`addIgnoreRelations()` 方法的配置，只在当前第一次查询有效，查询后会清除设置。
 
 
 ## 附加条件
