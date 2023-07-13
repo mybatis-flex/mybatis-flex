@@ -29,3 +29,6 @@
 - [MyBatis-Flex 视频教程 - 05 自动生成类的介绍](https://www.bilibili.com/video/BV1XF411R7pQ)
 - [MyBatis-Flex 视频教程 - 06 MyBatis-Flex 的配置选项](https://www.bilibili.com/video/BV1ys4y1676q)
 - [MyBatis-Flex 视频教程 - 07 初识 BaseMapper 接口](https://www.bilibili.com/video/BV1Pm4y1E7PV)
+- [MyBatis-Flex 视频教程 - 08 插入数据](https://www.bilibili.com/video/BV1Mz4y177jy)
+- [MyBatis-Flex 视频教程 - 09 删除数据](https://www.bilibili.com/video/BV1gV4y1h7Jf)
+- [MyBatis-Flex 视频教程 - 10 更新数据](https://www.bilibili.com/video/BV1Cg4y1w79y)
