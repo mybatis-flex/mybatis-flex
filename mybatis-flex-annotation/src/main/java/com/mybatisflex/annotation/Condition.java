@@ -28,17 +28,17 @@ import java.lang.annotation.*;
 public @interface Condition {
 
     /**
-     * 列名
+     * 列名。
      */
-	String column();
+    String column();
 
     /**
-     * 逻辑值，> , >= , = ,  IS NULL, IS NOT NULL 等
+     * 逻辑值，> , >= , = ,  IS NULL, IS NOT NULL 等。
      */
     String logic() default " = ";
 
     /**
-     * 值
+     * 值。
      */
     String[] value() default {};
 

@@ -22,6 +22,7 @@ import java.lang.annotation.Target;
 
 /**
  * 数据库表信息注解。
+ *
  * @author Michael Yang
  */
 @Retention(RetentionPolicy.RUNTIME)

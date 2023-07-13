@@ -32,17 +32,29 @@ public @interface RelationManyToMany {
      *
      * @return 属性名称
      */
-	String selfField() default "";
+    String selfField() default "";
 
     /**
-     * 目标实体类对应的表的 schema，一般情况下，关联数据不是 entity，而是 vo、dto 等需要配置此项
+     * <p>
+     * 目标实体类对应的表的 schema 模式。
+     *
+     * <p>
+     * 如果目标实体类没有使用 {@code @Table(schema = "...")} 指定 schema 时，
+     * 需要在这里指定对应表的 schema 值。一般关联数据不是 entity 对象，而是 vo、dto
+     * 等需要配置此项。
      *
      * @return schema 名称
      */
     String targetSchema() default "";
 
     /**
-     * 目标实体类对应的表，一般情况下，关联数据不是 entity，而是 vo、dto 等需要配置此项
+     * <p>
+     * 目标实体类对应的表名。
+     *
+     * <p>
+     * 如果目标实体类没有使用 {@code @Table(value = "...")} 指定表名时，
+     * 需要在这里指定对应表的表名。一般关联数据不是 entity 对象，而是 vo、dto
+     * 等需要配置此项。
      *
      * @return 表名
      */
@@ -52,48 +64,47 @@ public @interface RelationManyToMany {
      * 目标实体类的关联属性。
      *
      * @return 属性名称
-	 */
-	String targetField() default "";
+     */
+    String targetField() default "";
 
     /**
      * 中间表名称。
      *
      * @return 中间表名称
-	 */
-	String joinTable();
+     */
+    String joinTable();
 
     /**
      * 中间表与当前表的关联字段。
      *
      * @return 字段名称，列名
-	 */
-	String joinSelfColumn();
+     */
+    String joinSelfColumn();
 
     /**
      * 目标表的关联字段名称。
      *
      * @return 字段名称和表
-	 */
-	String joinTargetColumn();
+     */
+    String joinTargetColumn();
 
     /**
-     * 查询时，追加的额外条件
+     * 查询时，追加的额外条件。
      */
-	Condition[] extraConditions() default {};
+    Condition[] extraConditions() default {};
 
     /**
      * 查询排序。
      *
      * @return 排序方式
-	 */
-	String orderBy() default "";
+     */
+    String orderBy() default "";
 
     /**
      * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源。
      *
      * @return 数据源
-	 */
-	String dataSource() default "";
-
+     */
+    String dataSource() default "";
 
 }
