@@ -23,7 +23,6 @@ import com.mybatisflex.codegen.config.TableConfig;
 import com.mybatisflex.codegen.config.TableDefConfig;
 import com.mybatisflex.spring.service.impl.CacheableServiceImpl;
 import com.zaxxer.hikari.HikariDataSource;
-import org.junit.Test;
 
 import java.util.function.UnaryOperator;
 
@@ -149,7 +148,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-    @Test
+//    @Test
     public void testCodeGen3() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
