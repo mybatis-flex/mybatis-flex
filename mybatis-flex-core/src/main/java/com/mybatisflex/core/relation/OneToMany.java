@@ -16,76 +16,41 @@
 package com.mybatisflex.core.relation;
 
 import com.mybatisflex.annotation.RelationOneToMany;
-import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.util.ClassUtil;
-import com.mybatisflex.core.util.MapperUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
-import static com.mybatisflex.core.query.QueryMethods.column;
+class OneToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
 
-class OneToMany<SelfEntity> extends AbstractRelation<SelfEntity> {
-
-	private String orderBy;
-	private int limit;
+    private String orderBy;
+    private int limit;
 
 
-	public OneToMany(RelationOneToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
-		super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationOneToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
+    public OneToMany(RelationOneToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
+        super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationOneToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
             , annotation.targetSchema()
             , annotation.targetTable()
-			, annotation.targetField(), annotation.dataSource(), entityClass, relationField);
-		this.orderBy = annotation.orderBy();
-		this.limit = annotation.limit();
-	}
-
-	@Override
-	public QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities) {
-		Set<Object> selfFieldValues = getSelfFieldValues(selfEntities);
-		if (selfFieldValues.isEmpty()) {
-			return null;
-		}
-		QueryWrapper queryWrapper = QueryWrapper.create().select()
-			.from(getTargetTableWithSchema());
-		if (selfFieldValues.size() > 1) {
-			queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).in(selfFieldValues));
-		} else {
-			queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).eq(selfFieldValues.iterator().next()));
-		}
-
-		if (StringUtil.isNotBlank(orderBy)) {
-			queryWrapper.orderBy(orderBy);
-		}
-
-		if (limit > 0) {
-			queryWrapper.limit(limit);
-		}
-
-		return queryWrapper;
-	}
+            , annotation.targetField()
+            , annotation.joinTable()
+            , annotation.joinSelfColumn()
+            , annotation.joinTargetColumn()
+            , annotation.dataSource(), entityClass, relationField
+            , buildConditions(annotation.extraConditions()));
+        this.orderBy = annotation.orderBy();
+        this.limit = annotation.limit();
+    }
 
 
-	@Override
-	public void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper, Set<Class<?>> queriedClasses) {
-		selfEntities.forEach(selfEntity -> {
-			Object selfValue = selfFieldWrapper.get(selfEntity);
-			if (selfValue != null) {
-			    selfValue = selfValue.toString();
-				Class<?> wrapType = MapperUtil.getWrapType(relationFieldWrapper.getFieldType());
-				Collection<Object> collection = (Collection) ClassUtil.newInstance(wrapType);
-				for (Object targetObject : targetObjectList) {
-					Object targetValue = targetFieldWrapper.get(targetObject);
-					if (targetValue != null && selfValue.equals(targetValue.toString())) {
-						collection.add(targetObject);
-					}
-				}
-				relationFieldWrapper.set(collection, selfEntity);
-			}
-		});
-	}
+    @Override
+    public void customizeQueryWrapper(QueryWrapper queryWrapper) {
+        if (StringUtil.isNotBlank(orderBy)) {
+            queryWrapper.orderBy(orderBy);
+        }
+
+        if (limit > 0) {
+            queryWrapper.limit(limit);
+        }
+    }
+
 }

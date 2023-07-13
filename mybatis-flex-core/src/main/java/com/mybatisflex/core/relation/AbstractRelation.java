@@ -15,9 +15,9 @@
  */
 package com.mybatisflex.core.relation;
 
-import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.IdInfo;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
@@ -26,10 +26,9 @@ import com.mybatisflex.core.util.FieldWrapper;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static com.mybatisflex.core.query.QueryMethods.column;
 
 abstract class AbstractRelation<SelfEntity> {
 
@@ -47,13 +46,25 @@ abstract class AbstractRelation<SelfEntity> {
     protected TableInfo targetTableInfo;
     protected FieldWrapper targetFieldWrapper;
 
+    protected String joinTable;
+    protected String joinSelfColumn;
+    protected String joinTargetColumn;
+
     protected String dataSource;
+    protected List<Condition> extraConditions;
 
     public AbstractRelation(String selfField, String targetSchema, String targetTable, String targetField,
-                            String dataSource, Class<SelfEntity> entityClass, Field relationField) {
+                            String joinTable, String joinSelfColumn, String joinTargetColumn,
+                            String dataSource, Class<SelfEntity> entityClass, Field relationField,
+                            List<Condition> extraConditions
+    ) {
         this.selfEntityClass = entityClass;
         this.relationField = relationField;
         this.relationFieldWrapper = FieldWrapper.of(entityClass, relationField.getName());
+
+        this.joinTable = joinTable;
+        this.joinSelfColumn = joinSelfColumn;
+        this.joinTargetColumn = joinTargetColumn;
 
         this.dataSource = dataSource;
 
@@ -69,6 +80,7 @@ abstract class AbstractRelation<SelfEntity> {
         this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
 
         this.targetTableInfo = TableInfoFactory.ofEntityClass(targetEntityClass);
+        this.extraConditions = extraConditions;
     }
 
 
@@ -144,13 +156,52 @@ abstract class AbstractRelation<SelfEntity> {
         this.targetFieldWrapper = targetFieldWrapper;
     }
 
-    protected Set<Object> getSelfFieldValues(List<SelfEntity> list) {
-        if (list == null || list.isEmpty()) {
+    public String getTargetSchema() {
+        return targetSchema;
+    }
+
+    public void setTargetSchema(String targetSchema) {
+        this.targetSchema = targetSchema;
+    }
+
+    public String getTargetTable() {
+        return targetTable;
+    }
+
+    public void setTargetTable(String targetTable) {
+        this.targetTable = targetTable;
+    }
+
+    public String getJoinTable() {
+        return joinTable;
+    }
+
+    public void setJoinTable(String joinTable) {
+        this.joinTable = joinTable;
+    }
+
+    public String getJoinSelfColumn() {
+        return joinSelfColumn;
+    }
+
+    public void setJoinSelfColumn(String joinSelfColumn) {
+        this.joinSelfColumn = joinSelfColumn;
+    }
+
+    public String getJoinTargetColumn() {
+        return joinTargetColumn;
+    }
+
+    public void setJoinTargetColumn(String joinTargetColumn) {
+        this.joinTargetColumn = joinTargetColumn;
+    }
+
+    public Set<Object> getSelfFieldValues(List<SelfEntity> selfEntities) {
+        if (selfEntities == null || selfEntities.isEmpty()) {
             return Collections.emptySet();
         }
-
         Set<Object> values = new LinkedHashSet<>();
-        list.forEach(self -> {
+        selfEntities.forEach(self -> {
             Object value = selfFieldWrapper.get(self);
             if (value != null && !"".equals(value)) {
                 values.add(value);
@@ -159,6 +210,13 @@ abstract class AbstractRelation<SelfEntity> {
         return values;
     }
 
+    public List<Condition> getExtraConditions() {
+        return extraConditions;
+    }
+
+    public void setExtraConditions(List<Condition> extraConditions) {
+        this.extraConditions = extraConditions;
+    }
 
     public Class<?> getMappingType() {
         return relationFieldWrapper.getMappingType();
@@ -180,6 +238,10 @@ abstract class AbstractRelation<SelfEntity> {
         }
     }
 
+    protected boolean isRelationByMiddleTable() {
+        return StringUtil.isNotBlank(joinTable);
+    }
+
 
     protected static Class<?> getTargetEntityClass(Class<?> entityClass, Field relationField) {
         return FieldWrapper.of(entityClass, relationField.getName()).getMappingType();
@@ -199,23 +261,62 @@ abstract class AbstractRelation<SelfEntity> {
         return primaryKeyList.get(0).getProperty();
     }
 
+    protected static List<Condition> buildConditions(com.mybatisflex.annotation.Condition[] conditions){
+        if (conditions == null || conditions.length == 0){
+            return null;
+        }
+        List<Condition>  conditionList = new ArrayList<>();
+        for (com.mybatisflex.annotation.Condition condition : conditions) {
+            conditionList.add(new Condition(condition));
+        }
+        return conditionList;
+    }
+
 
     /**
-     * 把 Relations 的配置转换为查询的 QueryWrapper
+     * 构建查询目标对象的 QueryWrapper
      *
-     * @param selfEntities 当前的实体类
+     * @param targetValues 条件的值
      * @return QueryWrapper
      */
-    public abstract QueryWrapper toQueryWrapper(List<SelfEntity> selfEntities);
+    public QueryWrapper buildQueryWrapper(Set<Object> targetValues) {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select()
+            .from(getTargetTableWithSchema());
+
+        if (targetValues.size() > 1) {
+            queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).in(targetValues));
+        } else {
+            queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).eq(targetValues.iterator().next()));
+        }
+
+        if (extraConditions != null) {
+            for (Condition extraCondition : extraConditions) {
+                queryWrapper.and(extraCondition.toQueryCondition());
+            }
+        }
+
+        customizeQueryWrapper(queryWrapper);
+
+        return queryWrapper;
+    }
 
 
     /**
-     * 通过 {@link AbstractRelation#toQueryWrapper(List)} 查询到的结果，通过此方法进行内存 join
+     * 方便子类最近自定义的条件
      *
+     * @param queryWrapper 查询条件
+     */
+    public void customizeQueryWrapper(QueryWrapper queryWrapper) {
+        //do thing
+    }
+
+
+    /**
      * @param selfEntities     当前的实体类列表
      * @param targetObjectList 查询到的结果
-     * @param mapper           查询的 Mapper
-     * @param queriedClasses
+     * @param mappingRows      中间表的映射数据，非中间表查询的场景下，mappingRows 永远为 null
      */
-    public abstract void join(List<SelfEntity> selfEntities, List<?> targetObjectList, BaseMapper<?> mapper, Set<Class<?>> queriedClasses);
+    public abstract void join(List<SelfEntity> selfEntities, List<?> targetObjectList, List<Row> mappingRows);
+
 }

@@ -32,6 +32,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.mybatisflex.core.query.QueryMethods.column;
+
 /**
  * @author michael
  */
@@ -98,8 +100,47 @@ public class RelationManager {
         try {
             relations.forEach(relation -> {
 
-                QueryWrapper queryWrapper = relation.toQueryWrapper(entities);
-                Class<?> mappingType = relation.getMappingType();
+                Class mappingType = relation.getMappingType();
+                if (queriedClasses.contains(mappingType)) {
+                    return;
+                }
+
+                Set<Object> targetValues;
+                List<Row> mappingRows = null;
+
+                //通过中间表关联查询
+                if (relation.isRelationByMiddleTable()) {
+                    targetValues = new HashSet<>();
+                    Set selfFieldValues = relation.getSelfFieldValues(entities);
+                    QueryWrapper queryWrapper = QueryWrapper.create().select()
+                        .from(relation.getJoinTable());
+                    if (selfFieldValues.size() > 1) {
+                        queryWrapper.where(column(relation.getJoinSelfColumn()).in(selfFieldValues));
+                    } else {
+                        queryWrapper.where(column(relation.getJoinTargetColumn()).eq(selfFieldValues.iterator().next()));
+                    }
+
+                    mappingRows = mapper.selectListByQueryAs(queryWrapper, Row.class);
+                    if (CollectionUtil.isEmpty(mappingRows)) {
+                        return;
+                    }
+
+                    for (Row mappingData : mappingRows) {
+                        Object targetValue = mappingData.getIgnoreCase(relation.getJoinTargetColumn());
+                        if (targetValue != null) {
+                            targetValues.add(targetValue);
+                        }
+                    }
+                }
+                //通过外键字段关联查询
+                else {
+                    targetValues = relation.getSelfFieldValues(entities);
+                }
+
+                if (CollectionUtil.isEmpty(targetValues)) {
+                    return;
+                }
+
 
                 String dataSource = relation.getDataSource();
                 if (StringUtil.isBlank(dataSource) && currentDsKey != null) {
@@ -111,13 +152,11 @@ public class RelationManager {
                         DataSourceKey.use(dataSource);
                     }
 
+                    QueryWrapper queryWrapper = relation.buildQueryWrapper(targetValues);
                     List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, mappingType);
-                    if (mappingType != Row.class) {
-                        doQueryRelations(mapper, targetObjectList, queriedClasses);
-                    }
-
                     if (CollectionUtil.isNotEmpty(targetObjectList)) {
-                        relation.join(entities, targetObjectList, mapper, queriedClasses);
+                        doQueryRelations(mapper, targetObjectList, queriedClasses);
+                        relation.join(entities, targetObjectList, mappingRows);
                     }
                 } finally {
                     if (StringUtil.isNotBlank(dataSource)) {
