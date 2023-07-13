@@ -223,6 +223,12 @@ public class Table {
             tableAnnotation.append(", schema = \"").append(globalSchema).append("\"");
         }
 
+        // 添加 dataSource 配置，因为代码生成器是一个数据源生成的，所以这些实体类应该都是一个数据源。
+        String dataSource = globalConfig.getEntityDataSource();
+        if (StringUtil.isNotBlank(dataSource)) {
+            tableAnnotation.append(", dataSource = \"").append(dataSource).append("\"");
+        }
+
         if (tableConfig != null) {
             if (StringUtil.isNotBlank(tableConfig.getSchema())) {
                 tableAnnotation.append(", schema = \"").append(tableConfig.getSchema()).append("\"");
