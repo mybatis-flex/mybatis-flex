@@ -43,6 +43,7 @@ public class RelationManager {
     }
 
     private static Map<Class<?>, List<AbstractRelation>> classRelations = new ConcurrentHashMap<>();
+    private static ThreadLocal<Integer> depthThreadLocal = ThreadLocal.withInitial(() -> 3);
 
     private static List<AbstractRelation> getRelations(Class<?> clazz) {
         return MapUtil.computeIfAbsent(classRelations, clazz, RelationManager::doGetRelations);
@@ -75,23 +76,31 @@ public class RelationManager {
         return relations;
     }
 
+    public static void setMaxDepth(int maxDepth){
+        depthThreadLocal.set(maxDepth);
+    }
+
+    public static int getMaxDepth(){
+        return depthThreadLocal.get();
+    }
+
 
     public static <Entity> void queryRelations(BaseMapper<?> mapper, List<Entity> entities) {
-        doQueryRelations(mapper, entities, new HashSet<>());
+        doQueryRelations(mapper, entities, 0, depthThreadLocal.get());
     }
 
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    static <Entity> void doQueryRelations(BaseMapper<?> mapper, List<Entity> entities, Set<Class<?>> queriedClasses) {
+    static <Entity> void doQueryRelations(BaseMapper<?> mapper, List<Entity> entities, int currentDepth, int maxDepth) {
         if (CollectionUtil.isEmpty(entities)) {
             return;
         }
         Class<Entity> objectClass = (Class<Entity>) entities.get(0).getClass();
-        if (queriedClasses.contains(objectClass)) {
+
+        if (currentDepth >= maxDepth) {
             return;
-        } else {
-            queriedClasses.add(objectClass);
         }
+
         List<AbstractRelation> relations = getRelations(objectClass);
         if (relations.isEmpty()) {
             return;
@@ -101,9 +110,6 @@ public class RelationManager {
             relations.forEach(relation -> {
 
                 Class mappingType = relation.getMappingType();
-                if (queriedClasses.contains(mappingType)) {
-                    return;
-                }
 
                 Set<Object> targetValues;
                 List<Row> mappingRows = null;
@@ -155,7 +161,7 @@ public class RelationManager {
                     QueryWrapper queryWrapper = relation.buildQueryWrapper(targetValues);
                     List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, mappingType);
                     if (CollectionUtil.isNotEmpty(targetObjectList)) {
-                        doQueryRelations(mapper, targetObjectList, queriedClasses);
+                        doQueryRelations(mapper, targetObjectList, currentDepth + 1, maxDepth);
                         relation.join(entities, targetObjectList, mappingRows);
                     }
                 } finally {
