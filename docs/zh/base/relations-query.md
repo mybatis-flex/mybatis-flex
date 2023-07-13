@@ -89,6 +89,57 @@ WHERE account_id IN (1, 2, 3, 4, 5)
  ]
 ```
 
+**注意事项 1：**
+
+在以上的 `@RelationOneToOne` 注解配置中，`IDCard.java`  是一个有 `@Table` 注解修饰的实体类，若 `@RelationOneToOne`
+配置的类没有 `@Table` 修饰，则需要在 `@RelationOneToOne` 配置上 `targetTable` 用于指定查询的表名。
+
+
+假设 `IDCard.java` 是 vo 或 dto，没有 `@Table` 修饰，配置如下：
+```java 9
+public class Account implements Serializable {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    private String userName;
+
+    @RelationOneToOne(selfField = "id", targetField = "accountId"
+        , targetTable = "tb_idcard")
+    private IDCard idCard;
+
+    //getter setter
+}
+```
+
+**注意事项 2：**
+
+在 `Account.java` 和 `IDCard.java` 示例中，若他们的关联关系是通过 **中间表** 的方式进行关联，则需要添加
+`joinTable` `joinSelfColumn` `joinTargetColumn` 配置，如下所示：
+
+```java 9,10,11
+public class Account implements Serializable {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    private String userName;
+
+    @RelationOneToOne(
+         joinTable = "tb_idcard_mapping"
+        ,joinSelfColumn = "account_id"
+        ,joinTargetColumn = "idcard_id"
+        ,selfField = "id"
+        ,targetField = "accountId")
+    private IDCard idCard;
+
+    //getter setter
+}
+```
+
+其他场景：一对多（`@RelationOneToMany`）、多对一（`@RelationManyToOne`）、多对多（`@RelationManyToMany`） 也是如此。
+
+
 
 ## 一对多 `@RelationOneToMany`
 
@@ -149,6 +200,8 @@ SELECT `id`, `user_name`, `age` FROM `tb_account`
 SELECT `id`, `account_id`, `title`, `content` FROM `tb_book`
 WHERE account_id IN (1, 2, 3, 4, 5)
 ```
+
+
 
 
 
@@ -377,6 +430,136 @@ JSON 输出内容如下：
 ]
 ```
 
+在以上的父子关系查询中，默认的递归查询深度为 3 个层级，若需要查询指定递归深度，需要添加如下配置：
+
+```java
+QueryWrapper qw = QueryWrapper.create();
+qw.where(MENU.PARENT_ID.eq(0));
+
+//设置递归查询深度为 10 层
+RelationManager.setMaxDepth(10);
+List<Menu> menus = menuMapper.selectListWithRelationsByQuery(qw);
+```
+
+>`RelationManager.setMaxDepth(10)` 的配置，只在当前线程有效。
+
+## 忽略部分 Relation 注解
+
+在很多场景中，一个类里可能会有多个 `@RelationXXX` 注解配置的属性，例如：
+
+```java
+@Table(value = "tb_account")
+public class Account implements Serializable {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    private String userName;
+
+    @RelationOneToOne(targetField = "accountId")
+    private IDCard idCard;
+
+
+    @RelationOneToMany(targetField = "accountId")
+    private List<Book> books;
+
+
+    @RelationManyToMany(
+            joinTable = "tb_role_mapping",
+            joinSelfColumn = "account_id",
+            joinTargetColumn = "role_id",
+            extraCondition = "name like '%2%' or id > 1"
+    )
+    private List<Role> roles;
+
+    //getter setter
+}
+```
+
+默认情况下，我们通过 `BaseMapper` 的 withRelation 方法查询时，会查询 Account 所有带有 `@RelationXXX` 注解的属性：
+`idCard`  `books` `roles`。但是可能在我们的个别业务中，不需要那么多的关联数据，比如假设我们只需要查询 `roles`，而忽略掉
+`idCard`  `books`，此时，代码如下：
+
+```java
+RelationManager.addIgnoreRelations("idCard","books");
+List<Account> accounts = accountMapper.selectAllWithRelations();
+```
+
+>`addIgnoreRelations()` 方法的配置，只在当前线程有效。
+
+
+## 附加条件
+
+在一对多（`@RelationOneToMany`）、多对多（`@RelationManyToMany`） 的场景中，除了通过其关联字段查询结果以外，可能还会要求添加一些额外的条件。
+此时，我们可以通过添加 `extraCondition` 配置来满足这种场景，例如：
+
+```java 13
+@Table(value = "tb_account")
+public class Account implements Serializable {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    private String userName;
+
+    @RelationManyToMany(
+            joinTable = "tb_role_mapping",
+            joinSelfColumn = "account_id",
+            joinTargetColumn = "role_id",
+            extraCondition = "(name like '%2%' or id > 1)"
+    )
+    private List<Role> roles;
+
+    //getter setter
+}
+```
+以上配置查询的 SQL 如下：
+
+```sql
+SELECT `id`, `name` FROM `tb_role`
+WHERE id IN (1, 2, 3) AND (name like '%2%' or id > 1)
+```
+
+**动态参数：**
+
+若 `extraCondition` 配置的条件里，需要通过外面传入参数，可以配置如下：
+
+```java 13
+@Table(value = "tb_account")
+public class Account implements Serializable {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    private String userName;
+
+    @RelationManyToMany(
+            joinTable = "tb_role_mapping",
+            joinSelfColumn = "account_id",
+            joinTargetColumn = "role_id",
+            extraCondition = "(name like :name or id > :id)"
+    )
+    private List<Role> roles;
+
+    //getter setter
+}
+```
+以上的 `:name` 和  `:id` 相当于占位符，用于接受外部参数，那么外部参数如何传入呢？代码如下：
+
+```java
+RelationManager.addExtraConditionParam("name","%myName%");
+RelationManager.addExtraConditionParam("id",100);
+
+List<Account> accounts = accountMapper.selectAllWithRelations();
+System.out.println(JSON.toJSONString(accounts));
+```
+
+以上配置查询的 SQL 如下：
+
+```sql
+SELECT `id`, `name` FROM `tb_role`
+WHERE id IN (1, 2, 3) AND (name like '%myName%' or id > 100)
+```
 
 
 ## 方案 2：Field Query
