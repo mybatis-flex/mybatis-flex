@@ -28,6 +28,7 @@ import java.util.List;
  * 示例2：and not EXISTS (select ... from ... where ....)
  */
 public class OperatorSelectCondition extends QueryCondition {
+
     //操作符，例如 exist, not exist
     private final String operator;
     private QueryWrapper queryWrapper;
@@ -51,9 +52,9 @@ public class OperatorSelectCondition extends QueryCondition {
                     sql.append(prevEffectiveCondition.connector);
                 }
                 sql.append(operator)
-                        .append(SqlConsts.BRACKET_LEFT)
-                        .append(childSql)
-                        .append(SqlConsts.BRACKET_RIGHT);
+                    .append(SqlConsts.BRACKET_LEFT)
+                    .append(childSql)
+                    .append(SqlConsts.BRACKET_RIGHT);
             }
         }
 
@@ -82,4 +83,5 @@ public class OperatorSelectCondition extends QueryCondition {
         clone.queryWrapper = ObjectUtil.clone(this.queryWrapper);
         return clone;
     }
+
 }

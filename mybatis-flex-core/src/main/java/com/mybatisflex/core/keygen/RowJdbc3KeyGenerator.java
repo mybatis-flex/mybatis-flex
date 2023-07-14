@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.keygen;
 
@@ -48,7 +48,7 @@ public class RowJdbc3KeyGenerator implements KeyGenerator {
 
     private static final String SECOND_GENERIC_PARAM_NAME = ParamNameResolver.GENERIC_NAME_PREFIX + "2";
     private static final String MSG_TOO_MANY_KEYS = "Too many keys are generated. There are only %d target objects. "
-            + "You either specified a wrong 'keyProperty' or encountered a driver bug like #1523.";
+        + "You either specified a wrong 'keyProperty' or encountered a driver bug like #1523.";
 
 
     public RowJdbc3KeyGenerator(String keyProperty) {
@@ -87,7 +87,7 @@ public class RowJdbc3KeyGenerator implements KeyGenerator {
             // Multi-param or single param with @Param
             assignKeysToParamMap(configuration, rs, rsmd, keyProperties, (Map<String, ?>) parameter);
         } else if (parameter instanceof ArrayList && !((ArrayList<?>) parameter).isEmpty()
-                && ((ArrayList<?>) parameter).get(0) instanceof ParamMap) {
+            && ((ArrayList<?>) parameter).get(0) instanceof ParamMap) {
             // Multi-param or single param with @Param in batch operation
             assignKeysToParamMapList(configuration, rs, rsmd, keyProperties, (ArrayList<ParamMap<?>>) parameter);
         } else {
@@ -129,8 +129,8 @@ public class RowJdbc3KeyGenerator implements KeyGenerator {
             if (assignerList.isEmpty()) {
                 for (int i = 0; i < keyProperties.length; i++) {
                     assignerList
-                            .add(getAssignerForParamMap(configuration, rsmd, i + 1, paramMap, keyProperties[i], keyProperties, false)
-                                    .getValue());
+                        .add(getAssignerForParamMap(configuration, rsmd, i + 1, paramMap, keyProperties[i], keyProperties, false)
+                            .getValue());
                 }
             }
             assignerList.forEach(x -> x.assign(rs, paramMap));
@@ -146,9 +146,9 @@ public class RowJdbc3KeyGenerator implements KeyGenerator {
         Map<String, Entry<Iterator<?>, List<KeyAssigner>>> assignerMap = new HashMap<>();
         for (int i = 0; i < keyProperties.length; i++) {
             Entry<String, KeyAssigner> entry = getAssignerForParamMap(configuration, rsmd, i + 1, paramMap, keyProperties[i],
-                    keyProperties, true);
+                keyProperties, true);
             Entry<Iterator<?>, List<KeyAssigner>> iteratorPair = MapUtil.computeIfAbsent(assignerMap, entry.getKey(),
-                    k -> MapUtil.entry(collectionize(paramMap.get(k)).iterator(), new ArrayList<>()));
+                k -> MapUtil.entry(collectionize(paramMap.get(k)).iterator(), new ArrayList<>()));
             iteratorPair.getValue().add(entry.getValue());
         }
         long counter = 0;
@@ -176,9 +176,9 @@ public class RowJdbc3KeyGenerator implements KeyGenerator {
                 return getAssignerForSingleParam(config, rsmd, columnPosition, paramMap, keyProperty, omitParamName);
             }
             throw new ExecutorException("Could not determine which parameter to assign generated keys to. "
-                    + "Note that when there are multiple parameters, 'keyProperty' must include the parameter name (e.g. 'param.id'). "
-                    + "Specified key properties are " + ArrayUtil.toString(keyProperties) + " and available parameters are "
-                    + keySet);
+                + "Note that when there are multiple parameters, 'keyProperty' must include the parameter name (e.g. 'param.id'). "
+                + "Specified key properties are " + ArrayUtil.toString(keyProperties) + " and available parameters are "
+                + keySet);
         }
         String paramName = keyProperty.substring(0, firstDot);
         if (keySet.contains(paramName)) {
@@ -189,9 +189,9 @@ public class RowJdbc3KeyGenerator implements KeyGenerator {
             return getAssignerForSingleParam(config, rsmd, columnPosition, paramMap, keyProperty, omitParamName);
         } else {
             throw new ExecutorException("Could not find parameter '" + paramName + "'. "
-                    + "Note that when there are multiple parameters, 'keyProperty' must include the parameter name (e.g. 'param.id'). "
-                    + "Specified key properties are " + ArrayUtil.toString(keyProperties) + " and available parameters are "
-                    + keySet);
+                + "Note that when there are multiple parameters, 'keyProperty' must include the parameter name (e.g. 'param.id'). "
+                + "Specified key properties are " + ArrayUtil.toString(keyProperties) + " and available parameters are "
+                + keySet);
         }
     }
 
@@ -219,6 +219,7 @@ public class RowJdbc3KeyGenerator implements KeyGenerator {
     }
 
     private class KeyAssigner {
+
         private final Configuration configuration;
         private final ResultSetMetaData rsmd;
         private final TypeHandlerRegistry typeHandlerRegistry;
@@ -249,10 +250,10 @@ public class RowJdbc3KeyGenerator implements KeyGenerator {
                     if (metaParam.hasSetter(propertyName)) {
                         Class<?> propertyType = metaParam.getSetterType(propertyName);
                         typeHandler = typeHandlerRegistry.getTypeHandler(propertyType,
-                                JdbcType.forCode(rsmd.getColumnType(columnPosition)));
+                            JdbcType.forCode(rsmd.getColumnType(columnPosition)));
                     } else {
                         throw new ExecutorException("No setter found for the keyProperty '" + propertyName + "' in '"
-                                + metaParam.getOriginalObject().getClass().getName() + "'.");
+                            + metaParam.getOriginalObject().getClass().getName() + "'.");
                     }
                 }
                 if (typeHandler == null) {
@@ -263,8 +264,10 @@ public class RowJdbc3KeyGenerator implements KeyGenerator {
                 }
             } catch (SQLException e) {
                 throw new ExecutorException("Error getting generated key or setting result to parameter object. Cause: " + e,
-                        e);
+                    e);
             }
         }
+
     }
+
 }

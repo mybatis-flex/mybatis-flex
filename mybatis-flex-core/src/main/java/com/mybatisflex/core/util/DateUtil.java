@@ -30,7 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DateUtil {
 
-    private DateUtil() {}
+    private DateUtil() {
+    }
 
     public static String datePatternWithoutDividing = "yyyyMMdd";
     public static String datePattern = "yyyy-MM-dd";
@@ -91,7 +92,6 @@ public class DateUtil {
     }
 
 
-
     public static Date parseDate(String dateString) {
         if (StringUtil.isBlank(dateString)) {
             return null;
@@ -131,7 +131,6 @@ public class DateUtil {
             throw new IllegalArgumentException("The date format is not supported for the date string: " + dateString);
         }
     }
-
 
 
     public static LocalDateTime parseLocalDateTime(String dateString) {

@@ -24,4 +24,5 @@ import com.mybatisflex.annotation.Table;
  */
 @Table("test")
 public class TestEntity {
+
 }

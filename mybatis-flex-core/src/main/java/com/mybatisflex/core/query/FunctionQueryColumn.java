@@ -121,9 +121,9 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
         }
 
         String sql = columns.stream()
-                .filter(Objects::nonNull)
-                .map(c -> c.toSelectSql(queryTables, dialect))
-                .collect(Collectors.joining(SqlConsts.DELIMITER));
+            .filter(Objects::nonNull)
+            .map(c -> c.toSelectSql(queryTables, dialect))
+            .collect(Collectors.joining(SqlConsts.DELIMITER));
 
         if (StringUtil.isBlank(sql)) {
             return SqlConsts.EMPTY;
@@ -133,13 +133,12 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
     }
 
 
-
     @Override
     public String toString() {
         return "FunctionQueryColumn{" +
-                "fnName='" + fnName + '\'' +
-                ", columns=" + columns +
-                '}';
+            "fnName='" + fnName + '\'' +
+            ", columns=" + columns +
+            '}';
     }
 
     @Override

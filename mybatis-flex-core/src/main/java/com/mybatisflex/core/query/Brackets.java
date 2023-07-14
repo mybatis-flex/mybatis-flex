@@ -112,8 +112,8 @@ public class Brackets extends QueryCondition {
     @Override
     public String toString() {
         return "Brackets{" +
-                "childCondition=" + childCondition +
-                '}';
+            "childCondition=" + childCondition +
+            '}';
     }
 
     @Override
@@ -123,4 +123,5 @@ public class Brackets extends QueryCondition {
         clone.childCondition = ObjectUtil.clone(this.childCondition);
         return clone;
     }
+
 }

@@ -22,7 +22,8 @@ import java.util.Map;
 
 public class TableManager {
 
-    private TableManager() {}
+    private TableManager() {
+    }
 
     private static DynamicTableProcessor dynamicTableProcessor;
     private static DynamicSchemaProcessor dynamicSchemaProcessor;

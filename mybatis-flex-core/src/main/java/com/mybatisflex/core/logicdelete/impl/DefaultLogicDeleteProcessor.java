@@ -32,7 +32,7 @@ public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
     @Override
     public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo) {
         queryWrapper.where(QueryCondition.create(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getLogicDeleteColumn()
-                , EQUALS, FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
+            , EQUALS, FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
     }
 
 
@@ -40,7 +40,7 @@ public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
     protected Object getLogicNormalValue() {
         Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
         if (normalValueOfLogicDelete instanceof Number
-                || normalValueOfLogicDelete instanceof Boolean) {
+            || normalValueOfLogicDelete instanceof Boolean) {
             return normalValueOfLogicDelete;
         }
         return SINGLE_QUOTE + normalValueOfLogicDelete + SINGLE_QUOTE;
@@ -51,7 +51,7 @@ public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
     protected Object getLogicDeletedValue() {
         Object deletedValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete();
         if (deletedValueOfLogicDelete instanceof Number
-                || deletedValueOfLogicDelete instanceof Boolean) {
+            || deletedValueOfLogicDelete instanceof Boolean) {
             return deletedValueOfLogicDelete;
         }
         return SINGLE_QUOTE + deletedValueOfLogicDelete + SINGLE_QUOTE;

@@ -32,7 +32,7 @@ public class Book implements Serializable {
 
     private String content;
 
-    @RelationManyToOne(selfField = "accountId",targetField = "id")
+    @RelationManyToOne(selfField = "accountId", targetField = "id")
     private Account account;
 
     public Long getId() {
@@ -78,11 +78,12 @@ public class Book implements Serializable {
     @Override
     public String toString() {
         return "Book{" +
-                "id=" + id +
-                ", accountId=" + accountId +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", account=" + account +
-                '}';
+            "id=" + id +
+            ", accountId=" + accountId +
+            ", title='" + title + '\'' +
+            ", content='" + content + '\'' +
+            ", account=" + account +
+            '}';
     }
+
 }

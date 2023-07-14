@@ -42,8 +42,8 @@ public class IfFunctionQueryColumn extends QueryColumn implements HasParamsColum
     @Override
     String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
         return "IF(" + condition.toSql(queryTables, dialect) + ", " +
-                trueValue.toConditionSql(queryTables, dialect) + ", " +
-                falseValue.toConditionSql(queryTables, dialect) + ")";
+            trueValue.toConditionSql(queryTables, dialect) + ", " +
+            falseValue.toConditionSql(queryTables, dialect) + ")";
     }
 
     @Override

@@ -86,4 +86,5 @@ public class IdInfo extends ColumnInfo {
     public void setBefore(Boolean before) {
         this.before = before;
     }
+
 }

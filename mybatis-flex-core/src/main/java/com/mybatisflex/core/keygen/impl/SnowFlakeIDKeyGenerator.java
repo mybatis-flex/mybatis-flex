@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.keygen.impl;
 
@@ -132,11 +132,11 @@ public class SnowFlakeIDKeyGenerator implements IKeyGenerator {
     public SnowFlakeIDKeyGenerator(long workerId, long dataCenterId) {
         if (workerId > MAX_WORKER_ID || workerId < 0) {
             throw new IllegalArgumentException(
-                    String.format("workerId must be greater than 0 and less than %d.", MAX_WORKER_ID));
+                String.format("workerId must be greater than 0 and less than %d.", MAX_WORKER_ID));
         }
         if (dataCenterId > MAX_DATA_CENTER_ID || dataCenterId < 0) {
             throw new IllegalArgumentException(
-                    String.format("dataCenterId must be greater than 0 and less than %d.", MAX_DATA_CENTER_ID));
+                String.format("dataCenterId must be greater than 0 and less than %d.", MAX_DATA_CENTER_ID));
         }
         this.workerId = workerId;
         this.dataCenterId = dataCenterId;
@@ -228,9 +228,9 @@ public class SnowFlakeIDKeyGenerator implements IKeyGenerator {
 
         // 时间戳部分 | 数据中心部分 | 机器标识部分 | 序列号部分
         return ((currentTimeMillis - twepoch) << TIMESTAMP_SHIFT)
-                | (dataCenterId << DATA_CENTER_ID_SHIFT)
-                | (workerId << WORK_ID_SHIFT)
-                | sequence;
+            | (dataCenterId << DATA_CENTER_ID_SHIFT)
+            | (workerId << WORK_ID_SHIFT)
+            | sequence;
     }
 
     /**

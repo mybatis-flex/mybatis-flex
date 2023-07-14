@@ -224,7 +224,7 @@ public interface RowMapper {
      */
     @UpdateProvider(type = RowSqlProvider.class, method = "updateNumberAddByQuery")
     int updateNumberAddByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema, @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.FIELD_NAME) String fieldName
-            , @Param(FlexConsts.VALUE) Number value, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+        , @Param(FlexConsts.VALUE) Number value, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
     default int updateNumberAddByQuery(String tableName, String fieldName, Number value, QueryWrapper queryWrapper) {
@@ -403,7 +403,7 @@ public interface RowMapper {
      */
     @SelectProvider(type = RowSqlProvider.class, method = "selectListByQuery")
     List<Object> selectObjectListByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema
-            , @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+        , @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
     /**

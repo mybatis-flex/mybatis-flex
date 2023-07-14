@@ -19,7 +19,8 @@ import java.util.function.Supplier;
 
 public class TenantManager {
 
-    private TenantManager() {}
+    private TenantManager() {
+    }
 
     private static final ThreadLocal<Boolean> ignoreFlags = new ThreadLocal<>();
 

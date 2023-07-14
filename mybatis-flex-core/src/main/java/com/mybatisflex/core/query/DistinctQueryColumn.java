@@ -37,7 +37,7 @@ public class DistinctQueryColumn extends QueryColumn {
         }
 
         String sql = SqlConsts.DISTINCT + StringUtil.join(SqlConsts.DELIMITER, queryColumns, queryColumn ->
-                queryColumn.toSelectSql(queryTables, dialect));
+            queryColumn.toSelectSql(queryTables, dialect));
 
         return sql + WrapperUtil.buildAlias(alias, dialect);
     }
@@ -50,7 +50,7 @@ public class DistinctQueryColumn extends QueryColumn {
         }
 
         return SqlConsts.DISTINCT + StringUtil.join(SqlConsts.DELIMITER, queryColumns, queryColumn ->
-                queryColumn.toSelectSql(queryTables, dialect));
+            queryColumn.toSelectSql(queryTables, dialect));
 
     }
 
@@ -61,4 +61,5 @@ public class DistinctQueryColumn extends QueryColumn {
         clone.queryColumns = CollectionUtil.cloneArrayList(this.queryColumns);
         return clone;
     }
+
 }

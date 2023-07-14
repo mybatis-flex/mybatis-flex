@@ -30,9 +30,9 @@ public class Role implements Serializable {
 
 
     @RelationManyToMany(
-            joinTable = "tb_role_mapping",
-            selfField = "id", joinSelfColumn = "role_id",
-            targetField = "id", joinTargetColumn = "account_id"
+        joinTable = "tb_role_mapping",
+        selfField = "id", joinSelfColumn = "role_id",
+        targetField = "id", joinTargetColumn = "account_id"
     )
     private List<Account> accounts;
 
@@ -63,9 +63,10 @@ public class Role implements Serializable {
     @Override
     public String toString() {
         return "Role{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", accounts=" + accounts +
-                '}';
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", accounts=" + accounts +
+            '}';
     }
+
 }

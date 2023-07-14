@@ -24,7 +24,8 @@ import java.util.Map;
 
 public class KeyGeneratorFactory {
 
-    private KeyGeneratorFactory() {}
+    private KeyGeneratorFactory() {
+    }
 
     private static final Map<String, IKeyGenerator> KEY_GENERATOR_MAP = new HashMap<>();
 

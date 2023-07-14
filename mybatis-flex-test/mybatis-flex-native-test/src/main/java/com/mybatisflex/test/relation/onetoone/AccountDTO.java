@@ -43,9 +43,9 @@ public class AccountDTO implements Serializable {
 //            targetField = "id", joinTargetColumn = "role_id"
 //    )
     @RelationManyToMany(
-            joinTable = "tb_role_mapping",
-            joinSelfColumn = "account_id",
-            joinTargetColumn = "role_id"
+        joinTable = "tb_role_mapping",
+        joinSelfColumn = "account_id",
+        joinTargetColumn = "role_id"
     )
     private List<Role> roles;
 
@@ -101,12 +101,13 @@ public class AccountDTO implements Serializable {
     @Override
     public String toString() {
         return "AccountDTO{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", age=" + age +
-                ", idCard=" + idCard +
-                ", books=" + books +
-                ", roles=" + roles +
-                '}';
+            "id=" + id +
+            ", userName='" + userName + '\'' +
+            ", age=" + age +
+            ", idCard=" + idCard +
+            ", books=" + books +
+            ", roles=" + roles +
+            '}';
     }
+
 }

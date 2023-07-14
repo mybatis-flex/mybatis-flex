@@ -79,6 +79,7 @@ public class FlexTransactionManager extends AbstractPlatformTransactionManager {
         public TransactionObject(String prevXid) {
             this.prevXid = prevXid;
         }
+
     }
 
 }

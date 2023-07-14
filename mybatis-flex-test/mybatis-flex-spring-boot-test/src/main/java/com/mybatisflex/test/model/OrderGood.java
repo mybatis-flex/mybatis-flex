@@ -45,4 +45,5 @@ public class OrderGood {
     public void setGoodId(Integer goodId) {
         this.goodId = goodId;
     }
+
 }

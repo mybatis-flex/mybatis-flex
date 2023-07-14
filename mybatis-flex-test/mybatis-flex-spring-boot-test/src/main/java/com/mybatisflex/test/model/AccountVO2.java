@@ -66,11 +66,11 @@ public class AccountVO2 extends IdEntity<Long> {
     @Override
     public String toString() {
         return "AccountVO2{" +
-                "id=" + id +
-                ", age=" + age +
-                ", userName='" + userName + '\'' +
-                ", user='" + user + '\'' +
-                '}';
+            "id=" + id +
+            ", age=" + age +
+            ", userName='" + userName + '\'' +
+            ", user='" + user + '\'' +
+            '}';
     }
 
 }

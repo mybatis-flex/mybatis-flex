@@ -62,4 +62,5 @@ public class SelectQueryTable extends QueryTable {
         clone.queryWrapper = this.queryWrapper.clone();
         return clone;
     }
+
 }

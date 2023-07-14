@@ -43,13 +43,13 @@ public class AccountTest implements WithAssertions {
     public void testSelectOne() {
         Account account = accountMapper.selectOneById(1);
         assertThat(account).isNotNull()
-                .satisfies(a -> assertThat(a.getId()).isEqualTo(1));
+            .satisfies(a -> assertThat(a.getId()).isEqualTo(1));
     }
 
     @Test
     public void testSelectByQuery() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(ACCOUNT.AGE.eq(18));
+            .where(ACCOUNT.AGE.eq(18));
         List<Account> accounts = accountMapper.selectListByQuery(queryWrapper);
         assertThat(accounts.size()).isEqualTo(1);
         assertThat(accounts.get(0).getAge()).isEqualTo(18);
@@ -64,11 +64,11 @@ public class AccountTest implements WithAssertions {
     @Test
     public void testLambda() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(Account::getAge).in(
-                        QueryWrapper.create().select(ACCOUNT.AGE).from(ACCOUNT).where(ACCOUNT.AGE.ge(18))
-                );
+            .select()
+            .from(ACCOUNT)
+            .where(Account::getAge).in(
+                QueryWrapper.create().select(ACCOUNT.AGE).from(ACCOUNT).where(ACCOUNT.AGE.ge(18))
+            );
         System.out.println(queryWrapper.toSQL());
     }
 

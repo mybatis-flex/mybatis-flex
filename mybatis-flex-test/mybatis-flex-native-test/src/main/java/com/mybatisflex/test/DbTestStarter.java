@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.test;
 
@@ -28,20 +28,20 @@ public class DbTestStarter {
 
     public static void main(String[] args) {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.H2)
-                .addScript("schema.sql")
+            .setType(EmbeddedDatabaseType.H2)
+            .addScript("schema.sql")
 //                .addScript("data.sql")
-                .build();
+            .build();
 
         MybatisFlexBootstrap.getInstance()
-                .setDataSource(dataSource)
-                .start();
+            .setDataSource(dataSource)
+            .start();
 
-        Row row1 = Db.selectOneById(null,"tb_account", "id", 1);
+        Row row1 = Db.selectOneById(null, "tb_account", "id", 1);
         RowUtil.printPretty(row1);
 
         //查询全部
-        List<Row> rows = Db.selectAll(null,"tb_account");
+        List<Row> rows = Db.selectAll(null, "tb_account");
         RowUtil.printPretty(rows);
 
 
@@ -53,7 +53,7 @@ public class DbTestStarter {
         row.set("user_name", "michael yang");
         row.set("age", 18);
         row.set("birthday", new Date());
-        Db.insert(null,"tb_account", row);
+        Db.insert(null, "tb_account", row);
 
         //查看刚刚插入数据的主键 id
         System.out.println(">>>>>>>>>id: " + row.get("id"));
@@ -79,7 +79,7 @@ public class DbTestStarter {
 
 
         //再次查询全部数据
-        rows = Db.selectAll(null,"tb_account");
+        rows = Db.selectAll(null, "tb_account");
         RowUtil.printPretty(rows);
 
 //        for (Row row2 : rows) {
@@ -99,7 +99,8 @@ public class DbTestStarter {
 //        Db.insertBatch(null,"tb_account", rows, 100);
 
         //再次查询全部数据
-        rows = Db.selectAll(null,"tb_account");
+        rows = Db.selectAll(null, "tb_account");
         RowUtil.printPretty(rows);
     }
+
 }

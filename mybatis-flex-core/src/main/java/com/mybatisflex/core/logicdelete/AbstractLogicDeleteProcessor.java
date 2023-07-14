@@ -43,8 +43,8 @@ public abstract class AbstractLogicDeleteProcessor implements LogicDeleteProcess
     @Override
     public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo) {
         queryWrapper.and(QueryCondition.create(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getLogicDeleteColumn()
-                , EQUALS
-                , getLogicNormalValue()));
+            , EQUALS
+            , getLogicNormalValue()));
     }
 
     /**

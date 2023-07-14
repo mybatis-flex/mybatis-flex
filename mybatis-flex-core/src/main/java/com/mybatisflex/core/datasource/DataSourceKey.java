@@ -19,7 +19,8 @@ import java.util.function.Supplier;
 
 public class DataSourceKey {
 
-    private DataSourceKey() {}
+    private DataSourceKey() {
+    }
 
     private static final ThreadLocal<String> keyThreadLocal = new ThreadLocal<>();
 

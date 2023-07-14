@@ -59,9 +59,9 @@ public class MybatisFlexAdminAutoConfiguration implements InitializingBean {
         }
         MybatisFlexProperties.AdminConfig adminConfig = properties.getAdminConfig();
         MessageReporter messageReporter = new HttpMessageReporter(
-                adminConfig.getEndpoint(),
-                adminConfig.getSecretKey(),
-                jsonFormatter
+            adminConfig.getEndpoint(),
+            adminConfig.getSecretKey(),
+            jsonFormatter
         );
         AuditManager.setMessageReporter(messageReporter);
     }

@@ -50,17 +50,17 @@ class AccountMapperTest {
     @Test
     void testCount() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .groupBy(ACCOUNT.AGE);
+            .select()
+            .from(ACCOUNT)
+            .groupBy(ACCOUNT.AGE);
 
         long count = accountMapper.selectCountByQuery(queryWrapper);
 
         Assertions.assertEquals(2, count);
 
         queryWrapper = QueryWrapper.create()
-                .select(distinct(ACCOUNT.AGE))
-                .from(ACCOUNT);
+            .select(distinct(ACCOUNT.AGE))
+            .from(ACCOUNT);
 
         count = accountMapper.selectCountByQuery(queryWrapper);
 
@@ -97,10 +97,10 @@ class AccountMapperTest {
     @Test
     void testGenericEntity() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(ACCOUNT.ALL_COLUMNS, ROLE.ALL_COLUMNS)
-                .from(ACCOUNT)
-                .leftJoin(USER_ROLE).on(USER_ROLE.USER_ID.eq(ACCOUNT.ID))
-                .leftJoin(ROLE).on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID));
+            .select(ACCOUNT.ALL_COLUMNS, ROLE.ALL_COLUMNS)
+            .from(ACCOUNT)
+            .leftJoin(USER_ROLE).on(USER_ROLE.USER_ID.eq(ACCOUNT.ID))
+            .leftJoin(ROLE).on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID));
         accountMapper.selectListByQueryAs(queryWrapper, AccountVO.class).forEach(System.err::println);
     }
 
@@ -125,25 +125,25 @@ class AccountMapperTest {
         Account account = new Account();
         account.setAge(10);
         Assertions.assertThrows(Exception.class, () ->
-                accountMapper.updateByQuery(account, QueryWrapper.create()));
+            accountMapper.updateByQuery(account, QueryWrapper.create()));
     }
 
     @Test
     void testDeleteAll() {
         Assertions.assertThrows(Exception.class, () ->
-                accountMapper.deleteByQuery(QueryWrapper.create()));
+            accountMapper.deleteByQuery(QueryWrapper.create()));
     }
 
     @Test
     void testAs() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(ACCOUNT.ID,
-                        ACCOUNT.AGE,
-                        USER.USER_ID,
-                        USER.USER_NAME)
-                .from(ACCOUNT.as("a"), USER.as("u"))
-                .where(ACCOUNT.ID.eq(1))
-                .limit(1);
+            .select(ACCOUNT.ID,
+                ACCOUNT.AGE,
+                USER.USER_ID,
+                USER.USER_NAME)
+            .from(ACCOUNT.as("a"), USER.as("u"))
+            .where(ACCOUNT.ID.eq(1))
+            .limit(1);
         AccountVO2 account = accountMapper.selectOneByQueryAs(queryWrapper, AccountVO2.class);
         System.out.println(account);
     }
@@ -151,14 +151,14 @@ class AccountMapperTest {
     @Test
     void testAs0() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(ACCOUNT.ID.as("account_id"),
-                        ACCOUNT.AGE,
-                        concat(column("'account name: '"), ACCOUNT.USER_NAME).as("user_name"),
-                        USER.USER_ID,
-                        concat(column("'user name: '"), USER.USER_NAME).as("1_account_name"))
-                .from(ACCOUNT.as("a"), USER.as("u"))
-                .where(ACCOUNT.ID.eq(1))
-                .limit(1);
+            .select(ACCOUNT.ID.as("account_id"),
+                ACCOUNT.AGE,
+                concat(column("'account name: '"), ACCOUNT.USER_NAME).as("user_name"),
+                USER.USER_ID,
+                concat(column("'user name: '"), USER.USER_NAME).as("1_account_name"))
+            .from(ACCOUNT.as("a"), USER.as("u"))
+            .where(ACCOUNT.ID.eq(1))
+            .limit(1);
         AccountVO2 account = accountMapper.selectOneByQueryAs(queryWrapper, AccountVO2.class);
         System.out.println(account);
     }
@@ -166,14 +166,14 @@ class AccountMapperTest {
     @Test
     void testAs1() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(ACCOUNT.ID.as(AccountVO2::getId),
-                        ACCOUNT.AGE,
-                        concat(column("'account name: '"), ACCOUNT.USER_NAME).as(AccountVO2::getUserName),
-                        USER.USER_ID,
-                        concat(column("'user name: '"), USER.USER_NAME).as("1_account_name"))
-                .from(ACCOUNT.as("a"), USER.as("u"))
-                .where(ACCOUNT.ID.eq(1))
-                .limit(1);
+            .select(ACCOUNT.ID.as(AccountVO2::getId),
+                ACCOUNT.AGE,
+                concat(column("'account name: '"), ACCOUNT.USER_NAME).as(AccountVO2::getUserName),
+                USER.USER_ID,
+                concat(column("'user name: '"), USER.USER_NAME).as("1_account_name"))
+            .from(ACCOUNT.as("a"), USER.as("u"))
+            .where(ACCOUNT.ID.eq(1))
+            .limit(1);
         AccountVO2 account = accountMapper.selectOneByQueryAs(queryWrapper, AccountVO2.class);
         System.out.println(account);
     }

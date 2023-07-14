@@ -332,7 +332,7 @@ public class Db {
     public static int[] updateBatch(String sql, BatchArgsSetter batchArgsSetter) {
         int batchSize = batchArgsSetter.getBatchSize();
         return executeBatch(batchSize, batchSize, RowMapper.class
-                , (mapper, index) -> mapper.updateBySql(sql, batchArgsSetter.getSqlArgs(index)));
+            , (mapper, index) -> mapper.updateBySql(sql, batchArgsSetter.getSqlArgs(index)));
     }
 
 
@@ -1139,4 +1139,5 @@ public class Db {
     public static <T> T txWithResult(Supplier<T> supplier, Propagation propagation) {
         return TransactionalManager.exec(supplier, propagation, true);
     }
+
 }

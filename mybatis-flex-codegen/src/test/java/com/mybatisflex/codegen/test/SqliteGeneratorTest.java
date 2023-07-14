@@ -17,11 +17,9 @@
 package com.mybatisflex.codegen.test;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
 import com.mybatisflex.codegen.Generator;
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.dialect.IDialect;
-import org.junit.Test;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -29,7 +27,7 @@ import java.sql.Statement;
 
 public class SqliteGeneratorTest {
 
-//        @Test
+    //        @Test
     public void testGenerator3() {
 
         //配置数据源
@@ -50,15 +48,15 @@ public class SqliteGeneratorTest {
 
         //配置生成文件目录与根包
         globalConfig.getPackageConfig()
-                .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
-                .setBasePackage("com.test");
+            .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
+            .setBasePackage("com.test");
 
         //设置只生成哪些表
         globalConfig.getStrategyConfig()
-                .setGenerateTable("person");
+            .setGenerateTable("person");
 
         globalConfig.enableEntity()
-                .setWithLombok(true);
+            .setWithLombok(true);
 
         //设置生成 mapper 类
         globalConfig.enableMapper();
@@ -85,4 +83,5 @@ public class SqliteGeneratorTest {
             e.printStackTrace();
         }
     }
+
 }

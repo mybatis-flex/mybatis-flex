@@ -47,8 +47,9 @@ public class Inner {
     @Override
     public String toString() {
         return "Inner{" +
-                "id=" + id +
-                ", type='" + type + '\'' +
-                '}';
+            "id=" + id +
+            ", type='" + type + '\'' +
+            '}';
     }
+
 }

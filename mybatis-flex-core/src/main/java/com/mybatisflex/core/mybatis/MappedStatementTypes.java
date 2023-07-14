@@ -17,19 +17,20 @@ package com.mybatisflex.core.mybatis;
 
 public class MappedStatementTypes {
 
-    private MappedStatementTypes() {}
+    private MappedStatementTypes() {
+    }
 
     private static ThreadLocal<Class<?>> currentTypeTL = new ThreadLocal<>();
 
-    public static void setCurrentType(Class<?> type){
+    public static void setCurrentType(Class<?> type) {
         currentTypeTL.set(type);
     }
 
-    public static Class<?> getCurrentType(){
+    public static Class<?> getCurrentType() {
         return currentTypeTL.get();
     }
 
-    public static void clear(){
+    public static void clear() {
         currentTypeTL.remove();
     }
 

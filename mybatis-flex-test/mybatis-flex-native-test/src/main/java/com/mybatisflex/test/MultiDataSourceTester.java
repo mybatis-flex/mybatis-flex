@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.test;
 
@@ -34,11 +34,11 @@ public class MultiDataSourceTester {
 
     public static void main(String[] args) {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.H2)
-                .setName("db1")
-                .addScript("schema.sql")
-                .addScript("data.sql")
-                .build();
+            .setType(EmbeddedDatabaseType.H2)
+            .setName("db1")
+            .addScript("schema.sql")
+            .addScript("data.sql")
+            .build();
 
         HikariDataSource dataSource2 = new HikariDataSource();
         dataSource2.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/flex_test?characterEncoding=utf-8");
@@ -46,10 +46,10 @@ public class MultiDataSourceTester {
         dataSource2.setPassword("123456");
 
         MybatisFlexBootstrap.getInstance()
-                .setDataSource(dataSource)
-                .addMapper(AccountMapper.class)
-                .addDataSource("ds2", dataSource2)
-                .start();
+            .setDataSource(dataSource)
+            .addMapper(AccountMapper.class)
+            .addDataSource("ds2", dataSource2)
+            .start();
 
         //开启审计功能
         AuditManager.setAuditEnable(true);
@@ -61,7 +61,7 @@ public class MultiDataSourceTester {
 
         //默认查询 db1
         System.out.println("\n------ds1");
-        List<Row> rows1 = Db.selectAll(null,"tb_account");
+        List<Row> rows1 = Db.selectAll(null, "tb_account");
         RowUtil.printPretty(rows1);
 
 
@@ -74,7 +74,7 @@ public class MultiDataSourceTester {
 //        //查询数据源 ds2
         System.out.println("\n------ds2");
         DataSourceKey.use("ds2");
-        List<Row> rows = Db.selectAll(null,"tb_account");
+        List<Row> rows = Db.selectAll(null, "tb_account");
         RowUtil.printPretty(rows);
 //
 //        boolean success = Db.tx(() -> {
@@ -90,4 +90,5 @@ public class MultiDataSourceTester {
 //        System.out.println(accounts);
 
     }
+
 }

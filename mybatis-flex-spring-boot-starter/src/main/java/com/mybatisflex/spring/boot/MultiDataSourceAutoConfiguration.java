@@ -41,7 +41,7 @@ import java.util.Map;
 @EnableConfigurationProperties(MybatisFlexProperties.class)
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
 @AutoConfigureBefore(value = DataSourceAutoConfiguration.class
-        , name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
+    , name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
 public class MultiDataSourceAutoConfiguration {
 
     private final Map<String, Map<String, String>> dataSourceProperties;

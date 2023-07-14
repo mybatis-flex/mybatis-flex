@@ -107,7 +107,7 @@ public class Generator {
 
                 buildPrimaryKey(table);
 
-                dialect.buildTableColumns(schemaName,table, globalConfig, dbMeta, conn);
+                dialect.buildTableColumns(schemaName, table, globalConfig, dbMeta, conn);
 
                 tables.add(table);
             }

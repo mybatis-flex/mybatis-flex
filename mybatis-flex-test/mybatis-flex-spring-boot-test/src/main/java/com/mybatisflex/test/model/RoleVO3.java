@@ -53,9 +53,10 @@ public class RoleVO3 {
     @Override
     public String toString() {
         return "RoleVO3{" +
-                "roleId=" + roleId +
-                ", roleKey='" + roleKey + '\'' +
-                ", roleName='" + userName + '\'' +
-                '}';
+            "roleId=" + roleId +
+            ", roleKey='" + roleKey + '\'' +
+            ", roleName='" + userName + '\'' +
+            '}';
     }
+
 }

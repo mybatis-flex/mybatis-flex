@@ -53,4 +53,5 @@ public class BaseEntity<T, ID, L> extends IdEntity<ID> {
     public void setUserName(T userName) {
         this.userName = userName;
     }
+
 }

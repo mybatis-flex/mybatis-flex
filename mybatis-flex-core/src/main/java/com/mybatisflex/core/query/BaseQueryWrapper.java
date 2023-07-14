@@ -127,8 +127,8 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
         joinTables.add(queryTable);
     }
 
-    protected void addEndFragment(String fragment){
-        if (endFragments == null){
+    protected void addEndFragment(String fragment) {
+        if (endFragments == null) {
             endFragments = new ArrayList<>();
         }
         endFragments.add(fragment);
@@ -251,14 +251,14 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
         this.context = context;
     }
 
-    protected void putContext(String key, Object value){
-        if (context == null){
+    protected void putContext(String key, Object value) {
+        if (context == null) {
             context = new HashMap<>();
         }
-        context.put(key,value);
+        context.put(key, value);
     }
 
-    protected <R> R getContext(String key){
+    protected <R> R getContext(String key) {
         return context == null ? null : (R) context.get(key);
     }
 
@@ -278,11 +278,11 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
             clone.orderBys = CollectionUtil.cloneArrayList(this.orderBys);
             clone.unions = CollectionUtil.cloneArrayList(this.unions);
             // copy List if necessary ...
-            if (this.endFragments != null){
+            if (this.endFragments != null) {
                 clone.endFragments = CollectionUtil.newArrayList(this.endFragments);
             }
             // copy Map if necessary ...
-            if (this.context != null){
+            if (this.context != null) {
                 clone.context = CollectionUtil.newHashMap(this.context);
             }
             return clone;
@@ -290,4 +290,5 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
             throw FlexExceptions.wrap(e);
         }
     }
+
 }

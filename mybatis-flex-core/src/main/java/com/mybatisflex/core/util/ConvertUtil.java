@@ -25,7 +25,8 @@ import java.util.Date;
 
 public class ConvertUtil {
 
-    private ConvertUtil() {}
+    private ConvertUtil() {
+    }
 
     public static Object convert(Object value, Class targetClass) {
         return convert(value, targetClass, false);
@@ -36,7 +37,7 @@ public class ConvertUtil {
             return getPrimitiveDefaultValue(targetClass);
         }
         if (value == null || (targetClass != String.class && value.getClass() == String.class
-                && StringUtil.isBlank((String) value))) {
+            && StringUtil.isBlank((String) value))) {
             return null;
         }
         if (value.getClass().isAssignableFrom(targetClass)) {
@@ -300,4 +301,5 @@ public class ConvertUtil {
 
         return (LocalDateTime) o;
     }
+
 }

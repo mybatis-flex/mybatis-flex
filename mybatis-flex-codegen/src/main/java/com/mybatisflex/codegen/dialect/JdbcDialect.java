@@ -30,7 +30,7 @@ public abstract class JdbcDialect implements IDialect {
 
     @Override
     public void buildTableColumns(String schemaName, Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
-        Map<String, String> columnRemarks = buildColumnRemarks(schemaName,table, dbMeta, conn);
+        Map<String, String> columnRemarks = buildColumnRemarks(schemaName, table, dbMeta, conn);
 
         String sql = forBuildColumnsSql(table.getSchema(), table.getName());
         try (Statement stm = conn.createStatement(); ResultSet rs = stm.executeQuery(sql)) {
@@ -58,7 +58,7 @@ public abstract class JdbcDialect implements IDialect {
 
     private Map<String, String> buildColumnRemarks(String schemaName, Table table, DatabaseMetaData dbMeta, Connection conn) {
         Map<String, String> columnRemarks = new HashMap<>();
-        try (ResultSet colRs = forRemarks(schemaName,table, dbMeta, conn)) {
+        try (ResultSet colRs = forRemarks(schemaName, table, dbMeta, conn)) {
             while (colRs.next()) {
                 columnRemarks.put(colRs.getString("COLUMN_NAME"), colRs.getString("REMARKS"));
             }
@@ -97,9 +97,6 @@ public abstract class JdbcDialect implements IDialect {
     protected ResultSet forRemarks(String schemaName, Table table, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
         return dbMeta.getColumns(conn.getCatalog(), null, table.getName(), null);
     }
-
-
-
 
 
 }

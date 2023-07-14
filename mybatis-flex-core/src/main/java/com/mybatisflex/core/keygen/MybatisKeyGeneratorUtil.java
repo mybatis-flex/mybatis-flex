@@ -35,7 +35,8 @@ import java.util.List;
 
 public class MybatisKeyGeneratorUtil {
 
-    private MybatisKeyGeneratorUtil() {}
+    private MybatisKeyGeneratorUtil() {
+    }
 
     public static KeyGenerator createTableKeyGenerator(TableInfo tableInfo, MappedStatement ms) {
         List<IdInfo> primaryKeyList = tableInfo.getPrimaryKeyList();
@@ -76,30 +77,30 @@ public class MybatisKeyGeneratorUtil {
         String sequence = getKeyValue(idInfo, globalKeyConfig);
         if (StringUtil.isBlank(sequence)) {
             throw FlexExceptions.wrap("Please config sequence by @Id(value=\"...\") for field: %s in class: %s"
-                    , idInfo.getProperty()
-                    , tableInfo.getEntityClass().getName());
+                , idInfo.getProperty()
+                , tableInfo.getEntityClass().getName());
         }
 
 
         String selectId = ms.getId() + SelectKeyGenerator.SELECT_KEY_SUFFIX;
         SqlSource sqlSource = ms.getLang().createSqlSource(ms.getConfiguration(), sequence.trim(), idInfo.getPropertyType());
         MappedStatement.Builder msBuilder = new MappedStatement.Builder(ms.getConfiguration(), selectId, sqlSource, SqlCommandType.SELECT)
-                .resource(ms.getResource())
-                .fetchSize(null)
-                .timeout(null)
-                .statementType(StatementType.PREPARED)
-                .keyGenerator(NoKeyGenerator.INSTANCE)
-                .keyProperty(FlexConsts.ENTITY + "." + idInfo.getProperty())
-                .keyColumn(idInfo.getColumn())
-                .databaseId(ms.getDatabaseId())
-                .lang(ms.getLang())
-                .resultOrdered(false)
-                .resultSets(null)
-                .resultMaps(createIdResultMaps(ms.getConfiguration(), selectId + "-Inline", idInfo.getPropertyType(), new ArrayList<>()))
-                .resultSetType(null)
-                .flushCacheRequired(false)
-                .useCache(false)
-                .cache(ms.getCache());
+            .resource(ms.getResource())
+            .fetchSize(null)
+            .timeout(null)
+            .statementType(StatementType.PREPARED)
+            .keyGenerator(NoKeyGenerator.INSTANCE)
+            .keyProperty(FlexConsts.ENTITY + "." + idInfo.getProperty())
+            .keyColumn(idInfo.getColumn())
+            .databaseId(ms.getDatabaseId())
+            .lang(ms.getLang())
+            .resultOrdered(false)
+            .resultSets(null)
+            .resultMaps(createIdResultMaps(ms.getConfiguration(), selectId + "-Inline", idInfo.getPropertyType(), new ArrayList<>()))
+            .resultSetType(null)
+            .flushCacheRequired(false)
+            .useCache(false)
+            .cache(ms.getCache());
 
         MappedStatement keyMappedStatement = msBuilder.build();
         ms.getConfiguration().addMappedStatement(keyMappedStatement);
@@ -115,7 +116,7 @@ public class MybatisKeyGeneratorUtil {
     private static List<ResultMap> createIdResultMaps(Configuration configuration,
                                                       String statementId, Class<?> resultType, List<ResultMapping> resultMappings) {
         ResultMap resultMap = new ResultMap.Builder(configuration, statementId, resultType, resultMappings, null)
-                .build();
+            .build();
         return Arrays.asList(resultMap);
     }
 

@@ -86,8 +86,8 @@ public class QueryTable implements CloneSupport<QueryTable> {
             return false;
         }
         if (StringUtil.isNotBlank(alias)
-                && StringUtil.isNotBlank(table.alias)
-                && (Objects.equals(alias, table.alias))) {
+            && StringUtil.isNotBlank(table.alias)
+            && (Objects.equals(alias, table.alias))) {
             return false;
         }
         return Objects.equals(name, table.name);
@@ -112,10 +112,10 @@ public class QueryTable implements CloneSupport<QueryTable> {
     @Override
     public String toString() {
         return "QueryTable{" +
-                "schema='" + schema + '\'' +
-                ", name='" + name + '\'' +
-                ", alias='" + alias + '\'' +
-                '}';
+            "schema='" + schema + '\'' +
+            ", name='" + name + '\'' +
+            ", alias='" + alias + '\'' +
+            '}';
     }
 
     @Override
@@ -126,4 +126,5 @@ public class QueryTable implements CloneSupport<QueryTable> {
             throw FlexExceptions.wrap(e);
         }
     }
+
 }

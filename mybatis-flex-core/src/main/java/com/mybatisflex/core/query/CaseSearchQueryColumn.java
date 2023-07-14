@@ -91,6 +91,7 @@ public class CaseSearchQueryColumn extends QueryColumn implements HasParamsColum
 
 
     public static class When implements CloneSupport<When> {
+
         private Object searchValue;
         private Object thenValue;
 
@@ -114,6 +115,7 @@ public class CaseSearchQueryColumn extends QueryColumn implements HasParamsColum
                 throw FlexExceptions.wrap(e);
             }
         }
+
     }
 
 
@@ -153,6 +155,9 @@ public class CaseSearchQueryColumn extends QueryColumn implements HasParamsColum
                 this.builder.caseQueryColumn.addWhen(builder.lastWhen);
                 return builder;
             }
+
         }
+
     }
+
 }

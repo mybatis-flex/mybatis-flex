@@ -21,7 +21,8 @@ import java.util.Objects;
 
 public class ObjectUtil {
 
-    private ObjectUtil() {}
+    private ObjectUtil() {
+    }
 
     public static Object cloneObject(Object value) {
         // ROLE.ROLE_ID.ge(USER.USER_ID)
@@ -71,4 +72,5 @@ public class ObjectUtil {
         }
         return false;
     }
+
 }

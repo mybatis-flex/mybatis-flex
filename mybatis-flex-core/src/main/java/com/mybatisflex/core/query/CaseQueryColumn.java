@@ -91,6 +91,7 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
 
 
     public static class When implements CloneSupport<When> {
+
         private QueryCondition whenCondition;
         private Object thenValue;
 
@@ -114,6 +115,7 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
                 throw FlexExceptions.wrap(e);
             }
         }
+
     }
 
     public static class Builder {
@@ -148,6 +150,9 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
                 this.builder.caseQueryColumn.addWhen(builder.lastWhen);
                 return builder;
             }
+
         }
+
     }
+
 }

@@ -270,7 +270,7 @@ public class RowSqlProvider {
 
         //优先构建 sql，再构建参数
         String sql = DialectFactory.getDialect().forUpdateNumberAddByQuery(schema
-                , tableName, fieldName, value, queryWrapper);
+            , tableName, fieldName, value, queryWrapper);
 
         Object[] queryParams = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, queryParams);

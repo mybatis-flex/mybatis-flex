@@ -36,7 +36,7 @@ class ReflectTest {
         List<Field> allFields = ClassUtil.getAllFields(Account.class);
         for (Field field : allFields) {
             Type type = TypeParameterResolver.resolveFieldType(field, Account.class);
-            System.out.println("field: " + field+"----->Type:" + type);
+            System.out.println("field: " + field + "----->Type:" + type);
         }
 
     }

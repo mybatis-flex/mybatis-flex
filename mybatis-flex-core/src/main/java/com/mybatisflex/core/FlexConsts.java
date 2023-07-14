@@ -20,7 +20,8 @@ package com.mybatisflex.core;
  */
 public class FlexConsts {
 
-    private FlexConsts() {}
+    private FlexConsts() {
+    }
 
     public static final String NAME = "MyBatis-Flex";
     public static final String VERSION = "1.4.9";
@@ -57,4 +58,5 @@ public class FlexConsts {
      * 当 entity 使用逻辑删除时，1 为 entity 的删除状态
      */
     public static final int LOGIC_DELETE_DELETED = 1;
+
 }

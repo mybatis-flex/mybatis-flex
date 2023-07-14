@@ -64,8 +64,8 @@ public class SpringBootVFS extends VFS {
                                                  final String rootPath) {
         try {
             return rootPath + (rootPath.endsWith("/") ? "" : "/") + Normalizer
-                    .normalize(URLDecoder.decode(resource.getURL().toString(), urlDecodingCharset.name()), Normalizer.Form.NFC)
-                    .substring(baseUrlString.length());
+                .normalize(URLDecoder.decode(resource.getURL().toString(), urlDecodingCharset.name()), Normalizer.Form.NFC)
+                .substring(baseUrlString.length());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -82,7 +82,7 @@ public class SpringBootVFS extends VFS {
         String baseUrlString = urlString.endsWith("/") ? urlString : urlString.concat("/");
         Resource[] resources = resourceResolver.getResources(baseUrlString + "**/*.class");
         return Stream.of(resources).map(resource -> preserveSubpackageName(baseUrlString, resource, path))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
 }

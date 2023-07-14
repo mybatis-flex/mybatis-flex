@@ -713,7 +713,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
 
         List<QueryWrapper> childQueryWrappers = tableChildQuery == null
-                ? new ArrayList<>() : new ArrayList<>(tableChildQuery);
+            ? new ArrayList<>() : new ArrayList<>(tableChildQuery);
         childQueryWrappers.addAll(whereChildQuery);
         childQueryWrappers.addAll(havingChildQuery);
 
@@ -731,4 +731,5 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     public QueryWrapper clone() {
         return super.clone();
     }
+
 }

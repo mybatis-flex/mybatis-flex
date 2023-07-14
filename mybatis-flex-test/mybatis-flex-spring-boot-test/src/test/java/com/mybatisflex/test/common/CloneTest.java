@@ -89,22 +89,22 @@ class CloneTest {
 
     private QueryWrapper newQueryWrapper() {
         return QueryWrapper.create()
-                .select(count(distinct(USER.USER_ID))/*case_()
+            .select(count(distinct(USER.USER_ID))/*case_()
                                 .when(USER.USER_ID.eq(3)).then("x3")
                                 .when(USER.USER_ID.eq(5)).then("x4")
                                 .end(),
                         distinct(USER.USER_ID.add(4)),
                         USER.USER_NAME,
                         ROLE.ALL_COLUMNS*/)
-                .from(USER.as("u"))
-                .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
-                .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
-                .where(USER.USER_ID.eq(3))
-                .and(ROLE.ROLE_NAME.in(Arrays.asList(1, 2, 3)))
-                .or(ROLE.ROLE_ID.ge(USER.USER_ID))
-                .groupBy(ROLE.ROLE_NAME)
-                .having(ROLE.ROLE_ID.ge(7))
-                .orderBy(ROLE.ROLE_NAME.asc());
+            .from(USER.as("u"))
+            .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+            .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+            .where(USER.USER_ID.eq(3))
+            .and(ROLE.ROLE_NAME.in(Arrays.asList(1, 2, 3)))
+            .or(ROLE.ROLE_ID.ge(USER.USER_ID))
+            .groupBy(ROLE.ROLE_NAME)
+            .having(ROLE.ROLE_ID.ge(7))
+            .orderBy(ROLE.ROLE_NAME.asc());
     }
 
 }

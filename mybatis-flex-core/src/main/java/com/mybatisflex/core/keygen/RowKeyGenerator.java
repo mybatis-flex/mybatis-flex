@@ -40,6 +40,7 @@ import java.util.Map;
  * 为 row 的主键生成器
  */
 public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
+
     private static final KeyGenerator[] NO_KEY_GENERATORS = new KeyGenerator[0];
 
     private final MappedStatement ms;
@@ -104,23 +105,23 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
             String sequence = rowKey.getValue();
             SqlSource sqlSource = ms.getLang().createSqlSource(ms.getConfiguration(), sequence.trim(), Object.class);
             MappedStatement.Builder msBuilder = new MappedStatement.Builder(ms.getConfiguration(), selectId, sqlSource, SqlCommandType.SELECT)
-                    .resource(ms.getResource())
-                    .fetchSize(null)
-                    .timeout(null)
-                    .statementType(StatementType.PREPARED)
-                    .keyGenerator(NoKeyGenerator.INSTANCE)
-                    .keyProperty(FlexConsts.ROW + "." + rowKey.getKeyColumn())
+                .resource(ms.getResource())
+                .fetchSize(null)
+                .timeout(null)
+                .statementType(StatementType.PREPARED)
+                .keyGenerator(NoKeyGenerator.INSTANCE)
+                .keyProperty(FlexConsts.ROW + "." + rowKey.getKeyColumn())
 //                    .keyColumn(FlexConsts.ROW + "." + rowKey.getKeyColumn())
-                    .keyColumn(rowKey.getKeyColumn())
-                    .databaseId(ms.getDatabaseId())
-                    .lang(ms.getLang())
-                    .resultOrdered(false)
-                    .resultSets(null)
-                    .resultMaps(new ArrayList<>())
-                    .resultSetType(null)
-                    .flushCacheRequired(false)
-                    .useCache(false)
-                    .cache(ms.getCache());
+                .keyColumn(rowKey.getKeyColumn())
+                .databaseId(ms.getDatabaseId())
+                .lang(ms.getLang())
+                .resultOrdered(false)
+                .resultSets(null)
+                .resultMaps(new ArrayList<>())
+                .resultSetType(null)
+                .flushCacheRequired(false)
+                .useCache(false)
+                .cache(ms.getCache());
 
             MappedStatement keyMappedStatement = msBuilder.build();
             ms.getConfiguration().addMappedStatement(keyMappedStatement);
@@ -153,4 +154,5 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
     public String[] getKeyColumnNames() {
         return autoKeyGeneratorNames.toArray(new String[0]);
     }
+
 }

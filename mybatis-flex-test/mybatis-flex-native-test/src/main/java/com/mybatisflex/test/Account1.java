@@ -41,4 +41,5 @@ public class Account1 extends Account implements Serializable {
     public Long getId() {
         return id;
     }
+
 }

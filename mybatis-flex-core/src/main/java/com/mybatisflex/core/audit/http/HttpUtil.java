@@ -38,7 +38,8 @@ import java.util.Map.Entry;
  */
 public class HttpUtil {
 
-    private HttpUtil() {}
+    private HttpUtil() {
+    }
 
     private static final String POST = "POST";
 
@@ -74,16 +75,19 @@ public class HttpUtil {
      * https 域名校验
      */
     private static class TrustAnyHostnameVerifier implements HostnameVerifier {
+
         @Override
         public boolean verify(String hostname, SSLSession session) {
             return true;
         }
+
     }
 
     /**
      * https 证书管理
      */
     private static class TrustAnyTrustManager implements X509TrustManager {
+
         @Override
         public X509Certificate[] getAcceptedIssuers() {
             return null;
@@ -96,6 +100,7 @@ public class HttpUtil {
         @Override
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
         }
+
     }
 
 

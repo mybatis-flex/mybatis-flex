@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.mybatis.executor;
 
@@ -106,7 +106,7 @@ public class FlexBatchExecutor extends BatchExecutor implements CacheKeyBuilder 
                     // 修复批量插入并设置主键时出错
                     // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I6Y8ZU
                     else if (RowKeyGenerator.class.equals(keyGenerator.getClass())
-                            && ((RowKeyGenerator) keyGenerator).hasGeneratedKeys()) {
+                        && ((RowKeyGenerator) keyGenerator).hasGeneratedKeys()) {
                         keyGenerator.processAfter(this, ms, stmt, parameterObjects);
                     }
                     // issue #141
@@ -120,14 +120,14 @@ public class FlexBatchExecutor extends BatchExecutor implements CacheKeyBuilder 
                 } catch (BatchUpdateException e) {
                     StringBuilder message = new StringBuilder();
                     message.append(batchResult.getMappedStatement().getId())
-                            .append(" (batch index #")
-                            .append(i + 1)
-                            .append(")")
-                            .append(" failed.");
+                        .append(" (batch index #")
+                        .append(i + 1)
+                        .append(")")
+                        .append(" failed.");
                     if (i > 0) {
                         message.append(" ")
-                                .append(i)
-                                .append(" prior sub executor(s) completed successfully, but will be rolled back.");
+                            .append(i)
+                            .append(" prior sub executor(s) completed successfully, but will be rolled back.");
                     }
                     throw new BatchExecutorException(message.toString(), e, results, batchResult);
                 }
@@ -143,4 +143,5 @@ public class FlexBatchExecutor extends BatchExecutor implements CacheKeyBuilder 
             batchResultList.clear();
         }
     }
+
 }

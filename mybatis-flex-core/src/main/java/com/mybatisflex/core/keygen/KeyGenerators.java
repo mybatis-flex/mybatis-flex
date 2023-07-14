@@ -17,7 +17,8 @@ package com.mybatisflex.core.keygen;
 
 public class KeyGenerators {
 
-    private KeyGenerators() {}
+    private KeyGenerators() {
+    }
 
     /**
      * uuid 主键生成器
@@ -36,4 +37,5 @@ public class KeyGenerators {
      * {@link com.mybatisflex.core.keygen.impl.SnowFlakeIDKeyGenerator}
      */
     public static final String snowFlakeId = "snowFlakeId";
+
 }

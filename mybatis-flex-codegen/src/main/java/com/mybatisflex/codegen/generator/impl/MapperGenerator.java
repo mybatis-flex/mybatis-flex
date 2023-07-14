@@ -53,10 +53,10 @@ public class MapperGenerator implements IGenerator {
 
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         MapperConfig mapperConfig = globalConfig.getMapperConfig();
-        
+
         String mapperPackagePath = packageConfig.getMapperPackage().replace(".", "/");
         File mapperJavaFile = new File(packageConfig.getSourceDir(), mapperPackagePath + "/" +
-                table.buildMapperClassName() + ".java");
+            table.buildMapperClassName() + ".java");
 
 
         if (mapperJavaFile.exists() && !mapperConfig.isOverwriteEnable()) {

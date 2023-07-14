@@ -52,4 +52,5 @@ public class RawValue implements Serializable {
 
         return object.toString();
     }
+
 }
