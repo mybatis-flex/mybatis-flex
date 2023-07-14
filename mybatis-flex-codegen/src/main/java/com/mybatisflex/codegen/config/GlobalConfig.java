@@ -877,6 +877,20 @@ public class GlobalConfig {
         getEntityConfig().setWithLombok(entityWithLombok);
     }
 
+    /**
+     * @see EntityConfig#getDataSource()
+     */
+    public String getEntityDataSource() {
+        return getEntityConfig().getDataSource();
+    }
+
+    /**
+     * @see EntityConfig#setDataSource(String)
+     */
+    public void setEntityDataSource(String dataSource) {
+        getEntityConfig().setDataSource(dataSource);
+    }
+
     public boolean isMapperGenerateEnable() {
         return mapperGenerateEnable;
     }
@@ -1248,28 +1262,28 @@ public class GlobalConfig {
     /**
      * @see TableDefConfig#getPropertiesNameStyle()
      */
-    public TableDefConfig.NameStyle getPropertiesNameStyle() {
+    public TableDefConfig.NameStyle getTableDefPropertiesNameStyle() {
         return getTableDefConfig().getPropertiesNameStyle();
     }
 
     /**
      * @see TableDefConfig#setPropertiesNameStyle(TableDefConfig.NameStyle)
      */
-    public void setPropertiesNameStyle(TableDefConfig.NameStyle propertiesNameStyle) {
+    public void setTableDefPropertiesNameStyle(TableDefConfig.NameStyle propertiesNameStyle) {
         getTableDefConfig().setPropertiesNameStyle(propertiesNameStyle);
     }
 
     /**
      * @see TableDefConfig#getInstanceSuffix()
      */
-    public String getInstanceSuffix() {
+    public String getTableDefInstanceSuffix() {
         return getTableDefConfig().getInstanceSuffix();
     }
 
     /**
      * @see TableDefConfig#setInstanceSuffix(String)
      */
-    public void setInstanceSuffix(String instanceSuffix) {
+    public void setTableDefInstanceSuffix(String instanceSuffix) {
         getTableDefConfig().setInstanceSuffix(instanceSuffix);
     }
 

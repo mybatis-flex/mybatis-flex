@@ -250,7 +250,7 @@ public class Book implements Serializable {
 
 
 
-## 多对多 `@RelationManyToOne`
+## 多对多 `@RelationManyToMany`
 
 假设一个账户可以有多个角色，一个角色也可以有多个账户，他们是多对多的关系，需要通过中间件表 `tb_role_mapping` 来维护：
 
