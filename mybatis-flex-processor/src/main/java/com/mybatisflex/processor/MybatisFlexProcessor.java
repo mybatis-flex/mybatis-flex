@@ -23,6 +23,7 @@ import com.mybatisflex.processor.builder.ContentBuilder;
 import com.mybatisflex.processor.config.ConfigurationKey;
 import com.mybatisflex.processor.config.MybatisFlexConfig;
 import com.mybatisflex.processor.entity.ColumnInfo;
+import com.mybatisflex.processor.entity.TableInfo;
 import com.mybatisflex.processor.util.FileUtil;
 import com.mybatisflex.processor.util.StrUtil;
 
@@ -35,6 +36,7 @@ import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
 import java.io.File;
@@ -77,12 +79,14 @@ public class MybatisFlexProcessor extends AbstractProcessor {
 
     private Filer filer;
     private Types typeUtils;
+    private Elements elementUtils;
     private MybatisFlexConfig configuration;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         this.filer = processingEnvironment.getFiler();
+        this.elementUtils = processingEnvironment.getElementUtils();
         this.typeUtils = processingEnvironment.getTypeUtils();
         this.configuration = new MybatisFlexConfig(filer);
     }
@@ -174,10 +178,17 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     }
                 }
 
+                TableInfo tableInfo = new TableInfo();
+                tableInfo.setEntityName(entityClass);
+                tableInfo.setEntitySimpleName(entityClassName);
+                tableInfo.setTableName(table.value());
+                tableInfo.setSchema(table.schema());
+                tableInfo.setEntityComment(elementUtils.getDocComment(entityClassElement));
+
                 // 生成 TableDef 文件
                 String tableDefPackage = StrUtil.buildTableDefPackage(entityClass);
                 String tableDefClassName = entityClassName.concat(tableDefClassSuffix);
-                String tableDefContent = ContentBuilder.buildTableDef(table, entityClass, entityClassName, allInTablesEnable, tableDefPackage, tableDefClassName
+                String tableDefContent = ContentBuilder.buildTableDef(tableInfo, allInTablesEnable, tableDefPackage, tableDefClassName
                     , tableDefPropertiesNameStyle, tableDefInstanceSuffix, columnInfos, defaultColumns);
                 processGenClass(genPath, tableDefPackage, tableDefClassName, tableDefContent);
 
@@ -185,7 +196,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     // 标记 entity 类，如果没有配置 Tables 生成位置，以 entity 位置为准
                     entityClassReference = entityClass;
                     // 构建 Tables 常量属性及其导包
-                    ContentBuilder.buildTablesField(importBuilder, fieldBuilder, table, entityClass, entityClassName, tableDefClassSuffix, tableDefPropertiesNameStyle, tableDefInstanceSuffix);
+                    ContentBuilder.buildTablesField(importBuilder, fieldBuilder, tableInfo, tableDefClassSuffix, tableDefPropertiesNameStyle, tableDefInstanceSuffix);
                 }
 
                 // 是否生成 Mapper 文件
@@ -298,6 +309,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 columnInfo.setProperty(property);
                 columnInfo.setColumn(columnName);
                 columnInfo.setAlias(alias);
+                columnInfo.setComment(elementUtils.getDocComment(fieldElement));
 
                 columnInfos.add(columnInfo);
 
