@@ -150,7 +150,7 @@ globalConfig.enableEntity();
 // 设置生成 Entity 并启用 Lombok、设置父类
 globalConfig.enableEntity()
         .setWithLombok(true)
-        .setSupperClass(BaseEntity.class);
+        .setSuperClass(BaseEntity.class);
 ```
 
 ## 全局配置 `GlobalConfig`
@@ -193,7 +193,7 @@ globalConfig.getPackageConfig()
 // 设置生成 Entity 并启用 Lombok、设置父类
 globalConfig.enableEntity()
         .setWithLombok(true)
-        .setSupperClass(BaseEntity.class);
+        .setSuperClass(BaseEntity.class);
 ```
 
 ## 注释配置 `JavadocConfig`
@@ -284,7 +284,7 @@ globalConfig.getTemplateConfig()
 |-----------------------------|----------------------------------|--------------------|
 | setClassPrefix(String)      | Entity 类的前缀                      | ""                 |
 | setClassSuffix(String)      | Entity 类的后缀                      | ""                 |
-| setSupperClass(Class)       | Entity 类的父类，可以自定义一些 BaseEntity 类 | null               |
+| setSuperClass(Class)       | Entity 类的父类，可以自定义一些 BaseEntity 类 | null               |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件                      | false              |
 | setImplInterfaces(Class[])  | Entity 默认实现的接口                   | Serializable.class |
 | setWithLombok(boolean)      | Entity 是否使用 Lombok 注解            | false              |
@@ -294,7 +294,7 @@ globalConfig.getEntityConfig()
         .setWithLombok(true)
         .setClassPrefix("My")
         .setClassSuffix("Entity")
-        .setSupperClass(BaseEntity.class);
+        .setSuperClass(BaseEntity.class);
 ```
 
 ## Mapper 生成配置 `MapperConfig`
@@ -303,7 +303,7 @@ globalConfig.getEntityConfig()
 |-----------------------------|-------------|------------------|
 | setClassPrefix(String)      | Mapper 类的前缀 | ""               |
 | setClassSuffix(String)      | Mapper 类的后缀 | "Mapper"         |
-| setSupperClass(Class)       | Mapper 类的父类 | BaseMapper.class |
+| setSuperClass(Class)       | Mapper 类的父类 | BaseMapper.class |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件 | false            |
 
 ```java
@@ -319,7 +319,7 @@ globalConfig.getMapperConfig()
 |-----------------------------|--------------|----------------|
 | setClassPrefix(String)      | Service 类的前缀 | ""             |
 | setClassSuffix(String)      | Service 类的后缀 | "Service"      |
-| setSupperClass(Class)       | Service 类的父类 | IService.class |
+| setSuperClass(Class)       | Service 类的父类 | IService.class |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件  | false          |
 
 ```java
@@ -335,7 +335,7 @@ globalConfig.getServiceConfig()
 |-----------------------------|------------------|-------------------|
 | setClassPrefix(String)      | ServiceImpl 类的前缀 | ""                |
 | setClassSuffix(String)      | ServiceImpl 类的后缀 | "ServiceImpl"     |
-| setSupperClass(Class)       | ServiceImpl 类的父类 | ServiceImpl.class |
+| setSuperClass(Class)       | ServiceImpl 类的父类 | ServiceImpl.class |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件      | false             |
 | setCacheExample(boolean)    | 是否添加缓存示例代码       | false             |
 
@@ -352,7 +352,7 @@ globalConfig.getServiceImplConfig()
 |-----------------------------|---------------------|--------------|
 | setClassPrefix(String)      | Controller 类的前缀     | ""           |
 | setClassSuffix(String)      | Controller 类的后缀     | "Controller" |
-| setSupperClass(Class)       | Controller 类的父类     | null         |
+| setSuperClass(Class)       | Controller 类的父类     | null         |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件         | false        |
 | setRestStyle(boolean)       | REST 风格的 Controller | true         |
 

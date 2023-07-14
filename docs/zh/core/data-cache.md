@@ -179,11 +179,11 @@ public class AccountServiceImpl extends CacheableServiceImpl<MyAccountMapper, Ac
 ```java
 // 使用代码风格 1 生成
 globalConfig.setServiceImplGenerateEnable(true);
-globalConfig.setServiceImplSupperClass(CacheableServiceImpl.class);
+globalConfig.setServiceImplSuperClass(CacheableServiceImpl.class);
 globalConfig.setServiceImplCacheExample(true);
 
 // 或者使用代码风格 2 生成
 globleConfig.enableServiceImpl()
-        .setSupperClass(CacheableServiceImpl.class)
+        .setSuperClass(CacheableServiceImpl.class)
         .setCacheExample(true);
 ```
