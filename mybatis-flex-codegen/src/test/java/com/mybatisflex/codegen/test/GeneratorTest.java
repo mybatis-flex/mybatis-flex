@@ -61,7 +61,7 @@ public class GeneratorTest {
         //配置生成 entity
         globalConfig.setEntityGenerateEnable(true);
         globalConfig.setEntityWithLombok(true);
-        globalConfig.setEntitySupperClass(BaseEntity.class);
+        globalConfig.setEntitySuperClass(BaseEntity.class);
 
         //配置生成 mapper
         globalConfig.setMapperGenerateEnable(true);
@@ -122,7 +122,7 @@ public class GeneratorTest {
         globalConfig.enableEntity()
             .setOverwriteEnable(true)
             .setWithLombok(true)
-            .setSupperClass(BaseEntity.class);
+            .setSuperClass(BaseEntity.class);
 
         //配置生成 mapper
         globalConfig.enableMapper();
@@ -130,7 +130,7 @@ public class GeneratorTest {
         globalConfig.enableService();
         //配置生成 serviceImpl
         globalConfig.enableServiceImpl()
-            .setSupperClass(CacheableServiceImpl.class)
+            .setSuperClass(CacheableServiceImpl.class)
             .setCacheExample(true);
         //配置生成 controller
         globalConfig.enableController();
