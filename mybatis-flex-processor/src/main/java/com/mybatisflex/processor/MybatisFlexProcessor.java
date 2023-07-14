@@ -204,7 +204,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     String realMapperPackage = StrUtil.isBlank(mapperPackage) ? StrUtil.buildMapperPackage(entityClass) : mapperPackage;
                     String mapperClassName = entityClassName.concat("Mapper");
                     boolean mapperAnnotationEnable = "true".equalsIgnoreCase(mapperAnnotation);
-                    String mapperClassContent = ContentBuilder.buildMapper(entityClass, entityClassName, realMapperPackage, mapperClassName, mapperBaseClass, mapperAnnotationEnable);
+                    String mapperClassContent = ContentBuilder.buildMapper(tableInfo, realMapperPackage, mapperClassName, mapperBaseClass, mapperAnnotationEnable);
                     processGenClass(genPath, realMapperPackage, mapperClassName, mapperClassContent);
                 }
 
