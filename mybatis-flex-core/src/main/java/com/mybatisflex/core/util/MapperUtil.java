@@ -53,8 +53,8 @@ public class MapperUtil {
      */
     public static QueryWrapper rawCountQueryWrapper(QueryWrapper queryWrapper) {
         return QueryWrapper.create()
-                .select(count().as("total"))
-                .from(queryWrapper).as("t");
+            .select(count().as("total"))
+            .from(queryWrapper).as("t");
     }
 
     /**
@@ -254,7 +254,7 @@ public class MapperUtil {
             return list.get(0);
         }
         throw new TooManyResultsException(
-                "Expected one result (or null) to be returned by selectOne(), but found: " + size);
+            "Expected one result (or null) to be returned by selectOne(), but found: " + size);
     }
 
     public static long getLongNumber(List<Object> objects) {

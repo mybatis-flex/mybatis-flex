@@ -25,7 +25,10 @@ import java.lang.reflect.Proxy;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * SQL 审计详细消息。
@@ -207,15 +210,15 @@ public class AuditMessage implements Serializable {
 
     private PreparedStatement createPreparedStatement(Statement statement) {
         return (PreparedStatement) Proxy.newProxyInstance(
-                AuditMessage.class.getClassLoader(),
-                new Class[]{PreparedStatement.class}, (proxy, method, args) -> {
-                    if (args != null && (args.length == 2 || args.length == 3)) {
-                        doAddParam(statement, args[1]);
-                    } else if ("getConnection".equals(method.getName())) {
-                        return statement.getConnection();
-                    }
-                    return null;
-                });
+            AuditMessage.class.getClassLoader(),
+            new Class[]{PreparedStatement.class}, (proxy, method, args) -> {
+                if (args != null && (args.length == 2 || args.length == 3)) {
+                    doAddParam(statement, args[1]);
+                } else if ("getConnection".equals(method.getName())) {
+                    return statement.getConnection();
+                }
+                return null;
+            });
     }
 
     public int getQueryCount() {
@@ -260,20 +263,20 @@ public class AuditMessage implements Serializable {
     @Override
     public String toString() {
         return "AuditMessage{" +
-                "platform='" + platform + '\'' +
-                ", module='" + module + '\'' +
-                ", url='" + url + '\'' +
-                ", bizId='" + bizId + '\'' +
-                ", user='" + user + '\'' +
-                ", userIp='" + userIp + '\'' +
-                ", hostIp='" + hostIp + '\'' +
-                ", query='" + query + '\'' +
-                ", queryParams=" + queryParams +
-                ", queryCount=" + queryCount +
-                ", queryTime=" + queryTime +
-                ", elapsedTime=" + elapsedTime +
-                ", metas=" + metas +
-                '}';
+            "platform='" + platform + '\'' +
+            ", module='" + module + '\'' +
+            ", url='" + url + '\'' +
+            ", bizId='" + bizId + '\'' +
+            ", user='" + user + '\'' +
+            ", userIp='" + userIp + '\'' +
+            ", hostIp='" + hostIp + '\'' +
+            ", query='" + query + '\'' +
+            ", queryParams=" + queryParams +
+            ", queryCount=" + queryCount +
+            ", queryTime=" + queryTime +
+            ", elapsedTime=" + elapsedTime +
+            ", metas=" + metas +
+            '}';
     }
 
 }

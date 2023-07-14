@@ -81,4 +81,5 @@ public class ScheduledMessageCollector implements MessageCollector, Runnable {
         run(); //clear the messages
         scheduler.shutdown();
     }
+
 }

@@ -233,10 +233,10 @@ public interface IService<T> {
             // BaseMapper 是经过 Mybatis 动态代理处理过的对象，需要获取原始 BaseMapper 类型
             Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
             return SqlUtil.toBool(Arrays.stream(Db.executeBatch(
-                    entityList.size()
-                    , batchSize
-                    , usefulClass
-                    , (mapper, index) -> mapper.update(entityList.get(index)))
+                entityList.size()
+                , batchSize
+                , usefulClass
+                , (mapper, index) -> mapper.update(entityList.get(index)))
             ).sum());
         });
     }

@@ -42,4 +42,5 @@ public class StringQueryOrderBy extends QueryOrderBy {
     public StringQueryOrderBy clone() {
         return (StringQueryOrderBy) super.clone();
     }
+
 }

@@ -52,7 +52,7 @@ public class RowCPI {
         return row.getModifyAttrs();
     }
 
-    public static Map<String, RawValue> getRawValueMap(Row row){
+    public static Map<String, RawValue> getRawValueMap(Row row) {
         return row.getRawValueMap();
     }
 

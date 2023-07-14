@@ -100,4 +100,5 @@ public class Join implements CloneSupport<Join> {
             throw FlexExceptions.wrap(e);
         }
     }
+
 }

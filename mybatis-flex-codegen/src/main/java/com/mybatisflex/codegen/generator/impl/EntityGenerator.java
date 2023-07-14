@@ -56,7 +56,7 @@ public class EntityGenerator implements IGenerator {
 
         String entityPackagePath = packageConfig.getEntityPackage().replace(".", "/");
         File entityJavaFile = new File(packageConfig.getSourceDir(), entityPackagePath + "/" +
-                table.buildEntityClassName() + ".java");
+            table.buildEntityClassName() + ".java");
 
 
         if (entityJavaFile.exists() && !entityConfig.isOverwriteEnable()) {

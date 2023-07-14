@@ -147,5 +147,7 @@ public class ArithmeticQueryColumn extends QueryColumn {
                 throw FlexExceptions.wrap(e);
             }
         }
+
     }
+
 }

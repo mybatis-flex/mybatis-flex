@@ -70,26 +70,26 @@ public interface IDialect {
 
         @Override
         protected ResultSet forRemarks(String schema, Table table, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
-            if (conn instanceof  OracleConnection){
+            if (conn instanceof OracleConnection) {
                 ((OracleConnection) conn).setRemarksReporting(true);
                 return dbMeta.getColumns(conn.getCatalog(), StringUtil.isNotBlank(schema) ? schema : dbMeta.getUserName(), table.getName(), null);
-            }else if ("com.zaxxer.hikari.pool.HikariProxyConnection".equals(conn.getClass().getName())){
-                return forRemarks(schema,table,dbMeta,getOriginalConn(HikariProxyConnection.class,"delegate",conn));
-            }else if ("com.alibaba.druid.pool.DruidPooledConnection".equals(conn.getClass().getName())){
-                return forRemarks(schema,table,dbMeta,getOriginalConn(DruidPooledConnection.class,"conn",conn));
+            } else if ("com.zaxxer.hikari.pool.HikariProxyConnection".equals(conn.getClass().getName())) {
+                return forRemarks(schema, table, dbMeta, getOriginalConn(HikariProxyConnection.class, "delegate", conn));
+            } else if ("com.alibaba.druid.pool.DruidPooledConnection".equals(conn.getClass().getName())) {
+                return forRemarks(schema, table, dbMeta, getOriginalConn(DruidPooledConnection.class, "conn", conn));
             }
             return null;
-       }
+        }
 
-       private Connection getOriginalConn(Class<?> clazz,String attr,Connection conn){
-           Field delegate = ClassUtil.getFirstField(clazz, field -> field.getName().equals(attr));
-           try {
-               delegate.setAccessible(true);
-               return (Connection) delegate.get(conn);
-           } catch (IllegalAccessException e) {
-               throw new RuntimeException(e);
-           }
-       }
+        private Connection getOriginalConn(Class<?> clazz, String attr, Connection conn) {
+            Field delegate = ClassUtil.getFirstField(clazz, field -> field.getName().equals(attr));
+            try {
+                delegate.setAccessible(true);
+                return (Connection) delegate.get(conn);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
     };
 
     /**

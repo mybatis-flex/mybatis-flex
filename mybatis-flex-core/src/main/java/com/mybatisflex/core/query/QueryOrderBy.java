@@ -84,4 +84,5 @@ public class QueryOrderBy implements CloneSupport<QueryOrderBy> {
             throw FlexExceptions.wrap(e);
         }
     }
+
 }

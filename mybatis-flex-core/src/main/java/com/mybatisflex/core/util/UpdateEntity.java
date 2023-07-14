@@ -27,7 +27,8 @@ import java.util.List;
 
 public class UpdateEntity {
 
-    private UpdateEntity() {}
+    private UpdateEntity() {
+    }
 
 
     public static <T> T of(Class<T> clazz) {
@@ -84,7 +85,7 @@ public class UpdateEntity {
         for (String propertyName : propertyNames) {
             try {
                 Object value = reflector.getGetInvoker(propertyName)
-                        .invoke(entity, null);
+                    .invoke(entity, null);
                 if (value != null) {
                     reflector.getSetInvoker(propertyName).invoke(newEntity, new Object[]{value});
                 }

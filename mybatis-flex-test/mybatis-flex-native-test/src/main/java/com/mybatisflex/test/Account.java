@@ -32,7 +32,7 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
 
     private static final long serialVersionUID = 1L;
 
-//    @Id(keyType = KeyType.Generator,value = "uuid")
+    //    @Id(keyType = KeyType.Generator,value = "uuid")
     @Id(keyType = KeyType.Auto)
     @ColumnAlias("account_id")
     private Long id;
@@ -123,13 +123,14 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
     @Override
     public String toString() {
         return "Account{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", age=" + age +
-                ", birthday=" + birthday +
-                ", options=" + options +
-                ", isDelete=" + isDelete +
-                ", articles=" + articles +
-                '}';
+            "id=" + id +
+            ", userName='" + userName + '\'' +
+            ", age=" + age +
+            ", birthday=" + birthday +
+            ", options=" + options +
+            ", isDelete=" + isDelete +
+            ", articles=" + articles +
+            '}';
     }
+
 }

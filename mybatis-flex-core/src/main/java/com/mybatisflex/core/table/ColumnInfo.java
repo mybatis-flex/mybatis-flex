@@ -128,4 +128,5 @@ public class ColumnInfo {
     public void setMaskType(String maskType) {
         this.maskType = maskType;
     }
+
 }

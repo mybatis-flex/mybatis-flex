@@ -53,10 +53,10 @@ public class ServiceImplGenerator implements IGenerator {
 
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         ServiceImplConfig serviceImplConfig = globalConfig.getServiceImplConfig();
-        
+
         String serviceImplPackagePath = packageConfig.getServiceImplPackage().replace(".", "/");
         File serviceImplJavaFile = new File(packageConfig.getSourceDir(), serviceImplPackagePath + "/" +
-                table.buildServiceImplClassName() + ".java");
+            table.buildServiceImplClassName() + ".java");
 
 
         if (serviceImplJavaFile.exists() && !serviceImplConfig.isOverwriteEnable()) {

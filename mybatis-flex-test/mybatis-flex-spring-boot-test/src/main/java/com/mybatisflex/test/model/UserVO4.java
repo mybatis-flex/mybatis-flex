@@ -48,8 +48,9 @@ public class UserVO4 {
     @Override
     public String toString() {
         return "UserVO{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                '}';
+            "userId='" + userId + '\'' +
+            ", userName='" + userName + '\'' +
+            '}';
     }
+
 }

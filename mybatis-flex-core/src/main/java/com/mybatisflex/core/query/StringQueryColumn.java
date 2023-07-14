@@ -45,12 +45,13 @@ public class StringQueryColumn extends QueryColumn {
     @Override
     public String toString() {
         return "StringQueryColumn{" +
-                "content='" + content + '\'' +
-                '}';
+            "content='" + content + '\'' +
+            '}';
     }
 
     @Override
     public StringQueryColumn clone() {
         return (StringQueryColumn) super.clone();
     }
+
 }

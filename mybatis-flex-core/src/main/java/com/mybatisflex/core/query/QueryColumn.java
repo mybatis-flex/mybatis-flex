@@ -571,10 +571,10 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     @Override
     public String toString() {
         return "QueryColumn{" +
-                "table=" + table +
-                ", name='" + name + '\'' +
-                ", alias='" + alias + '\'' +
-                '}';
+            "table=" + table +
+            ", name='" + name + '\'' +
+            ", alias='" + alias + '\'' +
+            '}';
     }
 
 
@@ -589,4 +589,5 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
             throw FlexExceptions.wrap(e);
         }
     }
+
 }

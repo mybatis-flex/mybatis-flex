@@ -70,7 +70,6 @@ public class Page<T> implements Serializable {
     }
 
 
-
     /**
      * 获取当前页的数据。
      *
@@ -270,11 +269,12 @@ public class Page<T> implements Serializable {
     @Override
     public String toString() {
         return "Page{" +
-                "pageNumber=" + pageNumber +
-                ", pageSize=" + pageSize +
-                ", totalPage=" + totalPage +
-                ", totalRow=" + totalRow +
-                ", records=" + records +
-                '}';
+            "pageNumber=" + pageNumber +
+            ", pageSize=" + pageSize +
+            ", totalPage=" + totalPage +
+            ", totalRow=" + totalRow +
+            ", records=" + records +
+            '}';
     }
+
 }

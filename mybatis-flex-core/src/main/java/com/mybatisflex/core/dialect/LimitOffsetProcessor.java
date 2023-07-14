@@ -15,7 +15,10 @@
  */
 package com.mybatisflex.core.dialect;
 
-import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryOrderBy;
+import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.CollectionUtil;
 
 import java.util.List;

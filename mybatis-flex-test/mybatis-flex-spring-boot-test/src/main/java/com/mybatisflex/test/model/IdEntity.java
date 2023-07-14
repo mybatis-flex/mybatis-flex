@@ -40,4 +40,5 @@ public class IdEntity<T> implements Serializable {
     public void setId(T id) {
         this.id = id;
     }
+
 }

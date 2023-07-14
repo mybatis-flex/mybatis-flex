@@ -22,7 +22,6 @@ import java.util.StringJoiner;
 import java.util.regex.Matcher;
 
 import static com.mybatisflex.core.constant.SqlConsts.*;
-import static com.mybatisflex.core.constant.SqlConsts.BRACKET_RIGHT;
 
 public class SqlUtil {
 

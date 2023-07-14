@@ -1208,4 +1208,5 @@ public class TableInfo {
         String column = getColumnByProperty(property);
         return columnQueryMapping.get(column);
     }
+
 }

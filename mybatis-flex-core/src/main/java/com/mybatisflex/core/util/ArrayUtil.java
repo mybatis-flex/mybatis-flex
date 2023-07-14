@@ -20,7 +20,8 @@ import java.util.Objects;
 
 public class ArrayUtil {
 
-    private ArrayUtil() {}
+    private ArrayUtil() {
+    }
 
 
     /**

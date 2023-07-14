@@ -42,8 +42,8 @@ class FieldTest {
         Class<Account> accountClass = Account.class;
         Method[] declaredMethods = accountClass.getMethods();
         Arrays.stream(declaredMethods)
-                .filter(e -> e.getName().startsWith("get"))
-                .forEach(System.out::println);
+            .filter(e -> e.getName().startsWith("get"))
+            .forEach(System.out::println);
     }
 
     @Test

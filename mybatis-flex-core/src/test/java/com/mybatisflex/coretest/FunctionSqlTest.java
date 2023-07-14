@@ -33,22 +33,22 @@ public class FunctionSqlTest {
     @Test
     public void test() {
         String sql = QueryWrapper.create()
-                .select(new FunctionQueryColumn("NOW").as("n1"))
-                .select(new FunctionQueryColumn("NOW", new StringQueryColumn("")).as("n2"))
-                .select(new FunctionQueryColumn("CONCAT", ACCOUNT.USER_NAME, ACCOUNT.AGE).as("c1"))
-                .from(ACCOUNT)
-                .toSQL();
+            .select(new FunctionQueryColumn("NOW").as("n1"))
+            .select(new FunctionQueryColumn("NOW", new StringQueryColumn("")).as("n2"))
+            .select(new FunctionQueryColumn("CONCAT", ACCOUNT.USER_NAME, ACCOUNT.AGE).as("c1"))
+            .from(ACCOUNT)
+            .toSQL();
         System.out.println(sql);
     }
 
     @Test
     public void test02() {
         String sql = QueryWrapper.create()
-                .select(concatWs(string("abc"), ACCOUNT.USER_NAME, ACCOUNT.BIRTHDAY))
-                .select(abs(number(-3)))
-                .from(ACCOUNT)
-                .where(not(ACCOUNT.ID.eq(1)))
-                .toSQL();
+            .select(concatWs(string("abc"), ACCOUNT.USER_NAME, ACCOUNT.BIRTHDAY))
+            .select(abs(number(-3)))
+            .from(ACCOUNT)
+            .where(not(ACCOUNT.ID.eq(1)))
+            .toSQL();
         System.out.println(sql);
     }
 

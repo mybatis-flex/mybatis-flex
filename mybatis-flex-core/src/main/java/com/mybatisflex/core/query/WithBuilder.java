@@ -17,7 +17,9 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.util.CollectionUtil;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class WithBuilder {
 

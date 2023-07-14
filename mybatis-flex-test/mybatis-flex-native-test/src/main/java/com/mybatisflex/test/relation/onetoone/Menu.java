@@ -32,10 +32,10 @@ public class Menu implements Serializable {
 
     private String name;
 
-    @RelationManyToOne(selfField = "parentId",targetField = "id")
+    @RelationManyToOne(selfField = "parentId", targetField = "id")
     private Menu parent;
 
-    @RelationOneToMany(selfField = "id",targetField = "parentId")
+    @RelationOneToMany(selfField = "id", targetField = "parentId")
     private List<Menu> children;
 
     public Long getId() {
@@ -81,11 +81,12 @@ public class Menu implements Serializable {
     @Override
     public String toString() {
         return "Menu{" +
-                "id=" + id +
-                ", parentId=" + parentId +
-                ", name='" + name + '\'' +
-                ", parent=" + parent +
-                ", children=" + children +
-                '}';
+            "id=" + id +
+            ", parentId=" + parentId +
+            ", name='" + name + '\'' +
+            ", parent=" + parent +
+            ", children=" + children +
+            '}';
     }
+
 }

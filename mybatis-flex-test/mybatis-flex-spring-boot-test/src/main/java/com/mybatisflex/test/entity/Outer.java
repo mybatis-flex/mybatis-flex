@@ -55,9 +55,10 @@ public class Outer extends IdEntity<Integer> {
     @Override
     public String toString() {
         return "Outer{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", inner=" + inner +
-                '}';
+            "id='" + id + '\'' +
+            ", name='" + name + '\'' +
+            ", inner=" + inner +
+            '}';
     }
+
 }

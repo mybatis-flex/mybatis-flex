@@ -60,4 +60,5 @@ public class SelectQueryColumn extends QueryColumn implements HasParamsColumn {
     public Object[] getParamValues() {
         return queryWrapper.getValueArray();
     }
+
 }

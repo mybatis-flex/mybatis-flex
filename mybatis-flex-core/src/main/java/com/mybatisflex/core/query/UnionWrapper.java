@@ -61,9 +61,9 @@ public class UnionWrapper implements CloneSupport<UnionWrapper> {
 
     public void buildSql(StringBuilder sqlBuilder, IDialect dialect) {
         sqlBuilder.append(key)
-                .append(SqlConsts.BRACKET_LEFT)
-                .append(dialect.buildSelectSql(queryWrapper))
-                .append(SqlConsts.BRACKET_RIGHT);
+            .append(SqlConsts.BRACKET_LEFT)
+            .append(dialect.buildSelectSql(queryWrapper))
+            .append(SqlConsts.BRACKET_RIGHT);
     }
 
     @Override
@@ -77,4 +77,5 @@ public class UnionWrapper implements CloneSupport<UnionWrapper> {
             throw FlexExceptions.wrap(e);
         }
     }
+
 }

@@ -81,9 +81,9 @@ public class StringFunctionQueryColumn extends QueryColumn {
     @Override
     public String toString() {
         return "StringFunctionQueryColumn{" +
-                "fnName='" + fnName + '\'' +
-                ", params=" + params +
-                '}';
+            "fnName='" + fnName + '\'' +
+            ", params=" + params +
+            '}';
     }
 
     @Override
@@ -93,4 +93,5 @@ public class StringFunctionQueryColumn extends QueryColumn {
         clone.params = CollectionUtil.newArrayList(this.params);
         return clone;
     }
+
 }

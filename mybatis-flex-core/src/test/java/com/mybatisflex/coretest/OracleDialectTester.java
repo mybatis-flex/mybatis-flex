@@ -1,3 +1,19 @@
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.dialect.IDialect;
@@ -18,8 +34,8 @@ public class OracleDialectTester {
     @Test
     public void testSelectSql() {
         QueryWrapper query = new QueryWrapper()
-                .select()
-                .from(ACCOUNT);
+            .select()
+            .from(ACCOUNT);
 
         IDialect dialect = new OracleDialect();
         String sql = dialect.forSelectByQuery(query);
@@ -49,7 +65,7 @@ public class OracleDialectTester {
 
 
         IDialect dialect = new OracleDialect();
-        String sql = dialect.forInsertEntityBatch(TableInfoFactory.ofEntityClass(Account.class),accounts);
+        String sql = dialect.forInsertEntityBatch(TableInfoFactory.ofEntityClass(Account.class), accounts);
         System.out.println(sql);
     }
 
@@ -58,26 +74,26 @@ public class OracleDialectTester {
     public void testInsertRowBatchSql() {
         List<Row> accounts = new ArrayList<>();
         Row account1 = new Row();
-        account1.set("username","michael1");
-        account1.set("age",18);
-        account1.set("sex",1);
+        account1.set("username", "michael1");
+        account1.set("age", 18);
+        account1.set("sex", 1);
         accounts.add(account1);
 
         Row account2 = new Row();
-        account2.set("username","michael2");
-        account2.set("age",18);
-        account2.set("sex",1);
+        account2.set("username", "michael2");
+        account2.set("age", 18);
+        account2.set("sex", 1);
         accounts.add(account2);
 
         Row account3 = new Row();
-        account3.set("username","michael3");
-        account3.set("age",18);
-        account3.set("sex",1);
+        account3.set("username", "michael3");
+        account3.set("age", 18);
+        account3.set("sex", 1);
         accounts.add(account3);
 
 
         IDialect dialect = new OracleDialect();
-        String sql = dialect.forInsertBatchWithFirstRowColumns(null,"tb_account",accounts);
+        String sql = dialect.forInsertBatchWithFirstRowColumns(null, "tb_account", accounts);
         System.out.println(sql);
     }
 

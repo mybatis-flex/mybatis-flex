@@ -66,7 +66,7 @@ public class WithItem implements CloneSupport<WithItem> {
 
     public String toSql(IDialect dialect) {
         StringBuilder sql = new StringBuilder(name);
-        if (CollectionUtil.isNotEmpty(params)){
+        if (CollectionUtil.isNotEmpty(params)) {
             sql.append(BRACKET_LEFT).append(StringUtil.join(DELIMITER, params)).append(BRACKET_RIGHT);
         }
         sql.append(AS).append(BRACKET_LEFT);

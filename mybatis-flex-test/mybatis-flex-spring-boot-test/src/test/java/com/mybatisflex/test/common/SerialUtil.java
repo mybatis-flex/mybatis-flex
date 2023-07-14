@@ -57,14 +57,14 @@ public class SerialUtil {
 
     public static String toJSONString(Object obj) {
         return JSON.toJSONString(obj, JSONWriter.Feature.FieldBased,
-                JSONWriter.Feature.WriteClassName,
-                JSONWriter.Feature.NotWriteRootClassName,
-                JSONWriter.Feature.ReferenceDetection);
+            JSONWriter.Feature.WriteClassName,
+            JSONWriter.Feature.NotWriteRootClassName,
+            JSONWriter.Feature.ReferenceDetection);
     }
 
     public static <T> T parseObject(String str, Class<T> tClass) {
         return JSON.parseObject(str, tClass, JSONReader.Feature.FieldBased,
-                JSONReader.Feature.SupportClassForName);
+            JSONReader.Feature.SupportClassForName);
     }
 
     public static <T> T cloneObject(Object obj, Class<T> tClass) {

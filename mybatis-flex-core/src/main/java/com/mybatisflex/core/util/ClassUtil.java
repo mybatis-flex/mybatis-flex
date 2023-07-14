@@ -33,12 +33,12 @@ public class ClassUtil {
 
     //proxy frameworks
     private static final List<String> PROXY_CLASS_NAMES = Arrays.asList("net.sf.cglib.proxy.Factory"
-            // cglib
-            , "org.springframework.cglib.proxy.Factory"
+        // cglib
+        , "org.springframework.cglib.proxy.Factory"
 
-            // javassist
-            , "javassist.util.proxy.ProxyObject"
-            , "org.apache.ibatis.javassist.util.proxy.ProxyObject");
+        // javassist
+        , "javassist.util.proxy.ProxyObject"
+        , "org.apache.ibatis.javassist.util.proxy.ProxyObject");
     private static final String ENHANCER_BY = "$$EnhancerBy";
     private static final String JAVASSIST_BY = "_$$_";
 
@@ -99,11 +99,11 @@ public class ClassUtil {
 
     public static boolean isArray(Class<?> clazz) {
         return clazz.isArray()
-                || clazz == int[].class
-                || clazz == long[].class
-                || clazz == short[].class
-                || clazz == float[].class
-                || clazz == double[].class;
+            || clazz == int[].class
+            || clazz == long[].class
+            || clazz == short[].class
+            || clazz == float[].class
+            || clazz == double[].class;
     }
 
     public static boolean canInstance(int mod) {
@@ -169,7 +169,7 @@ public class ClassUtil {
         }
 
         if (constructor.getParameterCount() > 0
-                && (paras == null || paras.length != constructor.getParameterCount())) {
+            && (paras == null || paras.length != constructor.getParameterCount())) {
             return false;
         }
 

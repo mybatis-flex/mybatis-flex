@@ -47,7 +47,7 @@ public class TableDefGenerator implements IGenerator {
     @Override
     public void generate(Table table, GlobalConfig globalConfig) {
 
-        if (!globalConfig.isTableDefGenerateEnable()){
+        if (!globalConfig.isTableDefGenerateEnable()) {
             return;
         }
 
@@ -56,7 +56,7 @@ public class TableDefGenerator implements IGenerator {
 
         String tableDefPackagePath = packageConfig.getTableDefPackage().replace(".", "/");
         File tableDefJavaFile = new File(packageConfig.getSourceDir(), tableDefPackagePath + "/" +
-                table.buildTableDefClassName() + ".java");
+            table.buildTableDefClassName() + ".java");
 
 
         if (tableDefJavaFile.exists() && !tableDefConfig.isOverwriteEnable()) {

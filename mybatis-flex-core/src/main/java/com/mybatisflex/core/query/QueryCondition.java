@@ -182,8 +182,8 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             //子查询
             else if (value instanceof QueryWrapper) {
                 sql.append(SqlConsts.BRACKET_LEFT)
-                        .append(dialect.buildSelectSql((QueryWrapper) value))
-                        .append(SqlConsts.BRACKET_RIGHT);
+                    .append(dialect.buildSelectSql((QueryWrapper) value))
+                    .append(SqlConsts.BRACKET_RIGHT);
             }
             //原生sql
             else if (value instanceof RawFragment) {
@@ -214,10 +214,10 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
     protected void appendQuestionMark(StringBuilder sqlBuilder) {
         //noinspection StatementWithEmptyBody
         if (SqlConsts.IS_NULL.equals(logic)
-                || SqlConsts.IS_NOT_NULL.equals(logic)
-                || value instanceof QueryColumn
-                || value instanceof QueryWrapper
-                || value instanceof RawFragment) {
+            || SqlConsts.IS_NOT_NULL.equals(logic)
+            || value instanceof QueryColumn
+            || value instanceof QueryWrapper
+            || value instanceof RawFragment) {
             //do nothing
         }
 
@@ -278,11 +278,11 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
     @Override
     public String toString() {
         return "QueryCondition{" +
-                "column=" + column +
-                ", logic='" + logic + '\'' +
-                ", value=" + value +
-                ", effective=" + effective +
-                '}';
+            "column=" + column +
+            ", logic='" + logic + '\'' +
+            ", value=" + value +
+            ", effective=" + effective +
+            '}';
     }
 
     @Override
@@ -302,4 +302,5 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             throw FlexExceptions.wrap(e);
         }
     }
+
 }

@@ -1,3 +1,19 @@
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.dialect.IDialect;
@@ -25,8 +41,8 @@ public class AccountSqlTester {
     @Test
     public void testSelectSql() {
         QueryWrapper query = new QueryWrapper()
-                .select()
-                .from(ACCOUNT);
+            .select()
+            .from(ACCOUNT);
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(query);
@@ -36,8 +52,8 @@ public class AccountSqlTester {
     @Test
     public void testSelectWithSchemaSql() {
         QueryWrapper query = new QueryWrapper()
-                .select()
-                .from(ACCOUNT01);
+            .select()
+            .from(ACCOUNT01);
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(query);
@@ -47,10 +63,10 @@ public class AccountSqlTester {
     @Test
     public void testSelectWithSchemaSql01() {
         QueryWrapper query = new QueryWrapper()
-                .select()
-                .from(ACCOUNT01).leftJoin(ACCOUNT).on(ACCOUNT01.ID.eq(ACCOUNT.ID))
-                .where(ACCOUNT01.ID.ge(100))
-                .and(ACCOUNT.SEX.eq(1));
+            .select()
+            .from(ACCOUNT01).leftJoin(ACCOUNT).on(ACCOUNT01.ID.eq(ACCOUNT.ID))
+            .where(ACCOUNT01.ID.ge(100))
+            .and(ACCOUNT.SEX.eq(1));
 
         TableManager.setDynamicTableProcessor(new DynamicTableProcessor() {
             @Override
@@ -67,10 +83,10 @@ public class AccountSqlTester {
     @Test
     public void testSelectWithSchemaSql02() {
         QueryWrapper query = new QueryWrapper()
-                .select()
-                .from(ACCOUNT01).as("a1").leftJoin(ACCOUNT).on(ACCOUNT01.ID.eq(ACCOUNT.ID))
-                .where(ACCOUNT01.ID.ge(100))
-                .and(ACCOUNT.SEX.eq(1));
+            .select()
+            .from(ACCOUNT01).as("a1").leftJoin(ACCOUNT).on(ACCOUNT01.ID.eq(ACCOUNT.ID))
+            .where(ACCOUNT01.ID.ge(100))
+            .and(ACCOUNT.SEX.eq(1));
 
         TableManager.setDynamicTableProcessor(original -> original + "_01");
         TableManager.setDynamicTableProcessor(original -> original + "_01");
@@ -82,8 +98,8 @@ public class AccountSqlTester {
     @Test
     public void testSelectColumnsSql() {
         QueryWrapper query = new QueryWrapper()
-                .select(ACCOUNT.ID, ACCOUNT.USER_NAME)
-                .from(ACCOUNT);
+            .select(ACCOUNT.ID, ACCOUNT.USER_NAME)
+            .from(ACCOUNT);
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(query);
@@ -93,10 +109,10 @@ public class AccountSqlTester {
     @Test
     public void testSelect1ColumnsSql() {
         QueryWrapper query = new QueryWrapper()
-                .select(ACCOUNT.ID, ACCOUNT.USER_NAME,
-                        ARTICLE.ID.as("articleId"), ARTICLE.TITLE)
-                .from(ACCOUNT.as("a"), ARTICLE.as("b"))
-                .where(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
+            .select(ACCOUNT.ID, ACCOUNT.USER_NAME,
+                ARTICLE.ID.as("articleId"), ARTICLE.TITLE)
+            .from(ACCOUNT.as("a"), ARTICLE.as("b"))
+            .where(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
 
         IDialect dialect = new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.MYSQL);
         String sql = dialect.forSelectByQuery(query);
@@ -106,8 +122,8 @@ public class AccountSqlTester {
     @Test
     public void testSelectColumnsAndFunctionsSql() {
         QueryWrapper query = new QueryWrapper()
-                .select(ACCOUNT.ID, ACCOUNT.USER_NAME, max(ACCOUNT.BIRTHDAY), avg(ACCOUNT.SEX).as("sex_avg"))
-                .from(ACCOUNT);
+            .select(ACCOUNT.ID, ACCOUNT.USER_NAME, max(ACCOUNT.BIRTHDAY), avg(ACCOUNT.SEX).as("sex_avg"))
+            .from(ACCOUNT);
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(query);
@@ -118,8 +134,8 @@ public class AccountSqlTester {
     @Test
     public void testSelectAllColumnsSql() {
         QueryWrapper query = new QueryWrapper()
-                .select(ACCOUNT.ALL_COLUMNS)
-                .from(ACCOUNT);
+            .select(ACCOUNT.ALL_COLUMNS)
+            .from(ACCOUNT);
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(query);
@@ -130,11 +146,11 @@ public class AccountSqlTester {
     @Test
     public void testUnionSql() {
         QueryWrapper query = new QueryWrapper()
-                .select(ACCOUNT.ID)
-                .from(ACCOUNT)
-                .orderBy(ACCOUNT.ID.desc())
-                .union(select(ARTICLE.ID).from(ARTICLE))
-                .unionAll(select(ARTICLE.ID).from(ARTICLE));
+            .select(ACCOUNT.ID)
+            .from(ACCOUNT)
+            .orderBy(ACCOUNT.ID.desc())
+            .union(select(ARTICLE.ID).from(ARTICLE))
+            .unionAll(select(ARTICLE.ID).from(ARTICLE));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(query);
@@ -145,10 +161,10 @@ public class AccountSqlTester {
     @Test
     public void testWhereSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.ge(100))
-                .and(ACCOUNT.USER_NAME.like("michael"));
+            .select()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.ge(100))
+            .and(ACCOUNT.USER_NAME.like("michael"));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -158,10 +174,10 @@ public class AccountSqlTester {
     @Test
     public void testWhere2Sql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(column("A.*"), column("b.x"))
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.ge(100))
-                .and(column("aaa").in("michael", "aaa"));
+            .select(column("A.*"), column("b.x"))
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.ge(100))
+            .and(column("aaa").in("michael", "aaa"));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -173,10 +189,10 @@ public class AccountSqlTester {
     public void testWhereCond1Sql() {
         boolean flag = false;
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.ge(100).when(flag))
-                .and(ACCOUNT.USER_NAME.like("michael"));
+            .select()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.ge(100).when(flag))
+            .and(ACCOUNT.USER_NAME.like("michael"));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -191,10 +207,10 @@ public class AccountSqlTester {
     public void testWhereCond2Sql() {
         boolean flag = false;
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(flag ? ACCOUNT.ID.ge(100) : noCondition())
-                .and(ACCOUNT.USER_NAME.like("michael"));
+            .select()
+            .from(ACCOUNT)
+            .where(flag ? ACCOUNT.ID.ge(100) : noCondition())
+            .and(ACCOUNT.USER_NAME.like("michael"));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -208,14 +224,14 @@ public class AccountSqlTester {
     @Test
     public void testWhereExistSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.ge(100))
-                .and(
-                        exists(
-                                selectOne().from(ARTICLE).as("a").where(ARTICLE.ID.ge(100))
-                        )
-                );
+            .select()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.ge(100))
+            .and(
+                exists(
+                    selectOne().from(ARTICLE).as("a").where(ARTICLE.ID.ge(100))
+                )
+            );
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -226,11 +242,11 @@ public class AccountSqlTester {
     @Test
     public void testWhereAndOrSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.ge(100))
-                .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
-                .or(ACCOUNT.AGE.in(18, 19, 20).or(ACCOUNT.USER_NAME.like("michael")));
+            .select()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.ge(100))
+            .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
+            .or(ACCOUNT.AGE.in(18, 19, 20).or(ACCOUNT.USER_NAME.like("michael")));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -240,11 +256,11 @@ public class AccountSqlTester {
     @Test
     public void testWhereSelectSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.ge(
-                        select(ARTICLE.ACCOUNT_ID).from(ARTICLE).where(ARTICLE.ID.ge(100))
-                ));
+            .select()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.ge(
+                select(ARTICLE.ACCOUNT_ID).from(ARTICLE).where(ARTICLE.ID.ge(100))
+            ));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -254,9 +270,9 @@ public class AccountSqlTester {
     @Test
     public void testGroupSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .groupBy(ACCOUNT.USER_NAME);
+            .select()
+            .from(ACCOUNT)
+            .groupBy(ACCOUNT.USER_NAME);
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -268,19 +284,19 @@ public class AccountSqlTester {
     @Test
     public void testGroup_I7EAY9() {
         QueryWrapper query = QueryWrapper.create()
-                .from(ACCOUNT).as("a")
-                .from(ACCOUNT01).as("b")
-                .groupBy(year(ACCOUNT.BIRTHDAY));
+            .from(ACCOUNT).as("a")
+            .from(ACCOUNT01).as("b")
+            .groupBy(year(ACCOUNT.BIRTHDAY));
         System.out.println(query.toSQL());
     }
 
     @Test
     public void testHavingSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .groupBy(ACCOUNT.USER_NAME)
-                .having(ACCOUNT.AGE.between(18, 25));
+            .select()
+            .from(ACCOUNT)
+            .groupBy(ACCOUNT.USER_NAME)
+            .having(ACCOUNT.AGE.between(18, 25));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -290,10 +306,10 @@ public class AccountSqlTester {
     @Test
     public void testJoinSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
-                .where(ACCOUNT.AGE.ge(10));
+            .select()
+            .from(ACCOUNT)
+            .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+            .where(ACCOUNT.AGE.ge(10));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -303,12 +319,12 @@ public class AccountSqlTester {
     @Test
     public void testJoin2Sql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .leftJoin(ARTICLE).on(
-                        ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID).and(ACCOUNT.AGE.eq(18))
-                )
-                .where(ACCOUNT.AGE.ge(10));
+            .select()
+            .from(ACCOUNT)
+            .leftJoin(ARTICLE).on(
+                ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID).and(ACCOUNT.AGE.eq(18))
+            )
+            .where(ACCOUNT.AGE.ge(10));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -318,14 +334,14 @@ public class AccountSqlTester {
     @Test
     public void testJoin3Sql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .leftJoin(
-                        select().from(ARTICLE).where(ARTICLE.ID.ge(100))
-                ).as("a").on(
-                        ACCOUNT.ID.eq(raw("a.id"))
-                )
-                .where(ACCOUNT.AGE.ge(10));
+            .select()
+            .from(ACCOUNT)
+            .leftJoin(
+                select().from(ARTICLE).where(ARTICLE.ID.ge(100))
+            ).as("a").on(
+                ACCOUNT.ID.eq(raw("a.id"))
+            )
+            .where(ACCOUNT.AGE.ge(10));
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -333,15 +349,12 @@ public class AccountSqlTester {
     }
 
 
-
-
-
     @Test
     public void testOrderBySql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .orderBy(ACCOUNT.AGE.asc(), ACCOUNT.USER_NAME.desc().nullsLast());
+            .select()
+            .from(ACCOUNT)
+            .orderBy(ACCOUNT.AGE.asc(), ACCOUNT.USER_NAME.desc().nullsLast());
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(queryWrapper);
@@ -361,10 +374,10 @@ public class AccountSqlTester {
         IDialect dialect = new CommonsDialectImpl();
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .and(ACCOUNT.USER_NAME.like("michael"))
-                .forUpdate();
+            .select()
+            .from(ACCOUNT)
+            .and(ACCOUNT.USER_NAME.like("michael"))
+            .forUpdate();
 
         String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
@@ -375,12 +388,12 @@ public class AccountSqlTester {
         IDialect dialect = new CommonsDialectImpl();
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(ACCOUNT.ALL_COLUMNS, convert("NVARCHAR(30)", "GETDATE()", "126").as("result"))
-                .from(ACCOUNT)
-                .and(ACCOUNT.USER_NAME.like("michael"))
-                .and(convert("NVARCHAR(30)", "GETDATE()", "126").in(
-                        select(ACCOUNT.ID).from(ACCOUNT).where(ACCOUNT.ID.ge(100)))
-                );
+            .select(ACCOUNT.ALL_COLUMNS, convert("NVARCHAR(30)", "GETDATE()", "126").as("result"))
+            .from(ACCOUNT)
+            .and(ACCOUNT.USER_NAME.like("michael"))
+            .and(convert("NVARCHAR(30)", "GETDATE()", "126").in(
+                select(ACCOUNT.ID).from(ACCOUNT).where(ACCOUNT.ID.ge(100)))
+            );
 
         String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
@@ -390,14 +403,14 @@ public class AccountSqlTester {
     @Test
     public void testCase1() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(ACCOUNT.ALL_COLUMNS,
-                        case_()
-                                .when(ACCOUNT.ID.eq(100)).then(100)
-                                .when(ACCOUNT.ID.ge(200)).then(200)
-                                .else_(300)
-                                .end().as("result"))
-                .from(ACCOUNT)
-                .and(ACCOUNT.USER_NAME.like("michael"));
+            .select(ACCOUNT.ALL_COLUMNS,
+                case_()
+                    .when(ACCOUNT.ID.eq(100)).then(100)
+                    .when(ACCOUNT.ID.ge(200)).then(200)
+                    .else_(300)
+                    .end().as("result"))
+            .from(ACCOUNT)
+            .and(ACCOUNT.USER_NAME.like("michael"));
 
         System.out.println(queryWrapper.toSQL());
     }
@@ -407,14 +420,14 @@ public class AccountSqlTester {
         IDialect dialect = new CommonsDialectImpl();
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(ACCOUNT.ALL_COLUMNS,
-                        case_(ACCOUNT.ID)
-                                .when(100).then(100)
-                                .when(200).then(200)
-                                .else_(300)
-                                .end().as("result"))
-                .from(ACCOUNT)
-                .and(ACCOUNT.USER_NAME.like("michael"));
+            .select(ACCOUNT.ALL_COLUMNS,
+                case_(ACCOUNT.ID)
+                    .when(100).then(100)
+                    .when(200).then(200)
+                    .else_(300)
+                    .end().as("result"))
+            .from(ACCOUNT)
+            .and(ACCOUNT.USER_NAME.like("michael"));
 
         String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
@@ -426,14 +439,14 @@ public class AccountSqlTester {
         IDialect dialect = new CommonsDialectImpl();
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(ACCOUNT.ALL_COLUMNS,
-                        case_(ACCOUNT.ID)
-                                .when(100).then(100)
-                                .when(200).then(200)
-                                .else_(convert("varchar", "GETDATE()", "126"))
-                                .end().as("result"))
-                .from(ACCOUNT)
-                .and(ACCOUNT.USER_NAME.like("michael"));
+            .select(ACCOUNT.ALL_COLUMNS,
+                case_(ACCOUNT.ID)
+                    .when(100).then(100)
+                    .when(200).then(200)
+                    .else_(convert("varchar", "GETDATE()", "126"))
+                    .end().as("result"))
+            .from(ACCOUNT)
+            .and(ACCOUNT.USER_NAME.like("michael"));
 
         String sql = dialect.forSelectByQuery(queryWrapper);
         System.out.println(sql);
@@ -444,11 +457,11 @@ public class AccountSqlTester {
     public void testLimitOffset() {
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select()
-                .from(ACCOUNT)
-                .orderBy(ACCOUNT.ID.desc())
-                .limit(10)
-                .offset(20);
+            .select()
+            .from(ACCOUNT)
+            .orderBy(ACCOUNT.ID.desc())
+            .limit(10)
+            .offset(20);
 
         IDialect dialect1 = new CommonsDialectImpl();
         String sql1 = dialect1.buildSelectSql(queryWrapper);
@@ -484,28 +497,28 @@ public class AccountSqlTester {
     @Test
     public void testSelectLimitSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(distinct(ARTICLE.ID))
-                .select(ACCOUNT.ALL_COLUMNS)
-                .select(ARTICLE.ID.as("article_id"))
-                .select(max(ACCOUNT.SEX))
-                .select(count(distinct(ARTICLE.ID)))
-                .from(ACCOUNT).as("a1")
+            .select(distinct(ARTICLE.ID))
+            .select(ACCOUNT.ALL_COLUMNS)
+            .select(ARTICLE.ID.as("article_id"))
+            .select(max(ACCOUNT.SEX))
+            .select(count(distinct(ARTICLE.ID)))
+            .from(ACCOUNT).as("a1")
 //                .leftJoin(newWrapper().select().from(ARTICLE).where(ARTICLE.ID.ge(100))).as("aaa")
-                .leftJoin(ARTICLE).as("b1")
-                .on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
-                .where(ACCOUNT.ID.ge(select(ARTICLE.ID).from(ARTICLE).as("cc").where(ARTICLE.ID.eq(111))))
-                .and((true ? noCondition() : ARTICLE.ID.ge(22211)).and(ACCOUNT.ID.eq(10011)).when(false))
-                .and(ACCOUNT.USER_NAME.like("michael"))
-                .and(ARTICLE.ID.in(select(ARTICLE.ID).from("aaa")))
-                .and(
-                        notExists(
-                                selectOne().from("aaa").where(ARTICLE.ID.ge(333))
-                        )
+            .leftJoin(ARTICLE).as("b1")
+            .on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+            .where(ACCOUNT.ID.ge(select(ARTICLE.ID).from(ARTICLE).as("cc").where(ARTICLE.ID.eq(111))))
+            .and((true ? noCondition() : ARTICLE.ID.ge(22211)).and(ACCOUNT.ID.eq(10011)).when(false))
+            .and(ACCOUNT.USER_NAME.like("michael"))
+            .and(ARTICLE.ID.in(select(ARTICLE.ID).from("aaa")))
+            .and(
+                notExists(
+                    selectOne().from("aaa").where(ARTICLE.ID.ge(333))
                 )
-                .groupBy(ACCOUNT.ID).having(ARTICLE.ID.ge(0))
+            )
+            .groupBy(ACCOUNT.ID).having(ARTICLE.ID.ge(0))
 //                .and("bbb.id > ?",100)
-                .orderBy(ACCOUNT.ID.desc())
-                .limit(10, 10);
+            .orderBy(ACCOUNT.ID.desc())
+            .limit(10, 10);
 
         System.out.println(queryWrapper.toSQL());
 

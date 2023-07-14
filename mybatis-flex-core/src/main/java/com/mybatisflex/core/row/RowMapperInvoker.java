@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.row;
 
@@ -42,8 +42,8 @@ public class RowMapperInvoker {
         }
     }
 
-    public int insert(String schema,String tableName, Row row) {
-        return execute(mapper -> mapper.insert(schema,tableName, row));
+    public int insert(String schema, String tableName, Row row) {
+        return execute(mapper -> mapper.insert(schema, tableName, row));
     }
 
 
@@ -51,29 +51,29 @@ public class RowMapperInvoker {
         return execute(mapper -> mapper.insertBySql(sql, args));
     }
 
-    public int insertBatchWithFirstRowColumns(String schema,String tableName, List<Row> rows) {
-        return execute(mapper -> mapper.insertBatchWithFirstRowColumns(schema,tableName, rows));
+    public int insertBatchWithFirstRowColumns(String schema, String tableName, List<Row> rows) {
+        return execute(mapper -> mapper.insertBatchWithFirstRowColumns(schema, tableName, rows));
     }
 
     public int deleteBySql(String sql, Object... args) {
         return execute(mapper -> mapper.deleteBySql(sql, args));
     }
 
-    public int deleteById(String schema,String tableName, Row row) {
-        return execute(mapper -> mapper.deleteById(schema,tableName, row));
+    public int deleteById(String schema, String tableName, Row row) {
+        return execute(mapper -> mapper.deleteById(schema, tableName, row));
     }
 
-    public int deleteById(String schema,String tableName, String primaryKey, Object id) {
-        return execute(mapper -> mapper.deleteById(schema,tableName, primaryKey, id));
+    public int deleteById(String schema, String tableName, String primaryKey, Object id) {
+        return execute(mapper -> mapper.deleteById(schema, tableName, primaryKey, id));
     }
 
-    public int deleteBatchByIds(String schema,String tableName, String primaryKey, Collection<?> ids) {
-        return execute(mapper -> mapper.deleteBatchByIds(schema,tableName, primaryKey, ids));
+    public int deleteBatchByIds(String schema, String tableName, String primaryKey, Collection<?> ids) {
+        return execute(mapper -> mapper.deleteBatchByIds(schema, tableName, primaryKey, ids));
     }
 
 
-    public int deleteByQuery(String schema,String tableName, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.deleteByQuery(schema,tableName, queryWrapper));
+    public int deleteByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.deleteByQuery(schema, tableName, queryWrapper));
     }
 
     public int updateBySql(String sql, Object... args) {
@@ -115,52 +115,52 @@ public class RowMapperInvoker {
         return results;
     }
 
-    public int updateById(String schema,String tableName, Row row) {
-        return execute(mapper -> mapper.updateById(schema,tableName, row));
+    public int updateById(String schema, String tableName, Row row) {
+        return execute(mapper -> mapper.updateById(schema, tableName, row));
     }
 
-    public int updateByQuery(String schema,String tableName, Row data, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.updateByQuery(schema,tableName, data, queryWrapper));
+    public int updateByQuery(String schema, String tableName, Row data, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.updateByQuery(schema, tableName, data, queryWrapper));
     }
 
-    public int updateBatchById(String schema,String tableName, List<Row> rows) {
-        return execute(mapper -> mapper.updateBatchById(schema,tableName, rows));
+    public int updateBatchById(String schema, String tableName, List<Row> rows) {
+        return execute(mapper -> mapper.updateBatchById(schema, tableName, rows));
     }
 
     public Row selectOneBySql(String sql, Object... args) {
         return execute(mapper -> mapper.selectOneBySql(sql, args));
     }
 
-    public Row selectOneById(String schema,String tableName, Row row) {
-        return execute(mapper -> mapper.selectOneById(schema,tableName, row));
+    public Row selectOneById(String schema, String tableName, Row row) {
+        return execute(mapper -> mapper.selectOneById(schema, tableName, row));
     }
 
-    public Row selectOneById(String schema,String tableName, String primaryKey, Object id) {
-        return execute(mapper -> mapper.selectOneById(schema,tableName, primaryKey, id));
+    public Row selectOneById(String schema, String tableName, String primaryKey, Object id) {
+        return execute(mapper -> mapper.selectOneById(schema, tableName, primaryKey, id));
     }
 
-    public Row selectOneByQuery(String schema,String tableName, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.selectOneByQuery(schema,tableName, queryWrapper));
+    public Row selectOneByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.selectOneByQuery(schema, tableName, queryWrapper));
     }
 
     public List<Row> selectListBySql(String sql, Object... args) {
         return execute(mapper -> mapper.selectListBySql(sql, args));
     }
 
-    public List<Row> selectListByQuery(String schema,String tableName, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.selectListByQuery(schema,tableName, queryWrapper));
+    public List<Row> selectListByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.selectListByQuery(schema, tableName, queryWrapper));
     }
 
-    public List<Row> selectAll(String schema,String tableName) {
-        return execute(mapper -> mapper.selectAll(schema,tableName));
+    public List<Row> selectAll(String schema, String tableName) {
+        return execute(mapper -> mapper.selectAll(schema, tableName));
     }
 
-    public Object selectObjectByQuery(String schema,String tableName, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.selectObjectByQuery(schema,tableName, queryWrapper));
+    public Object selectObjectByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.selectObjectByQuery(schema, tableName, queryWrapper));
     }
 
-    public List<Object> selectObjectListByQuery(String schema,String tableName, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.selectObjectListByQuery(schema,tableName, queryWrapper));
+    public List<Object> selectObjectListByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.selectObjectListByQuery(schema, tableName, queryWrapper));
     }
 
     public Object selectObject(String sql, Object... args) {
@@ -176,16 +176,17 @@ public class RowMapperInvoker {
     }
 
 
-    public long selectCountByQuery(String schema,String tableName, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.selectCountByQuery(schema,tableName, queryWrapper));
+    public long selectCountByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.selectCountByQuery(schema, tableName, queryWrapper));
     }
 
-    public Page<Row> paginate(String schema,String tableName, Page<Row> page, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.paginate(schema,tableName, page, queryWrapper));
+    public Page<Row> paginate(String schema, String tableName, Page<Row> page, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.paginate(schema, tableName, page, queryWrapper));
     }
 
 
-    public int updateNumberAddByQuery(String schema,String tableName, String fieldName, Number value, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.updateNumberAddByQuery(schema,tableName, fieldName, value, queryWrapper));
+    public int updateNumberAddByQuery(String schema, String tableName, String fieldName, Number value, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.updateNumberAddByQuery(schema, tableName, fieldName, value, queryWrapper));
     }
+
 }

@@ -32,7 +32,7 @@ import java.util.Iterator;
 public class FlexResultSetHandler extends DefaultResultSetHandler {
 
     public FlexResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler
-            , ResultHandler<?> resultHandler, BoundSql boundSql, RowBounds rowBounds) {
+        , ResultHandler<?> resultHandler, BoundSql boundSql, RowBounds rowBounds) {
         super(executor, mappedStatement, parameterHandler, resultHandler, boundSql, rowBounds);
     }
 
@@ -87,5 +87,7 @@ public class FlexResultSetHandler extends DefaultResultSetHandler {
         public Iterator<T> iterator() {
             return originalCursor.iterator();
         }
+
     }
+
 }

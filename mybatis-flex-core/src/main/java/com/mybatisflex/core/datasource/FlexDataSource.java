@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.datasource;
 
@@ -139,7 +139,7 @@ public class FlexDataSource extends AbstractDataSource {
         } catch (SQLException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Error resetting autocommit to true "
-                        + "before closing the connection.  Cause: " + e);
+                    + "before closing the connection.  Cause: " + e);
             }
         }
     }
@@ -147,8 +147,8 @@ public class FlexDataSource extends AbstractDataSource {
 
     public Connection proxy(Connection connection, String xid) {
         return (Connection) Proxy.newProxyInstance(FlexDataSource.class.getClassLoader()
-                , new Class[]{Connection.class}
-                , new ConnectionHandler(connection, xid));
+            , new Class[]{Connection.class}
+            , new ConnectionHandler(connection, xid));
     }
 
     /**
@@ -188,6 +188,7 @@ public class FlexDataSource extends AbstractDataSource {
     }
 
     private static class ConnectionHandler implements InvocationHandler {
+
         private static final String[] proxyMethods = new String[]{"commit", "rollback", "close", "setAutoCommit"};
         private final Connection original;
         private final String xid;
@@ -203,7 +204,7 @@ public class FlexDataSource extends AbstractDataSource {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (ArrayUtil.contains(proxyMethods, method.getName())
-                    && isTransactional()) {
+                && isTransactional()) {
                 //do nothing
                 return null;
             }
@@ -219,6 +220,7 @@ public class FlexDataSource extends AbstractDataSource {
         private boolean isTransactional() {
             return Objects.equals(xid, TransactionContext.getXID());
         }
+
     }
 
 

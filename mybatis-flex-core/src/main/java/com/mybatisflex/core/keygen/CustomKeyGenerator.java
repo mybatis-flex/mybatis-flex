@@ -1,17 +1,17 @@
-/**
- * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.mybatisflex.core.keygen;
 
@@ -60,8 +60,8 @@ public class CustomKeyGenerator implements KeyGenerator {
     private void ensuresKeyGeneratorNotNull() {
         if (keyGenerator == null) {
             throw FlexExceptions.wrap("The name of \"%s\" key generator not exist.\n" +
-                            "please check annotation @Id(value=\"%s\") at field: %s#%s"
-                    , idInfo.getValue(), idInfo.getValue(), tableInfo.getEntityClass().getName(), idInfo.getProperty());
+                    "please check annotation @Id(value=\"%s\") at field: %s#%s"
+                , idInfo.getValue(), idInfo.getValue(), tableInfo.getEntityClass().getName(), idInfo.getProperty());
         }
     }
 
@@ -73,10 +73,10 @@ public class CustomKeyGenerator implements KeyGenerator {
         MetaObject metaParam = configuration.newMetaObject(parameter);
         Object generateId = keyGenerator.generate(entity, idInfo.getColumn());
         try {
-            MetaObject metaObjectForProperty= metaParam.metaObjectForProperty(FlexConsts.ENTITY);
+            MetaObject metaObjectForProperty = metaParam.metaObjectForProperty(FlexConsts.ENTITY);
             Invoker setInvoker = tableInfo.getReflector().getSetInvoker(idInfo.getProperty());
             Object id = ConvertUtil.convert(generateId, setInvoker.getType());
-            this.setValue(metaObjectForProperty,this.idInfo.getProperty(),id);
+            this.setValue(metaObjectForProperty, this.idInfo.getProperty(), id);
         } catch (Exception e) {
             throw FlexExceptions.wrap(e);
         }
@@ -95,4 +95,5 @@ public class CustomKeyGenerator implements KeyGenerator {
             metaParam.setValue(property, value);
         }
     }
+
 }

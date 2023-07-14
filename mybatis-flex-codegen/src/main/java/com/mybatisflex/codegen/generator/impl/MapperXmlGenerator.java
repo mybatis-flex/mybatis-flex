@@ -55,7 +55,7 @@ public class MapperXmlGenerator implements IGenerator {
         MapperXmlConfig mapperXmlConfig = globalConfig.getMapperXmlConfig();
 
         File mapperXmlFile = new File(packageConfig.getMapperXmlPath() + "/" +
-                table.buildMapperXmlFileName() + ".xml");
+            table.buildMapperXmlFileName() + ".xml");
 
 
         if (mapperXmlFile.exists() && !mapperXmlConfig.isOverwriteEnable()) {

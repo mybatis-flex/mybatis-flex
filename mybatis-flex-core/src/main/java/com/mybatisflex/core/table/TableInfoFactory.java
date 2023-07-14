@@ -51,18 +51,18 @@ public class TableInfoFactory {
     }
 
     static final Set<Class<?>> defaultSupportColumnTypes = CollectionUtil.newHashSet(
-            int.class, Integer.class,
-            short.class, Short.class,
-            long.class, Long.class,
-            float.class, Float.class,
-            double.class, Double.class,
-            boolean.class, Boolean.class,
-            Date.class, java.sql.Date.class, Time.class, Timestamp.class,
-            Instant.class, LocalDate.class, LocalDateTime.class, LocalTime.class, OffsetDateTime.class, OffsetTime.class, ZonedDateTime.class,
-            Year.class, Month.class, YearMonth.class, JapaneseDate.class,
-            byte[].class, Byte[].class, Byte.class,
-            BigInteger.class, BigDecimal.class,
-            char.class, String.class, Character.class
+        int.class, Integer.class,
+        short.class, Short.class,
+        long.class, Long.class,
+        float.class, Float.class,
+        double.class, Double.class,
+        boolean.class, Boolean.class,
+        Date.class, java.sql.Date.class, Time.class, Timestamp.class,
+        Instant.class, LocalDate.class, LocalDateTime.class, LocalTime.class, OffsetDateTime.class, OffsetTime.class, ZonedDateTime.class,
+        Year.class, Month.class, YearMonth.class, JapaneseDate.class,
+        byte[].class, Byte[].class, Byte.class,
+        BigInteger.class, BigDecimal.class,
+        char.class, String.class, Character.class
     );
 
 
@@ -144,25 +144,25 @@ public class TableInfoFactory {
 
             if (table.onInsert().length > 0) {
                 List<InsertListener> insertListeners = Arrays.stream(table.onInsert())
-                        .filter(listener -> listener != NoneListener.class)
-                        .map(ClassUtil::newInstance)
-                        .collect(Collectors.toList());
+                    .filter(listener -> listener != NoneListener.class)
+                    .map(ClassUtil::newInstance)
+                    .collect(Collectors.toList());
                 tableInfo.setOnInsertListeners(insertListeners);
             }
 
             if (table.onUpdate().length > 0) {
                 List<UpdateListener> updateListeners = Arrays.stream(table.onUpdate())
-                        .filter(listener -> listener != NoneListener.class)
-                        .map(ClassUtil::newInstance)
-                        .collect(Collectors.toList());
+                    .filter(listener -> listener != NoneListener.class)
+                    .map(ClassUtil::newInstance)
+                    .collect(Collectors.toList());
                 tableInfo.setOnUpdateListeners(updateListeners);
             }
 
             if (table.onSet().length > 0) {
                 List<SetListener> setListeners = Arrays.stream(table.onSet())
-                        .filter(listener -> listener != NoneListener.class)
-                        .map(ClassUtil::newInstance)
-                        .collect(Collectors.toList());
+                    .filter(listener -> listener != NoneListener.class)
+                    .map(ClassUtil::newInstance)
+                    .collect(Collectors.toList());
                 tableInfo.setOnSetListeners(setListeners);
             }
 
@@ -210,8 +210,8 @@ public class TableInfoFactory {
 
             //满足以下 3 种情况，不支持该类型
             if ((column == null || column.typeHandler() == UnknownTypeHandler.class) // 未配置 typeHandler
-                    && !fieldType.isEnum()   // 类型不是枚举
-                    && !defaultSupportColumnTypes.contains(fieldType) //默认的自动类型不包含该类型
+                && !fieldType.isEnum()   // 类型不是枚举
+                && !defaultSupportColumnTypes.contains(fieldType) //默认的自动类型不包含该类型
             ) {
                 // 集合嵌套
                 if (Collection.class.isAssignableFrom(fieldType)) {
@@ -223,7 +223,7 @@ public class TableInfoFactory {
                 }
                 // 实体类嵌套
                 else if (!Map.class.isAssignableFrom(fieldType)
-                        && !fieldType.isArray()) {
+                    && !fieldType.isArray()) {
                     tableInfo.addAssociationType(field.getName(), fieldType);
                 }
                 // 不支持的类型直接跳过
@@ -401,7 +401,7 @@ public class TableInfoFactory {
         Field[] declaredFields = entityClass.getDeclaredFields();
         for (Field declaredField : declaredFields) {
             if (Modifier.isStatic(declaredField.getModifiers())
-                    || existName(fields, declaredField)) {
+                || existName(fields, declaredField)) {
                 continue;
             }
             fields.add(declaredField);
@@ -419,4 +419,5 @@ public class TableInfoFactory {
         }
         return false;
     }
+
 }

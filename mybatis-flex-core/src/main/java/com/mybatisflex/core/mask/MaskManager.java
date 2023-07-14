@@ -24,7 +24,8 @@ import java.util.function.Supplier;
  */
 public class MaskManager {
 
-    private MaskManager() {}
+    private MaskManager() {
+    }
 
     /**
      * 脱敏处理器，type : processor

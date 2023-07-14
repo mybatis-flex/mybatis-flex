@@ -30,7 +30,8 @@ import java.util.Map;
  */
 public class DialectFactory {
 
-    private DialectFactory() {}
+    private DialectFactory() {
+    }
 
     /**
      * 数据库类型和方言的映射关系，可以通过其读取指定的方言，亦可能通过其扩展其他方言
@@ -134,8 +135,8 @@ public class DialectFactory {
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.DERBY);
             case SQLSERVER:
                 return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER);
-			case SQLSERVER_2005:
-				return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER_2005);
+            case SQLSERVER_2005:
+                return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER_2005);
             case INFORMIX:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.INFORMIX);
             case SINODB:
@@ -146,4 +147,5 @@ public class DialectFactory {
                 return new CommonsDialectImpl();
         }
     }
+
 }

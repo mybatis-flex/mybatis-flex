@@ -44,8 +44,9 @@ public class RoleVO2<T, K> {
     @Override
     public String toString() {
         return "RoleName{" +
-                "roleName=" + roleName +
-                ", roleKey=" + roleKey +
-                '}';
+            "roleName=" + roleName +
+            ", roleKey=" + roleKey +
+            '}';
     }
+
 }

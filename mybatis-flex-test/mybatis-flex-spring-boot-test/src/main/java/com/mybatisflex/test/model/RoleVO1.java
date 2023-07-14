@@ -64,11 +64,11 @@ public class RoleVO1 {
     @Override
     public String toString() {
         return "Role{" +
-                "roleId=" + roleId +
-                ", roleKey='" + roleKey + '\'' +
-                ", roleName='" + roleName + '\'' +
-                ", userVO1='" + user + '\'' +
-                '}';
+            "roleId=" + roleId +
+            ", roleKey='" + roleKey + '\'' +
+            ", roleName='" + roleName + '\'' +
+            ", userVO1='" + user + '\'' +
+            '}';
     }
 
 }

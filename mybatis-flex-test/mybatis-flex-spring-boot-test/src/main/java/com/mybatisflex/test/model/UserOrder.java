@@ -45,4 +45,5 @@ public class UserOrder {
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
+
 }

@@ -22,4 +22,5 @@ public interface WithDetail extends CloneSupport<WithDetail> {
     String toSql(IDialect dialect);
 
     Object[] getParamValues();
+
 }

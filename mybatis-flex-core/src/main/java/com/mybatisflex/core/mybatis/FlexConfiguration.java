@@ -90,8 +90,8 @@ public class FlexConfiguration extends Configuration {
          *  {@link SelectKeyGenerator#SELECT_KEY_SUFFIX}
          */
         if (!mappedStatementId.endsWith(SelectKeyGenerator.SELECT_KEY_SUFFIX)
-                && parameterObject instanceof Map
-                && ((Map<?, ?>) parameterObject).containsKey(FlexConsts.SQL_ARGS)) {
+            && parameterObject instanceof Map
+            && ((Map<?, ?>) parameterObject).containsKey(FlexConsts.SQL_ARGS)) {
             SqlArgsParameterHandler sqlArgsParameterHandler = new SqlArgsParameterHandler(mappedStatement, (Map) parameterObject, boundSql);
             return (ParameterHandler) interceptorChain.pluginAll(sqlArgsParameterHandler);
         } else {
@@ -102,9 +102,9 @@ public class FlexConfiguration extends Configuration {
 
     @Override
     public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement
-            , RowBounds rowBounds, ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
+        , RowBounds rowBounds, ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql) {
         ResultSetHandler resultSetHandler = new FlexResultSetHandler(executor, mappedStatement, parameterHandler,
-                resultHandler, boundSql, rowBounds);
+            resultHandler, boundSql, rowBounds);
         return (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);
     }
 
@@ -151,7 +151,7 @@ public class FlexConfiguration extends Configuration {
         Class<?> asType = MappedStatementTypes.getCurrentType();
         if (asType != null) {
             return MapUtil.computeIfAbsent(dynamicMappedStatementCache, id + ":" + asType.getName(),
-                    clazz -> replaceResultMap(ms, TableInfoFactory.ofEntityClass(asType))
+                clazz -> replaceResultMap(ms, TableInfoFactory.ofEntityClass(asType))
             );
         }
 
@@ -168,12 +168,12 @@ public class FlexConfiguration extends Configuration {
         }
         //entity insert methods
         else if (StringUtil.endsWithAny(ms.getId(), "insert", FlexConsts.METHOD_INSERT_BATCH)
-                && ms.getKeyGenerator() == NoKeyGenerator.INSTANCE) {
+            && ms.getKeyGenerator() == NoKeyGenerator.INSTANCE) {
             ms = replaceEntityKeyGenerator(ms);
         }
         //entity select
         else if (StringUtil.endsWithAny(ms.getId(), "selectOneById", "selectListByIds"
-                , "selectListByQuery")) {
+            , "selectListByQuery")) {
             ms = replaceResultMap(ms, getTableInfo(ms));
         }
 
@@ -200,23 +200,23 @@ public class FlexConfiguration extends Configuration {
         }
 
         return new MappedStatement.Builder(ms.getConfiguration(), ms.getId(), ms.getSqlSource(), ms.getSqlCommandType())
-                .resource(ms.getResource())
-                .fetchSize(ms.getFetchSize())
-                .timeout(ms.getTimeout())
-                .statementType(ms.getStatementType())
-                .keyGenerator(NoKeyGenerator.INSTANCE)
-                .keyProperty(ms.getKeyProperties() == null ? null : String.join(",", ms.getKeyProperties()))
-                .keyColumn(ms.getKeyColumns() == null ? null : String.join(",", ms.getKeyColumns()))
-                .databaseId(databaseId)
-                .lang(ms.getLang())
-                .resultOrdered(ms.isResultOrdered())
-                .resultSets(ms.getResultSets() == null ? null : String.join(",", ms.getResultSets()))
-                .resultMaps(Collections.singletonList(resultMap))
-                .resultSetType(ms.getResultSetType())
-                .flushCacheRequired(ms.isFlushCacheRequired())
-                .useCache(ms.isUseCache())
-                .cache(ms.getCache())
-                .build();
+            .resource(ms.getResource())
+            .fetchSize(ms.getFetchSize())
+            .timeout(ms.getTimeout())
+            .statementType(ms.getStatementType())
+            .keyGenerator(NoKeyGenerator.INSTANCE)
+            .keyProperty(ms.getKeyProperties() == null ? null : String.join(",", ms.getKeyProperties()))
+            .keyColumn(ms.getKeyColumns() == null ? null : String.join(",", ms.getKeyColumns()))
+            .databaseId(databaseId)
+            .lang(ms.getLang())
+            .resultOrdered(ms.isResultOrdered())
+            .resultSets(ms.getResultSets() == null ? null : String.join(",", ms.getResultSets()))
+            .resultMaps(Collections.singletonList(resultMap))
+            .resultSetType(ms.getResultSetType())
+            .flushCacheRequired(ms.isFlushCacheRequired())
+            .useCache(ms.isUseCache())
+            .cache(ms.getCache())
+            .build();
     }
 
     /**
@@ -238,23 +238,23 @@ public class FlexConfiguration extends Configuration {
         }
 
         return new MappedStatement.Builder(ms.getConfiguration(), ms.getId(), ms.getSqlSource(), ms.getSqlCommandType())
-                .resource(ms.getResource())
-                .fetchSize(ms.getFetchSize())
-                .timeout(ms.getTimeout())
-                .statementType(ms.getStatementType())
-                .keyGenerator(keyGenerator) // 替换主键生成器
-                .keyProperty(ms.getKeyProperties() == null ? null : String.join(",", ms.getKeyProperties()))
-                .keyColumn(ms.getKeyColumns() == null ? null : String.join(",", ms.getKeyColumns()))
-                .databaseId(databaseId)
-                .lang(ms.getLang())
-                .resultOrdered(ms.isResultOrdered())
-                .resultSets(ms.getResultSets() == null ? null : String.join(",", ms.getResultSets()))
-                .resultMaps(ms.getResultMaps())
-                .resultSetType(ms.getResultSetType())
-                .flushCacheRequired(ms.isFlushCacheRequired())
-                .useCache(ms.isUseCache())
-                .cache(ms.getCache())
-                .build();
+            .resource(ms.getResource())
+            .fetchSize(ms.getFetchSize())
+            .timeout(ms.getTimeout())
+            .statementType(ms.getStatementType())
+            .keyGenerator(keyGenerator) // 替换主键生成器
+            .keyProperty(ms.getKeyProperties() == null ? null : String.join(",", ms.getKeyProperties()))
+            .keyColumn(ms.getKeyColumns() == null ? null : String.join(",", ms.getKeyColumns()))
+            .databaseId(databaseId)
+            .lang(ms.getLang())
+            .resultOrdered(ms.isResultOrdered())
+            .resultSets(ms.getResultSets() == null ? null : String.join(",", ms.getResultSets()))
+            .resultMaps(ms.getResultMaps())
+            .resultSetType(ms.getResultSetType())
+            .flushCacheRequired(ms.isFlushCacheRequired())
+            .useCache(ms.isUseCache())
+            .cache(ms.getCache())
+            .build();
     }
 
     /**
@@ -281,23 +281,23 @@ public class FlexConfiguration extends Configuration {
         }
 
         return new MappedStatement.Builder(ms.getConfiguration(), ms.getId(), ms.getSqlSource(), ms.getSqlCommandType())
-                .resource(ms.getResource())
-                .fetchSize(ms.getFetchSize())
-                .timeout(ms.getTimeout())
-                .statementType(ms.getStatementType())
-                .keyGenerator(keyGenerator) // 替换主键生成器
-                .keyProperty(tableInfo.getKeyProperties())
-                .keyColumn(tableInfo.getKeyColumns())
-                .databaseId(databaseId)
-                .lang(ms.getLang())
-                .resultOrdered(ms.isResultOrdered())
-                .resultSets(ms.getResultSets() == null ? null : String.join(",", ms.getResultSets()))
-                .resultMaps(ms.getResultMaps())
-                .resultSetType(ms.getResultSetType())
-                .flushCacheRequired(ms.isFlushCacheRequired())
-                .useCache(ms.isUseCache())
-                .cache(ms.getCache())
-                .build();
+            .resource(ms.getResource())
+            .fetchSize(ms.getFetchSize())
+            .timeout(ms.getTimeout())
+            .statementType(ms.getStatementType())
+            .keyGenerator(keyGenerator) // 替换主键生成器
+            .keyProperty(tableInfo.getKeyProperties())
+            .keyColumn(tableInfo.getKeyColumns())
+            .databaseId(databaseId)
+            .lang(ms.getLang())
+            .resultOrdered(ms.isResultOrdered())
+            .resultSets(ms.getResultSets() == null ? null : String.join(",", ms.getResultSets()))
+            .resultMaps(ms.getResultMaps())
+            .resultSetType(ms.getResultSetType())
+            .flushCacheRequired(ms.isFlushCacheRequired())
+            .useCache(ms.isUseCache())
+            .cache(ms.getCache())
+            .build();
     }
 
 
@@ -337,8 +337,9 @@ public class FlexConfiguration extends Configuration {
     public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
         T mapper = super.getMapper(type, sqlSession);
         return (T) Proxy.newProxyInstance(type.getClassLoader()
-                , new Class[]{type}
-                , new MapperInvocationHandler(mapper, this));
+            , new Class[]{type}
+            , new MapperInvocationHandler(mapper, this));
 
     }
+
 }

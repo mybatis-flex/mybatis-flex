@@ -31,36 +31,36 @@ public class IfFunctionTest {
     @Test
     public void test01() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(if_(ACCOUNT.AGE.ge(6), ACCOUNT.IS_NORMAL, ACCOUNT.IS_DELETE).as("type"))
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.eq(1));
+            .select(if_(ACCOUNT.AGE.ge(6), ACCOUNT.IS_NORMAL, ACCOUNT.IS_DELETE).as("type"))
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.eq(1));
         System.out.println(queryWrapper.toSQL());
     }
 
     @Test
     public void test02() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(if_(ACCOUNT.AGE.ge(18), string("成年人"),
-                        if_(ACCOUNT.AGE.le(8), string("未上学"), string("已上学"))).as("type"))
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.eq(1));
+            .select(if_(ACCOUNT.AGE.ge(18), string("成年人"),
+                if_(ACCOUNT.AGE.le(8), string("未上学"), string("已上学"))).as("type"))
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.eq(1));
         System.out.println(queryWrapper.toSQL());
     }
 
     @Test
     public void test03() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(ifNull(ACCOUNT.ID, number(0)))
-                .from(ACCOUNT)
-                .where(ACCOUNT.ID.eq(1));
+            .select(ifNull(ACCOUNT.ID, number(0)))
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.eq(1));
         System.out.println(queryWrapper.toSQL());
     }
 
     @Test
     public void test04() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .select(ifNull(null_(), number(0)))
-                .from(ACCOUNT);
+            .select(ifNull(null_(), number(0)))
+            .from(ACCOUNT);
         System.out.println(queryWrapper.toSQL());
     }
 

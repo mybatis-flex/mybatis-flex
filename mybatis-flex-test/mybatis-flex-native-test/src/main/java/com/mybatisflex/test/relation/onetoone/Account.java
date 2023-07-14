@@ -16,7 +16,10 @@
 
 package com.mybatisflex.test.relation.onetoone;
 
-import com.mybatisflex.annotation.*;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.RelationManyToMany;
+import com.mybatisflex.annotation.Table;
 
 import java.io.Serializable;
 import java.util.List;
@@ -114,4 +117,5 @@ public class Account implements Serializable {
             ", roles=" + roles +
             '}';
     }
+
 }

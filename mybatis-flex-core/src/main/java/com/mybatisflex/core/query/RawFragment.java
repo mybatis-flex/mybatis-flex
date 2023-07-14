@@ -68,4 +68,5 @@ public class RawFragment extends QueryCondition {
     public String getContent() {
         return content;
     }
+
 }

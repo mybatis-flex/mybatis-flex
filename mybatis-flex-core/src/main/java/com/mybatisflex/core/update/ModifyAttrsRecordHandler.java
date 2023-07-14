@@ -38,9 +38,9 @@ class ModifyAttrsRecordHandler implements MethodHandler {
 
         String methodName = originalMethod.getName();
         if (methodName.startsWith("set")
-                && methodName.length() > 3
-                && Character.isUpperCase(methodName.charAt(3))
-                && originalMethod.getParameterCount() == 1) {
+            && methodName.length() > 3
+            && Character.isUpperCase(methodName.charAt(3))
+            && originalMethod.getParameterCount() == 1) {
             String property = StringUtil.firstCharToLowerCase(originalMethod.getName().substring(3));
             updates.put(property, args[0]);
         }

@@ -24,4 +24,5 @@ import com.mybatisflex.test.model.Account;
  * @since 2023-06-23
  */
 public interface AccountMapper extends BaseMapper<Account> {
+
 }

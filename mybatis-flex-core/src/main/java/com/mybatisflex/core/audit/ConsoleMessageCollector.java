@@ -39,6 +39,9 @@ public class ConsoleMessageCollector implements MessageCollector {
     }
 
     public interface SqlDebugPrinter {
+
         void print(String sql, Long tookTimeMillis);
+
     }
+
 }

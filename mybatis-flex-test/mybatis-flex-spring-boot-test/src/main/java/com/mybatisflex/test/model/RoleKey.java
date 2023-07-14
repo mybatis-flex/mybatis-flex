@@ -36,4 +36,5 @@ public class RoleKey<T> {
     public String toString() {
         return roleKey.toString();
     }
+
 }

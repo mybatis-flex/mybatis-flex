@@ -92,10 +92,10 @@ public class Table {
     public String getPrimaryKey() {
         // 这里默认表中一定会有字段，就不做空判断了
         return columns.stream()
-                .filter(Column::isPrimaryKey)
-                .findFirst()
-                .map(Column::getProperty)
-                .orElse(null);
+            .filter(Column::isPrimaryKey)
+            .findFirst()
+            .map(Column::getProperty)
+            .orElse(null);
     }
 
     public Set<String> getPrimaryKeys() {
@@ -271,7 +271,7 @@ public class Table {
         Class<?>[] entityInterfaces = globalConfig.getEntityConfig().getImplInterfaces();
         if (entityInterfaces != null && entityInterfaces.length > 0) {
             return " implements " + StringUtil.join(", ", Arrays.stream(entityInterfaces)
-                    .map(Class::getSimpleName).collect(Collectors.toList()));
+                .map(Class::getSimpleName).collect(Collectors.toList()));
         } else {
             return "";
         }
@@ -305,8 +305,8 @@ public class Table {
         String entityJavaFileName = getEntityJavaFileName();
         EntityConfig entityConfig = globalConfig.getEntityConfig();
         return entityConfig.getClassPrefix()
-                + entityJavaFileName
-                + entityConfig.getClassSuffix();
+            + entityJavaFileName
+            + entityConfig.getClassSuffix();
     }
 
     /**
@@ -316,8 +316,8 @@ public class Table {
         String tableDefJavaFileName = getEntityJavaFileName();
         TableDefConfig tableDefConfig = globalConfig.getTableDefConfig();
         return tableDefConfig.getClassPrefix()
-                + tableDefJavaFileName
-                + tableDefConfig.getClassSuffix();
+            + tableDefJavaFileName
+            + tableDefConfig.getClassSuffix();
     }
 
     /**
@@ -327,8 +327,8 @@ public class Table {
         String entityJavaFileName = getEntityJavaFileName();
         MapperConfig mapperConfig = globalConfig.getMapperConfig();
         return mapperConfig.getClassPrefix()
-                + entityJavaFileName
-                + mapperConfig.getClassSuffix();
+            + entityJavaFileName
+            + mapperConfig.getClassSuffix();
     }
 
     /**
@@ -338,8 +338,8 @@ public class Table {
         String entityJavaFileName = getEntityJavaFileName();
         ServiceConfig serviceConfig = globalConfig.getServiceConfig();
         return serviceConfig.getClassPrefix()
-                + entityJavaFileName
-                + serviceConfig.getClassSuffix();
+            + entityJavaFileName
+            + serviceConfig.getClassSuffix();
     }
 
     /**
@@ -349,8 +349,8 @@ public class Table {
         String entityJavaFileName = getEntityJavaFileName();
         ServiceImplConfig serviceImplConfig = globalConfig.getServiceImplConfig();
         return serviceImplConfig.getClassPrefix()
-                + entityJavaFileName
-                + serviceImplConfig.getClassSuffix();
+            + entityJavaFileName
+            + serviceImplConfig.getClassSuffix();
     }
 
     /**
@@ -360,8 +360,8 @@ public class Table {
         String entityJavaFileName = getEntityJavaFileName();
         ControllerConfig controllerConfig = globalConfig.getControllerConfig();
         return controllerConfig.getClassPrefix()
-                + entityJavaFileName
-                + controllerConfig.getClassSuffix();
+            + entityJavaFileName
+            + controllerConfig.getClassSuffix();
     }
 
     /**
@@ -371,19 +371,19 @@ public class Table {
         String tableDefJavaFileName = getEntityJavaFileName();
         MapperXmlConfig mapperXmlConfig = globalConfig.getMapperXmlConfig();
         return mapperXmlConfig.getFilePrefix()
-                + tableDefJavaFileName
-                + mapperXmlConfig.getFileSuffix();
+            + tableDefJavaFileName
+            + mapperXmlConfig.getFileSuffix();
     }
 
     @Override
     public String toString() {
         return "Table{" +
-                "schema'" + schema + '\'' +
-                "name='" + name + '\'' +
-                ", remarks='" + comment + '\'' +
-                ", primaryKeys='" + primaryKeys + '\'' +
-                ", columns=" + columns +
-                '}';
+            "schema'" + schema + '\'' +
+            "name='" + name + '\'' +
+            ", remarks='" + comment + '\'' +
+            ", primaryKeys='" + primaryKeys + '\'' +
+            ", columns=" + columns +
+            '}';
     }
 
 }

@@ -56,7 +56,7 @@ public class ControllerGenerator implements IGenerator {
 
         String controllerPackagePath = packageConfig.getControllerPackage().replace(".", "/");
         File controllerJavaFile = new File(packageConfig.getSourceDir(), controllerPackagePath + "/" +
-                table.buildControllerClassName() + ".java");
+            table.buildControllerClassName() + ".java");
 
 
         if (controllerJavaFile.exists() && !controllerConfig.isOverwriteEnable()) {

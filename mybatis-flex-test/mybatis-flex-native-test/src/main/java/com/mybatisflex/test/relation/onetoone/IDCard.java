@@ -56,9 +56,10 @@ public class IDCard implements Serializable {
     @Override
     public String toString() {
         return "IDCard{" +
-                "accountId=" + accountId +
-                ", cardNo='" + cardNo + '\'' +
-                ", content='" + content + '\'' +
-                '}';
+            "accountId=" + accountId +
+            ", cardNo='" + cardNo + '\'' +
+            ", content='" + content + '\'' +
+            '}';
     }
+
 }

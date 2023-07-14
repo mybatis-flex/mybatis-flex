@@ -213,7 +213,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         if (this.properties.isCheckConfigLocation() && StringUtils.hasText(this.properties.getConfigLocation())) {
             Resource resource = this.resourceLoader.getResource(this.properties.getConfigLocation());
             Assert.state(resource.exists(),
-                    "Cannot find config location: " + resource + " (please add config file or check your Mybatis configuration)");
+                "Cannot find config location: " + resource + " (please add config file or check your Mybatis configuration)");
         }
     }
 
@@ -263,8 +263,8 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
             factory.setMapperLocations(mapperLocations);
         }
         Set<String> factoryPropertyNames = Stream
-                .of(new BeanWrapperImpl(SqlSessionFactoryBean.class).getPropertyDescriptors()).map(PropertyDescriptor::getName)
-                .collect(Collectors.toSet());
+            .of(new BeanWrapperImpl(SqlSessionFactoryBean.class).getPropertyDescriptors()).map(PropertyDescriptor::getName)
+            .collect(Collectors.toSet());
         Class<? extends LanguageDriver> defaultLanguageDriver = this.properties.getDefaultScriptingLanguageDriver();
         if (factoryPropertyNames.contains("scriptingLanguageDrivers") && !ObjectUtils.isEmpty(this.languageDrivers)) {
             // Need to mybatis-spring 2.0.2+
@@ -323,7 +323,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
      * similar to using Spring Data JPA repositories.
      */
     public static class AutoConfiguredMapperScannerRegistrar
-            implements BeanFactoryAware, EnvironmentAware, ImportBeanDefinitionRegistrar {
+        implements BeanFactoryAware, EnvironmentAware, ImportBeanDefinitionRegistrar {
 
         private BeanFactory beanFactory;
         private Environment environment;
@@ -349,7 +349,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
             builder.addPropertyValue("basePackage", StringUtils.collectionToCommaDelimitedString(packages));
             BeanWrapper beanWrapper = new BeanWrapperImpl(MapperScannerConfigurer.class);
             Set<String> propertyNames = Stream.of(beanWrapper.getPropertyDescriptors()).map(PropertyDescriptor::getName)
-                    .collect(Collectors.toSet());
+                .collect(Collectors.toSet());
             if (propertyNames.contains("lazyInitialization")) {
                 // Need to mybatis-spring 2.0.2+
                 builder.addPropertyValue("lazyInitialization", "${mybatis.lazy-initialization:false}");
@@ -361,16 +361,16 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
             // for spring-native
             boolean injectSqlSession = environment.getProperty("mybatis.inject-sql-session-on-mapper-scan", Boolean.class,
-                    Boolean.TRUE);
+                Boolean.TRUE);
             if (injectSqlSession && this.beanFactory instanceof ListableBeanFactory) {
                 ListableBeanFactory listableBeanFactory = (ListableBeanFactory) this.beanFactory;
                 Optional<String> sqlSessionTemplateBeanName = Optional
-                        .ofNullable(getBeanNameForType(SqlSessionTemplate.class, listableBeanFactory));
+                    .ofNullable(getBeanNameForType(SqlSessionTemplate.class, listableBeanFactory));
                 Optional<String> sqlSessionFactoryBeanName = Optional
-                        .ofNullable(getBeanNameForType(SqlSessionFactory.class, listableBeanFactory));
+                    .ofNullable(getBeanNameForType(SqlSessionFactory.class, listableBeanFactory));
                 if (sqlSessionTemplateBeanName.isPresent() || !sqlSessionFactoryBeanName.isPresent()) {
                     builder.addPropertyValue("sqlSessionTemplateBeanName",
-                            sqlSessionTemplateBeanName.orElse("sqlSessionTemplate"));
+                        sqlSessionTemplateBeanName.orElse("sqlSessionTemplate"));
                 } else {
                     builder.addPropertyValue("sqlSessionFactoryBeanName", sqlSessionFactoryBeanName.get());
                 }
@@ -409,7 +409,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         @Override
         public void afterPropertiesSet() {
             logger.debug(
-                    "Not found configuration for registering mapper bean using @MapperScan, MapperFactoryBean and MapperScannerConfigurer.");
+                "Not found configuration for registering mapper bean using @MapperScan, MapperFactoryBean and MapperScannerConfigurer.");
         }
 
     }

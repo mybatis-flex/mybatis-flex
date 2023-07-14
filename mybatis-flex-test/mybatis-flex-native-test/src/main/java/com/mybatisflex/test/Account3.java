@@ -31,4 +31,5 @@ public class Account3 extends Account2 implements Serializable {
     public Long getId() {
         return super.getId();
     }
+
 }

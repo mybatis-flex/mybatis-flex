@@ -153,8 +153,8 @@ public class Column {
             return "";
         } else {
             return "/**\n" +
-                    "     * " + comment + "\n" +
-                    "     */";
+                "     * " + comment + "\n" +
+                "     */";
         }
     }
 
@@ -199,14 +199,14 @@ public class Column {
 
         //@Column 注解
         if (columnConfig.getOnInsertValue() != null
-                || columnConfig.getOnUpdateValue() != null
-                || columnConfig.getLarge() != null
-                || columnConfig.getLogicDelete() != null
-                || columnConfig.getVersion() != null
-                || columnConfig.getJdbcType() != null
-                || columnConfig.getTypeHandler() != null
-                || columnConfig.getTenantId() != null
-                || needGenColumnAnnotation
+            || columnConfig.getOnUpdateValue() != null
+            || columnConfig.getLarge() != null
+            || columnConfig.getLogicDelete() != null
+            || columnConfig.getVersion() != null
+            || columnConfig.getJdbcType() != null
+            || columnConfig.getTypeHandler() != null
+            || columnConfig.getTenantId() != null
+            || needGenColumnAnnotation
         ) {
             annotations.append("@Column(");
             boolean needComma = false;
@@ -280,8 +280,8 @@ public class Column {
 
         //lang 包不需要显式导入
         if (!propertyType.startsWith("java.lang.")
-                && !"byte[]".equals(propertyType)
-                && !"Byte[]".equals(propertyType)
+            && !"byte[]".equals(propertyType)
+            && !"Byte[]".equals(propertyType)
         ) {
             importClasses.add(propertyType);
         }
@@ -308,14 +308,14 @@ public class Column {
             }
 
             if (columnConfig.getOnInsertValue() != null
-                    || columnConfig.getOnUpdateValue() != null
-                    || columnConfig.getLarge() != null
-                    || columnConfig.getLogicDelete() != null
-                    || columnConfig.getVersion() != null
-                    || columnConfig.getJdbcType() != null
-                    || columnConfig.getTypeHandler() != null
-                    || Boolean.TRUE.equals(columnConfig.getTenantId())
-                    || needGenColumnAnnotation
+                || columnConfig.getOnUpdateValue() != null
+                || columnConfig.getLarge() != null
+                || columnConfig.getLogicDelete() != null
+                || columnConfig.getVersion() != null
+                || columnConfig.getJdbcType() != null
+                || columnConfig.getTypeHandler() != null
+                || Boolean.TRUE.equals(columnConfig.getTenantId())
+                || needGenColumnAnnotation
             ) {
                 importClasses.add(com.mybatisflex.annotation.Column.class.getName());
             }
@@ -336,11 +336,11 @@ public class Column {
     @Override
     public String toString() {
         return "Column{" +
-                "name='" + name + '\'' +
-                ", className='" + propertyType + '\'' +
-                ", remarks='" + comment + '\'' +
-                ", isAutoIncrement=" + isAutoIncrement +
-                '}';
+            "name='" + name + '\'' +
+            ", className='" + propertyType + '\'' +
+            ", remarks='" + comment + '\'' +
+            ", isAutoIncrement=" + isAutoIncrement +
+            '}';
     }
 
 }

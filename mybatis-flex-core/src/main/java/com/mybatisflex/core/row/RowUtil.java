@@ -29,7 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RowUtil {
 
-    private RowUtil() {}
+    private RowUtil() {
+    }
 
     static final String INDEX_SEPARATOR = "$";
 
@@ -201,9 +202,9 @@ public class RowUtil {
     private static boolean isCJK(char c) {
         Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
         return ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
-                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS
-                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION;
+            || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
+            || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS
+            || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION;
     }
 
 
@@ -211,9 +212,9 @@ public class RowUtil {
         return MapUtil.computeIfAbsent(classSettersCache, aClass, aClass1 -> {
             Map<String, Method> columnSetterMapping = new HashMap<>();
             List<Method> setters = ClassUtil.getAllMethods(aClass1,
-                    method -> method.getName().startsWith("set")
-                            && method.getParameterCount() == 1
-                            && Modifier.isPublic(method.getModifiers())
+                method -> method.getName().startsWith("set")
+                    && method.getParameterCount() == 1
+                    && Modifier.isPublic(method.getModifiers())
             );
             for (Method setter : setters) {
                 String column = setter.getName().substring(3);
@@ -224,4 +225,5 @@ public class RowUtil {
             return columnSetterMapping;
         });
     }
+
 }

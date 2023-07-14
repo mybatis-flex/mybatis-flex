@@ -33,7 +33,8 @@ import java.util.List;
 
 class WrapperUtil {
 
-    private WrapperUtil() {}
+    private WrapperUtil() {
+    }
 
     static List<QueryWrapper> getChildQueryWrapper(QueryCondition condition) {
         List<QueryWrapper> list = null;
@@ -96,8 +97,8 @@ class WrapperUtil {
 
         Object value = condition.getValue();
         if (value == null
-                || value instanceof QueryColumn
-                || value instanceof RawFragment) {
+            || value instanceof QueryColumn
+            || value instanceof RawFragment) {
             getValues(condition.next, params);
             return;
         }
@@ -154,7 +155,8 @@ class WrapperUtil {
         return StringUtil.isBlank(alias) ? SqlConsts.EMPTY : getAsKeyWord(dialect) + dialect.wrap(alias);
     }
 
-    private static String getAsKeyWord(IDialect dialect){
+    private static String getAsKeyWord(IDialect dialect) {
         return dialect instanceof OracleDialect ? SqlConsts.BLANK : SqlConsts.AS;
     }
+
 }

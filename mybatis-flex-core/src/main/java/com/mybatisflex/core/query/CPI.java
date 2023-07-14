@@ -42,7 +42,6 @@ public class CPI {
     }
 
 
-
     public static With getWith(QueryWrapper queryWrapper) {
         return queryWrapper.with;
     }
@@ -81,8 +80,8 @@ public class CPI {
 
     public static void setSelectColumnsIfNecessary(QueryWrapper queryWrapper, List<QueryColumn> selectColumns) {
         if (CollectionUtil.isEmpty(queryWrapper.getSelectColumns())
-                && CollectionUtil.isNotEmpty(selectColumns)
-                && CollectionUtil.isEmpty(CPI.getJoinTables(queryWrapper))
+            && CollectionUtil.isNotEmpty(selectColumns)
+            && CollectionUtil.isEmpty(CPI.getJoinTables(queryWrapper))
         ) {
             queryWrapper.setSelectColumns(selectColumns);
         }
@@ -212,14 +211,14 @@ public class CPI {
 
     public static void setFromIfNecessary(QueryWrapper queryWrapper, String tableName) {
         if (StringUtil.isNotBlank(tableName)
-                && CollectionUtil.isEmpty(queryWrapper.getQueryTables())) {
+            && CollectionUtil.isEmpty(queryWrapper.getQueryTables())) {
             queryWrapper.from(tableName);
         }
     }
 
     public static void setFromIfNecessary(QueryWrapper queryWrapper, String schema, String tableName) {
         if (StringUtil.isNotBlank(tableName)
-                && CollectionUtil.isEmpty(queryWrapper.getQueryTables())) {
+            && CollectionUtil.isEmpty(queryWrapper.getQueryTables())) {
             queryWrapper.from(new QueryTable(schema, tableName));
         }
     }
@@ -235,4 +234,5 @@ public class CPI {
     public static boolean isSameTable(QueryTable queryTable, QueryTable otherTable) {
         return queryTable.isSameTable(otherTable);
     }
+
 }

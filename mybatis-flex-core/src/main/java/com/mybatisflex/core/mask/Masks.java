@@ -20,7 +20,8 @@ package com.mybatisflex.core.mask;
  */
 public class Masks {
 
-    private Masks() {}
+    private Masks() {
+    }
 
     /**
      * 手机号脱敏
@@ -79,8 +80,8 @@ public class Masks {
 
     private static String mask(String needToMaskString, int keepFirstCount, int keepLastCount, int maskCount) {
         return needToMaskString.substring(0, keepFirstCount)
-                + createMask(maskCount)
-                + needToMaskString.substring(needToMaskString.length() - keepLastCount);
+            + createMask(maskCount)
+            + needToMaskString.substring(needToMaskString.length() - keepLastCount);
     }
 
 
@@ -183,8 +184,8 @@ public class Masks {
      * 密码 脱敏
      */
     static MaskProcessor PASSWORD_PROCESSOR = data -> {
-        if (data instanceof String ) {
-            return mask((String) data, 0, 0, ((String) data).length()) ;
+        if (data instanceof String) {
+            return mask((String) data, 0, 0, ((String) data).length());
         }
         return data;
     };

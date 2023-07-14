@@ -62,7 +62,7 @@ abstract class AbstractRelation<SelfEntity> {
                             String dataSource, Class<SelfEntity> entityClass, Field relationField,
                             String extraCondition
     ) {
-        this.name = entityClass.getSimpleName()+"."+relationField.getName();
+        this.name = entityClass.getSimpleName() + "." + relationField.getName();
         this.simpleName = relationField.getName();
         this.selfEntityClass = entityClass;
         this.relationField = relationField;

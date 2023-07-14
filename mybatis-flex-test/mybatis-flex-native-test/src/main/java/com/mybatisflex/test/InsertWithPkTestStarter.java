@@ -30,16 +30,16 @@ public class InsertWithPkTestStarter {
 
     public static void main(String[] args) {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.H2)
-                .addScript("schema.sql")
-                .addScript("data.sql")
-                .build();
+            .setType(EmbeddedDatabaseType.H2)
+            .addScript("schema.sql")
+            .addScript("data.sql")
+            .build();
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
-                .setDataSource(dataSource)
-                .addMapper(AccountMapper.class)
-                .addMapper(MyAccountMapper.class)
-                .start();
+            .setDataSource(dataSource)
+            .addMapper(AccountMapper.class)
+            .addMapper(MyAccountMapper.class)
+            .start();
 
         //开启审计功能
         AuditManager.setAuditEnable(true);

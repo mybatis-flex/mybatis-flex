@@ -51,7 +51,7 @@ public class WithValuesDetail implements WithDetail {
             stringValues.add(String.valueOf(value));
         }
         StringBuilder sql = new StringBuilder("VALUES (")
-                .append(StringUtil.join(", ", stringValues)).append(") ");
+            .append(StringUtil.join(", ", stringValues)).append(") ");
         return sql.append(dialect.buildNoSelectSql(queryWrapper)).toString();
     }
 

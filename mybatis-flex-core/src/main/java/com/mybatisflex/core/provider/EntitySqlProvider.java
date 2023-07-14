@@ -303,7 +303,7 @@ public class EntitySqlProvider {
 
         //优先构建 sql，再构建参数
         String sql = DialectFactory.getDialect().forUpdateNumberAddByQuery(tableInfo.getSchema()
-                , tableInfo.getTableName(), fieldName, value, queryWrapper);
+            , tableInfo.getTableName(), fieldName, value, queryWrapper);
 
         Object[] queryParams = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, queryParams);
