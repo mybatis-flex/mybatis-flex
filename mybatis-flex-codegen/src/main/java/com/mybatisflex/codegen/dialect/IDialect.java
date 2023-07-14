@@ -17,12 +17,17 @@ package com.mybatisflex.codegen.dialect;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.entity.Table;
+import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.StringUtil;
 
+import com.zaxxer.hikari.pool.HikariProxyConnection;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.function.Predicate;
+import oracle.jdbc.driver.OracleConnection;
 
 /**
  * 方言接口。
@@ -65,7 +70,22 @@ public interface IDialect {
 
         @Override
         protected ResultSet forRemarks(String schema, Table table, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
-            return dbMeta.getColumns(conn.getCatalog(), StringUtil.isNotBlank(schema) ? schema : dbMeta.getUserName(), table.getName(), null);
+            HikariProxyConnection hikariProxyConnection = (HikariProxyConnection) conn;
+            Field delegate = ClassUtil.getFirstField(HikariProxyConnection.class, new Predicate<Field>() {
+                @Override
+                public boolean test(Field field) {
+                    return field.getName().equals("delegate");
+                }
+            });
+            delegate.setAccessible(true);
+            OracleConnection oc;
+            try {
+                oc = (OracleConnection) delegate.get(hikariProxyConnection);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            oc.setRemarksReporting(true);
+            return dbMeta.getColumns(oc.getCatalog(), StringUtil.isNotBlank(schema) ? schema : dbMeta.getUserName(), table.getName(), null);
         }
     };
 
