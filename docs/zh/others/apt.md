@@ -22,6 +22,7 @@ MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 | processor.allInTables.package           | Tables 类名            | 合法的包名                                                    | ${entityPackage}.table               |
 | processor.allInTables.className         | Tables 类名            | 合法的类名                                                    | Tables                               |
 | processor.mapper.generateEnable         | 开启 Mapper 自动生成       | true/false                                               | false                                |
+| processor.mapper.annotation             | 开启 @Mapper 注解        | true/false                                               | false                                |
 | processor.mapper.baseClass              | 自定义 Mapper 的父类       | 全路径类名                                                    | com.mybatisflex.core.BaseMapper      |
 | processor.mapper.package                | 自定义 Mapper 生成的包名     | 合法的包名                                                    | ${entityPackage}.mapper              |
 | processor.tableDef.propertiesNameStyle  | 生成辅助类的字段风格           | upperCase, lowerCase<br />upperCamelCase, lowerCamelCase | upperCase                            |
