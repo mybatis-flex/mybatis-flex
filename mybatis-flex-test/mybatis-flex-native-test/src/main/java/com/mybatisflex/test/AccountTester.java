@@ -107,5 +107,24 @@ public class AccountTester {
 
     }
 
+    /**
+     * https://gitee.com/mybatis-flex/mybatis-flex/issues/I7L6DF
+     */
+    @Test
+    public void testInsertSelectiveWithPk() {
+        List<Account> accounts = accountMapper.selectAll();
+        System.out.println(accounts);
+
+
+        Account account = new Account();
+        account.setId(4L);
+        account.setUserName("test04");
+        accountMapper.insertSelectiveWithPk(account);
+
+        accounts = accountMapper.selectAll();
+        System.out.println(accounts);
+
+    }
+
 
 }

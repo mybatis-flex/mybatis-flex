@@ -479,7 +479,7 @@ public class TableInfo {
                     retColumns.add(insertColumn);
                 }
             }
-            return ArrayUtil.concat(insertPrimaryKeys, retColumns.toArray(new String[0]));
+            return retColumns.toArray(new String[0]);
         }
     }
 
@@ -797,7 +797,7 @@ public class TableInfo {
                         if (tableInfo != null) {
                             QueryCondition joinQueryCondition = CPI.getJoinQueryCondition(join);
                             QueryWrapper newWrapper = QueryWrapper.create()
-                                    .where(joinQueryCondition);
+                                .where(joinQueryCondition);
                             tableInfo.appendConditions(entity, newWrapper);
                             CPI.setJoinQueryCondition(join, CPI.getWhereQueryCondition(newWrapper));
                         }
@@ -857,8 +857,8 @@ public class TableInfo {
 
     public List<QueryColumn> getDefaultQueryColumn() {
         return Arrays.stream(defaultColumns)
-                .map(name -> columnQueryMapping.get(name))
-                .collect(Collectors.toList());
+            .map(name -> columnQueryMapping.get(name))
+            .collect(Collectors.toList());
     }
 
 
@@ -904,9 +904,9 @@ public class TableInfo {
                 ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, existMappingColumns, true, nestedPrefix);
                 if (nestedResultMap != null) {
                     resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
-                            .javaType(fieldType)
-                            .nestedResultMapId(nestedResultMap.getId())
-                            .build());
+                        .javaType(fieldType)
+                        .nestedResultMapId(nestedResultMap.getId())
+                        .build());
                 }
             });
         }
@@ -920,16 +920,16 @@ public class TableInfo {
                     // 映射 <result column="..."/>
                     String nestedResultMapId = entityClass.getName() + "." + field.getName();
                     ResultMapping resultMapping = new ResultMapping.Builder(configuration, null)
-                            .column(columnName)
-                            .typeHandler(new UnknownTypeHandler(configuration))
-                            .build();
+                        .column(columnName)
+                        .typeHandler(new UnknownTypeHandler(configuration))
+                        .build();
                     ResultMap nestedResultMap = new ResultMap.Builder(configuration, nestedResultMapId, genericClass, Collections.singletonList(resultMapping)).build();
                     configuration.addResultMap(nestedResultMap);
                     // 映射 <collection property="..." ofType="genericClass">
                     resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
-                            .javaType(field.getType())
-                            .nestedResultMapId(nestedResultMap.getId())
-                            .build());
+                        .javaType(field.getType())
+                        .nestedResultMapId(nestedResultMap.getId())
+                        .build());
                 } else {
                     // 获取集合泛型类型的信息，也就是 ofType 属性
                     TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
@@ -937,9 +937,9 @@ public class TableInfo {
                     ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, existMappingColumns, true, nestedPrefix);
                     if (nestedResultMap != null) {
                         resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
-                                .javaType(field.getType())
-                                .nestedResultMapId(nestedResultMap.getId())
-                                .build());
+                            .javaType(field.getType())
+                            .nestedResultMapId(nestedResultMap.getId())
+                            .build());
                     }
                 }
             });
@@ -953,18 +953,18 @@ public class TableInfo {
 
 
     private void doBuildColumnResultMapping(Configuration configuration, Set<String> existMappingColumns, List<ResultMapping> resultMappings
-            , ColumnInfo columnInfo, List<ResultFlag> flags, boolean isNested) {
+        , ColumnInfo columnInfo, List<ResultFlag> flags, boolean isNested) {
         String[] columns = ArrayUtil.concat(new String[]{columnInfo.column, columnInfo.property}, columnInfo.alias);
         for (String column : columns) {
             if (!existMappingColumns.contains(column)) {
                 ResultMapping mapping = new ResultMapping.Builder(configuration
-                        , columnInfo.property
-                        , column
-                        , columnInfo.propertyType)
-                        .jdbcType(columnInfo.getJdbcType())
-                        .flags(flags)
-                        .typeHandler(columnInfo.buildTypeHandler())
-                        .build();
+                    , columnInfo.property
+                    , column
+                    , columnInfo.propertyType)
+                    .jdbcType(columnInfo.getJdbcType())
+                    .flags(flags)
+                    .typeHandler(columnInfo.buildTypeHandler())
+                    .build();
                 resultMappings.add(mapping);
                 existMappingColumns.add(mapping.getColumn());
             }
@@ -975,13 +975,13 @@ public class TableInfo {
                 column = tableName + "$" + column;
                 if (!existMappingColumns.contains(column)) {
                     ResultMapping mapping = new ResultMapping.Builder(configuration
-                            , columnInfo.property
-                            , column
-                            , columnInfo.propertyType)
-                            .jdbcType(columnInfo.getJdbcType())
-                            .flags(flags)
-                            .typeHandler(columnInfo.buildTypeHandler())
-                            .build();
+                        , columnInfo.property
+                        , column
+                        , columnInfo.propertyType)
+                        .jdbcType(columnInfo.getJdbcType())
+                        .flags(flags)
+                        .typeHandler(columnInfo.buildTypeHandler())
+                        .build();
                     resultMappings.add(mapping);
                     existMappingColumns.add(mapping.getColumn());
                 }
@@ -1091,7 +1091,7 @@ public class TableInfo {
 
     private ResultSet getResultSet(Object value) {
         return (ResultSet) Proxy.newProxyInstance(TableInfo.class.getClassLoader(),
-                new Class[]{ResultSet.class}, (proxy, method, args) -> value);
+            new Class[]{ResultSet.class}, (proxy, method, args) -> value);
     }
 
 
@@ -1165,7 +1165,7 @@ public class TableInfo {
     public void invokeOnInsertListener(Object entity) {
         List<InsertListener> listeners = MapUtil.computeIfAbsent(insertListenerCache, entityClass, aClass -> {
             List<InsertListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
-                    .getSupportedInsertListener(entityClass, CollectionUtil.isNotEmpty(onInsertListeners));
+                .getSupportedInsertListener(entityClass, CollectionUtil.isNotEmpty(onInsertListeners));
             List<InsertListener> allListeners = CollectionUtil.merge(onInsertListeners, globalListeners);
             Collections.sort(allListeners);
             return allListeners;
@@ -1179,7 +1179,7 @@ public class TableInfo {
     public void invokeOnUpdateListener(Object entity) {
         List<UpdateListener> listeners = MapUtil.computeIfAbsent(updateListenerCache, entityClass, aClass -> {
             List<UpdateListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
-                    .getSupportedUpdateListener(entityClass, CollectionUtil.isNotEmpty(onUpdateListeners));
+                .getSupportedUpdateListener(entityClass, CollectionUtil.isNotEmpty(onUpdateListeners));
             List<UpdateListener> allListeners = CollectionUtil.merge(onUpdateListeners, globalListeners);
             Collections.sort(allListeners);
             return allListeners;
@@ -1193,7 +1193,7 @@ public class TableInfo {
     public Object invokeOnSetListener(Object entity, String property, Object value) {
         List<SetListener> listeners = MapUtil.computeIfAbsent(setListenerCache, entityClass, aClass -> {
             List<SetListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
-                    .getSupportedSetListener(entityClass, CollectionUtil.isNotEmpty(onSetListeners));
+                .getSupportedSetListener(entityClass, CollectionUtil.isNotEmpty(onSetListeners));
             List<SetListener> allListeners = CollectionUtil.merge(onSetListeners, globalListeners);
             Collections.sort(allListeners);
             return allListeners;

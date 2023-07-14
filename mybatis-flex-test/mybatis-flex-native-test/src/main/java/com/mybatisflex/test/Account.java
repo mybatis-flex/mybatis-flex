@@ -32,6 +32,7 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
 
     private static final long serialVersionUID = 1L;
 
+//    @Id(keyType = KeyType.Generator,value = "uuid")
     @Id(keyType = KeyType.Auto)
     @ColumnAlias("account_id")
     private Long id;
