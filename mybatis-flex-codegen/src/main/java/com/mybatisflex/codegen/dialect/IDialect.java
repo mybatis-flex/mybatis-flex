@@ -62,6 +62,11 @@ public interface IDialect {
         public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String schema, String[] types) throws SQLException {
             return dbMeta.getTables(conn.getCatalog(), StringUtil.isNotBlank(schema) ? schema : dbMeta.getUserName(), null, types);
         }
+
+        @Override
+        protected ResultSet forRemarks(String schema, Table table, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
+            return dbMeta.getColumns(conn.getCatalog(), StringUtil.isNotBlank(schema) ? schema : dbMeta.getUserName(), table.getName(), null);
+        }
     };
 
     /**
@@ -72,13 +77,14 @@ public interface IDialect {
     /**
      * 构建表和列的信息。
      *
+     * @param schemaName
      * @param table        存入的表对象
      * @param globalConfig 全局配置
      * @param dbMeta       数据库元数据
      * @param conn         连接
      * @throws SQLException 发生 SQL 异常时抛出
      */
-    void buildTableColumns(Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException;
+    void buildTableColumns(String schemaName, Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException;
 
     /**
      * 获取表的描述信息。

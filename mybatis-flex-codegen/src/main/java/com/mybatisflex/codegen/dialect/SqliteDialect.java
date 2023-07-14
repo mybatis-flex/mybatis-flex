@@ -29,7 +29,7 @@ import java.sql.*;
 public class SqliteDialect implements IDialect {
 
     @Override
-    public void buildTableColumns(Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
+    public void buildTableColumns(String schemaName, Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
         Statement statement = conn.createStatement();
         ResultSet rs = statement.executeQuery("pragma table_info(" + table.getName() + ")");
 

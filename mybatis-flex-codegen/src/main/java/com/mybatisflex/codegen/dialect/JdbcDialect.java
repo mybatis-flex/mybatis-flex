@@ -29,8 +29,8 @@ import java.util.Map;
 public abstract class JdbcDialect implements IDialect {
 
     @Override
-    public void buildTableColumns(Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
-        Map<String, String> columnRemarks = buildColumnRemarks(table, dbMeta, conn);
+    public void buildTableColumns(String schemaName, Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
+        Map<String, String> columnRemarks = buildColumnRemarks(schemaName,table, dbMeta, conn);
 
         String sql = forBuildColumnsSql(table.getSchema(), table.getName());
         try (Statement stm = conn.createStatement(); ResultSet rs = stm.executeQuery(sql)) {
@@ -55,9 +55,9 @@ public abstract class JdbcDialect implements IDialect {
         }
     }
 
-    private Map<String, String> buildColumnRemarks(Table table, DatabaseMetaData dbMeta, Connection conn) {
+    private Map<String, String> buildColumnRemarks(String schemaName, Table table, DatabaseMetaData dbMeta, Connection conn) {
         Map<String, String> columnRemarks = new HashMap<>();
-        try (ResultSet colRs = dbMeta.getColumns(conn.getCatalog(), null, table.getName(), null)) {
+        try (ResultSet colRs = forRemarks(schemaName,table, dbMeta, conn)) {
             while (colRs.next()) {
                 columnRemarks.put(colRs.getString("COLUMN_NAME"), colRs.getString("REMARKS"));
             }
@@ -66,6 +66,7 @@ public abstract class JdbcDialect implements IDialect {
         }
         return columnRemarks;
     }
+
 
     @Override
     public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String schema, String[] types) throws SQLException {
@@ -80,5 +81,24 @@ public abstract class JdbcDialect implements IDialect {
      * @return 全量查询 SQL 语句
      */
     abstract String forBuildColumnsSql(String schema, String tableName);
+
+
+    /**
+     * 构建 remarks 的 ResultSet
+     *
+     * @param schemaName
+     * @param table
+     * @param dbMeta
+     * @param conn
+     * @return
+     * @throws SQLException
+     */
+    protected ResultSet forRemarks(String schemaName, Table table, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
+        return dbMeta.getColumns(conn.getCatalog(), null, table.getName(), null);
+    }
+
+
+
+
 
 }
