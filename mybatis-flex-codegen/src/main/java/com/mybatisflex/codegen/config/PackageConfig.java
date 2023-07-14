@@ -200,7 +200,7 @@ public class PackageConfig {
      */
     public String getTableDefPackage() {
         if (StringUtil.isBlank(tableDefPackage)) {
-            return getEntityPackage().concat(".tables");
+            return getEntityPackage().concat(".table");
         }
         return tableDefPackage;
     }
