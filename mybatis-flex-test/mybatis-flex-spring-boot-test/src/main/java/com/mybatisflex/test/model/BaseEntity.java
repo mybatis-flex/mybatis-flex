@@ -26,7 +26,14 @@ import java.util.List;
  */
 public class BaseEntity<T, ID, L> extends IdEntity<ID> {
 
+    /**
+     * 用户名。
+     */
     protected T userName;
+
+    /**
+     * 用户角色。
+     */
     @Column(ignore = true)
     protected List<L> roles;
 
