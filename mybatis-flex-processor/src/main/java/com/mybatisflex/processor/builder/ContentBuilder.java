@@ -30,7 +30,7 @@ import java.util.StringJoiner;
  * @author 王帅
  * @since 2023-06-23
  */
-@SuppressWarnings("all")
+@SuppressWarnings({"squid:S107", "squid:S1192"})
 public class ContentBuilder {
 
     private ContentBuilder() {
@@ -39,19 +39,16 @@ public class ContentBuilder {
     /**
      * 构建 Mapper 文件内容。
      */
-    public static String buildMapper(String entityClass, String entityClassName,
-                                     String mappersPackage, String mapperClassName, String baseMapperClass, boolean mapperAnnotationEnable) {
+    public static String buildMapper(TableInfo tableInfo, String mappersPackage, String mapperClassName,
+                                     String baseMapperClass, boolean mapperAnnotationEnable) {
+        String entityClass = tableInfo.getEntityName();
         StringBuilder content = new StringBuilder("package ");
         content.append(mappersPackage).append(";\n\n");
-        content.append(mapperAnnotationEnable ? "" : "");
+        content.append("import ").append(baseMapperClass).append(";\n");
+        content.append("import ").append(entityClass).append(";\n\n");
         if (mapperAnnotationEnable) {
-            content.append("import org.apache.ibatis.annotations.Mapper;\n");
-            content.append("import ").append(baseMapperClass).append(";\n");
-            content.append("import ").append(entityClass).append(";\n\n");
+            content.append("import org.apache.ibatis.annotations.Mapper;\n\n");
             content.append("@Mapper\n");
-        } else {
-            content.append("import ").append(baseMapperClass).append(";\n");
-            content.append("import ").append(entityClass).append(";\n\n");
         }
         String realEntityClassName = StrUtil.getClassName(entityClass);
         String baseMapperClassName = StrUtil.getClassName(baseMapperClass);
@@ -82,7 +79,7 @@ public class ContentBuilder {
             content.append("    public static final ").append(tableDefClassName).append(' ').append(StrUtil.buildFieldName(tableInfo.getEntitySimpleName().concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
                 .append(" = new ").append(tableDefClassName).append("();\n\n");
         }
-        columnInfos.forEach((columnInfo) -> {
+        columnInfos.forEach(columnInfo -> {
             String comment = columnInfo.getComment();
             if (!StrUtil.isBlank(comment)) {
                 content.append("    /**\n")
@@ -103,7 +100,7 @@ public class ContentBuilder {
             .append("     */\n");
         content.append("    public final QueryColumn ").append(StrUtil.buildFieldName("allColumns", tableDefPropertiesNameStyle)).append(" = new QueryColumn(this, \"*\");\n");
         StringJoiner defaultColumnJoiner = new StringJoiner(", ");
-        columnInfos.forEach((columnInfo) -> {
+        columnInfos.forEach(columnInfo -> {
             if (defaultColumns.contains(columnInfo.getColumn())) {
                 defaultColumnJoiner.add(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle));
             }
