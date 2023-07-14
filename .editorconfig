@@ -3,7 +3,7 @@ root = true
 # 匹配全部文件
 [*]
 # 结尾换行符，可选"lf"、"cr"、"crlf"
-end_of_line = lf
+end_of_line = crlf
 # 在文件结尾插入新行
 insert_final_newline = true
 # 删除一行中的前后空格
