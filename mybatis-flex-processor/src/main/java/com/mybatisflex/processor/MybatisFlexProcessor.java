@@ -121,6 +121,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
 
             // mapper 配置
             String mapperGenerateEnable = configuration.get(ConfigurationKey.MAPPER_GENERATE_ENABLE);
+            String mapperAnnotation = configuration.get(ConfigurationKey.MAPPER_ANNOTATION);
             String mapperPackage = configuration.get(ConfigurationKey.MAPPER_PACKAGE);
             String mapperBaseClass = configuration.get(ConfigurationKey.MAPPER_BASE_CLASS);
 
@@ -191,7 +192,8 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 if ("true".equalsIgnoreCase(mapperGenerateEnable) && table.mapperGenerateEnable()) {
                     String realMapperPackage = StrUtil.isBlank(mapperPackage) ? StrUtil.buildMapperPackage(entityClass) : mapperPackage;
                     String mapperClassName = entityClassName.concat("Mapper");
-                    String mapperClassContent = ContentBuilder.buildMapper(entityClass, entityClassName, realMapperPackage, mapperClassName, mapperBaseClass);
+                    boolean mapperAnnotationEnable = "true".equalsIgnoreCase(mapperAnnotation);
+                    String mapperClassContent = ContentBuilder.buildMapper(entityClass, entityClassName, realMapperPackage, mapperClassName, mapperBaseClass, mapperAnnotationEnable);
                     processGenClass(genPath, realMapperPackage, mapperClassName, mapperClassContent);
                 }
 

@@ -40,11 +40,19 @@ public class ContentBuilder {
      * 构建 Mapper 文件内容。
      */
     public static String buildMapper(String entityClass, String entityClassName,
-                                     String mappersPackage, String mapperClassName, String baseMapperClass) {
+                                     String mappersPackage, String mapperClassName, String baseMapperClass, boolean mapperAnnotationEnable) {
         StringBuilder content = new StringBuilder("package ");
         content.append(mappersPackage).append(";\n\n");
-        content.append("import ").append(baseMapperClass).append(";\n");
-        content.append("import ").append(entityClass).append(";\n\n");
+        content.append(mapperAnnotationEnable ? "" : "");
+        if (mapperAnnotationEnable) {
+            content.append("import org.apache.ibatis.annotations.Mapper;\n");
+            content.append("import ").append(baseMapperClass).append(";\n");
+            content.append("import ").append(entityClass).append(";\n\n");
+            content.append("@Mapper\n");
+        } else {
+            content.append("import ").append(baseMapperClass).append(";\n");
+            content.append("import ").append(entityClass).append(";\n\n");
+        }
         String realEntityClassName = StrUtil.getClassName(entityClass);
         String baseMapperClassName = StrUtil.getClassName(baseMapperClass);
         content.append("public interface ").append(mapperClassName).append(" extends ").append(baseMapperClassName).append("<").append(realEntityClassName).append("> {\n}");

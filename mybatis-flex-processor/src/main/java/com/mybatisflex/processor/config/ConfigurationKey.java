@@ -57,6 +57,11 @@ public enum ConfigurationKey {
     MAPPER_GENERATE_ENABLE("processor.mapper.generateEnable", "false"),
 
     /**
+     * 开启 @Mapper 注解。
+     */
+    MAPPER_ANNOTATION("processor.mapper.annotation", "false"),
+
+    /**
      * 自定义 Mapper 的父类。
      */
     MAPPER_BASE_CLASS("processor.mapper.baseClass", "com.mybatisflex.core.BaseMapper"),
