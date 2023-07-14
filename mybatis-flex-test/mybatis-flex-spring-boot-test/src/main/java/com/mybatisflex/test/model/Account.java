@@ -20,14 +20,28 @@ import com.mybatisflex.annotation.Table;
 
 import java.util.Date;
 
+/**
+ * 账户信息。
+ */
 @Table(value = "tb_account", onSet = AccountOnSetListener.class)
 public class Account extends BaseEntity<String, Long, String> {
 
     /*@Id(keyType = KeyType.Auto)
     private Long id;*/
     //private String userName;
+    /**
+     * 年龄。
+     */
     private Integer age;
+
+    /**
+     * 生日。
+     */
     private Date birthday;
+
+    /**
+     * 逻辑删除。
+     */
     @Column(isLogicDelete = true)
     private Boolean isDelete;
 
@@ -84,12 +98,12 @@ public class Account extends BaseEntity<String, Long, String> {
     @Override
     public String toString() {
         return "Account{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", age=" + age +
-                ", birthday=" + birthday +
-                ", isDelete=" + isDelete +
+            "id=" + id +
+            ", userName='" + userName + '\'' +
+            ", age=" + age +
+            ", birthday=" + birthday +
+            ", isDelete=" + isDelete +
 //                ", roles=" + roles +
-                '}';
+            '}';
     }
 }

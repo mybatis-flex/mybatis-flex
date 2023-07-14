@@ -32,6 +32,11 @@ public class ColumnInfo implements Comparable<ColumnInfo> {
     private String property;
 
     /**
+     * 注释。
+     */
+    private String comment;
+
+    /**
      * 列名。
      */
     private String column;
@@ -47,6 +52,14 @@ public class ColumnInfo implements Comparable<ColumnInfo> {
 
     public void setProperty(String property) {
         this.property = property;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getColumn() {

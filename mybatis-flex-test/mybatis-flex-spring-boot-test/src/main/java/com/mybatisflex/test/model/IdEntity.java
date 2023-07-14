@@ -27,6 +27,9 @@ import java.io.Serializable;
  */
 public class IdEntity<T> implements Serializable {
 
+    /**
+     * 主键。
+     */
     @Id(keyType = KeyType.Auto)
     protected T id;
 

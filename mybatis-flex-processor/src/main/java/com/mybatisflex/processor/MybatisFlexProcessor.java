@@ -23,6 +23,7 @@ import com.mybatisflex.processor.builder.ContentBuilder;
 import com.mybatisflex.processor.config.ConfigurationKey;
 import com.mybatisflex.processor.config.MybatisFlexConfig;
 import com.mybatisflex.processor.entity.ColumnInfo;
+import com.mybatisflex.processor.entity.TableInfo;
 import com.mybatisflex.processor.util.FileUtil;
 import com.mybatisflex.processor.util.StrUtil;
 
@@ -35,6 +36,7 @@ import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
 import java.io.File;
@@ -60,29 +62,31 @@ import java.util.function.BiConsumer;
 public class MybatisFlexProcessor extends AbstractProcessor {
 
     private static final List<String> DEFAULT_SUPPORT_COLUMN_TYPES = Arrays.asList(
-            int.class.getName(), Integer.class.getName(),
-            short.class.getName(), Short.class.getName(),
-            long.class.getName(), Long.class.getName(),
-            float.class.getName(), Float.class.getName(),
-            double.class.getName(), Double.class.getName(),
-            boolean.class.getName(), Boolean.class.getName(),
-            Date.class.getName(), java.sql.Date.class.getName(), Time.class.getName(), Timestamp.class.getName(),
-            Instant.class.getName(), LocalDate.class.getName(), LocalDateTime.class.getName(), LocalTime.class.getName(),
-            OffsetDateTime.class.getName(), OffsetTime.class.getName(), ZonedDateTime.class.getName(),
-            Year.class.getName(), Month.class.getName(), YearMonth.class.getName(), JapaneseDate.class.getName(),
-            byte[].class.getName(), Byte[].class.getName(), Byte.class.getName(),
-            BigInteger.class.getName(), BigDecimal.class.getName(),
-            char.class.getName(), String.class.getName(), Character.class.getName()
+        int.class.getName(), Integer.class.getName(),
+        short.class.getName(), Short.class.getName(),
+        long.class.getName(), Long.class.getName(),
+        float.class.getName(), Float.class.getName(),
+        double.class.getName(), Double.class.getName(),
+        boolean.class.getName(), Boolean.class.getName(),
+        Date.class.getName(), java.sql.Date.class.getName(), Time.class.getName(), Timestamp.class.getName(),
+        Instant.class.getName(), LocalDate.class.getName(), LocalDateTime.class.getName(), LocalTime.class.getName(),
+        OffsetDateTime.class.getName(), OffsetTime.class.getName(), ZonedDateTime.class.getName(),
+        Year.class.getName(), Month.class.getName(), YearMonth.class.getName(), JapaneseDate.class.getName(),
+        byte[].class.getName(), Byte[].class.getName(), Byte.class.getName(),
+        BigInteger.class.getName(), BigDecimal.class.getName(),
+        char.class.getName(), String.class.getName(), Character.class.getName()
     );
 
     private Filer filer;
     private Types typeUtils;
+    private Elements elementUtils;
     private MybatisFlexConfig configuration;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         this.filer = processingEnvironment.getFiler();
+        this.elementUtils = processingEnvironment.getElementUtils();
         this.typeUtils = processingEnvironment.getTypeUtils();
         this.configuration = new MybatisFlexConfig(filer);
     }
@@ -174,18 +178,25 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     }
                 }
 
+                TableInfo tableInfo = new TableInfo();
+                tableInfo.setEntityName(entityClass);
+                tableInfo.setEntitySimpleName(entityClassName);
+                tableInfo.setTableName(table.value());
+                tableInfo.setSchema(table.schema());
+                tableInfo.setEntityComment(elementUtils.getDocComment(entityClassElement));
+
                 // 生成 TableDef 文件
                 String tableDefPackage = StrUtil.buildTableDefPackage(entityClass);
                 String tableDefClassName = entityClassName.concat(tableDefClassSuffix);
-                String tableDefContent = ContentBuilder.buildTableDef(table, entityClass, entityClassName, allInTablesEnable, tableDefPackage, tableDefClassName
-                        , tableDefPropertiesNameStyle, tableDefInstanceSuffix, columnInfos, defaultColumns);
+                String tableDefContent = ContentBuilder.buildTableDef(tableInfo, allInTablesEnable, tableDefPackage, tableDefClassName
+                    , tableDefPropertiesNameStyle, tableDefInstanceSuffix, columnInfos, defaultColumns);
                 processGenClass(genPath, tableDefPackage, tableDefClassName, tableDefContent);
 
                 if (allInTablesEnable) {
                     // 标记 entity 类，如果没有配置 Tables 生成位置，以 entity 位置为准
                     entityClassReference = entityClass;
                     // 构建 Tables 常量属性及其导包
-                    ContentBuilder.buildTablesField(importBuilder, fieldBuilder, table, entityClass, entityClassName, tableDefClassSuffix, tableDefPropertiesNameStyle, tableDefInstanceSuffix);
+                    ContentBuilder.buildTablesField(importBuilder, fieldBuilder, tableInfo, tableDefClassSuffix, tableDefPropertiesNameStyle, tableDefInstanceSuffix);
                 }
 
                 // 是否生成 Mapper 文件
@@ -267,8 +278,8 @@ public class MybatisFlexProcessor extends AbstractProcessor {
 
                 // 未配置 typeHandler 的情况下，只支持基本数据类型，不支持比如 list set 或者自定义的类等
                 if ((column == null || "org.apache.ibatis.type.UnknownTypeHandler".equals(typeHandlerClass[0]))
-                        && !DEFAULT_SUPPORT_COLUMN_TYPES.contains(typeString)
-                        && (typeElement != null && ElementKind.ENUM != typeElement.getKind())
+                    && !DEFAULT_SUPPORT_COLUMN_TYPES.contains(typeString)
+                    && (typeElement != null && ElementKind.ENUM != typeElement.getKind())
                 ) {
                     continue;
                 }
@@ -298,6 +309,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 columnInfo.setProperty(property);
                 columnInfo.setColumn(columnName);
                 columnInfo.setAlias(alias);
+                columnInfo.setComment(elementUtils.getDocComment(fieldElement));
 
                 columnInfos.add(columnInfo);
 

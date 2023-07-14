@@ -16,8 +16,8 @@
 
 package com.mybatisflex.processor.builder;
 
-import com.mybatisflex.annotation.Table;
 import com.mybatisflex.processor.entity.ColumnInfo;
+import com.mybatisflex.processor.entity.TableInfo;
 import com.mybatisflex.processor.util.StrUtil;
 
 import java.util.Collection;
@@ -62,7 +62,7 @@ public class ContentBuilder {
     /**
      * 构建 TableDef 文件内容。
      */
-    public static String buildTableDef(Table table, String entityClass, String entityClassName, boolean allInTablesEnable,
+    public static String buildTableDef(TableInfo tableInfo, boolean allInTablesEnable,
                                        String tableDefPackage, String tableDefClassName,
                                        String tableDefPropertiesNameStyle, String tableDefInstanceSuffix,
                                        Collection<ColumnInfo> columnInfos, List<String> defaultColumns) {
@@ -73,36 +73,54 @@ public class ContentBuilder {
         content.append("// Auto generate by mybatis-flex, do not modify it.\n");
         content.append("public class ").append(tableDefClassName).append(" extends TableDef {\n\n");
         if (!allInTablesEnable) {
-            content.append("    public static final ").append(tableDefClassName).append(' ').append(StrUtil.buildFieldName(entityClassName.concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
-                    .append(" = new ").append(tableDefClassName).append("();\n\n");
+            String entityComment = tableInfo.getEntityComment();
+            if (!StrUtil.isBlank(entityComment)) {
+                content.append("    /**\n")
+                    .append("     * ").append(entityComment.trim()).append("\n")
+                    .append("     */\n");
+            }
+            content.append("    public static final ").append(tableDefClassName).append(' ').append(StrUtil.buildFieldName(tableInfo.getEntitySimpleName().concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
+                .append(" = new ").append(tableDefClassName).append("();\n\n");
         }
         columnInfos.forEach((columnInfo) -> {
+            String comment = columnInfo.getComment();
+            if (!StrUtil.isBlank(comment)) {
+                content.append("    /**\n")
+                    .append("     * ").append(comment.trim()).append("\n")
+                    .append("     */\n");
+            }
             content.append("    public final QueryColumn ")
-                    .append(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle))
-                    .append(" = new QueryColumn(this, \"")
-                    .append(columnInfo.getColumn()).append("\"");
+                .append(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle))
+                .append(" = new QueryColumn(this, \"")
+                .append(columnInfo.getColumn()).append("\"");
             if (columnInfo.getAlias() != null && columnInfo.getAlias().length > 0) {
                 content.append(", \"").append(columnInfo.getAlias()[0]).append("\"");
             }
-            content.append(");\n");
+            content.append(");\n\n");
         });
-        content.append("\n    public final QueryColumn ").append(StrUtil.buildFieldName("allColumns", tableDefPropertiesNameStyle)).append(" = new QueryColumn(this, \"*\");\n");
+        content.append("    /**\n")
+            .append("     * 所有字段。\n")
+            .append("     */\n");
+        content.append("    public final QueryColumn ").append(StrUtil.buildFieldName("allColumns", tableDefPropertiesNameStyle)).append(" = new QueryColumn(this, \"*\");\n");
         StringJoiner defaultColumnJoiner = new StringJoiner(", ");
         columnInfos.forEach((columnInfo) -> {
             if (defaultColumns.contains(columnInfo.getColumn())) {
                 defaultColumnJoiner.add(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle));
             }
         });
+        content.append("\n    /**\n")
+            .append("     * 默认字段，不包含逻辑删除或者 large 等字段。\n")
+            .append("     */\n");
         content.append("    public final QueryColumn[] ").append(StrUtil.buildFieldName("defaultColumns", tableDefPropertiesNameStyle)).append(" = new QueryColumn[]{").append(defaultColumnJoiner).append("};\n\n");
-        String schema = !StrUtil.isBlank(table.schema())
-                ? table.schema()
-                : "";
-        String tableName = !StrUtil.isBlank(table.value())
-                ? table.value()
-                : StrUtil.firstCharToLowerCase(entityClassName);
+        String schema = !StrUtil.isBlank(tableInfo.getSchema())
+            ? tableInfo.getSchema()
+            : "";
+        String tableName = !StrUtil.isBlank(tableInfo.getTableName())
+            ? tableInfo.getTableName()
+            : StrUtil.firstCharToLowerCase(tableInfo.getEntitySimpleName());
         content.append("    public ").append(tableDefClassName).append("() {\n")
-                .append("        super").append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n")
-                .append("    }\n\n}\n");
+            .append("        super").append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n")
+            .append("    }\n\n}\n");
         return content.toString();
     }
 
@@ -112,26 +130,32 @@ public class ContentBuilder {
     public static String buildTables(StringBuilder importBuilder, StringBuilder fieldBuilder,
                                      String tablesPackage, String tablesClassName) {
         return "package " + tablesPackage + ";\n\n" +
-                importBuilder.toString() +
-                "\n// Auto generate by mybatis-flex, do not modify it.\n" +
-                "public class " + tablesClassName + " {\n\n" +
-                "    private " + tablesClassName + "() {\n" +
-                "    }\n\n" +
-                fieldBuilder.toString() +
-                "\n}\n";
+            importBuilder.toString() +
+            "\n// Auto generate by mybatis-flex, do not modify it.\n" +
+            "public class " + tablesClassName + " {\n\n" +
+            "    private " + tablesClassName + "() {\n" +
+            "    }\n\n" +
+            fieldBuilder.toString() +
+            "\n}\n";
     }
 
     /**
      * 构建 Tables 文件常量属性。
      */
-    public static void buildTablesField(StringBuilder importBuilder, StringBuilder fieldBuilder, Table table,
-                                        String entityClass, String entityClassName, String tableDefClassSuffix, String tableDefPropertiesNameStyle, String tableDefInstanceSuffix) {
-        String tableDefPackage = StrUtil.buildTableDefPackage(entityClass);
-        String tableDefClassName = entityClassName.concat(tableDefClassSuffix);
+    public static void buildTablesField(StringBuilder importBuilder, StringBuilder fieldBuilder, TableInfo tableInfo,
+                                        String tableDefClassSuffix, String tableDefPropertiesNameStyle, String tableDefInstanceSuffix) {
+        String tableDefPackage = StrUtil.buildTableDefPackage(tableInfo.getEntityName());
+        String tableDefClassName = tableInfo.getEntitySimpleName().concat(tableDefClassSuffix);
         importBuilder.append("import ").append(tableDefPackage).append('.').append(tableDefClassName).append(";\n");
+        String entityComment = tableInfo.getEntityComment();
+        if (!StrUtil.isBlank(entityComment)) {
+            fieldBuilder.append("    /**\n")
+                .append("    * ").append(entityComment).append("\n")
+                .append("    */\n");
+        }
         fieldBuilder.append("    public static final ").append(tableDefClassName).append(' ')
-                .append(StrUtil.buildFieldName(entityClassName.concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
-                .append(" = new ").append(tableDefClassName).append("();\n");
+            .append(StrUtil.buildFieldName(tableInfo.getEntitySimpleName().concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
+            .append(" = new ").append(tableDefClassName).append("();\n");
     }
 
 }
