@@ -47,6 +47,7 @@ public abstract class JdbcDialect implements IDialect {
 
                 column.setAutoIncrement(columnMetaData.isAutoIncrement(i));
 
+                column.setNullable(columnMetaData.isNullable(i));
                 //注释
                 column.setComment(columnRemarks.get(column.getName()));
 
