@@ -16,22 +16,30 @@
 
 package com.mybatisflex.codegen.test;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.mybatisflex.codegen.Generator;
 import com.mybatisflex.codegen.config.GlobalConfig;
 import com.mybatisflex.codegen.dialect.IDialect;
-import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Test;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.Statement;
 
 public class SqliteGeneratorTest {
 
-    //    @Test
+//        @Test
     public void testGenerator3() {
 
         //配置数据源
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:sqlite:sample.db");
+//        HikariDataSource dataSource = new HikariDataSource();
+//        dataSource.setJdbcUrl("jdbc:sqlite:sample.db");
+//        //dataSource.setUsername("root");
+//        //dataSource.setPassword("123456");
+
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setUrl("jdbc:sqlite:sample.db");
         //dataSource.setUsername("root");
         //dataSource.setPassword("123456");
 
@@ -62,7 +70,7 @@ public class SqliteGeneratorTest {
         generator.generate();
     }
 
-    private void createTestTable(HikariDataSource dataSource) {
+    private void createTestTable(DataSource dataSource) {
 
         try {
             Connection connection = dataSource.getConnection();

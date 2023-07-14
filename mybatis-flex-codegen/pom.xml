@@ -32,12 +32,6 @@
             <version>${mybatis-flex.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.oracle.ojdbc</groupId>
-            <artifactId>ojdbc8</artifactId>
-            <version>19.3.0.0</version>
-        </dependency>
-
 
         <!--使用 enjoy 模板引擎-->
         <dependency>
@@ -67,9 +61,26 @@
 
 
         <dependency>
+            <groupId>com.oracle.ojdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>19.3.0.0</version>
+            <optional>true</optional>
+        </dependency>
+
+
+        <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>4.0.3</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.18</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
@@ -96,6 +107,8 @@
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
+
+
 
     </dependencies>
 
