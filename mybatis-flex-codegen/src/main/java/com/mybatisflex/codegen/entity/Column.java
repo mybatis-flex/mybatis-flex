@@ -50,6 +50,11 @@ public class Column {
     private String comment;
 
     /**
+     * 是否可为空。
+     */
+    private Integer nullable;
+
+    /**
      * 是否为主键。
      */
     private boolean isPrimaryKey = false;
@@ -101,6 +106,14 @@ public class Column {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Integer getNullable() {
+        return nullable;
+    }
+
+    public void setNullable(Integer nullable) {
+        this.nullable = nullable;
     }
 
     public boolean isPrimaryKey() {
