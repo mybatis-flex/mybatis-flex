@@ -40,7 +40,7 @@ public class ServiceConfig {
     /**
      * 自定义 Service 的父类。
      */
-    private Class<?> supperClass = IService.class;
+    private Class<?> superClass = IService.class;
 
     /**
      * 是否覆盖之前生成的文件。
@@ -48,11 +48,11 @@ public class ServiceConfig {
     private boolean overwriteEnable;
 
     public String buildSuperClassImport() {
-        return supperClass.getName();
+        return superClass.getName();
     }
 
     public String buildSuperClassName() {
-        return supperClass.getSimpleName();
+        return superClass.getSimpleName();
     }
 
     /**
@@ -88,15 +88,15 @@ public class ServiceConfig {
     /**
      * 获取父类。
      */
-    public Class<?> getSupperClass() {
-        return supperClass;
+    public Class<?> getSuperClass() {
+        return superClass;
     }
 
     /**
      * 设置父类。
      */
-    public ServiceConfig setSupperClass(Class<?> supperClass) {
-        this.supperClass = supperClass;
+    public ServiceConfig setSuperClass(Class<?> superClass) {
+        this.superClass = superClass;
         return this;
     }
 

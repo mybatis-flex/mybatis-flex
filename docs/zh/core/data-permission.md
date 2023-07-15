@@ -11,7 +11,7 @@
 
 这一些，都是通过当前的用户的信息（部门、角色、权限等），查询时，添加特定的条件。在 MyBatis-Flex 中，我们可以通过 2 种方式来实现这一种需求。
 
-## 方式1：使用自定义数据方言 `IDialect` 
+## 方式1：使用自定义数据方言 `IDialect`
 
 在自定义方言中，重写 `forSelectByQuery` 方法，这个方法是用于构建返回根据 `QueryWrapper` 查询的方法， 以下是示例代码：
 
@@ -24,7 +24,7 @@ public class MyPermissionDialect extends CommonsDialectImpl {
         //获取当前用户信息，为 queryWrapper 添加额外的条件
         queryWrapper.and("...");
 
-        return supper.buildSelectSql(queryWrapper);
+        return super.buildSelectSql(queryWrapper);
     }
 }
 ```

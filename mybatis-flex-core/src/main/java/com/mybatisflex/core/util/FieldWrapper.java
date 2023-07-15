@@ -28,6 +28,7 @@ public class FieldWrapper {
 
     private Class<?> fieldType;
     private Class<?> mappingType;
+    private Class<?> keyType;
     private Method getterMethod;
     private Method setterMethod;
 
@@ -64,7 +65,9 @@ public class FieldWrapper {
 
                     fieldWrapper = new FieldWrapper();
                     fieldWrapper.fieldType = findField.getType();
-                    fieldWrapper.mappingType = parseMappingType(clazz, findField);
+                    initMappingTypeAndKeyType(clazz, findField, fieldWrapper);
+
+
                     fieldWrapper.setterMethod = setter;
 
                     String[] getterNames = new String[]{"get" + StringUtil.firstCharToUpperCase(fieldName), "is" + StringUtil.firstCharToUpperCase(fieldName)};
@@ -80,7 +83,7 @@ public class FieldWrapper {
         return fieldWrapper;
     }
 
-    private static Class<?> parseMappingType(Class<?> clazz, Field field) {
+    private static void initMappingTypeAndKeyType(Class<?> clazz, Field field, FieldWrapper fieldWrapper) {
         Reflector reflector = Reflectors.of(clazz);
         Class<?> fieldType = reflector.getGetterType(field.getName());
 
@@ -88,11 +91,17 @@ public class FieldWrapper {
             Type genericType = field.getGenericType();
             if (genericType instanceof ParameterizedType) {
                 Type actualTypeArgument = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-                return (Class<?>) actualTypeArgument;
+                fieldWrapper.mappingType = (Class<?>) actualTypeArgument;
             }
+        } else if (Map.class.isAssignableFrom(fieldType)) {
+            Type genericType = field.getGenericType();
+            if (genericType instanceof ParameterizedType) {
+                fieldWrapper.keyType = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
+                fieldWrapper.mappingType = (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[1];
+            }
+        } else {
+            fieldWrapper.mappingType = fieldType;
         }
-
-        return fieldType;
     }
 
 
@@ -120,4 +129,7 @@ public class FieldWrapper {
         return mappingType;
     }
 
+    public Class<?> getKeyType() {
+        return keyType;
+    }
 }

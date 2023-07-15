@@ -40,7 +40,7 @@ public class ServiceImplConfig {
     /**
      * 自定义 ServiceImpl 的父类。
      */
-    private Class<?> supperClass = ServiceImpl.class;
+    private Class<?> superClass = ServiceImpl.class;
 
     /**
      * 是否覆盖之前生成的文件。
@@ -53,11 +53,11 @@ public class ServiceImplConfig {
     private boolean cacheExample;
 
     public String buildSuperClassImport() {
-        return supperClass.getName();
+        return superClass.getName();
     }
 
     public String buildSuperClassName() {
-        return supperClass.getSimpleName();
+        return superClass.getSimpleName();
     }
 
     /**
@@ -93,15 +93,15 @@ public class ServiceImplConfig {
     /**
      * 获取父类。
      */
-    public Class<?> getSupperClass() {
-        return supperClass;
+    public Class<?> getSuperClass() {
+        return superClass;
     }
 
     /**
      * 设置父类。
      */
-    public ServiceImplConfig setSupperClass(Class<?> supperClass) {
-        this.supperClass = supperClass;
+    public ServiceImplConfig setSuperClass(Class<?> superClass) {
+        this.superClass = superClass;
         return this;
     }
 
@@ -124,7 +124,7 @@ public class ServiceImplConfig {
      * 是否生成缓存例子。
      */
     public boolean isCacheExample() {
-        return CacheableServiceImpl.class.equals(supperClass) && cacheExample;
+        return CacheableServiceImpl.class.equals(superClass) && cacheExample;
     }
 
     /**

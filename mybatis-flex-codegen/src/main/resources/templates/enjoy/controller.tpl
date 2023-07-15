@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 #else
 import org.springframework.stereotype.Controller;
 #end
-#if(controllerConfig.supperClass)
+#if(controllerConfig.superClass)
 import #(controllerConfig.buildSuperClassImport());
 #end
 
@@ -39,7 +39,7 @@ import java.util.List;
 @Controller
 #end
 @RequestMapping("/#(firstCharToLowerCase(entityClassName))")
-public class #(table.buildControllerClassName()) #if(controllerConfig.supperClass)extends #(controllerConfig.buildSuperClassName()) #end {
+public class #(table.buildControllerClassName()) #if(controllerConfig.superClass)extends #(controllerConfig.buildSuperClassName()) #end {
 
     @Autowired
     private #(table.buildServiceClassName()) #(serviceVarName);

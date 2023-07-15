@@ -39,7 +39,7 @@ public class EntityConfig {
     /**
      * Entity 类的父类，可以自定义一些 BaseEntity 类。
      */
-    private Class<?> supperClass;
+    private Class<?> superClass;
 
     /**
      * 是否覆盖之前生成的文件。
@@ -94,15 +94,15 @@ public class EntityConfig {
     /**
      * 获取父类。
      */
-    public Class<?> getSupperClass() {
-        return supperClass;
+    public Class<?> getSuperClass() {
+        return superClass;
     }
 
     /**
      * 设置父类。
      */
-    public EntityConfig setSupperClass(Class<?> supperClass) {
-        this.supperClass = supperClass;
+    public EntityConfig setSuperClass(Class<?> superClass) {
+        this.superClass = superClass;
         return this;
     }
 

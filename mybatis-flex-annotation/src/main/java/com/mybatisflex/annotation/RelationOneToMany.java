@@ -68,6 +68,12 @@ public @interface RelationOneToMany {
     String targetField();
 
     /**
+     * 当映射是一个 map 时，使用哪个内容来当做 map 的 Key
+     * @return 指定的列
+     */
+    String mapKeyField() default "";
+
+    /**
      * 中间表名称，一对一的关系是通过通过中间表维护时，需要添加此项配置。
      *
      * @return 中间表名称

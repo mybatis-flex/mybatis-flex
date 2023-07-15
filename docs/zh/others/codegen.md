@@ -150,7 +150,7 @@ globalConfig.enableEntity();
 // 设置生成 Entity 并启用 Lombok、设置父类
 globalConfig.enableEntity()
         .setWithLombok(true)
-        .setSupperClass(BaseEntity.class);
+        .setSuperClass(BaseEntity.class);
 ```
 
 ## 全局配置 `GlobalConfig`
@@ -193,7 +193,7 @@ globalConfig.getPackageConfig()
 // 设置生成 Entity 并启用 Lombok、设置父类
 globalConfig.enableEntity()
         .setWithLombok(true)
-        .setSupperClass(BaseEntity.class);
+        .setSuperClass(BaseEntity.class);
 ```
 
 ## 注释配置 `JavadocConfig`
@@ -284,7 +284,7 @@ globalConfig.getTemplateConfig()
 |-----------------------------|----------------------------------|--------------------|
 | setClassPrefix(String)      | Entity 类的前缀                      | ""                 |
 | setClassSuffix(String)      | Entity 类的后缀                      | ""                 |
-| setSupperClass(Class)       | Entity 类的父类，可以自定义一些 BaseEntity 类 | null               |
+| setSuperClass(Class)       | Entity 类的父类，可以自定义一些 BaseEntity 类 | null               |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件                      | false              |
 | setImplInterfaces(Class[])  | Entity 默认实现的接口                   | Serializable.class |
 | setWithLombok(boolean)      | Entity 是否使用 Lombok 注解            | false              |
@@ -294,7 +294,7 @@ globalConfig.getEntityConfig()
         .setWithLombok(true)
         .setClassPrefix("My")
         .setClassSuffix("Entity")
-        .setSupperClass(BaseEntity.class);
+        .setSuperClass(BaseEntity.class);
 ```
 
 ## Mapper 生成配置 `MapperConfig`
@@ -303,7 +303,7 @@ globalConfig.getEntityConfig()
 |-----------------------------|-------------|------------------|
 | setClassPrefix(String)      | Mapper 类的前缀 | ""               |
 | setClassSuffix(String)      | Mapper 类的后缀 | "Mapper"         |
-| setSupperClass(Class)       | Mapper 类的父类 | BaseMapper.class |
+| setSuperClass(Class)       | Mapper 类的父类 | BaseMapper.class |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件 | false            |
 
 ```java
@@ -319,7 +319,7 @@ globalConfig.getMapperConfig()
 |-----------------------------|--------------|----------------|
 | setClassPrefix(String)      | Service 类的前缀 | ""             |
 | setClassSuffix(String)      | Service 类的后缀 | "Service"      |
-| setSupperClass(Class)       | Service 类的父类 | IService.class |
+| setSuperClass(Class)       | Service 类的父类 | IService.class |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件  | false          |
 
 ```java
@@ -335,7 +335,7 @@ globalConfig.getServiceConfig()
 |-----------------------------|------------------|-------------------|
 | setClassPrefix(String)      | ServiceImpl 类的前缀 | ""                |
 | setClassSuffix(String)      | ServiceImpl 类的后缀 | "ServiceImpl"     |
-| setSupperClass(Class)       | ServiceImpl 类的父类 | ServiceImpl.class |
+| setSuperClass(Class)       | ServiceImpl 类的父类 | ServiceImpl.class |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件      | false             |
 | setCacheExample(boolean)    | 是否添加缓存示例代码       | false             |
 
@@ -352,7 +352,7 @@ globalConfig.getServiceImplConfig()
 |-----------------------------|---------------------|--------------|
 | setClassPrefix(String)      | Controller 类的前缀     | ""           |
 | setClassSuffix(String)      | Controller 类的后缀     | "Controller" |
-| setSupperClass(Class)       | Controller 类的父类     | null         |
+| setSuperClass(Class)       | Controller 类的父类     | null         |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件         | false        |
 | setRestStyle(boolean)       | REST 风格的 Controller | true         |
 
@@ -510,6 +510,42 @@ public class EnjoyTemplate implements ITemplate {
         engine.getTemplate("/templates/enjoy/mapper.tpl").render(params, fileOutputStream);
     }
 }
+```
+
+## 自定义数据方言
+在 MyBatis-Flex 的代码生成器中，已经内置了 4 中方言，他们分别是：
+
+- 默认方言
+- MySQL 方言
+- Oracle 方言
+- SQLite 方言
+
+方言可以通过如下的方式进行使用：
+
+```java 3
+Generator generator = new Generator(dataSource
+    , globalConfig
+    , IDialect.ORACLE); //使用哪个方言
+
+generator.generate();
+```
+> 不传入方言的情况下，使用默认方言。
+
+针对不同的数据库，我们也可以通过自定义方言来实现代码生成，例如：
+
+MyDialect.java
+```java
+class MyDialect implements IDialect{
+   //重写相关构建方法
+}
+```
+开始使用 MyDialect
+```java 3
+Generator generator = new Generator(dataSource
+    , globalConfig
+    , new MyDialect()); //使用哪个方言
+
+generator.generate();
 ```
 
 ## 添加其他产物的生成

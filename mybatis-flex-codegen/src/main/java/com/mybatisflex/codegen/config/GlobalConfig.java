@@ -836,17 +836,17 @@ public class GlobalConfig {
     }
 
     /**
-     * @see EntityConfig#getSupperClass()
+     * @see EntityConfig#getSuperClass()
      */
-    public Class<?> getEntitySupperClass() {
-        return getEntityConfig().getSupperClass();
+    public Class<?> getEntitySuperClass() {
+        return getEntityConfig().getSuperClass();
     }
 
     /**
-     * @see EntityConfig#setSupperClass(Class)
+     * @see EntityConfig#setSuperClass(Class)
      */
-    public void setEntitySupperClass(Class<?> entitySupperClass) {
-        getEntityConfig().setSupperClass(entitySupperClass);
+    public void setEntitySuperClass(Class<?> entitySuperClass) {
+        getEntityConfig().setSuperClass(entitySuperClass);
     }
 
     /**
@@ -946,17 +946,17 @@ public class GlobalConfig {
     }
 
     /**
-     * @see MapperConfig#getSupperClass()
+     * @see MapperConfig#getSuperClass()
      */
-    public Class<?> getMapperSupperClass() {
-        return getMapperConfig().getSupperClass();
+    public Class<?> getMapperSuperClass() {
+        return getMapperConfig().getSuperClass();
     }
 
     /**
-     * @see MapperConfig#setSupperClass(Class)
+     * @see MapperConfig#setSuperClass(Class)
      */
-    public void setMapperSupperClass(Class<?> mapperSupperClass) {
-        getMapperConfig().setSupperClass(mapperSupperClass);
+    public void setMapperSuperClass(Class<?> mapperSuperClass) {
+        getMapperConfig().setSuperClass(mapperSuperClass);
     }
 
     /**
@@ -1028,17 +1028,17 @@ public class GlobalConfig {
     }
 
     /**
-     * @see ServiceConfig#getSupperClass()
+     * @see ServiceConfig#getSuperClass()
      */
-    public Class<?> getServiceSupperClass() {
-        return getServiceConfig().getSupperClass();
+    public Class<?> getServiceSuperClass() {
+        return getServiceConfig().getSuperClass();
     }
 
     /**
-     * @see ServiceConfig#setSupperClass(Class)
+     * @see ServiceConfig#setSuperClass(Class)
      */
-    public void setServiceSupperClass(Class<?> serviceSupperClass) {
-        getServiceConfig().setSupperClass(serviceSupperClass);
+    public void setServiceSuperClass(Class<?> serviceSuperClass) {
+        getServiceConfig().setSuperClass(serviceSuperClass);
     }
 
     public boolean isServiceImplGenerateEnable() {
@@ -1096,17 +1096,17 @@ public class GlobalConfig {
     }
 
     /**
-     * @see ServiceImplConfig#getSupperClass()
+     * @see ServiceImplConfig#getSuperClass()
      */
-    public Class<?> getServiceImplSupperClass() {
-        return getServiceImplConfig().getSupperClass();
+    public Class<?> getServiceImplSuperClass() {
+        return getServiceImplConfig().getSuperClass();
     }
 
     /**
-     * @see ServiceImplConfig#setSupperClass(Class)
+     * @see ServiceImplConfig#setSuperClass(Class)
      */
-    public void setServiceImplSupperClass(Class<?> serviceImplSupperClass) {
-        getServiceImplConfig().setSupperClass(serviceImplSupperClass);
+    public void setServiceImplSuperClass(Class<?> serviceImplSuperClass) {
+        getServiceImplConfig().setSuperClass(serviceImplSuperClass);
     }
 
     /**
@@ -1178,17 +1178,17 @@ public class GlobalConfig {
     }
 
     /**
-     * @see ControllerConfig#getSupperClass()
+     * @see ControllerConfig#getSuperClass()
      */
-    public Class<?> getControllerSupperClass() {
-        return getControllerConfig().getSupperClass();
+    public Class<?> getControllerSuperClass() {
+        return getControllerConfig().getSuperClass();
     }
 
     /**
-     * @see ControllerConfig#setSupperClass(Class)
+     * @see ControllerConfig#setSuperClass(Class)
      */
-    public void setControllerSupperClass(Class<?> controllerSupperClass) {
-        getControllerConfig().setSupperClass(controllerSupperClass);
+    public void setControllerSuperClass(Class<?> controllerSuperClass) {
+        getControllerConfig().setSuperClass(controllerSuperClass);
     }
 
     /**

@@ -3,6 +3,9 @@
 # abort on errors
 set -e
 
+# copy changes.md
+cp ../changes.md ./zh/
+
 # build
 npm run docs:build
 #vuepress build .
