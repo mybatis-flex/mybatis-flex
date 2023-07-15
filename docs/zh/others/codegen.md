@@ -512,6 +512,42 @@ public class EnjoyTemplate implements ITemplate {
 }
 ```
 
+## 自定义数据方言
+在 MyBatis-Flex 的代码生成器中，已经内置了 4 中方言，他们分别是：
+
+- 默认方言
+- MySQL 方言
+- Oracle 方言
+- SQLite 方言
+
+方言可以通过如下的方式进行使用：
+
+```java 3
+Generator generator = new Generator(dataSource
+    , globalConfig
+    , IDialect.ORACLE); //使用哪个方言
+
+generator.generate();
+```
+> 不传入方言的情况下，使用默认方言。
+
+针对不同的数据库，我们也可以通过自定义方言来实现代码生成，例如：
+
+MyDialect.java
+```java
+class MyDialect implements IDialect{
+   //重写相关构建方法
+}
+```
+开始使用 MyDialect
+```java 3
+Generator generator = new Generator(dataSource
+    , globalConfig
+    , new MyDialect()); //使用哪个方言
+
+generator.generate();
+```
+
 ## 添加其他产物的生成
 
 通过实现 `IGenerator` 来实现，比如 Entity 实体类的代码如下：

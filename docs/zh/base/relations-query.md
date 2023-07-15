@@ -484,7 +484,12 @@ RelationManager.addIgnoreRelations("idCard","books");
 List<Account> accounts = accountMapper.selectAllWithRelations();
 ```
 
->`addIgnoreRelations()` 方法的配置，只在当前第一次查询有效，查询后会清除设置。
+>`addIgnoreRelations()` 方法的配置，只在当前第一次查询有效，查询后会清除设置。另外需要注意的是：
+> `addIgnoreRelations()` 的设置，是会影响其所有嵌套的 Relations 配置的。在嵌套的场景中，如果存在同名的属性，
+> 比如 `class A ` 和 `class B` 都有相同的属性 `x`，假设我们想忽略 `class A` 中的 `x` 而 `class B` 的 `x` 不忽略，
+> 那么我们需要添加上类名的前缀，例如：`addIgnoreRelations("A.x")`。
+
+
 
 
 ## 附加条件
