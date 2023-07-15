@@ -197,7 +197,7 @@ public class MapperUtil {
                 if (Collection.class.isAssignableFrom(fieldType)) {
                     value = mapper.selectListByQueryAs(childQuery, mappingType);
                     if (!fieldType.isAssignableFrom(value.getClass())) {
-                        fieldType = getWrapType(fieldType);
+                        fieldType = getCollectionWrapType(fieldType);
                         Collection newValue = (Collection) ClassUtil.newInstance(fieldType);
                         newValue.addAll((Collection) value);
                         value = newValue;
@@ -225,9 +225,9 @@ public class MapperUtil {
     }
 
 
-    public static Class<?> getWrapType(Class<?> type) {
+    public static Class<? extends Collection> getCollectionWrapType(Class<?> type) {
         if (ClassUtil.canInstance(type.getModifiers())) {
-            return type;
+            return (Class<? extends Collection>) type;
         }
 
         if (List.class.isAssignableFrom(type)) {
