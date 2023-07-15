@@ -16,14 +16,10 @@
 package com.mybatisflex.core.relation;
 
 import com.mybatisflex.annotation.RelationManyToMany;
-import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Field;
 
 class ManyToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
-
-    private String orderBy;
 
     public ManyToMany(RelationManyToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
         super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationManyToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
@@ -35,15 +31,10 @@ class ManyToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
             , annotation.joinTargetColumn()
             , annotation.dataSource(), entityClass, relationField
             , annotation.extraCondition());
+
         this.orderBy = annotation.orderBy();
+        this.setMapKeyField(annotation.mapKeyField());
     }
 
-
-    @Override
-    public void customizeQueryWrapper(QueryWrapper queryWrapper) {
-        if (StringUtil.isNotBlank(orderBy)) {
-            queryWrapper.orderBy(orderBy);
-        }
-    }
 
 }

@@ -23,6 +23,7 @@ import com.mybatisflex.annotation.Table;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Table(value = "tb_account")
 public class Account implements Serializable {
@@ -49,13 +50,23 @@ public class Account implements Serializable {
 //            selfField = "id", joinSelfColumn = "account_id",
 //            targetField = "id", joinTargetColumn = "role_id"
 //    )
+//    @RelationManyToMany(
+//        joinTable = "tb_role_mapping",
+//        joinSelfColumn = "account_id",
+//        joinTargetColumn = "role_id",
+//        extraCondition = "(name like '%2%' or id > 1)"
+//    )
+    private List<Role> roles;
+
+
     @RelationManyToMany(
         joinTable = "tb_role_mapping",
         joinSelfColumn = "account_id",
         joinTargetColumn = "role_id",
-        extraCondition = "(name like '%2%' or id > 1)"
+        extraCondition = "(name like '%2%' or id > 1)",
+        mapKeyField = "id"
     )
-    private List<Role> roles;
+    private Map<Long, Role> rolesMap;
 
 
     public Long getId() {
@@ -106,6 +117,14 @@ public class Account implements Serializable {
         this.roles = roles;
     }
 
+    public Map<Long, Role> getRolesMap() {
+        return rolesMap;
+    }
+
+    public void setRolesMap(Map<Long, Role> rolesMap) {
+        this.rolesMap = rolesMap;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
@@ -115,7 +134,7 @@ public class Account implements Serializable {
             ", idCard=" + idCard +
             ", books=" + books +
             ", roles=" + roles +
+            ", rolesMap=" + rolesMap +
             '}';
     }
-
 }

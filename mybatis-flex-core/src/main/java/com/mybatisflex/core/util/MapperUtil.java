@@ -208,9 +208,9 @@ public class MapperUtil {
     }
 
 
-    public static Class<?> getWrapType(Class<?> type) {
+    public static Class<? extends Collection> getCollectionWrapType(Class<?> type) {
         if (ClassUtil.canInstance(type.getModifiers())) {
-            return type;
+            return (Class<? extends Collection>) type;
         }
 
         if (List.class.isAssignableFrom(type)) {

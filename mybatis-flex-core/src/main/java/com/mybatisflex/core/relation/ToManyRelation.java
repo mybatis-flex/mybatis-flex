@@ -15,17 +15,19 @@
  */
 package com.mybatisflex.core.relation;
 
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
-import com.mybatisflex.core.util.ClassUtil;
-import com.mybatisflex.core.util.MapperUtil;
+import com.mybatisflex.core.util.*;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
+
+    protected String mapKeyField;
+    protected FieldWrapper mapKeyFieldWrapper;
+    protected String orderBy;
+    protected int limit = 0;
 
 
     public ToManyRelation(String selfField, String targetSchema, String targetTable, String targetField,
@@ -39,6 +41,17 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
         );
     }
 
+
+    @Override
+    public void customizeQueryWrapper(QueryWrapper queryWrapper) {
+        if (StringUtil.isNotBlank(orderBy)) {
+            queryWrapper.orderBy(orderBy);
+        }
+
+        if (limit > 0) {
+            queryWrapper.limit(limit);
+        }
+    }
 
     @SuppressWarnings("rawtypes")
     @Override
@@ -65,17 +78,50 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                     return;
                 }
 
-                Class<?> wrapType = MapperUtil.getWrapType(relationFieldWrapper.getFieldType());
-                Collection collection = (Collection) ClassUtil.newInstance(wrapType);
-                for (Object targetObject : targetObjectList) {
-                    Object targetValue = targetFieldWrapper.get(targetObject);
-                    if (targetValue != null && targetMappingValues.contains(targetValue.toString())) {
-                        collection.add(targetObject);
+                Class<?> fieldType = relationFieldWrapper.getFieldType();
+                //map
+                if (Map.class.isAssignableFrom(fieldType)) {
+                    Class<?> wrapType = getMapWrapType(fieldType);
+                    Map map = (Map) ClassUtil.newInstance(wrapType);
+                    for (Object targetObject : targetObjectList) {
+                        Object targetValue = targetFieldWrapper.get(targetObject);
+                        if (targetValue != null && targetMappingValues.contains(targetValue.toString())) {
+                            Object keyValue = mapKeyFieldWrapper.get(targetObject);
+                            Object needKeyValue = ConvertUtil.convert(keyValue, relationFieldWrapper.getKeyType());
+                            map.put(needKeyValue, targetObject);
+                        }
                     }
+                    relationFieldWrapper.set(map, selfEntity);
                 }
-                relationFieldWrapper.set(collection, selfEntity);
+                //集合
+                else {
+                    Class<?> wrapType = MapperUtil.getCollectionWrapType(fieldType);
+                    Collection collection = (Collection) ClassUtil.newInstance(wrapType);
+                    for (Object targetObject : targetObjectList) {
+                        Object targetValue = targetFieldWrapper.get(targetObject);
+                        if (targetValue != null && targetMappingValues.contains(targetValue.toString())) {
+                            collection.add(targetObject);
+                        }
+                    }
+                    relationFieldWrapper.set(collection, selfEntity);
+                }
             }
         });
+    }
+
+    public void setMapKeyField(String mapKeyField) {
+        this.mapKeyField = mapKeyField;
+        if (StringUtil.isNotBlank(mapKeyField)) {
+            this.mapKeyFieldWrapper = FieldWrapper.of(targetEntityClass, mapKeyField);
+        }
+    }
+
+    public static Class<? extends Map> getMapWrapType(Class<?> type) {
+        if (ClassUtil.canInstance(type.getModifiers())) {
+            return (Class<? extends Map>) type;
+        }
+
+        return HashMap.class;
     }
 
 }

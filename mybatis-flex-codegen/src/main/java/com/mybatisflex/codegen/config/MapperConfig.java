@@ -39,7 +39,7 @@ public class MapperConfig {
     /**
      * 自定义 Mapper 的父类。
      */
-    private Class<?> supperClass = BaseMapper.class;
+    private Class<?> superClass = BaseMapper.class;
 
     /**
      * 是否覆盖之前生成的文件。
@@ -52,11 +52,11 @@ public class MapperConfig {
     private boolean mapperAnnotation;
 
     public String buildSuperClassImport() {
-        return supperClass.getName();
+        return superClass.getName();
     }
 
     public String buildSuperClassName() {
-        return supperClass.getSimpleName();
+        return superClass.getSimpleName();
     }
 
     /**
@@ -92,15 +92,15 @@ public class MapperConfig {
     /**
      * 获取父类。
      */
-    public Class<?> getSupperClass() {
-        return supperClass;
+    public Class<?> getSuperClass() {
+        return superClass;
     }
 
     /**
      * 设置父类。
      */
-    public MapperConfig setSupperClass(Class<?> supperClass) {
-        this.supperClass = supperClass;
+    public MapperConfig setSuperClass(Class<?> superClass) {
+        this.superClass = superClass;
         return this;
     }
 

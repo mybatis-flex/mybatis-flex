@@ -5,14 +5,17 @@
 | 项目名称         | 描述                                                                                                                                        | 开源网址                                    |
 |--------------|-------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|
 | hh-vue       | 这是基于ruoyi-vue改造的项目，对flex完整封装可以参考此项项目                                                                                                      | https://gitee.com/min290/hh-vue         |
-| youcan-solon | 基于solon框架做的一个类似Rouyi的项目，使用flex自带的mybatis-flex-solon-plugin插件做集成，集成方式非常简单，属于即拿即用                                                           | https://gitee.com/gollyhu/youcan-solon  |
+| youcan-solon | 基于 solon 框架做的一个类似 Ruoyi 的项目，使用flex自带的 mybatis-flex-solon-plugin 插件做集成，集成方式非常简单，属于即拿即用                                                           | https://gitee.com/gollyhu/youcan-solon  |
 | Ruoyi-Flex   | Ruoyi-Flex是基于RuoYi-Vue v3.8.6进行的扩展，集成MyBatis-Flex、JDK17、lombok、Sa-Token、PowerJob、Hutool、OSS、ureport-keep、Flowable、vue3、TypeScript等优秀开源软件。 | https://gitee.com/dataprince/ruoyi-flex |
 
 ## 开发插件
 
 **Mybatis-Flex IDEA**
 
-这是一款高度自定义的mybatis-flex idea 代码生成插件，详情：https://www.bilibili.com/video/BV1yV411g7Yd
+这是一款高度自定义的 Mybatis-Flex IDEA 代码生成插件：
+
+- 开源地址：https://gitee.com/djxchi/mybatis-flex-code-gen.git
+- 视频简介：https://www.bilibili.com/video/BV1yV411g7Yd
 
 ## 视频教程
 

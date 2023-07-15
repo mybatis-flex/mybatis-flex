@@ -173,8 +173,8 @@ public class Table {
 
         EntityConfig entityConfig = globalConfig.getEntityConfig();
 
-        if (entityConfig.getSupperClass() != null) {
-            imports.add(entityConfig.getSupperClass().getName());
+        if (entityConfig.getSuperClass() != null) {
+            imports.add(entityConfig.getSuperClass().getName());
         }
 
         if (entityConfig.getImplInterfaces() != null) {
@@ -257,8 +257,8 @@ public class Table {
      */
     public String buildExtends() {
         EntityConfig entityConfig = globalConfig.getEntityConfig();
-        if (entityConfig.getSupperClass() != null) {
-            return " extends " + entityConfig.getSupperClass().getSimpleName();
+        if (entityConfig.getSuperClass() != null) {
+            return " extends " + entityConfig.getSuperClass().getSimpleName();
         } else {
             return "";
         }
