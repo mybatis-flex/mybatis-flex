@@ -15,36 +15,60 @@
  */
 package com.mybatisflex.core.field;
 
+import com.mybatisflex.core.exception.FlexAssert;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
 import java.io.Serializable;
 
+/**
+ * 属性查询构建者。
+ *
+ * @param <T> 属性所在实体类类型
+ * @author 开源海哥
+ * @author 王帅
+ */
 public class FieldQueryBuilder<T> implements Serializable {
 
-    private T entity;
-    private FieldQuery fieldQuery = new FieldQuery();
+    private FieldQuery.Builder<?> builder;
 
-    public FieldQueryBuilder(T entity) {
-        this.entity = entity;
+    /**
+     * 为指定属性创建查询。
+     *
+     * @param fn Lambda 引用
+     * @return {@link FieldQuery.Builder} 构建者
+     */
+    public FieldQuery.Builder<T> field(LambdaGetter<T> fn) {
+        return createBuilder(fn);
     }
 
-    public FieldQueryBuilder<T> field(String field) {
-        fieldQuery.setField(field);
-        return this;
+    /**
+     * 为指定嵌套属性创建查询。
+     *
+     * @param <N> 嵌套属性类型
+     * @param fn  Lambda 引用
+     * @return {@link FieldQuery.Builder} 构建者
+     */
+    public <N> FieldQuery.Builder<N> nestedField(LambdaGetter<N> fn) {
+        return createBuilder(fn);
     }
 
-    public FieldQueryBuilder<T> field(LambdaGetter<T> fn) {
-        return field(LambdaUtil.getFieldName(fn));
-    }
-
-    public FieldQueryBuilder<T> queryWrapper(QueryBuilder<T> fun) {
-        fieldQuery.setQueryWrapper(fun.build(entity));
-        return this;
+    /**
+     * <p>创建 {@link FieldQuery.Builder} 用于构建属性类型与 {@code QueryWrapper} 用于查询。
+     *
+     * <p>该方法主要用作于创建构建者对象，以及泛型的转换。
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private <R> FieldQuery.Builder<R> createBuilder(LambdaGetter fn) {
+        FlexAssert.notNull(fn, "Field can not be null.");
+        String className = LambdaUtil.getClassName(fn);
+        String fieldName = LambdaUtil.getFieldName(fn);
+        builder = new FieldQuery.Builder<>(className, fieldName);
+        return (FieldQuery.Builder<R>) builder;
     }
 
     public FieldQuery build() {
-        return fieldQuery;
+        return builder.build();
     }
 
 }
