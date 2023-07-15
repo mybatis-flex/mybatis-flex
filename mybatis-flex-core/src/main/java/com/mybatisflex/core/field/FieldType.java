@@ -84,7 +84,7 @@ public enum FieldType {
     );
 
     /**
-     * 自动推断属性类型
+     * 自动推断属性类型。
      *
      * @param field 属性
      * @return 属性类型

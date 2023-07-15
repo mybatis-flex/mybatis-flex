@@ -17,6 +17,9 @@ package com.mybatisflex.core.field;
 
 import java.io.Serializable;
 
+/**
+ * 查询属性的信息。
+ */
 @SuppressWarnings("rawtypes")
 public class FieldQuery implements Serializable {
 
