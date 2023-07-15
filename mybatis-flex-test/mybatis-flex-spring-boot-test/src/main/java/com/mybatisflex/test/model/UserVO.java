@@ -16,8 +16,8 @@
 
 package com.mybatisflex.test.model;
 
-import java.util.Collection;
-import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 用户 VO 对象。
@@ -30,7 +30,9 @@ public class UserVO {
 
     private String userId;
     private String userName;
-    private TreeSet<Role> roleList;
+    //    private TreeSet<Role> roleList;
+//    private Role[] roleList;
+    private HashMap<String, Object> roleList;
 
     public String getUserId() {
         return userId;
@@ -48,11 +50,11 @@ public class UserVO {
         this.userName = userName;
     }
 
-    public Collection<Role> getRoleList() {
+    public Map<String, Object> getRoleList() {
         return roleList;
     }
 
-    public void setRoleList(TreeSet<Role> roleList) {
+    public void setRoleList(HashMap<String, Object> roleList) {
         this.roleList = roleList;
     }
 

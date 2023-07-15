@@ -16,6 +16,7 @@
 
 package com.mybatisflex.test.mapper;
 
+import com.mybatisflex.core.field.FieldType;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.model.*;
@@ -73,6 +74,7 @@ class UserMapperTest {
         List<UserVO> userVOs = userMapper.selectListByQueryAs(queryWrapper, UserVO.class,
             fieldQueryBuilder -> fieldQueryBuilder
                 .field(UserVO::getRoleList)
+                .prevent(true)
                 .queryWrapper(user -> QueryWrapper.create()
                     .select()
                     .from(ROLE)
@@ -137,6 +139,40 @@ class UserMapperTest {
     }
 
     @Test
+    void testComplexSelectListFields() {
+        List<UserInfo> userInfos = userMapper.selectListByQueryAs(QueryWrapper.create(), UserInfo.class,
+            c -> c.field(UserInfo::getIdNumber).fieldType(FieldType.BASIC).queryWrapper(userInfo ->
+                QueryWrapper.create()
+                    .select(ID_CARD.ID_NUMBER)
+                    .from(ID_CARD)
+                    .where(ID_CARD.ID.eq(userInfo.getUserId()))
+            ),
+            c -> c.field(UserInfo::getRoleList).prevent().queryWrapper(userInfo ->
+                QueryWrapper.create()
+                    .select()
+                    .from(ROLE.as("r"))
+                    .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+                    .where(USER_ROLE.USER_ID.eq(userInfo.getUserId()))
+            ),
+            c -> c.field(UserInfo::getOrderInfoList).queryWrapper(userInfo ->
+                QueryWrapper.create()
+                    .select()
+                    .from(ORDER.as("o"))
+                    .leftJoin(USER_ORDER).as("uo").on(USER_ORDER.ORDER_ID.eq(ORDER.ORDER_ID))
+                    .where(USER_ORDER.USER_ID.eq(userInfo.getUserId()))
+            ),
+            c -> c.nestedField(OrderInfo::getGoodList).prevent().queryWrapper(orderInfo ->
+                QueryWrapper.create()
+                    .select()
+                    .from(GOOD.as("g"))
+                    .leftJoin(ORDER_GOOD).as("og").on(ORDER_GOOD.GOOD_ID.eq(GOOD.GOOD_ID))
+                    .where(ORDER_GOOD.ORDER_ID.eq(orderInfo.getOrderId()))
+            )
+        );
+        userInfos.forEach(System.err::println);
+    }
+
+    @Test
     void testEquals() {
         QueryWrapper queryWrapper1 = QueryWrapper.create()
             .select(USER.ALL_COLUMNS, ID_CARD.ID_NUMBER, ROLE.ALL_COLUMNS, ORDER.ALL_COLUMNS, GOOD.ALL_COLUMNS)
@@ -150,16 +186,48 @@ class UserMapperTest {
             .leftJoin(GOOD).as("g").on(GOOD.GOOD_ID.eq(ORDER_GOOD.GOOD_ID))
             .orderBy(USER.USER_ID.asc(), ROLE.ROLE_ID.asc(), ORDER.ORDER_ID.asc(), GOOD.GOOD_ID.asc());
         List<UserInfo> userInfos1 = userMapper.selectListByQueryAs(queryWrapper1, UserInfo.class);
-        userInfos1.forEach(System.err::println);
 
         QueryWrapper queryWrapper2 = QueryWrapper.create()
             .select(USER.ALL_COLUMNS, ID_CARD.ID_NUMBER)
             .from(USER.as("u"))
             .leftJoin(ID_CARD).as("i").on(USER.USER_ID.eq(ID_CARD.ID));
         List<UserInfo> userInfos2 = userMapper.selectListWithRelationsByQueryAs(queryWrapper2, UserInfo.class);
-        userInfos2.forEach(System.err::println);
 
-        Assertions.assertEquals(userInfos1, userInfos2);
+        List<UserInfo> userInfos3 = userMapper.selectListByQueryAs(QueryWrapper.create(), UserInfo.class,
+            c -> c.field(UserInfo::getIdNumber).fieldType(FieldType.BASIC).queryWrapper(userInfo ->
+                QueryWrapper.create()
+                    .select(ID_CARD.ID_NUMBER)
+                    .from(ID_CARD)
+                    .where(ID_CARD.ID.eq(userInfo.getUserId()))
+            ),
+            c -> c.field(UserInfo::getRoleList).prevent().queryWrapper(userInfo ->
+                QueryWrapper.create()
+                    .select()
+                    .from(ROLE.as("r"))
+                    .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+                    .where(USER_ROLE.USER_ID.eq(userInfo.getUserId()))
+                    .orderBy(ROLE.ROLE_ID.asc())
+            ),
+            c -> c.field(UserInfo::getOrderInfoList).queryWrapper(userInfo ->
+                QueryWrapper.create()
+                    .select()
+                    .from(ORDER.as("o"))
+                    .leftJoin(USER_ORDER).as("uo").on(USER_ORDER.ORDER_ID.eq(ORDER.ORDER_ID))
+                    .where(USER_ORDER.USER_ID.eq(userInfo.getUserId()))
+                    .orderBy(ORDER.ORDER_ID.asc())
+            ),
+            c -> c.nestedField(OrderInfo::getGoodList).prevent().queryWrapper(orderInfo ->
+                QueryWrapper.create()
+                    .select()
+                    .from(GOOD.as("g"))
+                    .leftJoin(ORDER_GOOD).as("og").on(ORDER_GOOD.GOOD_ID.eq(GOOD.GOOD_ID))
+                    .where(ORDER_GOOD.ORDER_ID.eq(orderInfo.getOrderId()))
+                    .orderBy(GOOD.GOOD_ID.asc())
+            )
+        );
+
+        Assertions.assertEquals(userInfos1.toString(), userInfos2.toString());
+        Assertions.assertEquals(userInfos1.toString(), userInfos3.toString());
     }
 
     @Test
