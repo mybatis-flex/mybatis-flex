@@ -16,7 +16,6 @@
 package com.mybatisflex.core.field;
 
 import com.mybatisflex.core.util.FieldWrapper;
-import sun.jvm.hotspot.oops.FieldType;
 
 import java.io.Serializable;
 
@@ -26,13 +25,13 @@ import java.io.Serializable;
 @SuppressWarnings("rawtypes")
 public class FieldQuery implements Serializable {
 
-    private Class entityClass;
+    private Class<?> entityClass;
     private String fieldName;
     private FieldWrapper fieldWrapper;
     private boolean prevent;
     private QueryBuilder queryBuilder;
 
-    public Class getEntityClass() {
+    public Class<?> getEntityClass() {
         return entityClass;
     }
 
@@ -84,8 +83,7 @@ public class FieldQuery implements Serializable {
         }
 
         /**
-         * 阻止对嵌套类属性的查询，只对 {@link FieldType#COLLECTION} 与
-         * {@link FieldType#ENTITY} 两种属性类型有效。
+         * 阻止对嵌套类属性的查询，只对 集合 与 实体类 两种属性类型有效。
          *
          * @return 构建者
          */
@@ -95,8 +93,7 @@ public class FieldQuery implements Serializable {
         }
 
         /**
-         * 设置是否阻止对嵌套类属性的查询，只对 {@link FieldType#COLLECTION} 与
-         * {@link FieldType#ENTITY} 两种属性类型有效。
+         * 设置是否阻止对嵌套类属性的查询，只对 集合 与 实体类 两种属性类型有效。
          *
          * @param prevent 是否阻止对嵌套类属性查询
          * @return 构建者
