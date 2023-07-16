@@ -1,6 +1,27 @@
 # MyBatis-Flex ChangeLog
 
 
+## v1.5.0 20230716:
+- 新增：ToMany 的 Relation 注解添加对 map 数据类型的支持 #I7KW9U
+- 新增：代码生成器添加 EntityConfig 关于数据的自定义配置，感谢 @Suomm
+- 新增：APT 和代码生成器添加辅助类字段注释的功能，感谢 @Suomm
+- 新增：Field Query 添加对嵌套字段的查询支持，感谢 @Suomm
+- 新增：代码生成器添加对 Swagger 注解自动配置的支持，感谢 @Suomm
+- 新增：代码生成器添加自定义 comments 格式化的支持，感谢 @Suomm
+- 新增：APT 新增 processor.mapper.annotation 配置是否生成 @Mapper 注解，感谢 @cainiao3853
+- 优化：统一 GlobalConfig 中每部分 setter/getter 命名，感谢 @Suomm
+- 优化：RelationManager 添加关于自动清除配置的相关功能
+- 修复：Oracle 方言下，代码生成器无法正常获取字段注释的问题，感谢 @galvin_chen
+- 修复：insertSelectiveWithPk 方法给主键赋值后会拼接两次id的问题 #I7L6DF
+- 修复：修改 APT 和代码生成器的单词拼写错误的问题，感谢 @lhzsdnu
+- 文档：修改多对多的注解描述错误的问题，感谢 @jl_0417
+- 文档：更新关于一对一和一对多的中间表查询文档
+- 文档：添加关于 `processor.mapper.annotation` 的相关文档，感谢 @cainiao3853
+- 文档：代码生成器添加关于自定义方言的相关文档
+- 文档：关联查询添加对 map 类型的相关文档
+
+
+
 ## v1.4.9 20230713:
 - 新增：Relation 注解支持递归查询的功能及递归深度设置的功能
 - 新增：Relation 注解添加对 vo、dto 等进行关联查询时，可以指定表的配置支持
