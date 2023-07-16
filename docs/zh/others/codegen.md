@@ -368,7 +368,7 @@ globalConfig.getControllerConfig()
 | 配置                                               | 描述             | 默认值                                       |
 |--------------------------------------------------|----------------|-------------------------------------------|
 | setClassPrefix(String)                           | TableDef 类的前缀  | ""                                        |
-| setClassSuffix(String)                           | TableDef 类的后缀  | "Def"                                     |
+| setClassSuffix(String)                           | TableDef 类的后缀  | "TableDef"                                     |
 | setOverwriteEnable(boolean)                      | 是否覆盖之前生成的文件    | false                                     |
 | setPropertiesNameStyle(TableDefConfig.NameStyle) | 生成辅助类的字段风格     | TableDefConfig.NameStyle.LOWER_CAMEL_CASE |
 | setInstanceSuffix(String)                        | 生成辅助类常量对应的变量后缀 | ""                                        |
