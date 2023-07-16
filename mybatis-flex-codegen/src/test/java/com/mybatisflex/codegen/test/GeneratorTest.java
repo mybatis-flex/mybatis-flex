@@ -85,7 +85,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-    //    @Test
+    //        @Test
     public void testCodeGen2() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -160,11 +160,14 @@ public class GeneratorTest {
 
         //用户信息表，用于存放用户信息。 -> 用户信息
         UnaryOperator<String> tableFormat = (e) -> e.split("，")[0].replace("表", "");
+        //属性添加句号
+        UnaryOperator<String> columnFormat = (e) -> e.concat("。");
 
         //设置注解生成配置
         globalConfig.getJavadocConfig()
             .setAuthor("王帅")
-            .setTableCommentFormat(tableFormat);
+            .setTableCommentFormat(tableFormat)
+            .setColumnCommentFormat(columnFormat);
 
         //设置生成文件目录和根包
         globalConfig.getPackageConfig()
@@ -197,11 +200,14 @@ public class GeneratorTest {
             .setPropertiesNameStyle(TableDefConfig.NameStyle.LOWER_CAMEL_CASE)
             .setOverwriteEnable(true);
 
+        globalConfig.disableTableDef();
+
         // 配置生成 entity
         globalConfig.enableEntity()
             .setOverwriteEnable(true)
             .setDataSource("ds1")
-            .setWithLombok(true);
+            .setWithLombok(true)
+            .setWithSwagger(true);
 
         // 配置生成 mapper
         globalConfig.enableMapper()
