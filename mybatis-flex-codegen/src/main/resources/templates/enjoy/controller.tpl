@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 #else
 import org.springframework.stereotype.Controller;
 #end
-#if(controllerConfig.superClass)
+#if(controllerConfig.superClass != null)
 import #(controllerConfig.buildSuperClassImport());
 #end
 #if(withSwagger)
