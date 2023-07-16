@@ -85,7 +85,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-    //        @Test
+    //    @Test
     public void testCodeGen2() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -122,6 +122,7 @@ public class GeneratorTest {
         globalConfig.enableEntity()
             .setOverwriteEnable(true)
             .setWithLombok(true)
+            .setWithSwagger(true)
             .setSuperClass(BaseEntity.class);
 
         //配置生成 mapper
