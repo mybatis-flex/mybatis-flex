@@ -262,11 +262,7 @@ public class Column {
             annotations.append("@ColumnMask(\"").append(columnConfig.getMask()).append("\")");
         }
 
-        String result = annotations.toString();
-        if (!result.isEmpty()) {
-            result += "\n    ";
-        }
-        return result;
+        return annotations.toString();
     }
 
     private void addComma(StringBuilder annotations, boolean needComma) {

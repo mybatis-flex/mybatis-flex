@@ -18,7 +18,7 @@ public class #(tableDefClassName) extends TableDef {
      */
     public static final #(tableDefClassName) #(tableDefConfig.buildFieldName(table.buildEntityClassName() + tableDefConfig.instanceSuffix)) = new #(tableDefClassName)();
 
-#for(column: table.columns)
+#for(column: table.getSortedColumns())
     #(column.buildComment())
     public final QueryColumn #(tableDefConfig.buildFieldName(column.property)) = new QueryColumn(this, "#(column.name)");
 

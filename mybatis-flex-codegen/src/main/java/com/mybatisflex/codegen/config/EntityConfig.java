@@ -57,6 +57,11 @@ public class EntityConfig {
     private boolean withLombok;
 
     /**
+     * Entity 是否使用 Swagger 注解。
+     */
+    private boolean withSwagger;
+
+    /**
      * 实体类数据源。
      */
     private String dataSource;
@@ -148,6 +153,21 @@ public class EntityConfig {
      */
     public EntityConfig setWithLombok(boolean withLombok) {
         this.withLombok = withLombok;
+        return this;
+    }
+
+    /**
+     * 是否启用 Swagger。
+     */
+    public boolean isWithSwagger() {
+        return withSwagger;
+    }
+
+    /**
+     * 设置是否启用 Swagger。
+     */
+    public EntityConfig setWithSwagger(boolean withSwagger) {
+        this.withSwagger = withSwagger;
         return this;
     }
 

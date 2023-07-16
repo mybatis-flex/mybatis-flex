@@ -114,10 +114,15 @@ public class Table {
     }
 
     public List<Column> getColumns() {
-        // 生成字段排序
-        columns.sort(Comparator.comparingInt((Column c) -> c.getProperty().length())
-            .thenComparing(Column::getProperty));
         return columns;
+    }
+
+    public List<Column> getSortedColumns() {
+        ArrayList<Column> arrayList = new ArrayList<>(columns);
+        // 生成字段排序
+        arrayList.sort(Comparator.comparingInt((Column c) -> c.getProperty().length())
+            .thenComparing(Column::getProperty));
+        return arrayList;
     }
 
     public void setColumns(List<Column> columns) {

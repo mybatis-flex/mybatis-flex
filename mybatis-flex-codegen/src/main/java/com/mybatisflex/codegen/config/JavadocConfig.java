@@ -16,6 +16,8 @@
 
 package com.mybatisflex.codegen.config;
 
+import com.mybatisflex.core.util.StringUtil;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
@@ -45,6 +47,11 @@ public class JavadocConfig {
      * 表名格式化。
      */
     private UnaryOperator<String> tableCommentFormat = UnaryOperator.identity();
+
+    /**
+     * 列名格式化。
+     */
+    private UnaryOperator<String> columnCommentFormat = UnaryOperator.identity();
 
     /**
      * Entity 包注释。
@@ -115,6 +122,9 @@ public class JavadocConfig {
     }
 
     public String formatTableComment(String comment) {
+        if (StringUtil.isBlank(comment)) {
+            return "";
+        }
         return tableCommentFormat.apply(comment);
     }
 
@@ -130,6 +140,28 @@ public class JavadocConfig {
      */
     public JavadocConfig setTableCommentFormat(UnaryOperator<String> tableCommentFormat) {
         this.tableCommentFormat = tableCommentFormat;
+        return this;
+    }
+
+    public String formatColumnComment(String comment) {
+        if (StringUtil.isBlank(comment)) {
+            return "";
+        }
+        return columnCommentFormat.apply(comment);
+    }
+
+    /**
+     * 获取列注释格式化。
+     */
+    public Function<String, String> getColumnCommentFormat() {
+        return columnCommentFormat;
+    }
+
+    /**
+     * 设置列注释格式化方案，用来生成实体类属性注释。
+     */
+    public JavadocConfig setColumnCommentFormat(UnaryOperator<String> columnCommentFormat) {
+        this.columnCommentFormat = columnCommentFormat;
         return this;
     }
 

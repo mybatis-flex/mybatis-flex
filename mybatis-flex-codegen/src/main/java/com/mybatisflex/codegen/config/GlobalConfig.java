@@ -283,6 +283,20 @@ public class GlobalConfig {
     }
 
     /**
+     * @see JavadocConfig#getColumnCommentFormat()
+     */
+    public Function<String, String> getColumnCommentFormat() {
+        return getJavadocConfig().getColumnCommentFormat();
+    }
+
+    /**
+     * @see JavadocConfig#setColumnCommentFormat(UnaryOperator)
+     */
+    public void setColumnCommentFormat(UnaryOperator<String> columnCommentFormat) {
+        getJavadocConfig().setColumnCommentFormat(columnCommentFormat);
+    }
+
+    /**
      * @see JavadocConfig#getEntityPackage()
      */
     public String getEntityPackageComment() {
@@ -875,6 +889,20 @@ public class GlobalConfig {
      */
     public void setEntityWithLombok(boolean entityWithLombok) {
         getEntityConfig().setWithLombok(entityWithLombok);
+    }
+
+    /**
+     * @see EntityConfig#isWithSwagger()
+     */
+    public boolean isEntityWithSwagger() {
+        return getEntityConfig().isWithSwagger();
+    }
+
+    /**
+     * @see EntityConfig#setWithSwagger(boolean)
+     */
+    public void setEntityWithSwagger(boolean entityWithSwagger) {
+        getEntityConfig().setWithSwagger(entityWithSwagger);
     }
 
     /**
