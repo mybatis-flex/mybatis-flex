@@ -141,7 +141,7 @@ public class Codegen {
 // 开启 Entity 的生成
 globalConfig.enableEntity();
 // 关闭 Entity 的生成
-        globalConfig.disableEntity();
+globalConfig.disableEntity();
 ```
 
 所有方法均支持链式调用配置，代码如下：
