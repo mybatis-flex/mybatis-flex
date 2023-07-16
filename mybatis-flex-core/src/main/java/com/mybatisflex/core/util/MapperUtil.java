@@ -187,9 +187,9 @@ public class MapperUtil {
             FieldQueryBuilder<R> fieldQueryBuilder = new FieldQueryBuilder<>();
             consumer.accept(fieldQueryBuilder);
 
-            FieldQuery fieldQuery = fieldQueryBuilder.build(list.get(0).getClass());
+            FieldQuery fieldQuery = fieldQueryBuilder.build();
 
-            String className = fieldQuery.getClassName();
+            String className = fieldQuery.getEntityClass().getName();
             String fieldName = fieldQuery.getFieldName();
             String mapKey = className + '#' + fieldName;
 

@@ -42,10 +42,9 @@ public class LambdaUtil {
         return PropertyNamer.methodToProperty(methodName);
     }
 
-    public static <T> String getClassName(LambdaGetter<T> getter) {
+    public static <T> Class<?> getImplClass(LambdaGetter<T> getter) {
         SerializedLambda lambda = getSerializedLambda(getter);
-        String className = getImplClass(lambda);
-        return className.replace('/', '.');
+        return getImplClass(lambda);
     }
 
 
@@ -59,14 +58,7 @@ public class LambdaUtil {
     public static <T> QueryColumn getQueryColumn(LambdaGetter<T> getter) {
         SerializedLambda lambda = getSerializedLambda(getter);
         String methodName = lambda.getImplMethodName();
-        String implClass = getImplClass(lambda);
-        Class<?> entityClass = MapUtil.computeIfAbsent(classMap, implClass, s -> {
-            try {
-                return Class.forName(s.replace("/", "."));
-            } catch (ClassNotFoundException e) {
-                throw FlexExceptions.wrap(e);
-            }
-        });
+        Class<?> entityClass = getImplClass(lambda);
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
         return tableInfo.getQueryColumnByProperty(PropertyNamer.methodToProperty(methodName));
     }
@@ -85,7 +77,18 @@ public class LambdaUtil {
     }
 
 
-    public static String getImplClass(SerializedLambda lambda) {
+    private static Class<?> getImplClass(SerializedLambda lambda) {
+        String implClass = getImplClassName(lambda);
+        return MapUtil.computeIfAbsent(classMap, implClass, s -> {
+            try {
+                return Class.forName(s.replace("/", "."));
+            } catch (ClassNotFoundException e) {
+                throw FlexExceptions.wrap(e);
+            }
+        });
+    }
+
+    private static String getImplClassName(SerializedLambda lambda) {
         String type = lambda.getInstantiatedMethodType();
         return type.substring(2, type.indexOf(";"));
     }

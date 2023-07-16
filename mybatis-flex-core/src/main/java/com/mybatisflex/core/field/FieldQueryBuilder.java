@@ -61,14 +61,14 @@ public class FieldQueryBuilder<T> implements Serializable {
     @SuppressWarnings({"rawtypes", "unchecked"})
     private <R> FieldQuery.Builder<R> createBuilder(LambdaGetter fn) {
         FlexAssert.notNull(fn, "Field can not be null.");
-        String className = LambdaUtil.getClassName(fn);
+        Class<?> entityClass = LambdaUtil.getImplClass(fn);
         String fieldName = LambdaUtil.getFieldName(fn);
-        builder = new FieldQuery.Builder<>(className, fieldName);
+        builder = new FieldQuery.Builder<>(entityClass, fieldName);
         return (FieldQuery.Builder<R>) builder;
     }
 
-    public FieldQuery build(Class<?> entityClass) {
-        return builder.build(entityClass);
+    public FieldQuery build() {
+        return builder.build();
     }
 
 }

@@ -26,18 +26,18 @@ import java.io.Serializable;
 @SuppressWarnings("rawtypes")
 public class FieldQuery implements Serializable {
 
-    private String className;
+    private Class entityClass;
     private String fieldName;
     private FieldWrapper fieldWrapper;
     private boolean prevent;
     private QueryBuilder queryBuilder;
 
-    public String getClassName() {
-        return className;
+    public Class getEntityClass() {
+        return entityClass;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setEntityClass(Class entityClass) {
+        this.entityClass = entityClass;
     }
 
     public String getFieldName() {
@@ -76,10 +76,11 @@ public class FieldQuery implements Serializable {
 
         private final FieldQuery fieldQuery;
 
-        public Builder(String className, String fieldName) {
+        public Builder(Class entityClass, String fieldName) {
             this.fieldQuery = new FieldQuery();
-            this.fieldQuery.setClassName(className);
+            this.fieldQuery.setEntityClass(entityClass);
             this.fieldQuery.setFieldName(fieldName);
+            this.fieldQuery.setFieldWrapper(FieldWrapper.of(entityClass, fieldName));
         }
 
         /**
@@ -116,8 +117,7 @@ public class FieldQuery implements Serializable {
             return this;
         }
 
-        protected FieldQuery build(Class<?> entityClass) {
-            this.fieldQuery.setFieldWrapper(FieldWrapper.of(entityClass, fieldQuery.fieldName));
+        protected FieldQuery build() {
             return this.fieldQuery;
         }
 
