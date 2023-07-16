@@ -16,11 +16,9 @@
 
 package com.mybatisflex.test.model;
 
-import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.RelationManyToMany;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 用户信息。
@@ -33,7 +31,6 @@ public class UserInfo {
     private Integer userId;
     private String userName;
     private String password;
-    @Column(ignore = true)
     private String idNumber;
 
     @RelationManyToMany(
@@ -113,46 +110,6 @@ public class UserInfo {
             ", roleList=" + roleList +
             ", orderInfoList=" + orderInfoList +
             '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        UserInfo userInfo = (UserInfo) o;
-
-        if (!Objects.equals(userId, userInfo.userId)) {
-            return false;
-        }
-        if (!Objects.equals(userName, userInfo.userName)) {
-            return false;
-        }
-        if (!Objects.equals(password, userInfo.password)) {
-            return false;
-        }
-        if (!Objects.equals(idNumber, userInfo.idNumber)) {
-            return false;
-        }
-        if (!Objects.equals(roleList, userInfo.roleList)) {
-            return false;
-        }
-        return Objects.equals(orderInfoList, userInfo.orderInfoList);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = userId != null ? userId.hashCode() : 0;
-        result = 31 * result + (userName != null ? userName.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (idNumber != null ? idNumber.hashCode() : 0);
-        result = 31 * result + (roleList != null ? roleList.hashCode() : 0);
-        result = 31 * result + (orderInfoList != null ? orderInfoList.hashCode() : 0);
-        return result;
     }
 
 }

@@ -42,6 +42,12 @@ public class LambdaUtil {
         return PropertyNamer.methodToProperty(methodName);
     }
 
+    public static <T> String getClassName(LambdaGetter<T> getter) {
+        SerializedLambda lambda = getSerializedLambda(getter);
+        String className = lambda.getImplClass();
+        return className.replace('/', '.');
+    }
+
 
     public static <T> String getAliasName(LambdaGetter<T> getter, boolean withPrefix) {
         QueryColumn queryColumn = getQueryColumn(getter);

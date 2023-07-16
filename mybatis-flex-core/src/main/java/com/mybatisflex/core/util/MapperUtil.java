@@ -20,6 +20,7 @@ import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.field.FieldQuery;
 import com.mybatisflex.core.field.FieldQueryBuilder;
+import com.mybatisflex.core.field.FieldQueryManager;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.relation.RelationManager;
@@ -176,41 +177,23 @@ public class MapperUtil {
     }
 
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     public static <R> void queryFields(BaseMapper<?> mapper, List<R> list, Consumer<FieldQueryBuilder<R>>[] consumers) {
         if (CollectionUtil.isEmpty(list) || ArrayUtil.isEmpty(consumers) || consumers[0] == null) {
             return;
         }
-        list.forEach(entity -> {
-            for (Consumer<FieldQueryBuilder<R>> consumer : consumers) {
-                FieldQueryBuilder<R> fieldQueryBuilder = new FieldQueryBuilder<>(entity);
-                consumer.accept(fieldQueryBuilder);
-                FieldQuery fieldQuery = fieldQueryBuilder.build();
-                QueryWrapper childQuery = fieldQuery.getQueryWrapper();
 
-                FieldWrapper fieldWrapper = FieldWrapper.of(entity.getClass(), fieldQuery.getField());
+        Map<String, FieldQuery> fieldQueryMap = new HashMap<>();
+        for (Consumer<FieldQueryBuilder<R>> consumer : consumers) {
+            FieldQueryBuilder<R> fieldQueryBuilder = new FieldQueryBuilder<>();
+            consumer.accept(fieldQueryBuilder);
+            FieldQuery fieldQuery = fieldQueryBuilder.build();
+            String className = fieldQuery.getClassName();
+            String fieldName = fieldQuery.getFieldName();
+            String mapKey = className + '#' + fieldName;
+            fieldQueryMap.put(mapKey, fieldQuery);
+        }
 
-                Class<?> fieldType = fieldWrapper.getFieldType();
-                Class<?> mappingType = fieldWrapper.getMappingType();
-
-                Object value;
-                if (Collection.class.isAssignableFrom(fieldType)) {
-                    value = mapper.selectListByQueryAs(childQuery, mappingType);
-                    if (!fieldType.isAssignableFrom(value.getClass())) {
-                        fieldType = getCollectionWrapType(fieldType);
-                        Collection newValue = (Collection) ClassUtil.newInstance(fieldType);
-                        newValue.addAll((Collection) value);
-                        value = newValue;
-                    }
-                } else if (fieldType.isArray()) {
-                    value = mapper.selectListByQueryAs(childQuery, mappingType);
-                    value = ((List<?>) value).toArray();
-                } else {
-                    value = mapper.selectOneByQueryAs(childQuery, mappingType);
-                }
-                fieldWrapper.set(value, entity);
-            }
-        });
+        FieldQueryManager.queryFields(mapper, list, fieldQueryMap);
     }
 
 

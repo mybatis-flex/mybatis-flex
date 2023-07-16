@@ -117,7 +117,8 @@ public class AccountTester {
         Account account = new Account();
         account.setId(4L);
         account.setUserName("test04");
-        accountMapper.insertSelectiveWithPk(account);
+        int rows = accountMapper.insertSelectiveWithPk(account);
+        System.out.println(rows);
 
         accounts = accountMapper.selectAll();
         System.out.println(accounts);
