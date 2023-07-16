@@ -94,6 +94,13 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.6.11</version>
+            <optional>true</optional>
+        </dependency>
+
 
         <dependency>
             <groupId>junit</groupId>
