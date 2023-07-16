@@ -23,6 +23,11 @@ import org.springframework.stereotype.Controller;
 #if(controllerConfig.superClass)
 import #(controllerConfig.buildSuperClassImport());
 #end
+#if(withSwagger)
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+#end
 
 import java.io.Serializable;
 import java.util.List;
@@ -38,6 +43,9 @@ import java.util.List;
 #else
 @Controller
 #end
+#if(withSwagger)
+@Api("#(tableComment)接口")
+#end
 @RequestMapping("/#(firstCharToLowerCase(entityClassName))")
 public class #(table.buildControllerClassName()) #if(controllerConfig.superClass)extends #(controllerConfig.buildSuperClassName()) #end {
 
@@ -51,7 +59,10 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return {@code true} 添加成功，{@code false} 添加失败
      */
     @PostMapping("save")
-    public boolean save(@RequestBody #(entityClassName) #(entityVarName)) {
+    #if(withSwagger)
+    @ApiOperation("保存#(tableComment)")
+    #end
+    public boolean save(@RequestBody #if(withSwagger)@ApiParam("#(tableComment)") #end #(entityClassName) #(entityVarName)) {
         return #(serviceVarName).save(#(entityVarName));
     }
 
@@ -62,7 +73,10 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return {@code true} 删除成功，{@code false} 删除失败
      */
     @DeleteMapping("remove/{id}")
-    public boolean remove(@PathVariable Serializable id) {
+    #if(withSwagger)
+    @ApiOperation("根据主键#(tableComment)")
+    #end
+    public boolean remove(@PathVariable #if(withSwagger)@ApiParam("#(tableComment)主键") #end Serializable id) {
         return #(serviceVarName).removeById(id);
     }
 
@@ -73,7 +87,10 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return {@code true} 更新成功，{@code false} 更新失败
      */
     @PutMapping("update")
-    public boolean update(@RequestBody #(entityClassName) #(entityVarName)) {
+    #if(withSwagger)
+    @ApiOperation("根据主键更新#(tableComment)")
+    #end
+    public boolean update(@RequestBody #if(withSwagger)@ApiParam("#(tableComment)主键") #end #(entityClassName) #(entityVarName)) {
         return #(serviceVarName).updateById(#(entityVarName));
     }
 
@@ -83,6 +100,9 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return 所有数据
      */
     @GetMapping("list")
+    #if(withSwagger)
+    @ApiOperation("查询所有#(tableComment)")
+    #end
     public List<#(entityClassName)> list() {
         return #(serviceVarName).list();
     }
@@ -94,7 +114,10 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return #(tableComment)详情
      */
     @GetMapping("getInfo/{id}")
-    public #(entityClassName) getInfo(@PathVariable Serializable id) {
+    #if(withSwagger)
+    @ApiOperation("根据主键获取#(tableComment)")
+    #end
+    public #(entityClassName) getInfo(@PathVariable #if(withSwagger)@ApiParam("#(tableComment)主键") #end Serializable id) {
         return #(serviceVarName).getById(id);
     }
 
@@ -105,7 +128,10 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return 分页对象
      */
     @GetMapping("page")
-    public Page<#(entityClassName)> page(Page<#(entityClassName)> page) {
+    #if(withSwagger)
+    @ApiOperation("分页查询#(tableComment)")
+    #end
+    public Page<#(entityClassName)> page(#if(withSwagger)@ApiParam("分页信息") #end Page<#(entityClassName)> page) {
         return #(serviceVarName).page(page);
     }
 
