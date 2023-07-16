@@ -44,7 +44,7 @@ public class LambdaUtil {
 
     public static <T> String getClassName(LambdaGetter<T> getter) {
         SerializedLambda lambda = getSerializedLambda(getter);
-        String className = lambda.getImplClass();
+        String className = getImplClass(lambda);
         return className.replace('/', '.');
     }
 

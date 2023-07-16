@@ -67,8 +67,8 @@ public class FieldQueryBuilder<T> implements Serializable {
         return (FieldQuery.Builder<R>) builder;
     }
 
-    public FieldQuery build() {
-        return builder.build();
+    public FieldQuery build(Class<?> entityClass) {
+        return builder.build(entityClass);
     }
 
 }

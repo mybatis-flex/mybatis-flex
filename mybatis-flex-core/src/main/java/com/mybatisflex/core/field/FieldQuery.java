@@ -15,6 +15,9 @@
  */
 package com.mybatisflex.core.field;
 
+import com.mybatisflex.core.util.FieldWrapper;
+import sun.jvm.hotspot.oops.FieldType;
+
 import java.io.Serializable;
 
 /**
@@ -25,7 +28,7 @@ public class FieldQuery implements Serializable {
 
     private String className;
     private String fieldName;
-    private FieldType fieldType = FieldType.AUTO;
+    private FieldWrapper fieldWrapper;
     private boolean prevent;
     private QueryBuilder queryBuilder;
 
@@ -45,12 +48,12 @@ public class FieldQuery implements Serializable {
         this.fieldName = fieldName;
     }
 
-    public FieldType getFieldType() {
-        return fieldType;
+    public FieldWrapper getFieldWrapper() {
+        return fieldWrapper;
     }
 
-    public void setFieldType(FieldType fieldType) {
-        this.fieldType = fieldType;
+    public void setFieldWrapper(FieldWrapper fieldWrapper) {
+        this.fieldWrapper = fieldWrapper;
     }
 
     public boolean isPrevent() {
@@ -77,17 +80,6 @@ public class FieldQuery implements Serializable {
             this.fieldQuery = new FieldQuery();
             this.fieldQuery.setClassName(className);
             this.fieldQuery.setFieldName(fieldName);
-        }
-
-        /**
-         * 设置属性类型（可选，默认自动识别）。
-         *
-         * @param fieldType 属性类型
-         * @return 构建者
-         */
-        public Builder<T> fieldType(FieldType fieldType) {
-            this.fieldQuery.setFieldType(fieldType);
-            return this;
         }
 
         /**
@@ -124,7 +116,8 @@ public class FieldQuery implements Serializable {
             return this;
         }
 
-        protected FieldQuery build() {
+        protected FieldQuery build(Class<?> entityClass) {
+            this.fieldQuery.setFieldWrapper(FieldWrapper.of(entityClass, fieldQuery.fieldName));
             return this.fieldQuery;
         }
 

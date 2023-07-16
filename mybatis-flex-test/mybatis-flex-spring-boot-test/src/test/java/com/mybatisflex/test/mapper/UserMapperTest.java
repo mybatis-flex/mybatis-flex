@@ -16,7 +16,6 @@
 
 package com.mybatisflex.test.mapper;
 
-import com.mybatisflex.core.field.FieldType;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.model.*;
@@ -141,7 +140,7 @@ class UserMapperTest {
     @Test
     void testComplexSelectListFields() {
         List<UserInfo> userInfos = userMapper.selectListByQueryAs(QueryWrapper.create(), UserInfo.class,
-            c -> c.field(UserInfo::getIdNumber).fieldType(FieldType.BASIC).queryWrapper(userInfo ->
+            c -> c.field(UserInfo::getIdNumber).queryWrapper(userInfo ->
                 QueryWrapper.create()
                     .select(ID_CARD.ID_NUMBER)
                     .from(ID_CARD)
@@ -194,7 +193,7 @@ class UserMapperTest {
         List<UserInfo> userInfos2 = userMapper.selectListWithRelationsByQueryAs(queryWrapper2, UserInfo.class);
 
         List<UserInfo> userInfos3 = userMapper.selectListByQueryAs(QueryWrapper.create(), UserInfo.class,
-            c -> c.field(UserInfo::getIdNumber).fieldType(FieldType.BASIC).queryWrapper(userInfo ->
+            c -> c.field(UserInfo::getIdNumber).queryWrapper(userInfo ->
                 QueryWrapper.create()
                     .select(ID_CARD.ID_NUMBER)
                     .from(ID_CARD)
