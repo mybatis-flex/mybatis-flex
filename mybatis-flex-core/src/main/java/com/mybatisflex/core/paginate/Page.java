@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.core.paginate;
 
+import com.mybatisflex.core.FlexGlobalConfig;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +33,7 @@ import java.util.function.Function;
 public class Page<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     public static final int INIT_VALUE = -1;
 
     /**
@@ -41,12 +44,12 @@ public class Page<T> implements Serializable {
     /**
      * 当前页码。
      */
-    private int pageNumber = INIT_VALUE;
+    private int pageNumber = 1;
 
     /**
      * 每页数据数量。
      */
-    private int pageSize = INIT_VALUE;
+    private int pageSize = FlexGlobalConfig.getDefaultConfig().getDefaultPageSize();
 
     /**
      * 总页数。
