@@ -74,6 +74,11 @@ public class FlexGlobalConfig {
     private Object normalValueOfLogicDelete = FlexConsts.LOGIC_DELETE_NORMAL;
     private Object deletedValueOfLogicDelete = FlexConsts.LOGIC_DELETE_DELETED;
 
+    /**
+     * 分页查询时，默认每页显示的数据数量。
+     */
+    private int defaultPageSize = 10;
+
     public boolean isPrintBanner() {
         return printBanner;
     }
@@ -305,6 +310,14 @@ public class FlexGlobalConfig {
             throw new NullPointerException("deletedValueOfLogicDelete can not be null.");
         }
         this.deletedValueOfLogicDelete = deletedValueOfLogicDelete;
+    }
+
+    public int getDefaultPageSize() {
+        return defaultPageSize;
+    }
+
+    public void setDefaultPageSize(int defaultPageSize) {
+        this.defaultPageSize = defaultPageSize;
     }
 
     public static ConcurrentHashMap<String, FlexGlobalConfig> getGlobalConfigs() {
