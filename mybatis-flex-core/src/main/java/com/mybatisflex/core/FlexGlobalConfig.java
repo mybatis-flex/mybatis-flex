@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FlexGlobalConfig {
 
     /**
-     * 启动是否打印 banner 和 版本好
+     * 启动是否打印 banner 和 版本号
      */
     private boolean printBanner = true;
 
