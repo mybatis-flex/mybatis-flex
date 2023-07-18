@@ -19,6 +19,7 @@ import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
+import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.dialect.DbType;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -332,6 +333,10 @@ public class FlexGlobalConfig {
 
     public void setDefaultRelationQueryDepth(int defaultRelationQueryDepth) {
         this.defaultRelationQueryDepth = defaultRelationQueryDepth;
+    }
+
+    public FlexDataSource getDataSource(){
+        return (FlexDataSource) getConfiguration().getEnvironment().getDataSource();
     }
 
     public static ConcurrentHashMap<String, FlexGlobalConfig> getGlobalConfigs() {
