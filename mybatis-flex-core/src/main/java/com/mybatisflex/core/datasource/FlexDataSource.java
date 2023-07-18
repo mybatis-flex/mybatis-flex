@@ -34,6 +34,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * @author michael
+ */
 public class FlexDataSource extends AbstractDataSource {
 
     private static final Log log = LogFactory.getLog(FlexDataSource.class);
@@ -126,7 +129,7 @@ public class FlexDataSource extends AbstractDataSource {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Error set AutoCommit to false.  Cause: " + e);
+                log.debug("Error set autoCommit to false. Cause: " + e);
             }
         }
     }
@@ -138,8 +141,8 @@ public class FlexDataSource extends AbstractDataSource {
             }
         } catch (SQLException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Error resetting autocommit to true "
-                    + "before closing the connection.  Cause: " + e);
+                log.debug("Error resetting autoCommit to true before closing the connection. " +
+                    "Cause: " + e);
             }
         }
     }
@@ -157,6 +160,7 @@ public class FlexDataSource extends AbstractDataSource {
     public String getUrl() {
         return DbTypeUtil.getJdbcUrl(defaultDataSource);
     }
+
 
     @Override
     @SuppressWarnings("unchecked")
