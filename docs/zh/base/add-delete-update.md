@@ -111,7 +111,7 @@ Account account = UpdateEntity.of(Account.class, 100);
 account.setUserName(null);
 
 // 通过 UpdateWrapper 操作 account 数据
-UpdateWrapper wrapper = (UpdateWrapper)account;
+UpdateWrapper wrapper = UpdateWrapper.of(account);
 wrapper.setRaw("age", "age + 1")
 
 accountMapper.update(account);
@@ -135,7 +135,7 @@ Account account = UpdateEntity.of(Account.class, 100);
 account.setUserName("Michael");
 
 // 通过 UpdateWrapper 操作 account 数据
-UpdateWrapper wrapper = (UpdateWrapper)account;
+UpdateWrapper wrapper = UpdateWrapper.of(account);
 wrapper.set(ACCOUNT.AGE, ACCOUNT.AGE.add(1))
 
 accountMapper.update(account);
@@ -157,7 +157,7 @@ Account account = UpdateEntity.of(Account.class, 100);
 account.setUserName("Michael");
 
 // 通过 UpdateWrapper 操作 account 数据
-UpdateWrapper wrapper = (UpdateWrapper)account;
+UpdateWrapper wrapper = UpdateWrapper.of(account);
 wrapper.set(ACCOUNT.AGE, select().from(...))
 
 accountMapper.update(account);
