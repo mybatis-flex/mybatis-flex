@@ -21,6 +21,7 @@ import com.mybatisflex.annotation.RelationOneToMany;
 import com.mybatisflex.annotation.RelationOneToOne;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
@@ -38,6 +39,7 @@ import static com.mybatisflex.core.query.QueryMethods.column;
 /**
  * @author michael
  */
+@SuppressWarnings("rawtypes")
 public class RelationManager {
 
     private RelationManager() {
@@ -46,9 +48,14 @@ public class RelationManager {
     private static Map<Class<?>, List<AbstractRelation>> classRelations = new ConcurrentHashMap<>();
 
     /**
+     * 默认查询深度
+     */
+    private static int defaultQueryDepth = FlexGlobalConfig.getDefaultConfig().getDefaultRelationQueryDepth();
+
+    /**
      * 递归查询深度，默认为 2，在一些特殊场景下可以修改这个值
      */
-    private static ThreadLocal<Integer> depthThreadLocal = ThreadLocal.withInitial(() -> 2);
+    private static ThreadLocal<Integer> depthThreadLocal = ThreadLocal.withInitial(() -> defaultQueryDepth);
 
     /**
      * 附加条件的查询参数
@@ -67,36 +74,12 @@ public class RelationManager {
      */
     private static ThreadLocal<Boolean> autoClearConfig = ThreadLocal.withInitial(() -> true);
 
-
-    private static List<AbstractRelation> getRelations(Class<?> clazz) {
-        return MapUtil.computeIfAbsent(classRelations, clazz, RelationManager::doGetRelations);
+    public static int getDefaultQueryDepth() {
+        return defaultQueryDepth;
     }
 
-    private static List<AbstractRelation> doGetRelations(Class<?> entityClass) {
-        List<Field> allFields = ClassUtil.getAllFields(entityClass);
-        List<AbstractRelation> relations = new ArrayList<>();
-        for (Field field : allFields) {
-            RelationManyToMany manyToManyAnnotation = field.getAnnotation(RelationManyToMany.class);
-            if (manyToManyAnnotation != null) {
-                relations.add(new ManyToMany<>(manyToManyAnnotation, entityClass, field));
-            }
-
-            RelationManyToOne manyToOneAnnotation = field.getAnnotation(RelationManyToOne.class);
-            if (manyToOneAnnotation != null) {
-                relations.add(new ManyToOne<>(manyToOneAnnotation, entityClass, field));
-            }
-
-            RelationOneToMany oneToManyAnnotation = field.getAnnotation(RelationOneToMany.class);
-            if (oneToManyAnnotation != null) {
-                relations.add(new OneToMany<>(oneToManyAnnotation, entityClass, field));
-            }
-
-            RelationOneToOne oneToOneAnnotation = field.getAnnotation(RelationOneToOne.class);
-            if (oneToOneAnnotation != null) {
-                relations.add(new OneToOne<>(oneToOneAnnotation, entityClass, field));
-            }
-        }
-        return relations;
+    public static void setDefaultQueryDepth(int defaultQueryDepth) {
+        RelationManager.defaultQueryDepth = defaultQueryDepth;
     }
 
     public static void setMaxDepth(int maxDepth) {
@@ -184,6 +167,38 @@ public class RelationManager {
         }
 
         return params;
+    }
+
+
+    private static List<AbstractRelation> getRelations(Class<?> clazz) {
+        return MapUtil.computeIfAbsent(classRelations, clazz, RelationManager::doGetRelations);
+    }
+
+    private static List<AbstractRelation> doGetRelations(Class<?> entityClass) {
+        List<Field> allFields = ClassUtil.getAllFields(entityClass);
+        List<AbstractRelation> relations = new ArrayList<>();
+        for (Field field : allFields) {
+            RelationManyToMany manyToManyAnnotation = field.getAnnotation(RelationManyToMany.class);
+            if (manyToManyAnnotation != null) {
+                relations.add(new ManyToMany<>(manyToManyAnnotation, entityClass, field));
+            }
+
+            RelationManyToOne manyToOneAnnotation = field.getAnnotation(RelationManyToOne.class);
+            if (manyToOneAnnotation != null) {
+                relations.add(new ManyToOne<>(manyToOneAnnotation, entityClass, field));
+            }
+
+            RelationOneToMany oneToManyAnnotation = field.getAnnotation(RelationOneToMany.class);
+            if (oneToManyAnnotation != null) {
+                relations.add(new OneToMany<>(oneToManyAnnotation, entityClass, field));
+            }
+
+            RelationOneToOne oneToOneAnnotation = field.getAnnotation(RelationOneToOne.class);
+            if (oneToOneAnnotation != null) {
+                relations.add(new OneToOne<>(oneToOneAnnotation, entityClass, field));
+            }
+        }
+        return relations;
     }
 
 

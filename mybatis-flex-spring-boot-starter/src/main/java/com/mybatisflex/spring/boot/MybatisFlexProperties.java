@@ -764,6 +764,18 @@ public class MybatisFlexProperties {
         private Object deletedValueOfLogicDelete = FlexConsts.LOGIC_DELETE_DELETED;
 
 
+        /**
+         * 默认的分页查询时的每页数据量
+         */
+        private int defaultPageSize = 10;
+
+
+        /**
+         * 默认的 Relation 注解查询深度
+         */
+        private int defaultRelationQueryDepth = 2;
+
+
         public boolean isPrintBanner() {
             return printBanner;
         }
@@ -796,12 +808,30 @@ public class MybatisFlexProperties {
             this.deletedValueOfLogicDelete = deletedValueOfLogicDelete;
         }
 
+        public int getDefaultPageSize() {
+            return defaultPageSize;
+        }
+
+        public void setDefaultPageSize(int defaultPageSize) {
+            this.defaultPageSize = defaultPageSize;
+        }
+
+        public int getDefaultRelationQueryDepth() {
+            return defaultRelationQueryDepth;
+        }
+
+        public void setDefaultRelationQueryDepth(int defaultRelationQueryDepth) {
+            this.defaultRelationQueryDepth = defaultRelationQueryDepth;
+        }
+
         void applyTo(FlexGlobalConfig target) {
             PropertyMapper mapper = PropertyMapper.get().alwaysApplyingWhenNonNull();
             mapper.from(isPrintBanner()).to(target::setPrintBanner);
             mapper.from(getKeyConfig()).to(target::setKeyConfig);
             mapper.from(getNormalValueOfLogicDelete()).to(target::setNormalValueOfLogicDelete);
             mapper.from(getDeletedValueOfLogicDelete()).to(target::setDeletedValueOfLogicDelete);
+            mapper.from(getDefaultPageSize()).to(target::setDefaultPageSize);
+            mapper.from(getDefaultRelationQueryDepth()).to(target::setDefaultRelationQueryDepth);
         }
 
     }

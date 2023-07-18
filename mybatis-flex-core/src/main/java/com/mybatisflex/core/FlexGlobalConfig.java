@@ -79,6 +79,12 @@ public class FlexGlobalConfig {
      */
     private int defaultPageSize = 10;
 
+
+    /**
+     * 默认的 Relation 注解查询深度
+     */
+    private int defaultRelationQueryDepth = 2;
+
     public boolean isPrintBanner() {
         return printBanner;
     }
@@ -318,6 +324,14 @@ public class FlexGlobalConfig {
 
     public void setDefaultPageSize(int defaultPageSize) {
         this.defaultPageSize = defaultPageSize;
+    }
+
+    public int getDefaultRelationQueryDepth() {
+        return defaultRelationQueryDepth;
+    }
+
+    public void setDefaultRelationQueryDepth(int defaultRelationQueryDepth) {
+        this.defaultRelationQueryDepth = defaultRelationQueryDepth;
     }
 
     public static ConcurrentHashMap<String, FlexGlobalConfig> getGlobalConfigs() {
