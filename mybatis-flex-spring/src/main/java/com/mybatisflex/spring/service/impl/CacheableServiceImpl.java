@@ -44,7 +44,7 @@ public class CacheableServiceImpl<M extends BaseMapper<T>, T> implements IServic
 
     @Autowired
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    private M mapper;
+    protected M mapper;
 
     /**
      * {@inheritDoc}
