@@ -96,6 +96,35 @@ public interface IService<T> {
         return SqlUtil.toBool(getMapper().insertBatch(CollectionUtil.toList(entities), batchSize));
     }
 
+
+    /**
+     * <p>批量保存实体类对象数据。
+     *
+     * @param entities 实体类对象
+     * @return {@code true} 保存成功，{@code false} 保存失败。
+     */
+    default boolean saveBatchSelective(Collection<T> entities) {
+        return saveBatchSelective(entities, DEFAULT_BATCH_SIZE);
+    }
+
+    // ===== 删除（删）操作 =====
+
+    /**
+     * <p>批量保存实体类对象数据。
+     *
+     * @param entities  实体类对象
+     * @param batchSize 每次保存切分的数量
+     * @return {@code true} 保存成功，{@code false} 保存失败。
+     */
+    default boolean saveBatchSelective(Collection<T> entities, int batchSize) {
+        List<T> entityList = CollectionUtil.toList(entities);
+        Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
+        return SqlUtil.toBool(
+            Db.executeBatch(entities.size(), batchSize, usefulClass, (mapper, integer) -> mapper.insertSelective(entityList.get(integer)))
+        );
+    }
+
+
     /**
      * <p>根据查询条件删除数据。
      *
@@ -228,17 +257,16 @@ public interface IService<T> {
      * @return {@code true} 更新成功，{@code false} 更新失败。
      */
     default boolean updateBatch(Collection<T> entities, int batchSize) {
-        return Db.tx(() -> {
-            List<T> entityList = CollectionUtil.toList(entities);
-            // BaseMapper 是经过 Mybatis 动态代理处理过的对象，需要获取原始 BaseMapper 类型
-            Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
-            return SqlUtil.toBool(Arrays.stream(Db.executeBatch(
+        List<T> entityList = CollectionUtil.toList(entities);
+        // BaseMapper 是经过 Mybatis 动态代理处理过的对象，需要获取原始 BaseMapper 类型
+        Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
+        return SqlUtil.toBool(
+            Db.executeBatch(
                 entityList.size()
                 , batchSize
                 , usefulClass
                 , (mapper, index) -> mapper.update(entityList.get(index)))
-            ).sum());
-        });
+        );
     }
 
 

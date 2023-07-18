@@ -79,7 +79,27 @@ public class SqlUtil {
      * @return {@code true} 操作成功，{@code false} 操作失败。
      */
     public static boolean toBool(Number result) {
-        return result != null && result.longValue() > 0;
+        return result != null && result.intValue() > 0;
+    }
+
+
+    /**
+     * 根据数据库响应结果判断数据库操作是否成功。
+     * 有 1 条数据成功便算成功
+     *
+     * @param results 操作数据的响应成功条数
+     * @return {@code true} 操作成功，{@code false} 操作失败。
+     */
+    public static boolean toBool(int[] results) {
+        int result = 0;
+        for (int i : results) {
+            result += i;
+            if (result > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
