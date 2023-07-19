@@ -132,9 +132,12 @@ class UserMapperTest {
         QueryWrapper queryWrapper = QueryWrapper.create()
             .select(USER.ALL_COLUMNS, ID_CARD.ID_NUMBER)
             .from(USER.as("u"))
-            .leftJoin(ID_CARD).as("i").on(USER.USER_ID.eq(ID_CARD.ID));
-        List<UserInfo> userInfos = userMapper.selectListWithRelationsByQueryAs(queryWrapper, UserInfo.class);
-        userInfos.forEach(System.err::println);
+            .leftJoin(ID_CARD).as("i").on(USER.USER_ID.eq(ID_CARD.ID))
+            .where(USER.USER_ID.eq(2));
+//        List<UserInfo> userInfos = userMapper.selectListWithRelationsByQueryAs(queryWrapper, UserInfo.class);
+//        userInfos.forEach(System.err::println);
+        UserInfo userInfo = userMapper.selectOneWithRelationsByQueryAs(queryWrapper, UserInfo.class);
+        System.out.println(userInfo);
     }
 
     @Test
