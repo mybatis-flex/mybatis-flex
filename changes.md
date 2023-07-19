@@ -1,6 +1,25 @@
 # MyBatis-Flex ChangeLog
 
 
+## v1.5.1 20230719:
+- 新增：添加 IService.saveBatchSelective() 批量保存的方法
+- 新增：添加 Relation 默认查询深度在 spring 的 application.yml 进行配置支持 #I7LLRU
+- 新增：添加 FlexGlobalConfig.getDataSource() 方法，方便获取数据源
+- 新增：QueryColumn.java 增加不含百分号的 like 方法，感谢 @aqnghu
+- 新增：QueryWrapper.create 可以通过 Entity 进行实例化的功能，感谢 @yasser
+- 优化：对 Page.java 的默认值优化，防止前缀不传值是查询 SQL 错误的问题，感谢 @Suomm
+- 优化：修改 FlexGlobalConfig.java 的注释文字错别字的问题，感谢 @lhzsdnu
+- 优化：修改 DbType 和 LimitOffsetProcessor 下的 sinodb 文字错误的问题，感谢 @wujl
+- 修复：多次 left join 相同表，设置的别名无效的问题 #I7M3ZW
+- 修复：通过 join 查询数据，在某些情况下主键值无法赋值的问题
+- 修复：在 Solon 下对 FlexGlobalConfig 进行初始化时，DbType 没有赋值的问题
+- 修复：banner 配置无法根据配置显示隐藏的问题，感谢 @wu-zhihao
+- 修复：Relation 注解在通过中间表询时，在某些场景下出错的问题，感谢 @Suomm
+- 文档：修改代码生成器的 TableDef 默认值描述错误的问题，感谢 @lhzsdnu
+- 文档：修改代码生成器的 TableDef 默认值描述错误的问题，感谢 @lhzsdnu
+
+
+
 ## v1.5.0 20230716:
 - 新增：ToMany 的 Relation 注解添加对 map 数据类型的支持 #I7KW9U
 - 新增：代码生成器添加 EntityConfig 关于数据的自定义配置，感谢 @Suomm
