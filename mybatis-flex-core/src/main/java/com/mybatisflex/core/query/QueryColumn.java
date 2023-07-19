@@ -224,6 +224,20 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.LIKE, "%" + value).when(fn);
     }
 
+    public QueryCondition likeRaw(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, SqlConsts.LIKE, value);
+    }
+
+    public <T> QueryCondition likeRaw(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, SqlConsts.LIKE, value).when(fn);
+    }
+
     /**
      * 大于 greater than
      *
