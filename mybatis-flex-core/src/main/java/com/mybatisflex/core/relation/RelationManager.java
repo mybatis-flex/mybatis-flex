@@ -258,7 +258,7 @@ public class RelationManager {
                     if (selfFieldValues.size() > 1) {
                         queryWrapper.where(column(relation.getJoinSelfColumn()).in(selfFieldValues));
                     } else {
-                        queryWrapper.where(column(relation.getJoinTargetColumn()).eq(selfFieldValues.iterator().next()));
+                        queryWrapper.where(column(relation.getJoinSelfColumn()).eq(selfFieldValues.iterator().next()));
                     }
 
                     mappingRows = mapper.selectListByQueryAs(queryWrapper, Row.class);
