@@ -161,8 +161,9 @@ public interface LimitOffsetProcessor {
 
 
     /**
+     *
      * SINODB 的处理器
-     * 适合  {@link DbType#INFORMIX}
+     * 适合  {@link DbType#SINODB}
      */
     LimitOffsetProcessor SINODB = (dialect, sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {
