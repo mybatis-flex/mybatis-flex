@@ -91,14 +91,11 @@ public class SqlUtil {
      * @return {@code true} 操作成功，{@code false} 操作失败。
      */
     public static boolean toBool(int[] results) {
-        int result = 0;
-        for (int i : results) {
-            result += i;
+        for (int result : results) {
             if (result > 0) {
                 return true;
             }
         }
-
         return false;
     }
 
