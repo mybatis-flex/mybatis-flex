@@ -19,6 +19,9 @@ import com.mybatisflex.core.query.QueryTable;
 
 import java.io.Serializable;
 
+/**
+ * @author michael
+ */
 public class TableDef implements Serializable {
 
     private String schema;

@@ -99,7 +99,7 @@ public class TableInfo {
     private final Map<String, QueryColumn> columnQueryMapping = new HashMap<>();
 
     //property:column
-    private final Map<String, String> propertyColumnMapping = new HashMap<>();
+    private final Map<String, String> propertyColumnMapping = new LinkedHashMap<>();
 
     private List<InsertListener> onInsertListeners;
     private List<UpdateListener> onUpdateListeners;
@@ -850,6 +850,34 @@ public class TableInfo {
     }
 
 
+    public QueryWrapper buildQueryWrapper(Object entity) {
+        QueryColumn[] queryColumns = new QueryColumn[defaultQueryColumns.length];
+        for (int i = 0; i < defaultQueryColumns.length; i++) {
+            queryColumns[i] = columnQueryMapping.get(defaultQueryColumns[i]);
+        }
+
+        QueryWrapper queryWrapper = QueryWrapper.create();
+
+        String tableNameWithSchema = getTableNameWithSchema();
+        queryWrapper.select(queryColumns).from(tableNameWithSchema);
+
+        MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
+        propertyColumnMapping.forEach((property, column) -> {
+            if (column.equals(logicDeleteColumn)){
+                return;
+            }
+            Object value = metaObject.getValue(property);
+            if (value != null && !"".equals(value)) {
+                QueryColumn queryColumn = TableDefs.getQueryColumn(entityClass, tableNameWithSchema, column);
+                if (queryColumn != null) {
+                    queryWrapper.and(queryColumn.eq(value));
+                }
+            }
+        });
+        return queryWrapper;
+    }
+
+
     public String getKeyProperties() {
         StringJoiner joiner = new StringJoiner(",");
         for (IdInfo value : primaryKeyList) {
@@ -1001,20 +1029,6 @@ public class TableInfo {
         }
     }
 
-
-//    private Object buildColumnSqlArg(Object value, String column) {
-//        ColumnInfo columnInfo = columnInfoMapping.get(column);
-////        Object value = getPropertyValue(metaObject, columnInfo.property);
-//
-//        if (value != null) {
-//            TypeHandler typeHandler = columnInfo.buildTypeHandler();
-//            if (typeHandler != null) {
-//                return new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
-//            }
-//        }
-//
-//        return value;
-//    }
 
     private Object buildColumnSqlArg(MetaObject metaObject, String column) {
         ColumnInfo columnInfo = columnInfoMapping.get(column);

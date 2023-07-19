@@ -1,18 +1,17 @@
 package com.mybatisflex.test;
 
-import java.util.List;
-
-import javax.sql.DataSource;
-
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.mapper.Entity04Mapper;
+import com.mybatisflex.test.table.Entity04TableDef;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+
+import javax.sql.DataSource;
+import java.util.List;
 
 public class QueryWrapperTest {
 
@@ -42,6 +41,8 @@ public class QueryWrapperTest {
         QueryWrapper queryWrapper = QueryWrapper.create(entity04);
         List<Entity04> entity04s = mapper.selectListByQuery(queryWrapper);
         System.out.println(entity04s);
+
+        System.out.println(Entity04TableDef.ENTITY04.AGE);
     }
 
 }

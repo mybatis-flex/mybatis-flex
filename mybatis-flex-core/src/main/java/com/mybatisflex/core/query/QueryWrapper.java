@@ -15,18 +15,16 @@
  */
 package com.mybatisflex.core.query;
 
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.function.Consumer;
-
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
-import com.mybatisflex.core.table.ColumnInfo;
 import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.*;
+
+import java.util.*;
+import java.util.function.Consumer;
 
 public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
@@ -34,76 +32,17 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return new QueryWrapper();
     }
 
+
     /**
      * 根据实体类对象，构建查询条件
-     * 查询出的列，不包含大字段列
      * @param entity 实体类对象
      * @return 查询对象
      */
     public static QueryWrapper create(Object entity) {
-        return create(entity, false);
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
+        return tableInfo.buildQueryWrapper(entity);
     }
 
-    /**
-     * 根据实体类对象，构建查询条件
-     * @param entity 实体类对象
-     * @param needLargeColumn 查询出的列，是否包含大字段列
-     * @return 查询对象
-     */
-    public static QueryWrapper create(Object entity, boolean needLargeColumn) {
-        QueryWrapper queryWrapper = create();
-        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
-        Map<String, Object> whereMap = getWhereMap(entity);
-        String[] selectColumn = needLargeColumn ? tableInfo.getAllColumns() : tableInfo.getDefaultQueryColumns();
-        queryWrapper.select(selectColumn);
-        queryWrapper.where(whereMap);
-        return queryWrapper;
-    }
-
-    /**
-     * 根据实体类对象，获取查询条件的参数
-     * @param entity 实体类对象
-     * @return key：实体对象的字段对应的列名称，value 字段值
-     */
-    public static Map<String, Object> getWhereMap(Object entity) {
-        Class<?> entityClass = entity.getClass();
-        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
-        Map<String, Object> dataMap = new HashMap<>();
-        // 添加非主键列
-        for (ColumnInfo columnInfo : tableInfo.getColumnInfoList()) {
-            // 跳过逻辑删除列
-            if (columnInfo.getColumn().equals(tableInfo.getLogicDeleteColumn())) {
-
-                continue;
-            }
-            try {
-                Field declaredField = entityClass.getDeclaredField(columnInfo.getProperty());
-                declaredField.setAccessible(true);
-                Object value = declaredField.get(entity);
-                if (Objects.isNull(value)) {
-                    continue;
-                }
-                dataMap.put(columnInfo.getColumn(), value);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        // 添加主键列
-        for (ColumnInfo columnInfo : tableInfo.getPrimaryKeyList()) {
-            try {
-                Field declaredField = entityClass.getDeclaredField(columnInfo.getProperty());
-                declaredField.setAccessible(true);
-                Object value = declaredField.get(entity);
-                if (Objects.isNull(value)) {
-                    continue;
-                }
-                dataMap.put(columnInfo.getColumn(), value);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return dataMap;
-    }
 
     public WithBuilder with(String name) {
         if (with == null) {
