@@ -113,12 +113,13 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
      * @param sessionFactory
      */
     private void initGlobalConfig(Configuration config, SqlSessionFactory sessionFactory) {
-        FlexGlobalConfig flexGlobalConfig = new FlexGlobalConfig();
-        flexGlobalConfig.setSqlSessionFactory(sessionFactory);
-        flexGlobalConfig.setConfiguration(config);
-
         String environmentId = config.getEnvironment().getId();
+        FlexGlobalConfig flexGlobalConfig = FlexGlobalConfig.getGlobalConfigs().get(environmentId);
+        flexGlobalConfig.setSqlSessionFactory(sessionFactory);
+
+
         FlexGlobalConfig.setConfig(environmentId, flexGlobalConfig);
+        FlexGlobalConfig.setDefaultConfig(flexGlobalConfig);
     }
 
 
