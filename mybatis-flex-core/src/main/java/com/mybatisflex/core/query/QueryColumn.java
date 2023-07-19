@@ -555,30 +555,35 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     }
 
 
-    QueryTable getSelectTable(List<QueryTable> queryTables, QueryTable columnTable) {
+    QueryTable getSelectTable(List<QueryTable> queryTables, QueryTable selfTable) {
+        //未查询任何表
         if (queryTables == null || queryTables.isEmpty()) {
             return null;
         }
 
-        if (queryTables.size() == 1 && queryTables.get(0).isSameTable(columnTable)) {
+        if (selfTable != null && StringUtil.isNotBlank(selfTable.alias)){
+            return selfTable;
+        }
+
+        if (queryTables.size() == 1 && queryTables.get(0).isSameTable(selfTable)) {
             //ignore table
             return null;
         }
 
         if (CollectionUtil.isEmpty(queryTables)) {
-            return columnTable;
+            return selfTable;
         }
 
-        if (columnTable == null && queryTables.size() == 1) {
+        if (selfTable == null && queryTables.size() == 1) {
             return queryTables.get(0);
         }
 
         for (QueryTable table : queryTables) {
-            if (table.isSameTable(columnTable)) {
+            if (table.isSameTable(selfTable)) {
                 return table;
             }
         }
-        return columnTable;
+        return selfTable;
     }
 
 

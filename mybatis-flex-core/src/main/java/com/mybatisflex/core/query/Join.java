@@ -57,6 +57,14 @@ public class Join implements CloneSupport<Join> {
 
 
     public void on(QueryCondition condition) {
+        if (condition.column != null){
+            QueryTable table = condition.column.getTable();
+            if (queryTable.isSameTable(table)){
+                QueryColumn newColumn = condition.column.clone();
+                newColumn.table.alias = queryTable.alias;
+                condition.column = newColumn;
+            }
+        }
         this.on = condition;
     }
 

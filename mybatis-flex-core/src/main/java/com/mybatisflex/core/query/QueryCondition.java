@@ -172,6 +172,7 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             }
             //列
             sql.append(getColumn().toConditionSql(queryTables, dialect));
+
             //逻辑符号
             sql.append(logic);
 

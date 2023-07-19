@@ -348,6 +348,24 @@ public class AccountSqlTester {
         System.out.println(sql);
     }
 
+    @Test
+    public void testJoinSelf() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+            .leftJoin(ACCOUNT).as("a1").on(ACCOUNT.ID.eq(ACCOUNT.AGE))
+            .where(ACCOUNT.AGE.ge(10));
+
+        System.out.println(queryWrapper.toSQL());
+
+        QueryWrapper queryWrapper1 = QueryWrapper.create()
+            .select(ACCOUNT.ID)
+            .from(ACCOUNT)
+            .where(ACCOUNT.AGE.ge(10));
+
+        System.out.println(queryWrapper1.toSQL());
+    }
+
 
     @Test
     public void testOrderBySql() {
