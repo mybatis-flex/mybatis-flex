@@ -193,8 +193,9 @@ public class TableInfoFactory {
 
         //大字段列
         Set<String> largeColumns = new LinkedHashSet<>();
+
         // 默认查询列
-        Set<String> defaultColumns = new LinkedHashSet<>();
+        Set<String> defaultQueryColumns = new LinkedHashSet<>();
 
 
         List<Field> entityFields = getColumnFields(entityClass);
@@ -275,7 +276,7 @@ public class TableInfoFactory {
             }
 
             if (column == null || !column.isLarge()) {
-                defaultColumns.add(columnName);
+                defaultQueryColumns.add(columnName);
             }
 
             Id id = field.getAnnotation(Id.class);
@@ -364,12 +365,12 @@ public class TableInfoFactory {
             tableInfo.setLargeColumns(largeColumns.toArray(new String[0]));
         }
 
-        if (!defaultColumns.isEmpty()) {
-            tableInfo.setDefaultColumns(defaultColumns.toArray(new String[0]));
+        if (!defaultQueryColumns.isEmpty()) {
+            tableInfo.setDefaultQueryColumns(defaultQueryColumns.toArray(new String[0]));
         }
 
-        tableInfo.setColumnInfoList(columnInfoList);
         tableInfo.setPrimaryKeyList(idInfos);
+        tableInfo.setColumnInfoList(columnInfoList);
 
 
         return tableInfo;

@@ -333,7 +333,7 @@ public class CommonsDialectImpl implements IDialect {
             if (!(firstTable instanceof SelectQueryTable)) {
                 TableInfo tableInfo = TableInfoFactory.ofTableName(firstTable.getName());
                 if (tableInfo != null && selectColumns != null && !selectColumns.isEmpty()) {
-                    String[] firstTableColumns = tableInfo.getColumns();
+                    String[] firstTableColumns = tableInfo.getAllColumns();
                     for (int i = 0; i < selectColumns.size(); i++) {
                         QueryColumn selectColumn = selectColumns.get(i);
                         QueryTable selectColumnTable = selectColumn.getTable();
