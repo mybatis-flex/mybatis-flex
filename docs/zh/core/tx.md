@@ -71,17 +71,17 @@ Db.tx(() -> {
         //另一个事务的操作
         return true;
     });
-    
-        
+
+
     return true;
 });
 ```
 
 支持无限极嵌套，默认情况下，嵌套事务直接的关系是：`REQUIRED`（若存在当前事务，则加入当前事务，若不存在当前事务，则创建新的事务）。
 
-## @Transactional 
+## @Transactional
 
-MyBatis-Flex 已支持 Spring 框架的 `@Transactional`，在使用 SpringBoot 的情况下，可以直接使用 `@Transactional` 进行事务管理。 
+MyBatis-Flex 已支持 Spring 框架的 `@Transactional`，在使用 SpringBoot 的情况下，可以直接使用 `@Transactional` 进行事务管理。
 同理，使用 Spring 的 `TransactionTemplate` 进行事务管理也是没问题的。
 
 > 注意：若项目未使用 SpringBoot，只用到了 Spring，需要参考 MyBatis-Flex 的 [FlexTransactionAutoConfiguration](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-spring-boot-starter/src/main/java/com/mybatisflex/spring/boot/FlexTransactionAutoConfiguration.java)
@@ -90,4 +90,37 @@ MyBatis-Flex 已支持 Spring 框架的 `@Transactional`，在使用 SpringBoot 
 ## 特征
 
 - 1、支持嵌套事务
-- 2、支持多数据源（注意：在多数据源的情况下，所有数据源的数据库请求（Connection）会执行相同的 commit 或者 rollback，但并非原子操作。）
+- 2、支持多数据源
+
+> 注意：在多数据源的情况下，所有数据源的数据库请求（Connection）会执行相同的 commit 或者 rollback，但并非原子操作。例如：
+
+```java
+@Transactional
+public void doSomething(){
+
+    try{
+        DataSourceKey.use("ds1");
+        Db.updateBySql("update ....");
+    }finally{
+        DataSourceKey.clear()
+    }
+
+    try{
+        DataSourceKey.use("ds2");
+        Db.updateBySql("update ...");
+    }finally{
+        DataSourceKey.clear()
+    }
+
+    //抛出异常
+    int x = 1/0;
+}
+```
+
+在以上的例子中，两次 `Db.update(...)` 虽然是两个不同的数据源，但它们都在同一个事务 `@Transactional` 里，因此，当抛出异常的时候，
+它们都会进行回滚（rollback）。
+
+以上提到的 `并非原子操作`，指的是：
+
+>假设在回滚的时候，恰好其中一个数据库出现了异常（比如 网络问题，数据库崩溃），此时，可能只有一个数据库的数据正常回滚（rollback）。
+> 但无论如何，MyBatis-Flex 都会保证在同一个 `@Transactional` 中的多个数据源，保持相同的 commit 或者 rollback 行为。
