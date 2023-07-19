@@ -203,12 +203,15 @@ public class RelationManager {
 
 
     public static <Entity> void queryRelations(BaseMapper<?> mapper, List<Entity> entities) {
-
         doQueryRelations(mapper, entities, 0, depthThreadLocal.get(), ignoreRelations.get());
+        clearConfigIfNecessary();
+    }
 
+    /**
+     * 清除查询配置
+     */
+    private static void clearConfigIfNecessary() {
         Boolean autoClearEnable = autoClearConfig.get();
-
-        //自动清除用户配置
         if (autoClearEnable != null && autoClearEnable) {
             depthThreadLocal.remove();
             extraConditionParams.remove();
@@ -222,16 +225,17 @@ public class RelationManager {
         if (CollectionUtil.isEmpty(entities)) {
             return;
         }
-        Class<Entity> objectClass = (Class<Entity>) entities.get(0).getClass();
 
         if (currentDepth >= maxDepth) {
             return;
         }
 
-        List<AbstractRelation> relations = getRelations(objectClass);
+        Class<Entity> entityClass = (Class<Entity>) ClassUtil.getUsefulClass(entities.get(0).getClass());
+        List<AbstractRelation> relations = getRelations(entityClass);
         if (relations.isEmpty()) {
             return;
         }
+
         String currentDsKey = DataSourceKey.get();
         try {
             relations.forEach(relation -> {
@@ -278,25 +282,29 @@ public class RelationManager {
                     return;
                 }
 
-
-                String dataSource = relation.getDataSource();
-                if (StringUtil.isBlank(dataSource) && currentDsKey != null) {
-                    dataSource = currentDsKey;
+                //注解配置的数据源
+                String configDsKey = relation.getDataSource();
+                if (StringUtil.isBlank(configDsKey) && currentDsKey != null) {
+                    configDsKey = currentDsKey;
                 }
 
                 try {
-                    if (StringUtil.isNotBlank(dataSource)) {
-                        DataSourceKey.use(dataSource);
+                    if (StringUtil.isNotBlank(configDsKey)) {
+                        DataSourceKey.use(configDsKey);
                     }
 
                     QueryWrapper queryWrapper = relation.buildQueryWrapper(targetValues);
                     List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, relation.getMappingType());
                     if (CollectionUtil.isNotEmpty(targetObjectList)) {
+
+                        //递归查询
                         doQueryRelations(mapper, targetObjectList, currentDepth + 1, maxDepth, ignoreRelations);
+
+                        //进行内存 join
                         relation.join(entities, targetObjectList, mappingRows);
                     }
                 } finally {
-                    if (StringUtil.isNotBlank(dataSource)) {
+                    if (StringUtil.isNotBlank(configDsKey)) {
                         DataSourceKey.clear();
                     }
                 }
