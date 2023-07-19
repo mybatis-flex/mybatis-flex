@@ -17,8 +17,6 @@ package com.mybatisflex.core.mybatis;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
-import com.mybatisflex.core.dialect.DbType;
-import com.mybatisflex.core.dialect.DbTypeUtil;
 import com.mybatisflex.core.exception.FlexExceptions;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.exceptions.ExceptionFactory;
@@ -85,10 +83,9 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
         }
 
         SqlSessionFactory sessionFactory = super.build(configuration);
-        DbType dbType = DbTypeUtil.getDbType(configuration.getEnvironment().getDataSource());
 
-        //设置全局配置的 sessionFactory 和 dbType
-        initGlobalConfig(configuration, sessionFactory, dbType);
+        // 设置全局配置的 sessionFactory
+        initGlobalConfig(configuration, sessionFactory);
 
         printBanner();
 
@@ -115,10 +112,9 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
      * @param config
      * @param sessionFactory
      */
-    private void initGlobalConfig(Configuration config, SqlSessionFactory sessionFactory, DbType dbType) {
+    private void initGlobalConfig(Configuration config, SqlSessionFactory sessionFactory) {
         FlexGlobalConfig flexGlobalConfig = new FlexGlobalConfig();
         flexGlobalConfig.setSqlSessionFactory(sessionFactory);
-        flexGlobalConfig.setDbType(dbType);
         flexGlobalConfig.setConfiguration(config);
 
         String environmentId = config.getEnvironment().getId();

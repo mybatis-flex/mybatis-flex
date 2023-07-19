@@ -44,13 +44,20 @@ public class FlexDataSource extends AbstractDataSource {
     private final Map<String, DataSource> dataSourceMap = new HashMap<>();
     private final Map<String, DbType> dbTypeHashMap = new HashMap<>();
 
+    private final DbType defaultDbType;
     private final String defaultDataSourceKey;
     private final DataSource defaultDataSource;
 
     public FlexDataSource(String dataSourceKey, DataSource dataSource) {
+
+        DataSourceManager.decryptDataSource(dataSource);
+
         this.defaultDataSourceKey = dataSourceKey;
         this.defaultDataSource = dataSource;
-        addDataSource(dataSourceKey, dataSource);
+        this.defaultDbType = DbTypeUtil.getDbType(dataSource);
+
+        dataSourceMap.put(dataSourceKey, dataSource);
+        dbTypeHashMap.put(dataSourceKey, defaultDbType);
     }
 
     public void addDataSource(String dataSourceKey, DataSource dataSource) {
@@ -80,9 +87,14 @@ public class FlexDataSource extends AbstractDataSource {
         return defaultDataSource;
     }
 
+    public DbType getDefaultDbType() {
+        return defaultDbType;
+    }
+
     public DbType getDbType(String dataSourceKey) {
         return dbTypeHashMap.get(dataSourceKey);
     }
+
 
     @Override
     public Connection getConnection() throws SQLException {

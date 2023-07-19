@@ -24,6 +24,7 @@ import com.mybatisflex.core.dialect.DbType;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -108,6 +109,10 @@ public class FlexGlobalConfig {
 
     public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
+        DataSource dataSource = configuration.getEnvironment().getDataSource();
+        if (dataSource instanceof FlexDataSource){
+            this.dbType = ((FlexDataSource) dataSource).getDefaultDbType();
+        }
     }
 
     public SqlSessionFactory getSqlSessionFactory() {
