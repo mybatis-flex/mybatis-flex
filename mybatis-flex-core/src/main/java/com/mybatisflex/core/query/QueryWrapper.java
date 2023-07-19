@@ -35,6 +35,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     /**
      * 根据实体类对象，构建查询条件
+     *
      * @param entity 实体类对象
      * @return 查询对象
      */
@@ -133,14 +134,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             if (StringUtil.isBlank(table)) {
                 throw new IllegalArgumentException("table must not be null or blank.");
             }
-            int indexOf = table.indexOf(".");
-            if (indexOf > 0) {
-                String schema = table.substring(0, indexOf);
-                table = table.substring(indexOf + 1);
-                from(new QueryTable(schema, table));
-            } else {
-                from(new QueryTable(table));
-            }
+            from(new QueryTable(table));
         }
         return this;
     }
@@ -694,7 +688,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         }
 
         List<QueryWrapper> childQueryWrappers = tableChildQuery == null ? new ArrayList<>()
-                : new ArrayList<>(tableChildQuery);
+            : new ArrayList<>(tableChildQuery);
         childQueryWrappers.addAll(whereChildQuery);
         childQueryWrappers.addAll(havingChildQuery);
 

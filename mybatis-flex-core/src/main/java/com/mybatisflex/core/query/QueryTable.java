@@ -36,12 +36,14 @@ public class QueryTable implements CloneSupport<QueryTable> {
     }
 
     public QueryTable(TableDef tableDef) {
-        this.name = tableDef.getTableName();
         this.schema = tableDef.getSchema();
+        this.name = tableDef.getTableName();
     }
 
     public QueryTable(String name) {
-        this.name = StringUtil.tryTrim(name);
+        String[] schemaAndTableName = StringUtil.getSchemaAndTableName(name);
+        this.schema = schemaAndTableName[0];
+        this.name = schemaAndTableName[1];
     }
 
     public QueryTable(String schema, String name) {

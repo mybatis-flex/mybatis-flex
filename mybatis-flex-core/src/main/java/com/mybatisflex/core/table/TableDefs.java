@@ -66,7 +66,7 @@ public class TableDefs implements Serializable {
             return Modifier.isPublic(mod) && Modifier.isStatic(mod);
         }).get(null);
 
-        String key = StringUtil.isNotBlank(tableDef.getSchema()) ? tableDef.getSchema() + "." + tableDef.getTableName() : tableDef.getTableName();
+        String key = StringUtil.buildSchemaWithTable(tableDef.getSchema(), tableDef.getTableName());
 
         TABLE_DEF_MAP.put(key, tableDef);
 

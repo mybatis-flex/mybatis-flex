@@ -137,7 +137,7 @@ public class TableInfo {
     }
 
     public String getTableNameWithSchema() {
-        return StringUtil.isNotBlank(schema) ? schema + "." + tableName : tableName;
+        return StringUtil.buildSchemaWithTable(schema, tableName);
     }
 
     public String getWrapSchemaAndTableName(IDialect dialect) {
@@ -863,7 +863,7 @@ public class TableInfo {
 
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
         propertyColumnMapping.forEach((property, column) -> {
-            if (column.equals(logicDeleteColumn)){
+            if (column.equals(logicDeleteColumn)) {
                 return;
             }
             Object value = metaObject.getValue(property);
@@ -871,6 +871,8 @@ public class TableInfo {
                 QueryColumn queryColumn = TableDefs.getQueryColumn(entityClass, tableNameWithSchema, column);
                 if (queryColumn != null) {
                     queryWrapper.and(queryColumn.eq(value));
+                } else {
+                    queryWrapper.and(QueryMethods.column(tableNameWithSchema, column).eq(value));
                 }
             }
         });
