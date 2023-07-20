@@ -29,6 +29,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 
+/**
+ * @author michael
+ * 用于增强对 Cursor 查询处理
+ */
 public class FlexResultSetHandler extends DefaultResultSetHandler {
 
     public FlexResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler

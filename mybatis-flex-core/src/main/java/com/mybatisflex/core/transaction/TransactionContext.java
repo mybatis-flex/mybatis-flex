@@ -20,6 +20,10 @@ import org.apache.ibatis.cursor.Cursor;
 
 import java.io.IOException;
 
+/**
+ * @author michael
+ * 事务管理器上下文
+ */
 public class TransactionContext {
 
     private TransactionContext() {
@@ -38,17 +42,15 @@ public class TransactionContext {
     }
 
     private static void closeCursor() {
-        try {
-            Cursor<?> cursor = CURSOR_HOLDER.get();
-            if (cursor != null) {
-                try {
-                    cursor.close();
-                } catch (IOException e) {
-                    //ignore
-                }
+        Cursor<?> cursor = CURSOR_HOLDER.get();
+        if (cursor != null) {
+            try {
+                cursor.close();
+            } catch (IOException e) {
+                //ignore
+            } finally {
+                CURSOR_HOLDER.remove();
             }
-        } finally {
-            CURSOR_HOLDER.remove();
         }
     }
 

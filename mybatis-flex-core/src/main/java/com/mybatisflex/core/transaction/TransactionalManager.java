@@ -35,7 +35,7 @@ public class TransactionalManager {
 
     private static final Log log = LogFactory.getLog(TransactionalManager.class);
 
-    //<xid : <datasource : connection>>
+    //<xid : <dataSourceKey : connection>>
     private static final ThreadLocal<Map<String, Map<String, Connection>>> CONNECTION_HOLDER
         = ThreadLocal.withInitial(ConcurrentHashMap::new);
 
@@ -70,7 +70,7 @@ public class TransactionalManager {
                     }
 
 
-                    //若存在当前事务，则加入当前事务，若不存在当前事务，则已非事务的方式运行
+                //若存在当前事务，则加入当前事务，若不存在当前事务，则已非事务的方式运行
                 case SUPPORTS:
                     return supplier.get();
 
@@ -84,7 +84,7 @@ public class TransactionalManager {
                     }
 
 
-                    //始终以新事务的方式运行，若存在当前事务，则暂停（挂起）当前事务。
+                //始终以新事务的方式运行，若存在当前事务，则暂停（挂起）当前事务。
                 case REQUIRES_NEW:
                     return execNewTransactional(supplier, withResult);
 
@@ -198,11 +198,12 @@ public class TransactionalManager {
             }
         } finally {
             holdMap.remove(xid);
+
             if (holdMap.isEmpty()) {
                 CONNECTION_HOLDER.remove();
             }
             if (exception != null) {
-                log.error("TransactionalManager.release() is error. cause: " + exception.getMessage(), exception);
+                log.error("TransactionalManager.release() is error. Cause: " + exception.getMessage(), exception);
             }
         }
     }

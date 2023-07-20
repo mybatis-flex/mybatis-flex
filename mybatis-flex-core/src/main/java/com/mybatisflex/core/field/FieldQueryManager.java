@@ -44,9 +44,11 @@ public class FieldQueryManager {
                 continue;
             }
 
+            String className = ClassUtil.getUsefulClass(entity.getClass()).getName();
+
             fieldQueryMap.forEach((key, fieldQuery) -> {
                 // 不是当前类的内容
-                if (!key.startsWith(entity.getClass().getName() + "#")) {
+                if (!key.startsWith(className + "#")) {
                     return;
                 }
 

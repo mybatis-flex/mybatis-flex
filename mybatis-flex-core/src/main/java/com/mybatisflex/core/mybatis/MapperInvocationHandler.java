@@ -25,38 +25,40 @@ import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.StringUtil;
-import org.apache.ibatis.session.Configuration;
 
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * @author michael
+ */
 public class MapperInvocationHandler implements InvocationHandler {
 
     private final Object mapper;
     private final FlexDataSource dataSource;
 
-    public MapperInvocationHandler(Object mapper, Configuration configuration) {
+    public MapperInvocationHandler(Object mapper, DataSource dataSource) {
         this.mapper = mapper;
-        this.dataSource = (FlexDataSource) configuration.getEnvironment().getDataSource();
+        this.dataSource = (FlexDataSource) dataSource;
     }
 
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        boolean clearDsKey = false;
-        boolean clearDbType = false;
+        boolean needClearDsKey = false;
+        boolean needClearDbType = false;
         try {
             //获取用户动态指定，由用户指定数据源，则应该有用户清除
             String dataSourceKey = DataSourceKey.get();
-
             if (StringUtil.isBlank(dataSourceKey)) {
                 //通过 @UseDataSource 或者 @Table(dataSource) 去获取
                 String configDataSourceKey = getConfigDataSourceKey(method, proxy);
                 if (StringUtil.isNotBlank(configDataSourceKey)) {
                     dataSourceKey = configDataSourceKey;
                     DataSourceKey.use(dataSourceKey);
-                    clearDsKey = true;
+                    needClearDsKey = true;
                 }
             }
 
@@ -70,16 +72,16 @@ public class MapperInvocationHandler implements InvocationHandler {
                     dbType = FlexGlobalConfig.getDefaultConfig().getDbType();
                 }
                 DialectFactory.setHintDbType(dbType);
-                clearDbType = true;
+                needClearDbType = true;
             }
             return method.invoke(mapper, args);
-        } catch (InvocationTargetException e1) {
-            throw e1.getCause();
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
         } finally {
-            if (clearDbType) {
+            if (needClearDbType) {
                 DialectFactory.clearHintDbType();
             }
-            if (clearDsKey) {
+            if (needClearDsKey) {
                 DataSourceKey.clear();
             }
         }

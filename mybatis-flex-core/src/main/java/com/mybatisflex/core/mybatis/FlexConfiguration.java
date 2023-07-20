@@ -146,7 +146,6 @@ public class FlexConfiguration extends Configuration {
     @Override
     public MappedStatement getMappedStatement(String id) {
         MappedStatement ms = super.getMappedStatement(id);
-
         //动态 resultsMap，方法名称为：selectListByQuery
         Class<?> asType = MappedStatementTypes.getCurrentType();
         if (asType != null) {
@@ -333,13 +332,12 @@ public class FlexConfiguration extends Configuration {
     }
 
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
         T mapper = super.getMapper(type, sqlSession);
-        return (T) Proxy.newProxyInstance(type.getClassLoader()
-            , new Class[]{type}
-            , new MapperInvocationHandler(mapper, this));
-
+        return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}
+            , new MapperInvocationHandler(mapper, environment.getDataSource()));
     }
 
 }
