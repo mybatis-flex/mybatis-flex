@@ -36,6 +36,10 @@ public class OperatorQueryCondition extends QueryCondition {
         this.childCondition = childCondition;
     }
 
+    public QueryCondition getChildCondition() {
+        return childCondition;
+    }
+
     @Override
     public String toSql(List<QueryTable> queryTables, IDialect dialect) {
         StringBuilder sql = new StringBuilder();

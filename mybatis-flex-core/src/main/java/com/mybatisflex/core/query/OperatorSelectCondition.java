@@ -38,6 +38,10 @@ public class OperatorSelectCondition extends QueryCondition {
         this.queryWrapper = queryWrapper;
     }
 
+    public QueryWrapper getQueryWrapper() {
+        return queryWrapper;
+    }
+
     @Override
     public String toSql(List<QueryTable> queryTables, IDialect dialect) {
         StringBuilder sql = new StringBuilder();

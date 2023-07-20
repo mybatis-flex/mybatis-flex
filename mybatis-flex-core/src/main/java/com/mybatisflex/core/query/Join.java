@@ -57,16 +57,31 @@ public class Join implements CloneSupport<Join> {
 
 
     public void on(QueryCondition condition) {
-        if (condition.column != null){
-            QueryTable table = condition.column.getTable();
-            if (queryTable.isSameTable(table)){
-                QueryColumn newColumn = condition.column.clone();
-                newColumn.table.alias = queryTable.alias;
-                condition.column = newColumn;
-            }
-        }
+        replaceConditionColumn(condition);
         this.on = condition;
     }
+
+    private void replaceConditionColumn(QueryCondition condition) {
+        if (condition != null) {
+            if (condition.checkEffective() && condition.column != null) {
+                QueryTable table = condition.column.getTable();
+                if (queryTable.isSameTable(table)) {
+                    QueryColumn newColumn = condition.column.clone();
+                    newColumn.table.alias = queryTable.alias;
+                    condition.column = newColumn;
+                }
+            } else if (condition instanceof Brackets) {
+                replaceConditionColumn(((Brackets) condition).getChildCondition());
+            } else if (condition instanceof OperatorQueryCondition) {
+                replaceConditionColumn(((OperatorQueryCondition) condition).getChildCondition());
+            } else if (condition instanceof OperatorSelectCondition) {
+                QueryWrapper qw = ((OperatorSelectCondition) condition).getQueryWrapper();
+                replaceConditionColumn(qw.whereQueryCondition);
+            }
+            replaceConditionColumn(condition.next);
+        }
+    }
+
 
     QueryCondition getOnCondition() {
         return on;
