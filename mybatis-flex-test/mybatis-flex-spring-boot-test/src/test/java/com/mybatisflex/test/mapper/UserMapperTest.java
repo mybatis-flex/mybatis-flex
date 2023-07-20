@@ -157,11 +157,12 @@ class UserMapperTest {
                     .where(USER_ROLE.USER_ID.eq(userInfo.getUserId()))
             ),
             c -> c.field(UserInfo::getOrderInfoList).queryWrapper(userInfo ->
-                QueryWrapper.create()
+                /*QueryWrapper.create()
                     .select()
                     .from(ORDER.as("o"))
                     .leftJoin(USER_ORDER).as("uo").on(USER_ORDER.ORDER_ID.eq(ORDER.ORDER_ID))
-                    .where(USER_ORDER.USER_ID.eq(userInfo.getUserId()))
+                    .where(USER_ORDER.USER_ID.eq(userInfo.getUserId()))*/
+                null
             ),
             c -> c.nestedField(OrderInfo::getGoodList).prevent().queryWrapper(orderInfo ->
                 QueryWrapper.create()

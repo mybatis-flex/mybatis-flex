@@ -39,13 +39,25 @@ public class FieldQueryManager {
 
     public static void queryFields(BaseMapper<?> mapper, Collection<?> entities, Map<String, FieldQuery> fieldQueryMap) {
         for (Object entity : entities) {
+
+            if (entity == null) {
+                continue;
+            }
+
             fieldQueryMap.forEach((key, fieldQuery) -> {
-                //不是当前类的内容
+                // 不是当前类的内容
                 if (!key.startsWith(entity.getClass().getName() + "#")) {
                     return;
                 }
 
+                @SuppressWarnings("unchecked")
                 QueryWrapper queryWrapper = fieldQuery.getQueryBuilder().build(entity);
+
+                // QueryWrapper 为 null 值时，不进行属性查询
+                if (queryWrapper == null) {
+                    return;
+                }
+
                 Class<?> filedType = fieldQuery.getFieldWrapper().getFieldType();
                 Object value;
 
@@ -73,9 +85,7 @@ public class FieldQueryManager {
                     Class<?> componentType = filedType.getComponentType();
                     List<?> objects = mapper.selectListByQueryAs(queryWrapper, componentType);
                     value = getArrayValue(componentType, objects);
-                }
-                // 实体类
-                else {
+                } else {
                     value = mapper.selectOneByQueryAs(queryWrapper, filedType);
                     // 循环查询嵌套类
                     if (!fieldQuery.isPrevent()) {
