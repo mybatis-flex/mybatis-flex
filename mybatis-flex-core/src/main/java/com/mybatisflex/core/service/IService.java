@@ -26,7 +26,10 @@ import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.SqlUtil;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -83,8 +86,6 @@ public interface IService<T> {
         return saveBatch(entities, DEFAULT_BATCH_SIZE);
     }
 
-    // ===== 删除（删）操作 =====
-
     /**
      * <p>批量保存实体类对象数据。
      *
@@ -93,9 +94,15 @@ public interface IService<T> {
      * @return {@code true} 保存成功，{@code false} 保存失败。
      */
     default boolean saveBatch(Collection<T> entities, int batchSize) {
-        return SqlUtil.toBool(getMapper().insertBatch(CollectionUtil.toList(entities), batchSize));
+        List<T> entityList = CollectionUtil.toList(entities);
+        Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
+        return SqlUtil.toBool(
+            Db.executeBatch(entities.size()
+                , batchSize
+                , usefulClass
+                , (mapper, integer) -> mapper.insert(entityList.get(integer)))
+        );
     }
-
 
     /**
      * <p>批量保存实体类对象数据。
@@ -106,8 +113,6 @@ public interface IService<T> {
     default boolean saveBatchSelective(Collection<T> entities) {
         return saveBatchSelective(entities, DEFAULT_BATCH_SIZE);
     }
-
-    // ===== 删除（删）操作 =====
 
     /**
      * <p>批量保存实体类对象数据。
@@ -120,10 +125,14 @@ public interface IService<T> {
         List<T> entityList = CollectionUtil.toList(entities);
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
         return SqlUtil.toBool(
-            Db.executeBatch(entities.size(), batchSize, usefulClass, (mapper, integer) -> mapper.insertSelective(entityList.get(integer)))
+            Db.executeBatch(entities.size()
+                , batchSize
+                , usefulClass
+                , (mapper, integer) -> mapper.insertSelective(entityList.get(integer)))
         );
     }
 
+    // ===== 删除（删）操作 =====
 
     /**
      * <p>根据查询条件删除数据。
