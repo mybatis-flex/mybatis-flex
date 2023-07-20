@@ -122,7 +122,7 @@ class WrapperUtil {
             if (enumWrapper.hasEnumValueAnnotation()) {
                 paras.add(enumWrapper.getEnumValue((Enum) value));
             } else {
-                paras.add(value);
+                paras.add(((Enum<?>)value).name());
             }
         } else {
             paras.add(value);
