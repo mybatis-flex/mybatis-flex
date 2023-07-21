@@ -95,6 +95,12 @@ public class RelationsTester {
     }
 
     @Test
+    public void testAsDto() {
+        List<AccountDTO> accounts = accountMapper.selectListWithRelationsByQueryAs(QueryWrapper.create(), AccountDTO.class);
+        System.out.println(">>>>>>1: " + accounts);
+    }
+
+    @Test
     public void testMenu() {
         QueryWrapper qw = QueryWrapper.create();
         qw.where(MENU.PARENT_ID.eq(0));
