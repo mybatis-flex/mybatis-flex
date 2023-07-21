@@ -18,7 +18,7 @@
 <!--    </resultMap>-->
 
     <!-- selectByName -->
-    <select id="selectByName" resultType="com.mybatisflex.test.model.Account">
+    <select id="selectByName" resultType="com.mybatisflex.test.model.AccountDto">
         select * from `tb_account` where `user_name` = #{name}
     </select>
 

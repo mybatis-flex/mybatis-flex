@@ -22,6 +22,7 @@ import com.mybatisflex.core.row.Row;
 import com.mybatisflex.test.mapper.AccountMapper;
 import com.mybatisflex.test.mapper.MyAccountMapper;
 import com.mybatisflex.test.model.Account;
+import com.mybatisflex.test.model.AccountDto;
 import com.mybatisflex.test.service.AccountService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +53,7 @@ public class AccountController {
 
 
     @GetMapping("/account/byName/{name}")
-    Account selectName(@PathVariable("name") String name) {
+    AccountDto selectName(@PathVariable("name") String name) {
         return myAccountMapper.selectByName(name);
     }
 
