@@ -52,14 +52,14 @@ public abstract class AbstractLogicDeleteProcessor implements LogicDeleteProcess
      *
      * @return 未删除标记值
      */
-    protected abstract Object getLogicNormalValue();
+    public abstract Object getLogicNormalValue();
 
     /**
      * 获取逻辑删除列删除时标记值。
      *
      * @return 删除时标记值
      */
-    protected abstract Object getLogicDeletedValue();
+    public abstract Object getLogicDeletedValue();
 
 }
 

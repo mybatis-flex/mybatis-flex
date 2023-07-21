@@ -30,7 +30,7 @@ public class TimeStampLogicDeleteProcessor extends AbstractLogicDeleteProcessor 
      * 逻辑删除字段值为 {@code 0} 表示数据未删除。
      */
     @Override
-    protected Object getLogicNormalValue() {
+    public Object getLogicNormalValue() {
         return 0;
     }
 
@@ -38,7 +38,7 @@ public class TimeStampLogicDeleteProcessor extends AbstractLogicDeleteProcessor 
      * 逻辑删除字段值为 {@code NOW()} 表示数据删除，并记录删除时时间戳。
      */
     @Override
-    protected Object getLogicDeletedValue() {
+    public Object getLogicDeletedValue() {
         return System.currentTimeMillis();
     }
 
