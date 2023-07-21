@@ -37,7 +37,7 @@ public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 
 
     @Override
-    protected Object getLogicNormalValue() {
+    public Object getLogicNormalValue() {
         Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
         if (normalValueOfLogicDelete instanceof Number
             || normalValueOfLogicDelete instanceof Boolean) {
@@ -48,7 +48,7 @@ public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 
 
     @Override
-    protected Object getLogicDeletedValue() {
+    public Object getLogicDeletedValue() {
         Object deletedValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete();
         if (deletedValueOfLogicDelete instanceof Number
             || deletedValueOfLogicDelete instanceof Boolean) {

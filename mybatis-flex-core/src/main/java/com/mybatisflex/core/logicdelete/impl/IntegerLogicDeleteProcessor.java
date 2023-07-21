@@ -30,7 +30,7 @@ public class IntegerLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      * 逻辑删除字段值为 {@code 0} 表示数据未删除。
      */
     @Override
-    protected Object getLogicNormalValue() {
+    public Object getLogicNormalValue() {
         return 0;
     }
 
@@ -38,7 +38,7 @@ public class IntegerLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      * 逻辑删除字段值为 {@code 1} 表示数据删除。
      */
     @Override
-    protected Object getLogicDeletedValue() {
+    public Object getLogicDeletedValue() {
         return 1;
     }
 

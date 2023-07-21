@@ -28,7 +28,7 @@ public interface LogicDeleteProcessor {
      * 用户构建查询正常数据的条件。
      *
      * @param logicColumn 逻辑删除列
-     * @param tableInfo
+     * @param tableInfo   表信息
      * @param dialect     数据库方言
      */
     String buildLogicNormalCondition(String logicColumn, TableInfo tableInfo, IDialect dialect);
@@ -37,7 +37,7 @@ public interface LogicDeleteProcessor {
      * 用户与构建删除数据时的内容。
      *
      * @param logicColumn 逻辑删除列
-     * @param tableInfo
+     * @param tableInfo   表信息
      * @param dialect     数据库方言
      */
     String buildLogicDeletedSet(String logicColumn, TableInfo tableInfo, IDialect dialect);
@@ -49,6 +49,20 @@ public interface LogicDeleteProcessor {
      * @param tableInfo    表信息
      */
     void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo);
+
+    /**
+     * 获取逻辑删除列未删除标记值。
+     *
+     * @return 未删除标记值
+     */
+    Object getLogicNormalValue();
+
+    /**
+     * 获取逻辑删除列删除时标记值。
+     *
+     * @return 删除时标记值
+     */
+    Object getLogicDeletedValue();
 
 }
 
