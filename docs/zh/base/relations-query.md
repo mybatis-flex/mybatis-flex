@@ -91,11 +91,11 @@ WHERE account_id IN (1, 2, 3, 4, 5)
 
 **注意事项 1：**
 
-在以上的 `@RelationOneToOne` 注解配置中，`IDCard.java`  是一个有 `@Table` 注解修饰的实体类，若 `@RelationOneToOne`
-配置的类没有 `@Table` 修饰，则需要在 `@RelationOneToOne` 配置上 `targetTable` 用于指定查询的表名。
+在以上的 `@RelationOneToOne` 注解配置中，若 `IDCard.java`  是一个没有 `@Table` 注解修饰的实体类，
+则需要在 `@RelationOneToOne` 配置上 `targetTable` 用于指定查询的表名。
 
 
-假设 `IDCard.java` 是 vo 或 dto，没有 `@Table` 修饰，配置如下：
+假设 `IDCard.java` 没有 `@Table` 注解修饰（比如 vo 或 dto 等），配置如下：
 ```java 9
 public class Account implements Serializable {
 
