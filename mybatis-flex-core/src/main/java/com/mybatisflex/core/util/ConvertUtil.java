@@ -32,6 +32,7 @@ public class ConvertUtil {
         return convert(value, targetClass, false);
     }
 
+    @SuppressWarnings("unchecked")
     public static Object convert(Object value, Class targetClass, boolean ignoreConvertError) {
         if (value == null && targetClass.isPrimitive()) {
             return getPrimitiveDefaultValue(targetClass);
@@ -94,14 +95,13 @@ public class ConvertUtil {
             }
             return Short.parseShort(value.toString());
         } else if (targetClass.isEnum()) {
-            EnumWrapper enumWrapper = EnumWrapper.of(targetClass);
+            EnumWrapper<?> enumWrapper = EnumWrapper.of(targetClass);
             if (enumWrapper.hasEnumValueAnnotation()) {
                 return enumWrapper.getEnum(value);
             } else if (value instanceof String) {
                 return Enum.valueOf(targetClass, value.toString());
             }
         }
-
         if (ignoreConvertError) {
             return null;
         } else {
@@ -241,16 +241,6 @@ public class ConvertUtil {
         }
 
         return (Boolean) b;
-    }
-
-    public static Number toNumber(Object o) {
-        if (o instanceof Number) {
-            return (Number) o;
-        } else if (o == null) {
-            return null;
-        }
-        String s = o.toString();
-        return s.indexOf('.') != -1 ? Double.parseDouble(s) : Long.parseLong(s);
     }
 
 
