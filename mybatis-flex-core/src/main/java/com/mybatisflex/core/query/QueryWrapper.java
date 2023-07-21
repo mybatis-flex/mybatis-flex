@@ -17,6 +17,7 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.constant.SqlConsts;
+import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.table.TableInfo;
@@ -167,7 +168,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         if (CollectionUtil.isEmpty(queryTables)) {
             throw new IllegalArgumentException("query table must not be empty.");
         }
-
         queryTables.get(queryTables.size() - 1).alias = alias;
         return this;
     }
@@ -188,11 +188,13 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper where(Map<String, Object> whereConditions) {
-        if (whereConditions != null) {
-            whereConditions.forEach((s, o) -> and(QueryCondition.create(new QueryColumn(s), o)));
-        }
-        return this;
+        return and(whereConditions);
     }
+
+    public QueryWrapper where(Map<String, Object> whereConditions, Map<String, SqlOperator> operators) {
+        return and(whereConditions, operators);
+    }
+
 
     public <T> QueryConditionBuilder where(LambdaGetter<T> fn) {
         return new QueryConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
@@ -226,6 +228,15 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
+
+    public QueryWrapper and(Map<String, Object> whereConditions) {
+        return and(whereConditions, Collections.emptyMap());
+    }
+
+    public QueryWrapper and(Map<String, Object> whereConditions, Map<String, SqlOperator> operators) {
+        return connectMap(whereConditions, operators, true, true);
+    }
+
     public QueryWrapper or(QueryCondition queryCondition) {
         return addWhereQueryCondition(queryCondition, SqlConnector.OR);
     }
@@ -253,6 +264,45 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         }
         return this;
     }
+
+
+    public QueryWrapper or(Map<String, Object> whereConditions) {
+        return or(whereConditions, Collections.emptyMap());
+    }
+
+    public QueryWrapper or(Map<String, Object> whereConditions, Map<String, SqlOperator> operators) {
+        return connectMap(whereConditions, operators, false, true);
+    }
+
+
+    private QueryWrapper connectMap(Map<String, Object> mapConditions, Map<String, SqlOperator> operators, boolean outerAnd, boolean innerAnd) {
+        if (mapConditions != null) {
+            QueryCondition condition = null;
+            for (Map.Entry<String, Object> entry : mapConditions.entrySet()) {
+                SqlOperator operator = operators.get(entry.getKey());
+                if (operator == null) {
+                    operator = SqlOperator.EQUALS;
+                }
+                QueryCondition cond = QueryCondition.create(new QueryColumn(entry.getKey()), operator.getValue(), entry.getValue());
+                if (condition == null) {
+                    condition = cond;
+                } else {
+                    if (innerAnd) {
+                        condition.and(cond);
+                    } else {
+                        condition.or(cond);
+                    }
+                }
+            }
+            if (outerAnd) {
+                and(condition);
+            } else {
+                or(condition);
+            }
+        }
+        return this;
+    }
+
 
     public Joiner<QueryWrapper> leftJoin(String table) {
         return joining(SqlConsts.LEFT_JOIN, new QueryTable(table), true);
