@@ -20,7 +20,7 @@ public class Account {
 
     @Column(isLogicDelete = true)
     private Boolean isDelete;
-    
+
     //Getter Setter...
 }
 ```
@@ -33,8 +33,10 @@ accountMapper.deleteById(1);
 MyBatis 执行的 SQL 如下：
 
 ```sql
-UPDATE `tb_account` SET `is_delete` = 1 
-WHERE `id` = ? AND `is_delete` = 0
+UPDATE `tb_account`
+SET `is_delete` = 1
+WHERE `id` = ?
+  AND `is_delete` = 0
 ```
 可以看出，当执行 deleteById 时，MyBatis 只是进行了 update 操作，而非 delete 操作。
 
@@ -66,10 +68,12 @@ QueryWrapper query1 = QueryWrapper.create()
 其执行的 SQL 如下：
 
 ```sql
-SELECT * FROM `tb_account` 
-    LEFT JOIN `tb_article` AS `a` ON `tb_account`.`id` = `a`.`account_id` 
-WHERE `tb_account`.`age` >= 10 
-  AND `tb_account`.`is_delete` = 0 AND `a`.`is_delete` = 0
+SELECT *
+FROM `tb_account`
+         LEFT JOIN `tb_article` AS `a` ON `tb_account`.`id` = `a`.`account_id`
+WHERE `tb_account`.`age` >= 10
+  AND `tb_account`.`is_delete` = 0
+  AND `a`.`is_delete` = 0
 ```
 自动添加上 `tb_account.is_delete = 0 AND a.is_delete = 0` 条件。
 
@@ -90,12 +94,14 @@ WHERE `tb_account`.`age` >= 10
 其执行的 SQL 如下：
 
 ```sql
-SELECT * FROM `tb_account` 
-    LEFT JOIN (
-        SELECT * FROM `tb_article` WHERE `id` >= 100 AND `is_delete` = 0
-        ) AS `a` 
-    ON `tb_account`.`id` = a.id 
-WHERE `tb_account`.`age` >= 10 AND `tb_account`.`is_delete` = 0
+SELECT *
+FROM `tb_account`
+         LEFT JOIN (SELECT *
+                    FROM `tb_article`
+                    WHERE `id` >= 100 AND `is_delete` = 0) AS `a`
+                   ON `tb_account`.`id` = a.id
+WHERE `tb_account`.`age` >= 10
+  AND `tb_account`.`is_delete` = 0
 ```
 
 
@@ -179,7 +185,7 @@ public interface LogicDeleteProcessor {
 }
 ```
 
-具体实现可以参考：[DefaultLogicDeleteProcessorImpl](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/logicdelete/DefaultLogicDeleteProcessorImpl.java)
+具体实现可以参考：[DefaultLogicDeleteProcessor](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/logicdelete/impl/DefaultLogicDeleteProcessor.java)
 
 
 ## SpringBoot 支持
@@ -195,6 +201,6 @@ public class MyConfiguration {
         LogicDeleteProcessor processor = new ....;
         return processor;
     }
-    
+
 }
 ```
