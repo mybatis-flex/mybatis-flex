@@ -57,7 +57,12 @@ public class MybatisFlexConfig {
             List<File> aptConfigFiles = new ArrayList<>();
             File moduleRoot = new File(aptConfigFileObject.toUri()).getParentFile().getParentFile().getParentFile();
 
-            while (FileUtil.existsBuildFile(moduleRoot)) {
+            // 一直往上递归寻找配置文件，直到到达根目录
+            while (true) {
+                // 如果到达根目录，停止递归
+                if (moduleRoot == null || moduleRoot.getParentFile() == null) {
+                    break;
+                }
                 File aptConfig = new File(moduleRoot, APT_FILE_NAME);
                 if (aptConfig.exists()) {
                     aptConfigFiles.add(aptConfig);
