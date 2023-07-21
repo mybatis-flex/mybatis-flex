@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.test.controller;
 
+import com.mybatisflex.annotation.UseDataSource;
+import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
@@ -31,6 +33,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
+@UseDataSource("ds3333")
 public class AccountController {
 
     @Resource
@@ -104,6 +107,14 @@ public class AccountController {
     @GetMapping("/paginate")
     Page<Account> paginate(@RequestParam(defaultValue = "1") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
         return accountMapper.paginate(pageNumber, pageSize, QueryWrapper.create());
+    }
+
+
+
+    @GetMapping("/ds")
+    @UseDataSource("ds2222")
+    public String ds() {
+        return ">>>>>ds: " + DataSourceKey.get();
     }
 
 }

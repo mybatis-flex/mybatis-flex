@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 
 /**
  * MyBatis-Flex 事务自动配置。
+ * @author michael
  */
 @ConditionalOnClass(Db.class)
 @Configuration(proxyBeanMethods = false)

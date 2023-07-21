@@ -32,8 +32,9 @@ import java.util.Iterator;
 
 /**
  * <p>判断是否有 MyBatis-Flex 的多数据源配置。
- *
  * <p>如果配置文件中有 MyBatis-Flex 的多数据源配置，就加载 MyBatis-Flex 多数据源自动配置类。
+ *
+ * @author michael
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

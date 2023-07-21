@@ -43,7 +43,6 @@ public class DataSourceInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-
         String dsKey = DataSourceKey.get();
         if (StringUtil.isNotBlank(dsKey)) {
             return invocation.proceed();

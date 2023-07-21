@@ -32,18 +32,22 @@ import org.springframework.aop.support.annotation.AnnotationMethodMatcher;
  */
 public class DataSourceAdvice extends AbstractPointcutAdvisor {
 
-    private final DataSourceInterceptor advice;
+    private final Advice advice;
+    private final Pointcut pointcut;
 
-    public DataSourceAdvice(DataSourceInterceptor advice) {
-        this.advice = advice;
+    public DataSourceAdvice() {
+        this.advice = new DataSourceInterceptor();
+
+        AnnotationMatchingPointcut cpc = new AnnotationMatchingPointcut(UseDataSource.class, true);
+        AnnotationMethodMatcher mpc = new AnnotationMethodMatcher(UseDataSource.class);
+        this.pointcut =  new ComposablePointcut(mpc).union(cpc);
     }
 
     @Override
     public Pointcut getPointcut() {
-        AnnotationMatchingPointcut cpc = new AnnotationMatchingPointcut(UseDataSource.class, true);
-        AnnotationMethodMatcher mpc = new AnnotationMethodMatcher(UseDataSource.class);
-        return new ComposablePointcut(cpc).union(mpc);
+        return pointcut;
     }
+
 
     @Override
     public Advice getAdvice() {

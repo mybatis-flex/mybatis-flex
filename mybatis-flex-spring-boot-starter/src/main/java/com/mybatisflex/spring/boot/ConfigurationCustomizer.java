@@ -19,6 +19,7 @@ import com.mybatisflex.core.mybatis.FlexConfiguration;
 
 /**
  * 为 {@link FlexConfiguration} 做自定义的配置支持。
+ * @author michael
  */
 @FunctionalInterface
 public interface ConfigurationCustomizer {

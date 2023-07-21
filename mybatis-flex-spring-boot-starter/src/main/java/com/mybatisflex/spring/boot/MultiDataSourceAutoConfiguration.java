@@ -17,12 +17,8 @@ package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.datasource.DataSourceBuilder;
 import com.mybatisflex.core.datasource.FlexDataSource;
-import com.mybatisflex.spring.datasource.DataSourceAdvice;
-import com.mybatisflex.spring.datasource.DataSourceInterceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.springframework.aop.Advisor;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -30,7 +26,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Role;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -38,6 +33,7 @@ import java.util.Map;
 
 /**
  * MyBatis-Flex 多数据源的配置支持。
+ * @author michael
  */
 @ConditionalOnMybatisFlexDatasource()
 @Configuration(proxyBeanMethods = false)
@@ -71,16 +67,6 @@ public class MultiDataSourceAutoConfiguration {
         }
 
         return flexDataSource;
-    }
-
-    /**
-     * {@link com.mybatisflex.annotation.UseDataSource} 注解切换数据源切面。
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public Advisor dataSourceAdvice() {
-        return new DataSourceAdvice(new DataSourceInterceptor());
     }
 
 }
