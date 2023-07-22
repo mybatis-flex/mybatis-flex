@@ -173,8 +173,8 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public QueryConditionBuilder<R> and(LambdaGetter fn) {
-        return super.and(fn);
+    public <T> QueryConditionBuilder<R> and(LambdaGetter<T> fn) {
+        return new QueryConditionBuilder<>((R) this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
     }
 
     @Override
@@ -196,8 +196,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public QueryWrapper and(Map<String, Object> whereConditions, Map<String, SqlOperator> operators, SqlConnector innerConnector) {
-        return super.and(whereConditions, operators, innerConnector);
+    public R and(Map<String, Object> whereConditions, Map<String, SqlOperator> operators, SqlConnector innerConnector) {
+        super.and(whereConditions, operators, innerConnector);
+        return (R) this;
     }
 
     @Override
@@ -219,8 +220,8 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public QueryConditionBuilder<R> or(LambdaGetter fn) {
-        return super.or(fn);
+    public <T> QueryConditionBuilder<R> or(LambdaGetter<T> fn) {
+        return new QueryConditionBuilder<>((R) this, LambdaUtil.getQueryColumn(fn), SqlConnector.OR);
     }
 
     @Override
@@ -242,8 +243,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public QueryWrapper or(Map<String, Object> whereConditions, Map<String, SqlOperator> operators, SqlConnector innerConnector) {
-        return super.or(whereConditions, operators, innerConnector);
+    public R or(Map<String, Object> whereConditions, Map<String, SqlOperator> operators, SqlConnector innerConnector) {
+        super.or(whereConditions, operators, innerConnector);
+        return (R) this;
     }
 
     @Override
