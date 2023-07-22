@@ -30,16 +30,24 @@ import java.util.Map;
 
 /**
  * <a href=https://jfinal.com/doc/6-1>JFinal Enjoy</a> 模板引擎实现。
+ *
+ * @author michael
  */
 public class EnjoyTemplate implements ITemplate {
 
+    private static final String engineName = "mybatis-flex";
     private final Engine engine;
 
     public EnjoyTemplate() {
-        engine = Engine.create("mybatis-flex", engine -> {
-            engine.addSharedStaticMethod(StringUtil.class);
-            engine.setSourceFactory(new FileAndClassPathSourceFactory());
-        });
+        Engine engine = Engine.use(engineName);
+        if (engine == null) {
+            engine = Engine.create(engineName, e -> {
+                e.addSharedStaticMethod(StringUtil.class);
+                e.setSourceFactory(new FileAndClassPathSourceFactory());
+            });
+        }
+        this.engine = engine;
+
         // 以下配置将支持 user.girl 表达式去调用 user 对象的 boolean isGirl() 方法
         Engine.addFieldGetterToFirst(new FieldGetters.IsMethodFieldGetter());
     }
