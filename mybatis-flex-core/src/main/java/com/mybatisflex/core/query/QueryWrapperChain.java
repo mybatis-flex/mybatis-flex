@@ -62,35 +62,35 @@ public class QueryWrapperChain<T> extends QueryWrapperAdapter<QueryWrapperChain<
     }
 
     public T one() {
-        return baseMapper.selectOneByQuery(this.limit(1));
+        return baseMapper.selectOneByQuery(this);
     }
 
     public <R> R oneAs(Class<R> asType) {
-        return baseMapper.selectOneByQueryAs(this.limit(1), asType);
+        return baseMapper.selectOneByQueryAs(this, asType);
     }
 
     public T oneWithRelations() {
-        return baseMapper.selectOneWithRelationsByQuery(this.limit(1));
+        return baseMapper.selectOneWithRelationsByQuery(this);
     }
 
     public <R> R oneWithRelationsAs(Class<R> asType) {
-        return baseMapper.selectOneWithRelationsByQueryAs(this.limit(1), asType);
+        return baseMapper.selectOneWithRelationsByQueryAs(this, asType);
     }
 
     public Optional<T> oneOpt() {
-        return Optional.ofNullable(baseMapper.selectOneByQuery(this.limit(1)));
+        return Optional.ofNullable(baseMapper.selectOneByQuery(this));
     }
 
     public <R> Optional<R> oneAsOpt(Class<R> asType) {
-        return Optional.ofNullable(baseMapper.selectOneByQueryAs(this.limit(1), asType));
+        return Optional.ofNullable(baseMapper.selectOneByQueryAs(this, asType));
     }
 
     public Optional<T> oneWithRelationsOpt() {
-        return Optional.ofNullable(baseMapper.selectOneWithRelationsByQuery(this.limit(1)));
+        return Optional.ofNullable(baseMapper.selectOneWithRelationsByQuery(this));
     }
 
     public <R> Optional<R> oneWithRelationsAsOpt(Class<R> asType) {
-        return Optional.ofNullable(baseMapper.selectOneWithRelationsByQueryAs(this.limit(1), asType));
+        return Optional.ofNullable(baseMapper.selectOneWithRelationsByQueryAs(this, asType));
     }
 
     public List<T> list() {
