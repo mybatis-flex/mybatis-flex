@@ -69,6 +69,14 @@ public class QueryWrapperChain<T> extends QueryWrapperAdapter<QueryWrapperChain<
         return baseMapper.selectOneByQueryAs(this, asType);
     }
 
+    public T oneWithRelations() {
+        return baseMapper.selectOneWithRelationsByQuery(this);
+    }
+
+    public <R> R oneWithRelationsAs(Class<R> asType) {
+        return baseMapper.selectOneWithRelationsByQueryAs(this, asType);
+    }
+
     public Optional<T> oneOpt() {
         return Optional.ofNullable(baseMapper.selectOneByQuery(this));
     }
@@ -77,20 +85,44 @@ public class QueryWrapperChain<T> extends QueryWrapperAdapter<QueryWrapperChain<
         return Optional.ofNullable(baseMapper.selectOneByQueryAs(this, asType));
     }
 
+    public Optional<T> oneWithRelationsOpt() {
+        return Optional.ofNullable(baseMapper.selectOneWithRelationsByQuery(this));
+    }
+
+    public <R> Optional<R> oneWithRelationsAsOpt(Class<R> asType) {
+        return Optional.ofNullable(baseMapper.selectOneWithRelationsByQueryAs(this, asType));
+    }
+
     public List<T> list() {
         return baseMapper.selectListByQuery(this);
+    }
+
+    public List<T> listWithRelations() {
+        return baseMapper.selectListWithRelationsByQuery(this);
     }
 
     public <R> List<R> listAs(Class<R> asType) {
         return baseMapper.selectListByQueryAs(this, asType);
     }
 
+    public <R> List<R> listWithRelationsAs(Class<R> asType) {
+        return baseMapper.selectListWithRelationsByQueryAs(this, asType);
+    }
+
     public Page<T> page(Page<T> page) {
         return baseMapper.paginate(page, this);
     }
 
-    public <R> Page<R> page(Page<R> page, Class<R> asType) {
+    public Page<T> pageWithRelations(Page<T> page) {
+        return baseMapper.paginateWithRelations(page, this);
+    }
+
+    public <R> Page<R> pageAs(Page<R> page, Class<R> asType) {
         return baseMapper.paginateAs(page, this, asType);
+    }
+
+    public <R> Page<R> pageWithRelationsAs(Page<R> page, Class<R> asType) {
+        return baseMapper.paginateWithRelationsAs(page, this, asType);
     }
 
 }
