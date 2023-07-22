@@ -38,7 +38,7 @@ class ArticleServiceTest {
             .select(ARTICLE.ALL_COLUMNS)
             .from(ARTICLE)
             .where(ARTICLE.ID.ge(100))
-            .list()
+            .getList()
             .forEach(System.out::println);
     }
 
