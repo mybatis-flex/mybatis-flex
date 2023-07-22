@@ -65,6 +65,22 @@ public class QueryWrapperChain<T> extends QueryWrapperAdapter<QueryWrapperChain<
         return baseMapper.selectOneByQuery(this);
     }
 
+    public Object getObj() {
+        return baseMapper.selectObjectByQuery(this);
+    }
+
+    public <R> R getObjAs(Class<R> asType) {
+        return baseMapper.selectObjectByQueryAs(this, asType);
+    }
+
+    public Optional<Object> getObjOpt() {
+        return Optional.ofNullable(baseMapper.selectObjectByQuery(this));
+    }
+
+    public <R> Optional<R> getObjAsOpt(Class<R> asType) {
+        return Optional.ofNullable(baseMapper.selectObjectByQueryAs(this, asType));
+    }
+
     public <R> R oneAs(Class<R> asType) {
         return baseMapper.selectOneByQueryAs(this, asType);
     }
