@@ -35,10 +35,10 @@ class ArticleServiceTest {
     @Test
     void testChain() {
         articleService.queryChain()
-            .select(ARTICLE.ALL_COLUMNS)
+            .select(ARTICLE.DEFAULT_COLUMNS)
             .from(ARTICLE)
             .where(ARTICLE.ID.ge(100))
-            .getList()
+            .objList()
             .forEach(System.out::println);
     }
 

@@ -61,104 +61,92 @@ public class QueryWrapperChain<T> extends QueryWrapperAdapter<QueryWrapperChain<
         return SqlUtil.toBool(count());
     }
 
-    public T getOne() {
+    public T one() {
         return baseMapper.selectOneByQuery(this);
     }
 
-    public <R> R getOneAs(Class<R> asType) {
+    public <R> R oneAs(Class<R> asType) {
         return baseMapper.selectOneByQueryAs(this, asType);
     }
 
-    public T getOneWithRelations() {
+    public T oneWithRelations() {
         return baseMapper.selectOneWithRelationsByQuery(this);
     }
 
-    public <R> R getOneWithRelationsAs(Class<R> asType) {
+    public <R> R oneWithRelationsAs(Class<R> asType) {
         return baseMapper.selectOneWithRelationsByQueryAs(this, asType);
     }
 
-    public Optional<T> getOneOpt() {
+    public Optional<T> oneOpt() {
         return Optional.ofNullable(baseMapper.selectOneByQuery(this));
     }
 
-    public <R> Optional<R> getOneAsOpt(Class<R> asType) {
+    public <R> Optional<R> oneAsOpt(Class<R> asType) {
         return Optional.ofNullable(baseMapper.selectOneByQueryAs(this, asType));
     }
 
-    public Optional<T> getOneWithRelationsOpt() {
+    public Optional<T> oneWithRelationsOpt() {
         return Optional.ofNullable(baseMapper.selectOneWithRelationsByQuery(this));
     }
 
-    public <R> Optional<R> getOneWithRelationsAsOpt(Class<R> asType) {
+    public <R> Optional<R> oneWithRelationsAsOpt(Class<R> asType) {
         return Optional.ofNullable(baseMapper.selectOneWithRelationsByQueryAs(this, asType));
     }
 
-
-
-    public List<T> getList() {
-        return baseMapper.selectListByQuery(this);
-    }
-
-    public List<T> getListWithRelations() {
-        return baseMapper.selectListWithRelationsByQuery(this);
-    }
-
-    public <R> List<R> getListAs(Class<R> asType) {
-        return baseMapper.selectListByQueryAs(this, asType);
-    }
-
-    public <R> List<R> getListWithRelationsAs(Class<R> asType) {
-        return baseMapper.selectListWithRelationsByQueryAs(this, asType);
-    }
-
-    public Page<T> getPage(Page<T> page) {
-        return baseMapper.paginate(page, this);
-    }
-
-    public Page<T> getPageWithRelations(Page<T> page) {
-        return baseMapper.paginateWithRelations(page, this);
-    }
-
-    public <R> Page<R> getPageAs(Page<R> page, Class<R> asType) {
-        return baseMapper.paginateAs(page, this, asType);
-    }
-
-    public <R> Page<R> getPageWithRelationsAs(Page<R> page, Class<R> asType) {
-        return baseMapper.paginateWithRelationsAs(page, this, asType);
-    }
-
-
-    public Object getObj() {
+    public Object obj() {
         return baseMapper.selectObjectByQuery(this);
     }
 
-    public <R> R getObjAs(Class<R> asType) {
+    public <R> R objAs(Class<R> asType) {
         return baseMapper.selectObjectByQueryAs(this, asType);
     }
 
-    public Optional<Object> getObjOpt() {
+    public Optional<Object> objOpt() {
         return Optional.ofNullable(baseMapper.selectObjectByQuery(this));
     }
 
-    public <R> Optional<R> getObjAsOpt(Class<R> asType) {
+    public <R> Optional<R> objAsOpt(Class<R> asType) {
         return Optional.ofNullable(baseMapper.selectObjectByQueryAs(this, asType));
     }
 
-
-    public List<Object> getObjList() {
+    public List<Object> objList() {
         return baseMapper.selectObjectListByQuery(this);
     }
 
-    public <R> List<R> getObjListAs(Class<R> asType) {
+    public <R> List<R> objListAs(Class<R> asType) {
         return baseMapper.selectObjectListByQueryAs(this, asType);
     }
 
-    public Optional<Object> getObjListOpt() {
-        return Optional.ofNullable(baseMapper.selectObjectListByQuery(this));
+    public List<T> list() {
+        return baseMapper.selectListByQuery(this);
     }
 
-    public <R> Optional<List<R>> getObjListAsOpt(Class<R> asType) {
-        return Optional.ofNullable(baseMapper.selectObjectListByQueryAs(this, asType));
+    public List<T> listWithRelations() {
+        return baseMapper.selectListWithRelationsByQuery(this);
+    }
+
+    public <R> List<R> listAs(Class<R> asType) {
+        return baseMapper.selectListByQueryAs(this, asType);
+    }
+
+    public <R> List<R> listWithRelationsAs(Class<R> asType) {
+        return baseMapper.selectListWithRelationsByQueryAs(this, asType);
+    }
+
+    public Page<T> page(Page<T> page) {
+        return baseMapper.paginate(page, this);
+    }
+
+    public Page<T> pageWithRelations(Page<T> page) {
+        return baseMapper.paginateWithRelations(page, this);
+    }
+
+    public <R> Page<R> pageAs(Page<R> page, Class<R> asType) {
+        return baseMapper.paginateAs(page, this, asType);
+    }
+
+    public <R> Page<R> pageWithRelationsAs(Page<R> page, Class<R> asType) {
+        return baseMapper.paginateWithRelationsAs(page, this, asType);
     }
 
 }
