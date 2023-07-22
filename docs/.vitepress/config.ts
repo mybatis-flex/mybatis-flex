@@ -61,6 +61,7 @@ export default defineConfig({
                     {text: '关联查询', link: '/zh/base/relations-query'},
                     {text: '批量操作', link: '/zh/base/batch'},
                     {text: 'QueryWrapper', link: '/zh/base/querywrapper'},
+                    {text: 'QueryWrapperChain', link: '/zh/base/query-wrapper-chain'},
                     {text: 'Db + Row', link: '/zh/base/db-row'},
                     {text: 'IService', link: '/zh/base/service'},
                     {text: 'SpringBoot 配置文件', link: '/zh/base/configuration'},

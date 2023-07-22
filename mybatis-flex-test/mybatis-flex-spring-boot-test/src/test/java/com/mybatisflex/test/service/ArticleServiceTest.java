@@ -16,7 +16,6 @@
 
 package com.mybatisflex.test.service;
 
-import com.mybatisflex.test.model.Article;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,7 +37,7 @@ class ArticleServiceTest {
         articleService.queryChain()
             .select(ARTICLE.ALL_COLUMNS)
             .from(ARTICLE)
-            .where(Article::getAccountId).eq(1)
+            .where(ARTICLE.ID.ge(100))
             .list()
             .forEach(System.out::println);
     }
