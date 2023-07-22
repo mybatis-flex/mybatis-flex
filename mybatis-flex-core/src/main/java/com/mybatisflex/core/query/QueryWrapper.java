@@ -33,7 +33,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return new QueryWrapper();
     }
 
-
     /**
      * 根据实体类对象，构建查询条件
      *
@@ -46,32 +45,32 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
 
-    public WithBuilder with(String name) {
+    public WithBuilder<? extends QueryWrapper> with(String name) {
         if (with == null) {
             with = new With();
         }
-        return new WithBuilder(this, with, name);
+        return new WithBuilder<>(this, with, name);
     }
 
-    public WithBuilder with(String name, String... params) {
+    public WithBuilder<? extends QueryWrapper> with(String name, String... params) {
         if (with == null) {
             with = new With();
         }
-        return new WithBuilder(this, with, name, Arrays.asList(params));
+        return new WithBuilder<>(this, with, name, Arrays.asList(params));
     }
 
-    public WithBuilder withRecursive(String name) {
+    public WithBuilder<? extends QueryWrapper> withRecursive(String name) {
         if (with == null) {
             with = new With(true);
         }
-        return new WithBuilder(this, with, name);
+        return new WithBuilder<>(this, with, name);
     }
 
-    public WithBuilder withRecursive(String name, String... params) {
+    public WithBuilder<? extends QueryWrapper> withRecursive(String name, String... params) {
         if (with == null) {
             with = new With(true);
         }
-        return new WithBuilder(this, with, name, Arrays.asList(params));
+        return new WithBuilder<>(this, with, name, Arrays.asList(params));
     }
 
     public QueryWrapper select() {
@@ -195,9 +194,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return and(whereConditions, operators);
     }
 
-
-    public <T> QueryConditionBuilder where(LambdaGetter<T> fn) {
-        return new QueryConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
+    public <T> QueryConditionBuilder<? extends QueryWrapper> where(LambdaGetter<T> fn) {
+        return new QueryConditionBuilder<>(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
     }
 
     public QueryWrapper and(QueryCondition queryCondition) {
@@ -214,8 +212,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public <T> QueryConditionBuilder and(LambdaGetter<T> fn) {
-        return new QueryConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
+    public <T> QueryConditionBuilder<? extends QueryWrapper> and(LambdaGetter<T> fn) {
+        return new QueryConditionBuilder<>(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
     }
 
     public QueryWrapper and(Consumer<QueryWrapper> consumer) {
@@ -234,8 +232,13 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper and(Map<String, Object> whereConditions, Map<String, SqlOperator> operators) {
-        return connectMap(whereConditions, operators, true, true);
+        return connectMap(whereConditions, operators, SqlConnector.AND, SqlConnector.AND);
     }
+
+    public QueryWrapper and(Map<String, Object> whereConditions, Map<String, SqlOperator> operators,SqlConnector innerConnector) {
+        return connectMap(whereConditions, operators, SqlConnector.AND, innerConnector);
+    }
+
 
     public QueryWrapper or(QueryCondition queryCondition) {
         return addWhereQueryCondition(queryCondition, SqlConnector.OR);
@@ -251,8 +254,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public <T> QueryConditionBuilder or(LambdaGetter<T> fn) {
-        return new QueryConditionBuilder(this, LambdaUtil.getQueryColumn(fn), SqlConnector.OR);
+    public <T> QueryConditionBuilder<? extends QueryWrapper> or(LambdaGetter<T> fn) {
+        return new QueryConditionBuilder<>(this, LambdaUtil.getQueryColumn(fn), SqlConnector.OR);
     }
 
     public QueryWrapper or(Consumer<QueryWrapper> consumer) {
@@ -271,11 +274,17 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper or(Map<String, Object> whereConditions, Map<String, SqlOperator> operators) {
-        return connectMap(whereConditions, operators, false, true);
+        return connectMap(whereConditions, operators, SqlConnector.OR, SqlConnector.AND);
     }
 
+    public QueryWrapper or(Map<String, Object> whereConditions, Map<String, SqlOperator> operators,SqlConnector innerConnector) {
+        return connectMap(whereConditions, operators, SqlConnector.OR, SqlConnector.AND);
+    }
 
-    private QueryWrapper connectMap(Map<String, Object> mapConditions, Map<String, SqlOperator> operators, boolean outerAnd, boolean innerAnd) {
+    protected QueryWrapper connectMap(Map<String, Object> mapConditions, Map<String, SqlOperator> operators, SqlConnector outerConnector, SqlConnector innerConnector) {
+        if (operators == null){
+            operators = Collections.emptyMap();
+        }
         if (mapConditions != null) {
             QueryCondition condition = null;
             for (Map.Entry<String, Object> entry : mapConditions.entrySet()) {
@@ -287,212 +296,208 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
                 if (condition == null) {
                     condition = cond;
                 } else {
-                    if (innerAnd) {
+                    if (innerConnector == SqlConnector.AND) {
                         condition.and(cond);
                     } else {
                         condition.or(cond);
                     }
                 }
             }
-            if (outerAnd) {
-                and(condition);
-            } else {
-                or(condition);
-            }
+            addWhereQueryCondition(condition, outerConnector);
         }
         return this;
     }
 
 
-    public Joiner<QueryWrapper> leftJoin(String table) {
+    public <Q extends QueryWrapper> Joiner<Q> leftJoin(String table) {
         return joining(SqlConsts.LEFT_JOIN, new QueryTable(table), true);
     }
 
-    public Joiner<QueryWrapper> leftJoin(String table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> leftJoin(String table, boolean when) {
         return joining(SqlConsts.LEFT_JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> leftJoin(Class<?> entityClass) {
+    public <Q extends QueryWrapper> Joiner<Q> leftJoin(Class<?> entityClass) {
         return joining(SqlConsts.LEFT_JOIN, entityClass, true);
     }
 
-    public Joiner<QueryWrapper> leftJoin(Class<?> entityClass, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> leftJoin(Class<?> entityClass, boolean when) {
         return joining(SqlConsts.LEFT_JOIN, entityClass, when);
     }
 
-    public Joiner<QueryWrapper> leftJoin(TableDef table) {
+    public <Q extends QueryWrapper> Joiner<Q> leftJoin(TableDef table) {
         return joining(SqlConsts.LEFT_JOIN, new QueryTable(table), true);
     }
 
-    public Joiner<QueryWrapper> leftJoin(TableDef table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> leftJoin(TableDef table, boolean when) {
         return joining(SqlConsts.LEFT_JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> leftJoin(QueryWrapper table) {
+    public <Q extends QueryWrapper> Joiner<Q> leftJoin(QueryWrapper table) {
         return joining(SqlConsts.LEFT_JOIN, table, true);
     }
 
-    public Joiner<QueryWrapper> leftJoin(QueryWrapper table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> leftJoin(QueryWrapper table, boolean when) {
         return joining(SqlConsts.LEFT_JOIN, table, when);
     }
 
-    public Joiner<QueryWrapper> rightJoin(String table) {
+    public <Q extends QueryWrapper> Joiner<Q> rightJoin(String table) {
         return joining(SqlConsts.RIGHT_JOIN, new QueryTable(table), true);
     }
 
-    public Joiner<QueryWrapper> rightJoin(String table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> rightJoin(String table, boolean when) {
         return joining(SqlConsts.RIGHT_JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> rightJoin(Class<?> entityClass) {
+    public <Q extends QueryWrapper> Joiner<Q> rightJoin(Class<?> entityClass) {
         return joining(SqlConsts.RIGHT_JOIN, entityClass, true);
     }
 
-    public Joiner<QueryWrapper> rightJoin(Class<?> entityClass, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> rightJoin(Class<?> entityClass, boolean when) {
         return joining(SqlConsts.RIGHT_JOIN, entityClass, when);
     }
 
-    public Joiner<QueryWrapper> rightJoin(TableDef table) {
+    public <Q extends QueryWrapper> Joiner<Q> rightJoin(TableDef table) {
         return joining(SqlConsts.RIGHT_JOIN, new QueryTable(table), true);
     }
 
-    public Joiner<QueryWrapper> rightJoin(TableDef table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> rightJoin(TableDef table, boolean when) {
         return joining(SqlConsts.RIGHT_JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> rightJoin(QueryWrapper table) {
+    public <Q extends QueryWrapper> Joiner<Q> rightJoin(QueryWrapper table) {
         return joining(SqlConsts.RIGHT_JOIN, table, true);
     }
 
-    public Joiner<QueryWrapper> rightJoin(QueryWrapper table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> rightJoin(QueryWrapper table, boolean when) {
         return joining(SqlConsts.RIGHT_JOIN, table, when);
     }
 
-    public Joiner<QueryWrapper> innerJoin(String table) {
+    public <Q extends QueryWrapper> Joiner<Q> innerJoin(String table) {
         return joining(SqlConsts.INNER_JOIN, new QueryTable(table), true);
     }
 
-    public Joiner<QueryWrapper> innerJoin(String table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> innerJoin(String table, boolean when) {
         return joining(SqlConsts.INNER_JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> innerJoin(Class<?> entityClass) {
+    public <Q extends QueryWrapper> Joiner<Q> innerJoin(Class<?> entityClass) {
         return joining(SqlConsts.INNER_JOIN, entityClass, true);
     }
 
-    public Joiner<QueryWrapper> innerJoin(Class<?> entityClass, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> innerJoin(Class<?> entityClass, boolean when) {
         return joining(SqlConsts.INNER_JOIN, entityClass, when);
     }
 
-    public Joiner<QueryWrapper> innerJoin(TableDef table) {
+    public <Q extends QueryWrapper> Joiner<Q> innerJoin(TableDef table) {
         return innerJoin(table, true);
     }
 
-    public Joiner<QueryWrapper> innerJoin(TableDef table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> innerJoin(TableDef table, boolean when) {
         return joining(SqlConsts.INNER_JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> innerJoin(QueryWrapper table) {
+    public <Q extends QueryWrapper> Joiner<Q> innerJoin(QueryWrapper table) {
         return joining(SqlConsts.INNER_JOIN, table, true);
     }
 
-    public Joiner<QueryWrapper> innerJoin(QueryWrapper table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> innerJoin(QueryWrapper table, boolean when) {
         return joining(SqlConsts.INNER_JOIN, table, when);
     }
 
-    public Joiner<QueryWrapper> fullJoin(String table) {
+    public <Q extends QueryWrapper> Joiner<Q> fullJoin(String table) {
         return joining(SqlConsts.FULL_JOIN, new QueryTable(table), true);
     }
 
-    public Joiner<QueryWrapper> fullJoin(String table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> fullJoin(String table, boolean when) {
         return joining(SqlConsts.FULL_JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> fullJoin(Class<?> entityClass) {
+    public <Q extends QueryWrapper> Joiner<Q> fullJoin(Class<?> entityClass) {
         return joining(SqlConsts.FULL_JOIN, entityClass, true);
     }
 
-    public Joiner<QueryWrapper> fullJoin(Class<?> entityClass, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> fullJoin(Class<?> entityClass, boolean when) {
         return joining(SqlConsts.FULL_JOIN, entityClass, when);
     }
 
-    public Joiner<QueryWrapper> fullJoin(TableDef table) {
+    public <Q extends QueryWrapper> Joiner<Q> fullJoin(TableDef table) {
         return joining(SqlConsts.FULL_JOIN, new QueryTable(table), true);
     }
 
-    public Joiner<QueryWrapper> fullJoin(TableDef table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> fullJoin(TableDef table, boolean when) {
         return joining(SqlConsts.FULL_JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> fullJoin(QueryWrapper table) {
+    public <Q extends QueryWrapper> Joiner<Q> fullJoin(QueryWrapper table) {
         return joining(SqlConsts.FULL_JOIN, table, true);
     }
 
-    public Joiner<QueryWrapper> fullJoin(QueryWrapper table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> fullJoin(QueryWrapper table, boolean when) {
         return joining(SqlConsts.FULL_JOIN, table, when);
     }
 
-    public Joiner<QueryWrapper> crossJoin(String table) {
+    public <Q extends QueryWrapper> Joiner<Q> crossJoin(String table) {
         return joining(SqlConsts.CROSS_JOIN, new QueryTable(table), true);
     }
 
-    public Joiner<QueryWrapper> crossJoin(String table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> crossJoin(String table, boolean when) {
         return joining(SqlConsts.CROSS_JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> crossJoin(Class<?> entityClass) {
+    public <Q extends QueryWrapper> Joiner<Q> crossJoin(Class<?> entityClass) {
         return joining(SqlConsts.CROSS_JOIN, entityClass, true);
     }
 
-    public Joiner<QueryWrapper> crossJoin(Class<?> entityClass, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> crossJoin(Class<?> entityClass, boolean when) {
         return joining(SqlConsts.CROSS_JOIN, entityClass, when);
     }
 
-    public Joiner<QueryWrapper> crossJoin(TableDef table) {
+    public <Q extends QueryWrapper> Joiner<Q> crossJoin(TableDef table) {
         return joining(SqlConsts.CROSS_JOIN, new QueryTable(table), true);
     }
 
-    public Joiner<QueryWrapper> crossJoin(TableDef table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> crossJoin(TableDef table, boolean when) {
         return joining(SqlConsts.CROSS_JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> crossJoin(QueryWrapper table) {
+    public <Q extends QueryWrapper> Joiner<Q> crossJoin(QueryWrapper table) {
         return joining(SqlConsts.CROSS_JOIN, table, true);
     }
 
-    public Joiner<QueryWrapper> crossJoin(QueryWrapper table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> crossJoin(QueryWrapper table, boolean when) {
         return joining(SqlConsts.CROSS_JOIN, table, when);
     }
 
-    public Joiner<QueryWrapper> join(String table) {
+    public <Q extends QueryWrapper> Joiner<Q> join(String table) {
         return joining(SqlConsts.JOIN, new QueryTable(table), true);
     }
 
-    public Joiner<QueryWrapper> join(String table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> join(String table, boolean when) {
         return joining(SqlConsts.JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> join(Class<?> entityClass) {
+    public <Q extends QueryWrapper> Joiner<Q> join(Class<?> entityClass) {
         return joining(SqlConsts.JOIN, entityClass, true);
     }
 
-    public Joiner<QueryWrapper> join(Class<?> entityClass, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> join(Class<?> entityClass, boolean when) {
         return joining(SqlConsts.JOIN, entityClass, when);
     }
 
-    public Joiner<QueryWrapper> join(TableDef table) {
+    public <Q extends QueryWrapper> Joiner<Q> join(TableDef table) {
         return joining(SqlConsts.JOIN, new QueryTable(table), true);
     }
 
-    public Joiner<QueryWrapper> join(TableDef table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> join(TableDef table, boolean when) {
         return joining(SqlConsts.JOIN, new QueryTable(table), when);
     }
 
-    public Joiner<QueryWrapper> join(QueryWrapper table) {
+    public <Q extends QueryWrapper> Joiner<Q> join(QueryWrapper table) {
         return joining(SqlConsts.JOIN, table, true);
     }
 
-    public Joiner<QueryWrapper> join(QueryWrapper table, boolean when) {
+    public <Q extends QueryWrapper> Joiner<Q> join(QueryWrapper table, boolean when) {
         return joining(SqlConsts.JOIN, table, when);
     }
 
@@ -527,22 +532,24 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     //        return this;
     //    }
 
-    protected Joiner<QueryWrapper> joining(String type, QueryTable table, boolean when) {
+    @SuppressWarnings("unchecked")
+    protected <T extends QueryWrapper> Joiner<T> joining(String type, QueryTable table, boolean when) {
         Join join = new Join(type, table, when);
         addJoinTable(join.getQueryTable());
-        return new Joiner<>(addJoin(join), join);
+        return new Joiner<>((T) addJoin(join), join);
     }
 
-    protected Joiner<QueryWrapper> joining(String type, Class<?> entityClass, boolean when) {
+    protected <T extends QueryWrapper> Joiner<T> joining(String type, Class<?> entityClass, boolean when) {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
         QueryTable queryTable = new QueryTable(tableInfo.getSchema(), tableInfo.getTableName());
         return joining(type, queryTable, when);
     }
 
-    protected Joiner<QueryWrapper> joining(String type, QueryWrapper queryWrapper, boolean when) {
+    @SuppressWarnings("unchecked")
+    protected <T extends QueryWrapper> Joiner<T> joining(String type, QueryWrapper queryWrapper, boolean when) {
         Join join = new Join(type, queryWrapper, when);
         addJoinTable(join.getQueryTable());
-        return new Joiner<>(addJoin(join), join);
+        return new Joiner<>((T) addJoin(join), join);
     }
 
     public QueryWrapper groupBy(String name) {

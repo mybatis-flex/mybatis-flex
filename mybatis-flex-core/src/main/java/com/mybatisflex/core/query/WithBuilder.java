@@ -21,25 +21,30 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class WithBuilder {
+/**
+ * @author michael
+ */
+public class WithBuilder<Wrapper extends QueryWrapper> {
 
-    private QueryWrapper queryWrapper;
+    private Wrapper queryWrapper;
     private With with;
 
-    //withItem
+    /**
+     * withItem
+     */
     private String name;
     private List<String> params;
 
     public WithBuilder() {
     }
 
-    public WithBuilder(QueryWrapper queryWrapper, With with, String name) {
+    public WithBuilder(Wrapper queryWrapper, With with, String name) {
         this.queryWrapper = queryWrapper;
         this.with = with;
         this.name = name;
     }
 
-    public WithBuilder(QueryWrapper queryWrapper, With with, String name, List<String> params) {
+    public WithBuilder(Wrapper queryWrapper, With with, String name, List<String> params) {
         this.queryWrapper = queryWrapper;
         this.with = with;
         this.name = name;
@@ -47,7 +52,7 @@ public class WithBuilder {
     }
 
 
-    public QueryWrapper asSelect(QueryWrapper newWrapper) {
+    public Wrapper asSelect(QueryWrapper newWrapper) {
         WithItem withItem = new WithItem(name, params);
         withItem.setWithDetail(new WithSelectDetail(newWrapper));
         with.addWithItem(withItem);
@@ -55,7 +60,7 @@ public class WithBuilder {
     }
 
 
-    public QueryWrapper asValues(Object[] values, QueryWrapper newWrapper) {
+    public Wrapper asValues(Object[] values, QueryWrapper newWrapper) {
         WithItem withItem = new WithItem(name, params);
         withItem.setWithDetail(new WithValuesDetail(Arrays.asList(values), newWrapper));
         with.addWithItem(withItem);
@@ -63,14 +68,14 @@ public class WithBuilder {
     }
 
 
-    public QueryWrapper asValues(Collection values, QueryWrapper newWrapper) {
+    public Wrapper asValues(Collection values, QueryWrapper newWrapper) {
         WithItem withItem = new WithItem(name, params);
         withItem.setWithDetail(new WithValuesDetail(CollectionUtil.toList(values), newWrapper));
         with.addWithItem(withItem);
         return queryWrapper;
     }
 
-    public QueryWrapper asRaw(String rawSQL, Object... params) {
+    public Wrapper asRaw(String rawSQL, Object... params) {
         WithItem withItem = new WithItem(name, this.params);
         withItem.setWithDetail(new WithStringDetail(rawSQL, params));
         with.addWithItem(withItem);
