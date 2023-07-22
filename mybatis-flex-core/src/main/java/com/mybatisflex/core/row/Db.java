@@ -880,7 +880,7 @@ public class Db {
      * @param queryWrapper query 封装
      * @return 数据内容
      */
-    public static Object selectObjectList(String schema, String tableName, QueryWrapper queryWrapper) {
+    public static List<Object> selectObjectList(String schema, String tableName, QueryWrapper queryWrapper) {
         return invoker().selectObjectListByQuery(schema, tableName, queryWrapper);
     }
 
@@ -891,7 +891,7 @@ public class Db {
      * @param queryWrapper query 封装
      * @return 数据内容
      */
-    public static Object selectObjectList(String tableName, QueryWrapper queryWrapper) {
+    public static List<Object> selectObjectList(String tableName, QueryWrapper queryWrapper) {
         return invoker().selectObjectListByQuery(null, tableName, queryWrapper);
     }
 
@@ -902,7 +902,7 @@ public class Db {
      * @param queryWrapper query 封装
      * @return 数据内容
      */
-    public static Object selectObjectList(QueryWrapper queryWrapper) {
+    public static List<Object> selectObjectList(QueryWrapper queryWrapper) {
         return invoker().selectObjectListByQuery(null, null, queryWrapper);
     }
 
