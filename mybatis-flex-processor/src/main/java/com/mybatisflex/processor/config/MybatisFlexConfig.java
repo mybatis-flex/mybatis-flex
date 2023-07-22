@@ -51,19 +51,23 @@ public class MybatisFlexConfig {
 
     public MybatisFlexConfig(Filer filer) {
         try {
-            //target/classes/mybatis-flex.config
-            FileObject aptConfigFileObject = filer.getResource(StandardLocation.CLASS_OUTPUT, "", APT_FILE_NAME);
+            //target/classes/
+            FileObject resource = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "mybatis-flex");
+            File classPathFile = new File(resource.toUri()).getParentFile();
+
+            String projectRootPath = FileUtil.getProjectRootPath(classPathFile, 10);
 
             List<File> aptConfigFiles = new ArrayList<>();
-            File moduleRoot = new File(aptConfigFileObject.toUri()).getParentFile().getParentFile().getParentFile();
 
-            while (FileUtil.existsBuildFile(moduleRoot)) {
-                File aptConfig = new File(moduleRoot, APT_FILE_NAME);
+            while (projectRootPath != null && classPathFile != null
+                && projectRootPath.length() <= classPathFile.getAbsolutePath().length()) {
+                File aptConfig = new File(classPathFile, APT_FILE_NAME);
                 if (aptConfig.exists()) {
                     aptConfigFiles.add(aptConfig);
                 }
-                moduleRoot = moduleRoot.getParentFile();
+                classPathFile = classPathFile.getParentFile();
             }
+
 
             for (File aptConfigFile : aptConfigFiles) {
                 try (InputStream stream = Files.newInputStream(aptConfigFile.toPath());
@@ -88,8 +92,8 @@ public class MybatisFlexConfig {
                 }
             }
 
-        } catch (Exception ignored) {
-            // do nothing here.
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

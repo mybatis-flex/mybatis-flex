@@ -35,9 +35,9 @@ public class FileUtil {
     private static Set<String> flagFileNames = new HashSet<>(Arrays.asList("pom.xml", "build.gradle", "build.gradle.kts"));
 
 
-    public static boolean existsBuildFile(File file) {
+    public static boolean existsBuildFile(File dir) {
         for (String fileName : flagFileNames) {
-            if (new File(file, fileName).exists()) {
+            if (new File(dir, fileName).exists()) {
                 return true;
             }
         }
@@ -61,17 +61,17 @@ public class FileUtil {
         return getProjectRootPath(file, count);
     }
 
-    public static String getProjectRootPath(File file, int count) {
-        if (count <= 0) {
+    public static String getProjectRootPath(File file, int depth) {
+        if (depth <= 0) {
             return null;
         }
         if (file.isFile()) {
-            return getProjectRootPath(file.getParentFile(), --count);
+            return getProjectRootPath(file.getParentFile(), depth - 1);
         } else {
             if (existsBuildFile(file) && !existsBuildFile(file.getParentFile())) {
                 return file.getAbsolutePath();
             } else {
-                return getProjectRootPath(file.getParentFile(), --count);
+                return getProjectRootPath(file.getParentFile(), depth - 1);
             }
         }
     }
