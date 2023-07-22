@@ -1178,12 +1178,15 @@ public class TableInfo {
         }
 
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
-        Object columnValue = getPropertyValue(metaObject, columnInfoMapping.get(logicDeleteColumn).property);
+        ColumnInfo logicDeleteColumn = columnInfoMapping.get(this.logicDeleteColumn);
+        Object columnValue = getPropertyValue(metaObject, logicDeleteColumn.property);
         if (columnValue == null) {
-            String property = columnInfoMapping.get(logicDeleteColumn).property;
-            Class<?> setterType = metaObject.getSetterType(property);
-            Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
-            metaObject.setValue(property, ConvertUtil.convert(normalValueOfLogicDelete, setterType));
+            Object normalValueOfLogicDelete = LogicDeleteManager.getProcessor().getLogicNormalValue();
+            if (normalValueOfLogicDelete != null) {
+                String property = logicDeleteColumn.property;
+                Class<?> setterType = metaObject.getSetterType(property);
+                metaObject.setValue(property, ConvertUtil.convert(normalValueOfLogicDelete, setterType));
+            }
         }
     }
 

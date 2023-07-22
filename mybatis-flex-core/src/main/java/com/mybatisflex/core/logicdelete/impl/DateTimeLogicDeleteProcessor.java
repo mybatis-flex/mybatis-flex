@@ -45,7 +45,7 @@ public class DateTimeLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      * 逻辑删除字段值为 {@code null} 表示数据未删除。
      */
     @Override
-    protected Object getLogicNormalValue() {
+    public Object getLogicNormalValue() {
         return null;
     }
 
@@ -53,7 +53,7 @@ public class DateTimeLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      * 逻辑删除字段值为 {@code NOW()} 表示数据删除，并记录删除时间。
      */
     @Override
-    protected Object getLogicDeletedValue() {
+    public Object getLogicDeletedValue() {
         return "NOW()";
     }
 

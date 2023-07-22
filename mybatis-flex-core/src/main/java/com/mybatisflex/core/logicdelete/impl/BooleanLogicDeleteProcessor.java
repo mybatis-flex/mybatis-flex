@@ -30,7 +30,7 @@ public class BooleanLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      * 逻辑删除字段值为 {@code false} 表示数据未删除。
      */
     @Override
-    protected Object getLogicNormalValue() {
+    public Object getLogicNormalValue() {
         return false;
     }
 
@@ -38,7 +38,7 @@ public class BooleanLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
      * 逻辑删除字段值为 {@code true} 表示数据删除。
      */
     @Override
-    protected Object getLogicDeletedValue() {
+    public Object getLogicDeletedValue() {
         return true;
     }
 
