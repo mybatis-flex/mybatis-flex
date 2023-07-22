@@ -66,9 +66,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public <T> QueryWrapper select(LambdaGetter<T>... lambdaGetters) {
+    public <T> R select(LambdaGetter<T>... lambdaGetters) {
         super.select(lambdaGetters);
-        return this;
+        return (R) this;
     }
 
     @Override
