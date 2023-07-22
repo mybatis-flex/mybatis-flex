@@ -44,33 +44,36 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return tableInfo.buildQueryWrapper(entity);
     }
 
-
-    public WithBuilder<? extends QueryWrapper> with(String name) {
+    @SuppressWarnings("unchecked")
+    public <Q extends QueryWrapper> WithBuilder<Q> with(String name) {
         if (with == null) {
             with = new With();
         }
-        return new WithBuilder<>(this, with, name);
+        return new WithBuilder<>((Q) this, with, name);
     }
 
-    public WithBuilder<? extends QueryWrapper> with(String name, String... params) {
+    @SuppressWarnings("unchecked")
+    public <Q extends QueryWrapper> WithBuilder<Q> with(String name, String... params) {
         if (with == null) {
             with = new With();
         }
-        return new WithBuilder<>(this, with, name, Arrays.asList(params));
+        return new WithBuilder<>((Q) this, with, name, Arrays.asList(params));
     }
 
-    public WithBuilder<? extends QueryWrapper> withRecursive(String name) {
+    @SuppressWarnings("unchecked")
+    public <Q extends QueryWrapper> WithBuilder<Q> withRecursive(String name) {
         if (with == null) {
             with = new With(true);
         }
-        return new WithBuilder<>(this, with, name);
+        return new WithBuilder<>((Q) this, with, name);
     }
 
-    public WithBuilder<? extends QueryWrapper> withRecursive(String name, String... params) {
+    @SuppressWarnings("unchecked")
+    public <Q extends QueryWrapper> WithBuilder<Q> withRecursive(String name, String... params) {
         if (with == null) {
             with = new With(true);
         }
-        return new WithBuilder<>(this, with, name, Arrays.asList(params));
+        return new WithBuilder<>((Q) this, with, name, Arrays.asList(params));
     }
 
     public QueryWrapper select() {
@@ -235,7 +238,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return connectMap(whereConditions, operators, SqlConnector.AND, SqlConnector.AND);
     }
 
-    public QueryWrapper and(Map<String, Object> whereConditions, Map<String, SqlOperator> operators,SqlConnector innerConnector) {
+    public QueryWrapper and(Map<String, Object> whereConditions, Map<String, SqlOperator> operators, SqlConnector innerConnector) {
         return connectMap(whereConditions, operators, SqlConnector.AND, innerConnector);
     }
 
@@ -277,12 +280,12 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return connectMap(whereConditions, operators, SqlConnector.OR, SqlConnector.AND);
     }
 
-    public QueryWrapper or(Map<String, Object> whereConditions, Map<String, SqlOperator> operators,SqlConnector innerConnector) {
+    public QueryWrapper or(Map<String, Object> whereConditions, Map<String, SqlOperator> operators, SqlConnector innerConnector) {
         return connectMap(whereConditions, operators, SqlConnector.OR, SqlConnector.AND);
     }
 
     protected QueryWrapper connectMap(Map<String, Object> mapConditions, Map<String, SqlOperator> operators, SqlConnector outerConnector, SqlConnector innerConnector) {
-        if (operators == null){
+        if (operators == null) {
             operators = Collections.emptyMap();
         }
         if (mapConditions != null) {
