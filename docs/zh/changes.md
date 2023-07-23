@@ -1,6 +1,31 @@
 # MyBatis-Flex ChangeLog
 
 
+## v1.5.2 20230723:
+- 新增：添加 QueryWrapperChain 用于链式调用查询或者操作数据，感谢 @Suomm
+- 新增：添加 DbChain 链式调用 Db + Row 的相关方法和功能，感谢 @Suomm
+- 新增：Relation 关联查询添加 `selectColumns` 配置，用于自定义查询指定列名
+- 新增：代码生成器添加支持 Springdoc 的支持，感谢 @dgmico
+- 新增：QueryWrapper 的 orderBy 添加 lambda 参数的支持
+- 优化：重构 IService 统一批量操作方式，感谢 @Suomm
+- 优化：Field Query 中 QueryWrapper 返回 null 值时，应该不进行属性查询，感谢 @Suomm
+- 优化：移除 ConvertUtil.java 一些未用到的代码
+- 优化：修改 Db.selectObjectList() 方法返回数据类型不明确的问题，感谢 @Suomm
+- 修复：left join 多个条件，且多次引用相同表，后续的条件中别名无效的问题 #I7MI4O
+- 修复：在某些场景下，在 Spring Controller 使用 `@UseDataSource` 设置当前数据源不生效的问题
+- 修复：当 Entity 或者 VO 中定义数据类型为 `List<Map`> 时，映射出错的问题
+- 修复：在 kotlin 下，使用枚举类作为条件参数时，sql 执行异常的问题，感谢 @liibang
+- 修复：逻辑删除使用时间类型时，正常值初始化错误的问题，感谢 @Suomm
+- 修复：在 kotlin 下，apt 无法正确找到 mybatis-flex.config 配置的问题
+- 修复：代码生成器在多次调用生成时，可能出现 IllegalArgumentException 错误的问题
+- 修复：嵌套事务下，且传播方式为 REQUIRED 时，当子事务抛出异常时出错的问题 #I7N8A1
+- 文档：更新多表 `@Relation` 关联查询的相关文档
+- 文档：添加关于 QueryWrapperChain 的相关文档
+- 文档：修改逻辑删除的相关链接引用错误，感谢 @Suomm
+- 文档：添加关于 DbChain 使用的相关文档，感谢 @Suomm
+
+
+
 ## v1.5.1 20230719:
 - 新增：添加 IService.saveBatchSelective() 批量保存的方法
 - 新增：添加 Relation 默认查询深度在 spring 的 application.yml 进行配置支持 #I7LLRU

@@ -13,7 +13,7 @@
 - 优化：修改 Db.selectObjectList() 方法返回数据类型不明确的问题，感谢 @Suomm
 - 修复：left join 多个条件，且多次引用相同表，后续的条件中别名无效的问题 #I7MI4O
 - 修复：在某些场景下，在 Spring Controller 使用 `@UseDataSource` 设置当前数据源不生效的问题
-- 修复：当 Entity 或者 VO 中定义数据类型为 List<Map> 时，映射出错的问题
+- 修复：当 Entity 或者 VO 中定义数据类型为 `List<Map`> 时，映射出错的问题
 - 修复：在 kotlin 下，使用枚举类作为条件参数时，sql 执行异常的问题，感谢 @liibang
 - 修复：逻辑删除使用时间类型时，正常值初始化错误的问题，感谢 @Suomm
 - 修复：在 kotlin 下，apt 无法正确找到 mybatis-flex.config 配置的问题
