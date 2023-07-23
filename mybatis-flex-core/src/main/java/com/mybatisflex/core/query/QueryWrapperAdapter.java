@@ -549,6 +549,11 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
+    public <T> QueryOrderByBuilder<R> orderBy(LambdaGetter<T> getter) {
+        return (QueryOrderByBuilder<R>) super.orderBy(getter);
+    }
+
+    @Override
     public R orderBy(String... orderBys) {
         super.orderBy(orderBys);
         return (R) this;

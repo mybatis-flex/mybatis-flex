@@ -591,6 +591,12 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
+
+    public <T> QueryOrderByBuilder<? extends QueryWrapper> orderBy(LambdaGetter<T> getter) {
+        return new QueryOrderByBuilder<>(this, getter);
+    }
+
+
     public QueryWrapper orderBy(String... orderBys) {
         if (orderBys == null || orderBys.length == 0) {
             //ignore

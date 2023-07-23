@@ -25,12 +25,16 @@ import java.util.List;
 
 /**
  * 排序字段
+ * @author michael
  */
 public class QueryOrderBy implements CloneSupport<QueryOrderBy> {
 
     private QueryColumn queryColumn;
 
-    private String orderType = SqlConsts.ASC; //asc desc
+    /**
+     * asc, desc
+     */
+    private String orderType = SqlConsts.ASC;
 
     private boolean nullsFirst = false;
     private boolean nullsLast = false;
@@ -72,6 +76,7 @@ public class QueryOrderBy implements CloneSupport<QueryOrderBy> {
         }
         return sql;
     }
+
 
     @Override
     public QueryOrderBy clone() {
