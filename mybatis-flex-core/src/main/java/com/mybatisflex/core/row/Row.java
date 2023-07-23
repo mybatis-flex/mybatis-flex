@@ -21,10 +21,7 @@ import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.update.RawValue;
 import com.mybatisflex.core.update.UpdateWrapper;
-import com.mybatisflex.core.util.ArrayUtil;
-import com.mybatisflex.core.util.ConvertUtil;
-import com.mybatisflex.core.util.SqlUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.util.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -36,7 +33,7 @@ import java.util.*;
 public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper {
 
     //主键，多个主键用英文逗号隔开
-    private RowKey[] primaryKeys;
+    private Set<RowKey> primaryKeys;
 
     public static Row of(String key, Object value) {
         Row row = new Row();
@@ -51,10 +48,10 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
     public static Row ofKey(String primaryKey, Object value) {
         Row row = new Row();
         String[] primaryKeyStrings = primaryKey.split(",");
-        row.primaryKeys = new RowKey[primaryKeyStrings.length];
+        row.primaryKeys = new HashSet<>(primaryKeyStrings.length);
 
-        for (int i = 0; i < primaryKeyStrings.length; i++) {
-            row.primaryKeys[i] = RowKey.of(primaryKeyStrings[i].trim());
+        for (String primaryKeyString : primaryKeyStrings) {
+            row.primaryKeys.add(RowKey.of(primaryKeyString.trim()));
         }
 
         if (primaryKeyStrings.length > 1 && !value.getClass().isArray()) {
@@ -74,14 +71,14 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
 
     public static Row ofKey(RowKey... rowKeys) {
         Row row = new Row();
-        row.primaryKeys = rowKeys;
+        row.getPrimaryKeys().addAll(Arrays.asList(rowKeys));
         return row;
     }
 
 
     public static Row ofKey(RowKey rowKey, Object value) {
         Row row = new Row();
-        row.primaryKeys = new RowKey[]{rowKey};
+        row.getPrimaryKeys().add(rowKey);
         row.put(rowKey.keyColumn, value);
         return row;
     }
@@ -89,7 +86,7 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
 
     public static Row ofKey(RowKey[] rowKeys, Object[] value) {
         Row row = new Row();
-        row.primaryKeys = rowKeys;
+        row.getPrimaryKeys().addAll(Arrays.asList(rowKeys));
         for (int i = 0; i < rowKeys.length; i++) {
             row.put(rowKeys[i].keyColumn, value[i]);
         }
@@ -328,11 +325,14 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
         return ret;
     }
 
-    public RowKey[] getPrimaryKeys() {
+    public Set<RowKey> getPrimaryKeys() {
+        if (primaryKeys == null) {
+            primaryKeys = new HashSet<>();
+        }
         return primaryKeys;
     }
 
-    public void setPrimaryKeys(RowKey... primaryKeys) {
+    public void setPrimaryKeys(Set<RowKey> primaryKeys) {
         this.primaryKeys = primaryKeys;
     }
 
@@ -347,7 +347,7 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
 
 
     Set<String> getModifyAttrs() {
-        int pkCount = primaryKeys != null ? primaryKeys.length : 0;
+        int pkCount = primaryKeys != null ? primaryKeys.size() : 0;
         if (pkCount == 0) {
             return keySet();
         }
@@ -384,26 +384,29 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
 
 
     String[] obtainsPrimaryKeyStrings() {
-        String[] returnKeys = new String[primaryKeys.length];
-        for (int i = 0; i < primaryKeys.length; i++) {
-            returnKeys[i] = primaryKeys[i].keyColumn;
+        String[] returnKeys = new String[primaryKeys.size()];
+        int index = 0;
+        for (RowKey primaryKey : primaryKeys) {
+            returnKeys[index++] = primaryKey.keyColumn;
         }
         return returnKeys;
     }
 
 
     RowKey[] obtainsPrimaryKeys() {
-        return this.primaryKeys;
+        return getPrimaryKeys().toArray(new RowKey[0]);
     }
 
 
     Object[] obtainsPrimaryValues() {
-        if (ArrayUtil.isEmpty(primaryKeys)) {
+        if (CollectionUtil.isEmpty(primaryKeys)) {
             return FlexConsts.EMPTY_ARRAY;
         }
-        Object[] values = new Object[primaryKeys.length];
-        for (int i = 0; i < primaryKeys.length; i++) {
-            values[i] = get(primaryKeys[i].keyColumn);
+        Object[] values = new Object[primaryKeys.size()];
+
+        int index = 0;
+        for (RowKey primaryKey : primaryKeys) {
+            values[index++] = get(primaryKey.keyColumn);
         }
         return values;
     }
@@ -415,7 +418,7 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
 
 
     private boolean isPk(String attr) {
-        if (primaryKeys != null && primaryKeys.length > 0) {
+        if (primaryKeys != null && !primaryKeys.isEmpty()) {
             for (RowKey primaryKey : primaryKeys) {
                 if (primaryKey.keyColumn.equalsIgnoreCase(attr)) {
                     return true;
