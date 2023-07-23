@@ -97,12 +97,12 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
         return rowData;
     }
 
-    public DbChain set(RowKey rowKey) {
+    public DbChain setId(RowKey rowKey) {
         getRow().getPrimaryKeys().add(rowKey);
         return this;
     }
 
-    public DbChain set(RowKey rowKey, Object value) {
+    public DbChain setId(RowKey rowKey, Object value) {
         getRow().getPrimaryKeys().add(rowKey);
         getRow().put(rowKey.keyColumn, value);
         return this;

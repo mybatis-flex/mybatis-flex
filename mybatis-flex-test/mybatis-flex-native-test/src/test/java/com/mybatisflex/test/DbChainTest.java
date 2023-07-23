@@ -58,7 +58,7 @@ public class DbChainTest {
     @Test
     public void testSave() {
         boolean saved = DbChain.table("tb_account")
-            .set(RowKey.AUTO)
+            .setId(RowKey.AUTO)
             .set("user_name", "王帅")
             .set("age", 18)
             .set("birthday", new Date())
@@ -76,7 +76,7 @@ public class DbChainTest {
     @Test
     public void testUpdate() {
         boolean updated = DbChain.table("tb_account")
-            .set(RowKey.AUTO, 1)
+            .setId(RowKey.AUTO, 1)
             .set("age", 1000)
             .updateById();
 
