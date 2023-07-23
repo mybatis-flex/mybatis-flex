@@ -57,9 +57,20 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
 
     /**
      * 覆盖 {@link QueryWrapper} 的静态方法，仅用于查询，必须使用 {@code from(...)} 方法指定表。
+     *
+     * @deprecated 使用 {@code table(...)} 方法创建
      */
+    @Deprecated
     public static DbChain create() {
         return new DbChain();
+    }
+
+    /**
+     * @deprecated 覆盖 {@link QueryWrapper} 的静态方法
+     */
+    @Deprecated
+    public static DbChain create(Object entity) {
+        throw new UnsupportedOperationException();
     }
 
     public static DbChain table(String tableName) {
@@ -86,12 +97,12 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
         return rowData;
     }
 
-    public DbChain set(RowKey rowKey) {
+    public DbChain setId(RowKey rowKey) {
         getRow().getPrimaryKeys().add(rowKey);
         return this;
     }
 
-    public DbChain set(RowKey rowKey, Object value) {
+    public DbChain setId(RowKey rowKey, Object value) {
         getRow().getPrimaryKeys().add(rowKey);
         getRow().put(rowKey.keyColumn, value);
         return this;
@@ -136,7 +147,7 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
         return SqlUtil.toBool(Db.updateById(schema, tableName, getRow()));
     }
 
-    private Row toRow(Object entity) {
+    private static Row toRow(Object entity) {
         Class<?> entityClass = entity.getClass();
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
         Row row = new Row();
