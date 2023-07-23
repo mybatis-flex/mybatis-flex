@@ -24,6 +24,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.DbChain;
 import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
+import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -49,6 +50,7 @@ public class AccountTester {
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
             .setDataSource(dataSource)
+            .setLogImpl(StdOutImpl.class)
             .addMapper(AccountMapper.class)
             .start();
 
