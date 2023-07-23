@@ -85,3 +85,95 @@ List<Article> articles=QueryWrapperChain.create(mapper)
 
 - objList()：查询第一列
 - objListAs(asType)：查询第一列，并转换为指定类型，比如 Long, String 等
+
+## 代码实战示例
+
+### 示例 1：查询 Entity 列表
+
+```java
+List<Article> articles = articleService.queryChain()
+    .select(ARTICLE.ALL_COLUMNS)
+    .from(ARTICLE)
+    .where(ARTICLE.ID.ge(100))
+    .list();
+```
+
+### 示例 2：查询 1 条 Entity 数据
+
+```java
+Article article = articleService.queryChain()
+    .select(ARTICLE.ALL_COLUMNS)
+    .from(ARTICLE)
+    .where(ARTICLE.ID.ge(100))
+    .limit(1)
+    .one();
+```
+
+### 示例 3：查询 VO 数据（ArticleVo）
+
+ArticleVo.java
+```java
+public class ArticleVo {
+
+    private Long id;
+
+    private Long accountId;
+
+    private String title;
+
+    private String content;
+
+    //评论量最多的内容
+    private Long maxComments;
+}
+```
+
+查询代码：
+
+```java
+ArticleVo articleVo = articleService.queryChain()
+    .select(
+        ARTICLE.ALL_COLUMNS,
+        max(ARTICLE.comments).as(ArticleVo::maxCommments)
+    ).from(ARTICLE)
+    .where(ARTICLE.ID.ge(100))
+    .limit(1)
+    .oneAs(ArticleVo.class);
+```
+### 示例 4：关联查询 VO 数据（ArticleVo）
+
+ArticleVo.java
+```java
+public class ArticleVo {
+
+    private Long id;
+
+    private Long accountId;
+
+    private String title;
+
+    private String content;
+
+    @RelationManyToMany(
+        joinTable = "tb_article_category_mapping", // 中间表
+        selfField = "id", joinSelfColumn = "article_id",
+        targetField = "id", joinTargetColumn = "category_id"
+    )
+    private List<ArticleCategory> categories;
+}
+```
+
+查询代码：
+
+```java
+ArticleVo articleVo = articleService.queryChain()
+    .select()
+    .from(ARTICLE)
+    .where(ARTICLE.ID.ge(100))
+    .limit(1)
+    .oneWithRelationsAs(ArticleVo.class);
+```
+
+> 通过 `oneWithRelationsAs` 方法查询 `ArticleVo` 及其关联数据。
+> 更多关于关联查询的内容请参考章节：[《关联查询》](/zh/base/relations-query.html)。
+
