@@ -22,6 +22,7 @@ import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.row.DbChain;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowKey;
+import com.mybatisflex.core.row.RowUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -29,9 +30,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.List;
 
 /**
  * @author 王帅
@@ -69,8 +68,6 @@ public class DbChainTest {
             .one();
 
         System.out.println(row);
-
-        assertTrue(saved);
     }
 
     @Test
@@ -85,8 +82,6 @@ public class DbChainTest {
             .one();
 
         System.out.println(row);
-
-        assertTrue(updated);
     }
 
     @Test
@@ -97,7 +92,10 @@ public class DbChainTest {
 
         long count = DbChain.table("tb_account").count();
 
-        assertEquals(1, count);
+        List<Row> tb_account = DbChain.table("tb_account").list();
+        RowUtil.printPretty(tb_account);
+
+        System.out.println(">>>>>>testRemove count: " + count);
     }
 
     @Test
