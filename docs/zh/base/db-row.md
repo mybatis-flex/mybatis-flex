@@ -28,14 +28,36 @@ List<Row> rows = Db.selectListBySql(sql,18);
 
 
 //分页查询：每页 10 条数据，查询第 3 页的年龄大于 18 的用户
-QueryWrapper query = QueryWrapper.create()
-        .where(ACCOUNT.AGE.ge(18));
-Page<Row> rowPage = Db.paginate("tb_account",3,10,query);
+    QueryWrapper query=QueryWrapper.create()
+    .where(ACCOUNT.AGE.ge(18));
+    Page<Row> rowPage=Db.paginate("tb_account",3,10,query);
 ```
 
 > Db 工具类还提供了更多 增、删、改、查和分页查询等方法。
 >
-> 具体参考： [Db.java](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/row/Db.java) 。
+>
+具体参考： [Db.java](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/row/Db.java) 。
+
+## DbChain 链式 Db 调用
+
+使用 `DbChain` 之后无需将 `QueryWrapper` 与 `Row` 的构建分离，直接即可进行操作。
+
+```java
+// 新增 Row 构建
+DbChain.table("tb_account")
+    .set(RowKey.AUTO)
+    .set("user_name","王帅")
+    .set("age",18)
+    .set("birthday",new Date())
+    .save();
+
+// 查询 QueryWrapper 构建
+    DbChain.table("tb_account")
+    .select("id","user_name","age","birthday")
+    .where("age > ?",18)
+    .list()
+    .forEach(System.out::println);
+```
 
 ## Row.toEntity()
 
@@ -45,7 +67,7 @@ Page<Row> rowPage = Db.paginate("tb_account",3,10,query);
 代码示例：
 
 ```java
-Row row = Db.selectOneBySql("select * from ....");
+Row row=Db.selectOneBySql("select * from ....");
 Account entity = row.toEntity(Account.class);
 ```
 
@@ -125,7 +147,7 @@ System.out.println(articles);
 public class Other {
     private String id;
     private String userName;
-    
+
     //getter setter
 }
 ```
