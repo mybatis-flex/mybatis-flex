@@ -899,6 +899,13 @@ public class GlobalConfig {
     }
 
     /**
+     * @see EntityConfig#getSwaggerVersion()
+     */
+    public EntityConfig.SwaggerVersion getSwaggerVersion() {
+        return getEntityConfig().getSwaggerVersion();
+    }
+
+    /**
      * @see EntityConfig#setWithSwagger(boolean)
      */
     public void setEntityWithSwagger(boolean entityWithSwagger) {

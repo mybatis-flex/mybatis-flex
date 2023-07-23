@@ -1,13 +1,17 @@
 #set(withLombok = entityConfig.isWithLombok())
 #set(withSwagger = entityConfig.isWithSwagger())
+#set(swaggerVersion = entityConfig.getSwaggerVersion())
 package #(packageConfig.entityPackage);
 
 #for(importClass : table.buildImports())
 import #(importClass);
 #end
-#if(withSwagger)
+#if(withSwagger && swaggerVersion.getName() == "FOX")
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+#end
+#if(withSwagger && swaggerVersion.getName() == "DOC")
+import io.swagger.v3.oas.annotations.media.Schema;
 #end
 #if(withLombok)
 import lombok.AllArgsConstructor;
@@ -28,13 +32,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 #end
-#if(withSwagger)
+#if(withSwagger && swaggerVersion.getName() == "FOX")
 @ApiModel("#(table.getComment())")
+#end
+#if(withSwagger && swaggerVersion.getName() == "DOC")
+@Schema(description = "#(table.getComment())")
 #end
 #(table.buildTableAnnotation())
 public class #(table.buildEntityClassName())#(table.buildExtends())#(table.buildImplements()) {
 #for(column : table.columns)
-
     #set(comment = javadocConfig.formatColumnComment(column.comment))
     #if(isNotBlank(comment))
     /**
@@ -45,8 +51,11 @@ public class #(table.buildEntityClassName())#(table.buildExtends())#(table.build
     #if(isNotBlank(annotations))
     #(annotations)
     #end
-    #if(withSwagger)
+    #if(withSwagger && swaggerVersion.getName() == "FOX")
     @ApiModelProperty("#(column.comment)")
+    #end
+    #if(withSwagger && swaggerVersion.getName() == "DOC")
+    @Schema(description = "#(column.comment)")
     #end
     private #(column.propertySimpleType) #(column.property);
 #end
