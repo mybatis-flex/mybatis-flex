@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.relation;
 
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.util.*;
@@ -33,11 +34,11 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
     public ToManyRelation(String selfField, String targetSchema, String targetTable, String targetField,
                           String joinTable, String joinSelfColumn, String joinTargetColumn,
                           String dataSource, Class<SelfEntity> selfEntityClass, Field relationField,
-                          String extraCondition) {
+                          String extraCondition, String[] selectColumns) {
         super(selfField, targetSchema, targetTable, targetField,
             joinTable, joinSelfColumn, joinTargetColumn,
             dataSource, selfEntityClass, relationField,
-            extraCondition
+            extraCondition, selectColumns
         );
     }
 
@@ -113,6 +114,10 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
         this.mapKeyField = mapKeyField;
         if (StringUtil.isNotBlank(mapKeyField)) {
             this.mapKeyFieldWrapper = FieldWrapper.of(targetEntityClass, mapKeyField);
+        } else {
+            if (Map.class.isAssignableFrom(relationFieldWrapper.getFieldType())) {
+                throw FlexExceptions.wrap("Please config mapKeyField for map field: " + relationFieldWrapper.getField());
+            }
         }
     }
 

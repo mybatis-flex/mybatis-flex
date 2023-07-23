@@ -16,11 +16,13 @@
 package com.mybatisflex.core.relation;
 
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.IdInfo;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
+import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.FieldWrapper;
 import com.mybatisflex.core.util.StringUtil;
@@ -57,10 +59,13 @@ abstract class AbstractRelation<SelfEntity> {
     protected String extraConditionSql;
     protected List<String> extraConditionParamKeys;
 
+    protected QueryColumn conditionColumn;
+    protected String[] selectColumns;
+
     public AbstractRelation(String selfField, String targetSchema, String targetTable, String targetField,
                             String joinTable, String joinSelfColumn, String joinTargetColumn,
                             String dataSource, Class<SelfEntity> entityClass, Field relationField,
-                            String extraCondition
+                            String extraCondition, String[] selectColumns
     ) {
         this.name = entityClass.getSimpleName() + "." + relationField.getName();
         this.simpleName = relationField.getName();
@@ -86,6 +91,17 @@ abstract class AbstractRelation<SelfEntity> {
         this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
 
         this.targetTableInfo = TableInfoFactory.ofEntityClass(targetEntityClass);
+
+        this.conditionColumn = column(targetTableInfo.getColumnByProperty(this.targetField.getName()));
+
+        if (ArrayUtil.isNotEmpty(selectColumns)) {
+            if (ArrayUtil.contains(selectColumns, conditionColumn.getName())) {
+                this.selectColumns = selectColumns;
+            } else {
+                //需要追加 conditionColumn，因为进行内存 join 的时候，需要用到这个内容进行对比
+                this.selectColumns = ArrayUtil.concat(selectColumns, new String[]{conditionColumn.getName()});
+            }
+        }
 
         initExtraCondition(extraCondition);
     }
@@ -323,14 +339,18 @@ abstract class AbstractRelation<SelfEntity> {
      * @return QueryWrapper
      */
     public QueryWrapper buildQueryWrapper(Set<Object> targetValues) {
-        QueryWrapper queryWrapper = QueryWrapper.create()
-            .select()
-            .from(getTargetTableWithSchema());
+        QueryWrapper queryWrapper = QueryWrapper.create();
+
+        if (ArrayUtil.isNotEmpty(selectColumns)) {
+            queryWrapper.select(selectColumns);
+        }
+
+        queryWrapper.from(getTargetTableWithSchema());
 
         if (targetValues.size() > 1) {
-            queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).in(targetValues));
+            queryWrapper.where(conditionColumn.in(targetValues));
         } else {
-            queryWrapper.where(column(targetTableInfo.getColumnByProperty(targetField.getName())).eq(targetValues.iterator().next()));
+            queryWrapper.where(conditionColumn.eq(targetValues.iterator().next()));
         }
 
         if (StringUtil.isNotBlank(extraConditionSql)) {
@@ -344,7 +364,7 @@ abstract class AbstractRelation<SelfEntity> {
 
 
     /**
-     * 方便子类最近自定义的条件
+     * 方便子类追加自定义的条件
      *
      * @param queryWrapper 查询条件
      */

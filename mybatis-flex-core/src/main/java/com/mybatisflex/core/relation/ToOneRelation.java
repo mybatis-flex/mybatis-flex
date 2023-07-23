@@ -25,11 +25,11 @@ class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
     public ToOneRelation(String selfField, String targetSchema, String targetTable, String targetField,
                          String joinTable, String joinSelfColumn, String joinTargetColumn,
-                         String dataSource, Class<SelfEntity> selfEntityClass, Field relationField) {
+                         String dataSource, Class<SelfEntity> selfEntityClass, Field relationField, String[] selectColumns) {
         super(selfField, targetSchema, targetTable, targetField,
             joinTable, joinSelfColumn, joinTargetColumn,
             dataSource, selfEntityClass, relationField,
-            null
+            null, selectColumns
         );
     }
 

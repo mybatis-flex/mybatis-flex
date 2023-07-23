@@ -100,6 +100,11 @@ public @interface RelationManyToMany {
     String extraCondition() default "";
 
     /**
+     * 查询（加载）指定的列
+     */
+    String[] selectColumns() default {};
+
+    /**
      * 查询排序。
      *
      * @return 排序方式

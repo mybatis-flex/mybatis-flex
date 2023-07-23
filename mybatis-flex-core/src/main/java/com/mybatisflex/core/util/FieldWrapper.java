@@ -26,6 +26,7 @@ public class FieldWrapper {
 
     public static Map<Class<?>, Map<String, FieldWrapper>> cache = new ConcurrentHashMap<>();
 
+    private Field field;
     private Class<?> fieldType;
     private Class<?> mappingType;
     private Class<?> keyType;
@@ -64,6 +65,7 @@ public class FieldWrapper {
                     }
 
                     fieldWrapper = new FieldWrapper();
+                    fieldWrapper.field = findField;
                     fieldWrapper.fieldType = findField.getType();
                     initMappingTypeAndKeyType(clazz, findField, fieldWrapper);
 
@@ -131,5 +133,9 @@ public class FieldWrapper {
 
     public Class<?> getKeyType() {
         return keyType;
+    }
+
+    public Field getField() {
+        return field;
     }
 }

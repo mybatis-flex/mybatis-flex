@@ -30,7 +30,8 @@ class ManyToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
             , annotation.joinSelfColumn()
             , annotation.joinTargetColumn()
             , annotation.dataSource(), entityClass, relationField
-            , annotation.extraCondition());
+            , annotation.extraCondition()
+            , annotation.selectColumns());
 
         this.orderBy = annotation.orderBy();
         this.setMapKeyField(annotation.mapKeyField());

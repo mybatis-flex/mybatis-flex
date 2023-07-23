@@ -32,7 +32,8 @@ class OneToOne<SelfEntity> extends ToOneRelation<SelfEntity> {
             , annotation.joinTargetColumn()
             , annotation.dataSource()
             , entityClass
-            , relationField);
+            , relationField
+            , annotation.selectColumns());
     }
 
 }

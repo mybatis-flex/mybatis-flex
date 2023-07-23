@@ -95,4 +95,9 @@ public @interface RelationManyToOne {
      */
     String dataSource() default "";
 
+    /**
+     * 查询（加载）指定的列
+     */
+    String[] selectColumns() default {};
+
 }
