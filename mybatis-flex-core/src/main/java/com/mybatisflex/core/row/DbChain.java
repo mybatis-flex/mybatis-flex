@@ -18,11 +18,11 @@ package com.mybatisflex.core.row;
 
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.QueryWrapperAdapter;
-import com.mybatisflex.core.table.ColumnInfo;
-import com.mybatisflex.core.table.TableInfo;
-import com.mybatisflex.core.table.TableInfoFactory;
+import com.mybatisflex.core.table.*;
+import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.SqlUtil;
 
 import java.lang.reflect.Field;
@@ -39,12 +39,101 @@ import java.util.stream.Collectors;
  */
 public class DbChain extends QueryWrapperAdapter<DbChain> {
 
+    private String schema;
+    private String tableName;
+    private Row rowData;
+
+    private DbChain() {
+    }
+
+    private DbChain(String tableName) {
+        this.tableName = tableName;
+    }
+
+    private DbChain(String schema, String tableName) {
+        this.schema = schema;
+        this.tableName = tableName;
+    }
+
+    /**
+     * 覆盖 {@link QueryWrapper} 的静态方法，仅用于查询，必须使用 {@code from(...)} 方法指定表。
+     */
     public static DbChain create() {
         return new DbChain();
     }
 
+    public static DbChain table(String tableName) {
+        return new DbChain(tableName);
+    }
+
+    public static DbChain table(String schema, String tableName) {
+        return new DbChain(schema, tableName);
+    }
+
+    public static DbChain table(Class<?> entityClass) {
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
+        return table(tableInfo.getSchema(), tableInfo.getTableName());
+    }
+
+    public static DbChain table(TableDef tableDef) {
+        return table(tableDef.getSchema(), tableDef.getTableName());
+    }
+
+    private Row getRow() {
+        if (rowData == null) {
+            this.rowData = new Row();
+        }
+        return rowData;
+    }
+
+    public DbChain set(RowKey rowKey) {
+        getRow().getPrimaryKeys().add(rowKey);
+        return this;
+    }
+
+    public DbChain set(RowKey rowKey, Object value) {
+        getRow().getPrimaryKeys().add(rowKey);
+        getRow().put(rowKey.keyColumn, value);
+        return this;
+    }
+
+    public DbChain set(String column, Object value) {
+        getRow().set(column, value);
+        return this;
+    }
+
+    public DbChain set(QueryColumn column, Object value) {
+        getRow().set(column, value);
+        return this;
+    }
+
+    public <T> DbChain set(LambdaGetter<T> column, Object value) {
+        getRow().set(column, value);
+        return this;
+    }
+
+    public boolean save(Object entity) {
+        return SqlUtil.toBool(Db.insert(schema, tableName, toRow(entity)));
+    }
+
+    public boolean save() {
+        return SqlUtil.toBool(Db.insert(schema, tableName, getRow()));
+    }
+
     public boolean remove() {
-        return SqlUtil.toBool(Db.deleteByQuery(null, this));
+        return SqlUtil.toBool(Db.deleteByQuery(schema, tableName, this));
+    }
+
+    public boolean removeById() {
+        return SqlUtil.toBool(Db.deleteById(schema, tableName, getRow()));
+    }
+
+    public boolean update() {
+        return SqlUtil.toBool(Db.updateByQuery(schema, tableName, getRow(), this));
+    }
+
+    public boolean updateById() {
+        return SqlUtil.toBool(Db.updateById(schema, tableName, getRow()));
     }
 
     private Row toRow(Object entity) {
@@ -66,6 +155,25 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
             }
         }
 
+        // 添加主键列设置的值
+        for (IdInfo idInfo : tableInfo.getPrimaryKeyList()) {
+            try {
+                Field declaredField = entityClass.getDeclaredField(idInfo.getProperty());
+                declaredField.setAccessible(true);
+                Object value = declaredField.get(entity);
+                if (value != null) {
+                    RowKey rowKey = RowKey.of(idInfo.getColumn()
+                        , idInfo.getKeyType()
+                        , idInfo.getValue()
+                        , idInfo.getBefore());
+                    row.getPrimaryKeys().add(rowKey);
+                    row.put(rowKey.keyColumn, value);
+                }
+            } catch (Exception e) {
+                throw FlexExceptions.wrap(e);
+            }
+        }
+
         return row;
     }
 
@@ -74,7 +182,7 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
     }
 
     public boolean update(Row data) {
-        return SqlUtil.toBool(Db.updateByQuery(null, data, this));
+        return SqlUtil.toBool(Db.updateByQuery(schema, tableName, data, this));
     }
 
     public boolean update(Map<String, Object> data) {
@@ -84,7 +192,7 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
     }
 
     public long count() {
-        return Db.selectCountByQuery(this);
+        return Db.selectCountByQuery(schema, tableName, this);
     }
 
     public boolean exists() {
@@ -92,7 +200,7 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
     }
 
     public Row one() {
-        return Db.selectOneByQuery(this);
+        return Db.selectOneByQuery(schema, tableName, this);
     }
 
     public Optional<Row> oneOpt() {
@@ -108,7 +216,7 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
     }
 
     public Object obj() {
-        return Db.selectObject(this);
+        return Db.selectObject(schema, tableName, this);
     }
 
     public Optional<Object> objOpt() {
@@ -133,7 +241,7 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
     }
 
     public List<Object> objList() {
-        return Db.selectObjectList(this);
+        return Db.selectObjectList(schema, tableName, this);
     }
 
     @SuppressWarnings("unchecked")
@@ -152,7 +260,7 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
     }
 
     public List<Row> list() {
-        return Db.selectListByQuery(this);
+        return Db.selectListByQuery(schema, tableName, this);
     }
 
     public <R> List<R> listAs(Class<R> asType) {
@@ -163,7 +271,7 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
     }
 
     public Page<Row> page(Page<Row> page) {
-        return Db.paginate(null, page, this);
+        return Db.paginate(schema, tableName, page, this);
     }
 
     public <R> Page<R> pageAs(Page<R> page, Class<R> asType) {
