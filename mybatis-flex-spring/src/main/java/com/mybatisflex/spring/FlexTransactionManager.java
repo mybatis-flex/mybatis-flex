@@ -25,6 +25,7 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
 
 /**
  * MyBatis-Flex 事务支持。
+ * @author michael
  */
 public class FlexTransactionManager extends AbstractPlatformTransactionManager {
 
@@ -68,6 +69,13 @@ public class FlexTransactionManager extends AbstractPlatformTransactionManager {
     protected void doRollback(DefaultTransactionStatus status) throws TransactionException {
         TransactionObject transactionObject = (TransactionObject) status.getTransaction();
         TransactionalManager.rollback(transactionObject.currentXid);
+    }
+
+    @Override
+    protected void doSetRollbackOnly(DefaultTransactionStatus status) throws TransactionException {
+        // 在多个事务嵌套时，子事务的传递方式为 REQUIRED（加入当前事务）
+        // 那么，当子事务抛出异常时，会调当前方法，而不是直接调用 doRollback
+        // 此时，不需要做任何处理即可，默认上父级事务进行正常 doRollback 即可。
     }
 
 

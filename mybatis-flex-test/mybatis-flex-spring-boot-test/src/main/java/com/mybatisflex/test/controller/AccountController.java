@@ -82,17 +82,13 @@ public class AccountController {
         Row row2 = Db.selectOneById(null, "tb_account", "id", 2);
         System.out.println(">>>>>>> row2: " + row2);
 
-//        Account account1 = accountMapper.selectOneById(1L);
-//        Account account2 = accountMapper.selectOneById(2L);
-//
-//        accountService.update2();
-//
-//        if (true) {
-//            throw new IllegalStateException("aaa");
-//        }
-//
-//        System.out.println("selectOne >>>>  " + account1);
-//        System.out.println("selectOne >>>>  " + account2);
+        Account account = new Account();
+        account.setId(2L);
+        account.setUserName("haha1111");
+        accountMapper.update(account);
+
+        //嵌套事务
+        accountService.update2();
 
         return accountMapper.selectOneById(id);
     }
