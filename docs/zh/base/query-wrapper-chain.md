@@ -28,7 +28,7 @@ class ArticleServiceTest {
 若不是在 Service 中，我们也可以通过 `QueryWrapperChain.create` 方法，自己创建一个 `QueryWrapperChain` 实例，代码如下：
 
 ```java
-List<Article> articles=QueryWrapperChain.create(mapper)
+List<Article> articles = QueryWrapperChain.create(mapper)
     .select(ARTICLE.ALL_COLUMNS)
     .from(ARTICLE)
     .where(ARTICLE.ID.ge(100))
@@ -140,9 +140,10 @@ ArticleVo articleVo = articleService.queryChain()
     .limit(1)
     .oneAs(ArticleVo.class);
 ```
-### 示例 4：关联查询 VO 数据（ArticleVo）
+### 示例 4：多对多关联查询 VO 数据（ArticleVo）
 
-ArticleVo.java
+ArticleVo.java 及其 **文章分类** 定义：
+
 ```java
 public class ArticleVo {
 
@@ -154,6 +155,7 @@ public class ArticleVo {
 
     private String content;
 
+    //文章和分类的 多对多 关系配置
     @RelationManyToMany(
         joinTable = "tb_article_category_mapping", // 中间表
         selfField = "id", joinSelfColumn = "article_id",
@@ -174,6 +176,6 @@ ArticleVo articleVo = articleService.queryChain()
     .oneWithRelationsAs(ArticleVo.class);
 ```
 
-> 通过 `oneWithRelationsAs` 方法查询 `ArticleVo` 及其关联数据。
+> 通过 `oneWithRelationsAs` 方法查询 `ArticleVo` 及其关联数据（多对多的文章分类）。
 > 更多关于关联查询的内容请参考章节：[《关联查询》](/zh/base/relations-query.html)。
 
