@@ -23,12 +23,16 @@ import org.springframework.stereotype.Controller;
 #if(controllerConfig.superClass != null)
 import #(controllerConfig.buildSuperClassImport());
 #end
-#if(withSwagger)
+#if(withSwagger && swaggerVersion.getName() == "FOX")
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 #end
-
+#if(withSwagger && swaggerVersion.getName() == "DOC")
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+#end
 import java.io.Serializable;
 import java.util.List;
 
@@ -43,8 +47,11 @@ import java.util.List;
 #else
 @Controller
 #end
-#if(withSwagger)
+#if(withSwagger && swaggerVersion.getName() == "FOX")
 @Api("#(tableComment)接口")
+#end
+#if(withSwagger && swaggerVersion.getName() == "DOC")
+@Tag(name = "#(tableComment)接口")
 #end
 @RequestMapping("/#(firstCharToLowerCase(entityClassName))")
 public class #(table.buildControllerClassName()) #if(controllerConfig.superClass)extends #(controllerConfig.buildSuperClassName()) #end {
@@ -59,10 +66,13 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return {@code true} 添加成功，{@code false} 添加失败
      */
     @PostMapping("save")
-    #if(withSwagger)
+    #if(withSwagger && swaggerVersion.getName() == "FOX")
     @ApiOperation("保存#(tableComment)")
     #end
-    public boolean save(@RequestBody #if(withSwagger)@ApiParam("#(tableComment)") #end #(entityClassName) #(entityVarName)) {
+    #if(withSwagger && swaggerVersion.getName() == "DOC")
+    @Operation(description="保存#(tableComment)")
+    #end
+    public boolean save(@RequestBody #if(withSwagger && swaggerVersion.getName() == "FOX")@ApiParam("#(tableComment)") #end #if(withSwagger && swaggerVersion.getName() == "DOC")@Parameter(description="#(tableComment)")#end #(entityClassName) #(entityVarName)) {
         return #(serviceVarName).save(#(entityVarName));
     }
 
@@ -73,10 +83,13 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return {@code true} 删除成功，{@code false} 删除失败
      */
     @DeleteMapping("remove/{id}")
-    #if(withSwagger)
+    #if(withSwagger && swaggerVersion.getName() == "FOX")
     @ApiOperation("根据主键#(tableComment)")
     #end
-    public boolean remove(@PathVariable #if(withSwagger)@ApiParam("#(tableComment)主键") #end Serializable id) {
+    #if(withSwagger && swaggerVersion.getName() == "DOC")
+    @Operation(description="根据主键#(tableComment)")
+    #end
+    public boolean remove(@PathVariable #if(withSwagger && swaggerVersion.getName() == "FOX")@ApiParam("#(tableComment)主键") #end #if(withSwagger && swaggerVersion.getName() == "DOC")@Parameter(description="#(tableComment)主键")#end Serializable id) {
         return #(serviceVarName).removeById(id);
     }
 
@@ -87,10 +100,13 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return {@code true} 更新成功，{@code false} 更新失败
      */
     @PutMapping("update")
-    #if(withSwagger)
+    #if(withSwagger && swaggerVersion.getName() == "FOX")
     @ApiOperation("根据主键更新#(tableComment)")
     #end
-    public boolean update(@RequestBody #if(withSwagger)@ApiParam("#(tableComment)主键") #end #(entityClassName) #(entityVarName)) {
+    #if(withSwagger && swaggerVersion.getName() == "DOC")
+    @Operation(description="根据主键更新#(tableComment)")
+    #end
+    public boolean update(@RequestBody #if(withSwagger && swaggerVersion.getName() == "FOX")@ApiParam("#(tableComment)主键") #end #if(withSwagger && swaggerVersion.getName() == "DOC")@Parameter(description="#(tableComment)主键")#end#(entityClassName) #(entityVarName)) {
         return #(serviceVarName).updateById(#(entityVarName));
     }
 
@@ -100,8 +116,11 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return 所有数据
      */
     @GetMapping("list")
-    #if(withSwagger)
+    #if(withSwagger && swaggerVersion.getName() == "FOX")
     @ApiOperation("查询所有#(tableComment)")
+    #end
+    #if(withSwagger && swaggerVersion.getName() == "DOC")
+    @Operation(description="查询所有#(tableComment)")
     #end
     public List<#(entityClassName)> list() {
         return #(serviceVarName).list();
@@ -114,10 +133,13 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return #(tableComment)详情
      */
     @GetMapping("getInfo/{id}")
-    #if(withSwagger)
+    #if(withSwagger && swaggerVersion.getName() == "FOX")
     @ApiOperation("根据主键获取#(tableComment)")
     #end
-    public #(entityClassName) getInfo(@PathVariable #if(withSwagger)@ApiParam("#(tableComment)主键") #end Serializable id) {
+    #if(withSwagger && swaggerVersion.getName() == "DOC")
+    @Operation(description="根据主键获取#(tableComment)")
+    #end
+    public #(entityClassName) getInfo(@PathVariable #if(withSwagger && swaggerVersion.getName() == "FOX")@ApiParam("#(tableComment)主键") #if(withSwagger && swaggerVersion.getName() == "DOC")@Parameter(description="#(tableComment)主键")#end#end Serializable id) {
         return #(serviceVarName).getById(id);
     }
 
@@ -128,10 +150,13 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      * @return 分页对象
      */
     @GetMapping("page")
-    #if(withSwagger)
+    #if(withSwagger && swaggerVersion.getName() == "FOX")
     @ApiOperation("分页查询#(tableComment)")
     #end
-    public Page<#(entityClassName)> page(#if(withSwagger)@ApiParam("分页信息") #end Page<#(entityClassName)> page) {
+    #if(withSwagger && swaggerVersion.getName() == "DOC")
+    @Operation(description="分页查询#(tableComment)")
+    #end
+    public Page<#(entityClassName)> page(#if(withSwagger && swaggerVersion.getName() == "FOX")@ApiParam("分页信息") #end #if(withSwagger && swaggerVersion.getName() == "DOC")@Parameter(description="分页信息")#end Page<#(entityClassName)> page) {
         return #(serviceVarName).page(page);
     }
 

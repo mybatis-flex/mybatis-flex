@@ -62,6 +62,25 @@ public class EntityConfig {
     private boolean withSwagger;
 
     /**
+     * Swagger 版本
+     */
+    private SwaggerVersion swaggerVersion;
+
+    public enum SwaggerVersion {
+        FOX("FOX"),
+        DOC("DOC");
+        private final String name;
+
+        SwaggerVersion(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+    }
+
+    /**
      * 实体类数据源。
      */
     private String dataSource;
@@ -168,6 +187,23 @@ public class EntityConfig {
      */
     public EntityConfig setWithSwagger(boolean withSwagger) {
         this.withSwagger = withSwagger;
+        this.swaggerVersion = SwaggerVersion.FOX;
+        return this;
+    }
+
+    /**
+     * Swagger 版本
+     */
+    public SwaggerVersion getSwaggerVersion() {
+        return swaggerVersion;
+    }
+
+    /**
+     * 设置 Swagger 版本
+     */
+    public EntityConfig setSwaggerVersion(SwaggerVersion swaggerVersion) {
+        this.swaggerVersion = swaggerVersion;
+        this.withSwagger = swaggerVersion != null;
         return this;
     }
 
