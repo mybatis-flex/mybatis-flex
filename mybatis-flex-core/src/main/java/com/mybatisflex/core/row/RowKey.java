@@ -99,6 +99,8 @@ public class RowKey {
      */
     protected boolean before = true;
 
+    private RowKey() {
+    }
 
     public String getKeyColumn() {
         return keyColumn;
@@ -119,5 +121,20 @@ public class RowKey {
         return before;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof RowKey) {
+            return keyColumn.equals(((RowKey) o).keyColumn);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return keyColumn.hashCode();
+    }
 
 }
