@@ -93,7 +93,12 @@ public class Column {
     }
 
     public String getPropertySimpleType() {
-        return propertyType.substring(propertyType.lastIndexOf(".") + 1);
+        if (columnConfig.getPropertyType()!=null){
+            return columnConfig.getPropertyType().getSimpleName();
+        }
+        else {
+            return propertyType.substring(propertyType.lastIndexOf(".") + 1);
+        }
     }
 
     public void setPropertyType(String propertyType) {
@@ -291,6 +296,9 @@ public class Column {
         }
 
         if (columnConfig != null) {
+            if (columnConfig.getPropertyType() !=null){
+                importClasses.add(columnConfig.getPropertyType().getName());
+            }
             if (columnConfig.getMask() != null) {
                 importClasses.add(ColumnMask.class.getName());
             }
