@@ -114,6 +114,7 @@ public final class SqlConsts {
     public static final String LT = " < ";
     public static final String LE = " <= ";
     public static final String LIKE = " LIKE ";
+    public static final String NOT_LIKE = " NOT LIKE ";
     public static final String EQUALS = " = ";
     public static final String NOT_EQUALS = " != ";
     public static final String IS_NULL = " IS NULL ";

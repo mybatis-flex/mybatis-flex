@@ -35,6 +35,9 @@ public enum SqlOperator {
     // like
     LIKE(SqlConsts.LIKE),
 
+    // not like
+    NOT_LIKE(SqlConsts.NOT_LIKE),
+
     // =
     EQUALS(SqlConsts.EQUALS),
 

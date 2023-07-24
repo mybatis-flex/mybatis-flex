@@ -224,6 +224,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.LIKE, "%" + value).when(fn);
     }
 
+
     public QueryCondition likeRaw(Object value) {
         if (value == null) {
             return QueryCondition.createEmpty();
@@ -237,6 +238,59 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         }
         return QueryCondition.create(this, SqlConsts.LIKE, value).when(fn);
     }
+
+
+
+    /**
+     * not like %%
+     *
+     * @param value
+     */
+    public QueryCondition notLike(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value + "%");
+    }
+
+    public <T> QueryCondition notLike(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value + "%").when(fn);
+    }
+
+
+    public QueryCondition notLikeLeft(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, SqlConsts.NOT_LIKE, value + "%");
+    }
+
+    public <T> QueryCondition notLikeLeft(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, SqlConsts.NOT_LIKE, value + "%").when(fn);
+    }
+
+
+    public QueryCondition notLikeRight(Object value) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value);
+    }
+
+    public <T> QueryCondition notLikeRight(Object value, Predicate<T> fn) {
+        if (value == null) {
+            return QueryCondition.createEmpty();
+        }
+        return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value).when(fn);
+    }
+
+
 
     /**
      * 大于 greater than

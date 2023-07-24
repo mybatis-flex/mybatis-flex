@@ -203,6 +203,19 @@ public class AccountSqlTester {
     }
 
 
+
+    @Test
+    public void testWhereSql3() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.ge(100))
+            .and(ACCOUNT.USER_NAME.notLike("michael"));
+
+        System.out.println(queryWrapper.toSQL());
+    }
+
+
     @Test
     public void testWhereCond2Sql() {
         boolean flag = false;

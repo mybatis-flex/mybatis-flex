@@ -109,7 +109,8 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
 
     public <T> QueryCondition when(Predicate<T> fn) {
         Object val = this.value;
-        if (SqlConsts.LIKE.equals(logic) && val instanceof String) {
+        if ((SqlConsts.LIKE.equals(logic) || SqlConsts.NOT_LIKE.equals(logic))
+            && val instanceof String) {
             String valStr = (String) val;
             if (valStr.startsWith(SqlConsts.PERCENT_SIGN)) {
                 valStr = valStr.substring(1);
