@@ -21,7 +21,6 @@ class ArticleServiceTest {
             .where(ARTICLE.ID.ge(100))
             .list();
     }
-
 }
 ```
 
@@ -116,15 +115,14 @@ ArticleVo.java
 public class ArticleVo {
 
     private Long id;
-
     private Long accountId;
-
     private String title;
-
     private String content;
 
     //评论量最多的内容
     private Long maxComments;
+
+    //getter setter
 }
 ```
 
@@ -148,11 +146,8 @@ ArticleVo.java 及其 **文章分类** 定义：
 public class ArticleVo {
 
     private Long id;
-
     private Long accountId;
-
     private String title;
-
     private String content;
 
     //文章和分类的 多对多 关系配置
@@ -162,6 +157,8 @@ public class ArticleVo {
         targetField = "id", joinTargetColumn = "category_id"
     )
     private List<ArticleCategory> categories;
+
+    //getter setter
 }
 ```
 
