@@ -76,6 +76,31 @@ public class StrategyConfig {
      */
     private Set<String> unGenerateTables;
 
+    /**
+     * 需要忽略的列 全局配置。
+     */
+    private Set<String> ignoreColumns;
+
+    /**
+     * 获取需要忽略的列 全局配置。
+     */
+    public Set<String> getIgnoreColumns() {
+        return ignoreColumns;
+    }
+    /**
+     * 设置需要忽略的列  全局配置。
+     */
+    public StrategyConfig setIgnoreColumns(String... columns) {
+        if (ignoreColumns == null) {
+            ignoreColumns = new HashSet<>();
+        }
+        for (String column : columns) {
+            if (column != null && column.trim().length() > 0) {
+                ignoreColumns.add(column.trim().toLowerCase());
+            }
+        }
+        return this;
+    }
 
     /**
      * 设置要生成的模式
