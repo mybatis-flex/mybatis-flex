@@ -60,6 +60,19 @@ public class Page<T> implements Serializable {
      * 总数据数量。
      */
     private long totalRow = INIT_VALUE;
+    /**
+     * 是否存在下一页。
+     */
+    private Boolean hasNext;
+
+    /**
+     * 是否存在下一页。
+     *
+     * @return {@code true} 存在下一页，{@code false} 不存在下一页
+     */
+    public Boolean getHasNext() {
+        return this.hasNext();
+    }
 
     /**
      * 是否优化分页查询 COUNT 语句。
