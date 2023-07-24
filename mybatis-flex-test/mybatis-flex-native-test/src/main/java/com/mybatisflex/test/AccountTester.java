@@ -19,6 +19,7 @@ import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
+import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.query.If;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.DbChain;
@@ -73,6 +74,14 @@ public class AccountTester {
             .where(ACCOUNT.ID.ge(1))
             .listAs(Account.class)
             .forEach(System.out::println);
+
+        AccountMapper accountBaseMapper = (AccountMapper) Mappers.ofEntityClass(Account.class);
+
+        AccountMapper accountMapper = Mappers.ofMapperClass(AccountMapper.class);
+        System.out.println(">>>>> : " + (accountBaseMapper == accountMapper));
+
+        Account account = accountBaseMapper.selectOneById(1);
+        System.out.println(">>>> account: "  + account);
     }
 
     @Test

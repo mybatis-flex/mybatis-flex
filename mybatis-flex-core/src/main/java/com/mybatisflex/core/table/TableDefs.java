@@ -51,17 +51,26 @@ public class TableDefs implements Serializable {
         }
     }
 
-    public static QueryColumn getQueryColumn(Class<?> entityClass, String key, String column) {
+
+    public static TableDef getTableDef(Class<?> entityClass, String tableNameWithSchema) {
         if (TABLE_DEF_MAP.isEmpty()) {
             init(entityClass.getPackage().getName());
         }
-        Map<String, QueryColumn> queryColumnMap = QUERY_COLUMN_MAP.get(key);
+        return TABLE_DEF_MAP.get(tableNameWithSchema);
+    }
+
+
+    public static QueryColumn getQueryColumn(Class<?> entityClass, String tableNameWithSchema, String column) {
+        if (TABLE_DEF_MAP.isEmpty()) {
+            init(entityClass.getPackage().getName());
+        }
+        Map<String, QueryColumn> queryColumnMap = QUERY_COLUMN_MAP.get(tableNameWithSchema);
         return queryColumnMap != null ? queryColumnMap.get(column) : null;
     }
 
 
-    public static void registerTableDef(Class<?> clazz) throws IllegalAccessException {
-        TableDef tableDef = (TableDef) ClassUtil.getFirstField(clazz, field -> {
+    public static void registerTableDef(Class<?> tableDefClass) throws IllegalAccessException {
+        TableDef tableDef = (TableDef) ClassUtil.getFirstField(tableDefClass, field -> {
             int mod = Modifier.fieldModifiers();
             return Modifier.isPublic(mod) && Modifier.isStatic(mod);
         }).get(null);

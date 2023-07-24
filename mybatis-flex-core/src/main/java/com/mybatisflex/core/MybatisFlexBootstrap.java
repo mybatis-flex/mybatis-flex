@@ -18,24 +18,18 @@ package com.mybatisflex.core;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
+import com.mybatisflex.core.mybatis.Mappers;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.apache.ibatis.util.MapUtil;
 
 import javax.sql.DataSource;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 
 /**
  * MybatisFlex 的启动类
@@ -62,10 +56,8 @@ public class MybatisFlexBootstrap {
     protected Configuration configuration;
     protected List<Class<?>> mappers;
 
-    protected SqlSessionFactory sqlSessionFactory;
     protected Class<? extends Log> logImpl;
 
-    private final Map<Class<?>, Object> mapperObjects = new ConcurrentHashMap<>();
 
     /**
      * 虽然提供了 getInstance，但也允许用户进行实例化，
@@ -120,7 +112,7 @@ public class MybatisFlexBootstrap {
             }
 
             //init sqlSessionFactory
-            this.sqlSessionFactory = new FlexSqlSessionFactoryBuilder().build(configuration);
+            new FlexSqlSessionFactoryBuilder().build(configuration);
 
             //init mappers
             if (mappers != null) {
@@ -134,20 +126,6 @@ public class MybatisFlexBootstrap {
     }
 
 
-    @Deprecated
-    public <R, T> R execute(Class<T> mapperClass, Function<T, R> function) {
-        try (SqlSession sqlSession = openSession()) {
-            T mapper = sqlSession.getMapper(mapperClass);
-            return function.apply(mapper);
-        }
-    }
-
-
-    protected SqlSession openSession() {
-        return sqlSessionFactory.openSession(configuration.getDefaultExecutorType(), true);
-    }
-
-
     /**
      * 直接获取 mapper 对象执行
      *
@@ -155,16 +133,7 @@ public class MybatisFlexBootstrap {
      * @return mapperObject
      */
     public <T> T getMapper(Class<T> mapperClass) {
-        Object mapperObject = MapUtil.computeIfAbsent(mapperObjects, mapperClass, clazz ->
-            Proxy.newProxyInstance(mapperClass.getClassLoader()
-                , new Class[]{mapperClass}
-                , (proxy, method, args) -> {
-                    try (SqlSession sqlSession = openSession()) {
-                        T mapper1 = sqlSession.getMapper(mapperClass);
-                        return method.invoke(mapper1, args);
-                    }
-                }));
-        return (T) mapperObject;
+        return Mappers.ofMapperClass(mapperClass);
     }
 
 
@@ -223,15 +192,6 @@ public class MybatisFlexBootstrap {
         return mappers;
     }
 
-
-    public SqlSessionFactory getSqlSessionFactory() {
-        return sqlSessionFactory;
-    }
-
-    public MybatisFlexBootstrap setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
-        this.sqlSessionFactory = sqlSessionFactory;
-        return this;
-    }
 
     public Class<? extends Log> getLogImpl() {
         return logImpl;

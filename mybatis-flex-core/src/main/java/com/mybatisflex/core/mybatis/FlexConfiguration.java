@@ -47,7 +47,6 @@ import org.apache.ibatis.util.MapUtil;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -318,7 +317,9 @@ public class FlexConfiguration extends Configuration {
         for (Type genericInterface : genericInterfaces) {
             if (genericInterface instanceof ParameterizedType) {
                 Type actualTypeArgument = ((ParameterizedType) genericInterface).getActualTypeArguments()[0];
-                if (actualTypeArgument instanceof TypeVariable) {
+                if (actualTypeArgument instanceof Class) {
+                    Mappers.addMapping((Class<?>) actualTypeArgument, type);
+                } else {
                     isGenericInterface = true;
                     break;
                 }
