@@ -92,7 +92,7 @@ abstract class AbstractRelation<SelfEntity> {
 
         this.targetTableInfo = TableInfoFactory.ofEntityClass(targetEntityClass);
 
-        this.conditionColumn = column(targetTableInfo.getColumnByProperty(this.targetField.getName()));
+        this.conditionColumn = column(targetTable, targetTableInfo.getColumnByProperty(this.targetField.getName()));
 
         if (ArrayUtil.isNotEmpty(selectColumns)) {
             if (ArrayUtil.contains(selectColumns, conditionColumn.getName())) {
