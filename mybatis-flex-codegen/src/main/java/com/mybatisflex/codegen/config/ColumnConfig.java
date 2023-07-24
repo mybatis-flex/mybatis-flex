@@ -61,9 +61,14 @@ public class ColumnConfig implements Serializable {
      */
     private JdbcType jdbcType;
     /**
-     * 属性的类型。
+     * 属性的类型。原始类型直接写类型名称：int/long/float/double/boolean，对象类型请写对应类的全限定名：
      */
-    private Class<?> propertyType;
+    private String propertyType;
+
+    /**
+     * 属性的默认值
+     */
+    private String propertyDefaultValue;
 
     /**
      * 自定义 TypeHandler。
@@ -212,11 +217,19 @@ public class ColumnConfig implements Serializable {
         this.tenantId = tenantId;
     }
 
-    public Class<?> getPropertyType() {
+    public String getPropertyType() {
         return propertyType;
     }
 
-    public void setPropertyType(Class<?> propertyType) {
+    public void setPropertyType(String propertyType) {
         this.propertyType = propertyType;
+    }
+
+    public String getPropertyDefaultValue() {
+        return propertyDefaultValue;
+    }
+
+    public void setPropertyDefaultValue(String propertyDefaultValue) {
+        this.propertyDefaultValue = propertyDefaultValue;
     }
 }
