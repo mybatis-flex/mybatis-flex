@@ -60,6 +60,10 @@ public class ColumnConfig implements Serializable {
      * 配置的 jdbcType。
      */
     private JdbcType jdbcType;
+    /**
+     * 属性的类型。
+     */
+    private Class<?> propertyType;
 
     /**
      * 自定义 TypeHandler。
@@ -207,5 +211,11 @@ public class ColumnConfig implements Serializable {
     public void setTenantId(Boolean tenantId) {
         this.tenantId = tenantId;
     }
+    public Class<?> getPropertyType() {
+        return propertyType;
+    }
 
+    public void setPropertyType(Class<?> propertyType) {
+        this.propertyType = propertyType;
+    }
 }
