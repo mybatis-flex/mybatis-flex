@@ -37,7 +37,7 @@ public class QueryChain<T> extends QueryWrapperAdapter<QueryChain<T>> {
         this.baseMapper = baseMapper;
     }
 
-    public static <E> QueryChain<E> create(BaseMapper<E> baseMapper) {
+    public static <E> QueryChain<E> of(BaseMapper<E> baseMapper) {
         return new QueryChain<>(baseMapper);
     }
 
