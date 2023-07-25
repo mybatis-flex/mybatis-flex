@@ -245,7 +245,7 @@ public class Table {
                 tableAnnotation.append(", schema = \"").append(tableConfig.getSchema()).append("\"");
             }
             if (tableConfig.getCamelToUnderline() != null) {
-                tableAnnotation.append(", camelToUnderline = \"").append(tableConfig.getCamelToUnderline()).append("\"");
+                tableAnnotation.append(", camelToUnderline = ").append(tableConfig.getCamelToUnderline());
             }
             if (tableConfig.getInsertListenerClass() != null) {
                 tableAnnotation.append(", onInsert = ").append(tableConfig.getInsertListenerClass().getSimpleName()).append(".class");
