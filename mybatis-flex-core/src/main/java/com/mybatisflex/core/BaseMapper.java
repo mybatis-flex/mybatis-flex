@@ -55,12 +55,6 @@ public interface BaseMapper<T> {
      */
     int DEFAULT_BATCH_SIZE = 1000;
 
-
-    default QueryWrapperChain<T> queryChain() {
-        return new QueryWrapperChain<>(this);
-    }
-
-
     // === 增（insert） ===
 
     /**

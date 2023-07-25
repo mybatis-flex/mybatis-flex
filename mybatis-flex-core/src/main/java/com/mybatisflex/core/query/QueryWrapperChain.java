@@ -41,18 +41,6 @@ public class QueryWrapperChain<T> extends QueryWrapperAdapter<QueryWrapperChain<
         return new QueryWrapperChain<>(baseMapper);
     }
 
-    public boolean remove() {
-        return SqlUtil.toBool(baseMapper.deleteByQuery(this));
-    }
-
-    public boolean update(T entity) {
-        return SqlUtil.toBool(baseMapper.updateByQuery(entity, this));
-    }
-
-    public boolean update(T entity, boolean ignoreNulls) {
-        return SqlUtil.toBool(baseMapper.updateByQuery(entity, ignoreNulls, this));
-    }
-
     public long count() {
         return baseMapper.selectCountByQuery(this);
     }

@@ -23,10 +23,14 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.util.MapUtil;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -77,6 +81,8 @@ public class Mappers {
 
 
     static class MapperHandler implements InvocationHandler {
+        private static final Set<String> ignoreMethods = new HashSet<>(Arrays.asList("queryChain","updateChain"));
+        private static final MethodHandles.Lookup lookup = MethodHandles.lookup();
         private Class<?> mapperClass;
         private final SqlSessionFactory sqlSessionFactory = FlexGlobalConfig.getDefaultConfig().getSqlSessionFactory();
         private final ExecutorType executorType = FlexGlobalConfig.getDefaultConfig().getConfiguration().getDefaultExecutorType();

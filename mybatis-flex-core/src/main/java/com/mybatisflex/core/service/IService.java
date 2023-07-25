@@ -530,7 +530,7 @@ public interface IService<T> {
     }
 
     default QueryWrapperChain<T> queryChain() {
-        return getMapper().queryChain();
+        return new QueryWrapperChain<>(getMapper());
     }
 
 }
