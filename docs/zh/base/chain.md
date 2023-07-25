@@ -67,7 +67,7 @@ WHERE `id` = 1
 - count()：查询数据条数
 - exists()：是否存在，判断 count 是否大于 0
 
-## UpdateChain 扩展方法
+## QueryChain 扩展方法
 
 ### `one()` 系列方法
 
