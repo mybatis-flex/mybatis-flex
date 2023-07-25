@@ -491,6 +491,16 @@ public interface BaseMapper<T> {
     }
 
     /**
+     * 根据主表主键来查询 1 条数据。
+     *
+     * @param id 主表主键
+     * @return 实体类数据
+     */
+    default T selectOneWithRelationsById(Serializable id) {
+        return MapperUtil.queryRelations(this, selectOneById(id));
+    }
+
+    /**
      * 根据查询条件来查询 1 条数据。
      *
      * @param queryWrapper 条件
