@@ -173,7 +173,7 @@ processor.allInTables.package=com.example.entity.table
 
 ## 和 Lombok、Mapstruct 整合
 
-在很多项目中，用到了 Lombok 帮我们减少代码编写，同时用到 Mapstruct 进行 bean 转换。使用到 Lombok 和 Mapstruct 时，其要求我们再
+在很多项目中，用到了 Lombok 帮我们减少代码编写，同时用到 Mapstruct 进行 bean 转换。使用到 Lombok 和 Mapstruct 时，其要求我们在
 pom.xml 添加 `annotationProcessorPaths` 配置，
 此时，我们也需要把 MyBatis-Flex 的 annotation 添加到 `annotationProcessorPaths` 配置里去，如下图所示：
 
