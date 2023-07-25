@@ -537,6 +537,18 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
+    public <T> R groupBy(LambdaGetter<T> column) {
+        super.groupBy(column);
+        return (R) this;
+    }
+
+    @Override
+    public <T> R groupBy(LambdaGetter<T>... columns) {
+        super.groupBy(columns);
+        return (R) this;
+    }
+
+    @Override
     public R having(QueryCondition queryCondition) {
         super.having(queryCondition);
         return (R) this;
