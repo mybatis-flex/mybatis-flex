@@ -29,16 +29,16 @@ import java.util.Optional;
  * @author 王帅
  * @since 2023-07-22
  */
-public class QueryWrapperChain<T> extends QueryWrapperAdapter<QueryWrapperChain<T>> {
+public class QueryChain<T> extends QueryWrapperAdapter<QueryChain<T>> {
 
     private final BaseMapper<T> baseMapper;
 
-    public QueryWrapperChain(BaseMapper<T> baseMapper) {
+    public QueryChain(BaseMapper<T> baseMapper) {
         this.baseMapper = baseMapper;
     }
 
-    public static <E> QueryWrapperChain<E> create(BaseMapper<E> baseMapper) {
-        return new QueryWrapperChain<>(baseMapper);
+    public static <E> QueryChain<E> create(BaseMapper<E> baseMapper) {
+        return new QueryChain<>(baseMapper);
     }
 
     public long count() {
