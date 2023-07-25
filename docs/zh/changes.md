@@ -1,6 +1,25 @@
 # MyBatis-Flex ChangeLog
 
 
+## v1.5.3 20230725:
+- 新增：添加 UpdateChain 方便用于对数据进行更新
+- 新增：添加对 ActiveRecord 设计模式的支持，感谢 @Suomm
+- 新增：代码生成器 ColumnConfig 增加 propertyType. 可以用于自定通用属性的类型。感谢 @jerryzhengsz1
+- 新增：添加 selectOneWithRelationsById(根据主表主键来查询 1 条数据) 方法，感谢 @barql
+- 新增：QueryWrapper.groupBy 支持 Lambda 表达式的功能，感谢 @Suomm
+- 新增：QueryWrapper 添加 `not like` 构建的支持
+- 优化：重命名 QueryWrapperChain 为 QueryChain，保存和 UpdateChain 统一
+- 修复：`@Relation` 关联查询注解，在指定 selectColumns 出错的问题，感谢 @zhy_balck
+- 修复：代码生成器配置 `camelToUnderline` 属性时 entity 生成后编译错误的问题，感谢 @genomics_zcg
+- 文档：优化 APT 的文档描述有错别字的问题，感谢 @zhangjx1992
+- 文档：添加关于 ActiveRecord 的相关文档，感谢 @Suomm
+- 文档：修改代码生成器对 EnjoyTemplate 的描述错误的问题
+- 文档：添加更多关于链式查询的相关文档
+- 文档：重构文档链接，链式操作的相关文档
+- 文档：修改代码生成器对 EnjoyTemplate 的描述错误的问题
+
+
+
 ## v1.5.2 20230723:
 - 新增：添加 QueryWrapperChain 用于链式调用查询或者操作数据，感谢 @Suomm
 - 新增：添加 DbChain 链式调用 Db + Row 的相关方法和功能，感谢 @Suomm

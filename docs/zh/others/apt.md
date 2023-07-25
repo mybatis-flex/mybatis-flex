@@ -88,7 +88,7 @@ public class AccountTableDef extends TableDef {
 #upperCase, lowerCase, upperCamelCase, lowerCamelCase
 processor.tableDef.propertiesNameStyle = upperCase
 ```
-风格支持 4 中配置，默认（未配置时）为 upperCase，支持的配置分别为：
+风格支持 4 种配置，默认（未配置时）为 upperCase，支持的配置分别为：
 
 - upperCase：大写 + 下划线，例如：USER_NAME
 - lowerCase：小写 + 下划线，例如：user_name
@@ -173,7 +173,7 @@ processor.allInTables.package=com.example.entity.table
 
 ## 和 Lombok、Mapstruct 整合
 
-在很多项目中，用到了 Lombok 帮我们减少代码编写，同时用到 Mapstruct 进行 bean 转换。使用到 Lombok 和 Mapstruct 时，其要求我们再
+在很多项目中，用到了 Lombok 帮我们减少代码编写，同时用到 Mapstruct 进行 bean 转换。使用到 Lombok 和 Mapstruct 时，其要求我们在
 pom.xml 添加 `annotationProcessorPaths` 配置，
 此时，我们也需要把 MyBatis-Flex 的 annotation 添加到 `annotationProcessorPaths` 配置里去，如下图所示：
 
@@ -219,7 +219,7 @@ pom.xml 添加 `annotationProcessorPaths` 配置，
 ```
 dependencies {
     ...
-    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:<version>1.5.2</version>'
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:<version>1.5.3</version>'
 }
 ```
 

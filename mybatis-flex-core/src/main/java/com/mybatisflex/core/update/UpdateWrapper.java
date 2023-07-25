@@ -26,6 +26,9 @@ import org.apache.ibatis.javassist.util.proxy.ProxyObject;
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * @author michael
+ */
 public interface UpdateWrapper extends Serializable {
 
     default Map<String, Object> getUpdates() {

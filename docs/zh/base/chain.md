@@ -1,7 +1,12 @@
-# QueryWrapperChain
+# 链式操作
 
-`QueryWrapperChain.java` 是一个对 `QueryWrapper` 进行链式调用封装的一个类，在 Service 中，
-我们可以调用 `service.queryChain()` 获得该实例。
+在 MyBatis-Flex 中，内置了 `QueryChain.java` 和  `UpdateChain.java` 用于对数据进行链式查询操作和链式数据操作（修改和删除）。
+
+- **QueryChain**：链式查询
+- **UpdateChain**：链式更新
+
+
+## QueryChain 示例
 
 例如，查询文章列表代码如下：
 
@@ -24,29 +29,76 @@ class ArticleServiceTest {
 }
 ```
 
-若不是在 Service 中，我们也可以通过 `QueryWrapperChain.create` 方法，自己创建一个 `QueryWrapperChain` 实例，代码如下：
+若不是在 Service 中，我们也可以通过 `QueryChain.create` 方法，自己创建一个 `QueryChain` 实例，代码如下：
 
 ```java
-List<Article> articles = QueryWrapperChain.create(mapper)
+List<Article> articles = QueryChain.of(mapper)
     .select(ARTICLE.ALL_COLUMNS)
     .from(ARTICLE)
     .where(ARTICLE.ID.ge(100))
     .list();
 ```
 
-## QueryWrapperChain 的方法
+## UpdateChain 示例
+
+假设我们要更新 `Account` 的 `userName` 为 "`张三`"，更新年龄在之前的基础上加 1，更新代码如下：
+
+```java
+@Test
+public void testUpdateChain1() {
+    UpdateChain.of(Account.class)
+        .set(Account::getUserName, "张三")
+        .setRaw(Account::getAge, "age + 1")
+        .where(Account::getId).eq(1)
+        .update();
+}
+```
+以上方法调用时，MyBatis-Flex 内部执行的 SQL 如下：
+
+```sql
+UPDATE `tb_account` SET `user_name` = '张三' , `age` = age + 1
+WHERE `id` = 1
+```
+
+**另一个示例：**
+
+```java
+@Test
+public void testUpdateChain2() {
+
+    //更新数据
+    UpdateChain.of(Account.class)
+        .set(Account::getAge, ACCOUNT.AGE.add(1))
+        .where(Account::getId).ge(100)
+        .and(Account::getAge).eq(18)
+        .update();
+
+    //查询所有数据并打印
+    QueryChain.of(accountMapper)
+        .list()
+        .forEach(System.out::println);
+}
+```
+通过 `UpdateChain` 进行 `update()`，其执行的 SQL 如下：
+
+```sql
+UPDATE `tb_account` SET `age` = `age` + 1
+WHERE  `id` >= 100 AND `age` = 18
+```
+
+
+
+## QueryChain 的方法
 
 - one()：获取一条数据
 - list()：获取多条数据
 - page()：分页查询
 - obj()：当 SQL 查询只返回 1 列数据的时候，且只有 1 条数据时，可以使用此方法
 - objList()：当 SQL 查询只返回 1 列数据的时候，可以使用此方法
-- remove()：删除数据
-- update(entity)：更新数据
 - count()：查询数据条数
 - exists()：是否存在，判断 count 是否大于 0
 
-## 扩展方法
+## QueryChain 扩展方法
 
 ### `one()` 系列方法
 

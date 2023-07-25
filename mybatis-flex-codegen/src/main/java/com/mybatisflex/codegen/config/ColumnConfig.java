@@ -216,6 +216,9 @@ public class ColumnConfig implements Serializable {
     public void setTenantId(Boolean tenantId) {
         this.tenantId = tenantId;
     }
+    public Class<?> getPropertyType() {
+        return propertyType;
+    }
 
     public String getPropertyType() {
         return propertyType;

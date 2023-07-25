@@ -170,3 +170,28 @@ update tb_account
 set user_name = "michael", age = (select ... from ... )
 where id = 100
 ```
+
+## UpdateChain
+
+UpdateChain 是一个对 `UpdateEntity`、`UpdateWrapper` 等进行封装的一个工具类，方便用户用于进行链式操作。
+
+假设我们要更新 `Account` 的 `userName` 为 "`张三`"，更新年龄在之前的基础上加 1，更新代码如下：
+
+```java
+@Test
+public void testUpdateChain() {
+    UpdateChain.of(Account.class)
+        .set(Account::getUserName, "张三")
+        .setRaw(Account::getAge, "age + 1")
+        .where(Account::getId).eq(1)
+        .update();
+}
+```
+以上方法调用时，MyBatis-Flex 内部执行的 SQL 如下：
+
+```sql
+UPDATE `tb_account` SET `user_name` = '张三' , `age` = age + 1
+WHERE `id` = 1
+```
+
+更多关于 **链式操作**，请点击这个 [这里](./chain.html#updatechain-示例)。

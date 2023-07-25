@@ -19,8 +19,11 @@ package com.mybatisflex.test.mapper;
 import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.model.Good;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static com.mybatisflex.test.model.table.GoodTableDef.GOOD;
 
 /**
  * @author 王帅
@@ -31,12 +34,75 @@ class ActiveRecordTest {
 
     @Test
     void testMapper() {
-        Good good = new Good();
-        good.setPrice(28);
+        Good good = Good.create();
 
-        GoodMapper goodMapper = Mappers.ofMapperClass(GoodMapper.class);
+        good.setPrice(28.0);
+
+        GoodMapper goodMapper = (GoodMapper) Mappers.ofEntityClass(Good.class);
 
         goodMapper.selectListByQuery(QueryWrapper.create(good));
+    }
+
+    @Test
+    void testInsert() {
+        boolean saved = Good.create()
+            .setPrice(28.0)
+            .setName("摆渡人")
+            .save();
+
+        Assertions.assertTrue(saved);
+    }
+
+    @Test
+    void testUpdate() {
+        Good.create()
+            .setGoodId(11)
+            .setPrice(38.0)
+            .updateById();
+    }
+
+    @Test
+    void testDelete() {
+        boolean removed = Good.create()
+            .setGoodId(1)
+            .removeById();
+
+        Assertions.assertTrue(removed);
+    }
+
+    @Test
+    void testSelectById() {
+        Good good = Good.create()
+            .setGoodId(11)
+            .oneById();
+
+        System.out.println(good);
+    }
+
+    @Test
+    void testSelectOne() {
+        Good good1 = Good.create()
+            .setName("摆渡人")
+            .one();
+
+        Good good2 = Good.create()
+            .where(GOOD.NAME.eq("摆渡人"))
+            .one();
+
+        Good good3 = Good.create()
+            .where(Good::getName).eq("摆渡人")
+            .one();
+
+        Assertions.assertEquals(good1, good2);
+        Assertions.assertEquals(good1, good3);
+    }
+
+    @Test
+    void testSelectList() {
+        Good.create()
+            .where(GOOD.PRICE.ge(28.0))
+            .list()
+            .forEach(System.out::println);
     }
 
 }
