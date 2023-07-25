@@ -99,17 +99,13 @@ public class Column {
     }
 
     public String getPropertySimpleType() {
-        try {
-            if (columnConfig.getPropertyType() != null) {
-                if (!columnConfig.getPropertyType().contains(".")) {
-                    return columnConfig.getPropertyType();
-                }
-                return Class.forName(columnConfig.getPropertyType()).getSimpleName();
-            } else {
-                return propertyType.substring(propertyType.lastIndexOf(".") + 1);
+        if (columnConfig.getPropertyType() != null) {
+            if (!columnConfig.getPropertyType().contains(".")) {
+                return columnConfig.getPropertyType();
             }
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
+            return StringUtil.substringAfterLast(columnConfig.getPropertyType(), ".");
+        } else {
+            return StringUtil.substringAfterLast(propertyType, ".");
         }
     }
 
