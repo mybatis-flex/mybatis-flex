@@ -25,7 +25,8 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 /**
- * @param <R>
+ * Lambda 条件构建器。
+ *
  * @author 王帅
  * @since 2023-07-24
  */
