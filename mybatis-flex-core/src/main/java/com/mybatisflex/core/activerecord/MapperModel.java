@@ -38,12 +38,7 @@ import java.util.Optional;
 public interface MapperModel<T> {
 
     /**
-     * <p>获取实体类对应的 {@link BaseMapper} 接口。
-     *
-     * <p>可以拓展该方法提高效率，例如：
-     * <pre>{@code
-     * return AccountMapper.class;
-     * }</pre>
+     * 获取实体类对应的 {@link BaseMapper} 接口。
      *
      * @return {@link BaseMapper} 接口
      */
