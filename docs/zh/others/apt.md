@@ -88,7 +88,7 @@ public class AccountTableDef extends TableDef {
 #upperCase, lowerCase, upperCamelCase, lowerCamelCase
 processor.tableDef.propertiesNameStyle = upperCase
 ```
-风格支持 4 中配置，默认（未配置时）为 upperCase，支持的配置分别为：
+风格支持 4 种配置，默认（未配置时）为 upperCase，支持的配置分别为：
 
 - upperCase：大写 + 下划线，例如：USER_NAME
 - lowerCase：小写 + 下划线，例如：user_name
