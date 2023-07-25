@@ -579,6 +579,18 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
+    public <T> QueryWrapper groupBy(LambdaGetter<T> column) {
+        addGroupByColumns(LambdaUtil.getQueryColumn(column));
+        return this;
+    }
+
+    public <T> QueryWrapper groupBy(LambdaGetter<T>... columns) {
+        for (LambdaGetter<T> column : columns) {
+            groupBy(LambdaUtil.getQueryColumn(column));
+        }
+        return this;
+    }
+
     public QueryWrapper having(QueryCondition queryCondition) {
         addHavingQueryCondition(queryCondition, SqlConnector.AND);
         return this;
