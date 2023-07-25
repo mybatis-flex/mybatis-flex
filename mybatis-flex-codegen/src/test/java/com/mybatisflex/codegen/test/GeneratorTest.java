@@ -23,6 +23,7 @@ import com.mybatisflex.codegen.config.TableConfig;
 import com.mybatisflex.codegen.config.TableDefConfig;
 import com.mybatisflex.spring.service.impl.CacheableServiceImpl;
 import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Test;
 
 import java.util.function.UnaryOperator;
 
@@ -149,7 +150,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-    //    @Test
+    @Test
     public void testCodeGen3() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -157,6 +158,13 @@ public class GeneratorTest {
         dataSource.setUsername("root");
         dataSource.setPassword("12345678");
 
+        //通过 datasource 和 globalConfig 创建代码生成器
+        new Generator(dataSource, globalConfig()).generate();
+        new Generator(dataSource, globalConfig()).generate();
+        new Generator(dataSource, globalConfig()).generate();
+    }
+
+    private GlobalConfig globalConfig() {
         GlobalConfig globalConfig = new GlobalConfig();
 
         //用户信息表，用于存放用户信息。 -> 用户信息
@@ -215,11 +223,7 @@ public class GeneratorTest {
             .setOverwriteEnable(true)
             .setMapperAnnotation(true);
 
-        //通过 datasource 和 globalConfig 创建代码生成器
-        Generator generator = new Generator(dataSource, globalConfig);
-
-        //开始生成代码
-        generator.generate();
+        return globalConfig;
     }
 
 }
