@@ -2,6 +2,9 @@
 
 在 MyBatis-Flex 中，内置了 `QueryChain.java` 和  `UpdateChain.java` 用于对数据进行链式查询操作和链式数据操作（修改和删除）。
 
+- **QueryChain**：链式查询
+- **UpdateChain**：链式更新
+
 
 ## QueryChain 示例
 
@@ -39,9 +42,10 @@ List<Article> articles = QueryChain.of(mapper)
 ## UpdateChain 示例
 
 假设我们要更新 `Account` 的 `userName` 为 "`张三`"，更新年龄在之前的基础上加 1，更新代码如下：
+
 ```java
 @Test
-public void testUpdateChain() {
+public void testUpdateChain1() {
     UpdateChain.of(Account.class)
         .set(Account::getUserName, "张三")
         .setRaw(Account::getAge, "age + 1")
@@ -55,6 +59,33 @@ public void testUpdateChain() {
 UPDATE `tb_account` SET `user_name` = '张三' , `age` = age + 1
 WHERE `id` = 1
 ```
+
+**另一个示例：**
+
+```java
+@Test
+public void testUpdateChain2() {
+
+    //更新数据
+    UpdateChain.of(Account.class)
+        .set(Account::getAge, ACCOUNT.AGE.add(1))
+        .where(Account::getId).ge(100)
+        .and(Account::getAge).eq(18)
+        .update();
+
+    //查询所有数据并打印
+    QueryChain.of(accountMapper)
+        .list()
+        .forEach(System.out::println);
+}
+```
+通过 `UpdateChain` 进行 `update()`，其执行的 SQL 如下：
+
+```sql
+UPDATE `tb_account` SET `age` = `age` + 1
+WHERE  `id` >= 100 AND `age` = 18
+```
+
 
 
 ## QueryChain 的方法
