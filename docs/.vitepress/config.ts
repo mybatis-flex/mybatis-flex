@@ -63,6 +63,7 @@ export default defineConfig({
                     {text: 'QueryWrapper', link: '/zh/base/querywrapper'},
                     {text: 'QueryWrapperChain', link: '/zh/base/query-wrapper-chain'},
                     {text: 'Db + Row', link: '/zh/base/db-row'},
+                    {text: 'Active Record', link: '/zh/base/active-record'},
                     {text: 'IService', link: '/zh/base/service'},
                     {text: 'SpringBoot 配置文件', link: '/zh/base/configuration'},
                     {text: 'MyBatisFlexCustomizer', link: '/zh/base/mybatis-flex-customizer'},

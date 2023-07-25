@@ -125,6 +125,10 @@ public class CPI {
         return queryWrapper.getWhereQueryCondition();
     }
 
+    public static void addWhereQueryCondition(QueryWrapper queryWrapper, QueryCondition queryCondition, SqlConnector connector) {
+        queryWrapper.addWhereQueryCondition(queryCondition, connector);
+    }
+
     public static List<QueryColumn> getGroupByColumns(QueryWrapper queryWrapper) {
         return queryWrapper.getGroupByColumns();
     }
