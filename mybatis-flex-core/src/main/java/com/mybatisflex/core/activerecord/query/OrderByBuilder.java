@@ -21,9 +21,10 @@ import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
 /**
- * 排序字段构建器
+ * Lambda 排序构建器。
  *
- * @author michael
+ * @author 王帅
+ * @since 2023-07-25
  */
 public class OrderByBuilder<R extends QueryModel<R>> {
 
