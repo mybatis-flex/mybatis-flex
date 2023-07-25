@@ -40,7 +40,7 @@ public abstract class QueryModel<T extends QueryModel<T>> {
 
     protected QueryWrapper getQueryWrapper() {
         if (queryWrapper == null) {
-            queryWrapper = QueryWrapper.create(this);
+            queryWrapper = QueryWrapper.create();
         }
         return queryWrapper;
     }
