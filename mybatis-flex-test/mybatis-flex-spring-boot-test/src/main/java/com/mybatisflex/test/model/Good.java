@@ -17,7 +17,9 @@
 package com.mybatisflex.test.model;
 
 import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
+import com.mybatisflex.core.activerecord.Model;
 
 import java.util.Objects;
 
@@ -28,35 +30,42 @@ import java.util.Objects;
  * @since 2023-06-07
  */
 @Table("tb_good")
-public class Good {
+public class Good extends Model<Good> {
 
-    @Id
+    @Id(keyType = KeyType.Auto)
     private Integer goodId;
     private String name;
-    private double price;
+    private Double price;
+
+    public static Good create() {
+        return new Good();
+    }
 
     public Integer getGoodId() {
         return goodId;
     }
 
-    public void setGoodId(Integer goodId) {
+    public Good setGoodId(Integer goodId) {
         this.goodId = goodId;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Good setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public Good setPrice(Double price) {
         this.price = price;
+        return this;
     }
 
     @Override
@@ -79,23 +88,20 @@ public class Good {
 
         Good good = (Good) o;
 
-        if (Double.compare(good.price, price) != 0) {
-            return false;
-        }
         if (!Objects.equals(goodId, good.goodId)) {
             return false;
         }
-        return Objects.equals(name, good.name);
+        if (!Objects.equals(name, good.name)) {
+            return false;
+        }
+        return Objects.equals(price, good.price);
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = goodId != null ? goodId.hashCode() : 0;
+        int result = goodId != null ? goodId.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        temp = Double.doubleToLongBits(price);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (price != null ? price.hashCode() : 0);
         return result;
     }
 
