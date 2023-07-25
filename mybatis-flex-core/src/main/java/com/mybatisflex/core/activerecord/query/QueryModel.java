@@ -22,6 +22,13 @@ import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
 /**
+ * <p>实体类条件查询构建模型。
+ *
+ * <p>该类内部维护了一个 {@link QueryWrapper} 属性，用来构建查询条件。
+ * 通过实体类属性构建的查询条件都是值等于，该扩展用于非等于值构建，及一些其他方法。
+ * 如果不想通过实体类直接构建查询条件，可以不继承该类。
+ *
+ * @param <T> 实体类类型
  * @author 王帅
  * @since 2023-07-24
  */
