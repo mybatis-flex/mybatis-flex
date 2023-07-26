@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.core.exception;
 
+import com.mybatisflex.core.exception.locale.Localizable;
+
 /**
  * MybatisFlexException 异常封装类
  */
@@ -61,41 +63,8 @@ public final class FlexExceptions {
         return new MybatisFlexException(String.format(msg, params));
     }
 
-
-    /**
-     * 断言 condition 必须为 true
-     *
-     * @param condition 条件
-     * @param msg       消息
-     * @param params    消息参数
-     */
-    public static void assertTrue(boolean condition, String msg, Object... params) {
-        if (!condition) {
-            throw wrap(msg, params);
-        }
-    }
-
-
-    /**
-     * 断言传入的内容不能为 null
-     */
-    public static void assertNotNull(Object object, String msg, Object params) {
-        assertTrue(object != null, msg, params);
-    }
-
-
-    /**
-     * 断言传入的数组内容不能为 null 或者 空
-     */
-    public static <T> void assertAreNotNull(T[] elements, String msg, Object params) {
-        if (elements == null || elements.length == 0) {
-            throw wrap(msg, params);
-        }
-        for (T element : elements) {
-            if (element == null) {
-                throw wrap(msg, params);
-            }
-        }
+    public static MybatisFlexException wrap(Localizable pattern, Object... args) {
+        return new MybatisFlexException(pattern, args);
     }
 
 }
