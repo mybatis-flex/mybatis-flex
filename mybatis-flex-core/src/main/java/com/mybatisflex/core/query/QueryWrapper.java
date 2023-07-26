@@ -201,6 +201,10 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return new QueryConditionBuilder<>(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
     }
 
+    public QueryWrapper where(Consumer<QueryWrapper> consumer) {
+        return and(consumer);
+    }
+
     public QueryWrapper and(QueryCondition queryCondition) {
         return addWhereQueryCondition(queryCondition, SqlConnector.AND);
     }

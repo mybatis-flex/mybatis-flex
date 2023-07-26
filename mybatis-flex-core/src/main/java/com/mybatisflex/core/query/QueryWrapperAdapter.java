@@ -155,6 +155,11 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
+    public R where(Consumer<QueryWrapper> consumer) {
+        return and(consumer);
+    }
+
+    @Override
     public R and(QueryCondition queryCondition) {
         super.and(queryCondition);
         return (R) this;
