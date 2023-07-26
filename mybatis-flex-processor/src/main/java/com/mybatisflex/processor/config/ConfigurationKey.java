@@ -30,6 +30,11 @@ public enum ConfigurationKey {
     ENABLE("processor.enable", ""),
 
     /**
+     * 生成文件的字符集。
+     */
+    CHARSET("processor.charset", "UTF-8"),
+
+    /**
      * APT 代码生成路径。
      */
     GEN_PATH("processor.genPath", ""),
