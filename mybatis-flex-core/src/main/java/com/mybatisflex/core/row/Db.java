@@ -127,9 +127,7 @@ public class Db {
      * @param batchSize 每次提交的数据量
      */
     public static int[] insertBatch(String schema, String tableName, Collection<Row> rows, int batchSize) {
-        List<Row> list = CollectionUtil.toList(rows);
-        return executeBatch(rows.size(), batchSize, RowMapper.class, (mapper, index) -> {
-            Row row = list.get(index);
+        return executeBatch(rows, batchSize, RowMapper.class, (mapper, row) -> {
             mapper.insert(schema, tableName, row);
         });
     }
@@ -142,9 +140,7 @@ public class Db {
      * @param batchSize 每次提交的数据量
      */
     public static int[] insertBatch(String tableName, Collection<Row> rows, int batchSize) {
-        List<Row> list = CollectionUtil.toList(rows);
-        return executeBatch(rows.size(), batchSize, RowMapper.class, (mapper, index) -> {
-            Row row = list.get(index);
+        return executeBatch(rows, batchSize, RowMapper.class, (mapper, row) -> {
             mapper.insert(null, tableName, row);
         });
     }
@@ -331,8 +327,9 @@ public class Db {
      */
     public static int[] updateBatch(String sql, BatchArgsSetter batchArgsSetter) {
         int batchSize = batchArgsSetter.getBatchSize();
-        return executeBatch(batchSize, batchSize, RowMapper.class
+        return invoker().executeBatch(batchSize, batchSize, RowMapper.class
             , (mapper, index) -> mapper.updateBySql(sql, batchArgsSetter.getSqlArgs(index)));
+
     }
 
 
@@ -461,10 +458,7 @@ public class Db {
      */
     public static <T> int updateEntitiesBatch(Collection<T> entities, int batchSize) {
         List<T> list = CollectionUtil.toList(entities);
-        return Arrays.stream(executeBatch(list.size(), batchSize, RowMapper.class, (mapper, index) -> {
-            T entity = list.get(index);
-            mapper.updateEntity(entity);
-        })).sum();
+        return Arrays.stream(executeBatch(list, batchSize, RowMapper.class, RowMapper::updateEntity)).sum();
     }
 
 
@@ -519,6 +513,37 @@ public class Db {
      */
     public static <M> int[] executeBatch(int totalSize, int batchSize, Class<M> mapperClass, BiConsumer<M, Integer> consumer) {
         return invoker().executeBatch(totalSize, batchSize, mapperClass, consumer);
+    }
+
+
+    /**
+     * 批量执行工具方法
+     *
+     * @param datas       数据
+     * @param mapperClass mapper 类
+     * @param consumer    消费者
+     * @param <M>         mapper
+     * @param <D>         数据类型
+     * @return 返回每条执行是否成功的结果
+     */
+    public static <M, D> int[] executeBatch(Collection<D> datas, Class<M> mapperClass, BiConsumer<M, D> consumer) {
+        return executeBatch(datas, RowMapper.DEFAULT_BATCH_SIZE, mapperClass, consumer);
+    }
+
+
+    /**
+     * 批量执行工具方法
+     *
+     * @param datas       数据
+     * @param batchSize   每批次执行多少条
+     * @param mapperClass mapper 类
+     * @param consumer    消费者
+     * @param <M>         mapper
+     * @param <E>         数据类型
+     * @return 返回每条执行是否成功的结果
+     */
+    public static <M, E> int[] executeBatch(Collection<E> datas, int batchSize, Class<M> mapperClass, BiConsumer<M, E> consumer) {
+        return invoker().executeBatch(datas, batchSize, mapperClass, consumer);
     }
 
     /**

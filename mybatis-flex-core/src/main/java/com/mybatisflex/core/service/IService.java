@@ -18,9 +18,9 @@ package com.mybatisflex.core.service;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.QueryChain;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.query.QueryChain;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
@@ -95,14 +95,8 @@ public interface IService<T> {
      * @return {@code true} 保存成功，{@code false} 保存失败。
      */
     default boolean saveBatch(Collection<T> entities, int batchSize) {
-        List<T> entityList = CollectionUtil.toList(entities);
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
-        return SqlUtil.toBool(
-            Db.executeBatch(entities.size()
-                , batchSize
-                , usefulClass
-                , (mapper, integer) -> mapper.insert(entityList.get(integer)))
-        );
+        return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::insert));
     }
 
     /**
@@ -123,14 +117,8 @@ public interface IService<T> {
      * @return {@code true} 保存成功，{@code false} 保存失败。
      */
     default boolean saveBatchSelective(Collection<T> entities, int batchSize) {
-        List<T> entityList = CollectionUtil.toList(entities);
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
-        return SqlUtil.toBool(
-            Db.executeBatch(entities.size()
-                , batchSize
-                , usefulClass
-                , (mapper, integer) -> mapper.insertSelective(entityList.get(integer)))
-        );
+        return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::insertSelective));
     }
 
     // ===== 删除（删）操作 =====
@@ -267,16 +255,8 @@ public interface IService<T> {
      * @return {@code true} 更新成功，{@code false} 更新失败。
      */
     default boolean updateBatch(Collection<T> entities, int batchSize) {
-        List<T> entityList = CollectionUtil.toList(entities);
-        // BaseMapper 是经过 Mybatis 动态代理处理过的对象，需要获取原始 BaseMapper 类型
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
-        return SqlUtil.toBool(
-            Db.executeBatch(
-                entityList.size()
-                , batchSize
-                , usefulClass
-                , (mapper, index) -> mapper.update(entityList.get(index)))
-        );
+        return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::update));
     }
 
 

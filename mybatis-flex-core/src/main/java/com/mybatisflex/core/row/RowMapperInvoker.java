@@ -81,6 +81,40 @@ public class RowMapperInvoker {
     }
 
 
+    public <M, E> int[] executeBatch(Collection<E> datas, int batchSize, Class<M> mapperClass, BiConsumer<M, E> consumer) {
+        int[] results = new int[datas.size()];
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, true)) {
+            M mapper = sqlSession.getMapper(mapperClass);
+            int counter = 0;
+            int resultsPos = 0;
+            for (E data : datas) {
+                consumer.accept(mapper, data);
+                if (++counter == batchSize) {
+                    counter = 0;
+                    List<BatchResult> batchResults = sqlSession.flushStatements();
+                    for (BatchResult batchResult : batchResults) {
+                        int[] updateCounts = batchResult.getUpdateCounts();
+                        for (int updateCount : updateCounts) {
+                            results[resultsPos++] = updateCount;
+                        }
+                    }
+                }
+            }
+            if (counter != 0) {
+                List<BatchResult> batchResults = sqlSession.flushStatements();
+                for (BatchResult batchResult : batchResults) {
+                    int[] updateCounts = batchResult.getUpdateCounts();
+                    for (int updateCount : updateCounts) {
+                        results[resultsPos++] = updateCount;
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
+
+
     public <M> int[] executeBatch(int totalSize, int batchSize, Class<M> mapperClass, BiConsumer<M, Integer> consumer) {
         int[] results = new int[totalSize];
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, true)) {
