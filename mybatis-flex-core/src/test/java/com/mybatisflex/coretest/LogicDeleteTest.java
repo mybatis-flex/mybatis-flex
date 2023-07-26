@@ -20,6 +20,8 @@ import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
 import com.mybatisflex.core.logicdelete.impl.*;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import org.junit.Test;
 
 /**
@@ -41,12 +43,14 @@ public class LogicDeleteTest {
         print("IntegerLogicDeleteProcessor", new IntegerLogicDeleteProcessor());
         print("DateTimeLogicDeleteProcessor", new DateTimeLogicDeleteProcessor());
         print("TimeStampLogicDeleteProcessor", new TimeStampLogicDeleteProcessor());
+        print("PrimaryKeyLogicDeleteProcessor", new PrimaryKeyLogicDeleteProcessor());
     }
 
     public void print(String type, LogicDeleteProcessor processor) {
         System.out.println("===== " + type + " =====");
-        System.out.println(processor.buildLogicDeletedSet(logicColumn, null, dialect));
-        System.out.println(processor.buildLogicNormalCondition(logicColumn, null, dialect));
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(Account.class);
+        System.out.println(processor.buildLogicDeletedSet(logicColumn, tableInfo, dialect));
+        System.out.println(processor.buildLogicNormalCondition(logicColumn, tableInfo, dialect));
     }
 
 }

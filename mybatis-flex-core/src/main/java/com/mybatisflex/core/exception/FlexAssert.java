@@ -82,4 +82,18 @@ public final class FlexAssert {
         }
     }
 
+    /**
+     * 断言传入的数组内容不能为 null 或者 空
+     */
+    public static <T> void assertAreNotNull(T[] elements, String msg, Object params) {
+        if (elements == null || elements.length == 0) {
+            throw FlexExceptions.wrap(msg, params);
+        }
+        for (T element : elements) {
+            if (element == null) {
+                throw FlexExceptions.wrap(msg, params);
+            }
+        }
+    }
+
 }
