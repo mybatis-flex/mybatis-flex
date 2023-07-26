@@ -47,20 +47,6 @@ public abstract class AbstractLogicDeleteProcessor implements LogicDeleteProcess
             , getLogicNormalValue()));
     }
 
-    /**
-     * 获取逻辑删除列未删除标记值。
-     *
-     * @return 未删除标记值
-     */
-    public abstract Object getLogicNormalValue();
-
-    /**
-     * 获取逻辑删除列删除时标记值。
-     *
-     * @return 删除时标记值
-     */
-    public abstract Object getLogicDeletedValue();
-
 }
 
 
