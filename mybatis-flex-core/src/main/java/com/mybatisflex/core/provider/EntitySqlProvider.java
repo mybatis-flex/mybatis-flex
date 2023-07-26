@@ -18,7 +18,6 @@ package com.mybatisflex.core.provider;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexAssert;
-import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -240,7 +239,7 @@ public class EntitySqlProvider {
         Object[] primaryValues = tableInfo.buildPkSqlArgs(entity);
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
-        FlexExceptions.assertAreNotNull(primaryValues, "The value of primary key must not be null, entity[%s]", entity);
+        FlexAssert.assertAreNotNull(primaryValues, "The value of primary key must not be null, entity[%s]", entity);
 
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(updateValues, primaryValues, tenantIdArgs));
 
