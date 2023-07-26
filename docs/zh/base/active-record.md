@@ -1,4 +1,4 @@
-# Active Record
+# Active Record <Badge type="tip" text="v1.5.3" />
 
 [Active Record 模式](http://www.martinfowler.com/eaaCatalog/activeRecord.html)出自 Martin Fowler
 写的《[企业应用架构模式](https://book.douban.com/subject/4826290/)》书中。在 Active Record

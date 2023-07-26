@@ -45,11 +45,10 @@ public class EnjoyTemplate implements ITemplate {
                 e.addSharedStaticMethod(StringUtil.class);
                 e.setSourceFactory(new FileAndClassPathSourceFactory());
             });
+            // 以下配置将支持 user.girl 表达式去调用 user 对象的 boolean isGirl() 方法
+            Engine.addFieldGetterToFirst(new FieldGetters.IsMethodFieldGetter());
         }
         this.engine = engine;
-
-        // 以下配置将支持 user.girl 表达式去调用 user 对象的 boolean isGirl() 方法
-        Engine.addFieldGetterToFirst(new FieldGetters.IsMethodFieldGetter());
     }
 
     @Override
