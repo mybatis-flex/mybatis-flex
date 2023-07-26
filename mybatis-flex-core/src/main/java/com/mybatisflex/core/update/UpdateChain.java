@@ -35,6 +35,7 @@ import java.lang.reflect.Type;
  * @author michale
  * @since 2023-07-25
  */
+@SuppressWarnings("unchecked")
 public class UpdateChain<T> extends QueryWrapperAdapter<UpdateChain<T>> {
 
     private final BaseMapper<T> baseMapper;
@@ -46,10 +47,25 @@ public class UpdateChain<T> extends QueryWrapperAdapter<UpdateChain<T>> {
         return new UpdateChain<>(baseMapper);
     }
 
+    public static <T> UpdateChain<T> of(T entityObject) {
+        Class<T> entityClass = (Class<T>) ClassUtil.getUsefulClass(entityObject.getClass());
+        BaseMapper<T> baseMapper = Mappers.ofEntityClass(entityClass);
+        return new UpdateChain<>(baseMapper, entityObject);
+    }
+
+
     public UpdateChain(BaseMapper<T> baseMapper) {
         this.baseMapper = baseMapper;
         this.entity = createEntity(ClassUtil.getUsefulClass(baseMapper.getClass()));
         this.entityWrapper = (UpdateWrapper) entity;
+    }
+
+
+    public UpdateChain(BaseMapper<T> baseMapper, T entityObject) {
+        this.baseMapper = baseMapper;
+        entityObject = (T) UpdateWrapper.of(entityObject);
+        this.entity = entityObject;
+        this.entityWrapper = (UpdateWrapper) entityObject;
     }
 
     private T createEntity(Class<?> mapperClass) {
