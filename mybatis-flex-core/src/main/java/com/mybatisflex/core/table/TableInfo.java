@@ -868,15 +868,21 @@ public class TableInfo {
             }
             Object value = metaObject.getValue(property);
             if (value != null && !"".equals(value)) {
-                QueryColumn queryColumn = TableDefs.getQueryColumn(entityClass, tableNameWithSchema, column);
-                if (queryColumn != null) {
-                    queryWrapper.and(queryColumn.eq(value));
-                } else {
-                    queryWrapper.and(QueryMethods.column(tableNameWithSchema, column).eq(value));
-                }
+                QueryColumn queryColumn = buildQueryColumn(column);
+                queryWrapper.and(queryColumn.eq(value));
             }
         });
         return queryWrapper;
+    }
+
+
+    public QueryColumn buildQueryColumn(String column) {
+        String tableNameWithSchema = getTableNameWithSchema();
+        QueryColumn queryColumn = TableDefs.getQueryColumn(entityClass, tableNameWithSchema, column);
+        if (queryColumn == null) {
+            queryColumn = QueryMethods.column(tableNameWithSchema, column);
+        }
+        return queryColumn;
     }
 
 
