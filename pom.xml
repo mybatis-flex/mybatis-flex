@@ -198,11 +198,6 @@
                 <includes>
                     <include>**/*</include>
                 </includes>
-                <excludes>
-                    <exclude>
-                        *.properties
-                    </exclude>
-                </excludes>
             </resource>
         </resources>
 
