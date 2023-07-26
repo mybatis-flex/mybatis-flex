@@ -22,7 +22,7 @@
 
 ## QQ 群
 
-群号： 532992631
+群号： 850176767
 
 ![](./docs/assets/images/qq_group.png)
 
@@ -132,7 +132,7 @@ Page<Account> accounts = mapper.paginate(5, 10, query);
 QueryWrapper query = new QueryWrapper();
 query.select().from(ACCOUNT);
 
-// SQL: 
+// SQL:
 // SELECT * FROM tb_account
 ```
 也可以通过静态方法简写成如下两种形式，效果完全相同：
@@ -143,7 +143,7 @@ QueryWrapper query = QueryWrapper.create()
 // 方式2
 QueryWrapper query = select().from(ACCOUNT);
 
-// SQL: 
+// SQL:
 // SELECT * FROM tb_account
 ```
 ### select columns
@@ -154,8 +154,8 @@ QueryWrapper query = new QueryWrapper();
 query.select(ACCOUNT.ID, ACCOUNT.USER_NAME)
     .from(ACCOUNT);
 
-// SQL: 
-// SELECT id, user_name 
+// SQL:
+// SELECT id, user_name
 // FROM tb_account
 ```
 
@@ -169,9 +169,9 @@ QueryWrapper query = new QueryWrapper()
     .from(ACCOUNT.as("a"), ARTICLE.as("b"))
     .where(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
 
-// SQL: 
-// SELECT a.id, a.user_name, b.id AS articleId, b.title 
-// FROM tb_account AS a, tb_article AS b 
+// SQL:
+// SELECT a.id, a.user_name, b.id AS articleId, b.title
+// FROM tb_account AS a, tb_article AS b
 // WHERE a.id = b.account_id
 ```
 
@@ -186,10 +186,10 @@ QueryWrapper query = new QueryWrapper()
         avg(ACCOUNT.SEX).as("sex_avg")
     ).from(ACCOUNT);
 
-// SQL: 
-// SELECT id, user_name, 
-// MAX(birthday), 
-// AVG(sex) AS sex_avg 
+// SQL:
+// SELECT id, user_name,
+// MAX(birthday),
+// AVG(sex) AS sex_avg
 // FROM tb_account
 ```
 
@@ -203,10 +203,10 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .where(ACCOUNT.ID.ge(100))
     .and(ACCOUNT.USER_NAME.like("michael"));
 
-// SQL: 
-// SELECT * FROM tb_account 
-// WHERE id >=  ?  
-// AND user_name LIKE  ? 
+// SQL:
+// SELECT * FROM tb_account
+// WHERE id >=  ?
+// AND user_name LIKE  ?
 ```
 
 ### where 动态条件 1
@@ -218,9 +218,9 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .where(flag ? ACCOUNT.ID.ge(100) : noCondition())
     .and(ACCOUNT.USER_NAME.like("michael"));
 
-// SQL: 
-// SELECT * FROM tb_account 
-// WHERE user_name LIKE  ? 
+// SQL:
+// SELECT * FROM tb_account
+// WHERE user_name LIKE  ?
 ```
 
 ### where 动态条件 2
@@ -232,9 +232,9 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .where(ACCOUNT.ID.ge(100).when(flag))
     .and(ACCOUNT.USER_NAME.like("michael"));
 
-// SQL: 
-// SELECT * FROM tb_account 
-// WHERE user_name LIKE  ? 
+// SQL:
+// SELECT * FROM tb_account
+// WHERE user_name LIKE  ?
 ```
 ### where 自动忽略 null 值
 当遇到条件值为 null 时，会自动忽略该条件，不会拼接到 SQL 中
@@ -247,9 +247,9 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .where(ACCOUNT.ID.ge(num))
     .and(ACCOUNT.USER_NAME.like(userName));
 
-// SQL: 
-// SELECT * FROM tb_account 
-// WHERE user_name LIKE '%michael%' 
+// SQL:
+// SELECT * FROM tb_account
+// WHERE user_name LIKE '%michael%'
 ```
 
 
@@ -262,9 +262,9 @@ QueryWrapper queryWrapper = QueryWrapper.create()
        select(ARTICLE.ACCOUNT_ID).from(ARTICLE).where(ARTICLE.ID.ge(100))
     ));
 
-// SQL: 
+// SQL:
 // SELECT * FROM tb_account
-// WHERE id >= 
+// WHERE id >=
 // (SELECT account_id FROM tb_article WHERE id >=  ? )
 ```
 
@@ -281,11 +281,11 @@ QueryWrapper queryWrapper=QueryWrapper.create()
         )
     );
 
-// SQL: 
-// SELECT * FROM tb_account 
-// WHERE id >=  ?  
+// SQL:
+// SELECT * FROM tb_account
+// WHERE id >=  ?
 // AND EXIST (
-//    SELECT 1 FROM tb_article WHERE id >=  ? 
+//    SELECT 1 FROM tb_article WHERE id >=  ?
 // )
 ```
 
@@ -299,10 +299,10 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .and(ACCOUNT.SEX.eq(1).or(ACCOUNT.SEX.eq(2)))
     .or(ACCOUNT.AGE.in(18,19,20).and(ACCOUNT.USER_NAME.like("michael")));
 
-// SQL: 
-// SELECT * FROM tb_account 
-// WHERE id >=  ?  
-// AND (sex =  ? OR sex =  ? ) 
+// SQL:
+// SELECT * FROM tb_account
+// WHERE id >=  ?
+// AND (sex =  ? OR sex =  ? )
 // OR (age IN (?,?,?) AND user_name LIKE ? )
 ```
 
@@ -314,8 +314,8 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .from(ACCOUNT)
     .groupBy(ACCOUNT.USER_NAME);
 
-// SQL: 
-// SELECT * FROM tb_account 
+// SQL:
+// SELECT * FROM tb_account
 // GROUP BY user_name
 ```
 
@@ -328,9 +328,9 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .groupBy(ACCOUNT.USER_NAME)
     .having(ACCOUNT.AGE.between(18,25));
 
-// SQL: 
-// SELECT * FROM tb_account 
-// GROUP BY user_name 
+// SQL:
+// SELECT * FROM tb_account
+// GROUP BY user_name
 // HAVING age BETWEEN  ? AND ?
 ```
 
@@ -343,7 +343,7 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .orderBy(ACCOUNT.AGE.asc()
         , ACCOUNT.USER_NAME.desc().nullsLast());
 
-// SQL: 
+// SQL:
 // SELECT * FROM tb_account
 // ORDER BY age ASC, user_name DESC NULLS LAST
 ```
@@ -358,10 +358,10 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .innerJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
     .where(ACCOUNT.AGE.ge(10));
 
-// SQL: 
-// SELECT * FROM tb_account 
-// LEFT JOIN tb_article ON tb_account.id = tb_article.account_id 
-// INNER JOIN tb_article ON tb_account.id = tb_article.account_id 
+// SQL:
+// SELECT * FROM tb_account
+// LEFT JOIN tb_article ON tb_account.id = tb_article.account_id
+// INNER JOIN tb_article ON tb_account.id = tb_article.account_id
 // WHERE tb_account.age >=  ?
 ```
 
@@ -376,30 +376,30 @@ QueryWrapper queryWrapper = QueryWrapper.create()
     .limit(10)
     .offset(20);
 
-// MySql: 
+// MySql:
 // SELECT * FROM `tb_account` ORDER BY `id` DESC LIMIT 20, 10
 
-// PostgreSQL: 
+// PostgreSQL:
 // SELECT * FROM "tb_account" ORDER BY "id" DESC LIMIT 20 OFFSET 10
 
-// Informix: 
+// Informix:
 // SELECT SKIP 20 FIRST 10 * FROM "tb_account" ORDER BY "id" DESC
 
-// Oracle: 
-// SELECT * FROM (SELECT TEMP_DATAS.*, 
+// Oracle:
+// SELECT * FROM (SELECT TEMP_DATAS.*,
 //  ROWNUM RN FROM (
-//          SELECT * FROM "tb_account" ORDER BY "id" DESC) 
-//      TEMP_DATAS WHERE  ROWNUM <=30) 
+//          SELECT * FROM "tb_account" ORDER BY "id" DESC)
+//      TEMP_DATAS WHERE  ROWNUM <=30)
 //  WHERE RN >20
 
-// Db2: 
-// SELECT * FROM "tb_account" ORDER BY "id" DESC 
+// Db2:
+// SELECT * FROM "tb_account" ORDER BY "id" DESC
 // OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY
 
-// Sybase: 
+// Sybase:
 // SELECT TOP 10 START AT 21 * FROM "tb_account" ORDER BY "id" DESC
 
-// Firebird: 
+// Firebird:
 // SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 ```
 
@@ -489,7 +489,7 @@ accountMapper.update(account);
 
 ```sql
 update tb_account
-set user_name = ?, sex = ? where id = ? 
+set user_name = ?, sex = ? where id = ?
 #params: null,1,100
 ```
 
@@ -511,7 +511,7 @@ public class Account {
     private Map<String, Object> options;
 
     //getter setter
-    
+
     public void addOption(String key, Object value) {
         if (options == null) {
             options = new HashMap<>();
@@ -612,7 +612,7 @@ public class Account {
 
 ## 还有问题？
 
-加入 QQ 交流群： 532992631
+加入 QQ 交流群： 850176767
 
 ![](./docs/assets/images/qq_group.png)
 
