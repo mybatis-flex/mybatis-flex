@@ -40,6 +40,7 @@ import lombok.NoArgsConstructor;
 #end
 #(table.buildTableAnnotation())
 public class #(table.buildEntityClassName())#(table.buildExtends())#(table.buildImplements()) {
+
 #for(column : table.columns)
     #set(comment = javadocConfig.formatColumnComment(column.comment))
     #if(isNotBlank(comment))
@@ -57,7 +58,8 @@ public class #(table.buildEntityClassName())#(table.buildExtends())#(table.build
     #if(withSwagger && swaggerVersion.getName() == "DOC")
     @Schema(description = "#(column.comment)")
     #end
-    private #(column.propertySimpleType) #(column.property);
+    private #(column.propertySimpleType) #(column.property)#if(isNotBlank(column.propertyDefaultValue)) = #(column.propertyDefaultValue)#end;
+
 #end
 
 #if(!withLombok)
@@ -71,5 +73,4 @@ public class #(table.buildEntityClassName())#(table.buildExtends())#(table.build
     }
 
     #end
-#end
-}
+#end}

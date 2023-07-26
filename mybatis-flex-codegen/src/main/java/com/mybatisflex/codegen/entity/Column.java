@@ -22,7 +22,9 @@ import com.mybatisflex.codegen.config.ColumnConfig;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 数据库表里面的列信息。
@@ -92,12 +94,18 @@ public class Column {
         return propertyType;
     }
 
+    public String getPropertyDefaultValue() {
+        return columnConfig.getPropertyDefaultValue();
+    }
+
     public String getPropertySimpleType() {
-        if (columnConfig.getPropertyType()!=null){
-            return columnConfig.getPropertyType().getSimpleName();
-        }
-        else {
-            return propertyType.substring(propertyType.lastIndexOf(".") + 1);
+        if (columnConfig.getPropertyType() != null) {
+            if (!columnConfig.getPropertyType().contains(".")) {
+                return columnConfig.getPropertyType();
+            }
+            return StringUtil.substringAfterLast(columnConfig.getPropertyType(), ".");
+        } else {
+            return StringUtil.substringAfterLast(propertyType, ".");
         }
     }
 
@@ -276,39 +284,32 @@ public class Column {
         }
     }
 
-    public List<String> getImportClasses() {
-        List<String> importClasses = new ArrayList<>();
+    public Set<String> getImportClasses() {
+        Set<String> importClasses = new LinkedHashSet<>();
 
-        //lang 包不需要显式导入
-        if (!propertyType.startsWith("java.lang.")
-            && !"byte[]".equals(propertyType)
-            && !"Byte[]".equals(propertyType)
-        ) {
-            importClasses.add(propertyType);
-        }
-
+        addImportClass(importClasses, propertyType);
 
         if (isPrimaryKey || (columnConfig != null && columnConfig.isPrimaryKey())) {
-            importClasses.add(Id.class.getName());
+            addImportClass(importClasses, Id.class.getName());
             if (isAutoIncrement || (columnConfig != null && columnConfig.getKeyType() != null)) {
-                importClasses.add(KeyType.class.getName());
+                addImportClass(importClasses, KeyType.class.getName());
             }
         }
 
         if (columnConfig != null) {
-            if (columnConfig.getPropertyType() !=null){
-                importClasses.add(columnConfig.getPropertyType().getName());
+            if (columnConfig.getPropertyType() != null) {
+                addImportClass(importClasses, columnConfig.getPropertyType());
             }
             if (columnConfig.getMask() != null) {
-                importClasses.add(ColumnMask.class.getName());
+                addImportClass(importClasses, ColumnMask.class.getName());
             }
 
             if (columnConfig.getJdbcType() != null) {
-                importClasses.add("org.apache.ibatis.type.JdbcType");
+                addImportClass(importClasses, "org.apache.ibatis.type.JdbcType");
             }
 
             if (columnConfig.getTypeHandler() != null) {
-                importClasses.add(columnConfig.getTypeHandler().getName());
+                addImportClass(importClasses, columnConfig.getTypeHandler().getName());
             }
 
             if (columnConfig.getOnInsertValue() != null
@@ -321,11 +322,22 @@ public class Column {
                 || Boolean.TRUE.equals(columnConfig.getTenantId())
                 || needGenColumnAnnotation
             ) {
-                importClasses.add(com.mybatisflex.annotation.Column.class.getName());
+                addImportClass(importClasses, com.mybatisflex.annotation.Column.class.getName());
             }
         }
 
         return importClasses;
+    }
+
+    /**
+     * importClass为类的全限定名
+     */
+    private static void addImportClass(Set<String> importClasses, String importClass) {
+        // 不包含“.”则认为是原始类型，不需要import
+        // lang包不需要显式导入
+        if (importClass.contains(".") && !importClass.startsWith("java.lang.")) {
+            importClasses.add(importClass);
+        }
     }
 
     public boolean isDefaultColumn() {

@@ -449,8 +449,21 @@ public class ColumnConfig implements Serializable {
 
     // 是否是租户列
     private Boolean tenantId;
+
+    /**
+     * 属性的类型。
+     * 原始类型直接写类型名称，例：int/long/float/double/boolean
+     * 对象类型请写对应类的全限定名，例：java.lang.String/com.abc.def.enums.Gender
+     */
+    private String propertyType;
+
+    /**
+     * 属性的默认值, 例：long类型默认值：0L，枚举类型默认值：Gender.MALE
+     */
+    private String propertyDefaultValue;
 }
 ```
+
 
 ## 自定义属性类型
 

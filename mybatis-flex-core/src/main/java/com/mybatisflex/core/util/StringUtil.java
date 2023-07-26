@@ -287,5 +287,15 @@ public class StringUtil {
         return string != null ? string.trim() : null;
     }
 
+    public static String substringAfterLast(String text, String str) {
+        if (text == null) {
+            return null;
+        }
+        if (str == null) {
+            return text;
+        }
+        return text.substring(text.lastIndexOf(str) + 1);
+    }
+
 
 }
