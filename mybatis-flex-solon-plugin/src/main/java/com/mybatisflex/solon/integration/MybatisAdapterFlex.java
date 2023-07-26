@@ -72,10 +72,6 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
 
     protected void initAfter(BeanWrap dsWrap) {
         globalConfig.setSqlSessionFactory(getFactory());
-
-        if (dsWrap.typed()) {
-            FlexGlobalConfig.setDefaultConfig(globalConfig);
-        }
     }
 
     @Override
@@ -109,6 +105,11 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
 
         //增加事件扩展机制
         EventBus.push(globalConfig);
+
+
+        if (dsWrap.typed()) {
+            FlexGlobalConfig.setDefaultConfig(globalConfig);
+        }
     }
 
     /**
