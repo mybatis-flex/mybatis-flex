@@ -22,6 +22,7 @@ import com.mybatisflex.core.query.QueryChain;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
+import com.mybatisflex.core.update.UpdateChain;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.SqlUtil;
@@ -505,12 +506,33 @@ public interface IService<T> {
         return getMapper().paginateAs(page, query, asType);
     }
 
+    // ===== 查询包装器操作 =====
+
+    /**
+     * 默认 {@link QueryWrapper} 构建。
+     *
+     * @return {@link QueryWrapper} 对象
+     */
     default QueryWrapper query() {
         return QueryWrapper.create();
     }
 
+    /**
+     * 链式查询。
+     *
+     * @return {@link QueryChain} 对象
+     */
     default QueryChain<T> queryChain() {
-        return new QueryChain<>(getMapper());
+        return QueryChain.of(getMapper());
+    }
+
+    /**
+     * 链式更新。
+     *
+     * @return {@link UpdateChain} 对象
+     */
+    default UpdateChain<T> updateChain() {
+        return UpdateChain.create(getMapper());
     }
 
 }
