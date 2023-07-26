@@ -45,7 +45,6 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.file.Files;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.*;
@@ -383,7 +382,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 return;
             }
 
-            writer = new PrintWriter(Files.newOutputStream(genJavaFile.toPath()));
+            writer = new PrintWriter(genJavaFile, configuration.get(ConfigurationKey.CHARSET));
             writer.write(genContent);
             writer.flush();
         } catch (IOException e) {
