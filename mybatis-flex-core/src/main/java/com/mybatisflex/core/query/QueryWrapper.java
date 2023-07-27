@@ -224,10 +224,10 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper and(Consumer<QueryWrapper> consumer) {
-        return and(true, consumer);
+        return and(consumer, true);
     }
 
-    public QueryWrapper and(boolean condition, Consumer<QueryWrapper> consumer) {
+    public QueryWrapper and(Consumer<QueryWrapper> consumer, boolean condition) {
         if (!condition) {
             return this;
         }
@@ -273,10 +273,10 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper or(Consumer<QueryWrapper> consumer) {
-        return or(true, consumer);
+        return or(consumer, true);
     }
 
-    public QueryWrapper or(boolean condition, Consumer<QueryWrapper> consumer) {
+    public QueryWrapper or(Consumer<QueryWrapper> consumer, boolean condition) {
         if (condition) {
             return this;
         }
