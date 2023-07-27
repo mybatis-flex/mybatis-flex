@@ -224,6 +224,13 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper and(Consumer<QueryWrapper> consumer) {
+        return and(consumer, true);
+    }
+
+    public QueryWrapper and(Consumer<QueryWrapper> consumer, boolean condition) {
+        if (!condition) {
+            return this;
+        }
         QueryWrapper newWrapper = new QueryWrapper();
         consumer.accept(newWrapper);
         QueryCondition whereQueryCondition = newWrapper.whereQueryCondition;
@@ -266,6 +273,13 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper or(Consumer<QueryWrapper> consumer) {
+        return or(consumer, true);
+    }
+
+    public QueryWrapper or(Consumer<QueryWrapper> consumer, boolean condition) {
+        if (condition) {
+            return this;
+        }
         QueryWrapper newWrapper = new QueryWrapper();
         consumer.accept(newWrapper);
         QueryCondition whereQueryCondition = newWrapper.whereQueryCondition;
