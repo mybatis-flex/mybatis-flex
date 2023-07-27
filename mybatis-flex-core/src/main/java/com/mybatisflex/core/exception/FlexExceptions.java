@@ -63,6 +63,10 @@ public final class FlexExceptions {
         return new MybatisFlexException(String.format(msg, params));
     }
 
+    public static MybatisFlexException wrap(Throwable cause, Localizable pattern, Object... args) {
+        return new MybatisFlexException(cause, pattern, args);
+    }
+
     public static MybatisFlexException wrap(Localizable pattern, Object... args) {
         return new MybatisFlexException(pattern, args);
     }

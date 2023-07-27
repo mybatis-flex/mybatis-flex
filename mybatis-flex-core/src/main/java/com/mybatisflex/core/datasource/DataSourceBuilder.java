@@ -16,6 +16,7 @@
 package com.mybatisflex.core.datasource;
 
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.util.ConvertUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.reflection.Reflector;
@@ -57,9 +58,9 @@ public class DataSourceBuilder {
 
         if (StringUtil.isBlank(dataSourceClassName)) {
             if (StringUtil.isBlank(type)) {
-                throw FlexExceptions.wrap("The dataSource type can not be null or blank.");
+                throw FlexExceptions.wrap(LocalizedFormats.DATASOURCE_TYPE_BLANK);
             } else {
-                throw FlexExceptions.wrap("Cannot find the dataSource type: " + type);
+                throw FlexExceptions.wrap(LocalizedFormats.DATASOURCE_TYPE_NOT_FIND, type);
             }
         }
 
@@ -69,7 +70,7 @@ public class DataSourceBuilder {
             setDataSourceProperties(dataSourceObject);
             return (DataSource) dataSourceObject;
         } catch (Exception e) {
-            throw new RuntimeException("Cannot new instance dataSource by class: " + dataSourceClassName);
+            throw FlexExceptions.wrap(LocalizedFormats.DATASOURCE_CAN_NOT_INSTANCE, dataSourceClassName);
         }
     }
 

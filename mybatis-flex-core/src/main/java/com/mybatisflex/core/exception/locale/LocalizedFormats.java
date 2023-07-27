@@ -24,11 +24,28 @@ import java.util.ResourceBundle;
  * 异常消息中使用的本地化消息格式的枚举。
  *
  * @author 王帅
+ * @author michael
+ *
  * @since 2023-07-26
  */
 public enum LocalizedFormats implements Localizable {
 
-    OBJECT_NULL("{0} can not be null.");
+    /**
+     * object can not be null
+     */
+    OBJECT_NULL("{0} can not be null."),
+
+
+    DATASOURCE_TYPE_BLANK("The dataSource type can not be null or blank."),
+    DATASOURCE_TYPE_NOT_FIND("Can not find the dataSource type: {0}"),
+    DATASOURCE_CAN_NOT_INSTANCE("Can not new instance dataSource object by class:  {0}"),
+    DATASOURCE_JDBC_URL("Can not get the dataSource jdbcUrl."),
+
+
+    UPDATE_ONLY_SUPPORT_1_TABLE("\"UpdateByQuery\" only support 1 table."),
+
+    ENTITY_VERSION_NULL("The version value of entity[{0}] must not be null."),
+    ;
 
     private final String sourceFormat;
 
@@ -50,10 +67,9 @@ public enum LocalizedFormats implements Localizable {
             ResourceBundle bundle = ResourceBundle.getBundle("assets/" + path, locale);
             // 获取当前语言的消息格式
             if (bundle.getLocale().getLanguage().equals(locale.getLanguage())) {
-                return bundle.getString(toString());
+                return bundle.getString(name());
             }
         } catch (MissingResourceException mre) {
-            mre.printStackTrace();
             // do nothing here.
         }
         // 如果没有该语言的本地化消息，则返回源消息字符串

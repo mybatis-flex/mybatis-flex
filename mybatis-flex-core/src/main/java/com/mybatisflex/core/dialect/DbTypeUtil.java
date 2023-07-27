@@ -17,6 +17,7 @@ package com.mybatisflex.core.dialect;
 
 
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 
@@ -70,7 +71,7 @@ public class DbTypeUtil {
             connection = dataSource.getConnection();
             return connection.getMetaData().getURL();
         } catch (Exception e) {
-            throw FlexExceptions.wrap("Can not get the dataSource jdbcUrl", e);
+            throw FlexExceptions.wrap(e, LocalizedFormats.DATASOURCE_JDBC_URL);
         } finally {
             if (connection != null) {
                 try {
