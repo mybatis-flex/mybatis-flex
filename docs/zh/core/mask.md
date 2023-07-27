@@ -8,7 +8,7 @@
 
 ## @ColumnMask
 
-MyBatis-Flex 提供了 `@ColumnMask()` 注解，以及内置的 9 种脱敏规则，帮助开发者方便的进行数据脱敏。例如：
+MyBatis-Flex 提供了 `@ColumnMask()` 注解，以及内置的9种脱敏规则，帮助开发者方便的进行数据脱敏。例如：
 
 ```java
 @Table("tb_account")
@@ -24,7 +24,7 @@ public class Account {
 
 以上的示例中，使用了 `CHINESE_NAME` 的脱敏规则，其主要用于处理 "中文名字" 的场景。当我们查询到 userName 为 `张三丰` 的时候，其内容自动被处理成 `张**`。
 
-除此之外，MyBatis-Flex 还提供了如下的 8 中脱敏规则（共9种），方便开发者直接使用：
+除此之外，MyBatis-Flex 还提供了如下的8种脱敏规则（共9种），方便开发者直接使用：
 
 - 手机号脱敏
 - 固定电话脱敏
@@ -37,7 +37,7 @@ public class Account {
 
 ## 自定义脱敏规则
 
-当 Mybaits-Flex 内置的 9 中脱敏规则无法满足要求时，我们还可以自定义脱敏规则，其步骤如下：
+当 Mybaits-Flex 内置的9种脱敏规则无法满足要求时，我们还可以自定义脱敏规则，其步骤如下：
 
 1、通过 `MaskManager` 注册新的脱敏规则：
 
