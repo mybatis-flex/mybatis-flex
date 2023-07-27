@@ -24,7 +24,7 @@ Account account = row.toEntity(Account.class);
 
 //查询所有大于 18 岁的用户
 String listsql = "select * from tb_account where age > ?"
-List<Row> rows = Db.selectListBySql(sql,18);
+List<Row> rows = Db.selectListBySql(listsql,18);
 
 
 //分页查询：每页 10 条数据，查询第 3 页的年龄大于 18 的用户
