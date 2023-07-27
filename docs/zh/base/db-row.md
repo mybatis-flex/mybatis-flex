@@ -28,9 +28,9 @@ List<Row> rows = Db.selectListBySql(listsql,18);
 
 
 //分页查询：每页 10 条数据，查询第 3 页的年龄大于 18 的用户
-    QueryWrapper query=QueryWrapper.create()
+QueryWrapper query=QueryWrapper.create()
     .where(ACCOUNT.AGE.ge(18));
-    Page<Row> rowPage=Db.paginate("tb_account",3,10,query);
+Page<Row> rowPage=Db.paginate("tb_account",3,10,query);
 ```
 
 > Db 工具类还提供了更多 增、删、改、查和分页查询等方法。
@@ -52,7 +52,7 @@ DbChain.table("tb_account")
     .save();
 
 // 查询 QueryWrapper 构建
-    DbChain.table("tb_account")
+DbChain.table("tb_account")
     .select("id","user_name","age","birthday")
     .where("age > ?",18)
     .list()

@@ -94,7 +94,7 @@ const {Layout} = DefaultTheme
           </div>
           <div class="banner">
             <a href="http://www.jpress.cn" target="_blank" style="height:50px;
-            background: #18a808;width: 105px;color: #fff;font-size: 18px">
+            background: rgb(247 247 247);width: 105px;color: #000;font-size: 18px">
               信创 CMS
             </a>
           </div>
@@ -102,7 +102,7 @@ const {Layout} = DefaultTheme
               <a href="https://lyunai.top" target="_blank"><img src="/assets/images/ad/lyunai_20230827.png" style="width: 105px;height: 50px"></a>
           </div>
           <div class="banner">
-            虚以待位
+              <a href="https://aigc.zijiantty.com" target="_blank"><img src="/assets/images/ad/zijiantty_20230827.png" style="width: 105px;height: 50px"></a>
           </div>
           <div class="banner">
             虚以待位

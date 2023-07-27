@@ -26,7 +26,7 @@ export default defineConfig({
             {text: '首页', link: '/'},
 
             {text: '帮助文档', link: '/zh/intro/what-is-mybatisflex'},
-            {text: '🔥常见问题', link: '/zh/faq'},
+            {text: '常见问题', link: '/zh/faq'},
             {text: '周边', link: '/zh/awesome-things'},
             {text: 'ChangeLog', link: '/zh/changes'},
             {
@@ -60,7 +60,7 @@ export default defineConfig({
                     {text: '基础查询', link: '/zh/base/query'},
                     {text: '关联查询', link: '/zh/base/relations-query'},
                     {text: '批量操作', link: '/zh/base/batch'},
-                    {text: '链式操作', link: '/zh/base/chain'},
+                    {text: '链式操作🔥🔥', link: '/zh/base/chain'},
                     {text: 'QueryWrapper', link: '/zh/base/querywrapper'},
                     {text: 'Db + Row', link: '/zh/base/db-row'},
                     {text: 'Active Record', link: '/zh/base/active-record'},
