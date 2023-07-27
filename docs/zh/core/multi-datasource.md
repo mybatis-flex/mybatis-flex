@@ -29,7 +29,7 @@ dataSource2.setJdbcUrl(....)
 
 DataSource dataSource3 = new HikariDataSource();
 dataSource3.setJdbcUrl(....)
-        
+
 MyBatisFlexBootstrap.getInstance()
         .setDataSource("ds1", dataSource1)
         .addDataSource("ds2", dataSource2)
@@ -51,9 +51,9 @@ System.out.println(rows);
 try{
     DataSourceKey.use("ds2")
     List<Row> rows = Db.selectAll("tb_account");
-    System.out.println(rows); 
+    System.out.println(rows);
 }finally{
-    DataSourceKey.clear(); 
+    DataSourceKey.clear();
 }
 ```
 
@@ -81,9 +81,9 @@ MyBatis-Flex 提供了 4 种方式来配置数据源：
 try{
     DataSourceKey.use("ds2")
     List<Row> rows = Db.selectAll("tb_account");
-    System.out.println(rows); 
+    System.out.println(rows);
 }finally{
-    DataSourceKey.clear(); 
+    DataSourceKey.clear();
 }
 ```
 
@@ -188,9 +188,8 @@ mybatis-flex:
 在多租户等某些场景下，我们可能需要用到动态的添加新的数据源，此时可以通过如下的方式进行添加。
 
 ```java
-FlexDataSource flexDataSource = (FlexDataSource) FlexGlobalConfig
-        .getDefaultConfig().getConfiguration()
-        .getEnvironment().getDataSource();
+FlexDataSource flexDataSource = FlexGlobalConfig.getDefaultConfig()
+                                .getDataSource();
 
 //新的数据源
 HikariDataSource newDataSource = new HikariDataSource();
@@ -208,11 +207,53 @@ public class DataSourceInitListener implements ApplicationListener<ContextRefres
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        FlexDataSource dataSource = (FlexDataSource) FlexGlobalConfig.getDefaultConfig()
-                .getConfiguration().getEnvironment().getDataSource();
+        FlexDataSource dataSource = FlexGlobalConfig.getDefaultConfig()
+                                    .getDataSource();
 
         dataSource.addDataSource("....", new DruidDataSource("..."));
     }
 
 }
 ```
+
+## 多数据源负载均衡 <Badge type="tip" text="^1.5.4" />
+
+数据源负载均衡指的是：在进行数据查询的时候，随机使用一个数据源。 这是的在高并发的场景下，起到负载的效果。
+
+假设多数据源配置如下：
+
+```yaml
+mybatis-flex:
+  datasource:
+    ds1:
+      type: druid
+      url: jdbc:mysql://127.0.0.1:3306/db
+      username: root
+      password: 123456
+      asyncInit: true
+    ds2:
+      type: com.your.datasource.type2
+      url: jdbc:mysql://127.0.0.1:3306/db2
+      username: root
+      password: 123456
+    other:
+        type: com.your.datasource.type2
+        url: jdbc:mysql://127.0.0.1:3306/db2
+        username: root
+        password: 123456
+```
+
+以上配置了三个数据源，分别为：`ds1`、`ds2`、`other`，假设我们想负载均衡使用 `ds1`、`ds2` ，那么代码如下：
+
+```java 2,6
+try{
+    DataSourceKey.use("ds*");
+    List<Row> rows = Db.selectAll("tb_account");
+    System.out.println(rows);
+}finally{
+    DataSourceKey.clear();
+}
+```
+
+`DataSourceKey.use("ds*")` 中的 `ds*` 指的是使用 `ds` 开头的任意一个数据源。`ds*` 必须以 "`*`" 结尾，
+中间不能有空格，比如 "`ds  *`" 中间有空格是不行的。
