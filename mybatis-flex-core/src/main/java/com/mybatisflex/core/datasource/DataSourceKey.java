@@ -25,7 +25,7 @@ public class DataSourceKey {
     private static final ThreadLocal<String> keyThreadLocal = new ThreadLocal<>();
 
     public static void use(String dataSourceKey) {
-        keyThreadLocal.set(dataSourceKey);
+        keyThreadLocal.set(dataSourceKey.trim());
     }
 
     public static <T> T use(String dataSourceKey, Supplier<T> supplier) {
