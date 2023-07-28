@@ -139,7 +139,7 @@ Account.create()
 
 ## 多表关联
 
-`Model` 提供了 `joins` 与 `@Relation` 两种方式实现夺标关联查询，例如：用户与角色的关系：
+`Model` 提供了 `joins` 与 `@Relation` 两种方式实现多表关联查询，例如：用户与角色的关系：
 
 - 通过 [joins](./relations-query.md#方案-3join-query) 联表方式查询数据：
 
