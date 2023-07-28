@@ -73,11 +73,22 @@ import static org.springframework.util.StringUtils.hasLength;
 import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 /**
- * <p>Spring 在定义 SqlSessionFactoryBean 的时候，需要替换为 FlexSqlSessionFactoryBean。
+ * 参考：https://github.com/mybatis/spring/blob/master/src/main/java/org/mybatis/spring/SqlSessionFactoryBean.java
+ *
+ * <p>在 MyBatis 官方的 SqlSessionFactoryBean 基础上,替换le  FlexSqlSessionFactoryBean。
  *
  * <p>源于 {@link SqlSessionFactoryBean}，主要是用于构建 {@link com.mybatisflex.core.mybatis.FlexConfiguration }，而不是使用原生的 {@link Configuration}。
  *
  * <p>此代码主要是用于修改 {@link FlexSqlSessionFactoryBean#buildSqlSessionFactory()} 部分。
+ *
+ * @author Putthiphong Boonphong
+ * @author Hunter Presnall
+ * @author Eduardo Macarron
+ * @author Eddú Meléndez
+ * @author Kazuki Shimizu
+ * @author Jens Schauder
+ * @author 王帅
+ * @author miachel
  */
 public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
     implements FactoryBean<SqlSessionFactory>, InitializingBean, ApplicationListener<ApplicationEvent> {

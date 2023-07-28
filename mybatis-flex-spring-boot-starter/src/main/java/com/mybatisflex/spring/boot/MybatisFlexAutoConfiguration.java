@@ -89,6 +89,13 @@ import java.util.stream.Stream;
  * 1、替换配置为 mybatis-flex 的配置前缀<br>
  * 2、修改 SqlSessionFactory 为 FlexSqlSessionFactoryBean<br>
  * 3、修改 Configuration 为 FlexConfiguration<br>
+ *
+ * @author Eddú Meléndez
+ * @author Josh Long
+ * @author Kazuki Shimizu
+ * @author Eduardo Macarrón
+ * @author michael
+ * @author 王帅
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})

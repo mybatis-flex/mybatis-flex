@@ -32,6 +32,11 @@ import java.util.stream.Stream;
 
 /**
  * MyBatis 的 VFS 支持。
+ *  参考：https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/SpringBootVFS.java
+ * @author Hans Westerbeek
+ * @author Eddú Meléndez
+ * @author Kazuki Shimizu
+ * @author Michael
  */
 public class SpringBootVFS extends VFS {
 

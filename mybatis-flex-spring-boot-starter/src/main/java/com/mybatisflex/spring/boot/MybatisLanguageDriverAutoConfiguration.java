@@ -31,6 +31,9 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 脚本语言驱动的自动配置，平常一般项目用不到，只为了同步 MyBatis 自带的 MybatisLanguageDriverAutoConfiguration。
+ * 参考：https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisLanguageDriverAutoConfiguration.java
+ * @author Kazuki Shimizu
+ * @author michael
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(LanguageDriver.class)

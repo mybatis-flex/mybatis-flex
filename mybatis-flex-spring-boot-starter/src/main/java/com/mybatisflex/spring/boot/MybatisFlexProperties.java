@@ -40,6 +40,11 @@ import java.util.stream.Stream;
 
 /**
  * Mybatis-Flex 的配置属性。
+ * 参考：https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisProperties.java
+ * @author Eddú Meléndez
+ * @author Kazuki Shimizu
+ * @author micahel
+ * @author 王帅
  */
 @ConfigurationProperties(prefix = "mybatis-flex")
 public class MybatisFlexProperties {
