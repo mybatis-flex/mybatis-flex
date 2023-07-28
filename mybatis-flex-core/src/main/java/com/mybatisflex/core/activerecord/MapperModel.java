@@ -56,7 +56,7 @@ public interface MapperModel<T> {
      *
      * @return 主键数据数组
      */
-    default Object[] getPkValues() {
+    default Object[] pkValues() {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(getClass());
         return tableInfo.buildPkSqlArgs(this);
     }
@@ -107,7 +107,7 @@ public interface MapperModel<T> {
      * @return {@code true} 删除成功，{@code false} 删除失败
      */
     default boolean removeById() {
-        return SqlUtil.toBool(baseMapper().deleteById(getPkValues()));
+        return SqlUtil.toBool(baseMapper().deleteById(pkValues()));
     }
 
     /**
@@ -135,7 +135,7 @@ public interface MapperModel<T> {
      * @return 数据
      */
     default T oneById() {
-        return baseMapper().selectOneById(getPkValues());
+        return baseMapper().selectOneById(pkValues());
     }
 
     /**
