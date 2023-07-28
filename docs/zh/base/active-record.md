@@ -136,3 +136,26 @@ Account.create()
     .where(Account::getAge).ge(18)
     .page(Page.of(1,10));
 ```
+
+## 多表关联
+
+`Model` 提供了 `joins` 与 `@Relation` 两种方式实现夺标关联查询，例如：用户与角色的关系：
+
+- 通过 [joins](./relations-query.md#方案-3join-query) 联表方式查询数据：
+
+```java
+User.create()
+    .select(USER.ALL_COLUMNS,ROLE.ALL_COLUMNS)
+    .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+    .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+    .where(USER.USER_ID.eq(2))
+    .one();
+```
+
+- 通过 [@Relation](./relations-query.md#方案-1relations-注解) 相关注解查询数据：
+
+```java
+User.create()
+    .where(USER.USER_ID.eq(2))
+    .oneWithRelations();
+```
