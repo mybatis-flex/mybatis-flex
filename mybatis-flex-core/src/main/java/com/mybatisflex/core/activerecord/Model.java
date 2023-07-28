@@ -41,7 +41,7 @@ public abstract class Model<T extends Model<T>>
      * @return {@code true} 删除成功，{@code false} 删除失败
      */
     public boolean remove() {
-        return SqlUtil.toBool(baseMapper().deleteByQuery(getQueryWrapper()));
+        return SqlUtil.toBool(baseMapper().deleteByQuery(queryWrapper()));
     }
 
     /**
@@ -60,7 +60,7 @@ public abstract class Model<T extends Model<T>>
      * @return {@code true} 更新成功，{@code false} 更新失败
      */
     public boolean update(boolean ignoreNulls) {
-        return SqlUtil.toBool(baseMapper().updateByQuery((T) this, ignoreNulls, getQueryWrapper()));
+        return SqlUtil.toBool(baseMapper().updateByQuery((T) this, ignoreNulls, queryWrapper()));
     }
 
     /**
@@ -69,7 +69,7 @@ public abstract class Model<T extends Model<T>>
      * @return 数据数量
      */
     public long count() {
-        return baseMapper().selectCountByQuery(getQueryWrapper());
+        return baseMapper().selectCountByQuery(queryWrapper());
     }
 
     /**
@@ -87,7 +87,7 @@ public abstract class Model<T extends Model<T>>
      * @return 数据
      */
     public T one() {
-        return baseMapper().selectOneByQuery(getQueryWrapper());
+        return baseMapper().selectOneByQuery(queryWrapper());
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class Model<T extends Model<T>>
      * @return 数据
      */
     public T oneWithRelations() {
-        return baseMapper().selectOneWithRelationsByQuery(getQueryWrapper().limit(1));
+        return baseMapper().selectOneWithRelationsByQuery(queryWrapper().limit(1));
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class Model<T extends Model<T>>
      * @return 数据列表
      */
     public List<T> list() {
-        return baseMapper().selectListByQuery(getQueryWrapper());
+        return baseMapper().selectListByQuery(queryWrapper());
     }
 
     /**
@@ -132,7 +132,7 @@ public abstract class Model<T extends Model<T>>
      * @return 数据列表
      */
     public List<T> listWithRelations() {
-        return baseMapper().selectListWithRelationsByQuery(getQueryWrapper());
+        return baseMapper().selectListWithRelationsByQuery(queryWrapper());
     }
 
     /**
@@ -142,7 +142,7 @@ public abstract class Model<T extends Model<T>>
      * @return 分页数据
      */
     public Page<T> page(Page<T> page) {
-        return baseMapper().paginate(page, getQueryWrapper());
+        return baseMapper().paginate(page, queryWrapper());
     }
 
     /**
@@ -152,7 +152,7 @@ public abstract class Model<T extends Model<T>>
      * @return 分页数据
      */
     public Page<T> pageWithRelations(Page<T> page) {
-        return baseMapper().paginateWithRelations(page, getQueryWrapper());
+        return baseMapper().paginateWithRelations(page, queryWrapper());
     }
 
 }
