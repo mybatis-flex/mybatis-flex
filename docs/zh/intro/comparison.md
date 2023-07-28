@@ -29,7 +29,7 @@ MyBatis-Flex 主要是和 `MyBatis-Plus` 与 `Fluent-MyBatis` 对比，内容来
 | 逻辑删除 | ✅ | ✅ | ✅ |
 | 乐观锁 | ✅ | ✅ | ✅ |
 | SQL 审计 | ✅ | ❌ | ❌ |
-| 数据填充 | ✅ |  ✔️ **（收费）** | ✅ |
+| 数据填充 | ✅ |  ✅ | ✅ |
 | 数据脱敏 | ✅ |  ✔️ **（收费）** | ❌ |
 | 字段权限 | ✅ |  ✔️ **（收费）** | ❌ |
 | 字段加密 | ✅ |  ✔️ **（收费）** | ❌ |
@@ -270,7 +270,7 @@ QueryWrapper query = new QueryWrapper()
 
 ```sql
 update tb_account
-set user_name = "michael", age = 18, birthday = null 
+set user_name = "michael", age = 18, birthday = null
 where id = 100
 ```
 
@@ -288,7 +288,7 @@ accountMapper.update(account);
 
 **MyBatis-Plus** 代码如下（或可使用 MyBatis-Plus 的 `LambdaUpdateWrapper`，但性能没有 `UpdateWrapper` 好）：
 
-```java 
+```java
 UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
 updateWrapper.eq("id", 100);
 updateWrapper.set("user_name", "michael");
@@ -300,7 +300,7 @@ accountMapper.update(null, updateWrapper);
 
 **Fluent-MyBatis** 代码如下：
 
-```java 
+```java
 AccountUpdate update = new AccountUpdate()
 .update.userName().is("michael")
 .age().is(18)

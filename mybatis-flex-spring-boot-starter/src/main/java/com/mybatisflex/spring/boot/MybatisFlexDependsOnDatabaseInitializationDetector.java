@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
+ * 参考：https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisDependsOnDatabaseInitializationDetector.java
  * {@link DependsOnDatabaseInitializationDetector} for Mybatis-Flex.
  */
 class MybatisFlexDependsOnDatabaseInitializationDetector
