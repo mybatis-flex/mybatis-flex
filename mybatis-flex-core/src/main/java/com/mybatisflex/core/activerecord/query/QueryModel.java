@@ -17,7 +17,11 @@
 package com.mybatisflex.core.activerecord.query;
 
 import com.mybatisflex.annotation.Column;
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.table.TableDef;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
@@ -126,6 +130,198 @@ public abstract class QueryModel<T extends QueryModel<T>> {
         return new WhereBuilder<>((T) this, LambdaUtil.getQueryColumn(column), SqlConnector.OR);
     }
 
+    public JoinBuilder<T> leftJoin(String table) {
+        return joins(SqlConsts.LEFT_JOIN, new QueryTable(table), true);
+    }
+
+    public JoinBuilder<T> leftJoin(String table, boolean when) {
+        return joins(SqlConsts.LEFT_JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> leftJoin(Class<?> entityClass) {
+        return joins(SqlConsts.LEFT_JOIN, entityClass, true);
+    }
+
+    public JoinBuilder<T> leftJoin(Class<?> entityClass, boolean when) {
+        return joins(SqlConsts.LEFT_JOIN, entityClass, when);
+    }
+
+    public JoinBuilder<T> leftJoin(TableDef table) {
+        return joins(SqlConsts.LEFT_JOIN, new QueryTable(table), true);
+    }
+
+    public JoinBuilder<T> leftJoin(TableDef table, boolean when) {
+        return joins(SqlConsts.LEFT_JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> leftJoin(QueryWrapper table) {
+        return joins(SqlConsts.LEFT_JOIN, table, true);
+    }
+
+    public JoinBuilder<T> leftJoin(QueryWrapper table, boolean when) {
+        return joins(SqlConsts.LEFT_JOIN, table, when);
+    }
+
+    public JoinBuilder<T> rightJoin(String table) {
+        return joins(SqlConsts.RIGHT_JOIN, new QueryTable(table), true);
+    }
+
+    public JoinBuilder<T> rightJoin(String table, boolean when) {
+        return joins(SqlConsts.RIGHT_JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> rightJoin(Class<?> entityClass) {
+        return joins(SqlConsts.RIGHT_JOIN, entityClass, true);
+    }
+
+    public JoinBuilder<T> rightJoin(Class<?> entityClass, boolean when) {
+        return joins(SqlConsts.RIGHT_JOIN, entityClass, when);
+    }
+
+    public JoinBuilder<T> rightJoin(TableDef table) {
+        return joins(SqlConsts.RIGHT_JOIN, new QueryTable(table), true);
+    }
+
+    public JoinBuilder<T> rightJoin(TableDef table, boolean when) {
+        return joins(SqlConsts.RIGHT_JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> rightJoin(QueryWrapper table) {
+        return joins(SqlConsts.RIGHT_JOIN, table, true);
+    }
+
+    public JoinBuilder<T> rightJoin(QueryWrapper table, boolean when) {
+        return joins(SqlConsts.RIGHT_JOIN, table, when);
+    }
+
+    public JoinBuilder<T> innerJoin(String table) {
+        return joins(SqlConsts.INNER_JOIN, new QueryTable(table), true);
+    }
+
+    public JoinBuilder<T> innerJoin(String table, boolean when) {
+        return joins(SqlConsts.INNER_JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> innerJoin(Class<?> entityClass) {
+        return joins(SqlConsts.INNER_JOIN, entityClass, true);
+    }
+
+    public JoinBuilder<T> innerJoin(Class<?> entityClass, boolean when) {
+        return joins(SqlConsts.INNER_JOIN, entityClass, when);
+    }
+
+    public JoinBuilder<T> innerJoin(TableDef table) {
+        return innerJoin(table, true);
+    }
+
+    public JoinBuilder<T> innerJoin(TableDef table, boolean when) {
+        return joins(SqlConsts.INNER_JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> innerJoin(QueryWrapper table) {
+        return joins(SqlConsts.INNER_JOIN, table, true);
+    }
+
+    public JoinBuilder<T> innerJoin(QueryWrapper table, boolean when) {
+        return joins(SqlConsts.INNER_JOIN, table, when);
+    }
+
+    public JoinBuilder<T> fullJoin(String table) {
+        return joins(SqlConsts.FULL_JOIN, new QueryTable(table), true);
+    }
+
+    public JoinBuilder<T> fullJoin(String table, boolean when) {
+        return joins(SqlConsts.FULL_JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> fullJoin(Class<?> entityClass) {
+        return joins(SqlConsts.FULL_JOIN, entityClass, true);
+    }
+
+    public JoinBuilder<T> fullJoin(Class<?> entityClass, boolean when) {
+        return joins(SqlConsts.FULL_JOIN, entityClass, when);
+    }
+
+    public JoinBuilder<T> fullJoin(TableDef table) {
+        return joins(SqlConsts.FULL_JOIN, new QueryTable(table), true);
+    }
+
+    public JoinBuilder<T> fullJoin(TableDef table, boolean when) {
+        return joins(SqlConsts.FULL_JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> fullJoin(QueryWrapper table) {
+        return joins(SqlConsts.FULL_JOIN, table, true);
+    }
+
+    public JoinBuilder<T> fullJoin(QueryWrapper table, boolean when) {
+        return joins(SqlConsts.FULL_JOIN, table, when);
+    }
+
+    public JoinBuilder<T> crossJoin(String table) {
+        return joins(SqlConsts.CROSS_JOIN, new QueryTable(table), true);
+    }
+
+    public JoinBuilder<T> crossJoin(String table, boolean when) {
+        return joins(SqlConsts.CROSS_JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> crossJoin(Class<?> entityClass) {
+        return joins(SqlConsts.CROSS_JOIN, entityClass, true);
+    }
+
+    public JoinBuilder<T> crossJoin(Class<?> entityClass, boolean when) {
+        return joins(SqlConsts.CROSS_JOIN, entityClass, when);
+    }
+
+    public JoinBuilder<T> crossJoin(TableDef table) {
+        return joins(SqlConsts.CROSS_JOIN, new QueryTable(table), true);
+    }
+
+    public JoinBuilder<T> crossJoin(TableDef table, boolean when) {
+        return joins(SqlConsts.CROSS_JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> crossJoin(QueryWrapper table) {
+        return joins(SqlConsts.CROSS_JOIN, table, true);
+    }
+
+    public JoinBuilder<T> crossJoin(QueryWrapper table, boolean when) {
+        return joins(SqlConsts.CROSS_JOIN, table, when);
+    }
+
+    public JoinBuilder<T> join(String table) {
+        return joins(SqlConsts.JOIN, new QueryTable(table), true);
+    }
+
+    public JoinBuilder<T> join(String table, boolean when) {
+        return joins(SqlConsts.JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> join(Class<?> entityClass) {
+        return joins(SqlConsts.JOIN, entityClass, true);
+    }
+
+    public JoinBuilder<T> join(Class<?> entityClass, boolean when) {
+        return joins(SqlConsts.JOIN, entityClass, when);
+    }
+
+    public JoinBuilder<T> join(TableDef table) {
+        return joins(SqlConsts.JOIN, new QueryTable(table), true);
+    }
+
+    public JoinBuilder<T> join(TableDef table, boolean when) {
+        return joins(SqlConsts.JOIN, new QueryTable(table), when);
+    }
+
+    public JoinBuilder<T> join(QueryWrapper table) {
+        return joins(SqlConsts.JOIN, table, true);
+    }
+
+    public JoinBuilder<T> join(QueryWrapper table, boolean when) {
+        return joins(SqlConsts.JOIN, table, when);
+    }
+
     public T groupBy(String... names) {
         getQueryWrapper().groupBy(names);
         return (T) this;
@@ -173,6 +369,24 @@ public abstract class QueryModel<T extends QueryModel<T>> {
     public T limit(Integer offset, Integer rows) {
         getQueryWrapper().limit(offset, rows);
         return (T) this;
+    }
+
+    protected JoinBuilder<T> joins(String type, QueryTable table, boolean when) {
+        Join join = new Join(type, table, when);
+        CPI.addJoin(getQueryWrapper(), join);
+        return new JoinBuilder<>((T) this, join);
+    }
+
+    protected JoinBuilder<T> joins(String type, Class<?> entityClass, boolean when) {
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
+        QueryTable queryTable = new QueryTable(tableInfo.getSchema(), tableInfo.getTableName());
+        return joins(type, queryTable, when);
+    }
+
+    protected JoinBuilder<T> joins(String type, QueryWrapper queryWrapper, boolean when) {
+        Join join = new Join(type, queryWrapper, when);
+        CPI.addJoin(getQueryWrapper(), join);
+        return new JoinBuilder<>((T) this, join);
     }
 
 }
