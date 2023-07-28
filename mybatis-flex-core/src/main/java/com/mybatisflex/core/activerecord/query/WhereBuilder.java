@@ -44,14 +44,14 @@ public class WhereBuilder<R extends QueryModel<R>> {
 
     public R eq(Object value) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.eq(value), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.eq(value), connector);
         }
         return queryModel;
     }
 
     public <T> R eq(Object value, Predicate<T> when) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.eq(value, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.eq(value, when), connector);
         }
         return queryModel;
     }
@@ -66,14 +66,14 @@ public class WhereBuilder<R extends QueryModel<R>> {
 
     public R ne(Object value) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.ne(value), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ne(value), connector);
         }
         return queryModel;
     }
 
     public <T> R ne(Object value, Predicate<T> when) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.ne(value, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ne(value, when), connector);
         }
         return queryModel;
     }
@@ -88,56 +88,56 @@ public class WhereBuilder<R extends QueryModel<R>> {
 
     public R like(Object value) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.like(value), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.like(value), connector);
         }
         return queryModel;
     }
 
     public <T> R like(Object value, Predicate<T> when) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.like(value, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.like(value, when), connector);
         }
         return queryModel;
     }
 
     public R likeLeft(Object value) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.likeLeft(value), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.likeLeft(value), connector);
         }
         return queryModel;
     }
 
     public <T> R likeLeft(Object value, Predicate<T> when) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.likeLeft(value, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.likeLeft(value, when), connector);
         }
         return queryModel;
     }
 
     public R likeRight(Object value) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.likeRight(value), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.likeRight(value), connector);
         }
         return queryModel;
     }
 
     public <T> R likeRight(Object value, Predicate<T> when) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.likeRight(value, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.likeRight(value, when), connector);
         }
         return queryModel;
     }
 
     public R gt(Object value) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.gt(value), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.gt(value), connector);
         }
         return queryModel;
     }
 
     public <T> R gt(Object value, Predicate<T> when) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.gt(value, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.gt(value, when), connector);
         }
         return queryModel;
     }
@@ -152,14 +152,14 @@ public class WhereBuilder<R extends QueryModel<R>> {
 
     public R ge(Object value) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.ge(value), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ge(value), connector);
         }
         return queryModel;
     }
 
     public <T> R ge(Object value, Predicate<T> when) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.ge(value, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ge(value, when), connector);
         }
         return queryModel;
     }
@@ -174,14 +174,14 @@ public class WhereBuilder<R extends QueryModel<R>> {
 
     public R lt(Object value) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.lt(value), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.lt(value), connector);
         }
         return queryModel;
     }
 
     public <T> R lt(Object value, Predicate<T> when) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.lt(value, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.lt(value, when), connector);
         }
         return queryModel;
     }
@@ -196,14 +196,14 @@ public class WhereBuilder<R extends QueryModel<R>> {
 
     public R le(Object value) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.le(value), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.le(value), connector);
         }
         return queryModel;
     }
 
     public <T> R le(Object value, Predicate<T> when) {
         if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.le(value, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.le(value, when), connector);
         }
         return queryModel;
     }
@@ -217,28 +217,28 @@ public class WhereBuilder<R extends QueryModel<R>> {
     }
 
     public R isNull() {
-        CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.isNull(), connector);
+        CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.isNull(), connector);
         return queryModel;
     }
 
     public <T> R isNull(Predicate<T> when) {
-        CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.isNull(when), connector);
+        CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.isNull(when), connector);
         return queryModel;
     }
 
     public R isNotNull() {
-        CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.isNotNull(), connector);
+        CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.isNotNull(), connector);
         return queryModel;
     }
 
     public <T> R isNotNull(Predicate<T> when) {
-        CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.isNotNull(when), connector);
+        CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.isNotNull(when), connector);
         return queryModel;
     }
 
     public R in(Object... arrays) {
         if (arrays != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.in(arrays), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(arrays), connector);
         }
         return queryModel;
     }
@@ -246,105 +246,105 @@ public class WhereBuilder<R extends QueryModel<R>> {
     public <T> R in(Object[] arrays, Predicate<T> when) {
         //忽略 QueryWrapper.in("name", null) 的情况
         if (arrays != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.in(arrays, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(arrays, when), connector);
         }
         return queryModel;
     }
 
     public R in(R queryModel) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.in(queryModel), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(queryModel), connector);
         }
         return this.queryModel;
     }
 
     public <T> R in(R queryModel, Predicate<T> when) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.in(queryModel, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(queryModel, when), connector);
         }
         return this.queryModel;
     }
 
     public R in(Collection<?> collection) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.in(collection), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(collection), connector);
         }
         return queryModel;
     }
 
     public <T> R in(Collection<?> collection, Predicate<T> when) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.in(collection, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(collection, when), connector);
         }
         return queryModel;
     }
 
     public R notIn(Object... arrays) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.notIn(arrays), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(arrays), connector);
         }
         return queryModel;
     }
 
     public <T> R notIn(Object[] arrays, Predicate<T> when) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.notIn(arrays, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(arrays, when), connector);
         }
         return queryModel;
     }
 
     public R notIn(Collection<?> collection) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.notIn(collection), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(collection), connector);
         }
         return queryModel;
     }
 
     public <T> R notIn(Collection<?> collection, Predicate<T> when) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.notIn(collection, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(collection, when), connector);
         }
         return queryModel;
     }
 
     public R notIn(R queryModel) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.notIn(queryModel), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(queryModel), connector);
         }
         return this.queryModel;
     }
 
     public <T> R notIn(R queryModel, Predicate<T> when) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.notIn(queryModel, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(queryModel, when), connector);
         }
         return this.queryModel;
     }
 
     public R between(Object start, Object end) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.between(start, end), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.between(start, end), connector);
         }
         return queryModel;
     }
 
     public <T> R between(Object start, Object end, Predicate<T> when) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.between(start, end, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.between(start, end, when), connector);
         }
         return queryModel;
     }
 
     public R notBetween(Object start, Object end) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.notBetween(start, end), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notBetween(start, end), connector);
         }
         return queryModel;
     }
 
     public <T> R notBetween(Object start, Object end, Predicate<T> when) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.getQueryWrapper(), queryColumn.notBetween(start, end, when), connector);
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notBetween(start, end, when), connector);
         }
         return queryModel;
     }

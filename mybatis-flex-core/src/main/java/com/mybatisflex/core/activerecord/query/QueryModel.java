@@ -42,7 +42,7 @@ public abstract class QueryModel<T extends QueryModel<T>> {
     @Column(ignore = true)
     private QueryWrapper queryWrapper;
 
-    protected QueryWrapper getQueryWrapper() {
+    protected QueryWrapper queryWrapper() {
         if (queryWrapper == null) {
             queryWrapper = QueryWrapper.create();
         }
@@ -54,37 +54,37 @@ public abstract class QueryModel<T extends QueryModel<T>> {
     }
 
     public T select(String... columns) {
-        getQueryWrapper().select(columns);
+        queryWrapper().select(columns);
         return (T) this;
     }
 
     public T select(QueryColumn... queryColumns) {
-        getQueryWrapper().select(queryColumns);
+        queryWrapper().select(queryColumns);
         return (T) this;
     }
 
     public <E> T select(LambdaGetter<E>... columns) {
-        getQueryWrapper().select(columns);
+        queryWrapper().select(columns);
         return (T) this;
     }
 
     public T select(QueryColumn[]... queryColumns) {
-        getQueryWrapper().select(queryColumns);
+        queryWrapper().select(queryColumns);
         return (T) this;
     }
 
     public T where(QueryCondition queryCondition) {
-        getQueryWrapper().where(queryCondition);
+        queryWrapper().where(queryCondition);
         return (T) this;
     }
 
     public T where(String sql) {
-        getQueryWrapper().where(sql);
+        queryWrapper().where(sql);
         return (T) this;
     }
 
     public T where(String sql, Object... params) {
-        getQueryWrapper().where(sql, params);
+        queryWrapper().where(sql, params);
         return (T) this;
     }
 
@@ -93,17 +93,17 @@ public abstract class QueryModel<T extends QueryModel<T>> {
     }
 
     public T and(QueryCondition queryCondition) {
-        getQueryWrapper().and(queryCondition);
+        queryWrapper().and(queryCondition);
         return (T) this;
     }
 
     public T and(String sql) {
-        getQueryWrapper().and(sql);
+        queryWrapper().and(sql);
         return (T) this;
     }
 
     public T and(String sql, Object... params) {
-        getQueryWrapper().and(sql, params);
+        queryWrapper().and(sql, params);
         return (T) this;
     }
 
@@ -112,17 +112,17 @@ public abstract class QueryModel<T extends QueryModel<T>> {
     }
 
     public T or(QueryCondition queryCondition) {
-        getQueryWrapper().or(queryCondition);
+        queryWrapper().or(queryCondition);
         return (T) this;
     }
 
     public T or(String sql) {
-        getQueryWrapper().or(sql);
+        queryWrapper().or(sql);
         return (T) this;
     }
 
     public T or(String sql, Object... params) {
-        getQueryWrapper().or(sql, params);
+        queryWrapper().or(sql, params);
         return (T) this;
     }
 
@@ -323,32 +323,32 @@ public abstract class QueryModel<T extends QueryModel<T>> {
     }
 
     public T groupBy(String... names) {
-        getQueryWrapper().groupBy(names);
+        queryWrapper().groupBy(names);
         return (T) this;
     }
 
     public T groupBy(QueryColumn... columns) {
-        getQueryWrapper().groupBy(columns);
+        queryWrapper().groupBy(columns);
         return (T) this;
     }
 
     public <E> T groupBy(LambdaGetter<E>... columns) {
-        getQueryWrapper().groupBy(columns);
+        queryWrapper().groupBy(columns);
         return (T) this;
     }
 
     public T having(QueryCondition queryCondition) {
-        getQueryWrapper().having(queryCondition);
+        queryWrapper().having(queryCondition);
         return (T) this;
     }
 
     public T orderBy(QueryOrderBy... orderBys) {
-        getQueryWrapper().orderBy(orderBys);
+        queryWrapper().orderBy(orderBys);
         return (T) this;
     }
 
     public T orderBy(String... orderBys) {
-        getQueryWrapper().orderBy(orderBys);
+        queryWrapper().orderBy(orderBys);
         return (T) this;
     }
 
@@ -357,23 +357,23 @@ public abstract class QueryModel<T extends QueryModel<T>> {
     }
 
     public T limit(Integer rows) {
-        getQueryWrapper().limit(rows);
+        queryWrapper().limit(rows);
         return (T) this;
     }
 
     public T offset(Integer offset) {
-        getQueryWrapper().offset(offset);
+        queryWrapper().offset(offset);
         return (T) this;
     }
 
     public T limit(Integer offset, Integer rows) {
-        getQueryWrapper().limit(offset, rows);
+        queryWrapper().limit(offset, rows);
         return (T) this;
     }
 
     protected JoinBuilder<T> joins(String type, QueryTable table, boolean when) {
         Join join = new Join(type, table, when);
-        CPI.addJoin(getQueryWrapper(), join);
+        CPI.addJoin(queryWrapper(), join);
         return new JoinBuilder<>((T) this, join);
     }
 
@@ -385,7 +385,7 @@ public abstract class QueryModel<T extends QueryModel<T>> {
 
     protected JoinBuilder<T> joins(String type, QueryWrapper queryWrapper, boolean when) {
         Join join = new Join(type, queryWrapper, when);
-        CPI.addJoin(getQueryWrapper(), join);
+        CPI.addJoin(queryWrapper(), join);
         return new JoinBuilder<>((T) this, join);
     }
 
