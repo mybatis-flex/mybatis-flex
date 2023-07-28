@@ -86,7 +86,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-    //    @Test
+    //        @Test
     public void testCodeGen2() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -107,7 +107,7 @@ public class GeneratorTest {
         //设置生成文件目录和根包
         globalConfig.getPackageConfig()
             .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
-            .setMapperXmlPath(System.getProperty("user.dir") + "/src/test/java/resources/mapper")
+            .setMapperXmlPath(System.getProperty("user.dir") + "/src/test/resources/mapper")
             .setBasePackage("com.test");
 
         //设置表前缀和只生成哪些表
