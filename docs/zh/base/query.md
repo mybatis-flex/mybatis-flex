@@ -206,7 +206,7 @@ paginate 的返回值为 Page 对象，Page 类的定义如下：
 
 ```java
 public class Page<T> implements Serializable {
-    private List<T> list;                // list result of this page
+    private List<T> records;                // list result of this page
     private int pageNumber;              // page number
     private int pageSize;                // result amount of this page
     private long totalPage;              // total page
