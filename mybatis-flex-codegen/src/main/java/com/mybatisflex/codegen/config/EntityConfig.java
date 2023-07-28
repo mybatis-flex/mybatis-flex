@@ -66,19 +66,10 @@ public class EntityConfig {
      */
     private SwaggerVersion swaggerVersion;
 
-    public enum SwaggerVersion {
-        FOX("FOX"),
-        DOC("DOC");
-        private final String name;
-
-        SwaggerVersion(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-    }
+    /**
+     * Entity 是否启用 Active Record 功能。
+     */
+    private boolean withActiveRecord;
 
     /**
      * 实体类数据源。
@@ -208,6 +199,21 @@ public class EntityConfig {
     }
 
     /**
+     * 是否启用 Active Record。
+     */
+    public boolean isWithActiveRecord() {
+        return withActiveRecord;
+    }
+
+    /**
+     * 设置是否启用 Active Record。
+     */
+    public EntityConfig setWithActiveRecord(boolean withActiveRecord) {
+        this.withActiveRecord = withActiveRecord;
+        return this;
+    }
+
+    /**
      * 获取实体类数据源。
      */
     public String getDataSource() {
@@ -220,6 +226,22 @@ public class EntityConfig {
     public EntityConfig setDataSource(String dataSource) {
         this.dataSource = dataSource;
         return this;
+    }
+
+    public enum SwaggerVersion {
+
+        FOX("FOX"),
+        DOC("DOC");
+        private final String name;
+
+        SwaggerVersion(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
     }
 
 }
