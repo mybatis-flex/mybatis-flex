@@ -89,9 +89,10 @@ const {Layout} = DefaultTheme
         </div>
 
         <div class="content">
-          <div class="banner">
-            <a href="http://www.codeformat.cn" target="_blank"><img src="/assets/images/ad/code-format.png"></a>
-          </div>
+
+            <div class="banner">
+                <a href="https://dromara.gitee.io/fast-request/" target="_blank"><img src="/assets/images/ad/fast-request-20230828.svg" style="width: 120px;height: 60px"></a>
+            </div>
           <div class="banner">
             <a href="http://www.jpress.cn" target="_blank" style="height:50px;
             background: rgb(247 247 247);width: 105px;color: #000;font-size: 18px">
@@ -104,9 +105,9 @@ const {Layout} = DefaultTheme
           <div class="banner">
               <a href="https://aigc.zijiantty.com" target="_blank"><img src="/assets/images/ad/zijiantty_20230827.png" style="width: 105px;height: 50px"></a>
           </div>
-          <div class="banner">
-            虚以待位
-          </div>
+            <div class="banner">
+                <a href="http://www.codeformat.cn" target="_blank"><img src="/assets/images/ad/code-format.png"></a>
+            </div>
           <div class="banner">
             虚以待位
           </div>

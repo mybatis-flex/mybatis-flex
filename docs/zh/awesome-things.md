@@ -19,7 +19,7 @@
 
 ## 视频教程
 
-**课程1：《MyBatis-Flex 视频教程》** -- 全网首发。
+**课程1：《MyBatis-Flex 视频教程》** -- 全网首发（免费）。
 > 课程简介：该课程由 [王帅](https://gitee.com/Suomm) 老师录制主讲， [王帅](https://gitee.com/Suomm) 老师 也是除了作者以外，对 MyBatis-Flex 代码贡献最大的 committer。
 > 其无论对 MyBatis 还是 MyBatis-Flex，都有非常深入的理解。
 
@@ -45,3 +45,7 @@
 - [MyBatis-Flex 视频教程 - 18 onSet 实现字段权限](https://www.bilibili.com/video/BV1AN411e7id)
 - [MyBatis-Flex 视频教程 - 19 onSet 实现字段加密](https://www.bilibili.com/video/BV12c411c74x)
 - [MyBatis-Flex 视频教程 - 20 onSet 实现字典回写](https://www.bilibili.com/video/BV1uu41157bF)
+- [MyBatis-Flex 视频教程 - 21 全局监听器配置](https://www.bilibili.com/video/BV1qm4y1L7Si)
+- [MyBatis-Flex 视频教程 - 22 @Id 的简单使用](https://www.bilibili.com/video/BV1Hp4y1571K)
+- [MyBatis-Flex 视频教程 - 23 自定义主键生成器](https://www.bilibili.com/video/BV1eM4y1p72z)
+- [MyBatis-Flex 视频教程 - 24 @Column 注解的简单使用](https://www.bilibili.com/video/BV14c411w7Fr)
