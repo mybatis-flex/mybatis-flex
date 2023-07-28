@@ -120,6 +120,11 @@ public class CPI {
         queryWrapper.setJoinTables(joinTables);
     }
 
+    public static void addJoin(QueryWrapper queryWrapper, Join join) {
+        queryWrapper.addJoinTable(join.getQueryTable());
+        queryWrapper.addJoin(join);
+    }
+
 
     public static QueryCondition getWhereQueryCondition(QueryWrapper queryWrapper) {
         return queryWrapper.getWhereQueryCondition();

@@ -56,7 +56,7 @@ public interface MapperModel<T> {
      *
      * @return 主键数据数组
      */
-    default Object[] getPkValues() {
+    default Object[] pkValues() {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(getClass());
         return tableInfo.buildPkSqlArgs(this);
     }
@@ -107,7 +107,7 @@ public interface MapperModel<T> {
      * @return {@code true} 删除成功，{@code false} 删除失败
      */
     default boolean removeById() {
-        return SqlUtil.toBool(baseMapper().deleteById(getPkValues()));
+        return SqlUtil.toBool(baseMapper().deleteById(pkValues()));
     }
 
     /**
@@ -135,7 +135,7 @@ public interface MapperModel<T> {
      * @return 数据
      */
     default T oneById() {
-        return baseMapper().selectOneById(getPkValues());
+        return baseMapper().selectOneById(pkValues());
     }
 
     /**
@@ -145,6 +145,24 @@ public interface MapperModel<T> {
      */
     default Optional<T> oneByIdOpt() {
         return Optional.ofNullable(oneById());
+    }
+
+    /**
+     * 根据实体类主键获取一条数据，并查询 {@code @Relation} 注解关联的内容。
+     *
+     * @return 数据
+     */
+    default T oneWithRelationsById() {
+        return baseMapper().selectOneWithRelationsById(pkValues());
+    }
+
+    /**
+     * 根据实体类主键获取一条数据，并查询 {@code @Relation} 注解关联的内容，封装为 {@link Optional} 返回。
+     *
+     * @return 数据
+     */
+    default Optional<T> oneWithRelationsByIdOpt() {
+        return Optional.ofNullable(oneWithRelationsById());
     }
 
 }

@@ -16,6 +16,7 @@
 
 package com.mybatisflex.test.model;
 
+import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.Table;
 
@@ -36,6 +37,7 @@ public class Role implements Comparable<Role> {
     private String roleKey;
     private String roleName;
 
+    @Column(ignore = true)
     private List<UserVO> userVOS;
 
     public Integer getRoleId() {

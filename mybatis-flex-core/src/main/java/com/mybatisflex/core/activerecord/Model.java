@@ -87,7 +87,16 @@ public abstract class Model<T extends Model<T>>
      * @return 数据
      */
     public T one() {
-        return baseMapper().selectOneByQuery(getQueryWrapper().limit(1));
+        return baseMapper().selectOneByQuery(getQueryWrapper());
+    }
+
+    /**
+     * 根据实体类构建的条件获取一条数据，并查询 {@code @Relation} 注解关联的内容。
+     *
+     * @return 数据
+     */
+    public T oneWithRelations() {
+        return baseMapper().selectOneWithRelationsByQuery(getQueryWrapper().limit(1));
     }
 
     /**
@@ -100,12 +109,30 @@ public abstract class Model<T extends Model<T>>
     }
 
     /**
+     * 根据实体类构建的条件获取一条数据，并查询 {@code @Relation} 注解关联的内容，封装为 {@link Optional} 返回。
+     *
+     * @return 数据
+     */
+    public Optional<T> oneWithRelationsOpt() {
+        return Optional.ofNullable(oneWithRelations());
+    }
+
+    /**
      * 根据实体类构建的条件获取多条数据。
      *
      * @return 数据列表
      */
     public List<T> list() {
         return baseMapper().selectListByQuery(getQueryWrapper());
+    }
+
+    /**
+     * 根据实体类构建的条件获取多条数据，并查询 {@code @Relation} 注解关联的内容。
+     *
+     * @return 数据列表
+     */
+    public List<T> listWithRelations() {
+        return baseMapper().selectListWithRelationsByQuery(getQueryWrapper());
     }
 
     /**
@@ -116,6 +143,16 @@ public abstract class Model<T extends Model<T>>
      */
     public Page<T> page(Page<T> page) {
         return baseMapper().paginate(page, getQueryWrapper());
+    }
+
+    /**
+     * 根据实体类构建的条件获取分页数据，并查询 {@code @Relation} 注解关联的内容。
+     *
+     * @param page 分页对象
+     * @return 分页数据
+     */
+    public Page<T> pageWithRelations(Page<T> page) {
+        return baseMapper().paginateWithRelations(page, getQueryWrapper());
     }
 
 }

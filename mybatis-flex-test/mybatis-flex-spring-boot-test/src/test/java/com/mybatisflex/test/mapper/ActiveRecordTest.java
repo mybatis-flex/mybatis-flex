@@ -19,11 +19,15 @@ package com.mybatisflex.test.mapper;
 import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.model.Good;
+import com.mybatisflex.test.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.mybatisflex.test.model.table.GoodTableDef.GOOD;
+import static com.mybatisflex.test.model.table.RoleTableDef.ROLE;
+import static com.mybatisflex.test.model.table.UserRoleTableDef.USER_ROLE;
+import static com.mybatisflex.test.model.table.UserTableDef.USER;
 
 /**
  * @author 王帅
@@ -103,6 +107,21 @@ class ActiveRecordTest {
             .where(GOOD.PRICE.ge(28.0))
             .list()
             .forEach(System.out::println);
+    }
+
+    @Test
+    void testRelation() {
+        User user1 = User.create().select(USER.ALL_COLUMNS, ROLE.ALL_COLUMNS)
+            .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+            .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+            .where(USER.USER_ID.eq(2))
+            .one();
+
+        User user2 = User.create()
+            .where(USER.USER_ID.eq(2))
+            .oneWithRelations();
+
+        Assertions.assertEquals(user1.toString(), user2.toString());
     }
 
 }
