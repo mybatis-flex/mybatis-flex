@@ -17,7 +17,9 @@
 package com.mybatisflex.test.model;
 
 import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.RelationManyToMany;
 import com.mybatisflex.annotation.Table;
+import com.mybatisflex.core.activerecord.Model;
 
 import java.util.List;
 
@@ -29,14 +31,25 @@ import java.util.List;
  */
 
 @Table("tb_user")
-public class User {
+public class User extends Model<User> {
 
     @Id
     private Integer userId;
     private String userName;
     private String password;
-    //@Column(ignore = true)
+
+    @RelationManyToMany(
+        selfField = "userId",
+        targetField = "roleId",
+        joinTable = "tb_user_role",
+        joinSelfColumn = "user_id",
+        joinTargetColumn = "role_id"
+    )
     private List<Role> roleList;
+
+    public static User create() {
+        return new User();
+    }
 
     public Integer getUserId() {
         return userId;
