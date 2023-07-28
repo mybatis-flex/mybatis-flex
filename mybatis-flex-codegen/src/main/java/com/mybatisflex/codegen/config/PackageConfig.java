@@ -218,7 +218,7 @@ public class PackageConfig {
      */
     public String getMapperXmlPath() {
         if (StringUtil.isBlank(mapperXmlPath)) {
-            return getSourceDir().concat("/resources/mapper");
+            return System.getProperty("user.dir").concat("/src/main/resources/mapper");
         }
         return mapperXmlPath;
     }
