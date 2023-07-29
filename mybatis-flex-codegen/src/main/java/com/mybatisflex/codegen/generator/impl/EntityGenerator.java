@@ -62,7 +62,10 @@ public class EntityGenerator implements IGenerator {
         if (entityJavaFile.exists() && !entityConfig.isOverwriteEnable()) {
             return;
         }
-
+        //排除忽略列
+        if (globalConfig.getStrategyConfig().getIgnoreColumns() != null) {
+            table.getColumns().removeIf(column -> globalConfig.getStrategyConfig().getIgnoreColumns().contains(column.getName().toLowerCase()));
+        }
 
         Map<String, Object> params = new HashMap<>(4);
         params.put("table", table);
