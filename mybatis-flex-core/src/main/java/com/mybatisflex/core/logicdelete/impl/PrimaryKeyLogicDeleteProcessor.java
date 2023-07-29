@@ -16,7 +16,6 @@
 
 package com.mybatisflex.core.logicdelete.impl;
 
-import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexAssert;
 import com.mybatisflex.core.logicdelete.AbstractLogicDeleteProcessor;
@@ -37,23 +36,24 @@ import static com.mybatisflex.core.constant.SqlConsts.EQUALS;
 public class PrimaryKeyLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 
     @Override
+    public String buildLogicNormalCondition(String logicColumn, TableInfo tableInfo, IDialect dialect) {
+        return dialect.wrap(logicColumn) + " IS NULL";
+    }
+
+    @Override
     public String buildLogicDeletedSet(String logicColumn, TableInfo tableInfo, IDialect dialect) {
         List<IdInfo> primaryKeyList = tableInfo.getPrimaryKeyList();
-        FlexAssert.notEmpty(primaryKeyList, "Must have one primary key.");
+        FlexAssert.notEmpty(primaryKeyList, "Entity must have one primary key.");
         String column = primaryKeyList.get(0).getColumn();
         return dialect.wrap(logicColumn) + EQUALS + dialect.wrap(column);
     }
 
     /**
-     * 正常未删除的值为 0 （或者可配置为其他值）。
+     * 正常未删除的值为 {@code null}，兼容不同的主键类型。
      */
     @Override
     public Object getLogicNormalValue() {
-        Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
-        if (normalValueOfLogicDelete instanceof Number) {
-            return normalValueOfLogicDelete;
-        }
-        return 0;
+        return null;
     }
 
     /**
