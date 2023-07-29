@@ -17,9 +17,20 @@ package com.mybatisflex.core.datasource;
 
 import java.util.function.Supplier;
 
+/**
+ * @author michael
+ */
 public class DataSourceKey {
 
-    private static final ThreadLocal<String> keyThreadLocal = new ThreadLocal<>();
+    /**
+     * 通过注解设置的 key
+     */
+    private static final ThreadLocal<String> annotationKeyThreadLocal = new ThreadLocal<>();
+
+    /**
+     * 通过手动编码指定的 key
+     */
+    private static final ThreadLocal<String> manualKeyThreadLocal = new ThreadLocal<>();
 
     public static String manualKey;
 
@@ -27,16 +38,11 @@ public class DataSourceKey {
     }
 
     public static void use(String dataSourceKey) {
-        keyThreadLocal.set(dataSourceKey.trim());
-        manualKey = dataSourceKey;
+        manualKeyThreadLocal.set(dataSourceKey.trim());
     }
 
-    public static void use(String dataSourceKey, boolean isManual) {
-        if (isManual)
-            use(dataSourceKey);
-        else {
-            keyThreadLocal.set(dataSourceKey.trim());
-        }
+    public static void useWithAnnotation(String dataSourceKey) {
+        annotationKeyThreadLocal.set(dataSourceKey.trim());
     }
 
     public static <T> T use(String dataSourceKey, Supplier<T> supplier) {
@@ -58,12 +64,21 @@ public class DataSourceKey {
     }
 
     public static void clear() {
-        keyThreadLocal.remove();
-        manualKey = null;
+        annotationKeyThreadLocal.remove();
+        manualKeyThreadLocal.remove();
+    }
+
+    public static String getByAnnotation() {
+        return annotationKeyThreadLocal.get();
+    }
+
+    public static String getByManual() {
+        return manualKeyThreadLocal.get();
     }
 
     public static String get() {
-        return keyThreadLocal.get();
+        String key = manualKeyThreadLocal.get();
+        return key != null ? key : annotationKeyThreadLocal.get();
     }
 
 }
