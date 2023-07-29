@@ -19,13 +19,24 @@ import java.util.function.Supplier;
 
 public class DataSourceKey {
 
+    private static final ThreadLocal<String> keyThreadLocal = new ThreadLocal<>();
+
+    public static String manualKey;
+
     private DataSourceKey() {
     }
 
-    private static final ThreadLocal<String> keyThreadLocal = new ThreadLocal<>();
-
     public static void use(String dataSourceKey) {
         keyThreadLocal.set(dataSourceKey.trim());
+        manualKey = dataSourceKey;
+    }
+
+    public static void use(String dataSourceKey, boolean isManual) {
+        if (isManual)
+            use(dataSourceKey);
+        else {
+            keyThreadLocal.set(dataSourceKey.trim());
+        }
     }
 
     public static <T> T use(String dataSourceKey, Supplier<T> supplier) {
@@ -48,6 +59,7 @@ public class DataSourceKey {
 
     public static void clear() {
         keyThreadLocal.remove();
+        manualKey = null;
     }
 
     public static String get() {
