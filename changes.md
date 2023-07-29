@@ -1,6 +1,44 @@
 # MyBatis-Flex ChangeLog
 
 
+## v1.5.4 20230729:
+- 新增：UpdateChain.of(entity) 方法，方便直接传入 entity
+- 新增：TableInfo.buildQueryColumn() 方法，用于在泛型下构建 QueryColumn
+- 新增：添加新的 Db.executeBatch() 方法，方便直接传入集合进行批量操作
+- 新增：QueryWrapper 添加 where(consumer) 方法
+- 新增：多数据源功能添加负载均衡的能力
+- 新增：QueryWrapper 的.and() .or() 方法, 增加一个 condition 参数的方法，感谢 @jerryzhengsz
+- 新增：添加 BaseMapper.selectOneWithRelationsByIdAs() 方法，感谢 @jerryzhengsz1
+- 新增：添加异常信息国际哈的支持，感谢 @Suomm
+- 新增：添加主键逻辑删除处理器的支持，感谢 @Suomm
+- 新增：在 Service 中可以直接获取链式更新 UpdateChain 方法，感谢 @Suomm
+- 新增：ActiveRecord 添加 join 查询和 Relations 查询的功能，感谢 @Suomm
+- 新增：代码生成器添加对 ActiveRecord 生成的支持，感谢 @Suomm
+- 优化：修改 getPropertySimpleType 方法实现， 防止出现找不到类的问题，感谢 @dcrpp
+- 优化：重构将 assertAreNotNull 从 FlexExceptions 移动到 FlexAssert 中，感谢 @Suomm
+- 优化：重构 ActiveRecord 的一些方法，避免被 JSON 框架解析，感谢 @Suomm
+- 优化：BaseMapper.updateNumberAddByQuery() 为删除，在未来 v1.6.0 将会从项目里删除
+- 优化：Maven 的 "artifact xxx has been relocated" 警告的问题，感谢 [@sppan24](https://github.com/sppan24)
+- 优化：优化主键逻辑删除处理器逻辑，感谢 @Suomm
+- 修复：代码生成器多次调用是出错的问题，感谢 @Suomm
+- 修复：TableInfo 相关处理时无法获取 defaultConfig 的问题，感谢 @noear_admin @lhzsdnu
+- 修复：代码生成器中的 mapper xml 默认生成路径错误的问题，感谢 @Suomm
+- 修复：逻辑删除在设置字符串时，多添加了单引号的问题，感谢 @Suomm
+- 修复：多数据源注解嵌套使用时，可能某些配置不生效的问题，感谢 @barql
+- 文档：修复字段脱敏中的一些错别字的问题，感谢 @winnerself93586
+- 文档：添加关于多数据源负载均衡的相关文档
+- 文档：修复 Db + Row 的一些代码示例错误的问题，感谢 @w-mgitee
+- 文档：修复链式操作相关的一些错别字的问题，感谢 @luyyyyy
+- 文档：修复 apt 的一些描述错误的问题，感谢 @djxchi
+- 文档：添加关于 ActiveRecord 关联查询的相关文档，感谢 @Suomm
+- 文档：更新内置逻辑删除处理器文档，感谢 @Suomm
+- 文档：修改 Query 查询的代码示例中的 Page 定义错误的问题，感谢 @eafonyoung
+
+
+
+
+
+
 ## v1.5.3 20230725:
 - 新增：添加 UpdateChain 方便用于对数据进行更新
 - 新增：添加对 ActiveRecord 设计模式的支持，感谢 @Suomm
