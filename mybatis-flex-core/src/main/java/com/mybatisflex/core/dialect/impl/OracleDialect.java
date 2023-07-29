@@ -32,6 +32,9 @@ import java.util.StringJoiner;
 
 import static com.mybatisflex.core.constant.SqlConsts.*;
 
+/**
+ * @author michael
+ */
 public class OracleDialect extends CommonsDialectImpl {
 
     //https://docs.oracle.com/cd/A97630_01/appdev.920/a42525/apb.htm

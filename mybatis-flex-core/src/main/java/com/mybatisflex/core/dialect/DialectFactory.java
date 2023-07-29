@@ -108,9 +108,9 @@ public class DialectFactory {
             case GOLDILOCKS:
             case CSIIDB:
                 return new CommonsDialectImpl(KeywordWrap.BACK_QUOTE, LimitOffsetProcessor.MYSQL);
+            case DM:
             case ORACLE:
                 return new OracleDialect();
-            case DM:
             case GAUSS:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.ORACLE);
             case POSTGRE_SQL:
