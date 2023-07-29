@@ -103,7 +103,7 @@ public class Account {
     private int maxAge;
 
     //平均年龄
-    private int svgAge;
+    private int avgAge;
 
     //getter setter
 }
@@ -115,7 +115,7 @@ QueryChain.of(accountMapper)
     .select(
         ACCOUNT.ALL_COLUMNS,
         max(ACCOUNT.AGE).as("maxAge"),
-        avg(ACCOUNT.AGE).as("svgAge")
+        avg(ACCOUNT.AGE).as("avgAge")
     ).where(ACCOUNT.ID.ge(100))
     .list();
 ```
@@ -126,7 +126,7 @@ QueryChain.of(accountMapper)
     .select(
         ACCOUNT.ALL_COLUMNS,
         max(ACCOUNT.AGE).as("max_age"),
-        avg(ACCOUNT.AGE).as("svg_age")
+        avg(ACCOUNT.AGE).as("avg_age")
     ).where(ACCOUNT.ID.ge(100))
     .list();
 ```
