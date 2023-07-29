@@ -23,9 +23,10 @@ import com.mybatisflex.core.audit.MessageCollector;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.relation.RelationManager;
-import com.mybatisflex.test.relation.mapper.AccountMapper;
-import com.mybatisflex.test.relation.mapper.BookMapper;
-import com.mybatisflex.test.relation.mapper.MenuMapper;
+import com.mybatisflex.test.Account;
+import com.mybatisflex.test.Book;
+import com.mybatisflex.test.Menu;
+import com.mybatisflex.test.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -33,11 +34,10 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 import java.util.List;
-
-import static com.mybatisflex.test.relation.onetoone.table.MenuTableDef.MENU;
-
+import com.mybatisflex.test.relation.onetoone.table.MenuTableDef;
 
 public class RelationsTester {
+
 
     static AccountMapper accountMapper;
     static BookMapper bookMapper;
@@ -103,7 +103,7 @@ public class RelationsTester {
     @Test
     public void testMenu() {
         QueryWrapper qw = QueryWrapper.create();
-        qw.where(MENU.PARENT_ID.eq(0));
+        qw.where(MenuTableDef.MENU.PARENT_ID.eq(0));
 
         List<Menu> menus = menuMapper.selectListWithRelationsByQuery(qw);
         System.out.println(JSON.toJSONString(menus));
@@ -112,7 +112,7 @@ public class RelationsTester {
     @Test
     public void testMenuIgnoreParent() {
         QueryWrapper qw = QueryWrapper.create();
-        qw.where(MENU.PARENT_ID.eq(0));
+        qw.where(MenuTableDef.MENU.PARENT_ID.eq(0));
 
         RelationManager.addIgnoreRelations("parent");
         List<Menu> menus = menuMapper.selectListWithRelationsByQuery(qw);
