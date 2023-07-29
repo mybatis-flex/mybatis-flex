@@ -86,7 +86,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-    //        @Test
+    //    @Test
     public void testCodeGen2() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -224,6 +224,48 @@ public class GeneratorTest {
             .setMapperAnnotation(true);
 
         return globalConfig;
+    }
+
+    @Test
+    public void testCodeGen4() {
+        //配置数据源
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
+        dataSource.setUsername("root");
+        dataSource.setPassword("12345678");
+
+        GlobalConfig globalConfig = new GlobalConfig();
+
+        //用户信息表，用于存放用户信息。 -> 用户信息
+        UnaryOperator<String> tableFormat = (e) -> e.split("，")[0].replace("表", "");
+
+        //设置注解生成配置
+        globalConfig.getJavadocConfig()
+            .setAuthor("王帅")
+            .setTableCommentFormat(tableFormat);
+
+        //设置生成文件目录和根包
+        globalConfig.getPackageConfig()
+            .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
+            .setMapperXmlPath(System.getProperty("user.dir") + "/src/test/resources/mapper")
+            .setBasePackage("com.test");
+
+        //设置表前缀和只生成哪些表
+        globalConfig.getStrategyConfig()
+            .setTablePrefix("sys_")
+            .setGenerateTable("sys_user");
+
+        //配置生成 entity
+        globalConfig.enableEntity()
+            .setOverwriteEnable(true)
+            .setWithLombok(false)
+            .setWithActiveRecord(true);
+
+        //通过 datasource 和 globalConfig 创建代码生成器
+        Generator generator = new Generator(dataSource, globalConfig);
+
+        //开始生成代码
+        generator.generate();
     }
 
 }

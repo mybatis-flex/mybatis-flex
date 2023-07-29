@@ -913,6 +913,20 @@ public class GlobalConfig {
     }
 
     /**
+     * @see EntityConfig#isWithActiveRecord()
+     */
+    public boolean isWithActiveRecord() {
+        return getEntityConfig().isWithActiveRecord();
+    }
+
+    /**
+     * @see EntityConfig#setWithActiveRecord(boolean)
+     */
+    public void setWithActiveRecord(boolean withActiveRecord) {
+        getEntityConfig().setWithActiveRecord(withActiveRecord);
+    }
+
+    /**
      * @see EntityConfig#getDataSource()
      */
     public String getEntityDataSource() {
