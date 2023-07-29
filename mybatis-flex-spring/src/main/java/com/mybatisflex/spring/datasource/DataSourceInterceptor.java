@@ -43,7 +43,7 @@ public class DataSourceInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        String dsKey = DataSourceKey.get();
+        String dsKey = DataSourceKey.manualKey;
         if (StringUtil.isNotBlank(dsKey)) {
             return invocation.proceed();
         }
@@ -53,7 +53,7 @@ public class DataSourceInterceptor implements MethodInterceptor {
             return invocation.proceed();
         }
 
-        DataSourceKey.use(dsKey);
+        DataSourceKey.use(dsKey, false);
         try {
             return invocation.proceed();
         } finally {
