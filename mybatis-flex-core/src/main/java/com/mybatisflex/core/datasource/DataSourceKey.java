@@ -17,15 +17,32 @@ package com.mybatisflex.core.datasource;
 
 import java.util.function.Supplier;
 
+/**
+ * @author michael
+ */
 public class DataSourceKey {
+
+    /**
+     * 通过注解设置的 key
+     */
+    private static final ThreadLocal<String> annotationKeyThreadLocal = new ThreadLocal<>();
+
+    /**
+     * 通过手动编码指定的 key
+     */
+    private static final ThreadLocal<String> manualKeyThreadLocal = new ThreadLocal<>();
+
+    public static String manualKey;
 
     private DataSourceKey() {
     }
 
-    private static final ThreadLocal<String> keyThreadLocal = new ThreadLocal<>();
-
     public static void use(String dataSourceKey) {
-        keyThreadLocal.set(dataSourceKey.trim());
+        manualKeyThreadLocal.set(dataSourceKey.trim());
+    }
+
+    public static void useWithAnnotation(String dataSourceKey) {
+        annotationKeyThreadLocal.set(dataSourceKey.trim());
     }
 
     public static <T> T use(String dataSourceKey, Supplier<T> supplier) {
@@ -47,11 +64,21 @@ public class DataSourceKey {
     }
 
     public static void clear() {
-        keyThreadLocal.remove();
+        annotationKeyThreadLocal.remove();
+        manualKeyThreadLocal.remove();
+    }
+
+    public static String getByAnnotation() {
+        return annotationKeyThreadLocal.get();
+    }
+
+    public static String getByManual() {
+        return manualKeyThreadLocal.get();
     }
 
     public static String get() {
-        return keyThreadLocal.get();
+        String key = manualKeyThreadLocal.get();
+        return key != null ? key : annotationKeyThreadLocal.get();
     }
 
 }

@@ -20,6 +20,7 @@ import com.mybatisflex.core.activerecord.query.QueryModel;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.util.SqlUtil;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ import java.util.Optional;
 @SuppressWarnings({"unused", "unchecked"})
 public abstract class Model<T extends Model<T>>
     extends QueryModel<T>
-    implements MapperModel<T> {
+    implements MapperModel<T>, Serializable {
 
     /**
      * 根据实体类构建的条件删除数据。

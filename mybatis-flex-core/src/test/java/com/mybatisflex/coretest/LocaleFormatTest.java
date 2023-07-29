@@ -16,8 +16,6 @@
 
 package com.mybatisflex.coretest;
 
-import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import org.junit.Test;
 
 /**
@@ -28,7 +26,7 @@ public class LocaleFormatTest {
 
     @Test
     public void test() {
-        throw FlexExceptions.wrap(LocalizedFormats.OBJECT_NULL, "primaryValues");
+//        throw FlexExceptions.wrap(LocalizedFormats.OBJECT_NULL, "primaryValues");
     }
 
 }

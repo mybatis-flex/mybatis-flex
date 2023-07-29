@@ -32,6 +32,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * 多数据源切换拦截器。
  *
  * @author 王帅
+ * @author barql
+ * @author michael
+ * 
  * @since 2023-06-25
  */
 public class DataSourceInterceptor implements MethodInterceptor {
@@ -43,7 +46,7 @@ public class DataSourceInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        String dsKey = DataSourceKey.get();
+        String dsKey = DataSourceKey.getByManual();
         if (StringUtil.isNotBlank(dsKey)) {
             return invocation.proceed();
         }
@@ -53,11 +56,19 @@ public class DataSourceInterceptor implements MethodInterceptor {
             return invocation.proceed();
         }
 
-        DataSourceKey.use(dsKey);
+        //方法嵌套时，挂起的 key
+        String suspendKey = DataSourceKey.getByAnnotation();
+
         try {
+            DataSourceKey.useWithAnnotation(dsKey);
             return invocation.proceed();
         } finally {
-            DataSourceKey.clear();
+            //恢复挂起的 key
+            if (suspendKey != null) {
+                DataSourceKey.useWithAnnotation(suspendKey);
+            } else {
+                DataSourceKey.clear();
+            }
         }
     }
 
@@ -70,6 +81,7 @@ public class DataSourceInterceptor implements MethodInterceptor {
         }
         return dsKey;
     }
+
 
     private String determineDataSourceKey(Method method, Class<?> targetClass) {
 
