@@ -131,12 +131,6 @@ public class Table {
 
     public void addColumn(Column column) {
 
-        //排除忽略列
-        if (globalConfig.getStrategyConfig().getIgnoreColumns() != null &&
-            globalConfig.getStrategyConfig().getIgnoreColumns().contains(column.getName().toLowerCase())) {
-            return;
-        }
-
         //主键
         if (primaryKeys != null && primaryKeys.contains(column.getName())) {
             column.setPrimaryKey(true);
