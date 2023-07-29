@@ -58,6 +58,7 @@ export default defineConfig({
                 items: [
                     {text: '增、删、改', link: '/zh/base/add-delete-update'},
                     {text: '基础查询', link: '/zh/base/query'},
+                    {text: '自动映射', link: '/zh/base/auto-mapping'},
                     {text: '关联查询', link: '/zh/base/relations-query'},
                     {text: '批量操作', link: '/zh/base/batch'},
                     {text: '链式操作🔥🔥', link: '/zh/base/chain'},

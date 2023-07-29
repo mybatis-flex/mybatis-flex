@@ -203,7 +203,7 @@ WHERE account_id IN (1, 2, 3, 4, 5)
 
 **Map 映射**
 
-若 `Account.books` 是一个 `Map`，而非 `List`，那么，我们需要通过配置 `mapKeyField` 来指定使用用个列来充当 `Map` 的 `Key`，
+若 `Account.books` 是一个 `Map`，而非 `List`，那么，我们需要通过配置 `mapKeyField` 来指定使用 `Book` 的那个列来充当 `Map` 的 `Key`，
 如下代码所示：
 
 ```java 9
@@ -217,6 +217,11 @@ public class Account implements Serializable {
     @RelationOneToMany(selfField = "id", targetField = "accountId"
         , mapKeyField = "id") //使用 Book 的 id 来填充这个 map 的 key
     private Map<Long, Book> books;
+
+
+    //注意 map 的 key 的类型，可以和 Book 的 id 类型不一致也是支持的
+    //比如：
+    //private Map<String, Book> books;
 
     //getter setter
 }
