@@ -1,10 +1,11 @@
 # 自动映射
 
-在 MyBatis-Flex 中，内置了非常智能的 **自动映射** 功能，能够使得我们在查询数据的时候，从数据结果集绑定到实体类（或者 VO、DTO等）等变得极其简单易用。
+在 MyBatis-Flex 中，内置了非常智能的 **自动映射** 功能，能够使得我们在查询数据的时候，从数据结果集绑定到实体类（或者 VO、DTO
+等）变得极其简单易用。
 
 ## 数据假设
 
-假设在我们的项目中，有如下的表结构、和实体类：
+假设在我们的项目中，有如下的表结构和实体类：
 
 账户表（tb_account）：
 ```sql
@@ -27,8 +28,8 @@ CREATE TABLE IF NOT EXISTS `tb_book`
     `content`    text
 );
 ```
-> 图书和账户的关系是多对一的关系：一个账户可以拥有多本书。
 
+> 图书和账户的关系是多对一的关系：一个账户可以拥有多本书。
 
 角色表（tb_role）：
 
@@ -41,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `tb_role`
 ```
 
 账户和角色的 **多对多** 关系映射表（tb_role_mapping）：
+
 ```sql
 CREATE TABLE IF NOT EXISTS `tb_role_mapping`
 (
@@ -169,8 +171,8 @@ List<BookVo> bookVos = QueryChain.of(bookMapper)
         BOOK.ALL_COLUMNS, //图书的所有字段
         ACCOUNT.USER_NAME, //用户表的 user_name 字段
         ACCOUNT.AGE.as("userAge") //用户表的 age 字段， as "userAge"
-    ).form(BOOK)
-    .leftJoin(ACCONT).on(BOOK.ACCOUNT_ID.eq(ACCOUNT.ID))
+    ).from(BOOK)
+    .leftJoin(ACCOUNT).on(BOOK.ACCOUNT_ID.eq(ACCOUNT.ID))
     .where(ACCOUNT.ID.ge(100))
     .listAs(BookVo.java);
 ```
@@ -199,8 +201,8 @@ List<BookVo> bookVos = QueryChain.of(bookMapper)
         BOOK.DEFAULT_COLUMNS,
         ACCOUNT.DEFAULT_COLUMNS,
      )
-    .form(BOOK)
-    .leftJoin(ACCONT).on(BOOK.ACCOUNT_ID.eq(ACCOUNT.ID))
+    .from(BOOK)
+    .leftJoin(ACCOUNT).on(BOOK.ACCOUNT_ID.eq(ACCOUNT.ID))
     .where(ACCOUNT.ID.ge(100))
     .listAs(BookVo.java);
 ```
@@ -224,7 +226,7 @@ public class AccountVO {
 ```java
 List<AccountVO> bookVos = QueryChain.of(accountMapper)
     .select() // 不传入参数等同于 SQL 的 select *
-    .form(ACCONT)
+    .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
     .listAs(AccountVO.java);
@@ -241,7 +243,7 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
         BOOK.TITLE,
         BOOK.CONTENT,
      )
-    .form(ACCONT)
+    .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
     .listAs(AccountVO.java);
@@ -286,7 +288,7 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
         BOOK.ID,
         BOOK.NAME,
      )
-    .form(ACCONT)
+    .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
     .listAs(AccountVO.java);
@@ -315,7 +317,7 @@ where tb_account.id >= 100
 ```sql
 List<AccountVO> bookVos = QueryChain.of(accountMapper)
     .select()
-    .form(ACCONT)
+    .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
     .listAs(AccountVO.java);
@@ -341,26 +343,25 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
         ACCOUNT.DEFAULT_COLUMNS,
         BOOK.DEFAULT_COLUMNS
      )
-    .form(ACCONT)
+    .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
     .listAs(AccountVO.java);
 ```
 
+**`@ColumnAlias` 注解：**
 
-**`@ColumnsAlias` 注解：**
-
-`@ColumnsAlias` 注解的作用是用于定义在 entity 查询时，默认的 SQL 别名名称，例如：
+`@ColumnAlias` 注解的作用是用于定义在 entity 查询时，默认的 SQL 别名名称，可以取代自动生成的别名，例如：
 
 ```java
 public class Book {
 
-    @ColumnsAlias("bookId")
+    @ColumnAlias("bookId")
     private Long id;
 
     private Long accountId;
 
-    @ColumnsAlias("bookName")
+    @ColumnAlias("bookName")
     private String name;
 }
 ```
@@ -376,7 +377,7 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
         BOOK.ID,
         BOOK.NAME,
      )
-    .form(ACCONT)
+    .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
     .listAs(AccountVO.java);
@@ -385,8 +386,8 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
 
 ```sql 2,3
 select tb_account.id, tb_account.name, tb_account.age,
-    tb_book.id as bookId, -- @ColumnsAlias("bookId")
-    tb_book.name as bookName  -- @ColumnsAlias("bookName")
+    tb_book.id as bookId, -- @ColumnAlias("bookId")
+    tb_book.name as bookName  -- @ColumnAlias("bookName")
 from tb_account
 left join tb_book on tb_account.id = tb_book.account_id
 where tb_account.id >= 100
