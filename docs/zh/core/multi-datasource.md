@@ -237,10 +237,10 @@ mybatis-flex:
       username: root
       password: 123456
     other:
-        type: com.your.datasource.type2
-        url: jdbc:mysql://127.0.0.1:3306/db2
-        username: root
-        password: 123456
+      type: com.your.datasource.type2
+      url: jdbc:mysql://127.0.0.1:3306/db2
+      username: root
+      password: 123456
 ```
 
 以上配置了三个数据源，分别为：`ds1`、`ds2`、`other`，假设我们想负载均衡使用 `ds1`、`ds2` ，那么代码如下：
