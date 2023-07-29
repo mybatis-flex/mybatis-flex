@@ -18,6 +18,8 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.SqlUtil;
 
 import java.util.List;
@@ -137,4 +139,10 @@ public class QueryChain<T> extends QueryWrapperAdapter<QueryChain<T>> {
         return baseMapper.paginateWithRelationsAs(page, this, asType);
     }
 
+    @Override
+    public String toSQL() {
+        TableInfo tableInfo = TableInfoFactory.ofMapperClass(baseMapper.getClass());
+        CPI.setFromIfNecessary(this, tableInfo.getSchema(), tableInfo.getTableName());
+        return super.toSQL();
+    }
 }

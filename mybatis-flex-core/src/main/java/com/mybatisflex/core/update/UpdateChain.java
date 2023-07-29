@@ -17,10 +17,14 @@
 package com.mybatisflex.core.update;
 
 import com.mybatisflex.core.BaseMapper;
+import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.mybatis.Mappers;
+import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryWrapperAdapter;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.SqlUtil;
@@ -122,6 +126,15 @@ public class UpdateChain<T> extends QueryWrapperAdapter<UpdateChain<T>> {
 
     public boolean update() {
         return SqlUtil.toBool(baseMapper.updateByQuery(entity, this));
+    }
+
+
+    @Override
+    public String toSQL() {
+        TableInfo tableInfo = TableInfoFactory.ofMapperClass(baseMapper.getClass());
+        CPI.setFromIfNecessary(this, tableInfo.getSchema(), tableInfo.getTableName());
+        String sql = DialectFactory.getDialect().forUpdateEntityByQuery(tableInfo,entity,true,this);
+        return SqlUtil.replaceSqlParams(sql, CPI.getValueArray(this));
     }
 
 }
