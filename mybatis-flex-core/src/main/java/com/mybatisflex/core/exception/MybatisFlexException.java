@@ -65,6 +65,9 @@ public class MybatisFlexException extends RuntimeException {
     }
 
     private String getMessage(Locale locale) {
+        if (pattern == null) {
+            return super.getMessage();
+        }
         String localizedString = pattern.getLocalizedString(locale);
         return MessageFormat.format(localizedString, arguments);
     }
