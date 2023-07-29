@@ -16,6 +16,7 @@
 package com.mybatisflex.core.logicdelete.impl;
 
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.logicdelete.AbstractLogicDeleteProcessor;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -30,31 +31,37 @@ import static com.mybatisflex.core.constant.SqlConsts.SINGLE_QUOTE;
 public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 
     @Override
-    public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo) {
-        queryWrapper.where(QueryCondition.create(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getLogicDeleteColumn()
-            , EQUALS, FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete()));
+    public String buildLogicNormalCondition(String logicColumn, TableInfo tableInfo, IDialect dialect) {
+        return dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicNormalValue());
     }
 
+    @Override
+    public String buildLogicDeletedSet(String logicColumn, TableInfo tableInfo, IDialect dialect) {
+        return dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicDeletedValue());
+    }
+
+    @Override
+    public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo) {
+        queryWrapper.where(QueryCondition.create(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getLogicDeleteColumn()
+            , EQUALS
+            , prepareValue(getLogicNormalValue())));
+    }
 
     @Override
     public Object getLogicNormalValue() {
-        Object normalValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
-        if (normalValueOfLogicDelete instanceof Number
-            || normalValueOfLogicDelete instanceof Boolean) {
-            return normalValueOfLogicDelete;
-        }
-        return SINGLE_QUOTE + normalValueOfLogicDelete + SINGLE_QUOTE;
+        return FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
     }
-
 
     @Override
     public Object getLogicDeletedValue() {
-        Object deletedValueOfLogicDelete = FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete();
-        if (deletedValueOfLogicDelete instanceof Number
-            || deletedValueOfLogicDelete instanceof Boolean) {
-            return deletedValueOfLogicDelete;
+        return FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete();
+    }
+
+    private static Object prepareValue(Object value) {
+        if (value instanceof Number || value instanceof Boolean) {
+            return value;
         }
-        return SINGLE_QUOTE + deletedValueOfLogicDelete + SINGLE_QUOTE;
+        return SINGLE_QUOTE + value + SINGLE_QUOTE;
     }
 
 }
