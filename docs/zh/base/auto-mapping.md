@@ -249,3 +249,147 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
 
 高级映射的场景中，我们还可以通过注解 `@RelationManyToOne` 进行查询，
 详情请点击 [这里](./relations-query#%E4%B8%80%E5%AF%B9%E5%A4%9A-relationonetomany)。
+
+
+## 重名映射
+
+在很多类型嵌套的场景下，可能会出现字段名定义重复的情况，例如：
+
+```java
+public class AccountVO {
+
+    private Long id;
+    private String name;
+    private int age;
+
+    //账户拥有的 图书列表
+    private List<Book> book;
+}
+```
+
+```java
+public class Book {
+    private Long id;
+    private Long accountId;
+    private String name;
+}
+```
+
+在以上的嵌套定义中， `AccountVO` 以及 `Book` 都包含了 `id` 和 `name` 的定义，假设我们查询的方法如下：
+
+```java
+List<AccountVO> bookVos = QueryChain.of(accountMapper)
+    .select(
+        ACCOUNT.ID,
+        ACCOUNT.NAME,
+        ACCOUNT.AGE,
+        BOOK.ID,
+        BOOK.NAME,
+     )
+    .form(ACCONT)
+    .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
+    .where(ACCOUNT.ID.ge(100))
+    .listAs(AccountVO.java);
+```
+
+其执行的 SQL 如下：
+
+```sql
+select tb_account.id, tb_account.name, tb_account.age,
+    tb_book.id as tb_book$id, -- Flex 发现有重名时，会自动添加上 as 别名
+    tb_book.name as tb_book$name  -- Flex 发现有重名时，会自动添加上 as 别名
+from tb_account
+left join tb_book on tb_account.id = tb_book.account_id
+where tb_account.id >= 100
+```
+
+此时，查询的数据可以正常映射到 `AccountVO` 类。
+
+> 注意，在 QueryWrapper 的 `select(...)` 中，MyBatis-Flex 在 **多表查询** 的情况下，且有相同的字段名时，MyBatis-Flex
+> 内部会主动帮助用户添加上 as 别名，默认为：`表名$字段名`。
+
+**错误的情况：**
+
+若我们修改查询代码如下：
+
+```sql
+List<AccountVO> bookVos = QueryChain.of(accountMapper)
+    .select()
+    .form(ACCONT)
+    .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
+    .where(ACCOUNT.ID.ge(100))
+    .listAs(AccountVO.java);
+```
+
+那么，其执行的 SQL 如下：
+
+```sql
+select * from tb_account
+left join tb_book on tb_account.id = tb_book.account_id
+where tb_account.id >= 100
+```
+此时，查询的结果集中，会有多个 `id` 和 `name` 列，程序无法知道 `id` 和 `name` 对应的应该是 `AccountVO` 的还是 `Book`
+的，因此，可能会出现数据错误赋值的情况。
+
+所以，若程序中出现包裹对象有重名属性的情况时，`QueryWrapper` 的 `select(...)` 方法必须传入具体的字段才能保证数据正常赋值。
+
+如下的代码也是没问题的：
+
+```java
+List<AccountVO> bookVos = QueryChain.of(accountMapper)
+    .select(
+        ACCOUNT.DEFAULT_COLUMNS,
+        BOOK.DEFAULT_COLUMNS
+     )
+    .form(ACCONT)
+    .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
+    .where(ACCOUNT.ID.ge(100))
+    .listAs(AccountVO.java);
+```
+
+
+**`@ColumnsAlias` 注解：**
+
+`@ColumnsAlias` 注解的作用是用于定义在 entity 查询时，默认的 SQL 别名名称，例如：
+
+```java
+public class Book {
+
+    @ColumnsAlias("bookId")
+    private Long id;
+
+    private Long accountId;
+
+    @ColumnsAlias("bookName")
+    private String name;
+}
+```
+
+那么，假设我们的查询代码如下：
+
+```java 6,7
+List<AccountVO> bookVos = QueryChain.of(accountMapper)
+    .select(
+        ACCOUNT.ID,
+        ACCOUNT.NAME,
+        ACCOUNT.AGE,
+        BOOK.ID,
+        BOOK.NAME,
+     )
+    .form(ACCONT)
+    .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
+    .where(ACCOUNT.ID.ge(100))
+    .listAs(AccountVO.java);
+```
+其执行的 SQL 为：
+
+```sql 2,3
+select tb_account.id, tb_account.name, tb_account.age,
+    tb_book.id as bookId, -- @ColumnsAlias("bookId")
+    tb_book.name as bookName  -- @ColumnsAlias("bookName")
+from tb_account
+left join tb_book on tb_account.id = tb_book.account_id
+where tb_account.id >= 100
+```
+
+此时，数据也是可以正常映射。
