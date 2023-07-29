@@ -6,8 +6,8 @@
 - **`updateByCondition(entity, ignoreNulls, whereConditions)`**：根据查询条件来更新数据。
 - **`updateByQuery(entity, queryWrapper)`**：根据查询条件来更新数据。
 - **`updateByQuery(entity, ignoreNulls, queryWrapper)`**：根据查询条件来更新数据。
-- **`updateNumberAddByQuery(fieldName, value, queryWrapper)`**：执行类似 `update table set field = field + 1 where ... `
-  的场景。
-- **`updateNumberAddByQuery(column, value, queryWrapper)`**：执行类似 `update table set field = field + 1 where ... `
-  的场景。
-- **`updateNumberAddByQuery(fn, value, queryWrapper)`**：执行类似 `update table set field = field + 1 where ... ` 的场景。
+- ~**`updateNumberAddByQuery(fieldName, value, queryWrapper)`**：执行类似 `update table set field = field + 1 where ... `
+  的场景。~
+- ~**`updateNumberAddByQuery(column, value, queryWrapper)`**：执行类似 `update table set field = field + 1 where ... `
+  的场景。~
+- ~**`updateNumberAddByQuery(fn, value, queryWrapper)`**：执行类似 `update table set field = field + 1 where ... ` 的场景。~
