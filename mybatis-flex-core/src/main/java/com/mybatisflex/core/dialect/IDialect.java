@@ -22,6 +22,9 @@ import com.mybatisflex.core.table.TableManager;
 
 import java.util.List;
 
+/**
+ * @author michael
+ */
 public interface IDialect {
 
     String wrap(String keyword);

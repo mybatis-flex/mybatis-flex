@@ -26,7 +26,15 @@ TableManager.setDynamicTableProcessor(new DynamicTableProcessor() {
 在某些情况下，我们临时修改映射关系，而非通过 `DynamicTableProcessor.process` 方法获取，可以通过如下配置：
 
 ```java
-TableManager.setHintTableMapping("tb_account", "tb_account_01")
+try{
+    TableManager.setHintTableMapping("tb_account", "tb_account_01")
+
+    //这里写您的业务逻辑
+
+}finally{
+    TableManager.clear()
+}
+
 ```
 那么此时，当前线程不再通过 `DynamicTableProcessor` 去获取。
 
@@ -57,13 +65,13 @@ public class MyConfiguration {
         DynamicTableProcessor processor = new ....;
         return processor;
     }
-    
-    
+
+
     @Bean
     public DynamicSchemaProcessor dynamicSchemaProcessor(){
         DynamicSchemaProcessor processor = new ....;
         return processor;
     }
-    
+
 }
 ```
