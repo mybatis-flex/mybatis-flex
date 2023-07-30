@@ -44,7 +44,7 @@ public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
     public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo) {
         queryWrapper.where(QueryCondition.create(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getLogicDeleteColumn()
             , EQUALS
-            , prepareValue(getLogicNormalValue())));
+            , getLogicNormalValue()));
     }
 
     @Override
