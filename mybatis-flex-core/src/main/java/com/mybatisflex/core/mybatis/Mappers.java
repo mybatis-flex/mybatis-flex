@@ -92,15 +92,9 @@ public class Mappers {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if ("getClass".equals(method.getName())) {
-                return mapperClass;
-            } else if ("toString".equals(method.getName())) {
-                return mapperClass.getName();
-            } else {
-                try (SqlSession sqlSession = openSession()) {
-                    Object mapper = sqlSession.getMapper(mapperClass);
-                    return method.invoke(mapper, args);
-                }
+            try (SqlSession sqlSession = openSession()) {
+                Object mapper = sqlSession.getMapper(mapperClass);
+                return method.invoke(mapper, args);
             }
         }
     }
