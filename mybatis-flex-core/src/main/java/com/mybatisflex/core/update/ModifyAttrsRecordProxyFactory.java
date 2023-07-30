@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.update;
 
+import com.mybatisflex.core.util.ClassUtil;
 import org.apache.ibatis.javassist.util.proxy.ProxyFactory;
 import org.apache.ibatis.javassist.util.proxy.ProxyObject;
 import org.apache.ibatis.logging.LogFactory;
@@ -22,6 +23,9 @@ import org.apache.ibatis.logging.LogFactory;
 import java.util.Arrays;
 
 
+/**
+ * @author michael
+ */
 public class ModifyAttrsRecordProxyFactory {
 
     private static final ModifyAttrsRecordProxyFactory instance = new ModifyAttrsRecordProxyFactory();
@@ -41,14 +45,13 @@ public class ModifyAttrsRecordProxyFactory {
         interfaces[interfaces.length - 1] = UpdateWrapper.class;
         factory.setInterfaces(interfaces);
 
-
         final Class<?> proxyClass = factory.createClass();
 
         T proxyObject = null;
         try {
-            proxyObject = (T) proxyClass.newInstance();
+            proxyObject = (T) ClassUtil.newInstance(proxyClass);
             ((ProxyObject) proxyObject).setHandler(new ModifyAttrsRecordHandler());
-        } catch (Throwable e) {
+        } catch (Exception e){
             LogFactory.getLog(ModifyAttrsRecordProxyFactory.class).error(e.toString(), e);
         }
 

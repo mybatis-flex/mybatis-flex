@@ -118,7 +118,7 @@ public class ClassUtil {
 
             Constructor<?>[] declaredConstructors = clazz.getDeclaredConstructors();
             for (Constructor<?> constructor : declaredConstructors) {
-                if (constructor.getParameterCount() == 0) {
+                if (constructor.getParameterCount() == 0 && Modifier.isPublic(constructor.getModifiers())) {
                     defaultConstructor = constructor;
                 } else if (Modifier.isPublic(constructor.getModifiers())) {
                     otherConstructor = constructor;
