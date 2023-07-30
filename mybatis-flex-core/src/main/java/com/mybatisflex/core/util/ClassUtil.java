@@ -138,6 +138,16 @@ public class ClassUtil {
                 }
                 return (T) otherConstructor.newInstance(parameters);
             }
+            // 没有任何构造函数的情况下，去查找 static 工厂方法，满足 lombok 注解的需求
+            else {
+                Method factoryMethod = ClassUtil.getFirstMethod(clazz, m -> m.getParameterCount() == 0
+                    && clazz.isAssignableFrom(m.getReturnType())
+                    && Modifier.isPublic(m.getModifiers())
+                    && Modifier.isStatic(m.getModifiers()));
+                if (factoryMethod != null) {
+                    return (T) factoryMethod.invoke(null);
+                }
+            }
             throw new IllegalArgumentException("the class \"" + clazz.getName() + "\" has no constructor.");
         } catch (Exception e) {
             throw new RuntimeException("Can not newInstance class: " + clazz.getName());
