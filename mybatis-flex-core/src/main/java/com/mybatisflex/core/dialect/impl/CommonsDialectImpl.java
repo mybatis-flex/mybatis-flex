@@ -782,8 +782,12 @@ public class CommonsDialectImpl implements IDialect {
         Set<String> updateColumns = tableInfo.obtainUpdateColumns(entity, ignoreNulls, true);
         Map<String, RawValue> rawValueMap = tableInfo.obtainUpdateRawValueMap(entity);
 
-        sql.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)))
-            .append(tableInfo.getWrapSchemaAndTableName(this)).append(SET);
+        sql.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
+        if (StringUtil.isNotBlank(tableInfo.getSchema())) {
+            sql.append(wrap(getRealSchema(tableInfo.getSchema()))).append(REFERENCE);
+        }
+
+        sql.append(wrap(getRealTable(tableInfo.getTableName()))).append(SET);
 
         StringJoiner stringJoiner = new StringJoiner(DELIMITER);
 
