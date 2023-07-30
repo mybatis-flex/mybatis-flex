@@ -1,0 +1,11 @@
+# 鼓励用户使用 Issue 模板（不允许用户创建空白 Issue）
+blank_issues_enabled: false
+
+# 引导用户浏览相关文档
+contact_links:
+    -   name: MyBatis-Flex 官网
+        url: https://mybatis-flex.com/
+        about: 查阅官网以获得基本功能使用、介绍和常见问题解答
+    -   name: MyBatis-Flex 视频教程
+        url: https://mybatis-flex.com/zh/awesome-things.html#%E8%A7%86%E9%A2%91%E6%95%99%E7%A8%8B
+        about: 通过观看视频教程及评论区笔记了解问题并进行解决
