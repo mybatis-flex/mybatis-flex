@@ -628,9 +628,11 @@ public class TableInfo {
 
                 if (value != null) {
                     ColumnInfo columnInfo = columnInfoMapping.get(column);
-                    TypeHandler typeHandler = columnInfo.buildTypeHandler();
-                    if (typeHandler != null) {
-                        value = new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
+                    if (columnInfo != null) {
+                        TypeHandler typeHandler = columnInfo.buildTypeHandler();
+                        if (typeHandler != null) {
+                            value = new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
+                        }
                     }
                 }
 

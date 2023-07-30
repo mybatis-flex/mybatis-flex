@@ -25,10 +25,7 @@ import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryWrapperAdapter;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.ClassUtil;
-import com.mybatisflex.core.util.LambdaGetter;
-import com.mybatisflex.core.util.SqlUtil;
-import com.mybatisflex.core.util.UpdateEntity;
+import com.mybatisflex.core.util.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -124,6 +121,7 @@ public class UpdateChain<T> extends QueryWrapperAdapter<UpdateChain<T>> {
         return SqlUtil.toBool(baseMapper.deleteByQuery(this));
     }
 
+
     public boolean update() {
         return SqlUtil.toBool(baseMapper.updateByQuery(entity, this));
     }
@@ -133,8 +131,12 @@ public class UpdateChain<T> extends QueryWrapperAdapter<UpdateChain<T>> {
     public String toSQL() {
         TableInfo tableInfo = TableInfoFactory.ofMapperClass(baseMapper.getClass());
         CPI.setFromIfNecessary(this, tableInfo.getSchema(), tableInfo.getTableName());
-        String sql = DialectFactory.getDialect().forUpdateEntityByQuery(tableInfo,entity,true,this);
-        return SqlUtil.replaceSqlParams(sql, CPI.getValueArray(this));
+        String sql = DialectFactory.getDialect().forUpdateEntityByQuery(tableInfo, entity, true, this);
+
+        Object[] values = tableInfo.buildUpdateSqlArgs(entity, true, true);
+        values = ArrayUtil.concat(values, CPI.getValueArray(this));
+
+        return SqlUtil.replaceSqlParams(sql, values);
     }
 
 }
