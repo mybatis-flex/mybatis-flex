@@ -783,11 +783,7 @@ public class CommonsDialectImpl implements IDialect {
         Map<String, RawValue> rawValueMap = tableInfo.obtainUpdateRawValueMap(entity);
 
         sql.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
-        if (StringUtil.isNotBlank(tableInfo.getSchema())) {
-            sql.append(wrap(getRealSchema(tableInfo.getSchema()))).append(REFERENCE);
-        }
-
-        sql.append(wrap(getRealTable(tableInfo.getTableName()))).append(SET);
+        sql.append(tableInfo.getWrapSchemaAndTableName(this)).append(SET);
 
         StringJoiner stringJoiner = new StringJoiner(DELIMITER);
 
@@ -818,7 +814,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //不允许全量更新
         if (StringUtil.isBlank(whereConditionSql)) {
-            throw new IllegalArgumentException("Not allowed UPDATE a table without where condition.");
+            throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
         }
 
         sql.append(WHERE).append(whereConditionSql);
@@ -848,7 +844,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //不允许全量更新
         if (StringUtil.isBlank(whereConditionSql)) {
-            throw new IllegalArgumentException("Not allowed UPDATE a table without where condition.");
+            throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
         }
 
         sql.append(WHERE).append(whereConditionSql);
@@ -997,12 +993,12 @@ public class CommonsDialectImpl implements IDialect {
             if (StringUtil.isNotBlank(whereSql)) {
                 sqlBuilder.append(WHERE).append(whereSql);
             } else if (!allowNoCondition) {
-                throw new IllegalArgumentException("Not allowed DELETE or UPDATE a table without where condition.");
+                throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
             }
         } else {
             // whereQueryCondition == null
             if (!allowNoCondition) {
-                throw new IllegalArgumentException("Not allowed DELETE or UPDATE a table without where condition.");
+                throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
             }
         }
     }

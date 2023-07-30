@@ -43,6 +43,7 @@ public enum LocalizedFormats implements Localizable {
 
 
     UPDATE_ONLY_SUPPORT_1_TABLE("\"UpdateByQuery\" only support 1 table."),
+    UPDATE_OR_DELETE_NOT_ALLOW("Not allowed \"UPDATE\" or \"DELETE\" a table without where condition."),
 
     ENTITY_VERSION_NULL("The version value of entity[{0}] must not be null."),
     ;
