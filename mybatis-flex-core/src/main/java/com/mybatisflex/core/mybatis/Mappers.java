@@ -47,6 +47,7 @@ public class Mappers {
 
     /**
      * 通过 entity Class 获取 Mapper 对象
+     *
      * @param entityClass
      * @param <Entity>
      * @return mapper 对象
@@ -75,8 +76,8 @@ public class Mappers {
     }
 
 
-
     static class MapperHandler implements InvocationHandler {
+
         private Class<?> mapperClass;
         private final SqlSessionFactory sqlSessionFactory = FlexGlobalConfig.getDefaultConfig().getSqlSessionFactory();
         private final ExecutorType executorType = FlexGlobalConfig.getDefaultConfig().getConfiguration().getDefaultExecutorType();
@@ -91,9 +92,15 @@ public class Mappers {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            try (SqlSession sqlSession = openSession()) {
-                Object mapper = sqlSession.getMapper(mapperClass);
-                return method.invoke(mapper, args);
+            if ("getClass".equals(method.getName())) {
+                return mapperClass;
+            } else if ("toString".equals(method.getName())) {
+                return mapperClass.getName();
+            } else {
+                try (SqlSession sqlSession = openSession()) {
+                    Object mapper = sqlSession.getMapper(mapperClass);
+                    return method.invoke(mapper, args);
+                }
             }
         }
     }

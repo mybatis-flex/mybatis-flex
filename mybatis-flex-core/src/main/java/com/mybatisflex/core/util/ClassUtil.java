@@ -24,12 +24,26 @@ import java.util.function.Predicate;
 
 /**
  * 类实例创建者创建者
- * Created by michael on 17/3/21.
+ *
+ * @author michael
+ * @date 17/3/21
  */
 public class ClassUtil {
 
     private ClassUtil() {
     }
+
+    private static final String[] OBJECT_METHODS = new String[]{
+        "toString",
+        "getClass",
+        "equals",
+        "hashCode",
+        "wait",
+        "notify",
+        "notifyAll",
+        "clone",
+        "finalize"
+    };
 
     //proxy frameworks
     private static final List<String> PROXY_CLASS_NAMES = Arrays.asList("net.sf.cglib.proxy.Factory"
@@ -297,6 +311,10 @@ public class ClassUtil {
         } else {
             return false;
         }
+    }
+
+    public static boolean isObjectMethod(String methodName) {
+        return ArrayUtil.contains(OBJECT_METHODS, methodName);
     }
 
 }
