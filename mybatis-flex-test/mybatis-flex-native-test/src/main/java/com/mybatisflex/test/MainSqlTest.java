@@ -53,7 +53,7 @@ public class MainSqlTest {
 
         String sql2 = UpdateChain.of(Article.class)
             .set("xxxx", "xxxx")
-//            .where(Article::getId).ge(100)
+            .where(Article::getId).ge(100)
             .toSQL();
 
         System.out.println(sql2);

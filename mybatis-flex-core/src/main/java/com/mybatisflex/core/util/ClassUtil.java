@@ -141,7 +141,7 @@ public class ClassUtil {
             // 没有任何构造函数的情况下，去查找 static 工厂方法，满足 lombok 注解的需求
             else {
                 Method factoryMethod = ClassUtil.getFirstMethod(clazz, m -> m.getParameterCount() == 0
-                    && clazz.isAssignableFrom(m.getReturnType())
+                    && clazz == m.getReturnType()
                     && Modifier.isPublic(m.getModifiers())
                     && Modifier.isStatic(m.getModifiers()));
                 if (factoryMethod != null) {
