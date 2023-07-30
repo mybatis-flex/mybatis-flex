@@ -21,6 +21,7 @@ import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.dialect.DbType;
+import com.mybatisflex.core.exception.FlexAssert;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -307,9 +308,7 @@ public class FlexGlobalConfig {
     }
 
     public void setNormalValueOfLogicDelete(Object normalValueOfLogicDelete) {
-        if (normalValueOfLogicDelete == null) {
-            throw new NullPointerException("normalValueOfLogicDelete can not be null.");
-        }
+        FlexAssert.notNull(normalValueOfLogicDelete,"normalValueOfLogicDelete");
         this.normalValueOfLogicDelete = normalValueOfLogicDelete;
     }
 
@@ -318,9 +317,7 @@ public class FlexGlobalConfig {
     }
 
     public void setDeletedValueOfLogicDelete(Object deletedValueOfLogicDelete) {
-        if (deletedValueOfLogicDelete == null) {
-            throw new NullPointerException("deletedValueOfLogicDelete can not be null.");
-        }
+        FlexAssert.notNull(deletedValueOfLogicDelete,"deletedValueOfLogicDelete");
         this.deletedValueOfLogicDelete = deletedValueOfLogicDelete;
     }
 
