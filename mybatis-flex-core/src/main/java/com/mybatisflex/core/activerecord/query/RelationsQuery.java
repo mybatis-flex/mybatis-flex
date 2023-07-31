@@ -63,7 +63,7 @@ public class RelationsQuery<T extends Model<T>> extends AbstractQuery<T> {
      * @param value 值
      * @return {@code Relations} 查询构建
      */
-    public RelationsQuery<T> extraCondition(String key, Object value) {
+    public RelationsQuery<T> extraConditionParam(String key, Object value) {
         RelationManager.addExtraConditionParam(key, value);
         return this;
     }
