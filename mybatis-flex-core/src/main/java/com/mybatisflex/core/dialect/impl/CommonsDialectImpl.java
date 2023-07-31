@@ -382,8 +382,8 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        Integer limitRows = CPI.getLimitRows(queryWrapper);
-        Integer limitOffset = CPI.getLimitOffset(queryWrapper);
+        Long limitRows = CPI.getLimitRows(queryWrapper);
+        Long limitOffset = CPI.getLimitOffset(queryWrapper);
         if (limitRows != null || limitOffset != null) {
             sqlBuilder = buildLimitOffsetSql(sqlBuilder, queryWrapper, limitRows, limitOffset);
         }
@@ -418,8 +418,8 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        Integer limitRows = CPI.getLimitRows(queryWrapper);
-        Integer limitOffset = CPI.getLimitOffset(queryWrapper);
+        Long limitRows = CPI.getLimitRows(queryWrapper);
+        Long limitOffset = CPI.getLimitOffset(queryWrapper);
         if (limitRows != null || limitOffset != null) {
             sqlBuilder = buildLimitOffsetSql(sqlBuilder, queryWrapper, limitRows, limitOffset);
         }
@@ -1051,7 +1051,7 @@ public class CommonsDialectImpl implements IDialect {
     /**
      * 构建 limit 和 offset 的参数
      */
-    protected StringBuilder buildLimitOffsetSql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, Integer limitRows, Integer limitOffset) {
+    protected StringBuilder buildLimitOffsetSql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, Long limitRows, Long limitOffset) {
         return limitOffsetProcessor.process(this, sqlBuilder, queryWrapper, limitRows, limitOffset);
     }
 

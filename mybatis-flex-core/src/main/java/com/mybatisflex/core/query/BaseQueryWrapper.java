@@ -40,8 +40,8 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
 
     protected List<UnionWrapper> unions;
 
-    protected Integer limitOffset;
-    protected Integer limitRows;
+    protected Long limitOffset;
+    protected Long limitRows;
 
     protected List<String> endFragments;
 
@@ -219,19 +219,19 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
         this.unions = unions;
     }
 
-    protected Integer getLimitOffset() {
+    protected Long getLimitOffset() {
         return limitOffset;
     }
 
-    protected void setLimitOffset(Integer limitOffset) {
+    protected void setLimitOffset(Long limitOffset) {
         this.limitOffset = limitOffset;
     }
 
-    protected Integer getLimitRows() {
+    protected Long getLimitRows() {
         return limitRows;
     }
 
-    protected void setLimitRows(Integer limitRows) {
+    protected void setLimitRows(Long limitRows) {
         this.limitRows = limitRows;
     }
 

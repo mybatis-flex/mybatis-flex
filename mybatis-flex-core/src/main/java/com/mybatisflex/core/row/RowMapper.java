@@ -289,7 +289,7 @@ public interface RowMapper {
      * @return row or null
      */
     default Row selectOneByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
-        List<Row> rows = selectListByQuery(schema, tableName, queryWrapper.limit(1));
+        List<Row> rows = selectListByQuery(schema, tableName, queryWrapper.limit(1L));
         if (rows == null || rows.isEmpty()) {
             return null;
         } else {
@@ -384,7 +384,7 @@ public interface RowMapper {
      * @return 数据
      */
     default Object selectObjectByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
-        queryWrapper.limit(1);
+        queryWrapper.limit(1L);
         List<Object> objects = selectObjectListByQuery(schema, tableName, queryWrapper);
         if (objects == null || objects.isEmpty()) {
             return null;

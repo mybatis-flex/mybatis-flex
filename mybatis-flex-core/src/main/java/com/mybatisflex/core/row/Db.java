@@ -610,7 +610,7 @@ public class Db {
      * @param whereColumns where条件
      */
     public static Row selectOneByMap(String schema, String tableName, Map whereColumns) {
-        return invoker().selectOneByQuery(schema, tableName, new QueryWrapper().where(whereColumns).limit(1));
+        return invoker().selectOneByQuery(schema, tableName, new QueryWrapper().where(whereColumns).limit(1L));
     }
 
 
@@ -621,7 +621,7 @@ public class Db {
      * @param whereColumns where条件
      */
     public static Row selectOneByMap(String tableName, Map whereColumns) {
-        return invoker().selectOneByQuery(null, tableName, new QueryWrapper().where(whereColumns).limit(1));
+        return invoker().selectOneByQuery(null, tableName, new QueryWrapper().where(whereColumns).limit(1L));
     }
 
     /**
@@ -632,7 +632,7 @@ public class Db {
      * @param condition 条件
      */
     public static Row selectOneByCondition(String schema, String tableName, QueryCondition condition) {
-        return invoker().selectOneByQuery(schema, tableName, new QueryWrapper().where(condition).limit(1));
+        return invoker().selectOneByQuery(schema, tableName, new QueryWrapper().where(condition).limit(1L));
     }
 
     /**
@@ -642,7 +642,7 @@ public class Db {
      * @param condition 条件
      */
     public static Row selectOneByCondition(String tableName, QueryCondition condition) {
-        return invoker().selectOneByQuery(null, tableName, new QueryWrapper().where(condition).limit(1));
+        return invoker().selectOneByQuery(null, tableName, new QueryWrapper().where(condition).limit(1L));
     }
 
 
@@ -723,7 +723,7 @@ public class Db {
      * @param whereColumns 条件
      * @param count        数据量
      */
-    public static List<Row> selectListByMap(String schema, String tableName, Map<String, Object> whereColumns, int count) {
+    public static List<Row> selectListByMap(String schema, String tableName, Map<String, Object> whereColumns, Long count) {
         return invoker().selectListByQuery(schema, tableName, new QueryWrapper().where(whereColumns).limit(count));
     }
 
@@ -734,7 +734,7 @@ public class Db {
      * @param whereColumns 条件
      * @param count        数据量
      */
-    public static List<Row> selectListByMap(String tableName, Map<String, Object> whereColumns, int count) {
+    public static List<Row> selectListByMap(String tableName, Map<String, Object> whereColumns, Long count) {
         return invoker().selectListByQuery(null, tableName, new QueryWrapper().where(whereColumns).limit(count));
     }
 
@@ -769,7 +769,7 @@ public class Db {
      * @param condition 条件
      * @param count     数据量
      */
-    public static List<Row> selectListByCondition(String schema, String tableName, QueryCondition condition, int count) {
+    public static List<Row> selectListByCondition(String schema, String tableName, QueryCondition condition, Long count) {
         return invoker().selectListByQuery(schema, tableName, new QueryWrapper().where(condition).limit(count));
     }
 
@@ -780,7 +780,7 @@ public class Db {
      * @param condition 条件
      * @param count     数据量
      */
-    public static List<Row> selectListByCondition(String tableName, QueryCondition condition, int count) {
+    public static List<Row> selectListByCondition(String tableName, QueryCondition condition, Long count) {
         return invoker().selectListByQuery(null, tableName, new QueryWrapper().where(condition).limit(count));
     }
 
@@ -1012,7 +1012,7 @@ public class Db {
      * @param pageSize   每页的数据量
      * @param condition  条件
      */
-    public static Page<Row> paginate(String schema, String tableName, int pageNumber, int pageSize, QueryCondition condition) {
+    public static Page<Row> paginate(String schema, String tableName, Number pageNumber, Number pageSize, QueryCondition condition) {
         return invoker().paginate(schema, tableName, new Page<>(pageNumber, pageSize), QueryWrapper.create().where(condition));
     }
 
@@ -1025,7 +1025,7 @@ public class Db {
      * @param pageSize   每页的数据量
      * @param condition  条件
      */
-    public static Page<Row> paginate(String tableName, int pageNumber, int pageSize, QueryCondition condition) {
+    public static Page<Row> paginate(String tableName, Number pageNumber, Number pageSize, QueryCondition condition) {
         return invoker().paginate(null, tableName, new Page<>(pageNumber, pageSize), QueryWrapper.create().where(condition));
     }
 
@@ -1040,7 +1040,7 @@ public class Db {
      * @param totalRow   数据总量
      * @param condition  条件
      */
-    public static Page<Row> paginate(String schema, String tableName, int pageNumber, int pageSize, int totalRow, QueryCondition condition) {
+    public static Page<Row> paginate(String schema, String tableName, Number pageNumber, Number pageSize, Number totalRow, QueryCondition condition) {
         return invoker().paginate(schema, tableName, new Page<>(pageNumber, pageSize, totalRow), QueryWrapper.create().where(condition));
     }
 
@@ -1053,7 +1053,7 @@ public class Db {
      * @param totalRow   数据总量
      * @param condition  条件
      */
-    public static Page<Row> paginate(String tableName, int pageNumber, int pageSize, int totalRow, QueryCondition condition) {
+    public static Page<Row> paginate(String tableName, Number pageNumber, Number pageSize, Number totalRow, QueryCondition condition) {
         return invoker().paginate(null, tableName, new Page<>(pageNumber, pageSize, totalRow), QueryWrapper.create().where(condition));
     }
 
@@ -1067,7 +1067,7 @@ public class Db {
      * @param pageSize     每页的数据量
      * @param queryWrapper 条件
      */
-    public static Page<Row> paginate(String schema, String tableName, int pageNumber, int pageSize, QueryWrapper queryWrapper) {
+    public static Page<Row> paginate(String schema, String tableName, Number pageNumber, Number pageSize, QueryWrapper queryWrapper) {
         return invoker().paginate(schema, tableName, new Page<>(pageNumber, pageSize), queryWrapper);
     }
 
@@ -1079,7 +1079,7 @@ public class Db {
      * @param pageSize     每页的数据量
      * @param queryWrapper 条件
      */
-    public static Page<Row> paginate(String tableName, int pageNumber, int pageSize, QueryWrapper queryWrapper) {
+    public static Page<Row> paginate(String tableName, Number pageNumber, Number pageSize, QueryWrapper queryWrapper) {
         return invoker().paginate(null, tableName, new Page<>(pageNumber, pageSize), queryWrapper);
     }
 
@@ -1094,7 +1094,7 @@ public class Db {
      * @param totalRow     数据总量
      * @param queryWrapper 条件
      */
-    public static Page<Row> paginate(String schema, String tableName, int pageNumber, int pageSize, int totalRow, QueryWrapper queryWrapper) {
+    public static Page<Row> paginate(String schema, String tableName, Number pageNumber, Number pageSize, Number totalRow, QueryWrapper queryWrapper) {
         return invoker().paginate(schema, tableName, new Page<>(pageNumber, pageSize, totalRow), queryWrapper);
     }
 
@@ -1107,7 +1107,7 @@ public class Db {
      * @param totalRow     数据总量
      * @param queryWrapper 条件
      */
-    public static Page<Row> paginate(String tableName, int pageNumber, int pageSize, int totalRow, QueryWrapper queryWrapper) {
+    public static Page<Row> paginate(String tableName, Number pageNumber, Number pageSize, Number totalRow, QueryWrapper queryWrapper) {
         return invoker().paginate(null, tableName, new Page<>(pageNumber, pageSize, totalRow), queryWrapper);
     }
 

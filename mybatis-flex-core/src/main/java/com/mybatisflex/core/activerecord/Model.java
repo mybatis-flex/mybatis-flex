@@ -97,7 +97,7 @@ public abstract class Model<T extends Model<T>>
      * @return 数据
      */
     public T oneWithRelations() {
-        return baseMapper().selectOneWithRelationsByQuery(queryWrapper().limit(1));
+        return baseMapper().selectOneWithRelationsByQuery(queryWrapper().limit(1L));
     }
 
     /**
