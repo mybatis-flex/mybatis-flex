@@ -28,6 +28,7 @@ import java.util.function.Predicate;
  * @author michael
  * @date 17/3/21
  */
+@SuppressWarnings("unchecked")
 public class ClassUtil {
 
     private ClassUtil() {
