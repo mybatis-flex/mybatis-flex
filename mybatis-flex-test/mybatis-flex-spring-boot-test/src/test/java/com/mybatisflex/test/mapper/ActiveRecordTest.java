@@ -119,9 +119,41 @@ class ActiveRecordTest {
 
         User user2 = User.create()
             .where(USER.USER_ID.eq(2))
-            .oneWithRelations();
+            .withRelations()
+            .one();
 
         Assertions.assertEquals(user1.toString(), user2.toString());
+    }
+
+    @Test
+    void testRelationsQuery() {
+        User.create()
+            .where(USER.USER_ID.ge(1))
+            .withRelations() // 使用 Relations Query 的方式进行关联查询。
+            .maxDepth(3) // 设置父子关系查询中，默认的递归查询深度。
+            .ignoreRelations("orderList") // 忽略查询部分 Relations 注解标记的属性。
+            .extraCondition("id", 100) // 添加额外的 Relations 查询条件。
+            .list()
+            .forEach(System.out::println);
+    }
+
+    @Test
+    void testFieldsQuery() {
+        User.create()
+            .where(USER.USER_ID.ge(1))
+            .withFields() // 使用 Fields Query 的方式进行关联查询。
+            .fieldMapping(User::getRoleList, user -> // 设置属性对应的 QueryWrapper 查询。
+                QueryWrapper.create()
+                    .select()
+                    .from(ROLE)
+                    .where(ROLE.ROLE_ID.in(
+                        QueryWrapper.create()
+                            .select(USER_ROLE.ROLE_ID)
+                            .from(USER_ROLE)
+                            .where(USER_ROLE.USER_ID.eq(user.getUserId()))
+                    )))
+            .list()
+            .forEach(System.out::println);
     }
 
 }

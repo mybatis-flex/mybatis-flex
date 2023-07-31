@@ -16,7 +16,9 @@
 
 package com.mybatisflex.core.activerecord;
 
+import com.mybatisflex.core.activerecord.query.FieldsQuery;
 import com.mybatisflex.core.activerecord.query.QueryModel;
+import com.mybatisflex.core.activerecord.query.RelationsQuery;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.util.SqlUtil;
 
@@ -92,13 +94,15 @@ public abstract class Model<T extends Model<T>>
     }
 
     /**
-     * 根据实体类构建的条件获取一条数据，并查询 {@code @Relation} 注解关联的内容。
+     * 根据实体类构建的条件获取一条数据，返回的数据为 asType 类型。
      *
+     * @param asType 接收数据类型
      * @return 数据
      */
-    public T oneWithRelations() {
-        return baseMapper().selectOneWithRelationsByQuery(queryWrapper().limit(1L));
+    public <R> R oneAs(Class<R> asType) {
+        return baseMapper().selectOneByQueryAs(queryWrapper(), asType);
     }
+
 
     /**
      * 根据实体类构建的条件获取一条数据，并封装为 {@link Optional} 返回。
@@ -110,12 +114,13 @@ public abstract class Model<T extends Model<T>>
     }
 
     /**
-     * 根据实体类构建的条件获取一条数据，并查询 {@code @Relation} 注解关联的内容，封装为 {@link Optional} 返回。
+     * 根据实体类构建的条件获取一条数据，返回的数据为 asType 类型，并封装为 {@link Optional} 返回。
      *
+     * @param asType 接收数据类型
      * @return 数据
      */
-    public Optional<T> oneWithRelationsOpt() {
-        return Optional.ofNullable(oneWithRelations());
+    public <R> Optional<R> oneAsOpt(Class<R> asType) {
+        return Optional.ofNullable(oneAs(asType));
     }
 
     /**
@@ -128,12 +133,13 @@ public abstract class Model<T extends Model<T>>
     }
 
     /**
-     * 根据实体类构建的条件获取多条数据，并查询 {@code @Relation} 注解关联的内容。
+     * 根据实体类构建的条件获取多条数据，返回的数据为 asType 类型。
      *
+     * @param asType 接收数据类型
      * @return 数据列表
      */
-    public List<T> listWithRelations() {
-        return baseMapper().selectListWithRelationsByQuery(queryWrapper());
+    public <R> List<R> listAs(Class<R> asType) {
+        return baseMapper().selectListByQueryAs(queryWrapper(), asType);
     }
 
     /**
@@ -147,13 +153,32 @@ public abstract class Model<T extends Model<T>>
     }
 
     /**
-     * 根据实体类构建的条件获取分页数据，并查询 {@code @Relation} 注解关联的内容。
+     * 根据实体类构建的条件获取分页数据，返回的数据为 asType 类型。
      *
-     * @param page 分页对象
+     * @param page   分页对象
+     * @param asType 接收数据类型
      * @return 分页数据
      */
-    public Page<T> pageWithRelations(Page<T> page) {
-        return baseMapper().paginateWithRelations(page, queryWrapper());
+    public <R> Page<R> pageAs(Page<R> page, Class<R> asType) {
+        return baseMapper().paginateAs(page, queryWrapper(), asType);
+    }
+
+    /**
+     * 使用 {@code Fields Query} 的方式进行关联查询。
+     *
+     * @return {@code Fields Query} 查询
+     */
+    public FieldsQuery<T> withFields() {
+        return new FieldsQuery<>(this);
+    }
+
+    /**
+     * 使用 {@code Relations Query} 的方式进行关联查询。
+     *
+     * @return {@code Relations Query} 查询
+     */
+    public RelationsQuery<T> withRelations() {
+        return new RelationsQuery<>(this);
     }
 
 }

@@ -99,7 +99,7 @@ public class RelationManager {
         extraConditionParams.set(params);
     }
 
-    public static void addExtraConditionParam(String key, String value) {
+    public static void addExtraConditionParam(String key, Object value) {
         Map<String, Object> params = extraConditionParams.get();
         if (params == null) {
             params = new HashMap<>();
