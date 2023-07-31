@@ -132,7 +132,7 @@ class ActiveRecordTest {
             .withRelations() // 使用 Relations Query 的方式进行关联查询。
             .maxDepth(3) // 设置父子关系查询中，默认的递归查询深度。
             .ignoreRelations("orderList") // 忽略查询部分 Relations 注解标记的属性。
-            .extraCondition("id", 100) // 添加额外的 Relations 查询条件。
+            .extraConditionParam("id", 100) // 添加额外的 Relations 查询条件。
             .list()
             .forEach(System.out::println);
     }
