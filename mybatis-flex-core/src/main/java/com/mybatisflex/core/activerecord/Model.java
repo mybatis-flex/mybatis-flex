@@ -124,6 +124,64 @@ public abstract class Model<T extends Model<T>>
     }
 
     /**
+     * 根据实体类构建的条件获取第一列，且第一条数据。
+     *
+     * @return 第一列数据
+     */
+    public Object obj() {
+        return baseMapper().selectObjectByQuery(queryWrapper());
+    }
+
+    /**
+     * 根据实体类构建的条件获取第一列，且第一条数据并转换为指定类型，比如 {@code Long}, {@code String} 等。
+     *
+     * @param asType 接收数据类型
+     * @return 第一列数据
+     */
+    public <R> R objAs(Class<R> asType) {
+        return baseMapper().selectObjectByQueryAs(queryWrapper(), asType);
+    }
+
+    /**
+     * 根据实体类构建的条件获取第一列，且第一条数据，并封装为 {@link Optional} 返回。
+     *
+     * @return 第一列数据
+     */
+    public Optional<Object> objOpt() {
+        return Optional.ofNullable(obj());
+    }
+
+    /**
+     * 根据实体类构建的条件获取第一列，且第一条数据并转换为指定类型，比如 {@code Long}, {@code String}
+     * 等，封装为 {@link Optional} 返回。
+     *
+     * @param asType 接收数据类型
+     * @return 第一列数据
+     */
+    public <R> Optional<R> objAsOpt(Class<R> asType) {
+        return Optional.ofNullable(objAs(asType));
+    }
+
+    /**
+     * 根据实体类构建的条件获取第一列的所有数据。
+     *
+     * @return 第一列数据
+     */
+    public List<Object> objList() {
+        return baseMapper().selectObjectListByQuery(queryWrapper());
+    }
+
+    /**
+     * 根据实体类构建的条件获取第一列的所有数据，并转换为指定类型，比如 {@code Long}, {@code String} 等。
+     *
+     * @param asType 接收数据类型
+     * @return 第一列数据
+     */
+    public <R> List<R> objListAs(Class<R> asType) {
+        return baseMapper().selectObjectListByQueryAs(queryWrapper(), asType);
+    }
+
+    /**
      * 根据实体类构建的条件获取多条数据。
      *
      * @return 数据列表
