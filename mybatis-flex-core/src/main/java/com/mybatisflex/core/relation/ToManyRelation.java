@@ -28,7 +28,7 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
     protected String mapKeyField;
     protected FieldWrapper mapKeyFieldWrapper;
     protected String orderBy;
-    protected int limit = 0;
+    protected long limit = 0;
 
 
     public ToManyRelation(String selfField, String targetSchema, String targetTable, String targetField,

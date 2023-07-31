@@ -382,8 +382,8 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        Integer limitRows = CPI.getLimitRows(queryWrapper);
-        Integer limitOffset = CPI.getLimitOffset(queryWrapper);
+        Long limitRows = CPI.getLimitRows(queryWrapper);
+        Long limitOffset = CPI.getLimitOffset(queryWrapper);
         if (limitRows != null || limitOffset != null) {
             sqlBuilder = buildLimitOffsetSql(sqlBuilder, queryWrapper, limitRows, limitOffset);
         }
@@ -418,8 +418,8 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        Integer limitRows = CPI.getLimitRows(queryWrapper);
-        Integer limitOffset = CPI.getLimitOffset(queryWrapper);
+        Long limitRows = CPI.getLimitRows(queryWrapper);
+        Long limitOffset = CPI.getLimitOffset(queryWrapper);
         if (limitRows != null || limitOffset != null) {
             sqlBuilder = buildLimitOffsetSql(sqlBuilder, queryWrapper, limitRows, limitOffset);
         }
@@ -782,8 +782,8 @@ public class CommonsDialectImpl implements IDialect {
         Set<String> updateColumns = tableInfo.obtainUpdateColumns(entity, ignoreNulls, true);
         Map<String, RawValue> rawValueMap = tableInfo.obtainUpdateRawValueMap(entity);
 
-        sql.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)))
-            .append(tableInfo.getWrapSchemaAndTableName(this)).append(SET);
+        sql.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
+        sql.append(tableInfo.getWrapSchemaAndTableName(this)).append(SET);
 
         StringJoiner stringJoiner = new StringJoiner(DELIMITER);
 
@@ -814,7 +814,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //不允许全量更新
         if (StringUtil.isBlank(whereConditionSql)) {
-            throw new IllegalArgumentException("Not allowed UPDATE a table without where condition.");
+            throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
         }
 
         sql.append(WHERE).append(whereConditionSql);
@@ -844,7 +844,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //不允许全量更新
         if (StringUtil.isBlank(whereConditionSql)) {
-            throw new IllegalArgumentException("Not allowed UPDATE a table without where condition.");
+            throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
         }
 
         sql.append(WHERE).append(whereConditionSql);
@@ -993,12 +993,12 @@ public class CommonsDialectImpl implements IDialect {
             if (StringUtil.isNotBlank(whereSql)) {
                 sqlBuilder.append(WHERE).append(whereSql);
             } else if (!allowNoCondition) {
-                throw new IllegalArgumentException("Not allowed DELETE or UPDATE a table without where condition.");
+                throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
             }
         } else {
             // whereQueryCondition == null
             if (!allowNoCondition) {
-                throw new IllegalArgumentException("Not allowed DELETE or UPDATE a table without where condition.");
+                throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
             }
         }
     }
@@ -1051,7 +1051,7 @@ public class CommonsDialectImpl implements IDialect {
     /**
      * 构建 limit 和 offset 的参数
      */
-    protected StringBuilder buildLimitOffsetSql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, Integer limitRows, Integer limitOffset) {
+    protected StringBuilder buildLimitOffsetSql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, Long limitRows, Long limitOffset) {
         return limitOffsetProcessor.process(this, sqlBuilder, queryWrapper, limitRows, limitOffset);
     }
 

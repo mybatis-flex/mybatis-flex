@@ -28,11 +28,12 @@ public class ConvertUtil {
     private ConvertUtil() {
     }
 
+    @SuppressWarnings("rawtypes")
     public static Object convert(Object value, Class targetClass) {
         return convert(value, targetClass, false);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static Object convert(Object value, Class targetClass, boolean ignoreConvertError) {
         if (value == null && targetClass.isPrimitive()) {
             return getPrimitiveDefaultValue(targetClass);

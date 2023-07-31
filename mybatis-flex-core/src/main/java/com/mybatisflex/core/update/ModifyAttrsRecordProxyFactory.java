@@ -15,47 +15,54 @@
  */
 package com.mybatisflex.core.update;
 
+import com.mybatisflex.core.util.ClassUtil;
 import org.apache.ibatis.javassist.util.proxy.ProxyFactory;
 import org.apache.ibatis.javassist.util.proxy.ProxyObject;
 import org.apache.ibatis.logging.LogFactory;
+import org.apache.ibatis.util.MapUtil;
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
+/**
+ * @author michael
+ */
 public class ModifyAttrsRecordProxyFactory {
 
-    private static final ModifyAttrsRecordProxyFactory instance = new ModifyAttrsRecordProxyFactory();
+    protected static final Map<Class<?>, Class<?>> CACHE = new ConcurrentHashMap<>();
+    private static final ModifyAttrsRecordProxyFactory INSTANCE = new ModifyAttrsRecordProxyFactory();
 
     public static ModifyAttrsRecordProxyFactory getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     private ModifyAttrsRecordProxyFactory() {
     }
 
     public <T> T get(Class<T> target) {
-        ProxyFactory factory = new ProxyFactory();
-        factory.setSuperclass(target);
+        Class<?> proxyClass = MapUtil.computeIfAbsent(CACHE, target, aClass -> {
+            ProxyFactory factory = new ProxyFactory();
+            factory.setSuperclass(target);
 
-        Class<?>[] interfaces = Arrays.copyOf(target.getInterfaces(), target.getInterfaces().length + 1);
-        interfaces[interfaces.length - 1] = UpdateWrapper.class;
-        factory.setInterfaces(interfaces);
+            Class<?>[] interfaces = Arrays.copyOf(target.getInterfaces(), target.getInterfaces().length + 1);
+            interfaces[interfaces.length - 1] = UpdateWrapper.class;
+            factory.setInterfaces(interfaces);
 
-
-        final Class<?> proxyClass = factory.createClass();
+            return factory.createClass();
+        });
 
         T proxyObject = null;
         try {
-            proxyObject = (T) proxyClass.newInstance();
+            proxyObject = (T) ClassUtil.newInstance(proxyClass);
             ((ProxyObject) proxyObject).setHandler(new ModifyAttrsRecordHandler());
-        } catch (Throwable e) {
+        } catch (Exception e) {
             LogFactory.getLog(ModifyAttrsRecordProxyFactory.class).error(e.toString(), e);
         }
 
         return proxyObject;
     }
-
-
 }
 
 

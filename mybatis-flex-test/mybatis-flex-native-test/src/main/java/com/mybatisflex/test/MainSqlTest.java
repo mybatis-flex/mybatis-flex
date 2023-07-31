@@ -2,6 +2,7 @@ package com.mybatisflex.test;
 
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
+import com.mybatisflex.core.table.TableManager;
 import com.mybatisflex.core.update.UpdateChain;
 import com.mybatisflex.mapper.ArticleMapper;
 import com.zaxxer.hikari.HikariDataSource;
@@ -12,14 +13,23 @@ public class MainSqlTest {
 
     public static void main(String[] args) {
 
-        Environment environment = new Environment("test", new JdbcTransactionFactory(), new HikariDataSource());
 
-        FlexConfiguration configuration = new FlexConfiguration(environment);
+
+
         FlexGlobalConfig globalConfig = FlexGlobalConfig.getDefaultConfig();
+
+
+        Environment environment = new Environment("test", new JdbcTransactionFactory(), new HikariDataSource());
+        FlexConfiguration configuration = new FlexConfiguration(environment);
         globalConfig.setConfiguration(configuration);
         FlexGlobalConfig.setConfig("test", globalConfig, true);
 
+
         configuration.addMapper(ArticleMapper.class);
+
+
+
+
 
 
 //        ArticleMapper mapper = (ArticleMapper) Proxy.newProxyInstance(MainSqlTest.class.getClassLoader(),
@@ -36,6 +46,9 @@ public class MainSqlTest {
 //            .toSQL();
 //
 //        System.out.println(sql1);
+
+
+        TableManager.setHintTableMapping("tb_article","tb_article1");
 
 
         String sql2 = UpdateChain.of(Article.class)

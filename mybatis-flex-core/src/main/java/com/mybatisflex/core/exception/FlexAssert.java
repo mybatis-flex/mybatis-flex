@@ -16,6 +16,8 @@
 
 package com.mybatisflex.core.exception;
 
+import com.mybatisflex.core.exception.locale.LocalizedFormats;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -23,6 +25,8 @@ import java.util.Map;
  * 断言。
  *
  * @author 王帅
+ * @author michael
+ *
  * @since 2023-07-08
  */
 public final class FlexAssert {
@@ -33,26 +37,27 @@ public final class FlexAssert {
     /**
      * 断言对象不为空，如果为空抛出异常，并指明哪个对象为空。
      *
-     * @param obj     对象
-     * @param message 错误消息
+     * @param obj   对象
+     * @param param 错误消息参数
      * @throws MybatisFlexException 如果对象为空，抛出此异常。
      */
-    public static void notNull(Object obj, String message) {
+    public static void notNull(Object obj, String param) {
         if (obj == null) {
-            throw FlexExceptions.wrap(message);
+            throw FlexExceptions.wrap(LocalizedFormats.OBJECT_NULL, param);
         }
     }
+
 
     /**
      * 断言 Map 集合不为 {@code null} 或者空集合，如果为空则抛出异常，并指明为什么不允许为空集合。
      *
-     * @param map     Map 集合
-     * @param message 错误消息
+     * @param map   Map 集合
+     * @param param 错误消息参数
      * @throws MybatisFlexException 如果集合为空，抛出此异常。
      */
-    public static void notEmpty(Map<?, ?> map, String message) {
+    public static void notEmpty(Map<?, ?> map, String param) {
         if (map == null || map.isEmpty()) {
-            throw FlexExceptions.wrap(message);
+            throw FlexExceptions.wrap(LocalizedFormats.MAP_NULL_OR_EMPTY, param);
         }
     }
 
@@ -60,25 +65,25 @@ public final class FlexAssert {
      * 断言集合不为 {@code null} 或者空集合，如果为空则抛出异常，并指明为什么不允许为空集合。
      *
      * @param collection 集合
-     * @param message    错误消息
+     * @param param      错误消息参数
      * @throws MybatisFlexException 如果集合为空，抛出此异常。
      */
-    public static void notEmpty(Collection<?> collection, String message) {
+    public static void notEmpty(Collection<?> collection, String param) {
         if (collection == null || collection.isEmpty()) {
-            throw FlexExceptions.wrap(message);
+            throw FlexExceptions.wrap(LocalizedFormats.MAP_NULL_OR_EMPTY, param);
         }
     }
 
     /**
      * 断言数组不为 {@code null} 或者空数组，如果为空则抛出异常，并指明为什么不允许为空数组。
      *
-     * @param array   数组
-     * @param message 错误消息
+     * @param array 数组
+     * @param param 错误消息参数
      * @throws MybatisFlexException 如果数组为空，抛出此异常。
      */
-    public static <T> void notEmpty(T[] array, String message) {
+    public static <T> void notEmpty(T[] array, String param) {
         if (array == null || array.length == 0) {
-            throw FlexExceptions.wrap(message);
+            throw FlexExceptions.wrap(param);
         }
     }
 

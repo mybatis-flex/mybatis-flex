@@ -52,7 +52,7 @@ public class EntitySqlProvider {
     public static String insert(Map params, ProviderContext context) {
         Object entity = ProviderUtil.getEntity(params);
 
-        FlexAssert.notNull(entity, "entity can not be null.");
+        FlexAssert.notNull(entity, "entity");
 
         boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
 
@@ -88,7 +88,7 @@ public class EntitySqlProvider {
     public static String insertWithPk(Map params, ProviderContext context) {
         Object entity = ProviderUtil.getEntity(params);
 
-        FlexAssert.notNull(entity, "entity can not be null.");
+        FlexAssert.notNull(entity, "entity");
 
         boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
 
@@ -125,7 +125,7 @@ public class EntitySqlProvider {
     public static String insertBatch(Map params, ProviderContext context) {
         List<Object> entities = ProviderUtil.getEntities(params);
 
-        FlexAssert.notEmpty(entities, "entities can not be null or empty.");
+        FlexAssert.notEmpty(entities, "entities");
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
         for (Object entity : entities) {
@@ -160,7 +160,7 @@ public class EntitySqlProvider {
     public static String deleteById(Map params, ProviderContext context) {
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
-        FlexAssert.notEmpty(primaryValues, "primaryValues can not be null or empty.");
+        FlexAssert.notEmpty(primaryValues, "primaryValues");
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
@@ -182,7 +182,7 @@ public class EntitySqlProvider {
     public static String deleteBatchByIds(Map params, ProviderContext context) {
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
-        FlexAssert.notEmpty(primaryValues, "primaryValues can not be null or empty.");
+        FlexAssert.notEmpty(primaryValues, "primaryValues");
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
@@ -322,7 +322,7 @@ public class EntitySqlProvider {
     public static String selectOneById(Map params, ProviderContext context) {
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
-        FlexAssert.notEmpty(primaryValues, "primaryValues can not be null or empty.");
+        FlexAssert.notEmpty(primaryValues, "primaryValues");
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
@@ -345,7 +345,7 @@ public class EntitySqlProvider {
     public static String selectListByIds(Map params, ProviderContext context) {
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
-        FlexAssert.notEmpty(primaryValues, "primaryValues can not be null or empty.");
+        FlexAssert.notEmpty(primaryValues, "primaryValues");
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 

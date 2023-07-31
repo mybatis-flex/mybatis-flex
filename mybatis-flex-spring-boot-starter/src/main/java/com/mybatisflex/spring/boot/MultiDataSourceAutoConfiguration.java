@@ -16,11 +16,14 @@
 package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.datasource.DataSourceBuilder;
+import com.mybatisflex.core.datasource.DataSourceDecipher;
+import com.mybatisflex.core.datasource.DataSourceManager;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.spring.datasource.DataSourceAdvice;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.aop.Advisor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -37,6 +40,7 @@ import java.util.Map;
 
 /**
  * MyBatis-Flex 多数据源的配置支持。
+ *
  * @author michael
  */
 @ConditionalOnMybatisFlexDatasource()
@@ -47,10 +51,18 @@ import java.util.Map;
     , name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
 public class MultiDataSourceAutoConfiguration {
 
+
     private final Map<String, Map<String, String>> dataSourceProperties;
 
-    public MultiDataSourceAutoConfiguration(MybatisFlexProperties properties) {
+    //数据源解密器
+    protected final DataSourceDecipher dataSourceDecipher;
+
+
+    public MultiDataSourceAutoConfiguration(MybatisFlexProperties properties
+        , ObjectProvider<DataSourceDecipher> dataSourceDecipherProvider
+    ) {
         dataSourceProperties = properties.getDatasource();
+        dataSourceDecipher = dataSourceDecipherProvider.getIfAvailable();
     }
 
     @Bean
@@ -60,6 +72,9 @@ public class MultiDataSourceAutoConfiguration {
         FlexDataSource flexDataSource = null;
 
         if (dataSourceProperties != null && !dataSourceProperties.isEmpty()) {
+
+            DataSourceManager.setDecipher(dataSourceDecipher);
+
             for (Map.Entry<String, Map<String, String>> entry : dataSourceProperties.entrySet()) {
                 DataSource dataSource = new DataSourceBuilder(entry.getValue()).build();
                 if (flexDataSource == null) {

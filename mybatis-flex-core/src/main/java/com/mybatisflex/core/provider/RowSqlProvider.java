@@ -79,7 +79,7 @@ public class RowSqlProvider {
     public static String insertBatchWithFirstRowColumns(Map params) {
         List<Row> rows = ProviderUtil.getRows(params);
 
-        FlexAssert.notEmpty(rows, "rows can not be null or empty.");
+        FlexAssert.notEmpty(rows, "rows");
 
         String tableName = ProviderUtil.getTableName(params);
         String schema = ProviderUtil.getSchemaName(params);
@@ -109,7 +109,7 @@ public class RowSqlProvider {
     public static String deleteById(Map params) {
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
-        FlexAssert.notEmpty(primaryValues, "primaryValue can not be null or empty.");
+        FlexAssert.notEmpty(primaryValues, "primaryValues");
 
         String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
@@ -211,7 +211,7 @@ public class RowSqlProvider {
     public static String updateBatchById(Map params) {
         List<Row> rows = ProviderUtil.getRows(params);
 
-        FlexAssert.notEmpty(rows, "rows can not be null or empty.");
+        FlexAssert.notEmpty(rows, "rows");
 
         String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);

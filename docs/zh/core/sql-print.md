@@ -33,7 +33,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MyBatisFlexConfiguration {
 
-    private static final Logger logger = LoggerFactory.getLogger("mybatis-flex-sql");
+    private static final Logger logger = LoggerFactory
+        .getLogger("mybatis-flex-sql");
+
 
     public MyBatisFlexConfiguration() {
         //开启审计功能
@@ -41,17 +43,42 @@ public class MyBatisFlexConfiguration {
 
         //设置 SQL 审计收集器
         AuditManager.setMessageCollector(auditMessage ->
-                logger.info("{},{}ms", auditMessage.getFullSql(), auditMessage.getElapsedTime())
+            logger.info("{},{}ms", auditMessage.getFullSql()
+                , auditMessage.getElapsedTime())
         );
     }
 }
 ```
 
-## 注意
-在执行以下语句之后执行的 SQL 才会被打印。如果你发现你有些 SQL 没有打印，则需要自行检查 SQL 执行与以下语句执行的先后顺序。
+## MyBatis 自带方案
+
+### 非 Spring 项目
+
+通过 `bootstrap.setLogImpl()` 方法来指定 MyBatis 输出日志：
+
+```java 5
+DataSource dataSource = ...;
+
+MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
+    .setDataSource(dataSource)
+    .setLogImpl(StdOutImpl.class)
+    .addMapper(AccountMapper.class)
+    .start();
 ```
-AuditManager.setAuditEnable(true);
-AuditManager.setMessageCollector(collector);
+
+### SpringBoot 项目
+
+通过自定义 `ConfigurationCustomizer` 来为 `configuration` 配置 `LogImpl`：
+
+```java
+@Configuration
+public class MyConfigurationCustomizer implements ConfigurationCustomizer {
+
+    @Override
+    public void customize(FlexConfiguration configuration) {
+        configuration.setLogImpl(StdOutImpl.class);
+    }
+}
 ```
 
 ## p6spy 方案

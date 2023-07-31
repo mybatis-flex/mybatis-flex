@@ -70,12 +70,12 @@ QueryWrapper query1 = QueryWrapper.create()
 ```sql
 SELECT *
 FROM `tb_account`
-         LEFT JOIN `tb_article` AS `a` ON `tb_account`.`id` = `a`.`account_id`
+         LEFT JOIN `tb_article` AS `a`
+         ON `a`.`is_delete` = 0 and `tb_account`.`id` = `a`.`account_id`
 WHERE `tb_account`.`age` >= 10
   AND `tb_account`.`is_delete` = 0
-  AND `a`.`is_delete` = 0
 ```
-自动添加上 `tb_account.is_delete = 0 AND a.is_delete = 0` 条件。
+在 `left join on` 条件自动添加：`a.is_delete = 0`，并在 where 条件添加上 `tb_account.is_delete = 0`。
 
 示例 2：
 

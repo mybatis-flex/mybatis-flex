@@ -23,14 +23,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.util.MapUtil;
 
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -51,6 +47,7 @@ public class Mappers {
 
     /**
      * 通过 entity Class 获取 Mapper 对象
+     *
      * @param entityClass
      * @param <Entity>
      * @return mapper 对象
@@ -58,7 +55,7 @@ public class Mappers {
     public static <Entity> BaseMapper<Entity> ofEntityClass(Class<Entity> entityClass) {
         Class<?> mapperClass = ENTITY_MAPPER_MAP.get(entityClass);
         if (mapperClass == null) {
-            throw FlexExceptions.wrap("Can not find MapperClass by entity: " + entityClass);
+            throw FlexExceptions.wrap("Can not find MapperClass by entity: " + entityClass.getName());
         }
         return (BaseMapper<Entity>) ofMapperClass(mapperClass);
     }
@@ -79,10 +76,8 @@ public class Mappers {
     }
 
 
-
     static class MapperHandler implements InvocationHandler {
-        private static final Set<String> ignoreMethods = new HashSet<>(Arrays.asList("queryChain","updateChain"));
-        private static final MethodHandles.Lookup lookup = MethodHandles.lookup();
+
         private Class<?> mapperClass;
         private final SqlSessionFactory sqlSessionFactory = FlexGlobalConfig.getDefaultConfig().getSqlSessionFactory();
         private final ExecutorType executorType = FlexGlobalConfig.getDefaultConfig().getConfiguration().getDefaultExecutorType();

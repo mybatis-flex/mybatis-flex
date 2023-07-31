@@ -37,9 +37,9 @@ public class PrimaryKeyLogicDeleteProcessor extends NullableColumnLogicDeletePro
 
     @Override
     public String buildLogicDeletedSet(String logicColumn, TableInfo tableInfo, IDialect dialect) {
-        List<IdInfo> primaryKeyList = tableInfo.getPrimaryKeyList();
-        FlexAssert.notEmpty(primaryKeyList, "Entity must have one primary key.");
-        String column = primaryKeyList.get(0).getColumn();
+        List<IdInfo> primaryKeys = tableInfo.getPrimaryKeyList();
+        FlexAssert.notEmpty(primaryKeys, "primaryKeys");
+        String column = primaryKeys.get(0).getColumn();
         return dialect.wrap(logicColumn) + EQUALS + dialect.wrap(column);
     }
 

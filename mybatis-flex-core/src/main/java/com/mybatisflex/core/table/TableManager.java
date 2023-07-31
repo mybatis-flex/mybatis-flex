@@ -20,6 +20,9 @@ import com.mybatisflex.core.util.StringUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author michael
+ */
 public class TableManager {
 
     private TableManager() {
@@ -28,8 +31,8 @@ public class TableManager {
     private static DynamicTableProcessor dynamicTableProcessor;
     private static DynamicSchemaProcessor dynamicSchemaProcessor;
 
-    private static final ThreadLocal<Map<String, String>> tableNameMappingTL = ThreadLocal.withInitial(HashMap::new);
-    private static final ThreadLocal<Map<String, String>> schemaMappingTL = ThreadLocal.withInitial(HashMap::new);
+    private static final ThreadLocal<Map<String, String>> tableNameMappingTL = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, String>> schemaMappingTL = new ThreadLocal<>();
 
 
     public static DynamicTableProcessor getDynamicTableProcessor() {
@@ -49,7 +52,12 @@ public class TableManager {
     }
 
     public static void setHintTableMapping(String tableName, String mappingTable) {
-        tableNameMappingTL.get().put(tableName, mappingTable);
+        Map<String, String> hintTables = tableNameMappingTL.get();
+        if (hintTables == null) {
+            hintTables = new HashMap<>();
+            tableNameMappingTL.set(hintTables);
+        }
+        hintTables.put(tableName, mappingTable);
     }
 
     public static String getHintTableMapping(String tableName) {
@@ -57,7 +65,12 @@ public class TableManager {
     }
 
     public static void setHintSchemaMapping(String schema, String mappingSchema) {
-        schemaMappingTL.get().put(schema, mappingSchema);
+        Map<String, String> hintTables = schemaMappingTL.get();
+        if (hintTables == null) {
+            hintTables = new HashMap<>();
+            schemaMappingTL.set(hintTables);
+        }
+        hintTables.put(schema, mappingSchema);
     }
 
     public static String getHintSchemaMapping(String schema) {
@@ -66,47 +79,45 @@ public class TableManager {
 
 
     public static String getRealTable(String tableName) {
+
+        Map<String, String> mapping = tableNameMappingTL.get();
+        if (mapping != null) {
+            String dynamicTableName = mapping.get(tableName);
+            if (StringUtil.isNotBlank(dynamicTableName)) {
+                return dynamicTableName;
+            }
+        }
+
         if (dynamicTableProcessor == null) {
             return tableName;
         }
 
-        Map<String, String> mapping = tableNameMappingTL.get();
-
-        String dynamicTableName = mapping.get(tableName);
-        if (StringUtil.isNotBlank(dynamicTableName)) {
-            return dynamicTableName;
-        }
-
-        dynamicTableName = dynamicTableProcessor.process(tableName);
-        mapping.put(tableName, dynamicTableName);
-        return dynamicTableName;
+        String dynamicTableName = dynamicTableProcessor.process(tableName);
+        return StringUtil.isNotBlank(dynamicTableName) ? dynamicTableName : tableName;
     }
 
 
     public static String getRealSchema(String schema) {
+        Map<String, String> mapping = schemaMappingTL.get();
+        if (mapping != null) {
+            String dynamicSchema = mapping.get(schema);
+            if (StringUtil.isNotBlank(dynamicSchema)) {
+                return dynamicSchema;
+            }
+        }
+
         if (dynamicSchemaProcessor == null) {
             return schema;
         }
 
-        Map<String, String> mapping = schemaMappingTL.get();
-        String dynamiSchema = mapping.get(schema);
-        if (StringUtil.isNotBlank(dynamiSchema)) {
-            return dynamiSchema;
-        }
-
-        dynamiSchema = dynamicSchemaProcessor.process(schema);
-        mapping.put(schema, dynamiSchema);
-        return dynamiSchema;
+        String dynamicSchema = dynamicSchemaProcessor.process(schema);
+        return StringUtil.isNotBlank(dynamicSchema) ? dynamicSchema : schema;
     }
 
 
-//    public static void clear() {
-//        if (dynamicTableProcessor != null) {
-//            tableNameMappingTL.remove();
-//        }
-//        if (dynamicSchemaProcessor != null) {
-//            schemaMappingTL.remove();
-//        }
-//    }
+    public static void clear() {
+        tableNameMappingTL.remove();
+        schemaMappingTL.remove();
+    }
 
 }

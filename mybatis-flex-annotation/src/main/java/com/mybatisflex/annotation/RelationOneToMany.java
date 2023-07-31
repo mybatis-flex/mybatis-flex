@@ -116,7 +116,7 @@ public @interface RelationOneToMany {
      *
      * @return 数据量
      */
-    int limit() default 0;
+    long limit() default 0;
 
     /**
      * 默认使用哪个数据源，若系统找不到该指定的数据源时，默认使用第一个数据源。

@@ -356,17 +356,17 @@ public abstract class QueryModel<T extends QueryModel<T>> {
         return new OrderByBuilder<>((T) this, column);
     }
 
-    public T limit(Integer rows) {
+    public T limit(Number rows) {
         queryWrapper().limit(rows);
         return (T) this;
     }
 
-    public T offset(Integer offset) {
+    public T offset(Number offset) {
         queryWrapper().offset(offset);
         return (T) this;
     }
 
-    public T limit(Integer offset, Integer rows) {
+    public T limit(Number offset, Number rows) {
         queryWrapper().limit(offset, rows);
         return (T) this;
     }

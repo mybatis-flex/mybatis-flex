@@ -25,7 +25,9 @@ import java.util.Map;
 
 class ModifyAttrsRecordHandler implements MethodHandler {
 
-    //更新内容
+    /**
+     * 更新的字段和内容
+     */
     private final Map<String, Object> updates = new LinkedHashMap<>();
 
     public Map<String, Object> getUpdates() {
