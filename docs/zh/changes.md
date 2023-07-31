@@ -17,7 +17,7 @@
 - 优化：修改 getPropertySimpleType 方法实现， 防止出现找不到类的问题，感谢 @dcrpp
 - 优化：重构将 assertAreNotNull 从 FlexExceptions 移动到 FlexAssert 中，感谢 @Suomm
 - 优化：重构 ActiveRecord 的一些方法，避免被 JSON 框架解析，感谢 @Suomm
-- 优化：BaseMapper.updateNumberAddByQuery() 为删除，在未来 v1.6.0 将会从项目里删除
+- 优化：标记 BaseMapper.updateNumberAddByQuery() 为删除，在未来 v1.6.0 将会从项目里删除
 - 优化：Maven 的 "artifact xxx has been relocated" 警告的问题，感谢 [@sppan24](https://github.com/sppan24)
 - 优化：优化主键逻辑删除处理器逻辑，感谢 @Suomm
 - 修复：代码生成器多次调用是出错的问题，感谢 @Suomm
@@ -33,9 +33,6 @@
 - 文档：添加关于 ActiveRecord 关联查询的相关文档，感谢 @Suomm
 - 文档：更新内置逻辑删除处理器文档，感谢 @Suomm
 - 文档：修改 Query 查询的代码示例中的 Page 定义错误的问题，感谢 @eafonyoung
-
-
-
 
 
 

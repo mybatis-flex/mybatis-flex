@@ -16,6 +16,7 @@
 package com.mybatisflex.core;
 
 import com.mybatisflex.core.datasource.FlexDataSource;
+import com.mybatisflex.core.exception.FlexAssert;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
 import com.mybatisflex.core.mybatis.Mappers;
@@ -92,9 +93,8 @@ public class MybatisFlexBootstrap {
 
     public MybatisFlexBootstrap start() {
         if (started.compareAndSet(false, true)) {
-            if (dataSource == null) {
-                throw new IllegalStateException("dataSource can not be null.");
-            }
+
+            FlexAssert.notNull(dataSource,"dataSource");
 
             //init configuration
             if (configuration == null) {

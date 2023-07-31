@@ -654,19 +654,27 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper limit(Integer rows) {
-        setLimitRows(rows);
+    public QueryWrapper limit(Number rows) {
+        if (rows != null) {
+            setLimitRows(rows.longValue());
+        }else {
+            setLimitRows(null);
+        }
         return this;
     }
 
-    public QueryWrapper offset(Integer offset) {
-        setLimitOffset(offset);
+    public QueryWrapper offset(Number offset) {
+        if (offset!= null) {
+            setLimitOffset(offset.longValue());
+        }else {
+            setLimitOffset(null);
+        }
         return this;
     }
 
-    public QueryWrapper limit(Integer offset, Integer rows) {
-        setLimitOffset(offset);
-        setLimitRows(rows);
+    public QueryWrapper limit(Number offset, Number rows) {
+        offset(offset);
+        limit(rows);
         return this;
     }
 

@@ -44,12 +44,12 @@ public class Page<T> implements Serializable {
     /**
      * 当前页码。
      */
-    private int pageNumber = 1;
+    private long pageNumber = 1;
 
     /**
      * 每页数据数量。
      */
-    private int pageSize = FlexGlobalConfig.getDefaultConfig().getDefaultPageSize();
+    private long pageSize = FlexGlobalConfig.getDefaultConfig().getDefaultPageSize();
 
     /**
      * 总页数。
@@ -74,7 +74,7 @@ public class Page<T> implements Serializable {
      * @param <T>        数据类型
      * @return 分页对象
      */
-    public static <T> Page<T> of(int pageNumber, int pageSize) {
+    public static <T> Page<T> of(Number pageNumber, Number pageSize) {
         return new Page<>(pageNumber, pageSize);
     }
 
@@ -87,7 +87,7 @@ public class Page<T> implements Serializable {
      * @param <T>        数据类型
      * @return 分页对象
      */
-    public static <T> Page<T> of(int pageNumber, int pageSize, long totalRow) {
+    public static <T> Page<T> of(Number pageNumber, Number pageSize, Number totalRow) {
         return new Page<>(pageNumber, pageSize, totalRow);
     }
 
@@ -103,7 +103,7 @@ public class Page<T> implements Serializable {
      * @param pageNumber 当前页码
      * @param pageSize   每页数据数量
      */
-    public Page(int pageNumber, int pageSize) {
+    public Page(Number pageNumber, Number pageSize) {
         this.setPageNumber(pageNumber);
         this.setPageSize(pageSize);
     }
@@ -115,7 +115,7 @@ public class Page<T> implements Serializable {
      * @param pageSize   每页数据数量
      * @param totalRow   总数居数量
      */
-    public Page(int pageNumber, int pageSize, long totalRow) {
+    public Page(Number pageNumber, Number pageSize, Number totalRow) {
         this.setPageNumber(pageNumber);
         this.setPageSize(pageSize);
         this.setTotalRow(totalRow);
@@ -129,7 +129,7 @@ public class Page<T> implements Serializable {
      * @param pageSize   每页数据数量
      * @param totalRow   总数居数量
      */
-    public Page(List<T> records, int pageNumber, int pageSize, long totalRow) {
+    public Page(List<T> records, Number pageNumber, Number pageSize, Number totalRow) {
         this.setRecords(records);
         this.setPageNumber(pageNumber);
         this.setPageSize(pageSize);
@@ -162,7 +162,7 @@ public class Page<T> implements Serializable {
      *
      * @return 页码
      */
-    public int getPageNumber() {
+    public long getPageNumber() {
         return pageNumber;
     }
 
@@ -171,11 +171,11 @@ public class Page<T> implements Serializable {
      *
      * @param pageNumber 页码
      */
-    public void setPageNumber(int pageNumber) {
-        if (pageNumber < 1) {
+    public void setPageNumber(Number pageNumber) {
+        if (pageNumber.longValue() < 1) {
             throw new IllegalArgumentException("pageNumber must greater than or equal 1，current value is: " + pageNumber);
         }
-        this.pageNumber = pageNumber;
+        this.pageNumber = pageNumber.longValue();
     }
 
     /**
@@ -183,7 +183,7 @@ public class Page<T> implements Serializable {
      *
      * @return 每页数据数量
      */
-    public int getPageSize() {
+    public long getPageSize() {
         return pageSize;
     }
 
@@ -192,11 +192,11 @@ public class Page<T> implements Serializable {
      *
      * @param pageSize 每页数据数量
      */
-    public void setPageSize(int pageSize) {
-        if (pageSize < 0) {
+    public void setPageSize(Number pageSize) {
+        if (pageSize.longValue() < 0) {
             throw new IllegalArgumentException("pageSize must greater than or equal 0，current value is: " + pageSize);
         }
-        this.pageSize = pageSize;
+        this.pageSize = pageSize.longValue();
         this.calcTotalPage();
     }
 
@@ -232,8 +232,8 @@ public class Page<T> implements Serializable {
      *
      * @param totalRow 数据总数
      */
-    public void setTotalRow(long totalRow) {
-        this.totalRow = totalRow;
+    public void setTotalRow(Number totalRow) {
+        this.totalRow = totalRow.longValue();
         this.calcTotalPage();
     }
 
@@ -280,7 +280,7 @@ public class Page<T> implements Serializable {
      *
      * @return 偏移量
      */
-    public int offset() {
+    public long offset() {
         return getPageSize() * (getPageNumber() - 1);
     }
 

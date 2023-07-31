@@ -39,7 +39,7 @@ public interface LimitOffsetProcessor {
      * @param limitRows    用户传入的 limit 参数 可能为 null
      * @param limitOffset  用户传入的 offset 参数，可能为 null
      */
-    StringBuilder process(IDialect dialect, StringBuilder sql, QueryWrapper queryWrapper, Integer limitRows, Integer limitOffset);
+    StringBuilder process(IDialect dialect, StringBuilder sql, QueryWrapper queryWrapper, Long limitRows, Long limitOffset);
 
 
     /**
@@ -110,7 +110,7 @@ public interface LimitOffsetProcessor {
     LimitOffsetProcessor SQLSERVER_2005 = (dialect, sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null) {
             if (limitOffset == null) {
-                limitOffset = 0;
+                limitOffset = 0L;
             }
 
             List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
@@ -196,7 +196,7 @@ public interface LimitOffsetProcessor {
     LimitOffsetProcessor ORACLE = (dialect, sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null) {
             if (limitOffset == null) {
-                limitOffset = 0;
+                limitOffset = 0L;
             }
             StringBuilder newSql = new StringBuilder("SELECT * FROM (SELECT TEMP_DATAS.*, ROWNUM RN FROM (");
             newSql.append(sql);

@@ -167,19 +167,19 @@ public class CPI {
     }
 
 
-    public static Integer getLimitOffset(QueryWrapper queryWrapper) {
+    public static Long getLimitOffset(QueryWrapper queryWrapper) {
         return queryWrapper.getLimitOffset();
     }
 
-    public static void setLimitOffset(QueryWrapper queryWrapper, Integer limitOffset) {
+    public static void setLimitOffset(QueryWrapper queryWrapper, Long limitOffset) {
         queryWrapper.setLimitOffset(limitOffset);
     }
 
-    public static Integer getLimitRows(QueryWrapper queryWrapper) {
+    public static Long getLimitRows(QueryWrapper queryWrapper) {
         return queryWrapper.getLimitRows();
     }
 
-    public static void setLimitRows(QueryWrapper queryWrapper, Integer limitRows) {
+    public static void setLimitRows(QueryWrapper queryWrapper, Long limitRows) {
         queryWrapper.setLimitRows(limitRows);
     }
 

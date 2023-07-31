@@ -16,7 +16,9 @@
 package com.mybatisflex.core.provider;
 
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.exception.FlexAssert;
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.TableInfo;
@@ -55,7 +57,7 @@ class ProviderUtil {
     public static String[] getPrimaryKeys(Map params) {
         String primaryKey = (String) params.get(FlexConsts.PRIMARY_KEY);
         if (StringUtil.isBlank(primaryKey)) {
-            throw FlexExceptions.wrap("primaryKey can not be null or blank.");
+            throw FlexExceptions.wrap(LocalizedFormats.OBJECT_NULL_OR_BLANK, "primaryKey");
         }
         String[] primaryKeys = primaryKey.split(",");
         for (int i = 0; i < primaryKeys.length; i++) {
@@ -80,9 +82,7 @@ class ProviderUtil {
 
     public static QueryWrapper getQueryWrapper(Map params) {
         Object queryWrapper = params.get(FlexConsts.QUERY);
-        if (queryWrapper == null) {
-            throw new IllegalArgumentException("queryWrapper can not be null.");
-        }
+        FlexAssert.notNull(queryWrapper,"queryWrapper");
         return (QueryWrapper) queryWrapper;
     }
 

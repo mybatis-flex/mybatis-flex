@@ -25,6 +25,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.DbChain;
 import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
+import com.mybatisflex.mapper.ArticleMapper;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,11 +36,13 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
+import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
 
 
 public class AccountTester {
 
     static AccountMapper accountMapper;
+    static ArticleMapper articleMapper;
 
     @BeforeClass
     public static void init() {
@@ -53,6 +56,7 @@ public class AccountTester {
             .setDataSource(dataSource)
             .setLogImpl(StdOutImpl.class)
             .addMapper(AccountMapper.class)
+            .addMapper(ArticleMapper.class)
             .start();
 
         //开启审计功能
@@ -64,6 +68,7 @@ public class AccountTester {
 
 
         accountMapper = bootstrap.getMapper(AccountMapper.class);
+        articleMapper = bootstrap.getMapper(ArticleMapper.class);
     }
 
     @Test
@@ -98,6 +103,16 @@ public class AccountTester {
         QueryWrapper queryWrapper = QueryWrapper.create();
         queryWrapper.where(Account::getId).ge(1);
         List<Account> accounts = accountMapper.selectListByQuery(queryWrapper);
+        System.out.println(accounts);
+    }
+
+    @Test
+    public void testLeftJoinForLogicDelete() {
+        QueryWrapper queryWrapper = QueryWrapper.create();
+        queryWrapper.from(ARTICLE)
+            .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+            .where(ARTICLE.ID.ge(1));
+        List<Article> accounts = articleMapper.selectListByQuery(queryWrapper);
         System.out.println(accounts);
     }
 

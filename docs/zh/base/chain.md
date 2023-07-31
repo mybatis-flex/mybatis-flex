@@ -187,7 +187,7 @@ public class ArticleVo {
 ArticleVo articleVo = articleService.queryChain()
     .select(
         ARTICLE.ALL_COLUMNS,
-        max(ARTICLE.comments).as(ArticleVo::maxCommments)
+        max(ARTICLE.comments).as(ArticleVo::maxComments)
     ).from(ARTICLE)
     .where(ARTICLE.ID.ge(100))
     .limit(1)
