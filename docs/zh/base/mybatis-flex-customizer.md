@@ -2,7 +2,7 @@
 
 `MyBatisFlexCustomizer` 是 MyBatis-Flex 为了方便 `SpringBoot` 用户对 MyBatis-Flex 进行初始化而产生的接口。
 
-通过在 `@Configuration` 去实现 `MyBatisFlexCustomizer` 接口，我们可以对 MyBatis-Flex 进行一些列的初始化配置。这些配置可能包含如下的内容：
+通过在 `@Configuration` 去实现 `MyBatisFlexCustomizer` 接口，我们可以对 MyBatis-Flex 进行一系列的初始化配置。这些配置可能包含如下的内容：
 
 - 1、FlexGlobalConfig 的全局配置
 - 2、自定义主键生成器
