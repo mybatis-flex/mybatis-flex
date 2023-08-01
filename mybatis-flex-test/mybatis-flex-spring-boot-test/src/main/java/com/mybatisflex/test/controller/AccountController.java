@@ -60,7 +60,7 @@ public class AccountController {
 //        return myAccountMapper.selectByName(name);
 
         QueryWrapper qw = QueryWrapper.create()
-//            .where(Account::getAge).eq("18")
+            .where(Account::getAge).eq(18)
             .and(Account::getId).ge(0);
 
         Page<AccountDto> accountPage = myAccountMapper.xmlPaginate("selectByName", Page.of(1, 10), qw);
