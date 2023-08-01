@@ -1,5 +1,5 @@
 name: Bug 反馈
-description: 当您在代码中发现了一个 Bug，导致应用崩溃或抛出异常，或者有一个组件存在问题，或者某些地方看起来不对劲。
+description: 在代码中发现了一个本项目的 Bug，导致应用崩溃或抛出异常
 title: "[Bug]: "
 labels: [ "bug" ]
 body:
@@ -35,7 +35,7 @@ body:
         attributes:
             label: 截图或视频：
             description: 如果可以的话，上传任何关于 Bug 的截图。
-            value: |
+            placeholder: |
                 [在这里上传图片]
     -   type: input
         id: version
