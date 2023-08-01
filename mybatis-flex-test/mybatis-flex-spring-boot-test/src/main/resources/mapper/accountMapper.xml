@@ -19,7 +19,11 @@
 
     <!-- selectByName -->
     <select id="selectByName" resultType="com.mybatisflex.test.model.AccountDto">
-        select * from `tb_account` where `user_name` = #{name}
+        select * from `tb_account` ${qwSql} limit ${pageOffset}, ${pageSize}
+    </select>
+
+    <select id="selectByName_COUNT" resultType="long">
+        select count(*) from `tb_account` ${qwSql}
     </select>
 
 </mapper>

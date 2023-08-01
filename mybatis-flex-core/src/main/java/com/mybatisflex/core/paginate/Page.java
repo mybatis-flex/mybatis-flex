@@ -193,7 +193,7 @@ public class Page<T> implements Serializable {
      * @param pageSize 每页数据数量
      */
     public void setPageSize(Number pageSize) {
-        if (pageSize.longValue() < 0) {
+        if (pageSize == null || pageSize.longValue() < 0) {
             throw new IllegalArgumentException("pageSize must greater than or equal 0，current value is: " + pageSize);
         }
         this.pageSize = pageSize.longValue();
@@ -233,7 +233,7 @@ public class Page<T> implements Serializable {
      * @param totalRow 数据总数
      */
     public void setTotalRow(Number totalRow) {
-        this.totalRow = totalRow.longValue();
+        this.totalRow = totalRow == null ? INIT_VALUE : totalRow.longValue();
         this.calcTotalPage();
     }
 
