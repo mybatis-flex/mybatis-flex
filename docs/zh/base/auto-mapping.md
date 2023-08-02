@@ -119,6 +119,7 @@ QueryChain.of(accountMapper)
         max(ACCOUNT.AGE).as("maxAge"),
         avg(ACCOUNT.AGE).as("avgAge")
     ).where(ACCOUNT.ID.ge(100))
+    .groupBy(ACCOUNT.AGE)
     .list();
 ```
 或者：
@@ -130,6 +131,7 @@ QueryChain.of(accountMapper)
         max(ACCOUNT.AGE).as("max_age"),
         avg(ACCOUNT.AGE).as("avg_age")
     ).where(ACCOUNT.ID.ge(100))
+    .groupBy(ACCOUNT.AGE)
     .list();
 ```
 
@@ -142,6 +144,7 @@ QueryChain.of(accountMapper)
         max(ACCOUNT.AGE).as(Account::getMaxAge),
         avg(ACCOUNT.AGE).as(Account::getAvgAge)
     ).where(ACCOUNT.ID.ge(100))
+    .groupBy(Account::getAge)
     .list();
 ```
 
