@@ -111,9 +111,9 @@ const {Layout} = DefaultTheme
             <div class="banner">
                 <a href="http://www.codeformat.cn" target="_blank"><img src="/assets/images/ad/code-format.png"></a>
             </div>
-          <div class="banner">
-            虚以待位
-          </div>
+            <div class="banner">
+                <a href="https://gitee.com/sdyunze/iotlink" target="_blank"><img src="/assets/images/ad/iotlink_20240802.png"></a>
+            </div>
           <div class="banner">
             虚以待位
           </div>
