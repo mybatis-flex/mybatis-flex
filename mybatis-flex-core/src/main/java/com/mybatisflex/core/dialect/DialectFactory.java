@@ -18,6 +18,7 @@ package com.mybatisflex.core.dialect;
 
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
+import com.mybatisflex.core.dialect.impl.DmDialect;
 import com.mybatisflex.core.dialect.impl.OracleDialect;
 import com.mybatisflex.core.util.ObjectUtil;
 import org.apache.ibatis.util.MapUtil;
@@ -109,6 +110,7 @@ public class DialectFactory {
             case CSIIDB:
                 return new CommonsDialectImpl(KeywordWrap.BACK_QUOTE, LimitOffsetProcessor.MYSQL);
             case DM:
+                return new DmDialect();
             case ORACLE:
                 return new OracleDialect();
             case GAUSS:
