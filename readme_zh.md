@@ -22,7 +22,7 @@
 
 ## QQ 群
 
-群号： 850176767
+群号： 131665923
 
 ![](./docs/assets/images/qq_group.png)
 
@@ -612,7 +612,7 @@ public class Account {
 
 ## 还有问题？
 
-加入 QQ 交流群： 850176767
+加入 QQ 交流群： 131665923
 
 ![](./docs/assets/images/qq_group.png)
 
