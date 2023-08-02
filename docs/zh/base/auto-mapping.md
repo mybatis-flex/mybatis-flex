@@ -155,6 +155,7 @@ select tb_account.*
      , max(tb_account.age) as maxAge
      , avg(tb_account.age) as avgAge
 where tb_account.id >= 100
+group by tb_account.age
 ```
 
 
