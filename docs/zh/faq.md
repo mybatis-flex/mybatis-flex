@@ -1,5 +1,27 @@
 # 常见问题
 
+## MyBatis-Flex 没有启动或者启动出错怎么办？
+
+正常情况下，MyBatis-Flex 在启动时，会在控制台打印如下 Banner 信息，包含版本与官方网址，如果在项目启动中没有发现 MyBatis-Flex 的 Banner 打印，那就说明 MyBatis-Flex 没有被正常加载。
+
+```txt
+  __  __       _           _   _       _____ _
+ |  \/  |_   _| |__   __ _| |_(_)___  |  ___| | _____  __
+ | |\/| | | | | '_ \ / _` | __| / __| | |_  | |/ _ \ \/ /
+ | |  | | |_| | |_) | (_| | |_| \__ \ |  _| | |  __/>  <
+ |_|  |_|\__, |_.__/ \__,_|\__|_|___/ |_|   |_|\___/_/\_\
+         |___/ v1.5.4 https://mybatis-flex.com
+```
+
+需要做如下排查：
+
+- 1、是否添加了数据源（Druid、HikariCP 等）依赖，或者添加了错误的数据源依赖版本。比如 SpringBoot v2.x 使用 HikariCP 时，应该是 HikariCP 的 4.x 版本。而 SpringBoot v3.x 应该使用
+  HikariCP 的 5.x 版本。
+- 2、是否主动添加了 `mybatis-plus-boot-starter` 的依赖，导致版本不匹配。使用 SpringBoot 的情况下，应该引用 `mybatis-flex-spring-boot-starter`
+  就可以了，不需要再添加其他 MyBatis 依赖。
+- 3、是否与 `mybatis-plus-boot-starter` 共用，使 MyBatis 被优先初始化，而导致 MyBatis-Flex 没有被加载。
+- 4、是否添加了 `pagehelper-spring-boot-starter` 依赖，导致传递了 `mybatis-plus-boot-starter` 依赖。如还想继续使用 pagehelper 插件，点击 [这里](#与-pagehelper-集成出现错误) 查看解决方案。
+
 ## 示例中的 AccountMapper 和 "ACCOUNT" 在哪里，报错了。
 
 MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的。
@@ -36,14 +58,6 @@ in alimaven (http://maven.aliyun.com/nexus/content/groups/public/)
     <url>https://mirrors.huaweicloud.com/repository/maven/</url>
 </mirror>
 ```
-
-## 启动出错？目前社区反馈有如下几个错误原因
-
-- 1、添加了错误的数据源依赖版本，比如 SpringBoot v2.x 使用 HikariCP 时，应该是 HikariCP 的 4.x 版本。而 SpringBoot v3.x 应该使用
-  HikariCP 的 5.x 版本。
-- 2、主动添加了 MyBatis 或者 `mybatis-spring-boot-starter` 的依赖，导致版本不匹配。使用 SpringBoot
-  的情况下，应该引用 `mybatis-flex-spring-boot-starter` 就可以了，不需要再添加其他 MyBatis 依赖。
-- 3、使用了 `MyBatis-Plus` 或者 `pagehelper-spring-boot-starter` 而被这些框架优先初始化 MyBatis， MyBatis-Flex 未得到初始化。
 
 ## SpringBoot 项目，启动报错 Property 'sqlSessionFactory' or 'sqlSessionTemplate' are required
 
@@ -182,11 +196,11 @@ public class MyConfigurationCustomizer implements ConfigurationCustomizer {
 public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
     SqlSessionFactoryBean factoryBean = new FlexSqlSessionFactoryBean();
     factoryBean.setDataSource(dataSource);
-    
+
     // 在这里配置
     FlexConfiguration configuration = new FlexConfiguration();
     configuration.setLogImpl(StdOutImpl.class);
-    
+
     factoryBean.setConfiguration(configuration);
     return factoryBean.getObject();
 }
