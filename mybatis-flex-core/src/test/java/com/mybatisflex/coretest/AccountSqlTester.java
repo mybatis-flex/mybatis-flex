@@ -179,9 +179,7 @@ public class AccountSqlTester {
             .where(ACCOUNT.ID.ge(100))
             .and(column("aaa").in("michael", "aaa"));
 
-        IDialect dialect = new CommonsDialectImpl();
-        String sql = dialect.forSelectByQuery(queryWrapper);
-        System.out.println(sql);
+        System.out.println(queryWrapper.toSQL());
     }
 
 

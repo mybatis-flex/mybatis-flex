@@ -108,41 +108,70 @@ public class SqlUtil {
      * @return 完整的 sql
      */
     public static String replaceSqlParams(String sql, Object[] params) {
-        if (params != null && params.length > 0) {
-            for (Object value : params) {
-                // null
-                if (value == null) {
-                    sql = sql.replaceFirst("\\?", "null");
+        if (params == null || params.length == 0) {
+            return sql;
+        }
+
+        StringBuilder sqlBuilder = new StringBuilder();
+        char quote = 0;
+        int index = 0;
+        for (int i = 0; i < sql.length(); ++i) {
+            char ch = sql.charAt(i);
+            if (ch == '\'') {
+                if (quote == 0) {
+                    quote = ch;
+                } else if (quote == '\'') {
+                    quote = 0;
                 }
-                // number
-                else if (value instanceof Number || value instanceof Boolean) {
-                    sql = sql.replaceFirst("\\?", value.toString());
-                }
-                // array
-                else if (ClassUtil.isArray(value.getClass())) {
-                    StringJoiner joiner = new StringJoiner(",");
-                    for (int i = 0; i < Array.getLength(value); i++) {
-                        joiner.add(String.valueOf(Array.get(value, i)));
-                    }
-                    sql = sql.replaceFirst("\\?", "[" + joiner + "]");
-                }
-                // other
-                else {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("'");
-                    if (value instanceof Date) {
-                        sb.append(DateUtil.toDateTimeString((Date) value));
-                    } else if (value instanceof LocalDateTime) {
-                        sb.append(DateUtil.toDateTimeString(DateUtil.toDate((LocalDateTime) value)));
-                    } else {
-                        sb.append(value);
-                    }
-                    sb.append("'");
-                    sql = sql.replaceFirst("\\?", Matcher.quoteReplacement(sb.toString()));
+            } else if (ch == '"') {
+                if (quote == 0) {
+                    quote = ch;
+                } else if (quote == '"') {
+                    quote = 0;
                 }
             }
+            if (quote == 0 && ch == '?' && index < params.length) {
+                sqlBuilder.append(getParamString(params, index++));
+            } else {
+                sqlBuilder.append(ch);
+            }
         }
-        return sql;
+
+        return sqlBuilder.toString();
+    }
+
+
+    private static String getParamString(Object[] params, int index) {
+        Object value = params[index];
+        if (value == null) {
+            return "null";
+        }
+        // number
+        else if (value instanceof Number || value instanceof Boolean) {
+            return value.toString();
+        }
+        // array
+        else if (ClassUtil.isArray(value.getClass())) {
+            StringJoiner joiner = new StringJoiner(",", "[", "]");
+            for (int i = 0; i < Array.getLength(value); i++) {
+                joiner.add(String.valueOf(Array.get(value, i)));
+            }
+            return joiner.toString();
+        }
+        // other
+        else {
+            StringBuilder sb = new StringBuilder();
+            sb.append("'");
+            if (value instanceof Date) {
+                sb.append(DateUtil.toDateTimeString((Date) value));
+            } else if (value instanceof LocalDateTime) {
+                sb.append(DateUtil.toDateTimeString(DateUtil.toDate((LocalDateTime) value)));
+            } else {
+                sb.append(value);
+            }
+            sb.append("'");
+            return Matcher.quoteReplacement(sb.toString());
+        }
     }
 
 
