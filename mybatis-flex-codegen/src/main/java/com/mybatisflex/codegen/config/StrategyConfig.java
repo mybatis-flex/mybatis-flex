@@ -95,7 +95,7 @@ public class StrategyConfig {
             ignoreColumns = new HashSet<>();
         }
         for (String column : columns) {
-            if (column != null && column.trim().length() > 0) {
+            if (column != null && !column.trim().isEmpty()) {
                 ignoreColumns.add(column.trim().toLowerCase());
             }
         }
@@ -103,19 +103,14 @@ public class StrategyConfig {
     }
 
     /**
-     * 设置要生成的模式
-     *
-     * @return
+     * 设置要生成的模式。
      */
     public String getGenerateSchema() {
         return generateSchema;
     }
 
     /**
-     * 获取要生成的模式
-     *
-     * @param generateSchema
-     * @return
+     * 获取要生成的模式。
      */
     public StrategyConfig setGenerateSchema(String generateSchema) {
         this.generateSchema = generateSchema;
@@ -209,7 +204,7 @@ public class StrategyConfig {
         }
 
         for (String table : tables) {
-            if (table != null && table.trim().length() > 0) {
+            if (table != null && !table.trim().isEmpty()) {
                 generateTables.add(table.trim());
             }
         }
@@ -226,7 +221,7 @@ public class StrategyConfig {
         }
 
         for (String table : tables) {
-            if (table != null && table.trim().length() > 0) {
+            if (table != null && !table.trim().isEmpty()) {
                 unGenerateTables.add(table.trim());
             }
         }

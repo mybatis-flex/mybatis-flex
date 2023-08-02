@@ -21,15 +21,15 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-        </dependency>
-
-
-        <dependency>
             <groupId>com.mybatis-flex</groupId>
-            <artifactId>mybatis-flex-spring</artifactId>
+            <artifactId>mybatis-flex-core</artifactId>
             <version>${mybatis-flex.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.mybatis-flex</groupId>
+                    <artifactId>mybatis-flex-processor</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
@@ -99,6 +99,7 @@
             <artifactId>swagger-annotations</artifactId>
             <version>1.6.11</version>
             <optional>true</optional>
+            <scope>test</scope>
         </dependency>
 
 
@@ -112,10 +113,37 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
+            <optional>true</optional>
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-spring</artifactId>
+            <version>${mybatis-flex.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.mybatis-flex</groupId>
+                    <artifactId>mybatis-flex-core</artifactId>
+                </exclusion>
+            </exclusions>
+            <optional>true</optional>
+            <scope>test</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-solon-plugin</artifactId>
+            <version>${mybatis-flex.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.mybatis-flex</groupId>
+                    <artifactId>mybatis-flex-core</artifactId>
+                </exclusion>
+            </exclusions>
+            <optional>true</optional>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
