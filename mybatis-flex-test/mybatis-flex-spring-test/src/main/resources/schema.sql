@@ -5,3 +5,16 @@ CREATE TABLE IF NOT EXISTS `tb_account`
     `age` Integer,
     `birthday` DATETIME
 );
+
+CREATE TABLE IF NOT EXISTS `tb_class`
+(
+    `id`     INTEGER PRIMARY KEY,
+    `user_id`  Integer NOT NULL,
+    `class_name` VARCHAR(100)
+);
+
+CREATE TABLE IF NOT EXISTS `tb_user`
+(
+    `id`     INTEGER PRIMARY KEY,
+    `name` VARCHAR(100)
+);
