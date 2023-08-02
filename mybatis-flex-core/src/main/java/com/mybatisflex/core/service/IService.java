@@ -418,7 +418,7 @@ public interface IService<T> {
      * @return {@code true} 数据存在，{@code false} 数据不存在。
      */
     default boolean exists(QueryWrapper query) {
-        return SqlUtil.toBool(count(query));
+        return CollectionUtil.isNotEmpty(getMapper().selectListByQuery(query.limit(1)));
     }
 
     /**
@@ -428,7 +428,7 @@ public interface IService<T> {
      * @return {@code true} 数据存在，{@code false} 数据不存在。
      */
     default boolean exists(QueryCondition condition) {
-        return SqlUtil.toBool(count(condition));
+        return CollectionUtil.isNotEmpty(getMapper().selectListByCondition(condition,1L));
     }
 
     /**
