@@ -196,5 +196,7 @@ public enum DbType {
         this.remarks = remarks;
     }
 
-
+    public String getName() {
+        return name;
+    }
 }

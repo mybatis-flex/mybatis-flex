@@ -29,6 +29,9 @@ import com.mybatisflex.core.util.*;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.cursor.Cursor;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.io.Serializable;
 import java.util.*;
@@ -364,6 +367,7 @@ public interface BaseMapper<T> {
     /**
      * 执行类似 {@code update table set field = field + 1 where ... } 的场景。
      * TODO: 2023/7/27  该方法将在 v1.6.0 被删除
+     *
      * @param fieldName    字段名
      * @param value        值（大于等于 0 加，小于 0 减）
      * @param queryWrapper 条件
@@ -377,6 +381,7 @@ public interface BaseMapper<T> {
     /**
      * 执行类似 {@code update table set field = field + 1 where ... } 的场景。
      * TODO: 该方法将在 v1.6.0 被删除
+     *
      * @param column       字段名
      * @param value        值（大于等于 0 加，小于 0 减）
      * @param queryWrapper 条件
@@ -392,6 +397,7 @@ public interface BaseMapper<T> {
     /**
      * 执行类似 {@code update table set field = field + 1 where ... } 的场景。
      * TODO: 该方法将在 v1.6.0 被删除
+     *
      * @param fn           字段名
      * @param value        值（大于等于 0 加，小于 0 减）
      * @param queryWrapper 条件
@@ -505,7 +511,8 @@ public interface BaseMapper<T> {
 
     /**
      * 根据主表主键来查询 1 条数据。
-     * @param id 表主键
+     *
+     * @param id     表主键
      * @param asType 接收数据类型
      * @return 实体类数据
      */
@@ -517,6 +524,7 @@ public interface BaseMapper<T> {
             MappedStatementTypes.clear();
         }
     }
+
     /**
      * 根据查询条件来查询 1 条数据。
      *
@@ -1115,6 +1123,46 @@ public interface BaseMapper<T> {
      */
     default <R> Page<R> paginateWithRelationsAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
         return MapperUtil.doPaginate(this, page, queryWrapper, asType, true, consumers);
+    }
+
+
+    default <E> Page<E> xmlPaginate(String dataSelectId, Page<E> page, QueryWrapper queryWrapper) {
+        return xmlPaginate(dataSelectId, dataSelectId + "_COUNT", page, queryWrapper, null);
+    }
+
+    default <E> Page<E> xmlPaginate(String dataSelectId, Page<E> page, Map<String, Object> otherParams) {
+        return xmlPaginate(dataSelectId, dataSelectId + "_COUNT", page, null, otherParams);
+    }
+
+    default <E> Page<E> xmlPaginate(String dataSelectId, Page<E> page, QueryWrapper queryWrapper, Map<String, Object> otherParams) {
+        return xmlPaginate(dataSelectId, dataSelectId + "_COUNT", page, queryWrapper, otherParams);
+    }
+
+    default <E> Page<E> xmlPaginate(String dataSelectId, String countSelectId, Page<E> page, QueryWrapper queryWrapper, Map<String, Object> otherParams) {
+        SqlSessionFactory sqlSessionFactory = FlexGlobalConfig.getDefaultConfig().getSqlSessionFactory();
+        ExecutorType executorType = FlexGlobalConfig.getDefaultConfig().getConfiguration().getDefaultExecutorType();
+        String mapperClassName = ClassUtil.getUsefulClass(this.getClass()).getName();
+
+        Map<String, Object> preparedParams = MapperUtil.preparedParams(page, queryWrapper, otherParams);
+        if (!dataSelectId.contains(".")) {
+            dataSelectId = mapperClassName + "." + dataSelectId;
+        }
+
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(executorType, false)) {
+            if (page.getTotalRow() < 0) {
+                if (!countSelectId.contains(".")) {
+                    countSelectId = mapperClassName + "." + countSelectId;
+                }
+                Number number = sqlSession.selectOne(countSelectId, preparedParams);
+                page.setTotalRow(number);
+            }
+
+            if (!page.isEmpty()) {
+                List<E> entities = sqlSession.selectList(dataSelectId, preparedParams);
+                page.setRecords(entities);
+            }
+        }
+        return page;
     }
 
 }

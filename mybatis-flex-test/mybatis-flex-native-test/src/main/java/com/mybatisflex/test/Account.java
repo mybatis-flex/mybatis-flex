@@ -46,7 +46,7 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
     @NotBlank
     private Date birthday;
 
-    @Column(typeHandler = Fastjson2TypeHandler.class, isLarge = true)
+    @Column(typeHandler = Fastjson2TypeHandler.class)
     private Map<String, Object> options;
 
     @Column(isLogicDelete = true)

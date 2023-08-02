@@ -56,8 +56,15 @@ public class AccountController {
 
 
     @GetMapping("/account/byName/{name}")
-    AccountDto selectName(@PathVariable("name") String name) {
-        return myAccountMapper.selectByName(name);
+    Page<AccountDto> selectName(@PathVariable("name") String name) {
+//        return myAccountMapper.selectByName(name);
+
+        QueryWrapper qw = QueryWrapper.create()
+            .where(Account::getAge).eq(18)
+            .and(Account::getId).ge(0);
+
+        Page<AccountDto> accountPage = myAccountMapper.xmlPaginate("selectByName", Page.of(1, 10), qw);
+        return accountPage;
     }
 
 
@@ -104,7 +111,6 @@ public class AccountController {
     Page<Account> paginate(@RequestParam(defaultValue = "1") int pageNumber, @RequestParam(defaultValue = "10") int pageSize) {
         return accountMapper.paginate(pageNumber, pageSize, QueryWrapper.create());
     }
-
 
 
     @GetMapping("/ds")

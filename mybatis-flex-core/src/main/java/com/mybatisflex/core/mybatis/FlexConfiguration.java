@@ -171,7 +171,7 @@ public class FlexConfiguration extends Configuration {
         }
         //entity select
         else if (StringUtil.endsWithAny(ms.getId(), "selectOneById", "selectListByIds"
-            , "selectListByQuery")) {
+            , "selectListByQuery", "selectCursorByQuery")) {
             ms = replaceResultMap(ms, getTableInfo(ms));
         }
 
