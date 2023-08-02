@@ -20,11 +20,12 @@
 - 2、是否主动添加了 `mybatis-spring-boot-starter` 的依赖，导致版本不匹配。使用 SpringBoot 的情况下，应该引用 `mybatis-flex-spring-boot-starter`
   就可以了，不需要再添加其他 MyBatis 依赖。
 - 3、是否与 `mybatis-plus-boot-starter` 共用，使 MyBatis 被优先初始化，而导致 MyBatis-Flex 没有被加载。
-- 4、是否添加了 `pagehelper-spring-boot-starter` 依赖，导致传递了 `mybatis-plus-boot-starter` 依赖。如还想继续使用 pagehelper 插件，点击 [这里](#与-pagehelper-集成出现错误) 查看解决方案。
+- 4、是否添加了 `pagehelper-spring-boot-starter` 依赖，导致传递了 `mybatis-spring-boot-starter` 依赖。如还想继续使用 pagehelper 插件，点击 [这里](#与-pagehelper-集成出现错误) 查看解决方案。
 
 ## 示例中的 AccountMapper 和 "ACCOUNT" 在哪里，报错了。
 
-MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的。
+MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的，如果已经生成但是导入不了，点击 [这里](./others/apt.md#开发工具无法导入生成的代码) 查看解决方案。
+
 参考：[MyBatis-Flex APT 配置 - MyBatis-Flex 官方网站](./others/apt.md)
 
 ## 阿里镜像找不到依赖？
