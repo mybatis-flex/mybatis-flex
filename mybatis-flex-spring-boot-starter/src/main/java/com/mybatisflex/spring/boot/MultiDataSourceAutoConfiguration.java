@@ -22,7 +22,6 @@ import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.spring.datasource.DataSourceAdvice;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.springframework.aop.Advisor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -95,7 +94,7 @@ public class MultiDataSourceAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public Advisor dataSourceAdvice() {
+    public DataSourceAdvice dataSourceAdvice() {
         return new DataSourceAdvice();
     }
 
