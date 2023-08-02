@@ -72,7 +72,7 @@ Page<Account> accountPage = ccountMapper
 
 > 参数 `selectByName` 指的是在 XML 里定义的 select 节点的 id 的名称。`selectByName` 也可以全写为： `com.mybatisflex.test.mapper.AccountMapper.selectByName`。
 >
-> 此时，需要也在 XML 里定义名称为 `selectByName_COUNT` 的 select 节点，用于查询数据量。
+> 此时，需要也在 XML 里定义名称为 `selectByName_COUNT` 的 select 节点，用于查询数据总量。
 
 XML 代码如下：
 
