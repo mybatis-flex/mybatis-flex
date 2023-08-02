@@ -15,9 +15,6 @@
  */
 package com.mybatisflex.codegen.config;
 
-import com.mybatisflex.spring.service.impl.CacheableServiceImpl;
-import com.mybatisflex.spring.service.impl.ServiceImpl;
-
 /**
  * 生成 ServiceImpl 的配置。
  *
@@ -40,7 +37,7 @@ public class ServiceImplConfig {
     /**
      * 自定义 ServiceImpl 的父类。
      */
-    private Class<?> superClass = ServiceImpl.class;
+    private Class<?> superClass;
 
     /**
      * 是否覆盖之前生成的文件。
@@ -53,10 +50,16 @@ public class ServiceImplConfig {
     private boolean cacheExample;
 
     public String buildSuperClassImport() {
+        if (superClass == null) {
+            return "com.mybatisflex.spring.service.impl.ServiceImpl";
+        }
         return superClass.getName();
     }
 
     public String buildSuperClassName() {
+        if (superClass == null) {
+            return "ServiceImpl";
+        }
         return superClass.getSimpleName();
     }
 
@@ -124,7 +127,7 @@ public class ServiceImplConfig {
      * 是否生成缓存例子。
      */
     public boolean isCacheExample() {
-        return CacheableServiceImpl.class.equals(superClass) && cacheExample;
+        return cacheExample;
     }
 
     /**
