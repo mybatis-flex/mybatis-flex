@@ -11,12 +11,38 @@
 
 ## 开发插件
 
-**Mybatis-Flex-Helper**
-
-这是一款高度自定义的 Mybatis-Flex IDEA 插件（idea 开发工具可以直接搜索安装）：
+**Mybatis-Flex-Helper** 这是一款高度自定义的 Mybatis-Flex IDEA 插件（该工具由 Mybatis-Flex 社区的同学 [@时间淡忘一切](https://gitee.com/djxchi) 开发，
+目前已经上架到应用商店，可以直接搜索安装）：
 
 - 开源地址：https://gitee.com/djxchi/mybatis-flex-code-gen.git
 - 视频简介：https://www.bilibili.com/video/BV1yV411g7Yd
+- 插件交流 QQ 群：872707845
+
+
+### 插件功能展示
+
+**功能 1：完善的代码生成配置**
+
+支持直接连接数据库，选择表后一键生成 Controller、Service、Mapper、Model 等代码，同时支持自定义代码文件和代码模板。
+
+![](../assets/images/mybatis-flex-helper/01.png)
+
+![](../assets/images/mybatis-flex-helper/02.png)
+
+**功能 2：智能的 APT 配置文件自动提示功能**
+
+直接编写 APT 配置文件，再也不担心写错，或者不明白其含义。
+
+![](../assets/images/mybatis-flex-helper/03.png)
+
+**功能 3：QueryWrapper SQL 预览**
+
+我们在 Java 代码中，编写 QueryWrapper，可以直接预览 QueryWrapper 生成的 SQL，除了 QueryWrapper 以外，还支持 QueryChain、UpdateChain 等构建是的 SQL 预览功能。
+
+![](../assets/images/mybatis-flex-helper/04.png)
+
+
+
 
 ## 视频教程
 
@@ -53,3 +79,5 @@
 - [MyBatis-Flex 视频教程 - 25 isLogicDelete 逻辑删除的简单使用](https://www.bilibili.com/video/BV1K94y1e7X7)
 - [MyBatis-Flex 视频教程 - 26 自定义逻辑删除处理器](https://www.bilibili.com/video/BV1oP411z7uu)
 - [MyBatis-Flex 视频教程 - 27 version 乐观锁的简单使用](https://www.bilibili.com/video/BV1Rc411F7wp)
+- [MyBatis-Flex 视频教程 - 28 tenantId 多租户的简单使用](https://www.bilibili.com/video/BV1eP41167TU)
+- [MyBatis-Flex 视频教程 - 29 typeHandler 的简单使用](https://www.bilibili.com/video/BV1B841127ea)

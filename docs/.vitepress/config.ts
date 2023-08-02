@@ -26,7 +26,7 @@ export default defineConfig({
             {text: '首页', link: '/'},
 
             {text: '帮助文档', link: '/zh/intro/what-is-mybatisflex'},
-            {text: '常见问题', link: '/zh/faq'},
+            {text: '🆘 常见问题', link: '/zh/faq'},
             {text: '周边', link: '/zh/awesome-things'},
             {text: 'ChangeLog', link: '/zh/changes'},
             {
