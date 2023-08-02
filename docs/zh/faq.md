@@ -20,7 +20,7 @@
 - 2、是否主动添加了 `mybatis-spring-boot-starter` 的依赖，导致版本不匹配。使用 SpringBoot 的情况下，应该引用 `mybatis-flex-spring-boot-starter`
   就可以了，不需要再添加其他 MyBatis 依赖。
 - 3、是否与 `mybatis-plus-boot-starter` 共用，使 MyBatis 被优先初始化，而导致 MyBatis-Flex 没有被加载。
-- 4、是否添加了 `pagehelper-spring-boot-starter` 依赖，导致传递了 `mybatis-plus-boot-starter` 依赖。如还想继续使用 pagehelper 插件，点击 [这里](#与-pagehelper-集成出现错误) 查看解决方案。
+- 4、是否添加了 `pagehelper-spring-boot-starter` 依赖，导致传递了 `mybatis-spring-boot-starter` 依赖。如还想继续使用 pagehelper 插件，点击 [这里](#与-pagehelper-集成出现错误) 查看解决方案。
 
 ## 示例中的 AccountMapper 和 "ACCOUNT" 在哪里，报错了。
 
