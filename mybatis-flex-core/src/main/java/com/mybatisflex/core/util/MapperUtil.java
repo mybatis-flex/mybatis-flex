@@ -204,7 +204,9 @@ public class MapperUtil {
 
 
     public static <E> E queryRelations(BaseMapper<?> mapper, E entity) {
-        queryRelations(mapper, Collections.singletonList(entity));
+        if (entity != null) {
+            queryRelations(mapper, Collections.singletonList(entity));
+        }
         return entity;
     }
 
