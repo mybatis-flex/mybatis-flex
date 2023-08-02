@@ -145,6 +145,16 @@ QueryChain.of(accountMapper)
     .list();
 ```
 
+以上代码执行的 SQL 如下：
+
+```sql
+select tb_account.*
+     , max(tb_account.age) as maxAge
+     , avg(tb_account.age) as avgAge
+where tb_account.id >= 100
+```
+
+
 ## 多表映射
 
 假设我们定义了一个 `BootVo.java`，其中包含了图书的基本信息，也包含了图书归属的用户信息，例如：

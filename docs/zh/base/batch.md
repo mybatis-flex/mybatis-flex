@@ -23,7 +23,7 @@ insert into tb_account(id,nickname, .....) values
 (104,"miachel104", ....),
 (105,"miachel105", ....);
 ```
-这种有一个特点：在小批量数据执行插入的时候，效率是非常高；但是当数据列表过多时，其生成的 SQL 可能会非常大， 这个大的 SQL 
+这种有一个特点：在小批量数据执行插入的时候，效率是非常高；但是当数据列表过多时，其生成的 SQL 可能会非常大， 这个大的 SQL
 在传输和执行的时候就会变得很慢了。
 
 因此，`BaseMapper.insertBatch` 方法只适用于在小批量数据插入的场景，比如 100 条数据以内。
@@ -39,42 +39,64 @@ Db.executeBatch(accounts.size(), 1000, AccountMapper.class, (mapper, index) -> {
         mapper.insert(account);
     });
 ```
+
+或者
+
+
+```java
+List<Account> accounts = ....
+Db.executeBatch(accounts, 1000, AccountMapper.class, (mapper, account) -> {
+        mapper.insert(account);
+    });
+```
+
+
 `Db.executeBatch` 是通过 JDBC 的 `Statement.executeBatch()` 进行批量执行；这个在大批量数据执行的时候，效率要比 `BaseMapper.insertBatch` 高出许多；
 
-::: tip 提示
-我看到有一些同学担心 `BaseMapper.insertBatch` 被误用，在 `IService` 中通过使用 `Db.executeBatch`  重写了 Service 的 `insertBatch` 方法，这也是没问题的。但还是需要明白，
-`BaseMapper.insertBatch` 和 `Db.executeBatch` 的底层实现差异，以及不同的使用场景。
-:::
+IService 很多批量操作的方法，也都是通过 `Db.executeBatch` 进行封装的，大家也可以通过其扩展出自己的 "批量操作" 方法来。比如这是一个批量忽略 `null` 的插入示例：
 
-## `Db.updateBatch` 方法 
+```java
+public boolean saveBatchSelective(Collection<Account> entities) {
+
+    int[] result = Db.executeBatch(entities, 1000,
+        AccountMapper.class, BaseMapper::insertSelective);
+
+    return SqlUtil.toBool(result);
+}
+```
+
+
+
+## `Db.updateBatch` 方法
 
 这个方法的示例代码如下：
 
 ```java
 List<Account> accounts = ....
-String sql = "insert into tb_account(user_name,age,birthday) values (?,?,?)";
+String sql = "insert into tb_account(user_name, age, birthday) " +
+    "values (?, ?, ?)";
 Db.updateBatch(sql, new BatchArgsSetter() {
-        @Override
-        public int getBatchSize() {
-            return accounts.size();
-        }
+    @Override
+    public int getBatchSize() {
+        return accounts.size();
+    }
 
-        @Override
-        public Object[] getSqlArgs(int index) {
-            Account account = accounts = accounts.get(index);
-            Object[] args = new Object[3];
-            args[0] = account.getUserName;
-            args[1] = account.getAge();
-            args[2] = new Date();
-            return args;
-        }
-    });
+    @Override
+    public Object[] getSqlArgs(int index) {
+        Account account = accounts = accounts.get(index);
+        Object[] args = new Object[3];
+        args[0] = account.getUserName;
+        args[1] = account.getAge();
+        args[2] = new Date();
+        return args;
+    }
+});
 ```
 
 虽然这个方法叫 `updateBatch`，但一样可以执行 `insert`、`delete`、`update` 等任何 SQL； 这个方法类似 Spring 的 `jdbcTemplate.batchUpdate()` 方法。
 
 
-## `Db.updateEntitiesBatch` 方法  
+## `Db.updateEntitiesBatch` 方法
 这个方法用于批量根据 id 更新 entity，其是对 `Db.executeBatch` 的封装，使用代码如下：
 
 ```java

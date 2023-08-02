@@ -1,6 +1,6 @@
 # 链式操作
 
-在 MyBatis-Flex 中，内置了 `QueryChain.java` 和  `UpdateChain.java` 用于对数据进行链式查询操作和链式数据操作（修改和删除）。
+在 MyBatis-Flex 中，内置了 `QueryChain.java` 、  `UpdateChain.java` 以及 `DbChain.java` 用于对数据进行链式查询操作和链式操作（修改和删除）。
 
 - **QueryChain**：链式查询
 - **UpdateChain**：链式更新
@@ -240,15 +240,15 @@ ArticleVo articleVo = articleService.queryChain()
 // 新增 Row 构建
 DbChain.table("tb_account")
     .set(RowKey.AUTO)
-    .set("user_name","王帅")
-    .set("age",18)
-    .set("birthday",new Date())
+    .set("user_name", "王帅")
+    .set("age", 18)
+    .set("birthday", new Date())
     .save();
 
 // 查询 QueryWrapper 构建
 DbChain.table("tb_account")
-    .select("id","user_name","age","birthday")
-    .where("age > ?",18)
+    .select("id", "user_name", "age", "birthday")
+    .where("age > ?", 18)
     .list()
     .forEach(System.out::println);
 ```
