@@ -271,7 +271,7 @@ public interface BaseMapper<T> {
     // === 改（update） ===
 
     /**
-     * 根据主键来更新数据，若实体类属性数据为 {@code null}，该属性不会新到数据库。
+     * 根据主键来更新数据，若实体类属性数据为 {@code null}，该属性不会更新到数据库。
      *
      * @param entity 数据内容，必须包含有主键
      * @return 受影响的行数

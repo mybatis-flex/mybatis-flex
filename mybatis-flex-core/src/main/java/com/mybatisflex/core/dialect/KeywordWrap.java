@@ -19,7 +19,6 @@ import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -110,14 +109,35 @@ public class KeywordWrap {
             return prefix + keyword + suffix;
         }
 
-        if (keywords.contains(keyword.toUpperCase(Locale.ENGLISH))) {
-            if (keywordsToUpperCase) {
-                return prefix + keyword.toUpperCase() + suffix;
-            } else {
-                return prefix + keyword + suffix;
-            }
-        }
-        return keyword;
+        keyword = keywordsToUpperCase ? keyword.toUpperCase() : keyword;
+        return keywords.contains(keyword) ? (prefix + keyword + suffix) : keyword;
     }
 
+    public boolean isCaseSensitive() {
+        return caseSensitive;
+    }
+
+    public void setCaseSensitive(boolean caseSensitive) {
+        this.caseSensitive = caseSensitive;
+    }
+
+    public boolean isKeywordsToUpperCase() {
+        return keywordsToUpperCase;
+    }
+
+    public void setKeywordsToUpperCase(boolean keywordsToUpperCase) {
+        this.keywordsToUpperCase = keywordsToUpperCase;
+    }
+
+    public Set<String> getKeywords() {
+        return keywords;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
 }

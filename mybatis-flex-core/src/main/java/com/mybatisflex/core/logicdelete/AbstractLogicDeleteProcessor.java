@@ -16,7 +16,8 @@
 package com.mybatisflex.core.logicdelete;
 
 import com.mybatisflex.core.dialect.IDialect;
-import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
 
@@ -41,10 +42,10 @@ public abstract class AbstractLogicDeleteProcessor implements LogicDeleteProcess
     }
 
     @Override
-    public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo) {
-        queryWrapper.and(QueryCondition.create(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getLogicDeleteColumn()
-            , EQUALS
-            , getLogicNormalValue()));
+    public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo, String joinTableAlias) {
+        QueryTable queryTable = new QueryTable(tableInfo.getSchema(), tableInfo.getTableName()).as(joinTableAlias);
+        QueryColumn queryColumn = new QueryColumn(queryTable, tableInfo.getLogicDeleteColumn());
+        queryWrapper.and(queryColumn.eq(getLogicNormalValue()));
     }
 
 }

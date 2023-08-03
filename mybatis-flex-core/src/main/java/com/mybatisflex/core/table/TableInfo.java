@@ -779,7 +779,8 @@ public class TableInfo {
 
         //逻辑删除
         if (StringUtil.isNotBlank(getLogicDeleteColumnOrSkip())) {
-            LogicDeleteManager.getProcessor().buildQueryCondition(queryWrapper, this);
+            String joinTableAlias = CPI.getContext(queryWrapper, "joinTableAlias");
+            LogicDeleteManager.getProcessor().buildQueryCondition(queryWrapper, this, joinTableAlias);
         }
 
         //多租户
@@ -800,11 +801,14 @@ public class TableInfo {
         if (CollectionUtil.isNotEmpty(joins)) {
             for (Join join : joins) {
                 QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
+
+                //join select
                 if (joinQueryTable instanceof SelectQueryTable) {
                     QueryWrapper childQuery = ((SelectQueryTable) joinQueryTable).getQueryWrapper();
                     doAppendConditions(entity, childQuery);
-                } else {
-
+                }
+                //join table
+                else {
                     String nameWithSchema = joinQueryTable.getNameWithSchema();
                     if (StringUtil.isNotBlank(nameWithSchema)) {
                         TableInfo tableInfo = TableInfoFactory.ofTableName(nameWithSchema);
@@ -812,8 +816,10 @@ public class TableInfo {
                             QueryCondition joinQueryCondition = CPI.getJoinQueryCondition(join);
                             QueryWrapper newWrapper = QueryWrapper.create()
                                 .where(joinQueryCondition);
+                            CPI.putContext(newWrapper, "joinTableAlias", joinQueryTable.getAlias());
                             tableInfo.appendConditions(entity, newWrapper);
-                            CPI.setJoinQueryCondition(join, CPI.getWhereQueryCondition(newWrapper));
+                            QueryCondition whereQueryCondition = CPI.getWhereQueryCondition(newWrapper);
+                            CPI.setJoinQueryCondition(join, whereQueryCondition);
                         }
                     }
                 }

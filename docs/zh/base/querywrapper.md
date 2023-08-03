@@ -17,10 +17,10 @@ public class AccountController {
 
     @Autowired
     AccountMapper accountMapper;
-    
+
     @GetMapping("/accounts")
     List<Account> selectList() {
-        
+
         //构造 QueryWrapper，也支持使用 QueryWrapper.create() 构造，效果相同
         QueryWrapper query = new QueryWrapper();
         query.where(ACCOUNT.ID.ge(100));
@@ -148,7 +148,7 @@ select(column("abc")) --> SELECT abc
 ，然后在自己的项目里进行自定义扩展。
 
 
-| 支持的函数 | 函数说明  |   
+| 支持的函数 | 函数说明  |
 | -------- | -------- |
 | count | 查询数据总量  |
 | distinct | 对指定列进行去重  |
@@ -339,11 +339,11 @@ QueryWrapper wrapper = QueryWrapper.create()
 其查询生成的 Sql 如下：
 
 ```sql
- SELECT `id`, 
-        (CASE WHEN `id` >=  2  THEN 'x2' 
-            WHEN `id` >=  1  THEN 'x1' 
-            ELSE 'x100' 
-            END) AS `xName` 
+ SELECT `id`,
+        (CASE WHEN `id` >=  2  THEN 'x2'
+            WHEN `id` >=  1  THEN 'x1'
+            ELSE 'x100'
+            END) AS `xName`
  FROM `tb_account`
 ```
 
@@ -374,12 +374,12 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 其查询生成的 Sql 如下：
 
 ```sql
-SELECT *, 
-       (CASE `id` 
-           WHEN 100 THEN 100 
-           WHEN 200 THEN 200 
-           ELSE 300 END) AS `result` 
-FROM `tb_account` 
+SELECT *,
+       (CASE `id`
+           WHEN 100 THEN 100
+           WHEN 200 THEN 200
+           ELSE 300 END) AS `result`
+FROM `tb_account`
 WHERE `user_name` LIKE  ?
 ```
 
@@ -408,7 +408,7 @@ System.out.println(query.toSQL());
 生成的 SQL 如下：
 
 ```sql
-WITH CTE AS (SELECT * FROM `tb_article` WHERE `id` >= 100) 
+WITH CTE AS (SELECT * FROM `tb_article` WHERE `id` >= 100)
 SELECT * FROM `tb_account` WHERE `sex` = 1
 ```
 
@@ -432,8 +432,8 @@ System.out.println(query.toSQL());
 生成的 SQL 如下：
 
 ```sql
-WITH xxx(id, name) 
-    AS (VALUES (a, b) UNION (SELECT * FROM `tb_article` WHERE `id` >= 200)) 
+WITH xxx(id, name)
+    AS (VALUES (a, b) UNION (SELECT * FROM `tb_article` WHERE `id` >= 200))
 SELECT * FROM `tb_account` WHERE `sex` = 1
 ```
 
@@ -458,7 +458,7 @@ System.out.println(query.toSQL());
 生成的 SQL 如下：
 
 ```sql
-WITH RECURSIVE CTE AS (SELECT * FROM `tb_article` WHERE `id` >= 100) 
+WITH RECURSIVE CTE AS (SELECT * FROM `tb_article` WHERE `id` >= 100)
 SELECT * FROM `tb_account` WHERE `sex` = 1
 ```
 
@@ -485,9 +485,9 @@ System.out.println(query.toSQL());
 生成的 SQL 如下：
 
 ```sql
-WITH RECURSIVE 
-     CTE AS (SELECT * FROM `tb_article` WHERE `id` >= 100), 
-     xxx(id, name) AS (VALUES (a, b)  UNION (SELECT * FROM `tb_article` WHERE `id` >= 200)) 
+WITH RECURSIVE
+     CTE AS (SELECT * FROM `tb_article` WHERE `id` >= 100),
+     xxx(id, name) AS (VALUES (a, b)  UNION (SELECT * FROM `tb_article` WHERE `id` >= 200))
 SELECT * FROM `tb_account` WHERE `sex` = 1
 ```
 
@@ -509,7 +509,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ```sql
 SELECT * FROM tb_account
 WHERE id >=  ?
-AND user_name LIKE  ? 
+AND user_name LIKE  ?
 ```
 
 ## where 动态条件 1
@@ -526,7 +526,7 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 ```sql
 SELECT * FROM tb_account
-WHERE user_name LIKE  ? 
+WHERE user_name LIKE  ?
 ```
 
 ## where 动态条件 2
@@ -543,7 +543,7 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 ```sql
 SELECT * FROM tb_account
-WHERE user_name LIKE  ? 
+WHERE user_name LIKE  ?
 ```
 
 ## where 动态条件 3
@@ -560,7 +560,7 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 ```sql
 SELECT * FROM tb_account
-WHERE id >= ? 
+WHERE id >= ?
 ```
 
 ## where 动态条件 4
@@ -569,7 +569,7 @@ WHERE id >= ?
 String name = null;
 QueryWrapper queryWrapper = QueryWrapper.create()
     .select().from(ACCOUNT)
-    .where(ACCOUNT.ID.ge(100)) 
+    .where(ACCOUNT.ID.ge(100))
     .and(ACCOUNT.USER_NAME.like(name, If::hasText));
 ```
 
@@ -577,7 +577,7 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 ```sql
 SELECT * FROM tb_account
-WHERE id >= ? 
+WHERE id >= ?
 ```
 
 ## where select
@@ -749,9 +749,9 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 其查询生成的 Sql 如下：
 
 ```sql
-SELECT * FROM tb_account LEFT JOIN tb_article 
-ON tb_account.id = tb_article.account_id AND tb_account.age =  ?  
-WHERE tb_account.age >=  ? 
+SELECT * FROM tb_account LEFT JOIN tb_article
+ON tb_account.id = tb_article.account_id AND tb_account.age =  ?
+WHERE tb_account.age >=  ?
 ```
 
 ## join select
@@ -772,11 +772,46 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 其查询生成的 Sql 如下：
 
 ```sql
-SELECT * FROM tb_account 
+SELECT * FROM tb_account
 LEFT JOIN (SELECT * FROM tb_article WHERE id >=  ? ) AS a
-ON tb_account.id = a.id 
-WHERE tb_account.age >=  ? 
+ON tb_account.id = a.id
+WHERE tb_account.age >=  ?
 ```
+
+## join 自己
+
+```java
+QueryWrapper queryWrapper = QueryWrapper.create();
+queryWrapper.from(ACCOUNT)
+    .leftJoin(ACCOUNT).as("a1").on(ACCOUNT.ID.eq(ACCOUNT.PARENT_ID))
+    .leftJoin(ACCOUNT).as("a2").on(ACCOUNT.ID.eq(ACCOUNT.PARENT_ID))
+    .where(ACCOUNT.ID.ge(1));
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT * FROM `tb_account`
+    LEFT JOIN `tb_account` AS `a1`
+        ON `a1`.`id` = `tb_account`.`parent_id`
+    LEFT JOIN `tb_account` AS `a2`
+        ON `a2`.`id` = `tb_account`.`parent_id`
+WHERE `tb_account`.`id` >= ?
+```
+
+若 `tb_account` 表带有逻辑删除，那么其生成的 SQL 如下：
+
+```sql
+SELECT * FROM `tb_account`
+    LEFT JOIN `tb_account` AS `a1`
+        ON `a1`.`id` = `tb_account`.`parent_id` AND `a1`.`is_delete` = ?
+    LEFT JOIN `tb_account` AS `a2`
+        ON `a2`.`id` = `tb_account`.`parent_id` AND `a2`.`is_delete` = ?
+WHERE `tb_account`.`id` >= ?
+  AND `tb_account`.`is_delete` = ?
+```
+
+> 关于逻辑删除更多文档请参考 [这里](../core/logic-delete.html)。
 
 ## union, union all
 
@@ -792,8 +827,8 @@ QueryWrapper query = new QueryWrapper()
 其查询生成的 Sql 如下：
 
 ```sql
-(SELECT id FROM tb_account ORDER BY id DESC) 
-UNION (SELECT id FROM tb_article) 
+(SELECT id FROM tb_account ORDER BY id DESC)
+UNION (SELECT id FROM tb_article)
 UNION ALL (SELECT id FROM tb_article)
 ```
 
@@ -894,12 +929,12 @@ System.out.println(query.toSQL());
 SQL 输入内容如下：
 
 ```sql
-SELECT * FROM `tb_article` 
-    LEFT JOIN `tb_account` AS `a` ON `a`.`id` = `tb_article`.`account_id` 
-WHERE `a`.`id` >=  100  AND 
-      (`a`.`id` >=  100  
-           OR `a`.`age` >  200  
-           AND `tb_article`.`account_id` =  200  
+SELECT * FROM `tb_article`
+    LEFT JOIN `tb_account` AS `a` ON `a`.`id` = `tb_article`.`account_id`
+WHERE `a`.`id` >=  100  AND
+      (`a`.`id` >=  100
+           OR `a`.`age` >  200
+           AND `tb_article`.`account_id` =  200
            OR (`a`.`id` LIKE  '%a%' )
       )
 ```

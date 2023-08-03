@@ -317,14 +317,14 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
      * @param queryWrapper
      * @return
      */
-    public Wrapper in(Wrapper queryWrapper) {
+    public Wrapper in(QueryWrapper queryWrapper) {
         if (queryWrapper != null) {
             this.queryWrapper.addWhereQueryCondition(queryColumn.in(queryWrapper), connector);
         }
         return this.queryWrapper;
     }
 
-    public <T> Wrapper in(Wrapper queryWrapper, Predicate<T> when) {
+    public <T> Wrapper in(QueryWrapper queryWrapper, Predicate<T> when) {
         if (queryWrapper != null) {
             this.queryWrapper.addWhereQueryCondition(queryColumn.in(queryWrapper, when), connector);
         }
@@ -398,14 +398,14 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
      *
      * @param queryWrapper
      */
-    public Wrapper notIn(Wrapper queryWrapper) {
+    public Wrapper notIn(QueryWrapper queryWrapper) {
         if (queryWrapper != null) {
             this.queryWrapper.addWhereQueryCondition(queryColumn.notIn(queryWrapper), connector);
         }
         return this.queryWrapper;
     }
 
-    public <T> Wrapper notIn(Wrapper queryWrapper, Predicate<T> when) {
+    public <T> Wrapper notIn(QueryWrapper queryWrapper, Predicate<T> when) {
         if (queryWrapper != null) {
             this.queryWrapper.addWhereQueryCondition(queryColumn.notIn(queryWrapper, when), connector);
         }

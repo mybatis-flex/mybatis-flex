@@ -41,7 +41,7 @@ public class DateUtil {
     public static final String dateMillisecondPattern = "yyyy-MM-dd HH:mm:ss SSS";
     public static final String dateCSTPattern = "EEE MMM dd HH:mm:ss zzz yyyy";
 
-    private static final ThreadLocal<HashMap<String, SimpleDateFormat>> TL = ThreadLocal.withInitial(() -> new HashMap<>());
+    private static final ThreadLocal<HashMap<String, SimpleDateFormat>> TL = ThreadLocal.withInitial(HashMap::new);
 
     private static final Map<String, DateTimeFormatter> dateTimeFormatters = new ConcurrentHashMap<>();
 

@@ -39,7 +39,7 @@ public class StringQueryColumn extends QueryColumn {
 
     @Override
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
-        return content;
+        return content + WrapperUtil.buildAlias(alias, dialect);
     }
 
     @Override

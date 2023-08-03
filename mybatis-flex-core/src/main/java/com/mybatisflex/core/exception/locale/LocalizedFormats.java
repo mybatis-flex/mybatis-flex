@@ -50,6 +50,8 @@ public enum LocalizedFormats implements Localizable {
 
 
     ENTITY_VERSION_NULL("The version value of entity \"{0}\" must not be null."),
+
+    KEY_GENERATOR_BLANK("The name of key generator must not be null or blank."),
     ;
 
     private final String sourceFormat;

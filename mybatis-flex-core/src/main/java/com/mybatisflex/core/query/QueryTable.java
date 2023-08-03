@@ -28,6 +28,7 @@ import java.util.Objects;
  */
 public class QueryTable implements CloneSupport<QueryTable> {
 
+    protected int tableDefHashCode = 0;
     protected String schema;
     protected String name;
     protected String alias;
@@ -36,6 +37,8 @@ public class QueryTable implements CloneSupport<QueryTable> {
     }
 
     public QueryTable(TableDef tableDef) {
+        // TableDef的标识符号,0:不确定标识
+        this.tableDefHashCode = tableDef.hashCode();
         this.schema = tableDef.getSchema();
         this.name = tableDef.getTableName();
     }
@@ -77,6 +80,13 @@ public class QueryTable implements CloneSupport<QueryTable> {
         return StringUtil.isNotBlank(schema) ? schema + "." + name : name;
     }
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 
     public QueryTable as(String alias) {
         this.alias = alias;
@@ -87,14 +97,15 @@ public class QueryTable implements CloneSupport<QueryTable> {
         if (table == null) {
             return false;
         }
-        if (StringUtil.isNotBlank(alias)
-            && StringUtil.isNotBlank(table.alias)
-            && (Objects.equals(alias, table.alias))) {
+        if (StringUtil.isNotBlank(alias) && StringUtil.isNotBlank(table.alias) && (Objects.equals(alias, table.alias))) {
             return false;
+        }
+        //比较对象都有tableDef标记,就用标记比对, 否则就用名称比对
+        if (tableDefHashCode != 0 && table.tableDefHashCode != 0) {
+            return tableDefHashCode == table.tableDefHashCode;
         }
         return Objects.equals(name, table.name);
     }
-
 
     Object[] getValueArray() {
         return FlexConsts.EMPTY_ARRAY;
@@ -110,14 +121,9 @@ public class QueryTable implements CloneSupport<QueryTable> {
         return sql;
     }
 
-
     @Override
     public String toString() {
-        return "QueryTable{" +
-            "schema='" + schema + '\'' +
-            ", name='" + name + '\'' +
-            ", alias='" + alias + '\'' +
-            '}';
+        return "QueryTable{" + "schema='" + schema + '\'' + ", name='" + name + '\'' + ", alias='" + alias + '\'' + '}';
     }
 
     @Override
