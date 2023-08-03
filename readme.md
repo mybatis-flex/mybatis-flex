@@ -21,7 +21,7 @@
     <br />
         <img src="https://img.shields.io/badge/SpringBoot-v2.x-blue">
         <img src="https://img.shields.io/badge/SpringBoot-v3.x-blue">
-        <img src="https://img.shields.io/badge/Solon-v2.x-blue">
+        <a target="_blank" href='https://github.com/noear/solon'><img src="https://img.shields.io/badge/Solon-v2.x-blue"></a>
     <br />
     <a target="_blank" href='https://gitee.com/mybatis-flex/mybatis-flex'>
 		<img src='https://gitee.com/mybatis-flex/mybatis-flex/badge/star.svg' alt='Gitee star'/>
