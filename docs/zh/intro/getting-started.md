@@ -14,7 +14,7 @@
 
 ## Hello World 视频教程
 
-<iframe width="100%" height="400px" src="//player.bilibili.com/player.html?aid=955526987&bvid=BV1yW4y1Z74j&cid=1187300793&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+<iframe width="100%" height="400px" src="//player.bilibili.com/player.html?aid=955526987&bvid=BV1yW4y1Z74j&cid=1187300793&page=1&autoplay=no" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 
 MyBatis-Flex 视频系列详情：https://www.bilibili.com/video/BV1yW4y1Z74j
 
