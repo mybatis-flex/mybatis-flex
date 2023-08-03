@@ -18,8 +18,6 @@ package com.mybatisflex.core.logicdelete.impl;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.logicdelete.AbstractLogicDeleteProcessor;
-import com.mybatisflex.core.query.QueryCondition;
-import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
 
 import static com.mybatisflex.core.constant.SqlConsts.EQUALS;
@@ -27,6 +25,7 @@ import static com.mybatisflex.core.constant.SqlConsts.SINGLE_QUOTE;
 
 /**
  * 默认逻辑删除处理器。
+ * @author michael
  */
 public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 
@@ -38,13 +37,6 @@ public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
     @Override
     public String buildLogicDeletedSet(String logicColumn, TableInfo tableInfo, IDialect dialect) {
         return dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicDeletedValue());
-    }
-
-    @Override
-    public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo) {
-        queryWrapper.where(QueryCondition.create(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getLogicDeleteColumn()
-            , EQUALS
-            , getLogicNormalValue()));
     }
 
     @Override

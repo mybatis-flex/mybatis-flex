@@ -116,6 +116,20 @@ public class AccountTester {
         System.out.println(accounts);
     }
 
+    /**
+     * issues  https://gitee.com/mybatis-flex/mybatis-flex/issues/I7QD29
+     */
+    @Test
+    public void testLeftJoinSelfForLogicDelete() {
+        QueryWrapper queryWrapper = QueryWrapper.create();
+        queryWrapper.from(ACCOUNT)
+            .leftJoin(ACCOUNT).as("a1").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+            .leftJoin(ACCOUNT).as("a2").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+            .where(ACCOUNT.ID.ge(1));
+        List<Article> accounts = articleMapper.selectListByQuery(queryWrapper);
+        System.out.println(accounts);
+    }
+
 
     @Test
     public void testSelectAsToDTO() {

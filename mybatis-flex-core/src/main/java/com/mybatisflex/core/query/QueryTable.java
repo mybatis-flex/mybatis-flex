@@ -80,6 +80,14 @@ public class QueryTable implements CloneSupport<QueryTable> {
         return StringUtil.isNotBlank(schema) ? schema + "." + name : name;
     }
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
     public QueryTable as(String alias) {
         this.alias = alias;
         return this;
