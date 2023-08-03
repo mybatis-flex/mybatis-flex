@@ -15,9 +15,12 @@
  */
 package com.mybatisflex.core.keygen;
 
+import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.keygen.impl.FlexIDKeyGenerator;
 import com.mybatisflex.core.keygen.impl.SnowFlakeIDKeyGenerator;
 import com.mybatisflex.core.keygen.impl.UUIDKeyGenerator;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,9 +46,12 @@ public class KeyGeneratorFactory {
      * 获取 主键生成器
      *
      * @param name
-     * @return
+     * @return 主键生成器
      */
     public static IKeyGenerator getKeyGenerator(String name) {
+        if (StringUtil.isBlank(name)){
+            throw FlexExceptions.wrap(LocalizedFormats.KEY_GENERATOR_BLANK);
+        }
         return KEY_GENERATOR_MAP.get(name.trim());
     }
 
