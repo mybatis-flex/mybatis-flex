@@ -224,15 +224,12 @@ public class FlexDataSource extends AbstractDataSource {
     }
 
     private static class ConnectionHandler implements InvocationHandler {
-
         private static final String[] proxyMethods = new String[]{"commit", "rollback", "close", "setAutoCommit"};
         private final Connection original;
         private final String xid;
 
         public ConnectionHandler(Connection original, String xid) {
-
             closeAutoCommit(original);
-
             this.original = original;
             this.xid = xid;
         }
