@@ -15,11 +15,11 @@
  */
 package com.mybatisflex.core.dialect.impl;
 
-import java.util.Set;
-
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.util.CollectionUtil;
+
+import java.util.Set;
 
 public class DmDialect extends CommonsDialectImpl {
 
@@ -73,11 +73,13 @@ public class DmDialect extends CommonsDialectImpl {
     );
 
     public DmDialect() {
+        //达梦 默认情况下，是支持 MySQL 的分页语法的
         this(LimitOffsetProcessor.MYSQL);
     }
 
     public DmDialect(LimitOffsetProcessor limitOffsetProcessor) {
-        this(new KeywordWrap(false, true, keywords, "", ""), limitOffsetProcessor);
+        //只有以上的关键字时，会添加 "" 包裹
+        this(new KeywordWrap(false, false, keywords, "\"", "\""), limitOffsetProcessor);
     }
 
     public DmDialect(KeywordWrap keywordWrap, LimitOffsetProcessor limitOffsetProcessor) {
