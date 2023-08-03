@@ -111,6 +111,8 @@ public class FieldQueryManager {
             } else if (fieldType == Set.class) {
                 return Collections.emptySet();
             }
+            // avoid NPE
+            return ClassUtil.newInstance(fieldType);
         }
 
         if (ClassUtil.canInstance(fieldType.getModifiers())) {
