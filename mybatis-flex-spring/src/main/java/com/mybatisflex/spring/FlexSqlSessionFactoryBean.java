@@ -89,6 +89,7 @@ import static org.springframework.util.StringUtils.tokenizeToStringArray;
  * @author Jens Schauder
  * @author 王帅
  * @author miachel
+ * @author life
  */
 public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
     implements FactoryBean<SqlSessionFactory>, InitializingBean, ApplicationListener<ApplicationEvent> {
@@ -595,9 +596,12 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
 
         // 事务由 flex 管理了，无需使用 SpringManagedTransactionFactory，否则会造成在同一个事务下，无法切换数据源的问题
         // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I70QWU
+        // 兼容SpringManagedTransactionFactory否则在使用JdbcTemplate,多数据源使用JdbcTemplate报错
+        //fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I7HJ4J
         targetConfiguration.setEnvironment(new Environment(this.environment,
 //                this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,
-            this.transactionFactory == null ? new JdbcTransactionFactory() : this.transactionFactory,
+//            this.transactionFactory == null ? new JdbcTransactionFactory() : this.transactionFactory,
+            this.transactionFactory == null ? new FlexTransactionFactory() : this.transactionFactory,
             dataSource instanceof FlexDataSource ? dataSource : new FlexDataSource(FlexConsts.NAME, dataSource)));
 
 
