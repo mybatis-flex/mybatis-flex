@@ -1,4 +1,4 @@
-package com.mybatisflex.test.issue113;
+package com.mybatisflex.test.issue;
 
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.AppConfig;
@@ -13,8 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-import static com.mybatisflex.test.issue113.def.TClassTableDef.TB_CLASS;
-import static com.mybatisflex.test.issue113.def.TUserTableDef.TB_USER;
+import static com.mybatisflex.test.issue.def.TClassTableDef.TB_CLASS;
+import static com.mybatisflex.test.issue.def.TUserTableDef.TB_USER;
 
 /**
  * <p>Title: Issue113Test. </p>
@@ -46,6 +46,18 @@ public class Issue113Test implements WithAssertions {
             .innerJoin(TB_USER)
             .on(TB_CLASS.USER_ID.eq(TB_USER.ID))
             .where(TB_CLASS.USER_ID.eq(1));
+        System.out.println(query.toSQL());
+        List<TbClass> list = tbClassMapper.selectListByQuery(query);
+        System.out.println(">>> result = " + list.toString());
+    }
+
+    @Test
+    public void testLeftJoin() {
+        QueryWrapper query = new QueryWrapper()
+            .select("c.*")
+            .from("tb_class").as("c")
+            .leftJoin("tb_user").as("u")
+            .on("c.user_id = u.id");
         System.out.println(query.toSQL());
         List<TbClass> list = tbClassMapper.selectListByQuery(query);
         System.out.println(">>> result = " + list.toString());

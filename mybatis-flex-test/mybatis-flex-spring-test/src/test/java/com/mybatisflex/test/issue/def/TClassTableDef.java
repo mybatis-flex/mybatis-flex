@@ -1,4 +1,4 @@
-package com.mybatisflex.test.issue113.def;
+package com.mybatisflex.test.issue.def;
 
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.table.TableDef;
