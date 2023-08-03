@@ -1,17 +1,8 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
- *  <p>
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *  <p>
- *  http://www.apache.org/licenses/LICENSE-2.0
- *  <p>
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com). <p> Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You
+ * may obtain a copy of the License at <p> http://www.apache.org/licenses/LICENSE-2.0 <p> Unless required by applicable law or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.mybatisflex.core.query;
 
@@ -28,14 +19,16 @@ import java.util.Objects;
  */
 public class QueryTable implements CloneSupport<QueryTable> {
 
+    protected int tableDefHashCode = 0;
     protected String schema;
     protected String name;
     protected String alias;
 
-    public QueryTable() {
-    }
+    public QueryTable() {}
 
     public QueryTable(TableDef tableDef) {
+        // TableDef的标识符号,0:不确定标识
+        this.tableDefHashCode = tableDef.hashCode();
         this.schema = tableDef.getSchema();
         this.name = tableDef.getTableName();
     }
@@ -77,7 +70,6 @@ public class QueryTable implements CloneSupport<QueryTable> {
         return StringUtil.isNotBlank(schema) ? schema + "." + name : name;
     }
 
-
     public QueryTable as(String alias) {
         this.alias = alias;
         return this;
@@ -87,14 +79,15 @@ public class QueryTable implements CloneSupport<QueryTable> {
         if (table == null) {
             return false;
         }
-        if (StringUtil.isNotBlank(alias)
-            && StringUtil.isNotBlank(table.alias)
-            && (Objects.equals(alias, table.alias))) {
+        if (StringUtil.isNotBlank(alias) && StringUtil.isNotBlank(table.alias) && (Objects.equals(alias, table.alias))) {
             return false;
+        }
+        //比较对象都有tableDef标记,就用标记比对, 否则就用名称比对
+        if (tableDefHashCode != 0 && table.tableDefHashCode != 0) {
+            return tableDefHashCode == table.tableDefHashCode;
         }
         return Objects.equals(name, table.name);
     }
-
 
     Object[] getValueArray() {
         return FlexConsts.EMPTY_ARRAY;
@@ -110,20 +103,15 @@ public class QueryTable implements CloneSupport<QueryTable> {
         return sql;
     }
 
-
     @Override
     public String toString() {
-        return "QueryTable{" +
-            "schema='" + schema + '\'' +
-            ", name='" + name + '\'' +
-            ", alias='" + alias + '\'' +
-            '}';
+        return "QueryTable{" + "schema='" + schema + '\'' + ", name='" + name + '\'' + ", alias='" + alias + '\'' + '}';
     }
 
     @Override
     public QueryTable clone() {
         try {
-            return (QueryTable) super.clone();
+            return (QueryTable)super.clone();
         } catch (CloneNotSupportedException e) {
             throw FlexExceptions.wrap(e);
         }
