@@ -7,7 +7,19 @@
 - 熟悉 Spring Boot 及相关框架
 - 熟悉 Java 构建工具，比如 Maven
 
-## Hello World
+> 当前章节涉及到的源码已经全部上传到：https://gitee.com/Suomm/mybatis-flex-test ，在开始之前，
+> 您也可以先下载到本地，导入到 idea 开发工具后，在继续看文档。
+
+
+
+## Hello World 视频教程
+
+<iframe width="100%" height="400px" src="//player.bilibili.com/player.html?aid=955526987&bvid=BV1yW4y1Z74j&cid=1187300793&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+MyBatis-Flex 视频系列详情：https://www.bilibili.com/video/BV1yW4y1Z74j
+
+## Hello World 文档
+
 
 **第 1 步：创建数据库表**
 
