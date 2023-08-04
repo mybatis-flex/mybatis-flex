@@ -115,7 +115,7 @@ processor.tableDef.ignoreEntitySuffixes = Model, Dto
 processor.mapper.generateEnable = true
 ```
 
-以上的配置，会关闭整个项目的 APT 生成，若我们只想关闭某一个 Entity 的 APT 生成，那么可以通过配置注解 `@Table(mapperGenerateEnable = false)` 进行关闭。
+以上的配置，会开启整个项目的 APT 生成，若我们想关闭某一个 Entity 的 APT 生成，那么可以通过配置注解 `@Table(mapperGenerateEnable = false)` 进行关闭。
 
 
 ## APT 生成的 Mapper 包名
