@@ -33,7 +33,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 1、每台机器允许最大的并发量为 10w/s。
  * 2、出现时间回拨，重启机器时，在时间回拨未恢复的情况下，可能出现 id 重复。
  * <p>
- * ID组成：时间（7+）| 毫秒内的时间自增 （00~99：2）| 机器ID（01 ~ 99：2）| 随机数（000~999：3）用于分库分表时，通过 id 取模，保证分布均衡。
+ * ID组成：时间（7+）| 毫秒内的时间自增 （00~99：2）| 机器ID（0 ~ 9：1）| 随机数（000~999：3）用于分库分表时，通过 id 取模，保证分布均衡。
  */
 public class FlexIDKeyGenerator implements IKeyGenerator {
 
