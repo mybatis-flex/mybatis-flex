@@ -16,6 +16,7 @@
 package com.mybatisflex.spring;
 
 import com.mybatisflex.core.datasource.FlexDataSource;
+import com.mybatisflex.core.transaction.TransactionContext;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
@@ -30,7 +31,7 @@ public class FlexSpringTransaction implements Transaction {
 
     DataSource dataSource;
 
-    boolean isTransaction;
+    boolean isTransaction =false;
 
     TransactionIsolationLevel level;
     boolean autoCommit;
@@ -46,6 +47,10 @@ public class FlexSpringTransaction implements Transaction {
     @Override
     public Connection getConnection() throws SQLException {
         if (dataSource instanceof FlexDataSource) {
+            this.autoCommit = this.dataSource.getConnection().getAutoCommit();
+            if ( TransactionContext.getXID() != null){
+                isTransaction = true;
+            }
             return  dataSource.getConnection();
         }else{
             throw new SQLException("The datasource must be FlextDataSource");
@@ -56,12 +61,17 @@ public class FlexSpringTransaction implements Transaction {
 
     @Override
     public void commit() throws SQLException {
-        getConnection().commit();
+        if (!isTransaction && !autoCommit){
+            getConnection().commit();
+        }
+
     }
 
     @Override
     public void rollback() throws SQLException {
-        getConnection().rollback();
+        if (!isTransaction && !autoCommit){
+            getConnection().rollback();
+        }
     }
 
     @Override
