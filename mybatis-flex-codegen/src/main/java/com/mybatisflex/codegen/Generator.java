@@ -33,6 +33,7 @@ import java.util.List;
 
 /**
  * 代码生成器。
+ * @author michael
  */
 public class Generator {
 
@@ -40,7 +41,6 @@ public class Generator {
     protected GlobalConfig globalConfig;
     protected IDialect dialect = IDialect.DEFAULT;
 
-    protected Connection conn = null;
     protected DatabaseMetaData dbMeta = null;
 
     public Generator(DataSource dataSource, GlobalConfig globalConfig) {
@@ -55,11 +55,10 @@ public class Generator {
     }
 
     public void generate() {
-        try {
-            conn = dataSource.getConnection();
-            dbMeta = conn.getMetaData();
+        try (Connection conn = dataSource.getConnection();) {
 
-            List<Table> tables = buildTables();
+            dbMeta = conn.getMetaData();
+            List<Table> tables = buildTables(conn);
 
             for (Table table : tables) {
                 Collection<IGenerator> generators = GeneratorFactory.getGenerators();
@@ -67,14 +66,13 @@ public class Generator {
                     generator.generate(table, globalConfig);
                 }
             }
-
             System.out.println("Code is generated successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    protected void buildPrimaryKey(Table table) throws SQLException {
+    protected void buildPrimaryKey(Connection conn, Table table) throws SQLException {
         try (ResultSet rs = dbMeta.getPrimaryKeys(conn.getCatalog(), null, table.getName())) {
             while (rs.next()) {
                 String primaryKey = rs.getString("COLUMN_NAME");
@@ -83,11 +81,11 @@ public class Generator {
         }
     }
 
-    private List<Table> buildTables() throws SQLException {
+    private List<Table> buildTables(Connection conn) throws SQLException {
         StrategyConfig strategyConfig = globalConfig.getStrategyConfig();
         String schemaName = strategyConfig.getGenerateSchema();
         List<Table> tables = new ArrayList<>();
-        try (ResultSet rs = getTablesResultSet(schemaName)) {
+        try (ResultSet rs = getTablesResultSet(conn, schemaName)) {
             while (rs.next()) {
                 String tableName = rs.getString("TABLE_NAME");
                 if (!strategyConfig.isSupportGenerate(tableName)) {
@@ -105,7 +103,7 @@ public class Generator {
                 table.setComment(remarks);
 
 
-                buildPrimaryKey(table);
+                buildPrimaryKey(conn, table);
 
                 dialect.buildTableColumns(schemaName, table, globalConfig, dbMeta, conn);
 
@@ -115,7 +113,8 @@ public class Generator {
         return tables;
     }
 
-    protected ResultSet getTablesResultSet(String schema) throws SQLException {
+
+    protected ResultSet getTablesResultSet(Connection conn, String schema) throws SQLException {
         if (globalConfig.getStrategyConfig().isGenerateForView()) {
             return dialect.getTablesResultSet(dbMeta, conn, schema, new String[]{"TABLE", "VIEW"});
         } else {
