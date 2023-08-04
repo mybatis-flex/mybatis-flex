@@ -15,13 +15,21 @@
  */
 package com.mybatisflex.spring;
 
+import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.transaction.TransactionContext;
+import com.mybatisflex.core.util.StringUtil;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.apache.ibatis.transaction.Transaction;
+import org.mybatis.logging.Logger;
+import org.mybatis.logging.LoggerFactory;
+import org.mybatis.spring.transaction.SpringManagedTransaction;
 
 /**
  * spring事务支持，解决issusehttps://gitee.com/mybatis-flex/mybatis-flex/issues/I7HJ4J
@@ -29,7 +37,10 @@ import org.apache.ibatis.transaction.Transaction;
  */
 public class FlexSpringTransaction implements Transaction {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlexSpringTransaction.class);
     DataSource dataSource;
+
+    Map<String,Connection> connectionMap =new HashMap<>();
 
     boolean isTransaction =false;
 
@@ -47,16 +58,23 @@ public class FlexSpringTransaction implements Transaction {
     @Override
     public Connection getConnection() throws SQLException {
         if (dataSource instanceof FlexDataSource) {
-            this.autoCommit = this.dataSource.getConnection().getAutoCommit();
+            String dataSourceKey = DataSourceKey.get();
+            if (StringUtil.isBlank(dataSourceKey)) {
+                dataSourceKey = ((FlexDataSource) dataSource).getDefaultDataSourceKey();
+            }
+            Connection connection = connectionMap.get(dataSourceKey);
+            if (connection == null){
+               connection = this.dataSource.getConnection();
+               connectionMap.put(dataSourceKey,connection);
+            }
+            this.autoCommit = connection.getAutoCommit();
             if ( TransactionContext.getXID() != null){
                 isTransaction = true;
             }
-            return  dataSource.getConnection();
+            return  connection;
         }else{
-            throw new SQLException("The datasource must be FlextDataSource");
+            throw new SQLException("The datasource must be FlexDataSource");
         }
-
-
     }
 
     @Override
@@ -64,7 +82,6 @@ public class FlexSpringTransaction implements Transaction {
         if (!isTransaction && !autoCommit){
             getConnection().commit();
         }
-
     }
 
     @Override
