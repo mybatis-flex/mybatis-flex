@@ -62,9 +62,8 @@ public class Codegen {
         globalConfig.setBasePackage("com.test");
 
         //设置表前缀和只生成哪些表
-        globalConfig.setGenerateSchema("schema");
         globalConfig.setTablePrefix("tb_");
-        globalConfig.setGenerateTable("account", "account_session");
+        globalConfig.setGenerateTable("tb_account", "tb_account_session");
 
         //设置生成 entity 并启用 Lombok
         globalConfig.setEntityGenerateEnable(true);
@@ -78,7 +77,7 @@ public class Codegen {
         columnConfig.setColumnName("tenant_id");
         columnConfig.setLarge(true);
         columnConfig.setVersion(true);
-        globalConfig.setColumnConfig("account", columnConfig);
+        globalConfig.setColumnConfig("tb_account", columnConfig);
 
         return globalConfig;
     }
@@ -93,9 +92,8 @@ public class Codegen {
 
         //设置表前缀和只生成哪些表，setGenerateTable 未配置时，生成所有表
         globalConfig.getStrategyConfig()
-                .setGenerateSchema("schema")
                 .setTablePrefix("tb_")
-                .setGenerateTable("account", "account_session");
+                .setGenerateTable("tb_account", "tb_account_session");
 
         //设置生成 entity 并启用 Lombok
         globalConfig.enableEntity()
@@ -110,7 +108,7 @@ public class Codegen {
         columnConfig.setLarge(true);
         columnConfig.setVersion(true);
         globalConfig.getStrategyConfig()
-                .setColumnConfig("account", columnConfig);
+                .setColumnConfig("tb_account", columnConfig);
 
         return globalConfig;
     }
