@@ -24,7 +24,9 @@
 
 ## 示例中的 AccountMapper 和 "ACCOUNT" 在哪里，报错了。
 
-MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的，如果已经生成但是导入不了，点击 [这里](./others/apt.md#开发工具无法导入生成的代码) 查看解决方案。
+MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的，需要编译一下项目。如果已经生成但是导入不了，按如下方法将 `target/generated-sources/annotations` 目录标记一下即可。
+
+![](../assets/images/generated-sources.png)
 
 参考：[MyBatis-Flex APT 配置 - MyBatis-Flex 官方网站](./others/apt.md)
 
