@@ -21,9 +21,7 @@ import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.codegen.config.ColumnConfig;
 import com.mybatisflex.core.util.StringUtil;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -70,6 +68,16 @@ public class Column {
      * 是否需要生成 @Column 注解。
      */
     private boolean needGenColumnAnnotation = false;
+
+    /**
+     * 数据库的字段类型，比如 varchar/tinyint 等
+     */
+    private String rawType;
+
+    /**
+     * 数据库中的字段长度，比如 varchar(32) 中的 32
+     */
+    private int rawLength;
 
     /**
      * 字段配置。
@@ -143,6 +151,22 @@ public class Column {
 
     public void setAutoIncrement(Boolean autoIncrement) {
         isAutoIncrement = autoIncrement;
+    }
+
+    public String getRawType() {
+        return rawType;
+    }
+
+    public void setRawType(String rawType) {
+        this.rawType = rawType;
+    }
+
+    public int getRawLength() {
+        return rawLength;
+    }
+
+    public void setRawLength(int rawLength) {
+        this.rawLength = rawLength;
     }
 
     public ColumnConfig getColumnConfig() {
