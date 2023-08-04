@@ -74,7 +74,7 @@
 - 新增：多数据源功能添加负载均衡的能力
 - 新增：QueryWrapper 的.and() .or() 方法, 增加一个 condition 参数的方法，感谢 @jerryzhengsz
 - 新增：添加 BaseMapper.selectOneWithRelationsByIdAs() 方法，感谢 @jerryzhengsz1
-- 新增：添加异常信息国际哈的支持，感谢 @Suomm
+- 新增：添加异常信息国际化的支持，感谢 @Suomm
 - 新增：添加主键逻辑删除处理器的支持，感谢 @Suomm
 - 新增：在 Service 中可以直接获取链式更新 UpdateChain 方法，感谢 @Suomm
 - 新增：ActiveRecord 添加 join 查询和 Relations 查询的功能，感谢 @Suomm
