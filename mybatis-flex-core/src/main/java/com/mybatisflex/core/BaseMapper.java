@@ -827,7 +827,7 @@ public interface BaseMapper<T> {
                     ((FunctionQueryColumn) selectColumns.get(0)).getFnName()
                 )) {
                     // 第一个查询列不是 COUNT 函数，使用 COUNT(*) 替换所有的查询列
-                    queryWrapper.select(count());
+                    CPI.setSelectColumns(queryWrapper, Collections.singletonList(count()));
                 }
                 // 第一个查询列是 COUNT 函数，可以使用 COUNT(1)、COUNT(列名) 代替默认的 COUNT(*)
                 objects = selectObjectListByQuery(queryWrapper);
@@ -839,7 +839,7 @@ public interface BaseMapper<T> {
                     objects = selectObjectListByQuery(MapperUtil.rawCountQueryWrapper(queryWrapper));
                 } else {
                     // 使用 COUNT(*) 替换所有的查询列
-                    queryWrapper.select(count());
+                    CPI.setSelectColumns(queryWrapper, Collections.singletonList(count()));
                     objects = selectObjectListByQuery(queryWrapper);
                 }
             }
