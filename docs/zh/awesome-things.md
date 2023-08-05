@@ -81,3 +81,9 @@
 - [MyBatis-Flex 视频教程 - 27 version 乐观锁的简单使用](https://www.bilibili.com/video/BV1Rc411F7wp)
 - [MyBatis-Flex 视频教程 - 28 tenantId 多租户的简单使用](https://www.bilibili.com/video/BV1eP41167TU)
 - [MyBatis-Flex 视频教程 - 29 typeHandler 的简单使用](https://www.bilibili.com/video/BV1B841127ea)
+- [MyBatis-Flex 视频教程 - 30 数据脱敏的简单使用](https://www.bilibili.com/video/BV1gz4y1s7Wg)
+- [MyBatis-Flex 视频教程 - 31 枚举属性的使用](https://www.bilibili.com/video/BV1mm4y1W7SD)
+- [MyBatis-Flex 视频教程 - 32 关联查询（Join Query）](https://www.bilibili.com/video/BV1B8411d7iC)
+
+
+
