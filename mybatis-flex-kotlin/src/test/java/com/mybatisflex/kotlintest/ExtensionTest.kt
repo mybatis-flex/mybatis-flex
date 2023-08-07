@@ -29,7 +29,7 @@ fun main() {
         .addScript("data.sql")
         .build()
 
-    AuditManager.setAuditEnable(true);
+    AuditManager.setAuditEnable(true)
     AuditManager.setMessageCollector(ConsoleMessageCollector())
     MybatisFlexBootstrap.getInstance()
         .addMapper(AccountMapper::class.java)
