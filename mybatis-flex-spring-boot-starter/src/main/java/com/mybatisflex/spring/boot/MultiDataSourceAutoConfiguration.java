@@ -82,7 +82,7 @@ public class MultiDataSourceAutoConfiguration {
 
             for (Map.Entry<String, Map<String, String>> entry : dataSourceProperties.entrySet()) {
                 DataSource dataSource = new DataSourceBuilder(entry.getValue()).build();
-                if (seataConfig.isEnable()){
+                if (seataConfig !=null &&seataConfig.isEnable()){
                     if (seataConfig.getSeataMode() ==SeataMode.XA){
                         dataSource = new DataSourceProxyXA(dataSource);
                     }else {
