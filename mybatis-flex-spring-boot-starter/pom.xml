@@ -91,6 +91,11 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-spring-boot-starter</artifactId>
+            <version>1.5.2</version>
+        </dependency>
 
     </dependencies>
 
