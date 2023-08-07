@@ -1,4 +1,4 @@
-package com.mybatisflex.kotlin.extend.db
+package com.mybatisflex.kotlin.extensions.db
 
 import com.mybatisflex.core.BaseMapper
 import com.mybatisflex.core.MybatisFlexBootstrap
@@ -10,8 +10,8 @@ import com.mybatisflex.core.row.*
 import com.mybatisflex.core.table.TableDef
 import com.mybatisflex.core.table.TableInfoFactory
 import com.mybatisflex.core.transaction.Propagation
-import com.mybatisflex.kotlin.extend.entry.filter
-import com.mybatisflex.kotlin.extend.entry.toEntities
+import com.mybatisflex.kotlin.extensions.entry.filter
+import com.mybatisflex.kotlin.extensions.entry.toEntities
 import com.mybatisflex.kotlin.scope.QueryScope
 import com.mybatisflex.kotlin.scope.queryScope
 import java.util.function.BiConsumer

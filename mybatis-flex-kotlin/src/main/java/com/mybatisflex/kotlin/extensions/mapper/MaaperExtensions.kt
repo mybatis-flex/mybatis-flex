@@ -1,4 +1,4 @@
-package com.mybatisflex.kotlin.extend.mapper
+package com.mybatisflex.kotlin.extensions.mapper
 
 import com.mybatisflex.core.BaseMapper
 import com.mybatisflex.core.query.QueryCondition

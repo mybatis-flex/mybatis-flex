@@ -1,4 +1,4 @@
-package com.mybatisflex.kotlin.extend.sql
+package com.mybatisflex.kotlin.extensions.sql
 
 import com.mybatisflex.core.query.Joiner
 import com.mybatisflex.core.query.QueryColumn

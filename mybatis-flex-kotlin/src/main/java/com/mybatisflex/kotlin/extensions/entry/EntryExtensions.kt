@@ -1,4 +1,4 @@
-package com.mybatisflex.kotlin.extend.entry
+package com.mybatisflex.kotlin.extensions.entry
 
 import com.mybatisflex.core.FlexConsts
 import com.mybatisflex.core.dialect.DialectFactory
@@ -10,7 +10,7 @@ import com.mybatisflex.core.table.TableDef
 import com.mybatisflex.core.table.TableInfoFactory
 import com.mybatisflex.core.util.ArrayUtil
 import com.mybatisflex.kotlin.entry.Entry
-import com.mybatisflex.kotlin.extend.db.DB
+import com.mybatisflex.kotlin.extensions.db.DB
 import com.mybatisflex.kotlin.scope.QueryScope
 import java.util.Arrays
 
@@ -49,9 +49,7 @@ inline fun <reified E> TableDef.query(
     )
 }
 
-inline fun <reified E> TableDef.all(
-    vararg columns: QueryColumn?
-): List<E> = DB.selectAll(schema, tableName).toEntities()
+inline fun <reified E> TableDef.all(): List<E> = DB.selectAll(schema, tableName).toEntities()
 
 inline fun <reified E> Collection<Row>.toEntities() = map { it to E::class.java }.toList()
 

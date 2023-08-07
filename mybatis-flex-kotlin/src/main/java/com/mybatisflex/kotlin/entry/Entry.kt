@@ -3,7 +3,7 @@ package com.mybatisflex.kotlin.entry
 import com.mybatisflex.core.dialect.DialectFactory
 import com.mybatisflex.core.table.TableInfoFactory
 import com.mybatisflex.core.util.ArrayUtil
-import com.mybatisflex.kotlin.extend.db.DB
+import com.mybatisflex.kotlin.extensions.db.DB
 import java.io.Serializable
 /**
  * 实体类父类，继承该类后将赋予实体简单增删改操作

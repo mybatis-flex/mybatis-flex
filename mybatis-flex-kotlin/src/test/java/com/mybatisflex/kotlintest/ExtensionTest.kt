@@ -1,19 +1,19 @@
 package com.myba
 
-import com.mybatisflex.kotlin.extend.entry.batchDeleteById
+import com.mybatisflex.kotlin.extensions.entry.batchDeleteById
 
 import com.mybatisflex.core.BaseMapper
 import com.mybatisflex.core.MybatisFlexBootstrap
 import com.mybatisflex.core.audit.AuditManager
 import com.mybatisflex.core.audit.ConsoleMessageCollector
 import com.mybatisflex.kotlin.entry.Entry
-import com.mybatisflex.kotlin.extend.db.DB
-import com.mybatisflex.kotlin.extend.db.DB.filter
-import com.mybatisflex.kotlin.extend.entry.all
-import com.mybatisflex.kotlin.extend.entry.batchInsert
-import com.mybatisflex.kotlin.extend.entry.batchUpdate
-import com.mybatisflex.kotlin.extend.mapper.queryList
-import com.mybatisflex.kotlin.extend.sql.*
+import com.mybatisflex.kotlin.extensions.db.DB
+import com.mybatisflex.kotlin.extensions.db.DB.filter
+import com.mybatisflex.kotlin.extensions.entry.all
+import com.mybatisflex.kotlin.extensions.entry.batchInsert
+import com.mybatisflex.kotlin.extensions.entry.batchUpdate
+import com.mybatisflex.kotlin.extensions.mapper.queryList
+import com.mybatisflex.kotlin.extensions.sql.*
 import com.mybatisflex.kotlintest.entry.Account
 import com.mybatisflex.kotlintest.entry.table.AccountTableDef.ACCOUNT
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder

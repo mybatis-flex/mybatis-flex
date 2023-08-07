@@ -1,7 +1,9 @@
 package com.mybatisflex.kotlin.db
 
+import java.util.NoSuchElementException
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+
 /**
  * 数据库配置对象，暂时未启用
  * @author 卡莫sama(yuanjiashuai)
@@ -20,15 +22,16 @@ class IfNullVar<T : Any>(private var init: (() -> T)?) : ReadWriteProperty<Any?,
     private var _value: T? = null
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): T {
-        if (_value == null) {
+        if (_value == null && init != null) {
             synchronized(this) {
                 if (_value == null) {
-                    _value = init!!()
+                    _value = init?.invoke()
+                    //释放引用
                     init = null
                 }
             }
         }
-        return this._value!!
+        return this._value?:throw NoSuchElementException()
     }
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
