@@ -36,6 +36,12 @@ public interface UpdateWrapper extends Serializable {
         return handler.getUpdates();
     }
 
+    default UpdateWrapper set(String property, Object value, boolean condition) {
+        if (condition) {
+            return set(property, value);
+        }
+        return this;
+    }
 
     default UpdateWrapper set(String property, Object value) {
         if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
@@ -46,6 +52,12 @@ public interface UpdateWrapper extends Serializable {
         return this;
     }
 
+    default <T> UpdateWrapper set(LambdaGetter<T> getter, Object value, boolean condition) {
+        if (condition) {
+            return set(getter, value);
+        }
+        return this;
+    }
 
     default <T> UpdateWrapper set(LambdaGetter<T> getter, Object value) {
         if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
@@ -57,6 +69,12 @@ public interface UpdateWrapper extends Serializable {
         return this;
     }
 
+    default <T> UpdateWrapper set(QueryColumn queryColumn, Object value, boolean condition) {
+        if (condition) {
+            return set(queryColumn, value);
+        }
+        return this;
+    }
 
     default <T> UpdateWrapper set(QueryColumn queryColumn, Object value) {
         if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
@@ -67,14 +85,38 @@ public interface UpdateWrapper extends Serializable {
         return this;
     }
 
+
+    default UpdateWrapper setRaw(String property, Object value, boolean condition) {
+        if (condition) {
+            return setRaw(property, value);
+        }
+        return this;
+    }
+
+
     default UpdateWrapper setRaw(String property, Object value) {
         getUpdates().put(property, new RawValue(value));
+        return this;
+    }
+
+    default <T> UpdateWrapper setRaw(LambdaGetter<T> getter, Object value, boolean condition) {
+        if (condition) {
+            return setRaw(getter, value);
+        }
         return this;
     }
 
 
     default <T> UpdateWrapper setRaw(LambdaGetter<T> getter, Object value) {
         getUpdates().put(LambdaUtil.getFieldName(getter), new RawValue(value));
+        return this;
+    }
+
+
+    default <T> UpdateWrapper setRaw(QueryColumn queryColumn, Object value, boolean condition) {
+        if (condition) {
+            return setRaw(queryColumn, value);
+        }
         return this;
     }
 
