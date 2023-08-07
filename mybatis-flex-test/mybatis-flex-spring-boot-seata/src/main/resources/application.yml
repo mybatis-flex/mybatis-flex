@@ -1,7 +1,7 @@
 mybatis-flex:
   seata-config:
-    enable: true
-    seata-mode: XA
+    enable: true #启动seata
+    seata-mode: XA #xa或者ta
   datasource:
     accountdb:
       url: jdbc:mysql://127.0.0.1:3306/db_account
@@ -21,7 +21,7 @@ seata:
   enabled: true
   application-id: business-service
   tx-service-group: my_test_tx_group
-  enable-auto-data-source-proxy: false
+  enable-auto-data-source-proxy: false  #必须
 #  use-jdk-proxy: false
   client:
     rm:
