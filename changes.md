@@ -2,6 +2,37 @@
 
 
 
+## v1.5.6 20230804:
+- 新增：代码生成器重构并新增对 Solon 框架的代码生成功能，感谢 @Suomm
+- 新增：添加新的默认的达梦方言，之前使用 Oracle，感谢 @qimincow
+- 优化：优化 QueryWrapper.toSQL() 的性能
+- 优化：添加 "未配置事务生成器" 时的异常信息国际化支持
+- 优化：重构 KeywordWrap.java 使之代码逻辑更加清晰
+- 优化：重构代码生成器的 Generator，使之在 web 中在线生成时，保证链接正常关闭
+- 优化：代码生成器的 Column 添加关于数据库类型和长度的相关属性
+- 优化：优化 QueryWrapper.exists() 的性能，感谢 @gongzhongqiang
+- 优化：修改 FlexIDKeyGenerator 注释描述错误的问题，感谢 @duxlei
+- 修复：新增 spring-devtools.properties 已解决 Spring 类转换异常的问题
+- 修复：QueryWrapper 同时 left join 两个同一个表的时候，逻辑删除条件不正确的问题 #I7QD29
+- 修复：RelationManager 在某些场景先可能出现 NPE 的问题
+- 修复：`@UseDataSource` 注解在某些 Spring 场景下不生效的问题，感谢 @Suomm
+- 修复：某些场景下，多数据源使用 JdbcTemplate 事务下使用报错的问题，感谢 @lifejwang11
+- 修复：FieldQueryManager.java 在某些极端场景下出现 NPE 的问题，感谢 @loong0306
+- 修复：同表连接查询，别名匹配不正确的问题，感谢 @qimincow
+- 修复：QueryMethods.column 等构建列使用 as 方法设置别名无效的问题，感谢 @Suomm
+- 文档：添加 QueryWrapper join 自身的相关示例
+- 文档：常见问题添加启动失败说明列表，感谢 @Suomm
+- 文档：优化关于 ActiveRecord 的相关文档，感谢 @Suomm
+- 文档：修改 Auto-Mapper 的一些错误文档，感谢 @Suomm
+- 文档：修改 APT 的配置描述错误的文档，感谢 @Suomm
+- 文档：修改 APT generateEnable 描述错误的问题，感谢 @cijie
+- 文档：修改代码生成器的示例代码错误的文档，感谢 @Suomm
+- 文档：更新 MyBatis-Flex-Helper 的相关文档和截图
+- 文档：优化 MyBatis 原生使用的相关文档，感谢 @pioneer-sun
+- 文档：修改关于 FAQ 的相关描述错误问题，感谢 @wlf213
+
+
+
 ## v1.5.5 20230801:
 - 新增：添加对 xml 分页查询的支持
 - 新增：逻辑删除添加列默认值为 null 值时的构建功能，感谢 @Suomm
@@ -43,7 +74,7 @@
 - 新增：多数据源功能添加负载均衡的能力
 - 新增：QueryWrapper 的.and() .or() 方法, 增加一个 condition 参数的方法，感谢 @jerryzhengsz
 - 新增：添加 BaseMapper.selectOneWithRelationsByIdAs() 方法，感谢 @jerryzhengsz1
-- 新增：添加异常信息国际哈的支持，感谢 @Suomm
+- 新增：添加异常信息国际化的支持，感谢 @Suomm
 - 新增：添加主键逻辑删除处理器的支持，感谢 @Suomm
 - 新增：在 Service 中可以直接获取链式更新 UpdateChain 方法，感谢 @Suomm
 - 新增：ActiveRecord 添加 join 查询和 Relations 查询的功能，感谢 @Suomm

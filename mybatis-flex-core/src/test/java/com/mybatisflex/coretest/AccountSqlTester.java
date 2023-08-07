@@ -362,7 +362,9 @@ public class AccountSqlTester {
     @Test
     public void testJoinSelf() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-            .select()
+            .select(ACCOUNT.ALL_COLUMNS
+//                ,column("a0.xxxx").as("xxx")
+            )
             .from(ACCOUNT).as("a0")
             .leftJoin(ACCOUNT).as("a1").on(ACCOUNT.ID.eq(ACCOUNT.AGE).and(ACCOUNT.USER_NAME.like("a")))
             .where(ACCOUNT.AGE.ge(10));

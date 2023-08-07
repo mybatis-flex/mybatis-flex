@@ -15,13 +15,14 @@
  */
 package com.mybatisflex.spring;
 
-import java.sql.Connection;
-import java.util.Properties;
-import javax.sql.DataSource;
+import com.mybatisflex.core.datasource.FlexDataSource;
 import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.apache.ibatis.transaction.Transaction;
-import org.mybatis.spring.transaction.SpringManagedTransaction;
 import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.util.Properties;
 
 /**
  * @author life
@@ -33,7 +34,7 @@ public class FlexTransactionFactory extends SpringManagedTransactionFactory {
      */
     @Override
     public Transaction newTransaction(DataSource dataSource, TransactionIsolationLevel level, boolean autoCommit) {
-        return new FlexSpringTransaction(dataSource,level,autoCommit);
+        return new FlexSpringTransaction((FlexDataSource) dataSource, autoCommit);
     }
 
     /**
