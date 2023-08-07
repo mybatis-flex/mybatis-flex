@@ -122,6 +122,19 @@ public class MybatisFlexProperties {
      */
     private CoreConfiguration configuration;
 
+    /**
+     * A Configuration object for seata
+     */
+    private SeataConfig seataConfig;
+
+    public SeataConfig getSeataConfig() {
+        return seataConfig;
+    }
+
+    public void setSeataConfig(SeataConfig seataConfig) {
+        this.seataConfig = seataConfig;
+    }
+
     public Map<String, Map<String, String>> getDatasource() {
         return datasource;
     }
@@ -888,6 +901,40 @@ public class MybatisFlexProperties {
             this.secretKey = secretKey;
         }
 
+    }
+
+    /**
+     * Seata 配置
+     *
+     * @author life
+     */
+    public static class SeataConfig{
+
+        /**
+         * 是否开启
+         */
+        private boolean enable = false;
+
+        /**
+         * 事务模式支持，只支持XA或者AT
+         */
+        private SeataMode seataMode = SeataMode.AT;
+
+        public boolean isEnable() {
+            return enable;
+        }
+
+        public void setEnable(boolean enable) {
+            this.enable = enable;
+        }
+
+        public SeataMode getSeataMode() {
+            return seataMode;
+        }
+
+        public void setSeataMode(SeataMode seataMode) {
+            this.seataMode = seataMode;
+        }
     }
 
 }
