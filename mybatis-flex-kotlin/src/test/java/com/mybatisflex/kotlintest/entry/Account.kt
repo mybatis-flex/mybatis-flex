@@ -14,7 +14,7 @@ import java.util.*
  */
 @Table(value = "tb_account", onUpdate = [NoneListener::class])
 data class Account(
-    @Id var id: Int?,
+    @Id var id: Int,
     @Column("u_name") var userName: String?,
     var age: Int?,
     var birthday: Date?,
