@@ -29,6 +29,7 @@ public class JdbcTypeMapping {
     }
 
     private static final Map<String, String> mapping = new HashMap<>();
+    private static JdbcTypeMapper mapper;
 
     static {
         registerMapping("[B", "byte[]");
@@ -46,6 +47,14 @@ public class JdbcTypeMapping {
         return mapping;
     }
 
+    public static JdbcTypeMapper getMapper() {
+        return mapper;
+    }
+
+    public static void setMapper(JdbcTypeMapper mapper) {
+        JdbcTypeMapping.mapper = mapper;
+    }
+
     /**
      * 当只使用 date 类型来映射数据库的所有 "时间" 类型时，调用此方法
      */
@@ -56,9 +65,17 @@ public class JdbcTypeMapping {
         registerMapping("java.time.LocalDate", "java.util.Date");
     }
 
-    static String getType(String jdbcType) {
+    static String getType(String jdbcType, int length) {
+        if (mapper != null) {
+            return mapper.getType(jdbcType, length);
+        }
+
         String registered = mapping.get(jdbcType);
         return StringUtil.isNotBlank(registered) ? registered : jdbcType;
+    }
+
+    public interface JdbcTypeMapper {
+        String getType(String jdbcType, int length);
     }
 
 }
