@@ -18,6 +18,7 @@
         <module>mybatis-flex-spring-test</module>
         <module>mybatis-flex-spring-boot-test</module>
         <module>mybatis-flex-spring-cloud-test</module>
+        <module>mybatis-flex-spring-boot-seata</module>
     </modules>
 
     <properties>

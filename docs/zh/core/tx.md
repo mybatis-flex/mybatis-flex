@@ -124,3 +124,29 @@ public void doSomething(){
 
 >假设在回滚的时候，恰好其中一个数据库出现了异常（比如 网络问题，数据库崩溃），此时，可能只有一个数据库的数据正常回滚（rollback）。
 > 但无论如何，MyBatis-Flex 都会保证在同一个 `@Transactional` 中的多个数据源，保持相同的 commit 或者 rollback 行为。
+
+## Seata 分布式事务
+
+Seata 是一款开源的分布式事务解决方案，致力于在微服务架构下提供高性能和简单易用的分布式事务服务。
+官方网站：https://seata.io/zh-cn/index.html
+
+1. 首先，先了解事务的基础(自行百度)，
+2. 在了解seata事务的项目 官网地址：https://seata.io/zh-cn/docs
+3. 然后根据官方的[快速开始](https://seata.io/zh-cn/docs/user/quickstart.html)在下载最新版的seata-server并在本地跑起一个
+4. seata-server服务
+5. 然后使用[mybatis-flex-test](https://gitee.com/mybatis-flex/mybatis-flex/tree/main/mybatis-flex-test)模块 下面的mybatis-flex-spring-boot-seata进行测试
+>此demo只是一个纯演示的demo，模仿的是[官方事例](https://github.com/seata/seata-samples/tree/master/springboot-mybatis)
+进行整合，微服务合并成一个多数据源进行测试，当然，这种方法是不提倡的，seata事务并且本地多数据源的方式可能本身就存在设计思路问题，可能存在过度设计，此demo只是作为一个演示。
+### 注意事项
+>使用seata的时候必须数据源代理
+`seata.enable-auto-data-source-proxy: false`
+
+`pom`自行引入[seata-spring-boot-starter](https://mvnrepository.com/artifact/io.seata/seata-spring-boot-starter)依赖,
+
+application.yml需要配置如下参数
+1. `mybatis-flex.seata-config.enable`
+
+    配置含义：seata事务是否开启，true开启，默认false关闭
+2. `mybatis-flex.seata-config.seata-mode`
+
+    默认启动的事务类型，目前只支持XA或者AT,默认AT
