@@ -17,6 +17,8 @@ package com.mybatisflex.core.table;
 
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.util.StringUtil;
 
 public class IdInfo extends ColumnInfo {
 
@@ -53,15 +55,37 @@ public class IdInfo extends ColumnInfo {
         if (Number.class.isAssignableFrom(columnInfo.getPropertyType())) {
             keyType = KeyType.Auto;
         } else {
-            keyType = KeyType.None;
+            initDefaultKeyType();
         }
     }
+
 
     public IdInfo(Id id) {
         this.keyType = id.keyType();
         this.value = id.value();
         this.before = id.before();
+
+        initDefaultKeyType();
     }
+
+    /**
+     * 用户未配置 keyType 是，配置默认的 key Type
+     */
+    private void initDefaultKeyType() {
+        if (this.keyType == null || this.keyType == KeyType.None) {
+            FlexGlobalConfig.KeyConfig defaultKeyConfig = FlexGlobalConfig.getDefaultConfig().getKeyConfig();
+            if (defaultKeyConfig != null) {
+                if (defaultKeyConfig.getKeyType() != null) {
+                    this.keyType = defaultKeyConfig.getKeyType();
+                    this.before = defaultKeyConfig.isBefore();
+                }
+                if (StringUtil.isBlank(this.value) && StringUtil.isNotBlank(defaultKeyConfig.getValue())) {
+                    this.value = defaultKeyConfig.getValue();
+                }
+            }
+        }
+    }
+
 
     public KeyType getKeyType() {
         return keyType;

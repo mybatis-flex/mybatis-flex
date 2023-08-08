@@ -370,11 +370,14 @@ public class TableInfo {
         this.primaryColumns = new String[primaryKeyList.size()];
 
         List<String> insertIdFields = new ArrayList<>();
+
         for (int i = 0; i < primaryKeyList.size(); i++) {
             IdInfo idInfo = primaryKeyList.get(i);
             primaryColumns[i] = idInfo.getColumn();
 
-            if (idInfo.getKeyType() != KeyType.Auto && (idInfo.getBefore() != null && idInfo.getBefore())) {
+            if (idInfo.getKeyType() != KeyType.Auto
+                || (idInfo.getBefore() != null && idInfo.getBefore())
+            ) {
                 insertIdFields.add(idInfo.getColumn());
             }
 
