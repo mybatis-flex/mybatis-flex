@@ -1017,6 +1017,64 @@ QueryWrapper query2 = QueryWrapper.create()
 在以上的 `query1` 中，由于 `userName` 和 `id` 都为 null，MyBatis-Flex 会自动忽略 null 值的条件，因此，它们构建出来的 SQL 条件是和 `query2` 完全一致的 。
 
 
+## QueryColumnBehavior <Badge type="tip" text="^ v1.5.6" />
+
+在以上的内容中，我们知道 MyBatis-Flex 会自动忽略 `null` 值的条件，但是在实际开发中，有的开发者希望除了自动忽略 `null`
+值以外，还可以自动忽略其他值，比如 `空字符串` 等。
+
+
+此时，我们可以通过配置 QueryColumnBehavior 来自定义忽略的值。如下的代码会自动忽略 `null` 和 `空字符串`：
+
+```java
+QueryColumnBehavior.setIgnoreFunction(new Function<Object, Boolean>() {
+    @Override
+    public Boolean apply(Object o) {
+        return "".equals(o);
+    }
+});
+```
+
+另外，在某些场景下，开发者希望在构建 QueryWrapper 中，如果传入的值是集合或数组，则使用 `in` 逻辑，否则使用 `=`（等于）
+逻辑：
+
+```java
+QueryColumnBehavior.setSmartConvertInToEquals(true);
+```
+
+当添加以上配置时，我们在构建 QueryWrapper 的 `in` 的 SQL 时，逻辑如下：
+
+```java
+// ids 有多个值
+List<Integer> ids = Arrays.asList(1, 2, 3);
+QueryWrapper qw = new QueryWrapper();
+qw.where(ACCOUNT.ID.in(ids))
+
+System.out.println(qw.toSQL());
+```
+输出的 SQL 如下：
+
+```sql
+select * from tb_account where id in (1,2,3);
+```
+
+若 `ids` 只有 1 个值时，逻辑如下：
+
+```java
+// ids 只有 1 个值
+List<Integer> ids = Arrays.asList(1);
+QueryWrapper qw = new QueryWrapper();
+qw.where(ACCOUNT.ID.in(ids))
+
+System.out.println(qw.toSQL());
+```
+输出的 SQL 如下：
+
+```sql
+select * from tb_account where id = 1;
+```
+
+
+
 ## 存在疑问？
 
 **疑问1：示例代码中的 QueryWrapper 所需要的 "ACCOUNT" 从哪里来的？**
