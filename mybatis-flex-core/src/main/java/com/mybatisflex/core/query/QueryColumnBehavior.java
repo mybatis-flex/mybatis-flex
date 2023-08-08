@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * @author michael
@@ -25,7 +25,7 @@ public class QueryColumnBehavior {
     /**
      * 自定义全局的自动忽略参数的方法
      */
-    private static Function<Object,Boolean> ignoreFunction;
+    private static Predicate<Object> ignoreFunction;
 
     /**
      * 是否自动把 in(...) 只有 1 个参数的内容转换为相等 =
@@ -33,12 +33,11 @@ public class QueryColumnBehavior {
     private static boolean smartConvertInToEquals = false;
 
 
-
-    public static Function<Object, Boolean> getIgnoreFunction() {
+    public static Predicate<Object> getIgnoreFunction() {
         return ignoreFunction;
     }
 
-    public static void setIgnoreFunction(Function<Object, Boolean> ignoreFunction) {
+    public static void setIgnoreFunction(Predicate<Object> ignoreFunction) {
         QueryColumnBehavior.ignoreFunction = ignoreFunction;
     }
 
@@ -55,7 +54,7 @@ public class QueryColumnBehavior {
         if (ignoreFunction == null){
             return false;
         }
-        return ignoreFunction.apply(value);
+        return ignoreFunction.test(value);
     }
 
 }
