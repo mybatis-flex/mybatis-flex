@@ -226,12 +226,8 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
     @ConditionalOnMissingBean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
 
-        FlexSqlSessionFactoryBean factory = new FlexSqlSessionFactoryBean();
+        SqlSessionFactoryBean factory = new FlexSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
-        if (properties.getSeataConfig() !=null && properties.getSeataConfig().isEnable()){
-            factory.setSeata(true);
-            factory.setSeataMode(properties.getSeataConfig().getSeataMode());
-        }
         if (properties.getConfiguration() == null || properties.getConfiguration().getVfsImpl() == null) {
             factory.setVfs(SpringBootVFS.class);
         }

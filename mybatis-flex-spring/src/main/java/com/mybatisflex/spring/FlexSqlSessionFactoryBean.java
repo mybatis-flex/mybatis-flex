@@ -154,21 +154,6 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
 
     private ObjectWrapperFactory objectWrapperFactory;
 
-
-    private boolean seata = false;
-
-
-    private SeataMode seataMode = SeataMode.AT;
-
-
-    public void setSeata(boolean seata) {
-        this.seata = seata;
-    }
-
-    public void setSeataMode(SeataMode seataMode) {
-        this.seataMode = seataMode;
-    }
-
     /**
      * Sets the ObjectFactory.
      *
@@ -615,16 +600,6 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
         // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I70QWU
         // 兼容SpringManagedTransactionFactory否则在使用JdbcTemplate,多数据源使用JdbcTemplate报错
         //fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I7HJ4J
-        // 兼容单数据源seata
-        if (!(dataSource instanceof FlexDataSource)){
-            if (seata){
-                if (seataMode == SeataMode.XA){
-                    dataSource = new DataSourceProxyXA(dataSource);
-                }else {
-                    dataSource = new DataSourceProxy(dataSource);
-                }
-            }
-        }
         targetConfiguration.setEnvironment(new Environment(this.environment,
 //                this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,
 //            this.transactionFactory == null ? new JdbcTransactionFactory() : this.transactionFactory,

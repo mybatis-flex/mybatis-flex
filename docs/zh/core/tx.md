@@ -238,3 +238,12 @@ seata:
     <version>1.7.0</version>
 </dependency>
 ```
+### 事例
+请到mybatis-flex-test模块下面：
+```xml
+mybatis-flex-spring-boot-seata：flex多数据源与seata的结合
+```
+```xml
+mybatis-flex-spring-boot-seata-demo:官方demo与flex结合
+```
+

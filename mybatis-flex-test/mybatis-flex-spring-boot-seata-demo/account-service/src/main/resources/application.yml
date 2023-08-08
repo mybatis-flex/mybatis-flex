@@ -1,14 +1,5 @@
 server:
   port: 8083
-mybatis-flex:
-    seata-config:
-        enable: true #启动seata
-        seata-mode: XA #xa或者ta
-#    datasource:
-#        accountdb:
-#            url: jdbc:mysql://127.0.0.1:3306/db_account
-#            username: root
-#            password: 131496
 spring:
     main:
         allow-circular-references: true
@@ -21,8 +12,6 @@ seata:
   enabled: true
   application-id: account-service
   tx-service-group: my_test_tx_group
-  enable-auto-data-source-proxy: false
-  #use-jdk-proxy: false
   client:
     rm:
       async-commit-buffer-limit: 1000

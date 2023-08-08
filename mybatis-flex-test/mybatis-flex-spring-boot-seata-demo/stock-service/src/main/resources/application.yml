@@ -1,14 +1,5 @@
 server:
   port: 8081
-mybatis-flex:
-    seata-config:
-        enable: true #启动seata
-        seata-mode: XA #xa或者ta
-#    datasource:
-#        stockdb:
-#            url: jdbc:mysql://127.0.0.1:3306/db_stock
-#            username: root
-#            password: 131496
 spring:
     main:
         allow-circular-references: true
@@ -21,7 +12,7 @@ seata:
   enabled: true
   application-id: stock-service
   tx-service-group: my_test_tx_group
-  enable-auto-data-source-proxy: false
+#  enable-auto-data-source-proxy: false
   #use-jdk-proxy: false
   client:
     rm:
