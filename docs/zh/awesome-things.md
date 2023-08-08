@@ -84,6 +84,9 @@
 - [MyBatis-Flex 视频教程 - 30 数据脱敏的简单使用](https://www.bilibili.com/video/BV1gz4y1s7Wg)
 - [MyBatis-Flex 视频教程 - 31 枚举属性的使用](https://www.bilibili.com/video/BV1mm4y1W7SD)
 - [MyBatis-Flex 视频教程 - 32 关联查询（Join Query）](https://www.bilibili.com/video/BV1B8411d7iC)
+- [MyBatis-Flex 视频教程 - 33 关联查询（Field Query）](https://www.bilibili.com/video/BV17k4y1g7vt)
+- [MyBatis-Flex 视频教程 - 34 关联查询（Relation Query）](https://www.bilibili.com/video/BV1bj411r7A4)
+- [MyBatis-Flex 视频教程 - 35 关联查询对比](https://www.bilibili.com/video/BV1oF411f7dr)
 
 
 

@@ -87,14 +87,12 @@ MyBatis-Flex 已支持 Spring 框架的 `@Transactional`，在使用 SpringBoot 
 > 注意：若项目未使用 SpringBoot，只用到了 Spring，需要参考 MyBatis-Flex 的 [FlexTransactionAutoConfiguration](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-spring-boot-starter/src/main/java/com/mybatisflex/spring/boot/FlexTransactionAutoConfiguration.java)
 > 进行事务配置，才能正常使用 `@Transactional` 注解。
 
-## 特征
+## 多数据源注意事项
 
-- 1、支持嵌套事务
-- 2、支持多数据源
+注意：在多数据源的情况下，所有数据源的数据库请求（Connection）会执行相同的 `commit` 或者 `rollback`，MyBatis-Flex 只保证了程序端的原子操作，
+但并不能保证多个数据源之间的原子操作。例如：
 
-> 注意：在多数据源的情况下，所有数据源的数据库请求（Connection）会执行相同的 commit 或者 rollback，但并非原子操作。例如：
-
-```java
+```java 1,6,13,19
 @Transactional
 public void doSomething(){
 
@@ -117,7 +115,7 @@ public void doSomething(){
 }
 ```
 
-在以上的例子中，两次 `Db.update(...)` 虽然是两个不同的数据源，但它们都在同一个事务 `@Transactional` 里，因此，当抛出异常的时候，
+在以上的例子中，执行了两次 `Db.updateBySql(...)`，它们是两个不同的数据源，但它们都在同一个事务 `@Transactional` 里，因此，当抛出异常的时候，
 它们都会进行回滚（rollback）。
 
 以上提到的 `并非原子操作`，指的是：
@@ -127,26 +125,112 @@ public void doSomething(){
 
 ## Seata 分布式事务
 
-Seata 是一款开源的分布式事务解决方案，致力于在微服务架构下提供高性能和简单易用的分布式事务服务。
+Seata 是一款开源的分布式事务解决方案，致力于提供高性能和简单易用的分布式事务服务。
+Seata 将为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打造一站式的分布式解决方案。
 官方网站：https://seata.io/zh-cn/index.html
 
-1. 首先，先了解事务的基础(自行百度)，
-2. 在了解seata事务的项目 官网地址：https://seata.io/zh-cn/docs
-3. 然后根据官方的[快速开始](https://seata.io/zh-cn/docs/user/quickstart.html)在下载最新版的seata-server并在本地跑起一个
-4. seata-server服务
-5. 然后使用[mybatis-flex-test](https://gitee.com/mybatis-flex/mybatis-flex/tree/main/mybatis-flex-test)模块 下面的mybatis-flex-spring-boot-seata进行测试
->此demo只是一个纯演示的demo，模仿的是[官方事例](https://github.com/seata/seata-samples/tree/master/springboot-mybatis)
-进行整合，微服务合并成一个多数据源进行测试，当然，这种方法是不提倡的，seata事务并且本地多数据源的方式可能本身就存在设计思路问题，可能存在过度设计，此demo只是作为一个演示。
+
+### 开始使用
+
+**第 1 步：在 `application.yml` 配置开启 Seata 分布式事务功能：**
+
+```yaml
+mybatis-flex:
+  seata-config:
+    enable: true
+    seata-mode: XA # 支持 xa 或者 ta
+```
+- XA：指的是: 分布式事务协议（X/Open Distributed Transaction Processing），它是一种由 X/Open 组织制定的分布式事务标准，
+XA 使用两阶段提交（2PC，Two-Phase Commit）来保证所有资源同时提交或回滚任何特定的事务。
+目前，几乎所有主流的数据库都对 XA 规范 提供了支持，是 Seata 默认使用的模式。
+
+- AT： 是一种无侵入的分布式事务解决方案。在 AT 模式下，用户只需关注自己的 “`业务SQL`”，
+用户的 “`业务SQL`” 作为一阶段，Seata 会根据 SQL 内容，自动生成事务的二阶段提交和回滚操作。
+
+**第 2 步：在 `application.yml` 添加 Seata 的相关配置：**
+
+```yaml
+seata:
+  enabled: true
+  application-id: business-service
+  tx-service-group: my_test_tx_group
+  enable-auto-data-source-proxy: false  #必须
+#  use-jdk-proxy: false
+  client:
+    rm:
+      async-commit-buffer-limit: 1000
+      report-retry-count: 5
+      table-meta-check-enable: false
+      report-success-enable: false
+      lock:
+        retry-interval: 10
+        retry-times: 30
+        retry-policy-branch-rollback-on-conflict: true
+    tm:
+      commit-retry-count: 5
+      rollback-retry-count: 5
+    undo:
+      data-validation: true
+      log-serialization: jackson
+      log-table: undo_log
+    log:
+      exceptionRate: 100
+  service:
+    vgroup-mapping:
+      my_test_tx_group: default
+    grouplist:
+      default: 127.0.0.1:8091
+    #enable-degrade: false
+    #disable-global-transaction: false
+  transport:
+    shutdown:
+      wait: 3
+    thread-factory:
+      boss-thread-prefix: NettyBoss
+      worker-thread-prefix: NettyServerNIOWorker
+      server-executor-thread-prefix: NettyServerBizHandler
+      share-boss-worker: false
+      client-selector-thread-prefix: NettyClientSelector
+      client-selector-thread-size: 1
+      client-worker-thread-prefix: NettyClientWorkerThread
+      worker-thread-size: default
+      boss-thread-size: 1
+    type: TCP
+    server: NIO
+    heartbeat: true
+    serialization: seata
+    compressor: none
+    enable-client-batch-send-request: true
+  config:
+    type: file
+  registry:
+    type: file
+```
+
+> 以上配置的含义，请参考 Seata 官方网站：https://seata.io/zh-cn/docs/user/configurations.html
+
+**3、通过使用 `@GloabalTransactional` 开始 Seata 分布式事务。**
+
+```java 1
+@GlobalTransactional
+public void purchase(String userId, String commodityCode, int orderCount) {
+    LOGGER.info("purchase begin ... xid: " + RootContext.getXID());
+    stockClient.deduct(commodityCode, orderCount);
+    orderClient.create(userId, commodityCode, orderCount);
+}
+```
+
+> 更多关于 Seata 的知识，请异步 Seata 官方网站了解：https://seata.io/zh-cn/docs ，也可以参考 Seata
+> 的官方示例快速开始：https://seata.io/zh-cn/docs/user/quickstart.html
+
 ### 注意事项
->使用seata的时候必须数据源代理
-`seata.enable-auto-data-source-proxy: false`
 
-`pom`自行引入[seata-spring-boot-starter](https://mvnrepository.com/artifact/io.seata/seata-spring-boot-starter)依赖,
+在使用 Seata 分布式事务时，请注意添加 Seata 的相关 Maven 依赖，例如：
 
-application.yml需要配置如下参数
-1. `mybatis-flex.seata-config.enable`
-
-    配置含义：seata事务是否开启，true开启，默认false关闭
-2. `mybatis-flex.seata-config.seata-mode`
-
-    默认启动的事务类型，目前只支持XA或者AT,默认AT
+```xml
+<dependency>
+    <groupId>io.seata</groupId>
+    <artifactId>seata-spring-boot-starter</artifactId>
+    <version>1.7.0</version>
+</dependency>
+```

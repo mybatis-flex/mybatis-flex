@@ -3,20 +3,20 @@ spring:
   #  h2:
   #    console:
   #      enabled: true
-#  datasource:
-##    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/flex_test
-#    username: root
-#    password: 131496
+  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/flex_test
+    username: root
+    password: 12345678
   #    driver-class-name:
   #  datasource:
   #    driver-class-name: org.h2.Driver
   #    username: root
   #    password: test
-  sql:
-    init:
-      schema-locations: classpath:schema.sql
-      data-locations: classpath:data.sql
+#  sql:
+#    init:
+#      schema-locations: classpath:schema.sql
+#      data-locations: classpath:data.sql
 mybatis-flex:
   admin-config:
     enable: true
@@ -37,12 +37,12 @@ mybatis-flex:
 #      username: root
 #      password: 12345678
 #mybatis-flex:
-  datasource:
-    ds3333:
-      url: jdbc:mysql://127.0.0.1:3306/flex_test
-      username: root
-      password: 131496
-    ds2:
-      url: jdbc:mysql://127.0.0.1:3306/flex_test1
-      username: root
-      password: 131496
+#  datasource:
+#    ds3333:
+#      url: jdbc:mysql://127.0.0.1:3306/flex_test
+#      username: root
+#      password: 131496
+#    ds2:
+#      url: jdbc:mysql://127.0.0.1:3306/flex_test1
+#      username: root
+#      password: 131496
