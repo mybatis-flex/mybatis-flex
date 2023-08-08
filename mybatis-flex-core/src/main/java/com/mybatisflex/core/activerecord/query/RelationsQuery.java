@@ -18,6 +18,7 @@ package com.mybatisflex.core.activerecord.query;
 
 import com.mybatisflex.core.activerecord.Model;
 import com.mybatisflex.core.query.RelationsBuilder;
+import com.mybatisflex.core.util.LambdaGetter;
 
 /**
  * 使用 {@code Relations Query} 的方式进行关联查询。
@@ -33,6 +34,12 @@ public class RelationsQuery<T extends Model<T>> extends RelationsBuilder<T> {
 
     @Override
     public RelationsQuery<T> ignoreRelations(String... fields) {
+        super.ignoreRelations(fields);
+        return this;
+    }
+
+    @Override
+    public RelationsQuery<T> ignoreRelations(LambdaGetter<T>... fields) {
         super.ignoreRelations(fields);
         return this;
     }

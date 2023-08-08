@@ -18,6 +18,7 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.relation.RelationManager;
+import com.mybatisflex.core.util.LambdaGetter;
 
 import java.util.List;
 
@@ -40,6 +41,17 @@ public class RelationsBuilder<T> extends AbstractQueryBuilder<T> {
      * @return {@code Relations} 查询构建
      */
     public RelationsBuilder<T> ignoreRelations(String... fields) {
+        RelationManager.addIgnoreRelations(fields);
+        return this;
+    }
+
+    /**
+     * 忽略查询部分 {@code Relations} 注解标记的属性。
+     *
+     * @param fields 属性
+     * @return {@code Relations} 查询构建
+     */
+    public RelationsBuilder<T> ignoreRelations(LambdaGetter<T>... fields) {
         RelationManager.addIgnoreRelations(fields);
         return this;
     }
