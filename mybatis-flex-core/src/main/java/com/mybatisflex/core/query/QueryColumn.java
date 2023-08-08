@@ -140,7 +140,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * @param value
      */
     public QueryCondition eq(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.EQUALS, value);
@@ -148,7 +148,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
 
 
     public <T> QueryCondition eq(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.EQUALS, value).when(fn);
@@ -161,14 +161,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * @param value
      */
     public QueryCondition ne(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.NOT_EQUALS, value);
     }
 
     public <T> QueryCondition ne(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.NOT_EQUALS, value).when(fn);
@@ -181,14 +181,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * @param value
      */
     public QueryCondition like(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LIKE, "%" + value + "%");
     }
 
     public <T> QueryCondition like(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LIKE, "%" + value + "%").when(fn);
@@ -196,14 +196,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
 
 
     public QueryCondition likeLeft(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LIKE, value + "%");
     }
 
     public <T> QueryCondition likeLeft(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LIKE, value + "%").when(fn);
@@ -211,14 +211,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
 
 
     public QueryCondition likeRight(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LIKE, "%" + value);
     }
 
     public <T> QueryCondition likeRight(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LIKE, "%" + value).when(fn);
@@ -226,19 +226,18 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
 
 
     public QueryCondition likeRaw(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LIKE, value);
     }
 
     public <T> QueryCondition likeRaw(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LIKE, value).when(fn);
     }
-
 
 
     /**
@@ -247,14 +246,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * @param value
      */
     public QueryCondition notLike(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value + "%");
     }
 
     public <T> QueryCondition notLike(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value + "%").when(fn);
@@ -262,14 +261,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
 
 
     public QueryCondition notLikeLeft(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.NOT_LIKE, value + "%");
     }
 
     public <T> QueryCondition notLikeLeft(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.NOT_LIKE, value + "%").when(fn);
@@ -277,19 +276,18 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
 
 
     public QueryCondition notLikeRight(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value);
     }
 
     public <T> QueryCondition notLikeRight(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value).when(fn);
     }
-
 
 
     /**
@@ -298,14 +296,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * @param value
      */
     public QueryCondition gt(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.GT, value);
     }
 
     public <T> QueryCondition gt(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.GT, value).when(fn);
@@ -317,14 +315,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * @param value
      */
     public QueryCondition ge(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.GE, value);
     }
 
     public <T> QueryCondition ge(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.GE, value).when(fn);
@@ -336,14 +334,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * @param value
      */
     public QueryCondition lt(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LT, value);
     }
 
     public <T> QueryCondition lt(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LT, value).when(fn);
@@ -355,14 +353,14 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * @param value
      */
     public QueryCondition le(Object value) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LE, value);
     }
 
     public <T> QueryCondition le(Object value, Predicate<T> fn) {
-        if (value == null) {
+        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlConsts.LE, value).when(fn);
@@ -372,7 +370,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     /**
      * IS NULL
      *
-     * @return
+     * @return QueryCondition
      */
     public QueryCondition isNull() {
         return QueryCondition.create(this, SqlConsts.IS_NULL, null);
@@ -386,7 +384,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     /**
      * IS NOT NULL
      *
-     * @return
+     * @return QueryCondition
      */
     public QueryCondition isNotNull() {
         return QueryCondition.create(this, SqlConsts.IS_NOT_NULL, null);
@@ -401,21 +399,32 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * in arrays
      *
      * @param arrays
-     * @return
+     * @return QueryCondition
      */
     public QueryCondition in(Object... arrays) {
         //忽略 QueryWrapper.in("name", null) 的情况
-        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null)) {
+        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null) || QueryColumnBehavior.shouldIgnoreValue(arrays)) {
             return QueryCondition.createEmpty();
         }
+
+        if (arrays.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
+            return QueryCondition.create(this, SqlConsts.EQUALS, arrays[0]);
+        }
+
         return QueryCondition.create(this, SqlConsts.IN, arrays);
     }
 
+
     public <T> QueryCondition in(Object[] arrays, Predicate<T> fn) {
         //忽略 QueryWrapper.in("name", null) 的情况
-        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null)) {
+        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null) || QueryColumnBehavior.shouldIgnoreValue(arrays)) {
             return QueryCondition.createEmpty();
         }
+
+        if (arrays.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
+            return QueryCondition.create(this, SqlConsts.EQUALS, arrays[0]);
+        }
+
         return QueryCondition.create(this, SqlConsts.IN, arrays).when(fn);
     }
 
@@ -423,13 +432,20 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * in child select
      *
      * @param queryWrapper
-     * @return
+     * @return QueryCondition
      */
     public QueryCondition in(QueryWrapper queryWrapper) {
+        if (queryWrapper == null || QueryColumnBehavior.shouldIgnoreValue(queryWrapper)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlConsts.IN, queryWrapper);
     }
 
+
     public <T> QueryCondition in(QueryWrapper queryWrapper, Predicate<T> fn) {
+        if (queryWrapper == null || QueryColumnBehavior.shouldIgnoreValue(queryWrapper)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlConsts.IN, queryWrapper).when(fn);
     }
 
@@ -438,17 +454,17 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * in Collection
      *
      * @param collection
-     * @return
+     * @return QueryCondition
      */
     public QueryCondition in(Collection<?> collection) {
-        if (collection != null && !collection.isEmpty()) {
+        if (collection != null && !collection.isEmpty() && !QueryColumnBehavior.shouldIgnoreValue(collection)) {
             return in(collection.toArray());
         }
         return QueryCondition.createEmpty();
     }
 
     public <T> QueryCondition in(Collection<?> collection, Predicate<T> fn) {
-        if (collection != null && !collection.isEmpty()) {
+        if (collection != null && !collection.isEmpty() && !QueryColumnBehavior.shouldIgnoreValue(collection)) {
             return in(collection.toArray(), fn);
         }
         return QueryCondition.createEmpty();
@@ -458,21 +474,31 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * not int arrays
      *
      * @param arrays
-     * @return
+     * @return QueryCondition
      */
     public QueryCondition notIn(Object... arrays) {
         //忽略 QueryWrapper.notIn("name", null) 的情况
-        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null)) {
+        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null) || QueryColumnBehavior.shouldIgnoreValue(arrays)) {
             return QueryCondition.createEmpty();
         }
+
+        if (arrays.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
+            return QueryCondition.create(this, SqlConsts.NOT_EQUALS, arrays[0]);
+        }
+
         return QueryCondition.create(this, SqlConsts.NOT_IN, arrays);
     }
 
     public <T> QueryCondition notIn(Object[] arrays, Predicate<T> fn) {
         //忽略 QueryWrapper.notIn("name", null) 的情况
-        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null)) {
+        if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null) || QueryColumnBehavior.shouldIgnoreValue(arrays)) {
             return QueryCondition.createEmpty();
         }
+
+        if (arrays.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
+            return QueryCondition.create(this, SqlConsts.NOT_EQUALS, arrays[0]);
+        }
+
         return QueryCondition.create(this, SqlConsts.NOT_IN, arrays).when(fn);
     }
 
@@ -481,17 +507,17 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * not in Collection
      *
      * @param collection
-     * @return
+     * @return QueryCondition
      */
     public QueryCondition notIn(Collection<?> collection) {
-        if (collection != null && !collection.isEmpty()) {
+        if (collection != null && !collection.isEmpty() && !QueryColumnBehavior.shouldIgnoreValue(collection)) {
             return notIn(collection.toArray());
         }
         return QueryCondition.createEmpty();
     }
 
     public <T> QueryCondition notIn(Collection<?> collection, Predicate<T> fn) {
-        if (collection != null && !collection.isEmpty()) {
+        if (collection != null && !collection.isEmpty() && !QueryColumnBehavior.shouldIgnoreValue(collection)) {
             return notIn(collection.toArray(), fn);
         }
         return QueryCondition.createEmpty();
@@ -503,10 +529,17 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * @param queryWrapper
      */
     public QueryCondition notIn(QueryWrapper queryWrapper) {
+        if (queryWrapper == null || QueryColumnBehavior.shouldIgnoreValue(queryWrapper)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlConsts.NOT_IN, queryWrapper);
     }
 
+
     public <T> QueryCondition notIn(QueryWrapper queryWrapper, Predicate<T> fn) {
+        if (queryWrapper == null || QueryColumnBehavior.shouldIgnoreValue(queryWrapper)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlConsts.NOT_IN, queryWrapper).when(fn);
     }
 
@@ -615,7 +648,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
             return null;
         }
 
-        if (selfTable != null && StringUtil.isNotBlank(selfTable.alias)){
+        if (selfTable != null && StringUtil.isNotBlank(selfTable.alias)) {
             return selfTable;
         }
 
