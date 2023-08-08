@@ -21,6 +21,7 @@
   就可以了，不需要再添加其他 MyBatis 依赖。
 - 3、是否与 `mybatis-plus-boot-starter` 共用，使 MyBatis 被优先初始化，而导致 MyBatis-Flex 没有被加载。
 - 4、是否添加了 `pagehelper-spring-boot-starter` 依赖，导致传递了 `mybatis-spring-boot-starter` 依赖。如还想继续使用 pagehelper 插件，点击 [这里](#与-pagehelper-集成出现错误) 查看解决方案。
+- 5、是否 Spring Boot 版本过低，请使用 Spring Boot 2.2 及其以上版本，点击 [这里](#springboot-项目启动报错-javalangclassnotfoundexception-orgspringframeworktransactiontransactionmanager) 获取详细信息。
 
 ## 示例中的 AccountMapper 和 "ACCOUNT" 在哪里，报错了。
 
@@ -61,6 +62,11 @@ in alimaven (http://maven.aliyun.com/nexus/content/groups/public/)
     <url>https://mirrors.huaweicloud.com/repository/maven/</url>
 </mirror>
 ```
+
+## SpringBoot 项目，启动报错 java.lang.ClassNotFoundException: org.springframework.transaction.TransactionManager
+
+这个应该是 Spring Boot 版本的问题，`org.springframework.transaction.TransactionManager` 这个类是 Spring Framework 5.2
+新增的，对应 Spring Boot 的版本应该是 Spring Boot 2.2 及其以上版本，所以应该使用 Spring Boot 2.2 及其以上版本。
 
 ## SpringBoot 项目，启动报错 Property 'sqlSessionFactory' or 'sqlSessionTemplate' are required
 
