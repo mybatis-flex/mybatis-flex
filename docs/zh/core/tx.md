@@ -125,7 +125,11 @@ public void doSomething(){
 >假设在回滚的时候，恰好其中一个数据库出现了异常（比如 网络问题，数据库崩溃），此时，可能只有一个数据库的数据正常回滚（rollback）。
 > 但无论如何，MyBatis-Flex 都会保证在同一个 `@Transactional` 中的多个数据源，保持相同的 commit 或者 rollback 行为。
 
-## 支持seata事务
+## Seata 分布式事务
+
+Seata 是一款开源的分布式事务解决方案，致力于在微服务架构下提供高性能和简单易用的分布式事务服务。
+官方网站：https://seata.io/zh-cn/index.html
+
 1. 首先，先了解事务的基础(自行百度)，
 2. 在了解seata事务的项目 官网地址：https://seata.io/zh-cn/docs
 3. 然后根据官方的[快速开始](https://seata.io/zh-cn/docs/user/quickstart.html)在下载最新版的seata-server并在本地跑起一个
