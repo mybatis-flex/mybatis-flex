@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mybatisflex.test.orderservice.persistence.OrderMapper">
+    <resultMap id="BaseResultMap" type="mybatisflex.test.orderservice.persistence.Order">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="commodity_code" property="commodityCode" jdbcType="VARCHAR"/>
+        <result column="count" property="count" jdbcType="INTEGER"/>
+        <result column="money" property="money" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="mybatisflex.test.orderservice.persistence.Order">
+        insert into order_tbl (user_id, commodity_code, count, money)
+        values (#{userId,jdbcType=VARCHAR}, #{commodityCode,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER},
+                #{money,jdbcType=DECIMAL})
+    </insert>
+
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mybatisflex.test.acount.accountservice.persistence.AccountMapper">
+    <resultMap id="BaseResultMap" type="mybatisflex.test.acount.accountservice.persistence.Account">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="money" property="money" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <select id="selectByUserId" resultType="mybatisflex.test.acount.accountservice.persistence.Account">
+        select id, user_id, money
+        from account_tbl
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="updateById" parameterType="mybatisflex.test.acount.accountservice.persistence.Account">
+        update account_tbl
+        set money = #{money,jdbcType=DECIMAL}
+        where id = #{id}
+    </update>
+
+</mapper>
