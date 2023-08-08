@@ -17,6 +17,7 @@ package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.spring.SeataMode;
 import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.mapping.ResultSetType;

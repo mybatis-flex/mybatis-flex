@@ -4,21 +4,19 @@ mybatis-flex:
     seata-config:
         enable: true #启动seata
         seata-mode: XA #xa或者ta
-    datasource:
-        orderdb:
-            url: jdbc:mysql://127.0.0.1:3306/db_order
-            username: root
-            password: 131496
+#    datasource:
+#        orderdb:
+#            url: jdbc:mysql://127.0.0.1:3306/db_order
+#            username: root
+#            password: 131496
 spring:
     main:
         allow-circular-references: true
-#spring:
-#  datasource:
-#    type: com.alibaba.druid.pool.DruidDataSource
-#    driver-class-name: com.mysql.jdbc.Driver
-#    url: jdbc:mysql://127.0.0.1:3306/db_order?useSSL=false&serverTimezone=UTC
-#    username: root
-#    password: 131496
+    datasource:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/db_order?useSSL=false&serverTimezone=UTC
+        username: root
+        password: 131496
 seata:
   enabled: true
   application-id: order-service
