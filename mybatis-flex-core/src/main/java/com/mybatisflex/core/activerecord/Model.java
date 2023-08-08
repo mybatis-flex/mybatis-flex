@@ -16,15 +16,15 @@
 
 package com.mybatisflex.core.activerecord;
 
+import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.activerecord.query.FieldsQuery;
 import com.mybatisflex.core.activerecord.query.QueryModel;
 import com.mybatisflex.core.activerecord.query.RelationsQuery;
-import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.MapperQueryChain;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.SqlUtil;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Active Record 模型。
@@ -36,7 +36,7 @@ import java.util.Optional;
 @SuppressWarnings({"unused", "unchecked"})
 public abstract class Model<T extends Model<T>>
     extends QueryModel<T>
-    implements MapperModel<T>, Serializable {
+    implements MapperModel<T>, MapperQueryChain<T>, Serializable {
 
     /**
      * 根据实体类构建的条件删除数据。
@@ -66,175 +66,22 @@ public abstract class Model<T extends Model<T>>
         return SqlUtil.toBool(baseMapper().updateByQuery((T) this, ignoreNulls, queryWrapper()));
     }
 
-    /**
-     * 根据实体类构建的条件查询数据数量。
-     *
-     * @return 数据数量
-     */
-    public long count() {
-        return baseMapper().selectCountByQuery(queryWrapper());
+    @Override
+    public BaseMapper<T> baseMapper() {
+        return MapperModel.super.baseMapper();
     }
 
-    /**
-     * 根据实体类构建的条件判断数据是否存在。
-     *
-     * @return {@code true} 数据存在，{@code false} 数据不存在
-     */
-    public boolean exists() {
-        return SqlUtil.toBool(count());
+    @Override
+    public QueryWrapper toQueryWrapper() {
+        return queryWrapper();
     }
 
-    /**
-     * 根据实体类构建的条件获取一条数据。
-     *
-     * @return 数据
-     */
-    public T one() {
-        return baseMapper().selectOneByQuery(queryWrapper());
-    }
-
-    /**
-     * 根据实体类构建的条件获取一条数据，返回的数据为 asType 类型。
-     *
-     * @param asType 接收数据类型
-     * @return 数据
-     */
-    public <R> R oneAs(Class<R> asType) {
-        return baseMapper().selectOneByQueryAs(queryWrapper(), asType);
-    }
-
-
-    /**
-     * 根据实体类构建的条件获取一条数据，并封装为 {@link Optional} 返回。
-     *
-     * @return 数据
-     */
-    public Optional<T> oneOpt() {
-        return Optional.ofNullable(one());
-    }
-
-    /**
-     * 根据实体类构建的条件获取一条数据，返回的数据为 asType 类型，并封装为 {@link Optional} 返回。
-     *
-     * @param asType 接收数据类型
-     * @return 数据
-     */
-    public <R> Optional<R> oneAsOpt(Class<R> asType) {
-        return Optional.ofNullable(oneAs(asType));
-    }
-
-    /**
-     * 根据实体类构建的条件获取第一列，且第一条数据。
-     *
-     * @return 第一列数据
-     */
-    public Object obj() {
-        return baseMapper().selectObjectByQuery(queryWrapper());
-    }
-
-    /**
-     * 根据实体类构建的条件获取第一列，且第一条数据并转换为指定类型，比如 {@code Long}, {@code String} 等。
-     *
-     * @param asType 接收数据类型
-     * @return 第一列数据
-     */
-    public <R> R objAs(Class<R> asType) {
-        return baseMapper().selectObjectByQueryAs(queryWrapper(), asType);
-    }
-
-    /**
-     * 根据实体类构建的条件获取第一列，且第一条数据，并封装为 {@link Optional} 返回。
-     *
-     * @return 第一列数据
-     */
-    public Optional<Object> objOpt() {
-        return Optional.ofNullable(obj());
-    }
-
-    /**
-     * 根据实体类构建的条件获取第一列，且第一条数据并转换为指定类型，比如 {@code Long}, {@code String}
-     * 等，封装为 {@link Optional} 返回。
-     *
-     * @param asType 接收数据类型
-     * @return 第一列数据
-     */
-    public <R> Optional<R> objAsOpt(Class<R> asType) {
-        return Optional.ofNullable(objAs(asType));
-    }
-
-    /**
-     * 根据实体类构建的条件获取第一列的所有数据。
-     *
-     * @return 第一列数据
-     */
-    public List<Object> objList() {
-        return baseMapper().selectObjectListByQuery(queryWrapper());
-    }
-
-    /**
-     * 根据实体类构建的条件获取第一列的所有数据，并转换为指定类型，比如 {@code Long}, {@code String} 等。
-     *
-     * @param asType 接收数据类型
-     * @return 第一列数据
-     */
-    public <R> List<R> objListAs(Class<R> asType) {
-        return baseMapper().selectObjectListByQueryAs(queryWrapper(), asType);
-    }
-
-    /**
-     * 根据实体类构建的条件获取多条数据。
-     *
-     * @return 数据列表
-     */
-    public List<T> list() {
-        return baseMapper().selectListByQuery(queryWrapper());
-    }
-
-    /**
-     * 根据实体类构建的条件获取多条数据，返回的数据为 asType 类型。
-     *
-     * @param asType 接收数据类型
-     * @return 数据列表
-     */
-    public <R> List<R> listAs(Class<R> asType) {
-        return baseMapper().selectListByQueryAs(queryWrapper(), asType);
-    }
-
-    /**
-     * 根据实体类构建的条件获取分页数据。
-     *
-     * @param page 分页对象
-     * @return 分页数据
-     */
-    public Page<T> page(Page<T> page) {
-        return baseMapper().paginate(page, queryWrapper());
-    }
-
-    /**
-     * 根据实体类构建的条件获取分页数据，返回的数据为 asType 类型。
-     *
-     * @param page   分页对象
-     * @param asType 接收数据类型
-     * @return 分页数据
-     */
-    public <R> Page<R> pageAs(Page<R> page, Class<R> asType) {
-        return baseMapper().paginateAs(page, queryWrapper(), asType);
-    }
-
-    /**
-     * 使用 {@code Fields Query} 的方式进行关联查询。
-     *
-     * @return {@code Fields Query} 查询
-     */
+    @Override
     public FieldsQuery<T> withFields() {
         return new FieldsQuery<>(this);
     }
 
-    /**
-     * 使用 {@code Relations Query} 的方式进行关联查询。
-     *
-     * @return {@code Relations Query} 查询
-     */
+    @Override
     public RelationsQuery<T> withRelations() {
         return new RelationsQuery<>(this);
     }

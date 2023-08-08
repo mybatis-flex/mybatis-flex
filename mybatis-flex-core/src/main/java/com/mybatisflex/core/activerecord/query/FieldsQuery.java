@@ -17,19 +17,14 @@
 package com.mybatisflex.core.activerecord.query;
 
 import com.mybatisflex.core.activerecord.Model;
-import com.mybatisflex.core.field.FieldQuery;
 import com.mybatisflex.core.field.FieldQueryManager;
 import com.mybatisflex.core.field.QueryBuilder;
 import com.mybatisflex.core.mybatis.MappedStatementTypes;
-import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.util.FieldWrapper;
+import com.mybatisflex.core.query.FieldsBuilder;
 import com.mybatisflex.core.util.LambdaGetter;
-import com.mybatisflex.core.util.LambdaUtil;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 使用 {@code Fields Query} 的方式进行关联查询。
@@ -37,53 +32,34 @@ import java.util.Map;
  * @author 王帅
  * @since 2023-07-30
  */
-public class FieldsQuery<T extends Model<T>> extends AbstractQuery<T> {
-
-    private final Map<String, FieldQuery> fieldQueryMap;
+public class FieldsQuery<T extends Model<T>> extends FieldsBuilder<T> {
 
     public FieldsQuery(Model<T> model) {
         super(model);
-        this.fieldQueryMap = new HashMap<>();
     }
 
-    /**
-     * 设置属性对应的 {@code QueryWrapper} 查询。
-     *
-     * @param field   属性
-     * @param builder {@code QueryWrapper} 构建
-     * @param <F>     属性类型
-     * @return 属性查询构建
-     */
+    @Override
     public <F> FieldsQuery<T> fieldMapping(LambdaGetter<F> field, QueryBuilder<F> builder) {
-        return fieldMapping(field, false, builder);
-    }
-
-    /**
-     * 设置属性对应的 {@code QueryWrapper} 查询。
-     *
-     * @param field   属性
-     * @param prevent 阻止对嵌套类属性的查询
-     * @param builder {@code QueryWrapper} 构建
-     * @param <F>     属性类型
-     * @return 属性查询构建
-     */
-    public <F> FieldsQuery<T> fieldMapping(LambdaGetter<F> field, boolean prevent, QueryBuilder<F> builder) {
-        String fieldName = LambdaUtil.getFieldName(field);
-        Class<?> entityClass = LambdaUtil.getImplClass(field);
-        FieldQuery fieldQuery = new FieldQuery();
-        fieldQuery.setPrevent(prevent);
-        fieldQuery.setFieldName(fieldName);
-        fieldQuery.setQueryBuilder(builder);
-        fieldQuery.setEntityClass(entityClass);
-        fieldQuery.setFieldWrapper(FieldWrapper.of(entityClass, fieldName));
-        this.fieldQueryMap.put(entityClass.getName() + '#' + fieldName, fieldQuery);
+        super.fieldMapping(field, builder);
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
+    public <F> FieldsBuilder<T> fieldMapping(LambdaGetter<F> field, boolean prevent, QueryBuilder<F> builder) {
+        super.fieldMapping(field, prevent, builder);
+        return this;
+    }
+
+    protected Object[] pkValues() {
+        // 懒加载，实际用到的时候才会生成 主键值
+        return ((Model<T>) delegate).pkValues();
+    }
+
+    /**
+     * 根据主键查询一条数据。
+     *
+     * @return 一条数据
+     */
     public T oneById() {
         List<T> entities = Collections.singletonList(baseMapper().selectOneById(pkValues()));
         FieldQueryManager.queryFields(baseMapper(), entities, fieldQueryMap);
@@ -91,9 +67,12 @@ public class FieldsQuery<T extends Model<T>> extends AbstractQuery<T> {
     }
 
     /**
-     * {@inheritDoc}
+     * 根据主键查询一条数据，返回的数据为 asType 类型。
+     *
+     * @param asType 接收数据类型
+     * @param <R>    接收数据类型
+     * @return 一条数据
      */
-    @Override
     @SuppressWarnings("unchecked")
     public <R> R oneByIdAs(Class<R> asType) {
         try {
@@ -104,66 +83,6 @@ public class FieldsQuery<T extends Model<T>> extends AbstractQuery<T> {
         } finally {
             MappedStatementTypes.clear();
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public T one() {
-        List<T> entities = Collections.singletonList(baseMapper().selectOneByQuery(queryWrapper()));
-        FieldQueryManager.queryFields(baseMapper(), entities, fieldQueryMap);
-        return entities.get(0);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public <R> R oneAs(Class<R> asType) {
-        List<R> entities = Collections.singletonList(baseMapper().selectOneByQueryAs(queryWrapper(), asType));
-        FieldQueryManager.queryFields(baseMapper(), entities, fieldQueryMap);
-        return entities.get(0);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<T> list() {
-        List<T> entities = baseMapper().selectListByQuery(queryWrapper());
-        FieldQueryManager.queryFields(baseMapper(), entities, fieldQueryMap);
-        return entities;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public <R> List<R> listAs(Class<R> asType) {
-        List<R> entities = baseMapper().selectListByQueryAs(queryWrapper(), asType);
-        FieldQueryManager.queryFields(baseMapper(), entities, fieldQueryMap);
-        return entities;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Page<T> page(Page<T> page) {
-        baseMapper().paginate(page, queryWrapper());
-        FieldQueryManager.queryFields(baseMapper(), page.getRecords(), fieldQueryMap);
-        return page;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public <R> Page<R> pageAs(Page<R> page, Class<R> asType) {
-        baseMapper().paginateAs(page, queryWrapper(), asType);
-        FieldQueryManager.queryFields(baseMapper(), page.getRecords(), fieldQueryMap);
-        return page;
     }
 
 }
