@@ -81,18 +81,22 @@ public class MultiDataSourceAutoConfiguration {
             DataSourceManager.setDecipher(dataSourceDecipher);
 
             for (Map.Entry<String, Map<String, String>> entry : dataSourceProperties.entrySet()) {
+
                 DataSource dataSource = new DataSourceBuilder(entry.getValue()).build();
-                if (seataConfig !=null &&seataConfig.isEnable()){
-                    if (seataConfig.getSeataMode() ==SeataMode.XA){
+                DataSourceManager.decryptDataSource(dataSource);
+
+                if (seataConfig != null && seataConfig.isEnable()) {
+                    if (seataConfig.getSeataMode() == SeataMode.XA) {
                         dataSource = new DataSourceProxyXA(dataSource);
-                    }else {
+                    } else {
                         dataSource = new DataSourceProxy(dataSource);
                     }
                 }
+
                 if (flexDataSource == null) {
-                    flexDataSource = new FlexDataSource(entry.getKey(), dataSource);
+                    flexDataSource = new FlexDataSource(entry.getKey(), dataSource, false);
                 } else {
-                    flexDataSource.addDataSource(entry.getKey(), dataSource);
+                    flexDataSource.addDataSource(entry.getKey(), dataSource, false);
                 }
             }
         }
