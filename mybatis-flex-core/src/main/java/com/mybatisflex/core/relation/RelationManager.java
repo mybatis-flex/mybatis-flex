@@ -25,9 +25,7 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
-import com.mybatisflex.core.util.ClassUtil;
-import com.mybatisflex.core.util.CollectionUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.util.*;
 import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.Field;
@@ -119,6 +117,19 @@ public class RelationManager {
 
     public static void setIgnoreRelations(Set<String> ignoreRelations) {
         RelationManager.ignoreRelations.set(ignoreRelations);
+    }
+
+
+    public static <T> void addIgnoreRelations(LambdaGetter<T>... ignoreRelations) {
+        Set<String> relations = RelationManager.ignoreRelations.get();
+        if (relations == null) {
+            relations = new HashSet<>();
+            setIgnoreRelations(relations);
+        }
+        for (LambdaGetter<T> lambdaGetter : ignoreRelations) {
+            String fieldName = LambdaUtil.getFieldName(lambdaGetter);
+            relations.add(fieldName);
+        }
     }
 
     public static void addIgnoreRelations(String... ignoreRelations) {

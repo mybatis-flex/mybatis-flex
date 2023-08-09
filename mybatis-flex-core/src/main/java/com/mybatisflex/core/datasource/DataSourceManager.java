@@ -21,6 +21,9 @@ import org.apache.ibatis.logging.LogFactory;
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
 
+/**
+ * @author michael
+ */
 public class DataSourceManager {
 
     private static DataSourceDecipher decipher;

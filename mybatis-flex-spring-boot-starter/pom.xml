@@ -91,6 +91,12 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-rm-datasource</artifactId>
+            <version>1.7.0</version>
+            <optional>true</optional>
+        </dependency>
 
     </dependencies>
 

@@ -20,18 +20,17 @@ import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.SqlUtil;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * {@link QueryWrapper}链式调用。
+ * {@link QueryWrapper} 链式调用。
  *
  * @author 王帅
  * @since 2023-07-22
  */
-public class QueryChain<T> extends QueryWrapperAdapter<QueryChain<T>> {
+public class QueryChain<T> extends QueryWrapperAdapter<QueryChain<T>> implements MapperQueryChain<T> {
 
     private final BaseMapper<T> baseMapper;
 
@@ -43,98 +42,76 @@ public class QueryChain<T> extends QueryWrapperAdapter<QueryChain<T>> {
         return new QueryChain<>(baseMapper);
     }
 
-    public long count() {
-        return baseMapper.selectCountByQuery(this);
+    @Override
+    public BaseMapper<T> baseMapper() {
+        return baseMapper;
     }
 
-    public boolean exists() {
-        return SqlUtil.toBool(count());
+    @Override
+    public QueryWrapper toQueryWrapper() {
+        return this;
     }
 
-    public T one() {
-        return baseMapper.selectOneByQuery(this);
-    }
-
-    public <R> R oneAs(Class<R> asType) {
-        return baseMapper.selectOneByQueryAs(this, asType);
-    }
-
+    /**
+     * @deprecated 该方法将在 1.6.0 版本移除
+     */
+    @Deprecated
     public T oneWithRelations() {
         return baseMapper.selectOneWithRelationsByQuery(this);
     }
 
+    /**
+     * @deprecated 该方法将在 1.6.0 版本移除
+     */
+    @Deprecated
     public <R> R oneWithRelationsAs(Class<R> asType) {
         return baseMapper.selectOneWithRelationsByQueryAs(this, asType);
     }
 
-    public Optional<T> oneOpt() {
-        return Optional.ofNullable(baseMapper.selectOneByQuery(this));
-    }
-
-    public <R> Optional<R> oneAsOpt(Class<R> asType) {
-        return Optional.ofNullable(baseMapper.selectOneByQueryAs(this, asType));
-    }
-
+    /**
+     * @deprecated 该方法将在 1.6.0 版本移除
+     */
+    @Deprecated
     public Optional<T> oneWithRelationsOpt() {
         return Optional.ofNullable(baseMapper.selectOneWithRelationsByQuery(this));
     }
 
+    /**
+     * @deprecated 该方法将在 1.6.0 版本移除
+     */
+    @Deprecated
     public <R> Optional<R> oneWithRelationsAsOpt(Class<R> asType) {
         return Optional.ofNullable(baseMapper.selectOneWithRelationsByQueryAs(this, asType));
     }
 
-    public Object obj() {
-        return baseMapper.selectObjectByQuery(this);
-    }
-
-    public <R> R objAs(Class<R> asType) {
-        return baseMapper.selectObjectByQueryAs(this, asType);
-    }
-
-    public Optional<Object> objOpt() {
-        return Optional.ofNullable(baseMapper.selectObjectByQuery(this));
-    }
-
-    public <R> Optional<R> objAsOpt(Class<R> asType) {
-        return Optional.ofNullable(baseMapper.selectObjectByQueryAs(this, asType));
-    }
-
-    public List<Object> objList() {
-        return baseMapper.selectObjectListByQuery(this);
-    }
-
-    public <R> List<R> objListAs(Class<R> asType) {
-        return baseMapper.selectObjectListByQueryAs(this, asType);
-    }
-
-    public List<T> list() {
-        return baseMapper.selectListByQuery(this);
-    }
-
+    /**
+     * @deprecated 该方法将在 1.6.0 版本移除
+     */
+    @Deprecated
     public List<T> listWithRelations() {
         return baseMapper.selectListWithRelationsByQuery(this);
     }
 
-    public <R> List<R> listAs(Class<R> asType) {
-        return baseMapper.selectListByQueryAs(this, asType);
-    }
-
+    /**
+     * @deprecated 该方法将在 1.6.0 版本移除
+     */
+    @Deprecated
     public <R> List<R> listWithRelationsAs(Class<R> asType) {
         return baseMapper.selectListWithRelationsByQueryAs(this, asType);
     }
 
-    public Page<T> page(Page<T> page) {
-        return baseMapper.paginate(page, this);
-    }
-
+    /**
+     * @deprecated 该方法将在 1.6.0 版本移除
+     */
+    @Deprecated
     public Page<T> pageWithRelations(Page<T> page) {
         return baseMapper.paginateWithRelations(page, this);
     }
 
-    public <R> Page<R> pageAs(Page<R> page, Class<R> asType) {
-        return baseMapper.paginateAs(page, this, asType);
-    }
-
+    /**
+     * @deprecated 该方法将在 1.6.0 版本移除
+     */
+    @Deprecated
     public <R> Page<R> pageWithRelationsAs(Page<R> page, Class<R> asType) {
         return baseMapper.paginateWithRelationsAs(page, this, asType);
     }
@@ -145,4 +122,5 @@ public class QueryChain<T> extends QueryWrapperAdapter<QueryChain<T>> {
         CPI.setFromIfNecessary(this, tableInfo.getSchema(), tableInfo.getTableName());
         return super.toSQL();
     }
+
 }

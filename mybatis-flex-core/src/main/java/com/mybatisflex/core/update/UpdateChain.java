@@ -82,15 +82,28 @@ public class UpdateChain<T> extends QueryWrapperAdapter<UpdateChain<T>> {
         return new UpdateChain<>(baseMapper);
     }
 
+    public UpdateChain<T> set(String property, Object value, boolean condition) {
+        entityWrapper.set(property, value, condition);
+        return this;
+    }
 
     public UpdateChain<T> set(String property, Object value) {
         entityWrapper.set(property, value);
         return this;
     }
 
+    public UpdateChain<T> set(LambdaGetter<T> getter, Object value, boolean condition) {
+        entityWrapper.set(getter, value, condition);
+        return this;
+    }
 
     public UpdateChain<T> set(LambdaGetter<T> getter, Object value) {
         entityWrapper.set(getter, value);
+        return this;
+    }
+
+    public UpdateChain<T> set(QueryColumn queryColumn, Object value, boolean condition) {
+        entityWrapper.set(queryColumn, value, condition);
         return this;
     }
 
@@ -100,14 +113,28 @@ public class UpdateChain<T> extends QueryWrapperAdapter<UpdateChain<T>> {
         return this;
     }
 
+    public UpdateChain<T> setRaw(String property, Object value, boolean condition) {
+        entityWrapper.setRaw(property, value, condition);
+        return this;
+    }
+
     public UpdateChain<T> setRaw(String property, Object value) {
         entityWrapper.setRaw(property, value);
         return this;
     }
 
+    public UpdateChain<T> setRaw(LambdaGetter<T> getter, Object value, boolean condition) {
+        entityWrapper.setRaw(getter, value, condition);
+        return this;
+    }
 
     public UpdateChain<T> setRaw(LambdaGetter<T> getter, Object value) {
         entityWrapper.setRaw(getter, value);
+        return this;
+    }
+
+    public UpdateChain<T> setRaw(QueryColumn queryColumn, Object value, boolean condition) {
+        entityWrapper.setRaw(queryColumn, value, condition);
         return this;
     }
 

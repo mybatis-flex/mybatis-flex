@@ -7,16 +7,16 @@ spring:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/flex_test
     username: root
-    password: 123456
+    password: 12345678
   #    driver-class-name:
   #  datasource:
   #    driver-class-name: org.h2.Driver
   #    username: root
   #    password: test
-  sql:
-    init:
-      schema-locations: classpath:schema.sql
-      data-locations: classpath:data.sql
+#  sql:
+#    init:
+#      schema-locations: classpath:schema.sql
+#      data-locations: classpath:data.sql
 mybatis-flex:
   admin-config:
     enable: true
@@ -38,11 +38,11 @@ mybatis-flex:
 #      password: 12345678
 #mybatis-flex:
 #  datasource:
-#    ds1:
-#      url: jdbc:mysql://127.0.0.1:3306/db
+#    ds3333:
+#      url: jdbc:mysql://127.0.0.1:3306/flex_test
 #      username: root
-#      password: 123456
+#      password: 131496
 #    ds2:
-#      url: jdbc:mysql://127.0.0.1:3306/db2
+#      url: jdbc:mysql://127.0.0.1:3306/flex_test1
 #      username: root
-#      password: 123456
+#      password: 131496
