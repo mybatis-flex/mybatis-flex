@@ -57,11 +57,11 @@ fun main() {
         it }.toList().batchInsert()
 
     println("批量插入后————————")
-    ACCOUNT.all<Account>().stream().peek { println(it) }.toList().filter { it.id!!.rem(2) == 0 }.batchDeleteById()
+    ACCOUNT.all<Account>().stream().peek { println(it) }.toList().filter { it.id.rem(2) == 0 }.batchDeleteById()
 
     println("批量删除后————————")
-    //使用DB对象查询时无需指定from表
-    DB.query<Account> {from(ACCOUNT)}.stream().peek { println(it) }.toList().filter { it.id!!.rem(3) == 0 }.map { it.userName = "哈哈"
+    //使用DB对象查询时需指定from表
+    DB.query<Account> {from(ACCOUNT)}.stream().peek { println(it) }.toList().filter { it.id.rem(3) == 0 }.map { it.userName = "哈哈"
         it }.batchUpdate()
 
     println("批量更新后————————")
@@ -76,6 +76,9 @@ interface AccountMapper : BaseMapper<Account> {
     fun findByAge(age: Int, vararg ids: Int): List<Account> = queryList {
         select(ACCOUNT.ALL_COLUMNS)
         from(ACCOUNT)
+        from {
+            select()
+        }
         where(ACCOUNT) {
             (AGE `=` age) and  `if`(true) {
                 ID `in` ids.asList()
