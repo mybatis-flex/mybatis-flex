@@ -44,7 +44,7 @@ public class LambdaUtil {
 
     public static <T> Class<?> getImplClass(LambdaGetter<T> getter) {
         SerializedLambda lambda = getSerializedLambda(getter);
-        return getImplClass(lambda);
+        return getImplClass(lambda, getter.getClass().getClassLoader());
     }
 
 
@@ -56,9 +56,10 @@ public class LambdaUtil {
 
 
     public static <T> QueryColumn getQueryColumn(LambdaGetter<T> getter) {
+        ClassLoader classLoader = getter.getClass().getClassLoader();
         SerializedLambda lambda = getSerializedLambda(getter);
         String methodName = lambda.getImplMethodName();
-        Class<?> entityClass = getImplClass(lambda);
+        Class<?> entityClass = getImplClass(lambda, classLoader);
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
         return tableInfo.getQueryColumnByProperty(PropertyNamer.methodToProperty(methodName));
     }
@@ -77,11 +78,11 @@ public class LambdaUtil {
     }
 
 
-    private static Class<?> getImplClass(SerializedLambda lambda) {
+    private static Class<?> getImplClass(SerializedLambda lambda, ClassLoader classLoader) {
         String implClass = getImplClassName(lambda);
         return MapUtil.computeIfAbsent(classMap, implClass, s -> {
             try {
-                return Class.forName(s.replace("/", "."));
+                return Class.forName(s.replace("/", "."), true, classLoader);
             } catch (ClassNotFoundException e) {
                 throw FlexExceptions.wrap(e);
             }
