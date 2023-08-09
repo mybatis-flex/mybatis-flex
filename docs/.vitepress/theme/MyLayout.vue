@@ -115,7 +115,7 @@ const {Layout} = DefaultTheme
                 <a href="https://gitee.com/sdyunze/iotlink" target="_blank"><img src="/assets/images/ad/iotlink_20240802.png"></a>
             </div>
           <div class="banner">
-            虚以待位
+              <a href="https://eiam.topiam.cn" target="_blank"><img src="/assets/images/ad/topiam_20230909.png" style="width: 105px;height: 50px"></a>
           </div>
         </div>
         <div class="banner-bottom">
