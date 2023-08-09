@@ -173,7 +173,9 @@ spring:
 解决方案：https://gitee.com/mybatis-flex/mybatis-flex/issues/I71AUE
 
 
+## 代码生成器获取不到注释
 
+如果是 MySQL 数据库的话，可能是因为数据库版本太低，解决办法：MySQL 5.* 需要在 jdbcUrl 设置参数 `useInformationSchema=true` 才能获取到注释。
 
 ## 如何自定义 MyBatis 的 Configuration?
 
