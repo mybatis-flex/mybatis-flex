@@ -92,12 +92,12 @@ public class UpdateChain<T> extends QueryWrapperAdapter<UpdateChain<T>> {
         return this;
     }
 
-    public UpdateChain<T> set(LambdaGetter<T> getter, Object value, boolean condition) {
+    public <L> UpdateChain<T> set(LambdaGetter<L> getter, Object value, boolean condition) {
         entityWrapper.set(getter, value, condition);
         return this;
     }
 
-    public UpdateChain<T> set(LambdaGetter<T> getter, Object value) {
+    public <L> UpdateChain<T> set(LambdaGetter<L> getter, Object value) {
         entityWrapper.set(getter, value);
         return this;
     }
@@ -123,12 +123,12 @@ public class UpdateChain<T> extends QueryWrapperAdapter<UpdateChain<T>> {
         return this;
     }
 
-    public UpdateChain<T> setRaw(LambdaGetter<T> getter, Object value, boolean condition) {
+    public <L> UpdateChain<T> setRaw(LambdaGetter<L> getter, Object value, boolean condition) {
         entityWrapper.setRaw(getter, value, condition);
         return this;
     }
 
-    public UpdateChain<T> setRaw(LambdaGetter<T> getter, Object value) {
+    public <L> UpdateChain<T> setRaw(LambdaGetter<L> getter, Object value) {
         entityWrapper.setRaw(getter, value);
         return this;
     }
