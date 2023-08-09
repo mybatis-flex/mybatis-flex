@@ -167,7 +167,7 @@ spring:
 <dependency>
     <groupId>com.github.pagehelper</groupId>
     <artifactId>pagehelper</artifactId>
-    <version>版本号</version>
+    <version>5.3.3</version>
 </dependency>
 ```
 解决方案：https://gitee.com/mybatis-flex/mybatis-flex/issues/I71AUE
