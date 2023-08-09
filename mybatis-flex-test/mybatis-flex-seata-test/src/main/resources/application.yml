@@ -1,4 +1,3 @@
-
 mybatis-flex:
   seata-config:
     enable: true #启动seata
