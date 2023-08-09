@@ -1,16 +1,32 @@
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.mybatisflex.kotlin.extensions.entry
 
 import com.mybatisflex.core.FlexConsts
 import com.mybatisflex.core.dialect.DialectFactory
 import com.mybatisflex.core.query.QueryColumn
 import com.mybatisflex.core.query.QueryCondition
+import com.mybatisflex.core.row.Db.*
+import com.mybatisflex.kotlin.extensions.db.*
 import com.mybatisflex.core.row.Row
 import com.mybatisflex.core.row.RowUtil
 import com.mybatisflex.core.table.TableDef
 import com.mybatisflex.core.table.TableInfoFactory
 import com.mybatisflex.core.util.ArrayUtil
 import com.mybatisflex.kotlin.entry.Entry
-import com.mybatisflex.kotlin.extensions.db.DB
 import com.mybatisflex.kotlin.scope.QueryScope
 import java.util.Arrays
 
@@ -29,7 +45,7 @@ inline fun <reified E, T : TableDef> T.filter(
     init: T.() -> QueryCondition
 ): List<E> {
     val tableInfo = TableInfoFactory.ofEntityClass(E::class.java)
-    return DB.filter<E>(
+    return filter<E>(
         columns = columns,
         schema = tableInfo.schema,
         tableName = tableInfo.tableName,
@@ -41,7 +57,7 @@ inline fun <reified E> TableDef.query(
     vararg columns: QueryColumn?,
     noinline init: QueryScope.() -> Unit
 ): List<E> {
-    return DB.query<E>(
+    return query<E>(
         columns = columns,
         schema = this.schema,
         tableName = this.tableName,
@@ -49,7 +65,7 @@ inline fun <reified E> TableDef.query(
     )
 }
 
-inline fun <reified E> TableDef.all(): List<E> = DB.selectAll(schema, tableName).toEntities()
+inline fun <reified E> TableDef.all(): List<E> = selectAll(schema, tableName).toEntities()
 
 inline fun <reified E> Collection<Row>.toEntities() = map { it to E::class.java }.toList()
 
@@ -68,7 +84,7 @@ inline fun<reified E:Entry> List<E>.batchInsert(): Boolean {
         allValues = ArrayUtil.concat(allValues, tableInfo.buildInsertSqlArgs(entity, false))
     }
     val sql = DialectFactory.getDialect().forInsertEntityBatch(tableInfo, entities)
-    return DB.insertBySql(sql,*allValues) > 1
+    return insertBySql(sql,*allValues) > 1
 }
 
 
@@ -79,5 +95,5 @@ inline fun<reified E:Entry> List<E>. batchDeleteById(): Boolean {
     val primaryValues = this.map { tableInfo.buildPkSqlArgs(it) }.stream().flatMap(Arrays::stream).toArray()
     val tenantIdArgs = tableInfo.buildTenantIdArgs()
     val sql =  DialectFactory.getDialect().forDeleteEntityBatchByIds(tableInfo, primaryValues)
-    return DB.deleteBySql(sql,*ArrayUtil.concat(primaryValues, tenantIdArgs)) > 1
+    return deleteBySql(sql,*ArrayUtil.concat(primaryValues, tenantIdArgs)) > 1
 }
