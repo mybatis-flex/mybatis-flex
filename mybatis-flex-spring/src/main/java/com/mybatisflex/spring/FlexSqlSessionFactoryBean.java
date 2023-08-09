@@ -19,6 +19,8 @@ import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
+import io.seata.rm.datasource.DataSourceProxy;
+import io.seata.rm.datasource.xa.DataSourceProxyXA;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.cache.Cache;

@@ -88,6 +88,6 @@ public class FlexSpringTransaction implements Transaction {
 
     @Override
     public Integer getTimeout() throws SQLException {
-        return getConnection().getNetworkTimeout();
+        return null;
     }
 }

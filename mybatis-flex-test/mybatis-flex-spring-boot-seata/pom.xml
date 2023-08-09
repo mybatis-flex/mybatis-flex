@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>com.mybatis-flex</groupId>
 			<artifactId>mybatis-flex-codegen</artifactId>
-			<version>1.5.6</version>
+			<version>${mybatis-flex.version}</version>
 		</dependency>
 
 		<dependency>
@@ -90,12 +90,6 @@
 			<artifactId>lombok</artifactId>
 			<version>RELEASE</version>
 			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>io.seata</groupId>
-			<artifactId>seata-spring-boot-starter</artifactId>
-			<version>1.7.0</version>
 		</dependency>
 	</dependencies>
 

@@ -19,6 +19,7 @@ import com.mybatisflex.core.datasource.DataSourceBuilder;
 import com.mybatisflex.core.datasource.DataSourceDecipher;
 import com.mybatisflex.core.datasource.DataSourceManager;
 import com.mybatisflex.core.datasource.FlexDataSource;
+import com.mybatisflex.spring.SeataMode;
 import com.mybatisflex.spring.boot.MybatisFlexProperties.SeataConfig;
 import com.mybatisflex.spring.datasource.DataSourceAdvice;
 import io.seata.rm.datasource.DataSourceProxy;

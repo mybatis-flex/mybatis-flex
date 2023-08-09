@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mybatisflex.test.stockservice.persistence.StockMapper">
+    <resultMap id="BaseResultMap" type="mybatisflex.test.stockservice.persistence.Stock">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="commodity_code" property="commodityCode" jdbcType="VARCHAR"/>
+        <result column="count" property="count" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="selectById" resultType="mybatisflex.test.stockservice.persistence.Stock">
+        select id, commodity_code, count
+        from stock_tbl
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByCommodityCode" resultType="mybatisflex.test.stockservice.persistence.Stock">
+        select id, commodity_code commodityCode, count
+        from stock_tbl
+        WHERE commodity_code = #{commodityCode}
+    </select>
+
+    <update id="updateById">
+        update stock_tbl
+        set count = #{count,jdbcType=INTEGER}
+        WHERE id = #{id}
+    </update>
+
+    <insert id="insert" parameterType="mybatisflex.test.stockservice.persistence.Stock">
+        insert into stock_tbl (commodity_code, count)
+        values (#{commodityCode,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER})
+    </insert>
+
+    <insert id="insertBatch" parameterType="mybatisflex.test.stockservice.persistence.Stock">
+        insert into stock_tbl (commodity_code, count)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.commodityCode,jdbcType=VARCHAR}, #{item.count,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <update id="updateBatch">
+        update stock_tbl set count = 100
+        WHERE id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and commodity_code = #{commodityCode,jdbcType=VARCHAR}
+    </update>
+</mapper>
