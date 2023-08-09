@@ -17,7 +17,6 @@ package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
-import com.mybatisflex.spring.SeataMode;
 import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.mapping.ResultSetType;
@@ -42,6 +41,7 @@ import java.util.stream.Stream;
 /**
  * Mybatis-Flex 的配置属性。
  * 参考：https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisProperties.java
+ *
  * @author Eddú Meléndez
  * @author Kazuki Shimizu
  * @author micahel
@@ -909,7 +909,7 @@ public class MybatisFlexProperties {
      *
      * @author life
      */
-    public static class SeataConfig{
+    public static class SeataConfig {
 
         /**
          * 是否开启
@@ -936,6 +936,18 @@ public class MybatisFlexProperties {
         public void setSeataMode(SeataMode seataMode) {
             this.seataMode = seataMode;
         }
+
+    }
+
+    /**
+     * @author life
+     */
+    public enum SeataMode {
+
+        XA,
+
+        AT
+
     }
 
 }

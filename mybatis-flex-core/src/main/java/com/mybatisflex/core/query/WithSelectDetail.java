@@ -44,7 +44,7 @@ public class WithSelectDetail implements WithDetail {
 
     @Override
     public Object[] getParamValues() {
-        return queryWrapper.getValueArray();
+        return queryWrapper.getAllValueArray();
     }
 
     @Override

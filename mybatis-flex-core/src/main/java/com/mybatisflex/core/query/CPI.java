@@ -34,7 +34,15 @@ public class CPI {
     }
 
     public static Object[] getValueArray(QueryWrapper queryWrapper) {
-        return queryWrapper.getValueArray();
+        return queryWrapper.getAllValueArray();
+    }
+
+    public static Object[] getJoinValueArray(QueryWrapper queryWrapper) {
+        return queryWrapper.getJoinValueArray();
+    }
+
+    public static Object[] getConditionValueArray(QueryWrapper queryWrapper) {
+        return queryWrapper.getConditionValueArray();
     }
 
     public static List<QueryWrapper> getChildSelect(QueryWrapper queryWrapper) {

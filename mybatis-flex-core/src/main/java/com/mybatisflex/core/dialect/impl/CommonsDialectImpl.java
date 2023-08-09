@@ -242,7 +242,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forUpdateByQuery(QueryWrapper queryWrapper, Row row) {
-        StringBuilder sql = new StringBuilder();
+        StringBuilder sqlBuilder = new StringBuilder();
 
         Set<String> modifyAttrs = RowCPI.getModifyAttrs(row);
         Map<String, RawValue> rawValueMap = RowCPI.getRawValueMap(row);
@@ -254,30 +254,39 @@ public class CommonsDialectImpl implements IDialect {
 
         //fix: support schema
         QueryTable queryTable = queryTables.get(0);
-        sql.append(UPDATE).append(queryTable.toSql(this)).append(SET);
+        sqlBuilder.append(UPDATE).append(queryTable.toSql(this)).append(SET);
         int index = 0;
         for (String modifyAttr : modifyAttrs) {
             if (index > 0) {
-                sql.append(DELIMITER);
+                sqlBuilder.append(DELIMITER);
             }
 
-            sql.append(wrap(modifyAttr));
+            sqlBuilder.append(wrap(modifyAttr));
 
             if (rawValueMap.containsKey(modifyAttr)) {
-                sql.append(EQUALS).append(rawValueMap.get(modifyAttr).toSql(this));
+                sqlBuilder.append(EQUALS).append(rawValueMap.get(modifyAttr).toSql(this));
             } else {
-                sql.append(EQUALS_PLACEHOLDER);
+                sqlBuilder.append(EQUALS_PLACEHOLDER);
             }
 
             index++;
         }
 
-        String whereConditionSql = buildWhereConditionSql(queryWrapper);
-        if (StringUtil.isNotBlank(whereConditionSql)) {
-            sql.append(WHERE).append(whereConditionSql);
+        buildJoinSql(sqlBuilder, queryWrapper, queryTables);
+        buildWhereSql(sqlBuilder, queryWrapper, queryTables, false);
+        buildGroupBySql(sqlBuilder, queryWrapper, queryTables);
+        buildHavingSql(sqlBuilder, queryWrapper, queryTables);
+
+        //ignore orderBy and limit
+        buildOrderBySql(sqlBuilder, queryWrapper, queryTables);
+
+        Long limitRows = CPI.getLimitRows(queryWrapper);
+        Long limitOffset = CPI.getLimitOffset(queryWrapper);
+        if (limitRows != null || limitOffset != null) {
+            sqlBuilder = buildLimitOffsetSql(sqlBuilder, queryWrapper, limitRows, limitOffset);
         }
 
-        return sql.toString();
+        return sqlBuilder.toString();
     }
 
     @Override
@@ -473,8 +482,13 @@ public class CommonsDialectImpl implements IDialect {
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
 
         //ignore orderBy and limit
-        //buildOrderBySql(sqlBuilder, queryWrapper)
-        //buildLimitSql(sqlBuilder, queryWrapper)
+        buildOrderBySql(sqlBuilder, queryWrapper, allTables);
+
+        Long limitRows = CPI.getLimitRows(queryWrapper);
+        Long limitOffset = CPI.getLimitOffset(queryWrapper);
+        if (limitRows != null || limitOffset != null) {
+            sqlBuilder = buildLimitOffsetSql(sqlBuilder, queryWrapper, limitRows, limitOffset);
+        }
 
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
         if (CollectionUtil.isNotEmpty(endFragments)) {
@@ -777,13 +791,19 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forUpdateEntityByQuery(TableInfo tableInfo, Object entity, boolean ignoreNulls, QueryWrapper queryWrapper) {
-        StringBuilder sql = new StringBuilder();
+        StringBuilder sqlBuilder = new StringBuilder();
 
         Set<String> updateColumns = tableInfo.obtainUpdateColumns(entity, ignoreNulls, true);
         Map<String, RawValue> rawValueMap = tableInfo.obtainUpdateRawValueMap(entity);
 
-        sql.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
-        sql.append(tableInfo.getWrapSchemaAndTableName(this)).append(SET);
+        sqlBuilder.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
+        sqlBuilder.append(tableInfo.getWrapSchemaAndTableName(this));
+
+        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        buildJoinSql(sqlBuilder, queryWrapper, queryTables);
+
+
+        sqlBuilder.append(SET);
 
         StringJoiner stringJoiner = new StringJoiner(DELIMITER);
 
@@ -807,26 +827,40 @@ public class CommonsDialectImpl implements IDialect {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 
-        sql.append(stringJoiner);
+        sqlBuilder.append(stringJoiner);
 
 
-        String whereConditionSql = buildWhereConditionSql(queryWrapper);
+        buildWhereSql(sqlBuilder, queryWrapper, queryTables, false);
+        buildGroupBySql(sqlBuilder, queryWrapper, queryTables);
+        buildHavingSql(sqlBuilder, queryWrapper, queryTables);
 
-        //不允许全量更新
-        if (StringUtil.isBlank(whereConditionSql)) {
-            throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
+        //ignore orderBy and limit
+        buildOrderBySql(sqlBuilder, queryWrapper, queryTables);
+
+        Long limitRows = CPI.getLimitRows(queryWrapper);
+        Long limitOffset = CPI.getLimitOffset(queryWrapper);
+        if (limitRows != null || limitOffset != null) {
+            sqlBuilder = buildLimitOffsetSql(sqlBuilder, queryWrapper, limitRows, limitOffset);
         }
 
-        sql.append(WHERE).append(whereConditionSql);
+
+//        String whereConditionSql = buildWhereConditionSql(queryWrapper);
+//
+//        //不允许全量更新
+//        if (StringUtil.isBlank(whereConditionSql)) {
+//            throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
+//        }
+//
+//        sql.append(WHERE).append(whereConditionSql);
 
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
         if (CollectionUtil.isNotEmpty(endFragments)) {
             for (String endFragment : endFragments) {
-                sql.append(BLANK).append(endFragment);
+                sqlBuilder.append(BLANK).append(endFragment);
             }
         }
 
-        return sql.toString();
+        return sqlBuilder.toString();
     }
 
 
@@ -973,16 +1007,19 @@ public class CommonsDialectImpl implements IDialect {
     }
 
 
-    protected void buildJoinSql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, List<QueryTable> queryTables) {
+    protected boolean buildJoinSql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, List<QueryTable> queryTables) {
         List<Join> joins = CPI.getJoins(queryWrapper);
+        boolean joinSuccess = false;
         if (joins != null && !joins.isEmpty()) {
             for (Join join : joins) {
                 if (!join.checkEffective()) {
                     continue;
                 }
                 sqlBuilder.append(join.toSql(queryTables, this));
+                joinSuccess = true;
             }
         }
+        return joinSuccess;
     }
 
 

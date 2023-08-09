@@ -261,7 +261,9 @@ public class EntitySqlProvider {
         FlexAssert.notNull(entity, "entity can not be null");
 
         boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
+
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
+        appendTableConditions(context,queryWrapper,false);
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
@@ -274,9 +276,13 @@ public class EntitySqlProvider {
         //优先构建 sql，再构建参数
         String sql = DialectFactory.getDialect().forUpdateEntityByQuery(tableInfo, entity, ignoreNulls, queryWrapper);
 
+        Object[] joinValueArray = CPI.getJoinValueArray(queryWrapper);
         Object[] values = tableInfo.buildUpdateSqlArgs(entity, ignoreNulls, true);
-        Object[] queryParams = CPI.getValueArray(queryWrapper);
-        ProviderUtil.setSqlArgs(params, ArrayUtil.concat(values, queryParams));
+        Object[] queryParams = CPI.getConditionValueArray(queryWrapper);
+
+        Object[] paramValues = ArrayUtil.concat(joinValueArray,ArrayUtil.concat(values,queryParams));
+
+        ProviderUtil.setSqlArgs(params, paramValues);
 
         return sql;
     }

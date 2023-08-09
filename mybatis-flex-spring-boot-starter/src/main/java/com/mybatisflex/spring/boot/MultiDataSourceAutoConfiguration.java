@@ -19,7 +19,6 @@ import com.mybatisflex.core.datasource.DataSourceBuilder;
 import com.mybatisflex.core.datasource.DataSourceDecipher;
 import com.mybatisflex.core.datasource.DataSourceManager;
 import com.mybatisflex.core.datasource.FlexDataSource;
-import com.mybatisflex.spring.SeataMode;
 import com.mybatisflex.spring.boot.MybatisFlexProperties.SeataConfig;
 import com.mybatisflex.spring.datasource.DataSourceAdvice;
 import io.seata.rm.datasource.DataSourceProxy;
@@ -87,7 +86,7 @@ public class MultiDataSourceAutoConfiguration {
                 DataSourceManager.decryptDataSource(dataSource);
 
                 if (seataConfig != null && seataConfig.isEnable()) {
-                    if (seataConfig.getSeataMode() == SeataMode.XA) {
+                    if (seataConfig.getSeataMode() == MybatisFlexProperties.SeataMode.XA) {
                         dataSource = new DataSourceProxyXA(dataSource);
                     } else {
                         dataSource = new DataSourceProxy(dataSource);

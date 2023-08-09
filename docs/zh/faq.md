@@ -1,5 +1,7 @@
 # 常见问题
 
+[[toc]]
+
 ## MyBatis-Flex 没有启动或者启动出错怎么办？
 
 正常情况下，MyBatis-Flex 在启动时，会在控制台打印如下 Banner 信息，包含版本与官方网址，如果在项目启动中没有发现 MyBatis-Flex 的 Banner 打印，那就说明 MyBatis-Flex 没有被正常加载。
@@ -21,7 +23,7 @@
   就可以了，不需要再添加其他 MyBatis 依赖。
 - 3、是否与 `mybatis-plus-boot-starter` 共用，使 MyBatis 被优先初始化，而导致 MyBatis-Flex 没有被加载。
 - 4、是否添加了 `pagehelper-spring-boot-starter` 依赖，导致传递了 `mybatis-spring-boot-starter` 依赖。如还想继续使用 pagehelper 插件，点击 [这里](#与-pagehelper-集成出现错误) 查看解决方案。
-- 5、是否 Spring Boot 版本过低，请使用 Spring Boot 2.2 及其以上版本，点击 [这里](#springboot-项目启动报错-javalangclassnotfoundexception-orgspringframeworktransactiontransactionmanager) 获取详细信息。
+- 5、是否 Spring Boot 版本过低，请使用 Spring Boot 2.2 及其以上版本，点击 [这里](#springboot-项目-启动报错-java-lang-classnotfoundexception-org-springframework-transaction-transactionmanager) 获取详细信息。
 
 ## 示例中的 AccountMapper 和 "ACCOUNT" 在哪里，报错了。
 
@@ -93,6 +95,18 @@ SpringBoot v3.x 添加 hikariCP 的内容如下：
 ```
 
 > 如果使用的是 druid 数据库连接池，则需要添加数据源类型的配置 `spring.datasource.type=com.alibaba.druid.pool.DruidDataSource`。
+
+## SpringBoot 项目中出现 class "com.xxx" cannot be cast class "com.xxx" 的错误
+这个问题是由于 Spring 的 devtools 热加载引起的，可以在项目的 `resources/META-INF`
+目录下创建一个名为 `spring-devtools.properties` 的配置文件，配置内容如下：
+
+```properties
+restart.include.mapper=/mapper-[\\w-\\.].jar
+restart.include.pagehelper=/pagehelper-[\\w-\\.].jar
+restart.include.mybatis-flex=/mybatis-flex-[\\w-\\.]+jar
+```
+相关文档参考 Spring 的官方网站：https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#using.devtools.restart.customizing-the-classload
+
 
 ## java.sql.SQLException: No value specified for parameter x
 出现这个问题，原因是 MyBatis-Flex 未能正常启动，SQL 执行没有经过 MyBatis-Flex 导致的。其直接是因为和其他第三方增强框架整合使用了，
@@ -167,13 +181,29 @@ spring:
 <dependency>
     <groupId>com.github.pagehelper</groupId>
     <artifactId>pagehelper</artifactId>
-    <version>版本号</version>
+    <version>5.3.3</version>
 </dependency>
 ```
 解决方案：https://gitee.com/mybatis-flex/mybatis-flex/issues/I71AUE
 
 
+## 代码生成器获取不到注释
 
+如果是 MySQL 数据库的话，可能是因为数据库版本太低，解决办法：MySQL 5.* 需要在 jdbcUrl 设置参数 `useInformationSchema=true` 才能获取到注释。
+
+例如：`jdbc:mysql://127.0.0.1:3306/mybatis-flex?characterEncoding=UTF-8&useInformationSchema=true`
+
+## 与 Nacos 集成时出错，无法正常启动 MyBatis-Flex
+
+一般请看下是缺少 Nacos 的相关 Maven，注意添加如下的 Nacos 依赖：
+
+```xml
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+    <version>2022.0.0.0</version>
+</dependency>
+```
 
 ## 如何自定义 MyBatis 的 Configuration?
 
