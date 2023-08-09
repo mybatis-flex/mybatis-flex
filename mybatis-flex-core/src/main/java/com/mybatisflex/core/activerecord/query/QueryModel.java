@@ -44,9 +44,18 @@ public abstract class QueryModel<T extends QueryModel<T>> {
 
     protected QueryWrapper queryWrapper() {
         if (queryWrapper == null) {
-            queryWrapper = QueryWrapper.create();
+            TableInfo tableInfo = TableInfoFactory.ofEntityClass(getClass());
+            QueryTable queryTable = new QueryTable();
+            queryTable.setSchema(tableInfo.getSchema());
+            queryTable.setName(tableInfo.getTableName());
+            queryWrapper = QueryWrapper.create().from(queryTable);
         }
         return queryWrapper;
+    }
+
+    public T as(String alias) {
+        queryWrapper().as(alias);
+        return (T) this;
     }
 
     public T select() {
