@@ -230,7 +230,8 @@ seata:
   enable-auto-data-source-proxy: false
 ```
 2.使用 `seata-all` 请不要使用 `@EnableAutoDataSourceProxy`
-3.如果是 SpringBoot 项目可以引入相关 Maven 依赖，例如：
+
+3.如果是 SpringBoot 项目需要引入相关 Maven 依赖，例如：
 
 ```xml
 <dependency>
@@ -241,13 +242,5 @@ seata:
 ```
 ### 示例
 
-请到 mybatis-flex-test 模块下面：
-
-```xml
-mybatis-flex-spring-boot-seata：flex多数据源与seata的结合
-```
-
-```xml
-mybatis-flex-spring-boot-seata-demo:官方demo与flex结合
-```
+[mybatis-flex-spring-boot-seata-demo](https://gitee.com/mybatis-flex/mybatis-flex-samples/tree/master/mybatis-flex-spring-boot-seata-demo) : Seata 官方 demo 与 flex 结合。
 
