@@ -229,8 +229,9 @@ public void purchase(String userId, String commodityCode, int orderCount) {
 seata:
   enable-auto-data-source-proxy: false
 ```
-2.使用`seata-all`请不要使用`@EnableAutoDataSourceProxy`
-3.如果是boot项目可以引入相关Maven依赖，例如：
+2.使用 `seata-all` 请不要使用 `@EnableAutoDataSourceProxy`
+3.如果是 SpringBoot 项目可以引入相关 Maven 依赖，例如：
+
 ```xml
 <dependency>
     <groupId>io.seata</groupId>
@@ -238,11 +239,14 @@ seata:
     <version>1.7.0</version>
 </dependency>
 ```
-### 事例
-请到mybatis-flex-test模块下面：
+### 示例
+
+请到 mybatis-flex-test 模块下面：
+
 ```xml
 mybatis-flex-spring-boot-seata：flex多数据源与seata的结合
 ```
+
 ```xml
 mybatis-flex-spring-boot-seata-demo:官方demo与flex结合
 ```

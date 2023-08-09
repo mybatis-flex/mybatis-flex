@@ -19,7 +19,6 @@
         <module>mybatis-flex-spring-boot-test</module>
         <module>mybatis-flex-spring-cloud-test</module>
         <module>mybatis-flex-spring-boot-seata</module>
-        <module>mybatis-flex-spring-boot-seata-demo</module>
     </modules>
 
     <properties>
@@ -28,14 +27,6 @@
     </properties>
 
     <build>
-        <!--        <resources>-->
-        <!--            <resource>-->
-        <!--                <directory>src/main/resources</directory>-->
-        <!--                <includes>-->
-        <!--                    <include>**/*</include>-->
-        <!--                </includes>-->
-        <!--            </resource>-->
-        <!--        </resources>-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
