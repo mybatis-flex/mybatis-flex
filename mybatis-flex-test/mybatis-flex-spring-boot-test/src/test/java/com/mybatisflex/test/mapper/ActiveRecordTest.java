@@ -156,4 +156,18 @@ class ActiveRecordTest {
             .forEach(System.out::println);
     }
 
+    @Test
+    void testToSql() {
+        String sql = User.create()
+            .as("u")
+            .select(USER.ALL_COLUMNS, ROLE.ALL_COLUMNS)
+            .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+            .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+            .where(USER.USER_ID.eq(2))
+            .toQueryWrapper()
+            .toSQL();
+
+        System.out.println(sql);
+    }
+
 }
