@@ -49,6 +49,8 @@ fun main() {
         dataSources {
 //            dataSource(FlexConsts.NAME,dataSource)
             FlexConsts.NAME of dataSource
+//            "dataSource1" of dataSource
+//            "dataSource2" of dataSource
         }
 //        + dataSource
     }.start()
