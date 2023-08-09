@@ -46,6 +46,7 @@ export default defineConfig({
                     {text: 'MyBatis-Flex 是什么', link: '/zh/intro/what-is-mybatisflex'},
                     {text: '快速开始', link: '/zh/intro/getting-started'},
                     {text: 'Maven 依赖', link: '/zh/intro/maven'},
+                    {text: 'Gradle 依赖', link: '/zh/intro/gradle'},
                     {text: '和同类框架「功能」对比', link: '/zh/intro/comparison'},
                     {text: '和同类框架「性能」对比', link: '/zh/intro/benchmark'},
                     {text: '使用 Mybatis 原生功能', link: '/zh/intro/use-mybatis-native'},
@@ -100,6 +101,7 @@ export default defineConfig({
                 items: [
                     {text: '代码生成器', link: '/zh/others/codegen'},
                     {text: 'APT 设置', link: '/zh/others/apt'},
+                    {text: 'KAPT 设置', link: '/zh/others/kapt'},
                 ]
             }
         ],

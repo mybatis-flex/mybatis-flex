@@ -1,11 +1,10 @@
-# 在Kotlin中使用注解处理器
+# 在 Kotlin 中使用注解处理器
 
-> 在Kotlin中想要使`@Table`等注解生效十分简单。只需要使用kapt即可。
->
+> 在 Kotlin 中想要使 `@Table` 等注解生效十分简单。只需要使用 KAPT 即可。
 
-## 在Gradle中使用
+## 在 Gradle 中使用
 
-1. 应用Gradle插件：kotlin-kapt
+1、应用 Gradle 插件：`kotlin-kapt`
 
 **【Kotlin】**
 
@@ -23,7 +22,9 @@ plugins {
 }
 ```
 
-2. 在 dependencies 块中使用 kapt 配置添加相应的依赖项
+2、在 dependencies 块中使用 KAPT 配置添加相应的依赖项
+
+
 **【Kotlin】**
 
 ```kotlin
@@ -39,7 +40,8 @@ dependencies {
 }
 ```
 
-## 在Maven中使用
+## 在 Maven 中使用
+
 在 compile 之前在 kotlin-maven-plugin 中添加 kapt 目标的执行：
 
 ```xml
@@ -60,4 +62,4 @@ dependencies {
 </execution>
 ```
 
-> 关于Kapt更详细的说明，请看[Kotlin官网说明](https://book.kotlincn.net/text/kapt.html)，或[Kotlin语言中文站](https://www.kotlincn.net/docs/reference/kapt.html)。
+> 关于 KAPT 更详细的说明，请看 [Kotlin 官网说明](https://book.kotlincn.net/text/kapt.html)，或 [Kotlin 语言中文站](https://www.kotlincn.net/docs/reference/kapt.html)。

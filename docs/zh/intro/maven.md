@@ -60,7 +60,7 @@
 
    参考：[APT 设置-和 Lombok、Mapstruct 整合](../others/apt.md)
 
-> 在Kotlin中使用时，请参考[在Kotlin中使用注解处理器](../kotlin/kapt.md)
+> 在Kotlin中使用时，请参考[在Kotlin中使用注解处理器](../others/kapt.md)
 
 ```xml
 <plugin>
