@@ -42,7 +42,7 @@ public class SelectQueryTable extends QueryTable {
 
     @Override
     Object[] getValueArray() {
-        return queryWrapper.getValueArray();
+        return queryWrapper.getAllValueArray();
     }
 
     @Override

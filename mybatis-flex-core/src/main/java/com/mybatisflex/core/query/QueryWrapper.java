@@ -692,7 +692,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * 获取 queryWrapper 的参数
      * 在构建 sql 的时候，需要保证 where 在 having 的前面
      */
-    Object[] getValueArray() {
+    Object[] getAllValueArray() {
 
         List<Object> withValues = null;
         if (with != null) {
@@ -770,7 +770,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         if (CollectionUtil.isNotEmpty(unions)) {
             for (UnionWrapper union : unions) {
                 QueryWrapper queryWrapper = union.getQueryWrapper();
-                paramValues = ArrayUtil.concat(paramValues, queryWrapper.getValueArray());
+                paramValues = ArrayUtil.concat(paramValues, queryWrapper.getAllValueArray());
             }
         }
 
@@ -782,6 +782,67 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
         return returnValues;
     }
+
+
+
+    /**
+     * 获取 queryWrapper 的参数
+     * 在构建 sql 的时候，需要保证 where 在 having 的前面
+     */
+    Object[] getJoinValueArray() {
+        //join 子查询的参数：left join (select ...)
+        List<Object> joinValues = null;
+        List<Join> joins = getJoins();
+        if (CollectionUtil.isNotEmpty(joins)) {
+            for (Join join : joins) {
+                QueryTable joinTable = join.getQueryTable();
+                Object[] valueArray = joinTable.getValueArray();
+                if (valueArray.length > 0) {
+                    if (joinValues == null) {
+                        joinValues = new ArrayList<>(valueArray.length);
+                    }
+                    joinValues.addAll(Arrays.asList(valueArray));
+                }
+                QueryCondition onCondition = join.getOnCondition();
+                Object[] values = WrapperUtil.getValues(onCondition);
+                if (values.length > 0) {
+                    if (joinValues == null) {
+                        joinValues = new ArrayList<>(values.length);
+                    }
+                    joinValues.addAll(Arrays.asList(values));
+                }
+            }
+        }
+
+        return joinValues == null ? FlexConsts.EMPTY_ARRAY : joinValues.toArray();
+    }
+
+
+
+    /**
+     * 获取 queryWrapper 的参数
+     * 在构建 sql 的时候，需要保证 where 在 having 的前面
+     */
+    Object[] getConditionValueArray() {
+        //where 参数
+        Object[] whereValues = WrapperUtil.getValues(whereQueryCondition);
+
+        //having 参数
+        Object[] havingValues = WrapperUtil.getValues(havingQueryCondition);
+
+        Object[] paramValues = ArrayUtil.concat(whereValues, havingValues);
+
+        //unions 参数
+        if (CollectionUtil.isNotEmpty(unions)) {
+            for (UnionWrapper union : unions) {
+                QueryWrapper queryWrapper = union.getQueryWrapper();
+                paramValues = ArrayUtil.concat(paramValues, queryWrapper.getAllValueArray());
+            }
+        }
+
+        return paramValues;
+    }
+
 
     List<QueryWrapper> getChildSelect() {
 
@@ -815,7 +876,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     public String toSQL() {
         String sql = DialectFactory.getDialect().forSelectByQuery(this);
-        return SqlUtil.replaceSqlParams(sql, getValueArray());
+        return SqlUtil.replaceSqlParams(sql, getAllValueArray());
     }
 
     @Override

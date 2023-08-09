@@ -71,7 +71,7 @@ public class OperatorSelectCondition extends QueryCondition {
 
     @Override
     public Object getValue() {
-        return queryWrapper.getValueArray();
+        return queryWrapper.getAllValueArray();
     }
 
     @Override
