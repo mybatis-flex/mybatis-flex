@@ -45,21 +45,6 @@ public class IdInfo extends ColumnInfo {
     private Boolean before;
 
 
-    public IdInfo(ColumnInfo columnInfo) {
-        this.setColumn(columnInfo.getColumn());
-        this.setAlias(columnInfo.getAlias());
-        this.setProperty(columnInfo.getProperty());
-        this.setPropertyType(columnInfo.getPropertyType());
-
-        //当 id 的类型为数值时，默认设置为自增的方式
-        if (Number.class.isAssignableFrom(columnInfo.getPropertyType())) {
-            keyType = KeyType.Auto;
-        } else {
-            initDefaultKeyType();
-        }
-    }
-
-
     public IdInfo(Id id) {
         this.keyType = id.keyType();
         this.value = id.value();

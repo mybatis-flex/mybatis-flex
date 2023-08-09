@@ -17,6 +17,9 @@ package com.mybatisflex.core;
 
 /**
  * Mybatis-Flex 可能用到的静态常量
+ *
+ * @author michael
+ * @author 王帅
  */
 public class FlexConsts {
 
@@ -26,7 +29,6 @@ public class FlexConsts {
     public static final String NAME = "MyBatis-Flex";
     public static final String VERSION = "1.5.6";
 
-    public static final String DEFAULT_PRIMARY_FIELD = "id";
 
     public static final String SQL = "$$sql";
     public static final String SQL_ARGS = "$$sql_args";

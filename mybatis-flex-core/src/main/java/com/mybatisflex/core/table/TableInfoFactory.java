@@ -17,7 +17,6 @@ package com.mybatisflex.core.table;
 
 import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.BaseMapper;
-import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ClassUtil;
@@ -179,7 +178,7 @@ public class TableInfoFactory {
         List<ColumnInfo> columnInfoList = new ArrayList<>();
         List<IdInfo> idInfos = new ArrayList<>();
 
-        Field idField = null;
+//        Field idField = null;
 
         String logicDeleteColumn = null;
         String versionColumn = null;
@@ -330,26 +329,8 @@ public class TableInfoFactory {
                 columnInfo.setJdbcType(column.jdbcType());
             }
 
-            if (FlexConsts.DEFAULT_PRIMARY_FIELD.equals(field.getName())) {
-                idField = field;
-            }
         }
 
-
-        if (idInfos.isEmpty() && idField != null) {
-            int index = -1;
-            for (int i = 0; i < columnInfoList.size(); i++) {
-                ColumnInfo columnInfo = columnInfoList.get(i);
-                if (FlexConsts.DEFAULT_PRIMARY_FIELD.equals(columnInfo.getProperty())) {
-                    index = i;
-                    break;
-                }
-            }
-            if (index >= 0) {
-                ColumnInfo removedColumnInfo = columnInfoList.remove(index);
-                idInfos.add(new IdInfo(removedColumnInfo));
-            }
-        }
 
         tableInfo.setLogicDeleteColumn(logicDeleteColumn);
         tableInfo.setVersionColumn(versionColumn);
