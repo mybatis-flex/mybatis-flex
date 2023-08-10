@@ -291,7 +291,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper or(Consumer<QueryWrapper> consumer, boolean condition) {
-        if (condition) {
+        if (!condition) {
             return this;
         }
         QueryWrapper newWrapper = new QueryWrapper();
