@@ -16,19 +16,34 @@
 package com.mybatisflex.core.handler;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+/**
+ * @author michael
+ */
 public class GsonTypeHandler extends BaseJsonTypeHandler<Object> {
 
     private static Gson gson;
     private final Class<?> propertyType;
+    private Class<?> genericType;
 
-    public GsonTypeHandler(Class<?> type) {
-        this.propertyType = type;
+    public GsonTypeHandler(Class<?> propertyType) {
+        this.propertyType = propertyType;
+    }
+
+    public GsonTypeHandler(Class<?> propertyType, Class<?> genericType) {
+        this.propertyType = propertyType;
+        this.genericType = genericType;
     }
 
     @Override
     protected Object parseJson(String json) {
-        return getGson().fromJson(json, propertyType);
+        if (genericType != null) {
+            TypeToken<?> typeToken = TypeToken.getParameterized(propertyType, genericType);
+            return getGson().fromJson(json, typeToken);
+        } else {
+            return getGson().fromJson(json, propertyType);
+        }
     }
 
     @Override
