@@ -88,6 +88,21 @@ public class FlexGlobalConfig {
      */
     private int defaultRelationQueryDepth = 2;
 
+    /**
+     * 默认的逻辑删除字段，允许设置 {@code null} 忽略匹配。
+     */
+    private String logicDeleteColumn = "del_flag";
+
+    /**
+     * 默认的多租户字段，允许设置 {@code null} 忽略匹配。
+     */
+    private String tenantColumn = "tenant_id";
+
+    /**
+     * 默认的乐观锁字段，允许设置 {@code null} 忽略匹配。
+     */
+    private String versionColumn = "version";
+
     public boolean isPrintBanner() {
         return printBanner;
     }
@@ -335,6 +350,30 @@ public class FlexGlobalConfig {
 
     public void setDefaultRelationQueryDepth(int defaultRelationQueryDepth) {
         this.defaultRelationQueryDepth = defaultRelationQueryDepth;
+    }
+
+    public String getLogicDeleteColumn() {
+        return logicDeleteColumn;
+    }
+
+    public void setLogicDeleteColumn(String logicDeleteColumn) {
+        this.logicDeleteColumn = logicDeleteColumn;
+    }
+
+    public String getTenantColumn() {
+        return tenantColumn;
+    }
+
+    public void setTenantColumn(String tenantColumn) {
+        this.tenantColumn = tenantColumn;
+    }
+
+    public String getVersionColumn() {
+        return versionColumn;
+    }
+
+    public void setVersionColumn(String versionColumn) {
+        this.versionColumn = versionColumn;
     }
 
     public FlexDataSource getDataSource() {
