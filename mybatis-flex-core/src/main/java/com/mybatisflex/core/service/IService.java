@@ -391,6 +391,70 @@ public interface IService<T> {
     }
 
     /**
+     * <p>查询结果集中第一列，且第一条数据。
+     *
+     * @param query 查询条件
+     * @return 数据值
+     */
+    default Object getObj(QueryWrapper query) {
+        return getMapper().selectObjectByQuery(query);
+    }
+
+    /**
+     * <p>查询结果集中第一列，且第一条数据，并封装为 {@link Optional} 返回。
+     *
+     * @param query 查询条件
+     * @return 数据值
+     */
+    default Optional<Object> getObjOpt(QueryWrapper query) {
+        return Optional.ofNullable(getObj(query));
+    }
+
+    /**
+     * <p>查询结果集中第一列，且第一条数据，并转换为指定类型，比如 {@code Long}, {@code String} 等。
+     *
+     * @param query  查询条件
+     * @param asType 接收的数据类型
+     * @return 数据值
+     */
+    default <R> R getObjAs(QueryWrapper query, Class<R> asType) {
+        return getMapper().selectObjectByQueryAs(query, asType);
+    }
+
+    /**
+     * <p>查询结果集中第一列，且第一条数据，并转换为指定类型，比如 {@code Long}, {@code String}
+     * 等，封装为 {@link Optional} 返回。
+     *
+     * @param query  查询条件
+     * @param asType 接收的数据类型
+     * @return 数据值
+     */
+    default <R> Optional<R> getObjAsOpt(QueryWrapper query, Class<R> asType) {
+        return Optional.ofNullable(getObjAs(query, asType));
+    }
+
+    /**
+     * <p>查询结果集中第一列所有数据。
+     *
+     * @param query 查询条件
+     * @return 数据列表
+     */
+    default List<Object> objList(QueryWrapper query) {
+        return getMapper().selectObjectListByQuery(query);
+    }
+
+    /**
+     * <p>查询结果集中第一列所有数据，并转换为指定类型，比如 {@code Long}, {@code String} 等。
+     *
+     * @param query  查询条件
+     * @param asType 接收的数据类型
+     * @return 数据列表
+     */
+    default <R> List<R> objListAs(QueryWrapper query, Class<R> asType) {
+        return getMapper().selectObjectListByQueryAs(query, asType);
+    }
+
+    /**
      * <p>查询所有数据。
      *
      * @return 所有数据
