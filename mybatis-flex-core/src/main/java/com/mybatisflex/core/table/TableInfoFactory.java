@@ -199,6 +199,8 @@ public class TableInfoFactory {
 
         List<Field> entityFields = getColumnFields(entityClass);
 
+        FlexGlobalConfig config = FlexGlobalConfig.getDefaultConfig();
+
         for (Field field : entityFields) {
 
             Column column = field.getAnnotation(Column.class);
@@ -218,7 +220,7 @@ public class TableInfoFactory {
                     Type genericType = TypeParameterResolver.resolveFieldType(field, entityClass);
                     if (genericType instanceof ParameterizedType) {
                         Type actualTypeArgument = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-                        if (actualTypeArgument instanceof Class){
+                        if (actualTypeArgument instanceof Class) {
                             tableInfo.addCollectionType(field, (Class<?>) actualTypeArgument);
                         }
                     }
@@ -236,7 +238,8 @@ public class TableInfoFactory {
             String columnName = getColumnName(tableInfo.isCamelToUnderline(), field, column);
 
             //逻辑删除字段
-            if (column != null && column.isLogicDelete()) {
+            if ((column != null && column.isLogicDelete())
+                || columnName.equals(config.getLogicDeleteColumn())) {
                 if (logicDeleteColumn == null) {
                     logicDeleteColumn = columnName;
                 } else {
@@ -245,7 +248,8 @@ public class TableInfoFactory {
             }
 
             //乐观锁版本字段
-            if (column != null && column.version()) {
+            if ((column != null && column.version())
+                || columnName.equals(config.getVersionColumn())) {
                 if (versionColumn == null) {
                     versionColumn = columnName;
                 } else {
@@ -254,7 +258,8 @@ public class TableInfoFactory {
             }
 
             //租户ID 字段
-            if (column != null && column.tenantId()) {
+            if ((column != null && column.tenantId())
+                || columnName.equals(config.getTenantColumn())) {
                 if (tenantIdColumn == null) {
                     tenantIdColumn = columnName;
                 } else {
@@ -311,7 +316,7 @@ public class TableInfoFactory {
 
             if (column != null && column.typeHandler() != UnknownTypeHandler.class) {
                 Class<?> typeHandlerClass = column.typeHandler();
-                Configuration configuration = FlexGlobalConfig.getDefaultConfig().getConfiguration();
+                Configuration configuration = config.getConfiguration();
                 TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
                 TypeHandler<?> typeHandler = typeHandlerRegistry.getInstance(columnInfo.getPropertyType(), typeHandlerClass);
                 columnInfo.setTypeHandler(typeHandler);
