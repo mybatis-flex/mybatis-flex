@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.test;
 
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
@@ -53,6 +54,9 @@ public class AccountTester {
             .addScript("data.sql")
             .build();
 
+        FlexGlobalConfig.getDefaultConfig()
+            .setLogicDeleteColumn("is_delete");
+
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
             .setDataSource(dataSource)
             .setLogImpl(StdOutImpl.class)
@@ -70,6 +74,11 @@ public class AccountTester {
 
         accountMapper = bootstrap.getMapper(AccountMapper.class);
         articleMapper = bootstrap.getMapper(ArticleMapper.class);
+    }
+
+    @Test
+    public void testLogicDelete() {
+        accountMapper.selectAll().forEach(System.out::println);
     }
 
     @Test

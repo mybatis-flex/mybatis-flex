@@ -196,6 +196,8 @@ public class TableInfoFactory {
 
         List<Field> entityFields = getColumnFields(entityClass);
 
+        FlexGlobalConfig config = FlexGlobalConfig.getDefaultConfig();
+
         for (Field field : entityFields) {
 
             Column column = field.getAnnotation(Column.class);
@@ -233,7 +235,8 @@ public class TableInfoFactory {
             String columnName = getColumnName(tableInfo.isCamelToUnderline(), field, column);
 
             //逻辑删除字段
-            if (column != null && column.isLogicDelete()) {
+            if ((column != null && column.isLogicDelete())
+                || columnName.equals(config.getLogicDeleteColumn())) {
                 if (logicDeleteColumn == null) {
                     logicDeleteColumn = columnName;
                 } else {
@@ -242,7 +245,8 @@ public class TableInfoFactory {
             }
 
             //乐观锁版本字段
-            if (column != null && column.version()) {
+            if ((column != null && column.version())
+                || columnName.equals(config.getVersionColumn())) {
                 if (versionColumn == null) {
                     versionColumn = columnName;
                 } else {
@@ -251,7 +255,8 @@ public class TableInfoFactory {
             }
 
             //租户ID 字段
-            if (column != null && column.tenantId()) {
+            if ((column != null && column.tenantId())
+                || columnName.equals(config.getTenantColumn())) {
                 if (tenantIdColumn == null) {
                     tenantIdColumn = columnName;
                 } else {
