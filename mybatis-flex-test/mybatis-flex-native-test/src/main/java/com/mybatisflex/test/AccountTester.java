@@ -23,6 +23,7 @@ import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.query.If;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.DbChain;
+import com.mybatisflex.core.update.UpdateChain;
 import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
 import com.mybatisflex.mapper.ArticleMapper;
@@ -139,7 +140,7 @@ public class AccountTester {
 
 
     @Test
-    public void testUpdate() {
+    public void testUpdate1() {
         List<Account> accounts = accountMapper.selectAll();
         System.out.println(accounts);
 
@@ -154,7 +155,25 @@ public class AccountTester {
 
         accounts = accountMapper.selectAll();
         System.out.println(accounts);
+    }
 
+
+    @Test
+    public void testUpdate2() {
+        List<Account> accounts = accountMapper.selectAll();
+        System.out.println(accounts);
+
+
+        UpdateChain.of(Account.class)
+            .set(Account::getUserName,"zhangsan123")
+//            .leftJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+            .where(Account::getId).eq(1)
+//            .and(ARTICLE.ID.ge(0))
+            .limit(1)
+            .remove();
+
+        accounts = accountMapper.selectAll();
+        System.out.println(accounts);
     }
 
     /**
