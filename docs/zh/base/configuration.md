@@ -8,13 +8,15 @@ SpringBoot 配置文件（`application.yml` 等）主要是用于对 MyBatis 原
 mybatis-flex:
   #......
   datasource:
-  #......
+    #......
   configuration:
-  #......
+    #......
   global-config:
-  #......
+    #......
   admin-config:
-  #......
+    #......
+  seata-config:
+    #......
 ```
 
 ## mybatis-flex
@@ -129,7 +131,28 @@ TypeHandler 扫描路径，如果配置了该属性，SqlSessionFactoryBean 会�
 - 类型：`java.lang.Object`
 - 默认值：`1`
 
-逻辑删除数据删除标记值，
+逻辑删除数据删除标记值。
+
+### logic-delete-column
+
+- 类型：`java.lang.String`
+- 默认值：`del_flag`
+
+默认的逻辑删除字段。
+
+### tenant-column
+
+- 类型：`java.lang.String`
+- 默认值：`tenant_id`
+
+默认的多租户字段。
+
+### version-column
+
+- 类型：`java.lang.String`
+- 默认值：`version`
+
+默认的乐观锁字段。
 
 ## admin-config
 
@@ -153,3 +176,19 @@ MyBatis-Flex-Admin 连接端点。
 - 默认值：`null`
 
 MyBatis-Flex-Admin 连接密钥。
+
+## seata-config
+
+### enable
+
+- 类型：`boolean`
+- 默认值：`false`
+
+是否启用 Seata 代理数据源。
+
+### seata-mode
+
+- 类型：`com.mybatisflex.spring.boot.MybatisFlexProperties.SeataMode`
+- 默认值：`AT`
+
+使用 Seata AT 模式代理数据源。
