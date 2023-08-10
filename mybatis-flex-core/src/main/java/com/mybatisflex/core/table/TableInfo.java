@@ -376,7 +376,7 @@ public class TableInfo {
             primaryColumns[i] = idInfo.getColumn();
 
             if (idInfo.getKeyType() != KeyType.Auto
-                || (idInfo.getBefore() != null && idInfo.getBefore())
+                && (idInfo.getBefore() != null && idInfo.getBefore())
             ) {
                 insertIdFields.add(idInfo.getColumn());
             }
