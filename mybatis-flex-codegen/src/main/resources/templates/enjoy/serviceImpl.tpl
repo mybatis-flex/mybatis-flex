@@ -89,6 +89,30 @@ public class #(table.buildServiceImplClassName()) extends #(serviceImplConfig.bu
 
     @Override
     @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
+    public Object getObj(QueryWrapper query) {
+        return super.getObj(query);
+    }
+
+    @Override
+    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
+    public <R> R getObjAs(QueryWrapper query, Class<R> asType) {
+        return super.getObjAs(query, asType);
+    }
+
+    @Override
+    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
+    public List<Object> objList(QueryWrapper query) {
+        return super.objList(query);
+    }
+
+    @Override
+    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
+    public <R> List<R> objListAs(QueryWrapper query, Class<R> asType) {
+        return super.objListAs(query, asType);
+    }
+
+    @Override
+    @Cacheable(key = "#root.methodName + ':' + #query.toSQL()")
     public List<#(entityClassName)> list(QueryWrapper query) {
         return super.list(query);
     }
