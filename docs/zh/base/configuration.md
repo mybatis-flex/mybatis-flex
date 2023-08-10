@@ -8,13 +8,15 @@ SpringBoot 配置文件（`application.yml` 等）主要是用于对 MyBatis 原
 mybatis-flex:
   #......
   datasource:
-  #......
+    #......
   configuration:
-  #......
+    #......
   global-config:
-  #......
+    #......
   admin-config:
-  #......
+    #......
+  seata-config:
+    #......
 ```
 
 ## mybatis-flex
@@ -153,3 +155,19 @@ MyBatis-Flex-Admin 连接端点。
 - 默认值：`null`
 
 MyBatis-Flex-Admin 连接密钥。
+
+## seata-config
+
+### enable
+
+- 类型：`boolean`
+- 默认值：`false`
+
+是否启用 Seata 代理数据源。
+
+### seata-mode
+
+- 类型：`com.mybatisflex.spring.boot.MybatisFlexProperties.SeataMode`
+- 默认值：`AT`
+
+使用 Seata AT 模式代理数据源。
