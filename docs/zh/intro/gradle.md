@@ -12,7 +12,6 @@
 ```kotlin
 dependencies {
     implementation("com.mybatis-flex:mybatis-flex-core:1.5.6")
-    compileOnly("com.mybatis-flex:mybatis-flex-processor:1.5.6")
 }
 ```
 
@@ -20,7 +19,6 @@ dependencies {
 ```groovy
 dependencies {
     implementation 'com.mybatis-flex:mybatis-flex-core:1.5.6'
-    compileOnly 'com.mybatis-flex:mybatis-flex-processor:1.5.6'
 }
 ```
 
@@ -30,7 +28,6 @@ dependencies {
 ```kotlin
 dependencies {
     implementation("com.mybatis-flex:mybatis-flex-spring:1.5.6")
-    compileOnly("com.mybatis-flex:mybatis-flex-processor:1.5.6")
 }
 ```
 
@@ -38,7 +35,6 @@ dependencies {
 ```groovy
 dependencies {
     implementation 'com.mybatis-flex:mybatis-flex-spring:1.5.6'
-    compileOnly 'com.mybatis-flex:mybatis-flex-processor:1.5.6'
 }
 ```
 3、用到了 Spring Boot 的场景
@@ -47,7 +43,6 @@ dependencies {
 ```kotlin
 dependencies {
     implementation("com.mybatis-flex:mybatis-flex-spring-boot-starter:1.5.6")
-    compileOnly("com.mybatis-flex:mybatis-flex-processor:1.5.6")
 }
 ```
 
@@ -55,13 +50,12 @@ dependencies {
 ```groovy
 dependencies {
     implementation 'com.mybatis-flex:mybatis-flex-spring-boot-starter:1.5.6'
-    compileOnly 'com.mybatis-flex:mybatis-flex-processor:1.5.6'
 }
 ```
 
 4. 配置 annotationProcessor
 
-   `mybatis-flex-processor`提供APT服务，可以配置到annotationProcessorPaths，配置后，无需在依赖中声明`mybatis-flex-processor`依赖。
+   `mybatis-flex-processor`提供APT服务。
 
    参考：[APT 设置-和 Lombok、Mapstruct 整合](../others/apt.md)
 
