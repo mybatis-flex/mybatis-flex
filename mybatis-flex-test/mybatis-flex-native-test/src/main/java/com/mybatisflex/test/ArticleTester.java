@@ -77,10 +77,7 @@ public class ArticleTester {
             articles.add(article);
         }
 
-        Db.executeBatch(articles, ArticleMapper.class, (mapper, article) -> {
-            System.out.println("article: " + article);
-            mapper.insertSelective(article);
-        });
+        Db.executeBatch(articles, ArticleMapper.class, ArticleMapper::insertOrUpdateSelective);
 
         articleMapper.selectAll().forEach(System.out::println);
     }
