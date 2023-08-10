@@ -131,7 +131,28 @@ TypeHandler 扫描路径，如果配置了该属性，SqlSessionFactoryBean 会�
 - 类型：`java.lang.Object`
 - 默认值：`1`
 
-逻辑删除数据删除标记值，
+逻辑删除数据删除标记值。
+
+### logic-delete-column
+
+- 类型：`java.lang.String`
+- 默认值：`del_flag`
+
+默认的逻辑删除字段。
+
+### tenant-column
+
+- 类型：`java.lang.String`
+- 默认值：`tenant_id`
+
+默认的多租户字段。
+
+### version-column
+
+- 类型：`java.lang.String`
+- 默认值：`version`
+
+默认的乐观锁字段。
 
 ## admin-config
 
