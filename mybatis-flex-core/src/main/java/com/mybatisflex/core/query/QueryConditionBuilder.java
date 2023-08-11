@@ -19,6 +19,7 @@ import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
 import java.util.Collection;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
@@ -47,7 +48,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
     }
 
 
-    public <T> Wrapper eq(Object value, Predicate<T> when) {
+    public <T> Wrapper eq(T value, Predicate<T> when) {
         if (value != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.eq(value, when), connector);
         }
@@ -59,9 +60,15 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return eq(LambdaUtil.getQueryColumn(value));
     }
 
-
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> Wrapper eq(LambdaGetter<T> value, Predicate<T> when) {
-        return eq(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            queryWrapper.addWhereQueryCondition(queryColumn.eq(value).when(when), connector);
+        }
+        return queryWrapper;
     }
 
 
@@ -77,7 +84,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper ne(Object value, Predicate<T> when) {
+    public <T> Wrapper ne(T value, Predicate<T> when) {
         if (value != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.ne(value, when), connector);
         }
@@ -89,8 +96,15 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
     }
 
 
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> Wrapper ne(LambdaGetter<T> value, Predicate<T> when) {
-        return ne(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            queryWrapper.addWhereQueryCondition(queryColumn.ne(value).when(when), connector);
+        }
+        return queryWrapper;
     }
 
 
@@ -106,7 +120,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper like(Object value, Predicate<T> when) {
+    public <T> Wrapper like(T value, Predicate<T> when) {
         if (value != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.like(value, when), connector);
         }
@@ -121,7 +135,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper likeLeft(Object value, Predicate<T> when) {
+    public <T> Wrapper likeLeft(T value, Predicate<T> when) {
         if (value != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.likeLeft(value, when), connector);
         }
@@ -136,7 +150,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper likeRight(Object value, Predicate<T> when) {
+    public <T> Wrapper likeRight(T value, Predicate<T> when) {
         if (value != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.likeRight(value, when), connector);
         }
@@ -155,7 +169,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper gt(Object value, Predicate<T> when) {
+    public <T> Wrapper gt(T value, Predicate<T> when) {
         if (value != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.gt(value, when), connector);
         }
@@ -166,9 +180,15 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return gt(LambdaUtil.getQueryColumn(value));
     }
 
-
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> Wrapper gt(LambdaGetter<T> value, Predicate<T> when) {
-        return gt(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            queryWrapper.addWhereQueryCondition(queryColumn.gt(value).when(when), connector);
+        }
+        return queryWrapper;
     }
 
 
@@ -184,7 +204,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper ge(Object value, Predicate<T> when) {
+    public <T> Wrapper ge(T value, Predicate<T> when) {
         if (value != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.ge(value, when), connector);
         }
@@ -195,9 +215,15 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return ge(LambdaUtil.getQueryColumn(value));
     }
 
-
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> Wrapper ge(LambdaGetter<T> value, Predicate<T> when) {
-        return ge(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            queryWrapper.addWhereQueryCondition(queryColumn.ge(value).when(when), connector);
+        }
+        return queryWrapper;
     }
 
     /**
@@ -212,7 +238,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper lt(Object value, Predicate<T> when) {
+    public <T> Wrapper lt(T value, Predicate<T> when) {
         if (value != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.lt(value, when), connector);
         }
@@ -223,9 +249,15 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return lt(LambdaUtil.getQueryColumn(value));
     }
 
-
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> Wrapper lt(LambdaGetter<T> value, Predicate<T> when) {
-        return lt(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            queryWrapper.addWhereQueryCondition(queryColumn.lt(value).when(when), connector);
+        }
+        return queryWrapper;
     }
 
     /**
@@ -241,7 +273,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
     }
 
 
-    public <T> Wrapper le(Object value, Predicate<T> when) {
+    public <T> Wrapper le(T value, Predicate<T> when) {
         if (value != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.le(value, when), connector);
         }
@@ -252,9 +284,15 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return le(LambdaUtil.getQueryColumn(value));
     }
 
-
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> Wrapper le(LambdaGetter<T> value, Predicate<T> when) {
-        return le(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            queryWrapper.addWhereQueryCondition(queryColumn.le(value).when(when), connector);
+        }
+        return queryWrapper;
     }
 
 
@@ -268,6 +306,10 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> Wrapper isNull(Predicate<T> when) {
         queryWrapper.addWhereQueryCondition(queryColumn.isNull(when), connector);
         return queryWrapper;
@@ -284,6 +326,10 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> Wrapper isNotNull(Predicate<T> when) {
         queryWrapper.addWhereQueryCondition(queryColumn.isNotNull(when), connector);
         return queryWrapper;
@@ -303,7 +349,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper in(Object[] arrays, Predicate<T> when) {
+    public <T> Wrapper in(T[] arrays, Predicate<T[]> when) {
         //忽略 QueryWrapper.in("name", null) 的情况
         if (arrays != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.in(arrays, when), connector);
@@ -324,6 +370,10 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return this.queryWrapper;
     }
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> Wrapper in(QueryWrapper queryWrapper, Predicate<T> when) {
         if (queryWrapper != null) {
             this.queryWrapper.addWhereQueryCondition(queryColumn.in(queryWrapper, when), connector);
@@ -345,7 +395,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper in(Collection<?> collection, Predicate<T> when) {
+    public <T extends Collection<?>> Wrapper in(T collection, Predicate<T> when) {
         if (queryWrapper != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.in(collection, when), connector);
         }
@@ -365,7 +415,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper notIn(Object[] arrays, Predicate<T> when) {
+    public <T> Wrapper notIn(T[] arrays, Predicate<T[]> when) {
         if (queryWrapper != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.notIn(arrays, when), connector);
         }
@@ -386,7 +436,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper notIn(Collection<?> collection, Predicate<T> when) {
+    public <T extends Collection<?>> Wrapper notIn(T collection, Predicate<T> when) {
         if (queryWrapper != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.notIn(collection, when), connector);
         }
@@ -405,6 +455,10 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return this.queryWrapper;
     }
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> Wrapper notIn(QueryWrapper queryWrapper, Predicate<T> when) {
         if (queryWrapper != null) {
             this.queryWrapper.addWhereQueryCondition(queryColumn.notIn(queryWrapper, when), connector);
@@ -427,7 +481,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
     }
 
 
-    public <T> Wrapper between(Object start, Object end, Predicate<T> when) {
+    public <S, E> Wrapper between(S start, E end, BiPredicate<S, E> when) {
         if (queryWrapper != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.between(start, end, when), connector);
         }
@@ -448,7 +502,7 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         return queryWrapper;
     }
 
-    public <T> Wrapper notBetween(Object start, Object end, Predicate<T> when) {
+    public <S, E> Wrapper notBetween(S start, E end, BiPredicate<S, E> when) {
         if (queryWrapper != null) {
             queryWrapper.addWhereQueryCondition(queryColumn.notBetween(start, end, when), connector);
         }
