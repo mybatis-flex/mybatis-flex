@@ -49,7 +49,7 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
     @Column(typeHandler = Fastjson2TypeHandler.class)
     private Map<String, Object> options;
 
-    @Column(isLogicDelete = true)
+//    @Column(isLogicDelete = true)
     private Boolean isDelete;
 
     private List<Article> articles;

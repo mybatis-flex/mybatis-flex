@@ -52,4 +52,27 @@ public class FunctionSqlTest {
         System.out.println(sql);
     }
 
+    @Test
+    public void test03() {
+        String sql = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+            .where(upper(ACCOUNT.USER_NAME).likeRaw(raw("UPPER('ws')")))
+            .toSQL();
+
+        System.out.println(sql);
+    }
+
+    @Test
+    public void test04() {
+        String sql = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+//            .where("FIND_IN_SET(?, `id`)", 100)
+            .where(findInSet(number(100), ACCOUNT.ID).eq(true))
+            .toSQL();
+
+        System.out.println(sql);
+    }
+
 }

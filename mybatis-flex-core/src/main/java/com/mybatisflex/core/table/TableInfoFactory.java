@@ -27,10 +27,7 @@ import org.apache.ibatis.io.ResolverUtil;
 import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
-import org.apache.ibatis.type.TypeHandlerRegistry;
-import org.apache.ibatis.type.UnknownTypeHandler;
+import org.apache.ibatis.type.*;
 import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.*;
@@ -199,6 +196,8 @@ public class TableInfoFactory {
 
         List<Field> entityFields = getColumnFields(entityClass);
 
+        FlexGlobalConfig config = FlexGlobalConfig.getDefaultConfig();
+
         for (Field field : entityFields) {
 
             Column column = field.getAnnotation(Column.class);
@@ -218,7 +217,7 @@ public class TableInfoFactory {
                     Type genericType = TypeParameterResolver.resolveFieldType(field, entityClass);
                     if (genericType instanceof ParameterizedType) {
                         Type actualTypeArgument = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-                        if (actualTypeArgument instanceof Class){
+                        if (actualTypeArgument instanceof Class) {
                             tableInfo.addCollectionType(field, (Class<?>) actualTypeArgument);
                         }
                     }
@@ -236,7 +235,8 @@ public class TableInfoFactory {
             String columnName = getColumnName(tableInfo.isCamelToUnderline(), field, column);
 
             //逻辑删除字段
-            if (column != null && column.isLogicDelete()) {
+            if ((column != null && column.isLogicDelete())
+                || columnName.equals(config.getLogicDeleteColumn())) {
                 if (logicDeleteColumn == null) {
                     logicDeleteColumn = columnName;
                 } else {
@@ -245,7 +245,8 @@ public class TableInfoFactory {
             }
 
             //乐观锁版本字段
-            if (column != null && column.version()) {
+            if ((column != null && column.version())
+                || columnName.equals(config.getVersionColumn())) {
                 if (versionColumn == null) {
                     versionColumn = columnName;
                 } else {
@@ -254,7 +255,8 @@ public class TableInfoFactory {
             }
 
             //租户ID 字段
-            if (column != null && column.tenantId()) {
+            if ((column != null && column.tenantId())
+                || columnName.equals(config.getTenantColumn())) {
                 if (tenantIdColumn == null) {
                     tenantIdColumn = columnName;
                 } else {
@@ -310,10 +312,22 @@ public class TableInfoFactory {
             columnInfo.setPropertyType(fieldType);
 
             if (column != null && column.typeHandler() != UnknownTypeHandler.class) {
-                Class<?> typeHandlerClass = column.typeHandler();
-                Configuration configuration = FlexGlobalConfig.getDefaultConfig().getConfiguration();
-                TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
-                TypeHandler<?> typeHandler = typeHandlerRegistry.getInstance(columnInfo.getPropertyType(), typeHandlerClass);
+                TypeHandler<?> typeHandler;
+
+                // 集合类型，传入泛型
+                // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I7S2YE
+                if (Collection.class.isAssignableFrom(fieldType)) {
+                    typeHandler = createCollectionTypeHandler(entityClass, field, column.typeHandler(), fieldType);
+                }
+
+                //非集合类型
+                else {
+                    Class<?> typeHandlerClass = column.typeHandler();
+                    Configuration configuration = FlexGlobalConfig.getDefaultConfig().getConfiguration();
+                    TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+                    typeHandler = typeHandlerRegistry.getInstance(columnInfo.getPropertyType(), typeHandlerClass);
+                }
+
                 columnInfo.setTypeHandler(typeHandler);
             }
 
@@ -358,6 +372,48 @@ public class TableInfoFactory {
 
         return tableInfo;
     }
+
+    /**
+     * 创建 typeHandler
+     * 参考 {@link TypeHandlerRegistry#getInstance(Class, Class)}
+     *
+     * @param entityClass
+     * @param field
+     * @param typeHandlerClass
+     * @param fieldType
+     */
+    private static TypeHandler<?> createCollectionTypeHandler(Class<?> entityClass, Field field, Class<?> typeHandlerClass, Class<?> fieldType) {
+        Class<?> genericClass = null;
+        Type genericType = TypeParameterResolver.resolveFieldType(field, entityClass);
+        if (genericType instanceof ParameterizedType) {
+            Type actualTypeArgument = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+            if (actualTypeArgument instanceof Class) {
+                genericClass = (Class<?>) actualTypeArgument;
+            }
+        }
+
+        try {
+            Constructor<?> constructor = typeHandlerClass.getConstructor(Class.class, Class.class);
+            return (TypeHandler<?>) constructor.newInstance(fieldType, genericClass);
+        } catch (NoSuchMethodException ignored) {
+        } catch (Exception e) {
+            throw new TypeException("Failed invoking constructor for handler " + typeHandlerClass, e);
+        }
+        try {
+            Constructor<?> constructor = typeHandlerClass.getConstructor(Class.class);
+            return (TypeHandler<?>) constructor.newInstance(fieldType);
+        } catch (NoSuchMethodException ignored) {
+        } catch (Exception e) {
+            throw new TypeException("Failed invoking constructor for handler " + typeHandlerClass, e);
+        }
+        try {
+            Constructor<?> c = typeHandlerClass.getConstructor();
+            return (TypeHandler<?>) c.newInstance();
+        } catch (Exception e) {
+            throw new TypeException("Unable to find a usable constructor for " + typeHandlerClass, e);
+        }
+    }
+
 
     static String getColumnName(boolean isCamelToUnderline, Field field, Column column) {
         if (column != null && StringUtil.isNotBlank(column.value())) {
