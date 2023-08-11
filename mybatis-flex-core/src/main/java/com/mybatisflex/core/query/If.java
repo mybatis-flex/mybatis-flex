@@ -45,7 +45,9 @@ public class If {
      * 查看某个对象是否为空，支持数组、集合、map 等
      *
      * @param object
+     * @deprecated 无泛型，多 instanceof 判断
      */
+    @Deprecated
     public static boolean notEmpty(Object object) {
         if (object == null) {
             return false;
@@ -74,7 +76,9 @@ public class If {
      * 查看某个对象是否为空数据 或者 null
      *
      * @param object
+     * @deprecated 无泛型，多 instanceof 判断
      */
+    @Deprecated
     public static boolean isEmpty(Object object) {
         return !notEmpty(object);
     }
