@@ -17,6 +17,8 @@
 package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.StringUtil;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -50,7 +52,28 @@ public class DynamicConditionTest {
         String sql = QueryWrapper.create()
             .from(ACCOUNT)
             .where(ACCOUNT.ID.in(idList).when(false))
-            .where(ACCOUNT.ID.in(idList).when(() -> !idList.isEmpty()))
+            .where(ACCOUNT.ID.in(idList, CollectionUtil::isNotEmpty))
+            .where(ACCOUNT.ID.in(idList).when(idList::isEmpty))
+            .toSQL();
+
+        System.out.println(sql);
+    }
+
+    @Test
+    public void test03() {
+        String sql = QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.eq("1", StringUtil::isNumeric))
+            .toSQL();
+
+        System.out.println(sql);
+    }
+
+    @Test
+    public void test04() {
+        String sql = QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.between('1', '2', (start, end) -> start < end))
             .toSQL();
 
         System.out.println(sql);
