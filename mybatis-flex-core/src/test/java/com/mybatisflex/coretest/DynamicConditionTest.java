@@ -19,6 +19,9 @@ package com.mybatisflex.coretest;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 
 /**
@@ -35,6 +38,19 @@ public class DynamicConditionTest {
             .from(ACCOUNT)
             .where(ACCOUNT.AGE.ge(18))
             .or(qw -> qw.where(ACCOUNT.ID.eq(1)), false)
+            .toSQL();
+
+        System.out.println(sql);
+    }
+
+    @Test
+    public void test02() {
+        List<Integer> idList = Arrays.asList(1, 2, 3);
+
+        String sql = QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.in(idList).when(false))
+            .where(ACCOUNT.ID.in(idList).when(() -> !idList.isEmpty()))
             .toSQL();
 
         System.out.println(sql);
