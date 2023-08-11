@@ -22,6 +22,7 @@ import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
 import java.util.Collection;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 /**
@@ -49,7 +50,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R eq(Object value, Predicate<T> when) {
+    public <T> R eq(T value, Predicate<T> when) {
         if (value != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.eq(value, when), connector);
         }
@@ -60,8 +61,15 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return eq(LambdaUtil.getQueryColumn(value));
     }
 
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> R eq(LambdaGetter<T> value, Predicate<T> when) {
-        return eq(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.eq(LambdaUtil.getQueryColumn(value)).when(when), connector);
+        }
+        return queryModel;
     }
 
     public R ne(Object value) {
@@ -71,7 +79,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R ne(Object value, Predicate<T> when) {
+    public <T> R ne(T value, Predicate<T> when) {
         if (value != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ne(value, when), connector);
         }
@@ -82,8 +90,15 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return ne(LambdaUtil.getQueryColumn(value));
     }
 
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> R ne(LambdaGetter<T> value, Predicate<T> when) {
-        return ne(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ne(LambdaUtil.getQueryColumn(value)).when(when), connector);
+        }
+        return queryModel;
     }
 
     public R like(Object value) {
@@ -93,7 +108,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R like(Object value, Predicate<T> when) {
+    public <T> R like(T value, Predicate<T> when) {
         if (value != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.like(value, when), connector);
         }
@@ -107,7 +122,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R likeLeft(Object value, Predicate<T> when) {
+    public <T> R likeLeft(T value, Predicate<T> when) {
         if (value != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.likeLeft(value, when), connector);
         }
@@ -121,7 +136,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R likeRight(Object value, Predicate<T> when) {
+    public <T> R likeRight(T value, Predicate<T> when) {
         if (value != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.likeRight(value, when), connector);
         }
@@ -135,7 +150,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R gt(Object value, Predicate<T> when) {
+    public <T> R gt(T value, Predicate<T> when) {
         if (value != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.gt(value, when), connector);
         }
@@ -146,8 +161,15 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return gt(LambdaUtil.getQueryColumn(value));
     }
 
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> R gt(LambdaGetter<T> value, Predicate<T> when) {
-        return gt(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.gt(LambdaUtil.getQueryColumn(value)).when(when), connector);
+        }
+        return queryModel;
     }
 
     public R ge(Object value) {
@@ -157,7 +179,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R ge(Object value, Predicate<T> when) {
+    public <T> R ge(T value, Predicate<T> when) {
         if (value != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ge(value, when), connector);
         }
@@ -168,8 +190,15 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return ge(LambdaUtil.getQueryColumn(value));
     }
 
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> R ge(LambdaGetter<T> value, Predicate<T> when) {
-        return ge(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ge(LambdaUtil.getQueryColumn(value)).when(when), connector);
+        }
+        return queryModel;
     }
 
     public R lt(Object value) {
@@ -179,7 +208,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R lt(Object value, Predicate<T> when) {
+    public <T> R lt(T value, Predicate<T> when) {
         if (value != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.lt(value, when), connector);
         }
@@ -190,8 +219,15 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return lt(LambdaUtil.getQueryColumn(value));
     }
 
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> R lt(LambdaGetter<T> value, Predicate<T> when) {
-        return lt(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.lt(LambdaUtil.getQueryColumn(value)).when(when), connector);
+        }
+        return queryModel;
     }
 
     public R le(Object value) {
@@ -201,7 +237,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R le(Object value, Predicate<T> when) {
+    public <T> R le(T value, Predicate<T> when) {
         if (value != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.le(value, when), connector);
         }
@@ -212,8 +248,15 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return le(LambdaUtil.getQueryColumn(value));
     }
 
+    /**
+     * @deprecated {@link Predicate} 泛型参数无效
+     */
+    @Deprecated
     public <T> R le(LambdaGetter<T> value, Predicate<T> when) {
-        return le(LambdaUtil.getQueryColumn(value), when);
+        if (value != null) {
+            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.le(LambdaUtil.getQueryColumn(value)).when(when), connector);
+        }
+        return queryModel;
     }
 
     public R isNull() {
@@ -221,6 +264,10 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> R isNull(Predicate<T> when) {
         CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.isNull(when), connector);
         return queryModel;
@@ -231,6 +278,10 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> R isNotNull(Predicate<T> when) {
         CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.isNotNull(when), connector);
         return queryModel;
@@ -243,7 +294,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R in(Object[] arrays, Predicate<T> when) {
+    public <T> R in(T[] arrays, Predicate<T[]> when) {
         //忽略 QueryWrapper.in("name", null) 的情况
         if (arrays != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(arrays, when), connector);
@@ -258,6 +309,10 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return this.queryModel;
     }
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> R in(R queryModel, Predicate<T> when) {
         if (queryModel != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(queryModel, when), connector);
@@ -272,7 +327,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R in(Collection<?> collection, Predicate<T> when) {
+    public <T extends Collection<?>> R in(T collection, Predicate<T> when) {
         if (queryModel != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(collection, when), connector);
         }
@@ -286,7 +341,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R notIn(Object[] arrays, Predicate<T> when) {
+    public <T> R notIn(T[] arrays, Predicate<T[]> when) {
         if (queryModel != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(arrays, when), connector);
         }
@@ -300,7 +355,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R notIn(Collection<?> collection, Predicate<T> when) {
+    public <T extends Collection<?>> R notIn(T collection, Predicate<T> when) {
         if (queryModel != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(collection, when), connector);
         }
@@ -314,6 +369,10 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return this.queryModel;
     }
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> R notIn(R queryModel, Predicate<T> when) {
         if (queryModel != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(queryModel, when), connector);
@@ -328,7 +387,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R between(Object start, Object end, Predicate<T> when) {
+    public <S, E> R between(S start, E end, BiPredicate<S, E> when) {
         if (queryModel != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.between(start, end, when), connector);
         }
@@ -342,7 +401,7 @@ public class WhereBuilder<R extends QueryModel<R>> {
         return queryModel;
     }
 
-    public <T> R notBetween(Object start, Object end, Predicate<T> when) {
+    public <S, E> R notBetween(S start, E end, BiPredicate<S, E> when) {
         if (queryModel != null) {
             CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notBetween(start, end, when), connector);
         }

@@ -29,7 +29,7 @@ import java.util.Objects;
  * @author 王帅
  * @since 2023-06-07
  */
-@Table("tb_good")
+@Table(value = "tb_good", onSet = GoodOnSetListener.class)
 public class Good extends Model<Good> {
 
     @Id(keyType = KeyType.Auto)
