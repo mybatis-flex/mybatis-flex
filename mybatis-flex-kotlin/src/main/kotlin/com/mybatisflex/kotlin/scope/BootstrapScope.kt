@@ -41,9 +41,6 @@ class DataSourceScope(private val bootstrap: MybatisFlexBootstrap) {
     fun dataSource(dataSourceKey: String, dataSource: DataSource) =
         bootstrap.addDataSource(dataSourceKey, dataSource)
 
-//    infix fun String.of(dataSource: DataSource) =
-//        bootstrap.addDataSource(this, dataSource)
-
 }
 
 

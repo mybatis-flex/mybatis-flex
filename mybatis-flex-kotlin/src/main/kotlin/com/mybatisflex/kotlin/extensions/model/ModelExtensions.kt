@@ -13,27 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.kotlin.extensions.entry
+package com.mybatisflex.kotlin.extensions.model
 
-import com.mybatisflex.core.FlexConsts
-import com.mybatisflex.core.dialect.DialectFactory
+import com.mybatisflex.core.activerecord.Model
+import com.mybatisflex.core.mybatis.Mappers
 import com.mybatisflex.core.query.QueryColumn
 import com.mybatisflex.core.query.QueryCondition
 import com.mybatisflex.core.row.Db.*
-import com.mybatisflex.kotlin.extensions.db.*
 import com.mybatisflex.core.row.Row
 import com.mybatisflex.core.row.RowUtil
 import com.mybatisflex.core.table.TableDef
 import com.mybatisflex.core.table.TableInfoFactory
-import com.mybatisflex.core.util.ArrayUtil
-import com.mybatisflex.kotlin.entry.Entry
+import com.mybatisflex.core.util.SqlUtil
+import com.mybatisflex.kotlin.extensions.db.*
 import com.mybatisflex.kotlin.scope.QueryScope
-import java.util.Arrays
+import java.io.Serializable
 
 /*
  * 实体操作扩展
  * @author 卡莫sama(yuanjiashuai)
- * @date 2023/8/7
  */
 
 infix fun <T> Row.to(entryClass: Class<T>): T {
@@ -69,31 +67,13 @@ inline fun <reified E> TableDef.all(): List<E> = selectAll(schema, tableName).to
 
 inline fun <reified E> Collection<Row>.toEntities() = map { it to E::class.java }.toList()
 
-inline fun<reified E:Entry> List<E>.batchInsert(): Boolean {
-    val entities = this
-    val tableInfo = TableInfoFactory.ofEntityClass(E::class.java)
-    for (entity in entities) {
-        tableInfo.initVersionValueIfNecessary(entity)
-        tableInfo.initTenantIdIfNecessary(entity)
-        tableInfo.initLogicDeleteValueIfNecessary(entity)
-        //执行 onInsert 监听器
-        tableInfo.invokeOnInsertListener(entity)
-    }
-    var allValues = FlexConsts.EMPTY_ARRAY
-    for (entity in entities) {
-        allValues = ArrayUtil.concat(allValues, tableInfo.buildInsertSqlArgs(entity, false))
-    }
-    val sql = DialectFactory.getDialect().forInsertEntityBatch(tableInfo, entities)
-    return insertBySql(sql,*allValues) > 1
+inline fun<reified E:Model<E>> List<E>.batchInsert(): Int = Mappers.ofEntityClass(E::class.java).insertBatch(this)
+
+fun< E:Model<E>> List<E>.batchUpdateById(): Boolean = all(Model<E>::updateById)
+
+inline fun<reified E:Model<E>> List<E>. batchDeleteById(): Boolean {
+    //拿到集合中所有实体的主键
+    val primaryValues = this.map { it.pkValues() }.flatMap(Array<*>::toMutableList).map { it as Serializable }
+    return SqlUtil.toBool(Mappers.ofEntityClass(E::class.java).deleteBatchByIds(primaryValues))
 }
 
-
-fun< E:Entry> List<E>.batchUpdate(): Boolean = all(Entry::update)
-
-inline fun<reified E:Entry> List<E>. batchDeleteById(): Boolean {
-    val tableInfo = TableInfoFactory.ofEntityClass(E::class.java)
-    val primaryValues = this.map { tableInfo.buildPkSqlArgs(it) }.stream().flatMap(Arrays::stream).toArray()
-    val tenantIdArgs = tableInfo.buildTenantIdArgs()
-    val sql =  DialectFactory.getDialect().forDeleteEntityBatchByIds(tableInfo, primaryValues)
-    return deleteBySql(sql,*ArrayUtil.concat(primaryValues, tenantIdArgs)) > 1
-}

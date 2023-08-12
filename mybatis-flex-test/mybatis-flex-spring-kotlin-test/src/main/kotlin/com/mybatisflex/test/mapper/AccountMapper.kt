@@ -20,18 +20,17 @@ import com.mybatisflex.core.BaseMapper
 import com.mybatisflex.kotlin.extensions.mapper.queryList
 import com.mybatisflex.kotlin.extensions.sql.*
 import com.mybatisflex.test.model.Account
-import com.mybatisflex.test.model.table.AccountTableDef.ACCOUNT
 
 
 @JvmDefaultWithCompatibility
 interface AccountMapper : BaseMapper<Account> {
 
 
-        fun findByAge(age: Int, vararg ids: Int): List<Account> = queryList {
-        select(ACCOUNT.ALL_COLUMNS)
-        from(ACCOUNT)
-        where(ACCOUNT) {
-            (AGE `=` age) and  `if`(true) {
+    fun findByAge(age: Int, vararg ids: Int): List<Account> = queryList {
+        select(Account.ALL_COLUMNS)
+        from(Account)
+        where(Account) {
+            (AGE `=` age) and `if`(ids.isNotEmpty()) {
                 ID `in` ids.asList()
             }
         }
