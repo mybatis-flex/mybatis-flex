@@ -15,8 +15,7 @@
  */
 package com.mybatisflex.kotlin.extensions.db
 
-import com.mybatisflex.core.BaseMapper
-import com.mybatisflex.core.MybatisFlexBootstrap
+import com.mybatisflex.core.mybatis.Mappers
 import com.mybatisflex.core.query.QueryColumn
 import com.mybatisflex.core.query.QueryCondition
 import com.mybatisflex.core.row.Db.selectListByQuery
@@ -24,22 +23,18 @@ import com.mybatisflex.core.row.Db.selectOneByQuery
 import com.mybatisflex.core.row.Row
 import com.mybatisflex.core.table.TableDef
 import com.mybatisflex.core.table.TableInfoFactory
-import com.mybatisflex.kotlin.extensions.entry.filter
-import com.mybatisflex.kotlin.extensions.entry.toEntities
+import com.mybatisflex.kotlin.extensions.model.filter
+import com.mybatisflex.kotlin.extensions.model.toEntities
 import com.mybatisflex.kotlin.scope.QueryScope
 import com.mybatisflex.kotlin.scope.queryScope
 
 
-/**
+/*
  * 数据库简单操作扩展
  * @author 卡莫sama(yuanjiashuai)
- * @date 2023/8/7
  */
 
-
-
-
-inline fun <reified M : BaseMapper<*>> mapper(): M = MybatisFlexBootstrap.getInstance().getMapper(M::class.java)
+inline fun <reified M > mapper(): M = Mappers.ofMapperClass(M::class.java)
 
 inline fun <reified T : Any> queryOne(
     vararg columns: QueryColumn,
@@ -92,7 +87,7 @@ inline fun <reified E> filter(
     queryScope(*columns).where(queryCondition)
 ).toEntities()
 
-inline fun <reified E> filter(
+inline fun <reified E > filter(
     vararg columns: QueryColumn?,
     init: () -> QueryCondition
 ): List<E> {
@@ -110,7 +105,6 @@ inline fun <reified E, T : TableDef> filter(
     vararg columns: QueryColumn?,
     init: T.() -> QueryCondition
 ): List<E> = tableDef.filter(columns = columns, init = init)
-
 
 
 
