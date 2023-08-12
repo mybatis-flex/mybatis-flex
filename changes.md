@@ -1,6 +1,34 @@
 # MyBatis-Flex ChangeLog
 
 
+## v1.5.7 20230812:
+- 新增：QueryWrapper 添加对 delete 和 update 的 left join 支持
+- 新增：RelationManager.addIgnoreRelations() 添加对 lambda 的支持
+- 新增：添加 QueryColumnBehavior 用于自定义 QueryColumn 的某些行为特征
+- 新增：typeHandler 添加对泛型自动支持的功能
+- 新增：多数据源新增对 Seata 分布式事务的支持，感谢 @lifejwang11
+- 新增：添加对 Kotlin 的扩展支持，感谢 @kamo-sama
+- 新增：添加 saveOrUpdateBatch 方法的支持，感谢 @Suomm
+- 新增：QueryModel 提供 as 方法的支持，感谢 @Suomm
+- 新增：逻辑删除、乐观锁、多租户添加全局默认自动配置的功能，感谢 @Suomm
+- 优化：移除 flex 自动把 id 属性设置为主键的功能
+- 优化：重构链式调用的方法，统一链式调用和 ActiveRecord 的 API，感谢 @Suomm
+- 优化：UpdateChian 支持设置 left join 的表数据的支持，感谢 @Suomm
+- 修复：db2 方言的 KeywordWrap 错误的问题
+- 修复：在某些场景下 count 查询没有被替换的问题，感谢 @Suomm
+- 修复：QueryWrapper 的 or(consumer, condition) 方法逻辑错误，感谢 @Suomm
+- 修复：QueryColumn 由于 Predicate 没有类型约束可能导致类型转换异常的问题，感谢 @Suomm
+- 修复：OSGI 环境下，Lambda 通过 ClassLoader 获取不到类的问题，感谢 @2han9wen71an
+- 文档：更新视频教程的文档链接
+- 文档：添加 SpringBoot 最低版本的说明文档，感谢 @Suomm
+- 文档：Seata 分布式事务的相关文档，感谢 @lifejwang11
+- 文档：增加了使用gradle构建时的文档说明，感谢 @CloudPlayer
+- 文档：增加了在Kotlin中使用注解处理器的说明，感谢 @CloudPlayer
+- 文档：常见问题添加代码生成器获取不到注释说明，感谢 @Suomm
+- 文档：常见问题添加 Spring Devtools 造成的类转换异常的相关文档
+- 文档：常见问题添加 Nacos 集成启动出错的相关文档
+
+
 
 ## v1.5.6 20230804:
 - 新增：代码生成器重构并新增对 Solon 框架的代码生成功能，感谢 @Suomm

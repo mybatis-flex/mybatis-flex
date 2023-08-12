@@ -55,7 +55,7 @@ dependencies {
             <path>
                 <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-processor</artifactId>
-                <version>1.5.6</version>
+                <version>1.5.7</version>
             </path>
         </annotationProcessorPaths>
     </configuration>

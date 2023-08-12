@@ -11,8 +11,8 @@
 
 ```kotlin
 dependencies {
-    implementation("com.mybatis-flex:mybatis-flex-core:1.5.6")
-    compileOnly("com.mybatis-flex:mybatis-flex-processor:1.5.6")
+    implementation("com.mybatis-flex:mybatis-flex-core:1.5.7")
+    compileOnly("com.mybatis-flex:mybatis-flex-processor:1.5.7")
 }
 ```
 
@@ -20,8 +20,8 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.mybatis-flex:mybatis-flex-core:1.5.6'
-    compileOnly 'com.mybatis-flex:mybatis-flex-processor:1.5.6'
+    implementation 'com.mybatis-flex:mybatis-flex-core:1.5.7'
+    compileOnly 'com.mybatis-flex:mybatis-flex-processor:1.5.7'
 }
 ```
 
@@ -30,16 +30,16 @@ dependencies {
 **【Kotlin】**
 ```kotlin
 dependencies {
-    implementation("com.mybatis-flex:mybatis-flex-spring:1.5.6")
-    compileOnly("com.mybatis-flex:mybatis-flex-processor:1.5.6")
+    implementation("com.mybatis-flex:mybatis-flex-spring:1.5.7")
+    compileOnly("com.mybatis-flex:mybatis-flex-processor:1.5.7")
 }
 ```
 
 **【Groovy】**
 ```groovy
 dependencies {
-    implementation 'com.mybatis-flex:mybatis-flex-spring:1.5.6'
-    compileOnly 'com.mybatis-flex:mybatis-flex-processor:1.5.6'
+    implementation 'com.mybatis-flex:mybatis-flex-spring:1.5.7'
+    compileOnly 'com.mybatis-flex:mybatis-flex-processor:1.5.7'
 }
 ```
 
@@ -49,8 +49,8 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("com.mybatis-flex:mybatis-flex-spring-boot-starter:1.5.6")
-    compileOnly("com.mybatis-flex:mybatis-flex-processor:1.5.6")
+    implementation("com.mybatis-flex:mybatis-flex-spring-boot-starter:1.5.7")
+    compileOnly("com.mybatis-flex:mybatis-flex-processor:1.5.7")
 }
 ```
 
@@ -58,8 +58,8 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.mybatis-flex:mybatis-flex-spring-boot-starter:1.5.6'
-    compileOnly 'com.mybatis-flex:mybatis-flex-processor:1.5.6'
+    implementation 'com.mybatis-flex:mybatis-flex-spring-boot-starter:1.5.7'
+    compileOnly 'com.mybatis-flex:mybatis-flex-processor:1.5.7'
 }
 ```
 
@@ -75,7 +75,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:1.5.6")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:1.5.7")
 }
 ```
 
@@ -83,6 +83,6 @@ dependencies {
 
 ```groovy
 dependencies {
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:1.5.6'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:1.5.7'
 }
 ```
