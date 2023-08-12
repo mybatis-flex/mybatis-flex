@@ -1017,7 +1017,7 @@ QueryWrapper query2 = QueryWrapper.create()
 在以上的 `query1` 中，由于 `userName` 和 `id` 都为 null，MyBatis-Flex 会自动忽略 null 值的条件，因此，它们构建出来的 SQL 条件是和 `query2` 完全一致的 。
 
 
-## QueryColumnBehavior <Badge type="tip" text="^ v1.5.6" />
+## QueryColumnBehavior <Badge type="tip" text="^ v1.5.7" />
 
 在以上的内容中，我们知道 MyBatis-Flex 会自动忽略 `null` 值的条件，但是在实际开发中，有的开发者希望除了自动忽略 `null`
 值以外，还可以自动忽略其他值，比如 `空字符串` 等。

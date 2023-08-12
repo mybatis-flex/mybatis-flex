@@ -87,6 +87,10 @@
 - [MyBatis-Flex 视频教程 - 33 关联查询（Field Query）](https://www.bilibili.com/video/BV17k4y1g7vt)
 - [MyBatis-Flex 视频教程 - 34 关联查询（Relation Query）](https://www.bilibili.com/video/BV1bj411r7A4)
 - [MyBatis-Flex 视频教程 - 35 关联查询对比](https://www.bilibili.com/video/BV1oF411f7dr)
+- [MyBatis-Flex 视频教程 - 36 分页查询](https://www.bilibili.com/video/BV1d44y1F7JM)
+- [MyBatis-Flex 视频教程 - 37 分页查询 count 查询优化](https://www.bilibili.com/video/BV1np4y1G7R9)
+- [MyBatis-Flex 视频教程 - 38 基于 XML 文件的高性能分页](https://www.bilibili.com/video/BV1Zh4y1D7aj)
+- [MyBatis-Flex 视频教程 - 39 Db + Row](https://www.bilibili.com/video/BV1wp4y1g7by)
 
 
 

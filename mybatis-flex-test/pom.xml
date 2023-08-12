@@ -5,7 +5,7 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.5.6</version>
+        <version>1.5.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,10 +15,11 @@
 
     <modules>
         <module>mybatis-flex-native-test</module>
+        <module>mybatis-flex-seata-test</module>
         <module>mybatis-flex-spring-test</module>
         <module>mybatis-flex-spring-boot-test</module>
         <module>mybatis-flex-spring-cloud-test</module>
-        <module>mybatis-flex-spring-boot-seata</module>
+        <module>mybatis-flex-spring-kotlin-test</module>
     </modules>
 
     <properties>
@@ -27,14 +28,6 @@
     </properties>
 
     <build>
-        <!--        <resources>-->
-        <!--            <resource>-->
-        <!--                <directory>src/main/resources</directory>-->
-        <!--                <includes>-->
-        <!--                    <include>**/*</include>-->
-        <!--                </includes>-->
-        <!--            </resource>-->
-        <!--        </resources>-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

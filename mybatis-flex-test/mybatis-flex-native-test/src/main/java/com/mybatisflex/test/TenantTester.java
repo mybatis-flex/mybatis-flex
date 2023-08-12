@@ -18,18 +18,12 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
-import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.tenant.TenantFactory;
 import com.mybatisflex.core.tenant.TenantManager;
 import com.mybatisflex.mapper.TenantAccountMapper;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-
-import static com.mybatisflex.core.query.QueryMethods.select;
-import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
-import static com.mybatisflex.test.table.TenantAccountTableDef.TENANT_ACCOUNT;
 
 public class TenantTester {
 
@@ -52,24 +46,22 @@ public class TenantTester {
         AuditManager.setMessageCollector(new ConsoleMessageCollector());
 
         //配置 tenantFactory
-        TenantManager.setTenantFactory(new TenantFactory() {
-            @Override
-            public Object[] getTenantIds() {
-                return new Object[]{1, 2};
-            }
-        });
+        TenantManager.setTenantFactory(() -> new Object[]{1, 2});
 
-        TenantAccountMapper mapper = MybatisFlexBootstrap.getInstance().getMapper(TenantAccountMapper.class);
+        TenantAccountMapper mapper = MybatisFlexBootstrap.getInstance()
+            .getMapper(TenantAccountMapper.class);
 
-        mapper.selectListByQuery(QueryWrapper.create()
-            .select(TENANT_ACCOUNT.ALL_COLUMNS)
-            .from(TENANT_ACCOUNT.as("c"), ACCOUNT.as("b"))
-            .where(TENANT_ACCOUNT.ID.eq(ACCOUNT.ID))
-            .and(TENANT_ACCOUNT.ID.eq(1))
-            .unionAll(select(TENANT_ACCOUNT.ALL_COLUMNS).from(TENANT_ACCOUNT)
-                .where(TENANT_ACCOUNT.ID.eq(2))
-            )
-        );
+        mapper.selectAll().forEach(System.out::println);
+
+//        mapper.selectListByQuery(QueryWrapper.create()
+//            .select(TENANT_ACCOUNT.ALL_COLUMNS)
+//            .from(TENANT_ACCOUNT.as("c"), ACCOUNT.as("b"))
+//            .where(TENANT_ACCOUNT.ID.eq(ACCOUNT.ID))
+//            .and(TENANT_ACCOUNT.ID.eq(1))
+//            .unionAll(select(TENANT_ACCOUNT.ALL_COLUMNS).from(TENANT_ACCOUNT)
+//                .where(TENANT_ACCOUNT.ID.eq(2))
+//            )
+//        );
 
 //         mapper.deleteBatchByIds(Arrays.asList(1, 2));
 

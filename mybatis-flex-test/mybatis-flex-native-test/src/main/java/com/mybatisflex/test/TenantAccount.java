@@ -16,7 +16,10 @@
 
 package com.mybatisflex.test;
 
-import com.mybatisflex.annotation.*;
+import com.mybatisflex.annotation.ColumnMask;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.mask.Masks;
 
 import java.util.Date;
@@ -34,7 +37,7 @@ public class TenantAccount {
 
     private Date birthday;
 
-    @Column(tenantId = true)
+//    @Column(tenantId = true)
     private Long tenantId;
 
     public Long getId() {

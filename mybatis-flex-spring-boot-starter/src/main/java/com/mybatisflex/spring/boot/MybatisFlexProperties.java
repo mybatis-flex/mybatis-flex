@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 /**
  * Mybatis-Flex 的配置属性。
  * 参考：https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisProperties.java
+ *
  * @author Eddú Meléndez
  * @author Kazuki Shimizu
  * @author micahel
@@ -777,22 +778,36 @@ public class MybatisFlexProperties {
         private Object normalValueOfLogicDelete = FlexConsts.LOGIC_DELETE_NORMAL;
 
         /**
-         * 逻辑删除数据删除标记值，
+         * 逻辑删除数据删除标记值。
          */
         private Object deletedValueOfLogicDelete = FlexConsts.LOGIC_DELETE_DELETED;
 
 
         /**
-         * 默认的分页查询时的每页数据量
+         * 默认的分页查询时的每页数据量。
          */
         private int defaultPageSize = 10;
 
 
         /**
-         * 默认的 Relation 注解查询深度
+         * 默认的 Relation 注解查询深度。
          */
         private int defaultRelationQueryDepth = 2;
 
+        /**
+         * 默认的逻辑删除字段。
+         */
+        private String logicDeleteColumn = "del_flag";
+
+        /**
+         * 默认的多租户字段。
+         */
+        private String tenantColumn = "tenant_id";
+
+        /**
+         * 默认的乐观锁字段。
+         */
+        private String versionColumn = "version";
 
         public boolean isPrintBanner() {
             return printBanner;
@@ -842,6 +857,30 @@ public class MybatisFlexProperties {
             this.defaultRelationQueryDepth = defaultRelationQueryDepth;
         }
 
+        public String getLogicDeleteColumn() {
+            return logicDeleteColumn;
+        }
+
+        public void setLogicDeleteColumn(String logicDeleteColumn) {
+            this.logicDeleteColumn = logicDeleteColumn;
+        }
+
+        public String getTenantColumn() {
+            return tenantColumn;
+        }
+
+        public void setTenantColumn(String tenantColumn) {
+            this.tenantColumn = tenantColumn;
+        }
+
+        public String getVersionColumn() {
+            return versionColumn;
+        }
+
+        public void setVersionColumn(String versionColumn) {
+            this.versionColumn = versionColumn;
+        }
+
         void applyTo(FlexGlobalConfig target) {
             PropertyMapper mapper = PropertyMapper.get().alwaysApplyingWhenNonNull();
             mapper.from(isPrintBanner()).to(target::setPrintBanner);
@@ -850,6 +889,9 @@ public class MybatisFlexProperties {
             mapper.from(getDeletedValueOfLogicDelete()).to(target::setDeletedValueOfLogicDelete);
             mapper.from(getDefaultPageSize()).to(target::setDefaultPageSize);
             mapper.from(getDefaultRelationQueryDepth()).to(target::setDefaultRelationQueryDepth);
+            mapper.from(getLogicDeleteColumn()).to(target::setLogicDeleteColumn);
+            mapper.from(getVersionColumn()).to(target::setVersionColumn);
+            mapper.from(getTenantColumn()).to(target::setTenantColumn);
         }
 
     }
@@ -908,7 +950,7 @@ public class MybatisFlexProperties {
      *
      * @author life
      */
-    public static class SeataConfig{
+    public static class SeataConfig {
 
         /**
          * 是否开启
@@ -935,6 +977,18 @@ public class MybatisFlexProperties {
         public void setSeataMode(SeataMode seataMode) {
             this.seataMode = seataMode;
         }
+
+    }
+
+    /**
+     * @author life
+     */
+    public enum SeataMode {
+
+        XA,
+
+        AT
+
     }
 
 }

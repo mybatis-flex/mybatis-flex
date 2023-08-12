@@ -24,6 +24,7 @@ import com.mybatisflex.core.util.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 /**
@@ -147,11 +148,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     }
 
 
-    public <T> QueryCondition eq(Object value, Predicate<T> fn) {
+    public <T> QueryCondition eq(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.EQUALS, value).when(fn);
+        return QueryCondition.create(this, SqlConsts.EQUALS, value).when(fn.test(value));
     }
 
 
@@ -167,11 +168,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.NOT_EQUALS, value);
     }
 
-    public <T> QueryCondition ne(Object value, Predicate<T> fn) {
+    public <T> QueryCondition ne(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.NOT_EQUALS, value).when(fn);
+        return QueryCondition.create(this, SqlConsts.NOT_EQUALS, value).when(fn.test(value));
     }
 
 
@@ -187,11 +188,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.LIKE, "%" + value + "%");
     }
 
-    public <T> QueryCondition like(Object value, Predicate<T> fn) {
+    public <T> QueryCondition like(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.LIKE, "%" + value + "%").when(fn);
+        return QueryCondition.create(this, SqlConsts.LIKE, "%" + value + "%").when(fn.test(value));
     }
 
 
@@ -202,11 +203,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.LIKE, value + "%");
     }
 
-    public <T> QueryCondition likeLeft(Object value, Predicate<T> fn) {
+    public <T> QueryCondition likeLeft(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.LIKE, value + "%").when(fn);
+        return QueryCondition.create(this, SqlConsts.LIKE, value + "%").when(fn.test(value));
     }
 
 
@@ -217,11 +218,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.LIKE, "%" + value);
     }
 
-    public <T> QueryCondition likeRight(Object value, Predicate<T> fn) {
+    public <T> QueryCondition likeRight(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.LIKE, "%" + value).when(fn);
+        return QueryCondition.create(this, SqlConsts.LIKE, "%" + value).when(fn.test(value));
     }
 
 
@@ -232,11 +233,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.LIKE, value);
     }
 
-    public <T> QueryCondition likeRaw(Object value, Predicate<T> fn) {
+    public <T> QueryCondition likeRaw(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.LIKE, value).when(fn);
+        return QueryCondition.create(this, SqlConsts.LIKE, value).when(fn.test(value));
     }
 
 
@@ -252,11 +253,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value + "%");
     }
 
-    public <T> QueryCondition notLike(Object value, Predicate<T> fn) {
+    public <T> QueryCondition notLike(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value + "%").when(fn);
+        return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value + "%").when(fn.test(value));
     }
 
 
@@ -267,11 +268,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.NOT_LIKE, value + "%");
     }
 
-    public <T> QueryCondition notLikeLeft(Object value, Predicate<T> fn) {
+    public <T> QueryCondition notLikeLeft(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.NOT_LIKE, value + "%").when(fn);
+        return QueryCondition.create(this, SqlConsts.NOT_LIKE, value + "%").when(fn.test(value));
     }
 
 
@@ -282,11 +283,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value);
     }
 
-    public <T> QueryCondition notLikeRight(Object value, Predicate<T> fn) {
+    public <T> QueryCondition notLikeRight(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value).when(fn);
+        return QueryCondition.create(this, SqlConsts.NOT_LIKE, "%" + value).when(fn.test(value));
     }
 
 
@@ -302,11 +303,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.GT, value);
     }
 
-    public <T> QueryCondition gt(Object value, Predicate<T> fn) {
+    public <T> QueryCondition gt(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.GT, value).when(fn);
+        return QueryCondition.create(this, SqlConsts.GT, value).when(fn.test(value));
     }
 
     /**
@@ -321,11 +322,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.GE, value);
     }
 
-    public <T> QueryCondition ge(Object value, Predicate<T> fn) {
+    public <T> QueryCondition ge(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.GE, value).when(fn);
+        return QueryCondition.create(this, SqlConsts.GE, value).when(fn.test(value));
     }
 
     /**
@@ -340,11 +341,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.LT, value);
     }
 
-    public <T> QueryCondition lt(Object value, Predicate<T> fn) {
+    public <T> QueryCondition lt(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.LT, value).when(fn);
+        return QueryCondition.create(this, SqlConsts.LT, value).when(fn.test(value));
     }
 
     /**
@@ -359,11 +360,11 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.LE, value);
     }
 
-    public <T> QueryCondition le(Object value, Predicate<T> fn) {
+    public <T> QueryCondition le(T value, Predicate<T> fn) {
         if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
-        return QueryCondition.create(this, SqlConsts.LE, value).when(fn);
+        return QueryCondition.create(this, SqlConsts.LE, value).when(fn.test(value));
     }
 
 
@@ -376,6 +377,10 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.IS_NULL, null);
     }
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> QueryCondition isNull(Predicate<T> fn) {
         return QueryCondition.create(this, SqlConsts.IS_NULL, null).when(fn);
     }
@@ -390,6 +395,10 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.IS_NOT_NULL, null);
     }
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> QueryCondition isNotNull(Predicate<T> fn) {
         return QueryCondition.create(this, SqlConsts.IS_NOT_NULL, null).when(fn);
     }
@@ -415,7 +424,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     }
 
 
-    public <T> QueryCondition in(Object[] arrays, Predicate<T> fn) {
+    public <T> QueryCondition in(T[] arrays, Predicate<T[]> fn) {
         //忽略 QueryWrapper.in("name", null) 的情况
         if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null) || QueryColumnBehavior.shouldIgnoreValue(arrays)) {
             return QueryCondition.createEmpty();
@@ -425,7 +434,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
             return QueryCondition.create(this, SqlConsts.EQUALS, arrays[0]);
         }
 
-        return QueryCondition.create(this, SqlConsts.IN, arrays).when(fn);
+        return QueryCondition.create(this, SqlConsts.IN, arrays).when(fn.test(arrays));
     }
 
     /**
@@ -442,6 +451,10 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     }
 
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> QueryCondition in(QueryWrapper queryWrapper, Predicate<T> fn) {
         if (queryWrapper == null || QueryColumnBehavior.shouldIgnoreValue(queryWrapper)) {
             return QueryCondition.createEmpty();
@@ -457,17 +470,17 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * @return QueryCondition
      */
     public QueryCondition in(Collection<?> collection) {
-        if (collection != null && !collection.isEmpty() && !QueryColumnBehavior.shouldIgnoreValue(collection)) {
-            return in(collection.toArray());
+        if (collection == null || collection.isEmpty() || QueryColumnBehavior.shouldIgnoreValue(collection)) {
+            return QueryCondition.createEmpty();
         }
-        return QueryCondition.createEmpty();
+        return in(collection.toArray());
     }
 
-    public <T> QueryCondition in(Collection<?> collection, Predicate<T> fn) {
-        if (collection != null && !collection.isEmpty() && !QueryColumnBehavior.shouldIgnoreValue(collection)) {
-            return in(collection.toArray(), fn);
+    public <T extends Collection<?>> QueryCondition in(T collection, Predicate<T> fn) {
+        if (collection == null || collection.isEmpty() || QueryColumnBehavior.shouldIgnoreValue(collection)) {
+            return QueryCondition.createEmpty();
         }
-        return QueryCondition.createEmpty();
+        return in(collection.toArray()).when(fn.test(collection));
     }
 
     /**
@@ -489,7 +502,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.NOT_IN, arrays);
     }
 
-    public <T> QueryCondition notIn(Object[] arrays, Predicate<T> fn) {
+    public <T> QueryCondition notIn(T[] arrays, Predicate<T[]> fn) {
         //忽略 QueryWrapper.notIn("name", null) 的情况
         if (arrays == null || arrays.length == 0 || (arrays.length == 1 && arrays[0] == null) || QueryColumnBehavior.shouldIgnoreValue(arrays)) {
             return QueryCondition.createEmpty();
@@ -499,7 +512,7 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
             return QueryCondition.create(this, SqlConsts.NOT_EQUALS, arrays[0]);
         }
 
-        return QueryCondition.create(this, SqlConsts.NOT_IN, arrays).when(fn);
+        return QueryCondition.create(this, SqlConsts.NOT_IN, arrays).when(fn.test(arrays));
     }
 
 
@@ -510,17 +523,17 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
      * @return QueryCondition
      */
     public QueryCondition notIn(Collection<?> collection) {
-        if (collection != null && !collection.isEmpty() && !QueryColumnBehavior.shouldIgnoreValue(collection)) {
-            return notIn(collection.toArray());
+        if (collection == null || collection.isEmpty() || QueryColumnBehavior.shouldIgnoreValue(collection)) {
+            return QueryCondition.createEmpty();
         }
-        return QueryCondition.createEmpty();
+        return notIn(collection.toArray());
     }
 
-    public <T> QueryCondition notIn(Collection<?> collection, Predicate<T> fn) {
-        if (collection != null && !collection.isEmpty() && !QueryColumnBehavior.shouldIgnoreValue(collection)) {
-            return notIn(collection.toArray(), fn);
+    public <T extends Collection<?>> QueryCondition notIn(T collection, Predicate<T> fn) {
+        if (collection == null || collection.isEmpty() || QueryColumnBehavior.shouldIgnoreValue(collection)) {
+            return QueryCondition.createEmpty();
         }
-        return QueryCondition.createEmpty();
+        return notIn(collection.toArray()).when(fn.test(collection));
     }
 
     /**
@@ -536,6 +549,10 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
     }
 
 
+    /**
+     * @deprecated 无法推断泛型
+     */
+    @Deprecated
     public <T> QueryCondition notIn(QueryWrapper queryWrapper, Predicate<T> fn) {
         if (queryWrapper == null || QueryColumnBehavior.shouldIgnoreValue(queryWrapper)) {
             return QueryCondition.createEmpty();
@@ -554,8 +571,8 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.BETWEEN, new Object[]{start, end});
     }
 
-    public <T> QueryCondition between(Object start, Object end, Predicate<T> fn) {
-        return QueryCondition.create(this, SqlConsts.BETWEEN, new Object[]{start, end}).when(fn);
+    public <S, E> QueryCondition between(S start, E end, BiPredicate<S, E> fn) {
+        return QueryCondition.create(this, SqlConsts.BETWEEN, new Object[]{start, end}).when(fn.test(start, end));
     }
 
 
@@ -569,8 +586,8 @@ public class QueryColumn implements CloneSupport<QueryColumn> {
         return QueryCondition.create(this, SqlConsts.NOT_BETWEEN, new Object[]{start, end});
     }
 
-    public <T> QueryCondition notBetween(Object start, Object end, Predicate<T> fn) {
-        return QueryCondition.create(this, SqlConsts.NOT_BETWEEN, new Object[]{start, end}).when(fn);
+    public <S, E> QueryCondition notBetween(S start, E end, BiPredicate<S, E> fn) {
+        return QueryCondition.create(this, SqlConsts.NOT_BETWEEN, new Object[]{start, end}).when(fn.test(start, end));
     }
 
 

@@ -17,6 +17,7 @@ package com.mybatisflex.core.util;
 
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
@@ -146,7 +147,7 @@ public class SqlUtil {
         if (value == null) {
             return "null";
         }
-        // number
+        // number or bool
         else if (value instanceof Number || value instanceof Boolean) {
             return value.toString();
         }
@@ -165,7 +166,7 @@ public class SqlUtil {
             if (value instanceof Date) {
                 sb.append(DateUtil.toDateTimeString((Date) value));
             } else if (value instanceof LocalDateTime) {
-                sb.append(DateUtil.toDateTimeString(DateUtil.toDate((LocalDateTime) value)));
+                sb.append(((LocalDateTime) value).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             } else {
                 sb.append(value);
             }

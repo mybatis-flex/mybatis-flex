@@ -4,5 +4,5 @@ CREATE TABLE IF NOT EXISTS `tb_account`
     `user_name` VARCHAR(100),
     `age`       INTEGER,
     `birthday`  DATETIME,
-    `tenant_id`   INTEGER(11)
+    `tenant_id` INTEGER
 );

@@ -224,8 +224,14 @@ public void purchase(String userId, String commodityCode, int orderCount) {
 > 的官方示例快速开始：https://seata.io/zh-cn/docs/user/quickstart.html
 
 ### 注意事项
+1.使用`seata-spring-boot-starter`的时候请关闭自动代理
+```yaml
+seata:
+  enable-auto-data-source-proxy: false
+```
+2.使用 `seata-all` 请不要使用 `@EnableAutoDataSourceProxy`
 
-在使用 Seata 分布式事务时，请注意添加 Seata 的相关 Maven 依赖，例如：
+3.如果是 SpringBoot 项目需要引入相关 Maven 依赖，例如：
 
 ```xml
 <dependency>
@@ -234,3 +240,7 @@ public void purchase(String userId, String commodityCode, int orderCount) {
     <version>1.7.0</version>
 </dependency>
 ```
+### 示例
+
+[mybatis-flex-spring-boot-seata-demo](https://gitee.com/mybatis-flex/mybatis-flex-samples/tree/master/mybatis-flex-spring-boot-seata-demo) : Seata 官方 demo 与 flex 结合。
+

@@ -46,8 +46,6 @@ public interface IService<T> {
 
     int DEFAULT_BATCH_SIZE = 1000;
 
-    // ===== 保存（增）操作 =====
-
     /**
      * <p>获取对应实体类（Entity）的基础映射类（BaseMapper）。
      *
@@ -55,27 +53,18 @@ public interface IService<T> {
      */
     BaseMapper<T> getMapper();
 
+    // ===== 保存（增）操作 =====
+
     /**
      * <p>保存实体类对象数据。
      *
      * @param entity 实体类对象
      * @return {@code true} 保存成功，{@code false} 保存失败。
-     * @apiNote 默认调用的是 {@link BaseMapper#insertSelective(Object)} 方法，忽略
-     * {@code null} 字段的数据，使数据库配置的默认值生效。
+     * @apiNote 默认调用的是 {@link BaseMapper#insertSelective(Object)} 方法，忽略实体类
+     * {@code null} 属性的数据，使数据库配置的默认值生效。
      */
     default boolean save(T entity) {
-        return SqlUtil.toBool(getMapper().insertSelective(entity));
-    }
-
-    /**
-     * <p>保存或者更新实体类对象数据。
-     *
-     * @param entity 实体类对象
-     * @return {@code true} 保存或更新成功，{@code false} 保存或更新失败。
-     * @apiNote 如果实体类对象主键有值，则更新数据，若没有值，则保存数据。
-     */
-    default boolean saveOrUpdate(T entity) {
-        return SqlUtil.toBool(getMapper().insertOrUpdate(entity, true));
+        return SqlUtil.toBool(getMapper().insert(entity, true));
     }
 
     /**
@@ -83,6 +72,8 @@ public interface IService<T> {
      *
      * @param entities 实体类对象
      * @return {@code true} 保存成功，{@code false} 保存失败。
+     * @apiNote 默认调用的是 {@link BaseMapper#insertSelective(Object)} 方法，忽略实体类
+     * {@code null} 属性的数据，使数据库配置的默认值生效。
      */
     default boolean saveBatch(Collection<T> entities) {
         return saveBatch(entities, DEFAULT_BATCH_SIZE);
@@ -94,10 +85,12 @@ public interface IService<T> {
      * @param entities  实体类对象
      * @param batchSize 每次保存切分的数量
      * @return {@code true} 保存成功，{@code false} 保存失败。
+     * @apiNote 默认调用的是 {@link BaseMapper#insertSelective(Object)} 方法，忽略实体类
+     * {@code null} 属性的数据，使数据库配置的默认值生效。
      */
     default boolean saveBatch(Collection<T> entities, int batchSize) {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
-        return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::insert));
+        return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::insertSelective));
     }
 
     /**
@@ -105,7 +98,10 @@ public interface IService<T> {
      *
      * @param entities 实体类对象
      * @return {@code true} 保存成功，{@code false} 保存失败。
+     * @deprecated 为保持 Service 层 API 一致性，默认方法都是忽略实体类 {@code null} 属性的数据。
+     * 另外，该方法将在 1.6.0 版本被移除。
      */
+    @Deprecated
     default boolean saveBatchSelective(Collection<T> entities) {
         return saveBatchSelective(entities, DEFAULT_BATCH_SIZE);
     }
@@ -116,10 +112,51 @@ public interface IService<T> {
      * @param entities  实体类对象
      * @param batchSize 每次保存切分的数量
      * @return {@code true} 保存成功，{@code false} 保存失败。
+     * @deprecated 为保持 Service 层 API 一致性，默认方法都是忽略实体类 {@code null} 属性的数据。
+     * 另外，该方法将在 1.6.0 版本被移除。
      */
+    @Deprecated
     default boolean saveBatchSelective(Collection<T> entities, int batchSize) {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
         return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::insertSelective));
+    }
+
+    /**
+     * <p>保存或者更新实体类对象数据。
+     *
+     * @param entity 实体类对象
+     * @return {@code true} 保存或更新成功，{@code false} 保存或更新失败。
+     * @apiNote 如果实体类对象主键有值，则更新数据，若没有值，则保存数据，无论新增还是更新都会忽略实体类
+     * {@code null} 属性的数据。
+     */
+    default boolean saveOrUpdate(T entity) {
+        return SqlUtil.toBool(getMapper().insertOrUpdate(entity, true));
+    }
+
+    /**
+     * <p>保存或者更新实体类对象数据。
+     *
+     * @param entities 实体类对象
+     * @return {@code true} 保存或更新成功，{@code false} 保存或更新失败。
+     * @apiNote 如果实体类对象主键有值，则更新数据，若没有值，则保存数据，无论新增还是更新都会忽略实体类
+     * {@code null} 属性的数据。
+     */
+    default boolean saveOrUpdateBatch(Collection<T> entities) {
+        return saveOrUpdateBatch(entities, DEFAULT_BATCH_SIZE);
+    }
+
+    /**
+     * <p>保存或者更新实体类对象数据。
+     *
+     * @param entities  实体类对象
+     * @param batchSize 每次操作切分的数量
+     * @return {@code true} 保存或更新成功，{@code false} 保存或更新失败。
+     * @apiNote 如果实体类对象主键有值，则更新数据，若没有值，则保存数据，无论新增还是更新都会忽略实体类
+     * {@code null} 属性的数据。
+     */
+    default boolean saveOrUpdateBatch(Collection<T> entities, int batchSize) {
+        Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
+        return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::insertOrUpdateSelective));
     }
 
     // ===== 删除（删）操作 =====
@@ -167,8 +204,6 @@ public interface IService<T> {
         return SqlUtil.toBool(getMapper().deleteBatchByIds(ids));
     }
 
-    // ===== 更新（改）操作 =====
-
     /**
      * <p>根据 {@link Map} 构建查询条件删除数据。
      *
@@ -182,6 +217,8 @@ public interface IService<T> {
         }
         return remove(query().where(query));
     }
+
+    // ===== 更新（改）操作 =====
 
     /**
      * <p>根据数据主键更新数据。
@@ -211,6 +248,7 @@ public interface IService<T> {
      * @param entity 实体类对象
      * @param query  查询条件
      * @return {@code true} 更新成功，{@code false} 更新失败。
+     * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
     default boolean update(T entity, Map<String, Object> query) {
         return update(entity, query().where(query));
@@ -222,6 +260,7 @@ public interface IService<T> {
      * @param entity 实体类对象
      * @param query  查询条件
      * @return {@code true} 更新成功，{@code false} 更新失败。
+     * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
     default boolean update(T entity, QueryWrapper query) {
         return SqlUtil.toBool(getMapper().updateByQuery(entity, query));
@@ -233,6 +272,7 @@ public interface IService<T> {
      * @param entity    实体类对象
      * @param condition 查询条件
      * @return {@code true} 更新成功，{@code false} 更新失败。
+     * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
     default boolean update(T entity, QueryCondition condition) {
         return update(entity, query().where(condition));
@@ -243,6 +283,7 @@ public interface IService<T> {
      *
      * @param entities 实体类对象集合
      * @return boolean {@code true} 更新成功，{@code false} 更新失败。
+     * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
     default boolean updateBatch(Collection<T> entities) {
         return updateBatch(entities, DEFAULT_BATCH_SIZE);
@@ -254,12 +295,12 @@ public interface IService<T> {
      * @param entities  实体类对象集合
      * @param batchSize 每批次更新数量
      * @return {@code true} 更新成功，{@code false} 更新失败。
+     * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
     default boolean updateBatch(Collection<T> entities, int batchSize) {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
         return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::update));
     }
-
 
     // ===== 查询（查）操作 =====
 
@@ -350,6 +391,70 @@ public interface IService<T> {
     }
 
     /**
+     * <p>查询结果集中第一列，且第一条数据。
+     *
+     * @param query 查询条件
+     * @return 数据值
+     */
+    default Object getObj(QueryWrapper query) {
+        return getMapper().selectObjectByQuery(query);
+    }
+
+    /**
+     * <p>查询结果集中第一列，且第一条数据，并封装为 {@link Optional} 返回。
+     *
+     * @param query 查询条件
+     * @return 数据值
+     */
+    default Optional<Object> getObjOpt(QueryWrapper query) {
+        return Optional.ofNullable(getObj(query));
+    }
+
+    /**
+     * <p>查询结果集中第一列，且第一条数据，并转换为指定类型，比如 {@code Long}, {@code String} 等。
+     *
+     * @param query  查询条件
+     * @param asType 接收的数据类型
+     * @return 数据值
+     */
+    default <R> R getObjAs(QueryWrapper query, Class<R> asType) {
+        return getMapper().selectObjectByQueryAs(query, asType);
+    }
+
+    /**
+     * <p>查询结果集中第一列，且第一条数据，并转换为指定类型，比如 {@code Long}, {@code String}
+     * 等，封装为 {@link Optional} 返回。
+     *
+     * @param query  查询条件
+     * @param asType 接收的数据类型
+     * @return 数据值
+     */
+    default <R> Optional<R> getObjAsOpt(QueryWrapper query, Class<R> asType) {
+        return Optional.ofNullable(getObjAs(query, asType));
+    }
+
+    /**
+     * <p>查询结果集中第一列所有数据。
+     *
+     * @param query 查询条件
+     * @return 数据列表
+     */
+    default List<Object> objList(QueryWrapper query) {
+        return getMapper().selectObjectListByQuery(query);
+    }
+
+    /**
+     * <p>查询结果集中第一列所有数据，并转换为指定类型，比如 {@code Long}, {@code String} 等。
+     *
+     * @param query  查询条件
+     * @param asType 接收的数据类型
+     * @return 数据列表
+     */
+    default <R> List<R> objListAs(QueryWrapper query, Class<R> asType) {
+        return getMapper().selectObjectListByQueryAs(query, asType);
+    }
+
+    /**
      * <p>查询所有数据。
      *
      * @return 所有数据
@@ -428,7 +533,7 @@ public interface IService<T> {
      * @return {@code true} 数据存在，{@code false} 数据不存在。
      */
     default boolean exists(QueryCondition condition) {
-        return CollectionUtil.isNotEmpty(getMapper().selectListByCondition(condition,1L));
+        return CollectionUtil.isNotEmpty(getMapper().selectListByCondition(condition, 1L));
     }
 
     /**

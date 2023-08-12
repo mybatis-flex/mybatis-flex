@@ -24,8 +24,8 @@ import com.mybatisflex.core.util.ObjectUtil;
 
 import java.lang.reflect.Array;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class QueryCondition implements CloneSupport<QueryCondition> {
 
@@ -96,17 +96,44 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         this.logic = logic;
     }
 
-
+    /**
+     * 动态条件构造。
+     *
+     * @param effective 是否启用该条件
+     * @return {@link QueryCondition}
+     */
     public QueryCondition when(boolean effective) {
         this.effective = effective;
         return this;
     }
 
-    public void when(Supplier<Boolean> fn) {
-        Boolean effective = fn.get();
-        this.effective = (effective != null && effective);
+
+    /**
+     * 动态条件构造。
+     *
+     * @param fn 是否启用该条件
+     * @return {@link QueryCondition}
+     */
+    public QueryCondition when(BooleanSupplier fn) {
+        this.effective = fn.getAsBoolean();
+        return this;
     }
 
+    /**
+     * <p>动态条件构造。
+     *
+     * <p>推荐将 {@link Predicate} 推断写在填写的值的后面，以确保泛型对应，例如：
+     * <pre>{@code
+     * ACCOUNT.ID.in(idList, CollectionUtil::isNotEmpty);
+     * }</pre>
+     *
+     * @see #when(boolean)
+     * @see #when(BooleanSupplier)
+     * @deprecated 由于 {@link QueryCondition} 中属性 {@link #value} 的类型为 Object
+     * 类型，没有使用泛型，所以该方法泛型推断可能会出现问题。
+     */
+    @Deprecated
+    @SuppressWarnings("unchecked")
     public <T> QueryCondition when(Predicate<T> fn) {
         Object val = this.value;
         if ((SqlConsts.LIKE.equals(logic) || SqlConsts.NOT_LIKE.equals(logic))

@@ -57,7 +57,7 @@ public class WithValuesDetail implements WithDetail {
 
     @Override
     public Object[] getParamValues() {
-        return queryWrapper.getValueArray();
+        return queryWrapper.getAllValueArray();
     }
 
     @Override

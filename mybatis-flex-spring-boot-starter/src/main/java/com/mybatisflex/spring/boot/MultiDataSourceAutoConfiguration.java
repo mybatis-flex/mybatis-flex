@@ -86,7 +86,7 @@ public class MultiDataSourceAutoConfiguration {
                 DataSourceManager.decryptDataSource(dataSource);
 
                 if (seataConfig != null && seataConfig.isEnable()) {
-                    if (seataConfig.getSeataMode() == SeataMode.XA) {
+                    if (seataConfig.getSeataMode() == MybatisFlexProperties.SeataMode.XA) {
                         dataSource = new DataSourceProxyXA(dataSource);
                     } else {
                         dataSource = new DataSourceProxy(dataSource);

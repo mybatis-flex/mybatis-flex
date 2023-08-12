@@ -17,18 +17,38 @@ package com.mybatisflex.core.handler;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.TypeReference;
 
+import java.lang.reflect.Type;
+import java.util.Collection;
+
+/**
+ * @author michael
+ */
 public class Fastjson2TypeHandler extends BaseJsonTypeHandler<Object> {
 
     private final Class<?> propertyType;
+    private Class<?> genericType;
+    private Type type;
 
-    public Fastjson2TypeHandler(Class<?> type) {
-        this.propertyType = type;
+    public Fastjson2TypeHandler(Class<?> propertyType) {
+        this.propertyType = propertyType;
+    }
+
+
+    public Fastjson2TypeHandler(Class<?> propertyType, Class<?> genericType) {
+        this.propertyType = propertyType;
+        this.genericType = genericType;
+        this.type = TypeReference.collectionType((Class<? extends Collection>) propertyType, genericType);
     }
 
     @Override
     protected Object parseJson(String json) {
-        return JSON.parseObject(json, propertyType);
+        if (genericType != null && Collection.class.isAssignableFrom(propertyType)) {
+            return JSON.parseObject(json, type);
+        } else {
+            return JSON.parseObject(json, propertyType);
+        }
     }
 
     @Override

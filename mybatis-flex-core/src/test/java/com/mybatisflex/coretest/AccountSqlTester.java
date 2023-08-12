@@ -359,6 +359,21 @@ public class AccountSqlTester {
         System.out.println(sql);
     }
 
+
+    @Test
+    public void testJoin4Sql() {
+        QueryWrapper query = QueryWrapper.create()
+            .select(ACCOUNT.ALL_COLUMNS,
+                column("bui.user_code"),
+                column("bui.user_name"),
+                column("burmc.user_name as created_by_name"))
+            .from(ACCOUNT).as("burm")
+            .leftJoin("base_admin_user_info").as("bui").on("bui.user_id = burm.user_id")
+            .leftJoin("base_admin_user_info").as("burmc").on("burmc.user_id = burm.created_by")
+            .where("bui.is_valid = ?", 3);
+        System.out.println(query.toSQL());
+    }
+
     @Test
     public void testJoinSelf() {
         QueryWrapper queryWrapper = QueryWrapper.create()

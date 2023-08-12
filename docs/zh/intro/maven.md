@@ -12,12 +12,12 @@
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-core</artifactId>
-    <version>1.5.6</version>
+    <version>1.5.7</version>
 </dependency>
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-processor</artifactId>
-    <version>1.5.6</version>
+    <version>1.5.7</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -28,12 +28,12 @@
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-spring</artifactId>
-    <version>1.5.6</version>
+    <version>1.5.7</version>
 </dependency>
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-processor</artifactId>
-    <version>1.5.6</version>
+    <version>1.5.7</version>
     <scope>provided</scope>
 </dependency>
 ``````
@@ -44,12 +44,12 @@
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-spring-boot-starter</artifactId>
-    <version>1.5.6</version>
+    <version>1.5.7</version>
 </dependency>
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-processor</artifactId>
-    <version>1.5.6</version>
+    <version>1.5.7</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -60,7 +60,7 @@
 
    参考：[APT 设置-和 Lombok、Mapstruct 整合](../others/apt.md)
 
-> 在Kotlin中使用时，请参考[在Kotlin中使用注解处理器](../kotlin/kapt.md)
+> 在Kotlin中使用时，请参考[在Kotlin中使用注解处理器](../others/kapt.md)
 
 ```xml
 <plugin>
@@ -72,7 +72,7 @@
             <path>
                 <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-processor</artifactId>
-                <version>1.5.6</version>
+                <version>1.5.7</version>
             </path>
         </annotationProcessorPaths>
     </configuration>
