@@ -283,6 +283,12 @@ public class StringUtil {
             : new String[]{tableNameWithSchema.substring(0, index).trim(), tableNameWithSchema.substring(index + 1).trim()};
     }
 
+    public static String[] getTableNameWithAlisa(String tableNameWithAlisa) {
+        int index = tableNameWithAlisa.indexOf(".");
+        return index <= 0 ? new String[]{tableNameWithAlisa, null}
+            : new String[]{tableNameWithAlisa.substring(0, index), tableNameWithAlisa.substring(index + 1)};
+    }
+
     public static String tryTrim(String string) {
         return string != null ? string.trim() : null;
     }
