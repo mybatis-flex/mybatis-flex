@@ -21,6 +21,7 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
 import com.mybatisflex.core.query.*;
@@ -775,7 +776,7 @@ public class TableInfo {
         if (StringUtil.isNotBlank(versionColumn) && entity != null) {
             Object versionValue = buildColumnSqlArg(entity, versionColumn);
             if (versionValue == null) {
-                throw FlexExceptions.wrap("The version value of entity[%s] must not be null.", entity);
+                throw FlexExceptions.wrap(LocalizedFormats.ENTITY_VERSION_NULL, entity);
             }
             queryWrapper.and(QueryCondition.create(schema, tableName, versionColumn, SqlConsts.EQUALS, versionValue));
         }
