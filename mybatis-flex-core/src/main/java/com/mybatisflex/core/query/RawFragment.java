@@ -17,6 +17,7 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
 
@@ -38,6 +39,17 @@ public class RawFragment extends QueryCondition {
         this.setValue(paras);
     }
 
+    @Override
+    boolean containsTable(String... tables) {
+        for (String table : tables) {
+            String[] tableNameWithAlisa = StringUtil.getTableNameWithAlisa(table);
+            if (content.contains(tableNameWithAlisa[1])
+                || content.contains(tableNameWithAlisa[0])) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public String toSql(List<QueryTable> queryTables, IDialect dialect) {

@@ -120,8 +120,13 @@ public class MapperUtil {
         List<String> joinTables = new ArrayList<>();
         joins.forEach(join -> {
             QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
-            if (joinQueryTable != null && StringUtil.isNotBlank(joinQueryTable.getName())) {
-                joinTables.add(joinQueryTable.getName());
+            if (joinQueryTable != null) {
+                String tableName = joinQueryTable.getName();
+                if (StringUtil.isNotBlank(joinQueryTable.getAlias())) {
+                    joinTables.add(tableName + "." + joinQueryTable.getAlias());
+                } else {
+                    joinTables.add(tableName);
+                }
             }
         });
 
