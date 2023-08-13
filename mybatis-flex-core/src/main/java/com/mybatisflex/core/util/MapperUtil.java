@@ -122,7 +122,7 @@ public class MapperUtil {
             QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
             if (joinQueryTable != null) {
                 String tableName = joinQueryTable.getName();
-                if (joinQueryTable.getAlias() != null) {
+                if (StringUtil.isNotBlank(joinQueryTable.getAlias())) {
                     joinTables.add(tableName + "." + joinQueryTable.getAlias());
                 } else {
                     joinTables.add(tableName);
