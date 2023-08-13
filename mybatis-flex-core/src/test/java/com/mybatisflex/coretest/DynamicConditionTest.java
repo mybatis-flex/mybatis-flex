@@ -16,7 +16,10 @@
 
 package com.mybatisflex.coretest;
 
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.SqlConnector;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.junit.Test;
@@ -77,6 +80,24 @@ public class DynamicConditionTest {
             .toSQL();
 
         System.out.println(sql);
+    }
+
+    @Test
+    public void test05() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.in(1, 2, 3));
+
+        boolean anyMatch = CPI.getQueryTables(queryWrapper)
+            .stream()
+            .map(QueryTable::getName)
+            .anyMatch(tableName -> tableName.equals(ACCOUNT.getTableName()));
+
+        if (anyMatch) {
+            CPI.addWhereQueryCondition(queryWrapper, ACCOUNT.AGE.ge(18), SqlConnector.AND);
+        }
+
+        System.out.println(queryWrapper.toSQL());
     }
 
 }
