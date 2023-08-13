@@ -21,6 +21,7 @@ import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.ObjectUtil;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Array;
 import java.util.List;
@@ -290,7 +291,8 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             return nextContainsTable(tables);
         }
         for (String table : tables) {
-            if (column.table != null && table.equals(column.table.name)) {
+            String tableName = StringUtil.getTableNameWithAlisa(table)[0];
+            if (column.table != null && tableName.equals(column.table.name)) {
                 return true;
             }
         }
