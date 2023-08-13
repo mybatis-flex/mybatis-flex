@@ -17,6 +17,7 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.BaseMapper;
+import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
@@ -36,6 +37,11 @@ public class QueryChain<T> extends QueryWrapperAdapter<QueryChain<T>> implements
 
     public QueryChain(BaseMapper<T> baseMapper) {
         this.baseMapper = baseMapper;
+    }
+
+    public static <T> QueryChain<T> of(Class<T> entityClass) {
+        BaseMapper<T> baseMapper = Mappers.ofEntityClass(entityClass);
+        return new QueryChain<>(baseMapper);
     }
 
     public static <E> QueryChain<E> of(BaseMapper<E> baseMapper) {
