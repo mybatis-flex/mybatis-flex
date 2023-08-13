@@ -240,6 +240,13 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         return prev.checkEffective() ? prev : prev.getPrevEffectiveCondition();
     }
 
+    protected QueryCondition getNextEffectiveCondition() {
+        if (next == null) {
+            return null;
+        }
+        return next.checkEffective() ? next : next.getNextEffectiveCondition();
+    }
+
 
     protected void appendQuestionMark(StringBuilder sqlBuilder) {
         //noinspection StatementWithEmptyBody
