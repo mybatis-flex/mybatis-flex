@@ -79,15 +79,22 @@ class KotlinTest {
 //        查询表对象对应的所有实体数据
         ACCOUNT.all<Account>().forEach(::println)
 //        ACCOUNT.query<Account> {}.forEach(::println)
+
 //        a and (b or c)
-//        filter<Account> {
-//             ACCOUNT.AGE `=` 12 and
-//                    (ACCOUNT.ID `in` listOf(1, 2)  or  (ACCOUNT.ID `in` listOf(1, 2)))
-//        }
+//      filter:
         filter<Account> {
             ACCOUNT.ID `=` 1 and
-                    (ACCOUNT.AGE `in` listOf(18,19) or (ACCOUNT.BIRTHDAY between ("2020-01-10" to "2020-01-12")) )
+                    (ACCOUNT.AGE `in` (17..19) or (ACCOUNT.BIRTHDAY between ("2020-01-10" to "2020-01-12")) )
         }.forEach(::println)
+
+//       query:
+        query <Account> {
+            from(Account)
+            where(Account) {
+                (AGE `in` (17..19) or (BIRTHDAY between ("2020-01-10" .. "2020-01-12")) )
+            } orderBy -Account.ID
+        }.forEach(::println)
+
 //        查询表对象对应的实体数据并根据条件过滤
         filter<Account> {
             ACCOUNT.AGE `=` 12 or
