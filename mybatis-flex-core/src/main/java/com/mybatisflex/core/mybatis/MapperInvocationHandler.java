@@ -33,6 +33,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author michael
+ * @author norkts
  */
 public class MapperInvocationHandler implements InvocationHandler {
 
@@ -41,12 +42,11 @@ public class MapperInvocationHandler implements InvocationHandler {
 
     public MapperInvocationHandler(Object mapper, DataSource dataSource) {
         this.mapper = mapper;
-        if(dataSource instanceof FlexDataSource){
+        if (dataSource instanceof FlexDataSource) {
             this.dataSource = (FlexDataSource) dataSource;
-        }else{
+        } else {
             this.dataSource = null;
         }
-
     }
 
 

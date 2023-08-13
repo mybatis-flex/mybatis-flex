@@ -62,7 +62,7 @@ public class MybatisKeyGeneratorUtil {
             return NoKeyGenerator.INSTANCE;
         }
 
-        FlexGlobalConfig.KeyConfig globalKeyConfig = FlexGlobalConfig.getConfig(ms.getConfiguration()).getKeyConfig();
+        FlexGlobalConfig.KeyConfig globalKeyConfig = flexGlobalConfig.getKeyConfig();
         KeyType keyType = getKeyType(idInfo, globalKeyConfig);
 
         if (keyType == null || keyType == KeyType.None) {
