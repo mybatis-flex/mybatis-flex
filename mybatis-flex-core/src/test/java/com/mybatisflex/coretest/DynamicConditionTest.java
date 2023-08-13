@@ -114,4 +114,21 @@ public class DynamicConditionTest {
         System.out.println(queryWrapper.toSQL());
     }
 
+    @Test
+    public void test07() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.in(1, 2, 3)
+                .and(ACCOUNT.AGE.ge(18))
+                .or(ACCOUNT.USER_NAME.eq("zhang san")));
+
+        for (QueryCondition condition = CPI.getWhereQueryCondition(queryWrapper); condition != null; condition = CPI.getNextCondition(condition)) {
+            if (condition.getColumn().getName().equals(ACCOUNT.AGE.getName())) {
+                condition.when(false);
+            }
+        }
+
+        System.out.println(queryWrapper.toSQL());
+    }
+
 }
