@@ -56,6 +56,12 @@ public class MybatisKeyGeneratorUtil {
 
 
     public static KeyGenerator createIdKeyGenerator(TableInfo tableInfo, MappedStatement ms, IdInfo idInfo) {
+        FlexGlobalConfig flexGlobalConfig = FlexGlobalConfig.getConfig(ms.getConfiguration());
+
+        if(flexGlobalConfig == null){
+            return NoKeyGenerator.INSTANCE;
+        }
+
         FlexGlobalConfig.KeyConfig globalKeyConfig = FlexGlobalConfig.getConfig(ms.getConfiguration()).getKeyConfig();
         KeyType keyType = getKeyType(idInfo, globalKeyConfig);
 
