@@ -91,6 +91,8 @@
 - [MyBatis-Flex 视频教程 - 37 分页查询 count 查询优化](https://www.bilibili.com/video/BV1np4y1G7R9)
 - [MyBatis-Flex 视频教程 - 38 基于 XML 文件的高性能分页](https://www.bilibili.com/video/BV1Zh4y1D7aj)
 - [MyBatis-Flex 视频教程 - 39 Db + Row](https://www.bilibili.com/video/BV1wp4y1g7by)
+- [MyBatis-Flex 视频教程 - 40 批量操作](https://www.bilibili.com/video/BV1PV4y1Y73a)
+- [MyBatis-Flex 视频教程 - 41 IService 接口介绍](https://www.bilibili.com/video/BV14F411Z7EQ)
 
 
 
