@@ -16,7 +16,7 @@
 
 package com.mybatisflex.coretest;
 
-import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.junit.Test;
@@ -77,6 +77,58 @@ public class DynamicConditionTest {
             .toSQL();
 
         System.out.println(sql);
+    }
+
+    @Test
+    public void test05() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.in(1, 2, 3));
+
+        boolean anyMatch = CPI.getQueryTables(queryWrapper)
+            .stream()
+            .map(QueryTable::getName)
+            .anyMatch(tableName -> tableName.equals(ACCOUNT.getTableName()));
+
+        if (anyMatch) {
+            CPI.addWhereQueryCondition(queryWrapper, ACCOUNT.AGE.ge(18), SqlConnector.AND);
+        }
+
+        System.out.println(queryWrapper.toSQL());
+    }
+
+    @Test
+    public void test06() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.in(1, 2, 3))
+            .and(ACCOUNT.AGE.ge(18))
+            .or(ACCOUNT.USER_NAME.eq("zhang san"));
+
+        for (QueryCondition condition = CPI.getWhereQueryCondition(queryWrapper); condition != null; condition = CPI.getNextCondition(condition)) {
+            if (condition.getColumn().getName().equals(ACCOUNT.AGE.getName())) {
+                condition.when(false);
+            }
+        }
+
+        System.out.println(queryWrapper.toSQL());
+    }
+
+    @Test
+    public void test07() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.in(1, 2, 3)
+                .and(ACCOUNT.AGE.ge(18))
+                .or(ACCOUNT.USER_NAME.eq("zhang san")));
+
+        for (QueryCondition condition = CPI.getWhereQueryCondition(queryWrapper); condition != null; condition = CPI.getNextCondition(condition)) {
+            if (condition.getColumn().getName().equals(ACCOUNT.AGE.getName())) {
+                condition.when(false);
+            }
+        }
+
+        System.out.println(queryWrapper.toSQL());
     }
 
 }
