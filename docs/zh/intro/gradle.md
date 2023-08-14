@@ -64,13 +64,13 @@ dependencies {
 **【Kotlin】**
 ```kotlin
 dependencies {
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:1.5.6")
+    annotationProcessor("com.mybatis-flex:mybatis-flex-processor:1.5.6")
 }
 ```
 
 **【Groovy】**
 ```groovy
 dependencies {
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:1.5.6'
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.5.6'
 }
 ```
