@@ -28,7 +28,7 @@ plugins {
 
 ```kotlin
 dependencies {
-    kapt("org.springframework.boot:spring-boot-configuration-processor:1.5.6")
+    kapt("com.mybatis-flex:mybatis-flex-processor:1.5.6")
 }
 ```
 
@@ -36,7 +36,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    kapt 'org.springframework.boot:spring-boot-configuration-processor:1.5.6'
+    kapt 'com.mybatis-flex:mybatis-flex-processor:1.5.6'
 }
 ```
 
