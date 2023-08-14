@@ -131,4 +131,14 @@ public class DynamicConditionTest {
         System.out.println(queryWrapper.toSQL());
     }
 
+    @Test
+    public void test08() {
+        QueryWrapper queryWrapper = QueryWrapper.create().
+            from(ACCOUNT)
+            .where(ACCOUNT.ID.eq(1))
+            .and(ACCOUNT.AGE.in(17, 18, 19).or(ACCOUNT.USER_NAME.eq("zhang san")));
+
+        System.out.println(queryWrapper.toSQL());
+    }
+
 }
