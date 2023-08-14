@@ -80,7 +80,7 @@ public class Brackets extends QueryCondition {
 
     @Override
     protected QueryCondition getPrevEffectiveCondition() {
-        return childCondition.getPrevEffectiveCondition();
+        return super.getPrevEffectiveCondition();
     }
 
     @Override
