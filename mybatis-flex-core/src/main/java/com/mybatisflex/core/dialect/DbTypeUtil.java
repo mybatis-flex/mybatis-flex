@@ -167,7 +167,9 @@ public class DbTypeUtil {
             return DbType.UXDB;
         } else if (jdbcUrl.contains(":greenplum:")) {
             return DbType.GREENPLUM;
-        } else {
+        } else if (jdbcUrl.contains(":lealone:")) {
+            return DbType.LEALONE;
+        }  else {
             return DbType.OTHER;
         }
     }
