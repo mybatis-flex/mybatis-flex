@@ -128,6 +128,7 @@ public class DialectFactory {
             case REDSHIFT:
             case OPENGAUSS:
             case UXDB:
+            case LEALONE:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.POSTGRESQL);
             case TDENGINE:
                 return new CommonsDialectImpl(KeywordWrap.BACK_QUOTE, LimitOffsetProcessor.POSTGRESQL);

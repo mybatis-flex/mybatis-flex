@@ -175,6 +175,11 @@ public enum DbType {
      * greenplum
      */
     GREENPLUM("greenplum", "greenplum 数据库"),
+
+    /**
+     * lealone
+     */
+    LEALONE("lealone", "lealone 数据库"),
     /**
      * UNKNOWN DB
      */
