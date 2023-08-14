@@ -63,7 +63,7 @@ inline fun <reified E> TableDef.query(
     )
 }
 
-inline fun <reified E> TableDef.all(): List<E> = selectAll(schema, tableName).toEntities()
+inline fun <reified E> TableDef.all(): List<E> = selectAll(schema, tableName).toEntities<E>()
 
 inline fun <reified E> Collection<Row>.toEntities() = map { it to E::class.java }.toList()
 
