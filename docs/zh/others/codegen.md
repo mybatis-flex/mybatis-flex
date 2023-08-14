@@ -514,7 +514,7 @@ public class EnjoyTemplate implements ITemplate {
 ```
 
 ## 自定义数据方言
-在 MyBatis-Flex 的代码生成器中，已经内置了 4 中方言，他们分别是：
+在 MyBatis-Flex 的代码生成器中，已经内置了 4 种方言，他们分别是：
 
 - 默认方言
 - MySQL 方言
