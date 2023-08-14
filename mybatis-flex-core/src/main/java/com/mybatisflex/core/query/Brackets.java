@@ -79,11 +79,6 @@ public class Brackets extends QueryCondition {
     }
 
     @Override
-    protected QueryCondition getPrevEffectiveCondition() {
-        return super.getPrevEffectiveCondition();
-    }
-
-    @Override
     protected QueryCondition getNextEffectiveCondition() {
         return childCondition.getNextEffectiveCondition();
     }

@@ -135,8 +135,15 @@ public class DynamicConditionTest {
     public void test08() {
         QueryWrapper queryWrapper = QueryWrapper.create().
             from(ACCOUNT)
-            .where(ACCOUNT.ID.eq(1))
-            .and(ACCOUNT.AGE.in(17, 18, 19).or(ACCOUNT.USER_NAME.eq("zhang san")));
+            .where(ACCOUNT.ID.eq(1)
+                .and(ACCOUNT.AGE.in(17, 18, 19).or(ACCOUNT.USER_NAME.eq("zhang san"))
+            ));
+
+        QueryCondition condition = CPI.getWhereQueryCondition(queryWrapper);
+        while (condition != null) {
+            System.out.println(condition.getColumn().getName());
+            condition = CPI.getNextCondition(condition);
+        }
 
         System.out.println(queryWrapper.toSQL());
     }
