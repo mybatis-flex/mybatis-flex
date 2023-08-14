@@ -195,3 +195,95 @@ WHERE `id` = 1
 ```
 
 更多关于 **链式操作**，请点击这个 [这里](./chain.html#updatechain-示例)。
+
+## `set()` 和 `setRaw()` 的区别
+
+在 `Row`、`UpdateWrapper`、`UpdateChain` 中，都提供了 `set()` 和 `setRaw()` 两个方法用于设置数据。
+那么，他们有什么区别呢？
+
+- `set()` 方法用于设置参数数据。
+- `setRaw()` 用于设置 SQL 拼接数据。
+
+例如：
+
+```java
+UpdateChain.of(Account.class)
+    .set(Account::getUserName, "张三")
+    .where(Account::getId).eq(1)
+    .update();
+```
+
+其执行的 SQL 如下：
+
+```sql
+UPDATE `tb_account` SET `user_name` = ? WHERE `id` = 1
+```
+
+如果是使用 `setRaw()` 方法：
+
+```java
+UpdateChain.of(Account.class)
+    .setRaw(Account::getUserName, "张三")
+    .where(Account::getId).eq(1)
+    .update();
+```
+
+以上代码执行时，参数 "`张三`" 会直接参与 SQL 拼接，可能会造成 SQL 错误，其 SQL 如下：
+
+```sql
+UPDATE `tb_account` SET `user_name` = 张三 WHERE `id` = 1
+```
+
+因此，需要用户 **【特别注意!!!】**，`setRaw()` 传入不恰当的参数时，可能会造成 SQL 注入的危险。
+因此，调用 `setRaw()` 方法时，需要开发者自行对其参数进行 SQL 注入过滤。
+
+
+**`setRaw()` 经常使用的场景：**
+
+- **场景1： 用户充值，更新用户金额：**
+
+```java
+UpdateChain.of(Account.class)
+    .setRaw(Account::getMoney, "money + 100")
+    .where(Account::getId).eq(1)
+    .update();
+```
+
+其执行的 SQL 如下：
+
+```sql
+UPDATE `tb_account` SET  `money` = money + 100
+WHERE `id` = 1
+```
+
+- **场景2：执行某些特殊函数：**
+
+```java
+UpdateChain.of(Account.class)
+    .setRaw(Account::getUserName, "UPPER(user_name)")
+    .where(Account::getId).eq(1)
+    .update();
+```
+
+其执行的 SQL 如下：
+
+```sql
+UPDATE tb_account SET  user_name = UPPER(user_name)
+WHERE id = 1
+```
+
+或者
+
+```java
+UpdateChain.of(Account.class)
+    .setRaw(Account::getUserName, "utl_raw.cast_to_raw('some magic here')")
+    .where(Account::getId).eq(1)
+    .update();
+```
+
+其执行的 SQL 如下：
+
+```sql
+UPDATE tb_account SET  user_name = utl_raw.cast_to_raw('some magic here')
+WHERE id = 1
+```
