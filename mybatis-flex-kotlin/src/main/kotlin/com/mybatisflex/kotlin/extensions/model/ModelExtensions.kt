@@ -67,13 +67,13 @@ inline fun <reified E> TableDef.all(): List<E> = selectAll(schema, tableName).to
 
 inline fun <reified E> Collection<Row>.toEntities() = map { it to E::class.java }.toList()
 
-inline fun<reified E:Model<E>> List<E>.batchInsert(): Int = Mappers.ofEntityClass(E::class.java).insertBatch(this)
+inline fun<reified E:Model<E>> List<E>.batchInsert(): Int = Mappers.ofEntityClass<E>(E::class.java).insertBatch(this)
 
 fun< E:Model<E>> List<E>.batchUpdateById(): Boolean = all(Model<E>::updateById)
 
 inline fun<reified E:Model<E>> List<E>. batchDeleteById(): Boolean {
     //拿到集合中所有实体的主键
     val primaryValues = this.map { it.pkValues() }.flatMap(Array<*>::toMutableList).map { it as Serializable }
-    return SqlUtil.toBool(Mappers.ofEntityClass(E::class.java).deleteBatchByIds(primaryValues))
+    return SqlUtil.toBool(Mappers.ofEntityClass<E>(E::class.java).deleteBatchByIds(primaryValues))
 }
 
