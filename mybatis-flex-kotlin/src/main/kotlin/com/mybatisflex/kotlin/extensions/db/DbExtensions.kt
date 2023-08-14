@@ -64,7 +64,7 @@ inline fun <reified T> query(
     noinline init: QueryScope.() -> Unit
 ): List<T> =
     queryRows(schema = schema, tableName = tableName, columns = columns, init = init)
-        .toEntities()
+        .toEntities<T>()
 
 fun queryRows(
     vararg columns: QueryColumn?,
@@ -85,7 +85,7 @@ inline fun <reified E> filter(
     schema,
     tableName,
     queryScope(*columns).where(queryCondition)
-).toEntities()
+).toEntities<E>()
 
 inline fun <reified E > filter(
     vararg columns: QueryColumn?,
