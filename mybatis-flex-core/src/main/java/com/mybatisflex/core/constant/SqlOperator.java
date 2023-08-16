@@ -41,6 +41,9 @@ public enum SqlOperator {
     // =
     EQUALS(SqlConsts.EQUALS),
 
+    // !=
+    NOT_EQUALS(SqlConsts.NOT_EQUALS),
+
     // is null
     IS_NULL(SqlConsts.IS_NULL),
 
@@ -70,4 +73,5 @@ public enum SqlOperator {
     public String getValue() {
         return value;
     }
+
 }
