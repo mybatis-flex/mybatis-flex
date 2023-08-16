@@ -22,6 +22,7 @@ import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.QueryWrapperAdapter;
 import com.mybatisflex.core.table.*;
+import com.mybatisflex.core.update.PropertySetter;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.SqlUtil;
 
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
  * @author 王帅
  * @since 2023-07-22
  */
-public class DbChain extends QueryWrapperAdapter<DbChain> {
+public class DbChain extends QueryWrapperAdapter<DbChain> implements PropertySetter<DbChain> {
 
     private String schema;
     private String tableName;
@@ -108,18 +109,39 @@ public class DbChain extends QueryWrapperAdapter<DbChain> {
         return this;
     }
 
-    public DbChain set(String column, Object value) {
-        getRow().set(column, value);
+    @Override
+    public DbChain set(String property, Object value, boolean isEffective) {
+        getRow().set(property, value, isEffective);
         return this;
     }
 
-    public DbChain set(QueryColumn column, Object value) {
-        getRow().set(column, value);
+    @Override
+    public DbChain set(QueryColumn property, Object value, boolean isEffective) {
+        getRow().set(property, value, isEffective);
         return this;
     }
 
-    public <T> DbChain set(LambdaGetter<T> column, Object value) {
-        getRow().set(column, value);
+    @Override
+    public <T> DbChain set(LambdaGetter<T> property, Object value, boolean isEffective) {
+        getRow().set(property, value, isEffective);
+        return this;
+    }
+
+    @Override
+    public DbChain setRaw(String property, Object value, boolean isEffective) {
+        getRow().set(property, value, isEffective);
+        return this;
+    }
+
+    @Override
+    public DbChain setRaw(QueryColumn property, Object value, boolean isEffective) {
+        getRow().set(property, value, isEffective);
+        return this;
+    }
+
+    @Override
+    public <T> DbChain setRaw(LambdaGetter<T> property, Object value, boolean isEffective) {
+        getRow().set(property, value, isEffective);
         return this;
     }
 
