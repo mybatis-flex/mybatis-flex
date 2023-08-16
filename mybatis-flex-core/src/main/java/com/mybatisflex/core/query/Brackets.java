@@ -20,8 +20,6 @@ import com.mybatisflex.core.util.ObjectUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
-import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 
 /**
  * 括号
@@ -57,25 +55,6 @@ public class Brackets extends QueryCondition {
     @Override
     public void setLogic(String logic) {
         childCondition.setLogic(logic);
-    }
-
-    @Override
-    public QueryCondition when(boolean effective) {
-        return childCondition.when(effective);
-    }
-
-    @Override
-    public QueryCondition when(BooleanSupplier fn) {
-        return childCondition.when(fn);
-    }
-
-    /**
-     * @deprecated 继承自标记删除的方法
-     */
-    @Override
-    @Deprecated
-    public <T> QueryCondition when(Predicate<T> fn) {
-        return childCondition.when(fn);
     }
 
     @Override

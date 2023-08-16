@@ -15,14 +15,13 @@
  */
 package com.mybatisflex.core.activerecord.query;
 
-import com.mybatisflex.core.query.CPI;
-import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.query.SqlConnector;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
 import java.util.Collection;
 import java.util.function.BiPredicate;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 /**
@@ -31,7 +30,7 @@ import java.util.function.Predicate;
  * @author 王帅
  * @since 2023-07-24
  */
-public class WhereBuilder<R extends QueryModel<R>> {
+public class WhereBuilder<R extends QueryModel<R>> implements Conditional<R> {
 
     private final R queryModel;
     private final QueryColumn queryColumn;
@@ -43,368 +42,661 @@ public class WhereBuilder<R extends QueryModel<R>> {
         this.connector = connector;
     }
 
+    private void addWhereQueryCondition(QueryCondition queryCondition) {
+        CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryCondition, connector);
+    }
+
+    @Override
     public R eq(Object value) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.eq(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.eq(value));
         return queryModel;
     }
 
-    public <T> R eq(T value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.eq(value, when), connector);
-        }
+    @Override
+    public R eq(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.eq(value, isEffective));
         return queryModel;
     }
 
+    @Override
+    public R eq(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.eq(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R eq(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.eq(value, isEffective));
+        return queryModel;
+    }
+
+    /**
+     * 等于 {@code =}
+     */
     public <T> R eq(LambdaGetter<T> value) {
-        return eq(LambdaUtil.getQueryColumn(value));
+        return eq(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * @deprecated {@link Predicate} 泛型参数无效
+     * 等于 {@code =}
      */
-    @Deprecated
-    public <T> R eq(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.eq(LambdaUtil.getQueryColumn(value)).when(when), connector);
-        }
-        return queryModel;
+    public <T> R eq(LambdaGetter<T> value, boolean isEffective) {
+        return eq(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
+    /**
+     * 等于 {@code =}
+     */
+    public <T> R eq(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return eq(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
+    }
+
+    @Override
     public R ne(Object value) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ne(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.ne(value));
         return queryModel;
     }
 
-    public <T> R ne(T value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ne(value, when), connector);
-        }
+    @Override
+    public R ne(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.ne(value, isEffective));
         return queryModel;
     }
 
+    @Override
+    public R ne(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.ne(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R ne(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.ne(value, isEffective));
+        return queryModel;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     */
     public <T> R ne(LambdaGetter<T> value) {
-        return ne(LambdaUtil.getQueryColumn(value));
+        return ne(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * @deprecated {@link Predicate} 泛型参数无效
+     * 不等于 {@code !=}
      */
-    @Deprecated
-    public <T> R ne(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ne(LambdaUtil.getQueryColumn(value)).when(when), connector);
-        }
-        return queryModel;
+    public <T> R ne(LambdaGetter<T> value, boolean isEffective) {
+        return ne(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
-    public R like(Object value) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.like(value), connector);
-        }
-        return queryModel;
+    /**
+     * 不等于 {@code !=}
+     */
+    public <T> R ne(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return ne(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
     }
 
-    public <T> R like(T value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.like(value, when), connector);
-        }
-        return queryModel;
-    }
-
-    public R likeLeft(Object value) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.likeLeft(value), connector);
-        }
-        return queryModel;
-    }
-
-    public <T> R likeLeft(T value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.likeLeft(value, when), connector);
-        }
-        return queryModel;
-    }
-
-    public R likeRight(Object value) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.likeRight(value), connector);
-        }
-        return queryModel;
-    }
-
-    public <T> R likeRight(T value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.likeRight(value, when), connector);
-        }
-        return queryModel;
-    }
-
+    @Override
     public R gt(Object value) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.gt(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.gt(value));
         return queryModel;
     }
 
-    public <T> R gt(T value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.gt(value, when), connector);
-        }
+    @Override
+    public R gt(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.gt(value, isEffective));
         return queryModel;
     }
 
+    @Override
+    public R gt(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.gt(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R gt(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.gt(value, isEffective));
+        return queryModel;
+    }
+
+    /**
+     * 大于 {@code >}
+     */
     public <T> R gt(LambdaGetter<T> value) {
-        return gt(LambdaUtil.getQueryColumn(value));
+        return gt(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * @deprecated {@link Predicate} 泛型参数无效
+     * 大于 {@code >}
      */
-    @Deprecated
-    public <T> R gt(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.gt(LambdaUtil.getQueryColumn(value)).when(when), connector);
-        }
-        return queryModel;
+    public <T> R gt(LambdaGetter<T> value, boolean isEffective) {
+        return gt(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
+    /**
+     * 大于 {@code >}
+     */
+    public <T> R gt(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return gt(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
+    }
+
+    @Override
     public R ge(Object value) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ge(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.ge(value));
         return queryModel;
     }
 
-    public <T> R ge(T value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ge(value, when), connector);
-        }
+    @Override
+    public R ge(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.ge(value, isEffective));
         return queryModel;
     }
 
+    @Override
+    public R ge(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.ge(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R ge(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.ge(value, isEffective));
+        return queryModel;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     */
     public <T> R ge(LambdaGetter<T> value) {
-        return ge(LambdaUtil.getQueryColumn(value));
+        return eq(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * @deprecated {@link Predicate} 泛型参数无效
+     * 大于等于 {@code >=}
      */
-    @Deprecated
-    public <T> R ge(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.ge(LambdaUtil.getQueryColumn(value)).when(when), connector);
-        }
-        return queryModel;
+    public <T> R ge(LambdaGetter<T> value, boolean isEffective) {
+        return eq(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
+    /**
+     * 大于等于 {@code >=}
+     */
+    public <T> R ge(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return ge(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
+    }
+
+    @Override
     public R lt(Object value) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.lt(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.lt(value));
         return queryModel;
     }
 
-    public <T> R lt(T value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.lt(value, when), connector);
-        }
+    @Override
+    public R lt(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.lt(value, isEffective));
         return queryModel;
     }
 
+    @Override
+    public R lt(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.lt(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R lt(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.lt(value, isEffective));
+        return queryModel;
+    }
+
+    /**
+     * 小于 {@code <}
+     */
     public <T> R lt(LambdaGetter<T> value) {
-        return lt(LambdaUtil.getQueryColumn(value));
+        return lt(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * @deprecated {@link Predicate} 泛型参数无效
+     * 小于 {@code <}
      */
-    @Deprecated
-    public <T> R lt(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.lt(LambdaUtil.getQueryColumn(value)).when(when), connector);
-        }
-        return queryModel;
+    public <T> R lt(LambdaGetter<T> value, boolean isEffective) {
+        return lt(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
+    /**
+     * 小于 {@code <}
+     */
+    public <T> R lt(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return lt(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
+    }
+
+    @Override
     public R le(Object value) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.le(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.le(value));
         return queryModel;
     }
 
-    public <T> R le(T value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.le(value, when), connector);
-        }
+    @Override
+    public R le(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.le(value, isEffective));
         return queryModel;
     }
 
+    @Override
+    public R le(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.le(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R le(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.le(value, isEffective));
+        return queryModel;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     */
     public <T> R le(LambdaGetter<T> value) {
-        return le(LambdaUtil.getQueryColumn(value));
+        return le(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * @deprecated {@link Predicate} 泛型参数无效
+     * 小于等于 {@code <=}
      */
-    @Deprecated
-    public <T> R le(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.le(LambdaUtil.getQueryColumn(value)).when(when), connector);
-        }
+    public <T> R le(LambdaGetter<T> value, boolean isEffective) {
+        return le(LambdaUtil.getQueryColumn(value), isEffective);
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     */
+    public <T> R le(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return le(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
+    }
+
+    @Override
+    public R in(Object... value) {
+        addWhereQueryCondition(queryColumn.in(value));
         return queryModel;
     }
 
-    public R isNull() {
-        CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.isNull(), connector);
+    @Override
+    public R in(Object[] value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R in(Object[] value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R in(T[] value, Predicate<T[]> isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R in(Collection<?> value) {
+        addWhereQueryCondition(queryColumn.in(value));
+        return queryModel;
+    }
+
+    @Override
+    public R in(Collection<?> value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R in(Collection<?> value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T extends Collection<?>> R in(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R in(QueryWrapper queryWrapper) {
+        addWhereQueryCondition(queryColumn.in(queryWrapper));
+        return queryModel;
+    }
+
+    @Override
+    public R in(QueryWrapper queryWrapper, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.in(queryWrapper, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R in(QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.in(queryWrapper, isEffective));
         return queryModel;
     }
 
     /**
-     * @deprecated 无法推断泛型
+     * {@code IN(value)}
      */
-    @Deprecated
-    public <T> R isNull(Predicate<T> when) {
-        CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.isNull(when), connector);
-        return queryModel;
-    }
-
-    public R isNotNull() {
-        CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.isNotNull(), connector);
-        return queryModel;
+    public R in(QueryModel<R> queryModel) {
+        return in(queryModel, true);
     }
 
     /**
-     * @deprecated 无法推断泛型
+     * {@code IN(value)}
      */
-    @Deprecated
-    public <T> R isNotNull(Predicate<T> when) {
-        CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.isNotNull(when), connector);
-        return queryModel;
-    }
-
-    public R in(Object... arrays) {
-        if (arrays != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(arrays), connector);
-        }
-        return queryModel;
-    }
-
-    public <T> R in(T[] arrays, Predicate<T[]> when) {
-        //忽略 QueryWrapper.in("name", null) 的情况
-        if (arrays != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(arrays, when), connector);
-        }
-        return queryModel;
-    }
-
-    public R in(R queryModel) {
+    public R in(QueryModel<R> queryModel, boolean isEffective) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(queryModel), connector);
+            addWhereQueryCondition(queryColumn.in(queryModel.queryWrapper(), isEffective));
         }
         return this.queryModel;
     }
 
     /**
-     * @deprecated 无法推断泛型
+     * {@code IN(value)}
      */
-    @Deprecated
-    public <T> R in(R queryModel, Predicate<T> when) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(queryModel, when), connector);
-        }
-        return this.queryModel;
+    public R in(QueryModel<R> queryModel, BooleanSupplier isEffective) {
+        return in(queryModel, isEffective.getAsBoolean());
     }
 
-    public R in(Collection<?> collection) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(collection), connector);
-        }
+    @Override
+    public R notIn(Object... value) {
+        addWhereQueryCondition(queryColumn.notIn(value));
         return queryModel;
     }
 
-    public <T extends Collection<?>> R in(T collection, Predicate<T> when) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.in(collection, when), connector);
-        }
+    @Override
+    public R notIn(Object[] value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
         return queryModel;
     }
 
-    public R notIn(Object... arrays) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(arrays), connector);
-        }
+    @Override
+    public R notIn(Object[] value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
         return queryModel;
     }
 
-    public <T> R notIn(T[] arrays, Predicate<T[]> when) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(arrays, when), connector);
-        }
+    @Override
+    public <T> R notIn(T[] value, Predicate<T[]> isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
         return queryModel;
     }
 
-    public R notIn(Collection<?> collection) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(collection), connector);
-        }
+    @Override
+    public R notIn(Collection<?> value) {
+        addWhereQueryCondition(queryColumn.notIn(value));
         return queryModel;
     }
 
-    public <T extends Collection<?>> R notIn(T collection, Predicate<T> when) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(collection, when), connector);
-        }
+    @Override
+    public R notIn(Collection<?> value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
         return queryModel;
     }
 
-    public R notIn(R queryModel) {
+    @Override
+    public R notIn(Collection<?> value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T extends Collection<?>> R notIn(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R notIn(QueryWrapper queryWrapper) {
+        addWhereQueryCondition(queryColumn.notIn(queryWrapper));
+        return queryModel;
+    }
+
+    @Override
+    public R notIn(QueryWrapper queryWrapper, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(queryWrapper, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R notIn(QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(queryWrapper, isEffective));
+        return queryModel;
+    }
+
+    /**
+     * {@code NOT IN(value)}
+     */
+    public R notIn(QueryModel<R> queryModel) {
+        return notIn(queryModel, true);
+    }
+
+    /**
+     * {@code NOT IN(value)}
+     */
+    public R notIn(QueryModel<R> queryModel, boolean isEffective) {
         if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(queryModel), connector);
+            addWhereQueryCondition(queryColumn.notIn(queryModel.queryWrapper(), isEffective));
         }
         return this.queryModel;
     }
 
     /**
-     * @deprecated 无法推断泛型
+     * {@code NOT IN(value)}
      */
-    @Deprecated
-    public <T> R notIn(R queryModel, Predicate<T> when) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notIn(queryModel, when), connector);
-        }
-        return this.queryModel;
+    public R notIn(QueryModel<R> queryModel, BooleanSupplier isEffective) {
+        return notIn(queryModel, isEffective.getAsBoolean());
     }
 
+    @Override
     public R between(Object start, Object end) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.between(start, end), connector);
-        }
+        addWhereQueryCondition(queryColumn.between(start, end));
         return queryModel;
     }
 
-    public <S, E> R between(S start, E end, BiPredicate<S, E> when) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.between(start, end, when), connector);
-        }
+    @Override
+    public R between(Object start, Object end, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.between(start, end, isEffective));
         return queryModel;
     }
 
+    @Override
+    public R between(Object start, Object end, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.between(start, end, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <S, E> R between(S start, E end, BiPredicate<S, E> isEffective) {
+        addWhereQueryCondition(queryColumn.between(start, end, isEffective));
+        return queryModel;
+    }
+
+    @Override
     public R notBetween(Object start, Object end) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notBetween(start, end), connector);
-        }
+        addWhereQueryCondition(queryColumn.notBetween(start, end));
         return queryModel;
     }
 
-    public <S, E> R notBetween(S start, E end, BiPredicate<S, E> when) {
-        if (queryModel != null) {
-            CPI.addWhereQueryCondition(queryModel.queryWrapper(), queryColumn.notBetween(start, end, when), connector);
-        }
+    @Override
+    public R notBetween(Object start, Object end, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notBetween(start, end, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R notBetween(Object start, Object end, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notBetween(start, end, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <S, E> R notBetween(S start, E end, BiPredicate<S, E> isEffective) {
+        addWhereQueryCondition(queryColumn.notBetween(start, end, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R like(Object value) {
+        addWhereQueryCondition(queryColumn.like(value));
+        return queryModel;
+    }
+
+    @Override
+    public R like(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.like(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R like(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.like(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R like(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.like(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R likeLeft(Object value) {
+        addWhereQueryCondition(queryColumn.likeLeft(value));
+        return queryModel;
+    }
+
+    @Override
+    public R likeLeft(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.likeLeft(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R likeLeft(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.likeLeft(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R likeLeft(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.likeLeft(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R likeRight(Object value) {
+        addWhereQueryCondition(queryColumn.likeRight(value));
+        return queryModel;
+    }
+
+    @Override
+    public R likeRight(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.likeRight(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R likeRight(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.likeRight(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R likeRight(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.likeRight(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R notLike(Object value) {
+        addWhereQueryCondition(queryColumn.notLike(value));
+        return queryModel;
+    }
+
+    @Override
+    public R notLike(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notLike(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R notLike(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notLike(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R notLike(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.notLike(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R notLikeLeft(Object value) {
+        addWhereQueryCondition(queryColumn.notLikeLeft(value));
+        return queryModel;
+    }
+
+    @Override
+    public R notLikeLeft(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeLeft(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R notLikeLeft(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeLeft(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R notLikeLeft(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeLeft(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R notLikeRight(Object value) {
+        addWhereQueryCondition(queryColumn.notLikeRight(value));
+        return queryModel;
+    }
+
+    @Override
+    public R notLikeRight(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeRight(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R notLikeRight(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeRight(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public <T> R notLikeRight(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeRight(value, isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R isNull(boolean isEffective) {
+        addWhereQueryCondition(queryColumn.isNull(isEffective));
+        return queryModel;
+    }
+
+    @Override
+    public R isNotNull(boolean isEffective) {
+        addWhereQueryCondition(queryColumn.isNotNull(isEffective));
         return queryModel;
     }
 

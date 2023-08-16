@@ -29,6 +29,8 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 
 public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper {
 
@@ -93,8 +95,73 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
         return row;
     }
 
+    @Override
+    public Row set(String property, Object value, boolean isEffective) {
+        if (!isEffective) {
+            return this;
+        }
+
+        if (StringUtil.isBlank(property)) {
+            throw new IllegalArgumentException("key column not be null or empty.");
+        }
+
+        SqlUtil.keepColumnSafely(property);
+
+        if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
+            super.put(property, new RawValue(value));
+        } else {
+            super.put(property, value);
+        }
+
+        return this;
+    }
 
     @Override
+    public Row set(QueryColumn property, Object value, boolean isEffective) {
+        if (!isEffective) {
+            return this;
+        }
+
+        if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
+            super.put(property.getName(), new RawValue(value));
+        } else {
+            super.put(property.getName(), value);
+        }
+
+        return this;
+    }
+
+    @Override
+    public <T> Row set(LambdaGetter<T> property, Object value, boolean isEffective) {
+        if (!isEffective) {
+            return this;
+        }
+
+        if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
+            super.put(LambdaUtil.getFieldName(property), new RawValue(value));
+        } else {
+            super.put(LambdaUtil.getFieldName(property), value);
+        }
+
+        return this;
+    }
+
+    @Override
+    public Row setRaw(String property, Object value, boolean isEffective) {
+        return (Row) UpdateWrapper.super.setRaw(property, value, isEffective);
+    }
+
+    @Override
+    public Row setRaw(QueryColumn property, Object value, boolean isEffective) {
+        return (Row) UpdateWrapper.super.setRaw(property, value, isEffective);
+    }
+
+    @Override
+    public <T> Row setRaw(LambdaGetter<T> property, Object value, boolean isEffective) {
+        return (Row) UpdateWrapper.super.setRaw(property, value, isEffective);
+    }
+
+/*@Override
     public Row set(String column, Object value) {
         if (StringUtil.isBlank(column)) {
             throw new IllegalArgumentException("key column not be null or empty.");
@@ -119,8 +186,97 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
             super.put(queryColumn.getName(), value);
         }
         return this;
+    }*/
+
+    @Override
+    public Row set(String property, Object value) {
+        return set(property, value, true);
     }
 
+    @Override
+    public Row set(String property, Object value, BooleanSupplier isEffective) {
+        return set(property, value, isEffective.getAsBoolean());
+    }
+
+    @Override
+    public <V> Row set(String property, V value, Predicate<V> isEffective) {
+        return set(property, value, isEffective.test(value));
+    }
+
+    @Override
+    public Row set(QueryColumn property, Object value) {
+        return set(property, value, true);
+    }
+
+    @Override
+    public Row set(QueryColumn property, Object value, BooleanSupplier isEffective) {
+        return set(property, value, isEffective.getAsBoolean());
+    }
+
+    @Override
+    public <V> Row set(QueryColumn property, V value, Predicate<V> isEffective) {
+        return set(property, value, isEffective.test(value));
+    }
+
+    @Override
+    public <T> Row set(LambdaGetter<T> property, Object value) {
+        return set(property, value, true);
+    }
+
+    @Override
+    public <T> Row set(LambdaGetter<T> property, Object value, BooleanSupplier isEffective) {
+        return set(property, value, isEffective.getAsBoolean());
+    }
+
+    @Override
+    public <T, V> Row set(LambdaGetter<T> property, V value, Predicate<V> isEffective) {
+        return set(property, value, isEffective.test(value));
+    }
+
+    @Override
+    public Row setRaw(String property, Object value) {
+        return setRaw(property, value, true);
+    }
+
+    @Override
+    public Row setRaw(String property, Object value, BooleanSupplier isEffective) {
+        return setRaw(property, value, isEffective.getAsBoolean());
+    }
+
+    @Override
+    public <V> Row setRaw(String property, V value, Predicate<V> isEffective) {
+        return setRaw(property, value, isEffective.test(value));
+    }
+
+    @Override
+    public Row setRaw(QueryColumn property, Object value) {
+        return setRaw(property, value, true);
+    }
+
+    @Override
+    public Row setRaw(QueryColumn property, Object value, BooleanSupplier isEffective) {
+        return setRaw(property, value, isEffective.getAsBoolean());
+    }
+
+    @Override
+    public <V> Row setRaw(QueryColumn property, V value, Predicate<V> isEffective) {
+        return setRaw(property, value, isEffective.test(value));
+    }
+
+    @Override
+    public <T> Row setRaw(LambdaGetter<T> property, Object value) {
+        return setRaw(property, value, true);
+    }
+
+    @Override
+    public <T> Row setRaw(LambdaGetter<T> property, Object value, BooleanSupplier isEffective) {
+        return setRaw(property, value, isEffective.getAsBoolean());
+    }
+
+    @Override
+    public <T, V> Row setRaw(LambdaGetter<T> property, V value, Predicate<V> isEffective) {
+        return setRaw(property, value, isEffective.test(value));
+    }
 
     public Object get(String key, Object defaultValue) {
         Object result = super.get(key);

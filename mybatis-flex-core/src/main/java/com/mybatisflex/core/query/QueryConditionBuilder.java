@@ -20,9 +20,10 @@ import com.mybatisflex.core.util.LambdaUtil;
 
 import java.util.Collection;
 import java.util.function.BiPredicate;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
-public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
+public class QueryConditionBuilder<Wrapper extends QueryWrapper> implements Conditional<Wrapper> {
 
     private final Wrapper queryWrapper;
     private final QueryColumn queryColumn;
@@ -35,479 +36,614 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> {
         this.connector = connector;
     }
 
-    /**
-     * equals
-     *
-     * @param value
-     */
+    private void addWhereQueryCondition(QueryCondition queryCondition) {
+        queryWrapper.addWhereQueryCondition(queryCondition, connector);
+    }
+
+    @Override
     public Wrapper eq(Object value) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.eq(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.eq(value));
         return queryWrapper;
     }
 
-
-    public <T> Wrapper eq(T value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.eq(value, when), connector);
-        }
+    @Override
+    public Wrapper eq(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.eq(value, isEffective));
         return queryWrapper;
     }
 
+    @Override
+    public Wrapper eq(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.eq(value, isEffective));
+        return queryWrapper;
+    }
 
+    @Override
+    public <T> Wrapper eq(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.eq(value, isEffective));
+        return queryWrapper;
+    }
+
+    /**
+     * 等于 {@code =}
+     */
     public <T> Wrapper eq(LambdaGetter<T> value) {
-        return eq(LambdaUtil.getQueryColumn(value));
+        return eq(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * @deprecated {@link Predicate} 泛型参数无效
+     * 等于 {@code =}
      */
-    @Deprecated
-    public <T> Wrapper eq(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.eq(value).when(when), connector);
-        }
-        return queryWrapper;
+    public <T> Wrapper eq(LambdaGetter<T> value, boolean isEffective) {
+        return eq(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
-
     /**
-     * not equals !=
-     *
-     * @param value
+     * 等于 {@code =}
      */
+    public <T> Wrapper eq(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return eq(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
+    }
+
+    @Override
     public Wrapper ne(Object value) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.ne(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.ne(value));
         return queryWrapper;
     }
 
-    public <T> Wrapper ne(T value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.ne(value, when), connector);
-        }
+    @Override
+    public Wrapper ne(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.ne(value, isEffective));
         return queryWrapper;
     }
 
+    @Override
+    public Wrapper ne(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.ne(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T> Wrapper ne(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.ne(value, isEffective));
+        return queryWrapper;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     */
     public <T> Wrapper ne(LambdaGetter<T> value) {
-        return ne(LambdaUtil.getQueryColumn(value));
-    }
-
-
-    /**
-     * @deprecated {@link Predicate} 泛型参数无效
-     */
-    @Deprecated
-    public <T> Wrapper ne(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.ne(value).when(when), connector);
-        }
-        return queryWrapper;
-    }
-
-
-    /**
-     * like %%
-     *
-     * @param value
-     */
-    public Wrapper like(Object value) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.like(value), connector);
-        }
-        return queryWrapper;
-    }
-
-    public <T> Wrapper like(T value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.like(value, when), connector);
-        }
-        return queryWrapper;
-    }
-
-
-    public Wrapper likeLeft(Object value) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.likeLeft(value), connector);
-        }
-        return queryWrapper;
-    }
-
-    public <T> Wrapper likeLeft(T value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.likeLeft(value, when), connector);
-        }
-        return queryWrapper;
-    }
-
-
-    public Wrapper likeRight(Object value) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.likeRight(value), connector);
-        }
-        return queryWrapper;
-    }
-
-    public <T> Wrapper likeRight(T value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.likeRight(value, when), connector);
-        }
-        return queryWrapper;
+        return ne(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * 大于 greater than
-     *
-     * @param value
+     * 不等于 {@code !=}
      */
+    public <T> Wrapper ne(LambdaGetter<T> value, boolean isEffective) {
+        return ne(LambdaUtil.getQueryColumn(value), isEffective);
+    }
+
+    /**
+     * 不等于 {@code !=}
+     */
+    public <T> Wrapper ne(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return ne(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
+    }
+
+    @Override
     public Wrapper gt(Object value) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.gt(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.gt(value));
         return queryWrapper;
     }
 
-    public <T> Wrapper gt(T value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.gt(value, when), connector);
-        }
+    @Override
+    public Wrapper gt(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.gt(value, isEffective));
         return queryWrapper;
     }
 
+    @Override
+    public Wrapper gt(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.gt(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T> Wrapper gt(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.gt(value, isEffective));
+        return queryWrapper;
+    }
+
+    /**
+     * 大于 {@code >}
+     */
     public <T> Wrapper gt(LambdaGetter<T> value) {
-        return gt(LambdaUtil.getQueryColumn(value));
+        return gt(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * @deprecated {@link Predicate} 泛型参数无效
+     * 大于 {@code >}
      */
-    @Deprecated
-    public <T> Wrapper gt(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.gt(value).when(when), connector);
-        }
-        return queryWrapper;
+    public <T> Wrapper gt(LambdaGetter<T> value, boolean isEffective) {
+        return gt(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
-
     /**
-     * 大于等于 greater or equal
-     *
-     * @param value
+     * 大于 {@code >}
      */
+    public <T> Wrapper gt(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return gt(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
+    }
+
+    @Override
     public Wrapper ge(Object value) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.ge(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.ge(value));
         return queryWrapper;
     }
 
-    public <T> Wrapper ge(T value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.ge(value, when), connector);
-        }
+    @Override
+    public Wrapper ge(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.ge(value, isEffective));
         return queryWrapper;
     }
 
+    @Override
+    public Wrapper ge(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.ge(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T> Wrapper ge(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.ge(value, isEffective));
+        return queryWrapper;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     */
     public <T> Wrapper ge(LambdaGetter<T> value) {
-        return ge(LambdaUtil.getQueryColumn(value));
+        return eq(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * @deprecated {@link Predicate} 泛型参数无效
+     * 大于等于 {@code >=}
      */
-    @Deprecated
-    public <T> Wrapper ge(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.ge(value).when(when), connector);
-        }
-        return queryWrapper;
+    public <T> Wrapper ge(LambdaGetter<T> value, boolean isEffective) {
+        return eq(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
     /**
-     * 小于 less than
-     *
-     * @param value
+     * 大于等于 {@code >=}
      */
+    public <T> Wrapper ge(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return ge(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
+    }
+
+    @Override
     public Wrapper lt(Object value) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.lt(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.lt(value));
         return queryWrapper;
     }
 
-    public <T> Wrapper lt(T value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.lt(value, when), connector);
-        }
+    @Override
+    public Wrapper lt(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.lt(value, isEffective));
         return queryWrapper;
     }
 
+    @Override
+    public Wrapper lt(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.lt(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T> Wrapper lt(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.lt(value, isEffective));
+        return queryWrapper;
+    }
+
+    /**
+     * 小于 {@code <}
+     */
     public <T> Wrapper lt(LambdaGetter<T> value) {
-        return lt(LambdaUtil.getQueryColumn(value));
+        return lt(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * @deprecated {@link Predicate} 泛型参数无效
+     * 小于 {@code <}
      */
-    @Deprecated
-    public <T> Wrapper lt(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.lt(value).when(when), connector);
-        }
-        return queryWrapper;
+    public <T> Wrapper lt(LambdaGetter<T> value, boolean isEffective) {
+        return lt(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
     /**
-     * 小于等于 less or equal
-     *
-     * @param value
+     * 小于 {@code <}
      */
+    public <T> Wrapper lt(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return lt(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
+    }
+
+    @Override
     public Wrapper le(Object value) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.le(value), connector);
-        }
+        addWhereQueryCondition(queryColumn.le(value));
         return queryWrapper;
     }
 
-
-    public <T> Wrapper le(T value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.le(value, when), connector);
-        }
+    @Override
+    public Wrapper le(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.le(value, isEffective));
         return queryWrapper;
     }
 
+    @Override
+    public Wrapper le(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.le(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T> Wrapper le(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.le(value, isEffective));
+        return queryWrapper;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     */
     public <T> Wrapper le(LambdaGetter<T> value) {
-        return le(LambdaUtil.getQueryColumn(value));
+        return le(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
-     * @deprecated {@link Predicate} 泛型参数无效
+     * 小于等于 {@code <=}
      */
-    @Deprecated
-    public <T> Wrapper le(LambdaGetter<T> value, Predicate<T> when) {
-        if (value != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.le(value).when(when), connector);
-        }
-        return queryWrapper;
-    }
-
-
-    /**
-     * IS NULL
-     *
-     * @return
-     */
-    public Wrapper isNull() {
-        queryWrapper.addWhereQueryCondition(queryColumn.isNull(), connector);
-        return queryWrapper;
+    public <T> Wrapper le(LambdaGetter<T> value, boolean isEffective) {
+        return le(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
     /**
-     * @deprecated 无法推断泛型
+     * 小于等于 {@code <=}
      */
-    @Deprecated
-    public <T> Wrapper isNull(Predicate<T> when) {
-        queryWrapper.addWhereQueryCondition(queryColumn.isNull(when), connector);
+    public <T> Wrapper le(LambdaGetter<T> value, BooleanSupplier isEffective) {
+        return le(LambdaUtil.getQueryColumn(value), isEffective.getAsBoolean());
+    }
+
+    @Override
+    public Wrapper in(Object... value) {
+        addWhereQueryCondition(queryColumn.in(value));
         return queryWrapper;
     }
 
-
-    /**
-     * IS NOT NULL
-     *
-     * @return
-     */
-    public Wrapper isNotNull() {
-        queryWrapper.addWhereQueryCondition(queryColumn.isNotNull(), connector);
+    @Override
+    public Wrapper in(Object[] value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
         return queryWrapper;
     }
 
-    /**
-     * @deprecated 无法推断泛型
-     */
-    @Deprecated
-    public <T> Wrapper isNotNull(Predicate<T> when) {
-        queryWrapper.addWhereQueryCondition(queryColumn.isNotNull(when), connector);
+    @Override
+    public Wrapper in(Object[] value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
         return queryWrapper;
     }
 
-
-    /**
-     * in arrays
-     *
-     * @param arrays
-     * @return
-     */
-    public Wrapper in(Object... arrays) {
-        if (arrays != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.in(arrays), connector);
-        }
+    @Override
+    public <T> Wrapper in(T[] value, Predicate<T[]> isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
         return queryWrapper;
     }
 
-    public <T> Wrapper in(T[] arrays, Predicate<T[]> when) {
-        //忽略 QueryWrapper.in("name", null) 的情况
-        if (arrays != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.in(arrays, when), connector);
-        }
+    @Override
+    public Wrapper in(Collection<?> value) {
+        addWhereQueryCondition(queryColumn.in(value));
         return queryWrapper;
     }
 
-    /**
-     * in child select
-     *
-     * @param queryWrapper
-     * @return
-     */
+    @Override
+    public Wrapper in(Collection<?> value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper in(Collection<?> value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T extends Collection<?>> Wrapper in(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.in(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
     public Wrapper in(QueryWrapper queryWrapper) {
-        if (queryWrapper != null) {
-            this.queryWrapper.addWhereQueryCondition(queryColumn.in(queryWrapper), connector);
-        }
+        addWhereQueryCondition(queryColumn.in(queryWrapper));
         return this.queryWrapper;
     }
 
-    /**
-     * @deprecated 无法推断泛型
-     */
-    @Deprecated
-    public <T> Wrapper in(QueryWrapper queryWrapper, Predicate<T> when) {
-        if (queryWrapper != null) {
-            this.queryWrapper.addWhereQueryCondition(queryColumn.in(queryWrapper, when), connector);
-        }
+    @Override
+    public Wrapper in(QueryWrapper queryWrapper, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.in(queryWrapper, isEffective));
         return this.queryWrapper;
     }
 
+    @Override
+    public Wrapper in(QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.in(queryWrapper, isEffective));
+        return this.queryWrapper;
+    }
 
-    /**
-     * in Collection
-     *
-     * @param collection
-     * @return
-     */
-    public Wrapper in(Collection<?> collection) {
-        if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.in(collection), connector);
-        }
+    @Override
+    public Wrapper notIn(Object... value) {
+        addWhereQueryCondition(queryColumn.notIn(value));
         return queryWrapper;
     }
 
-    public <T extends Collection<?>> Wrapper in(T collection, Predicate<T> when) {
-        if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.in(collection, when), connector);
-        }
+    @Override
+    public Wrapper notIn(Object[] value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
         return queryWrapper;
     }
 
-    /**
-     * not int arrays
-     *
-     * @param arrays
-     * @return
-     */
-    public Wrapper notIn(Object... arrays) {
-        if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.notIn(arrays), connector);
-        }
+    @Override
+    public Wrapper notIn(Object[] value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
         return queryWrapper;
     }
 
-    public <T> Wrapper notIn(T[] arrays, Predicate<T[]> when) {
-        if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.notIn(arrays, when), connector);
-        }
+    @Override
+    public <T> Wrapper notIn(T[] value, Predicate<T[]> isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
         return queryWrapper;
     }
 
-
-    /**
-     * not in Collection
-     *
-     * @param collection
-     * @return
-     */
-    public Wrapper notIn(Collection<?> collection) {
-        if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.notIn(collection), connector);
-        }
+    @Override
+    public Wrapper notIn(Collection<?> value) {
+        addWhereQueryCondition(queryColumn.notIn(value));
         return queryWrapper;
     }
 
-    public <T extends Collection<?>> Wrapper notIn(T collection, Predicate<T> when) {
-        if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.notIn(collection, when), connector);
-        }
+    @Override
+    public Wrapper notIn(Collection<?> value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
         return queryWrapper;
     }
 
-    /**
-     * not in child select
-     *
-     * @param queryWrapper
-     */
+    @Override
+    public Wrapper notIn(Collection<?> value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T extends Collection<?>> Wrapper notIn(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
     public Wrapper notIn(QueryWrapper queryWrapper) {
-        if (queryWrapper != null) {
-            this.queryWrapper.addWhereQueryCondition(queryColumn.notIn(queryWrapper), connector);
-        }
+        addWhereQueryCondition(queryColumn.notIn(queryWrapper));
         return this.queryWrapper;
     }
 
-    /**
-     * @deprecated 无法推断泛型
-     */
-    @Deprecated
-    public <T> Wrapper notIn(QueryWrapper queryWrapper, Predicate<T> when) {
-        if (queryWrapper != null) {
-            this.queryWrapper.addWhereQueryCondition(queryColumn.notIn(queryWrapper, when), connector);
-        }
+    @Override
+    public Wrapper notIn(QueryWrapper queryWrapper, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(queryWrapper, isEffective));
         return this.queryWrapper;
     }
 
+    @Override
+    public Wrapper notIn(QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notIn(queryWrapper, isEffective));
+        return this.queryWrapper;
+    }
 
-    /**
-     * between
-     *
-     * @param start
-     * @param end
-     */
+    @Override
     public Wrapper between(Object start, Object end) {
-        if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.between(start, end), connector);
-        }
+        addWhereQueryCondition(queryColumn.between(start, end));
         return queryWrapper;
     }
 
-
-    public <S, E> Wrapper between(S start, E end, BiPredicate<S, E> when) {
-        if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.between(start, end, when), connector);
-        }
+    @Override
+    public Wrapper between(Object start, Object end, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.between(start, end, isEffective));
         return queryWrapper;
     }
 
+    @Override
+    public Wrapper between(Object start, Object end, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.between(start, end, isEffective));
+        return queryWrapper;
+    }
 
-    /**
-     * not between
-     *
-     * @param start
-     * @param end
-     */
+    @Override
+    public <S, E> Wrapper between(S start, E end, BiPredicate<S, E> isEffective) {
+        addWhereQueryCondition(queryColumn.between(start, end, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
     public Wrapper notBetween(Object start, Object end) {
-        if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.notBetween(start, end), connector);
-        }
+        addWhereQueryCondition(queryColumn.notBetween(start, end));
         return queryWrapper;
     }
 
-    public <S, E> Wrapper notBetween(S start, E end, BiPredicate<S, E> when) {
-        if (queryWrapper != null) {
-            queryWrapper.addWhereQueryCondition(queryColumn.notBetween(start, end, when), connector);
-        }
+    @Override
+    public Wrapper notBetween(Object start, Object end, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notBetween(start, end, isEffective));
         return queryWrapper;
     }
 
+    @Override
+    public Wrapper notBetween(Object start, Object end, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notBetween(start, end, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <S, E> Wrapper notBetween(S start, E end, BiPredicate<S, E> isEffective) {
+        addWhereQueryCondition(queryColumn.notBetween(start, end, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper like(Object value) {
+        addWhereQueryCondition(queryColumn.like(value));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper like(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.like(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper like(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.like(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T> Wrapper like(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.like(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper likeLeft(Object value) {
+        addWhereQueryCondition(queryColumn.likeLeft(value));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper likeLeft(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.likeLeft(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper likeLeft(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.likeLeft(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T> Wrapper likeLeft(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.likeLeft(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper likeRight(Object value) {
+        addWhereQueryCondition(queryColumn.likeRight(value));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper likeRight(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.likeRight(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper likeRight(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.likeRight(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T> Wrapper likeRight(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.likeRight(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper notLike(Object value) {
+        addWhereQueryCondition(queryColumn.notLike(value));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper notLike(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notLike(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper notLike(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notLike(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T> Wrapper notLike(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.notLike(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper notLikeLeft(Object value) {
+        addWhereQueryCondition(queryColumn.notLikeLeft(value));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper notLikeLeft(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeLeft(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper notLikeLeft(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeLeft(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T> Wrapper notLikeLeft(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeLeft(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper notLikeRight(Object value) {
+        addWhereQueryCondition(queryColumn.notLikeRight(value));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper notLikeRight(Object value, boolean isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeRight(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper notLikeRight(Object value, BooleanSupplier isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeRight(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public <T> Wrapper notLikeRight(T value, Predicate<T> isEffective) {
+        addWhereQueryCondition(queryColumn.notLikeRight(value, isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper isNull(boolean isEffective) {
+        addWhereQueryCondition(queryColumn.isNull(isEffective));
+        return queryWrapper;
+    }
+
+    @Override
+    public Wrapper isNotNull(boolean isEffective) {
+        addWhereQueryCondition(queryColumn.isNotNull(isEffective));
+        return queryWrapper;
+    }
 
 }
