@@ -17,6 +17,7 @@ package com.mybatisflex.core.query;
 
 
 import com.mybatisflex.core.constant.SqlConsts;
+import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ClassUtil;
@@ -70,7 +71,12 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         return condition;
     }
 
-    public QueryCondition() {
+    public static QueryCondition create(QueryColumn queryColumn, SqlOperator logic, Object value) {
+        QueryCondition condition = new QueryCondition();
+        condition.setColumn(queryColumn);
+        condition.setLogic(logic.getValue());
+        condition.setValue(value);
+        return condition;
     }
 
     public QueryColumn getColumn() {
