@@ -199,9 +199,27 @@ public class MyConfiguration {
 
     @Bean
     public LogicDeleteProcessor logicDeleteProcessor(){
-        LogicDeleteProcessor processor = new ....;
-        return processor;
+        return new DateTimeLogicDeleteProcessor();
     }
+
+}
+```
+
+## 全局配置逻辑删除字段
+
+在 `MyBatis-Flex` 中，可以使用 `FlexGlobalConfig` 在 `MyBatis-Flex` 启动之前，指定项目中的逻辑删除列的列名。
+
+```java
+FlexGlobalConfig.getDefaultConfig().setLogicDeleteColumn("del_flag");
+```
+
+这样就可以省略实体类属性上的 `@Column(isLogicDelete = true)` 注解了。
+
+```java
+public class Account {
+
+    // @Column(isLogicDelete = true)
+    private Boolean delFlag;
 
 }
 ```

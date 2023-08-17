@@ -75,7 +75,7 @@ public class MyConfiguration {
         TenantFactory tenantFactory = new ....;
         return tenantFactory;
     }
-    
+
 }
 ```
 
@@ -162,7 +162,7 @@ System.out.println(tenantAccounts);
 ```java
 try {
     TenantManager.ignoreTenantCondition();
-    
+
     //此处操作的数据不会带有 tenant_id 的条件
     accountMapper.selectListByQuery(...);
 } finally {
@@ -171,3 +171,22 @@ try {
 ```
 
 当然，除此之外，`TenantFactory` 返回空数据，也会忽略 tenant 条件。
+
+## 全局配置多租户字段
+
+在 `MyBatis-Flex` 中，可以使用 `FlexGlobalConfig` 在 `MyBatis-Flex` 启动之前，指定项目中的多租户列的列名。
+
+```java
+FlexGlobalConfig.getDefaultConfig().setTenantColumn("tenant_id");
+```
+
+这样就可以省略实体类属性上的 `@Column(tenantId = true)` 注解了。
+
+```java
+public class Account {
+
+    // @Column(tenantId = true)
+    private Integer tenantId;
+
+}
+```

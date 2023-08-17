@@ -12,7 +12,7 @@
 更新数据时，执行的 SQL 如下：
 
 ```sql
- UPDATE account SET nickname = ?, version = version + 1 
+ UPDATE account SET nickname = ?, version = version + 1
  WHERE id = ? AND version = ?
 ```
 
@@ -28,7 +28,7 @@ public class Account {
 
     @Column(version = true)
     private Long version;
-    
+
     //Getter Setter...
 }
 ```
@@ -36,3 +36,22 @@ public class Account {
 
 - 1、在同一张表中，只能有一个被 `@Column(version = true)` 修饰的字段。
 - 2、Account 在插入数据时，若 version 未设置值，那么会自动被 MyBatis-Flex 设置为 0。
+
+## 全局配置乐观锁字段
+
+在 `MyBatis-Flex` 中，可以使用 `FlexGlobalConfig` 在 `MyBatis-Flex` 启动之前，指定项目中的乐观锁列的列名。
+
+```java
+FlexGlobalConfig.getDefaultConfig().setVersionColumn("version");
+```
+
+这样就可以省略实体类属性上的 `@Column(version = true)` 注解了。
+
+```java
+public class Account {
+
+    // @Column(version = true)
+    private Integer version;
+
+}
+```
