@@ -180,8 +180,8 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 TableInfo tableInfo = new TableInfo();
                 tableInfo.setEntityName(entityClass);
                 tableInfo.setEntitySimpleName(entityClassName);
-                tableInfo.setTableName(table.value());
                 tableInfo.setSchema(table.schema());
+                tableInfo.setTableName(table.value());
                 tableInfo.setEntityComment(elementUtils.getDocComment(entityClassElement));
 
                 // 生成 TableDef 文件

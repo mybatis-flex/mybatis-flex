@@ -91,17 +91,17 @@ public class FlexGlobalConfig {
     /**
      * 默认的逻辑删除字段，允许设置 {@code null} 忽略匹配。
      */
-    private String logicDeleteColumn = "del_flag";
+    private String logicDeleteColumn;
 
     /**
      * 默认的多租户字段，允许设置 {@code null} 忽略匹配。
      */
-    private String tenantColumn = "tenant_id";
+    private String tenantColumn;
 
     /**
      * 默认的乐观锁字段，允许设置 {@code null} 忽略匹配。
      */
-    private String versionColumn = "version";
+    private String versionColumn;
 
     public boolean isPrintBanner() {
         return printBanner;
@@ -323,7 +323,7 @@ public class FlexGlobalConfig {
     }
 
     public void setNormalValueOfLogicDelete(Object normalValueOfLogicDelete) {
-        FlexAssert.notNull(normalValueOfLogicDelete,"normalValueOfLogicDelete");
+        FlexAssert.notNull(normalValueOfLogicDelete, "normalValueOfLogicDelete");
         this.normalValueOfLogicDelete = normalValueOfLogicDelete;
     }
 
@@ -332,7 +332,7 @@ public class FlexGlobalConfig {
     }
 
     public void setDeletedValueOfLogicDelete(Object deletedValueOfLogicDelete) {
-        FlexAssert.notNull(deletedValueOfLogicDelete,"deletedValueOfLogicDelete");
+        FlexAssert.notNull(deletedValueOfLogicDelete, "deletedValueOfLogicDelete");
         this.deletedValueOfLogicDelete = deletedValueOfLogicDelete;
     }
 

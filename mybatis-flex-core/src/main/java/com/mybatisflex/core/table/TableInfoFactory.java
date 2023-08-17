@@ -134,8 +134,8 @@ public class TableInfoFactory {
         //初始化表名
         Table table = entityClass.getAnnotation(Table.class);
         if (table != null) {
-            tableInfo.setTableName(table.value());
             tableInfo.setSchema(table.schema());
+            tableInfo.setTableName(table.value());
             tableInfo.setCamelToUnderline(table.camelToUnderline());
 
             if (table.onInsert().length > 0) {

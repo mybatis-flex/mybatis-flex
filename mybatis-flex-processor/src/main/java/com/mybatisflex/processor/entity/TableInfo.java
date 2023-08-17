@@ -78,7 +78,17 @@ public class TableInfo {
     }
 
     public void setTableName(String tableName) {
-        this.tableName = tableName;
+        int indexOf = tableName.indexOf(".");
+        if (indexOf > 0) {
+            if (schema == null || schema.trim().length() == 0) {
+                this.schema = tableName.substring(0, indexOf);
+                this.tableName = tableName.substring(indexOf + 1);
+            } else {
+                this.tableName = tableName;
+            }
+        } else {
+            this.tableName = tableName;
+        }
     }
 
     public String getSchema() {
