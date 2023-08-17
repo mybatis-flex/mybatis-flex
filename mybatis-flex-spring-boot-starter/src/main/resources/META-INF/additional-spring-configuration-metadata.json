@@ -71,6 +71,21 @@
             "name": "mybatis-flex.global-config.key-config.key-type",
             "description": "ID 生成策略",
             "type": "com.mybatisflex.annotation.KeyType"
+        },
+        {
+            "name": "mybatis-flex.global-config.logic-delete-column",
+            "description": "全局默认逻辑删除字段",
+            "type": "java.lang.String"
+        },
+        {
+            "name": "mybatis-flex.global-config.tenant-column",
+            "description": "全局默认多租户字段",
+            "type": "java.lang.String"
+        },
+        {
+            "name": "mybatis-flex.global-config.version-column",
+            "description": "全局默认逻辑乐观锁字段",
+            "type": "java.lang.String"
         }
     ]
 }
