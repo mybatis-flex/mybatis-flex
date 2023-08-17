@@ -68,8 +68,7 @@ public class FunctionSqlTest {
         String sql = QueryWrapper.create()
             .select()
             .from(ACCOUNT)
-//            .where("FIND_IN_SET(?, `id`)", 100)
-            .where(findInSet(number(100), ACCOUNT.ID).eq(true))
+            .where(findInSet(number(100), ACCOUNT.ID).gt(0))
             .toSQL();
 
         System.out.println(sql);
