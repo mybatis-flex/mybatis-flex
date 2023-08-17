@@ -39,7 +39,7 @@ public class RelationsQuery<T extends Model<T>> extends RelationsBuilder<T> {
     }
 
     @Override
-    public RelationsQuery<T> ignoreRelations(LambdaGetter<T>... fields) {
+    public <L> RelationsQuery<T> ignoreRelations(LambdaGetter<L>... fields) {
         super.ignoreRelations(fields);
         return this;
     }
