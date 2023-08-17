@@ -209,14 +209,14 @@ public class WhereBuilder<R extends QueryModel<R>> implements Conditional<R> {
      * 大于等于 {@code >=}
      */
     public <T> R ge(LambdaGetter<T> value) {
-        return eq(LambdaUtil.getQueryColumn(value), true);
+        return ge(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
      * 大于等于 {@code >=}
      */
     public <T> R ge(LambdaGetter<T> value, boolean isEffective) {
-        return eq(LambdaUtil.getQueryColumn(value), isEffective);
+        return ge(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
     /**
