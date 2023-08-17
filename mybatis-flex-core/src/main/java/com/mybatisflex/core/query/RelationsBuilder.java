@@ -51,7 +51,7 @@ public class RelationsBuilder<T> extends AbstractQueryBuilder<T> {
      * @param fields 属性
      * @return {@code Relations} 查询构建
      */
-    public RelationsBuilder<T> ignoreRelations(LambdaGetter<T>... fields) {
+    public <L> RelationsBuilder<T> ignoreRelations(LambdaGetter<L>... fields) {
         RelationManager.addIgnoreRelations(fields);
         return this;
     }
