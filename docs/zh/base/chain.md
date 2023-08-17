@@ -239,8 +239,8 @@ ArticleVo articleVo = articleService.queryChain()
 ```java
 // 新增 Row 构建
 DbChain.table("tb_account")
-    .set(RowKey.AUTO)
-    .set("user_name", "王帅")
+    .setId(RowKey.AUTO)
+    .set("user_name", "zhang san")
     .set("age", 18)
     .set("birthday", new Date())
     .save();
