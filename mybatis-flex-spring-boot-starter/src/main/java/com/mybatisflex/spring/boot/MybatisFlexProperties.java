@@ -797,17 +797,18 @@ public class MybatisFlexProperties {
         /**
          * 默认的逻辑删除字段。
          */
-        private String logicDeleteColumn = "del_flag";
+        private String logicDeleteColumn;
 
         /**
          * 默认的多租户字段。
          */
-        private String tenantColumn = "tenant_id";
+        private String tenantColumn;
 
         /**
          * 默认的乐观锁字段。
          */
-        private String versionColumn = "version";
+        private String versionColumn;
+
 
         public boolean isPrintBanner() {
             return printBanner;
