@@ -129,19 +129,19 @@ public class DbChain extends QueryWrapperAdapter<DbChain> implements PropertySet
 
     @Override
     public DbChain setRaw(String property, Object value, boolean isEffective) {
-        getRow().set(property, value, isEffective);
+        getRow().setRaw(property, value, isEffective);
         return this;
     }
 
     @Override
     public DbChain setRaw(QueryColumn property, Object value, boolean isEffective) {
-        getRow().set(property, value, isEffective);
+        getRow().setRaw(property, value, isEffective);
         return this;
     }
 
     @Override
     public <T> DbChain setRaw(LambdaGetter<T> property, Object value, boolean isEffective) {
-        getRow().set(property, value, isEffective);
+        getRow().setRaw(property, value, isEffective);
         return this;
     }
 
