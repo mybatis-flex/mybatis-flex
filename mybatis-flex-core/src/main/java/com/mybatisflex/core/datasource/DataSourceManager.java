@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.datasource;
 
+import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ClassUtil;
 import org.apache.ibatis.logging.LogFactory;
 
@@ -42,6 +43,8 @@ public class DataSourceManager {
             return;
         }
 
+        restartDataSource(dataSource);
+
         for (DataSourceProperty property : DataSourceProperty.values()) {
             Method getterMethod = ClassUtil.getAnyMethod(dataSource.getClass(), property.getGetterMethods());
             if (getterMethod != null) {
@@ -53,6 +56,18 @@ public class DataSourceManager {
                         invokeMethod(setter, dataSource, value);
                     }
                 }
+            }
+        }
+    }
+
+    static void restartDataSource(DataSource dataSource) {
+        Method restartMethod = ClassUtil.getFirstMethod(ClassUtil.getUsefulClass(dataSource.getClass())
+            , method -> "restart".equals(method.getName()));
+        if (restartMethod != null) {
+            try {
+                restartMethod.invoke(dataSource);
+            } catch (Exception e) {
+                throw FlexExceptions.wrap(e);
             }
         }
     }
