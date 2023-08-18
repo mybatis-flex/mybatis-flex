@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.datasource;
 
+import com.alibaba.ttl.TransmittableThreadLocal;
 import java.util.function.Supplier;
 
 /**
@@ -25,12 +26,12 @@ public class DataSourceKey {
     /**
      * 通过注解设置的 key
      */
-    private static final ThreadLocal<String> annotationKeyThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<String> annotationKeyThreadLocal = new TransmittableThreadLocal<>();
 
     /**
      * 通过手动编码指定的 key
      */
-    private static final ThreadLocal<String> manualKeyThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<String> manualKeyThreadLocal = new TransmittableThreadLocal<>();
 
     public static String manualKey;
 
