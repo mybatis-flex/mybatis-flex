@@ -62,7 +62,7 @@ public class DataSourceManager {
 
     static void restartDataSource(DataSource dataSource) {
         Method restartMethod = ClassUtil.getFirstMethod(ClassUtil.getUsefulClass(dataSource.getClass())
-            , method -> "restart".equals(method.getName()));
+            , method -> "restart".equals(method.getName()) && method.getParameterCount() == 0);
         if (restartMethod != null) {
             try {
                 restartMethod.invoke(dataSource);
