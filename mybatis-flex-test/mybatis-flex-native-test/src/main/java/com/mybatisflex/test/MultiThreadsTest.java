@@ -1,5 +1,6 @@
 package com.mybatisflex.test;
 
+import com.alibaba.ttl.TransmittableThreadLocal;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
@@ -20,6 +21,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 public class MultiThreadsTest {
 
     public static void main(String[] args) {
+        DataSourceKey.setAnnotationKeyThreadLocal(new TransmittableThreadLocal<>());
+        DataSourceKey.setManualKeyThreadLocal(new TransmittableThreadLocal<>());
         DataSource dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
             .setName("db1")
