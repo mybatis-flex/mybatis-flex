@@ -285,4 +285,5 @@ public static void main(String[]args){
         }).start();
 }
 ```
-
+### 扩展阅读
+[transmittable-thread-local](https://github.com/alibaba/transmittable-thread-local) 可以不侵入进行代码原线程的替换
