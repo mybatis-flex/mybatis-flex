@@ -25,12 +25,12 @@ public class DataSourceKey {
     /**
      * 通过注解设置的 key
      */
-    private static final ThreadLocal<String> annotationKeyThreadLocal = new ThreadLocal<>();
+    private static ThreadLocal<String> annotationKeyThreadLocal = new ThreadLocal<>();
 
     /**
      * 通过手动编码指定的 key
      */
-    private static final ThreadLocal<String> manualKeyThreadLocal = new ThreadLocal<>();
+    private static ThreadLocal<String> manualKeyThreadLocal = new ThreadLocal<>();
 
     public static String manualKey;
 
@@ -81,4 +81,11 @@ public class DataSourceKey {
         return key != null ? key : annotationKeyThreadLocal.get();
     }
 
+    public static void setAnnotationKeyThreadLocal(ThreadLocal<String> annotationKeyThreadLocal) {
+        DataSourceKey.annotationKeyThreadLocal = annotationKeyThreadLocal;
+    }
+
+    public static void setManualKeyThreadLocal(ThreadLocal<String> manualKeyThreadLocal) {
+        DataSourceKey.manualKeyThreadLocal = manualKeyThreadLocal;
+    }
 }

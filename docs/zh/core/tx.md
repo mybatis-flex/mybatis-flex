@@ -244,3 +244,46 @@ seata:
 
 [mybatis-flex-spring-boot-seata-demo](https://gitee.com/mybatis-flex/mybatis-flex-samples/tree/master/mybatis-flex-spring-boot-seata-demo) : Seata 官方 demo 与 flex 结合。
 
+
+## 子父线程同时访问一个ThreadLocal访问的场景
+考虑到某些场景下，子父线程会同时访问父线程进行传递值进行切换数据源的场景，提供了以下的支持
+比如如下的代码：
+```java
+public static void main(String[]args){
+        //线程1
+        //进行数据库操作读取 ds1
+        //切换数据源2
+        DataSourceKey.use("ds2");
+        new Thread(() -> {
+            //查询数据源 ds2
+            //实际在线程2并不是ds2而是ds1
+        }).start();
+}
+```
+此类场景进行如下的方案进行修改
+1. 使用可以跨越线程池的`ThreadLocal`比如阿里的`transmittable-thread-local`
+导入如下的包
+```xml
+     <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+            <version>2.14.2</version>
+        </dependency>
+```
+2. 对切换的源码进行修改
+```java
+public static void main(String[]args){
+        DataSourceKey.setAnnotationKeyThreadLocal(new TransmittableThreadLocal<>());
+        DataSourceKey.setManualKeyThreadLocal(new TransmittableThreadLocal<>());
+        //线程1
+        //进行数据库操作读取 ds1
+        //切换数据源2
+        DataSourceKey.use("ds2");
+        new Thread(() -> {
+            //查询数据源 ds2
+            //实际在线程2使用的就是ds2
+        }).start();
+}
+```
+### 扩展阅读
+[transmittable-thread-local](https://github.com/alibaba/transmittable-thread-local) 可以不侵入进行代码原线程的替换
