@@ -43,7 +43,11 @@ public class DataSourceManager {
             return;
         }
 
-        restartDataSource(dataSource);
+        try {
+            restartDataSource(dataSource);
+        } catch (Exception ignored) {
+            // do nothing here.
+        }
 
         for (DataSourceProperty property : DataSourceProperty.values()) {
             Method getterMethod = ClassUtil.getAnyMethod(dataSource.getClass(), property.getGetterMethods());
