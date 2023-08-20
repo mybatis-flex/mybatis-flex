@@ -24,6 +24,9 @@ import com.mybatisflex.core.query.QueryWrapper;
 
 import java.io.Serializable;
 
+/**
+ * @author michael
+ */
 public class RawValue implements Serializable {
 
     private Object object;

@@ -161,32 +161,6 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper 
         return (Row) UpdateWrapper.super.setRaw(property, value, isEffective);
     }
 
-/*@Override
-    public Row set(String column, Object value) {
-        if (StringUtil.isBlank(column)) {
-            throw new IllegalArgumentException("key column not be null or empty.");
-        }
-
-        SqlUtil.keepColumnSafely(column);
-
-        if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
-            setRaw(column, value);
-        } else {
-            super.put(column, value);
-        }
-
-        return this;
-    }
-
-    @Override
-    public Row set(QueryColumn queryColumn, Object value) {
-        if (value instanceof QueryWrapper || value instanceof QueryCondition || value instanceof QueryColumn) {
-            setRaw(queryColumn, value);
-        } else {
-            super.put(queryColumn.getName(), value);
-        }
-        return this;
-    }*/
 
     @Override
     public Row set(String property, Object value) {

@@ -20,100 +20,45 @@ import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
-import com.mybatisflex.core.row.RowKey;
 import com.mybatisflex.core.row.RowUtil;
+import org.apache.ibatis.logging.stdout.StdOutImpl;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-
-import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 
 public class RowTestStarter {
 
-    public static void main(String[] args) {
+    @BeforeClass
+    public static void init() {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
             .addScript("schema.sql")
             .addScript("data.sql")
             .build();
 
-        MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
+        MybatisFlexBootstrap.getInstance()
             .setDataSource(dataSource)
-//                .setLogImpl(StdOutImpl.class)
+            .setLogImpl(StdOutImpl.class)
             .start();
 
         AuditManager.setAuditEnable(true);
         AuditManager.setMessageCollector(new ConsoleMessageCollector());
-
-//        Page<Row> rowPage = Db.paginate("flex","tb_account", 1, 10, QueryWrapper.create().hint("USE_MERGE"));
-//        System.out.println(rowPage);
+    }
 
 
-        //查询 ID 为 1 的数据
-//        Row row = Db.selectOneById("tb_account", "id", 1);
-//        System.out.println(row);
+    @Test
+    public void testSetRaw(){
+        Row row = new Row();
+        row.set("user_name","michael");
+        row.setRaw("birthday","now()");
 
-
-//        QueryWrapper query = new QueryWrapper();
-//        query.select().from(ACCOUNT).leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
-//        List<Row> rows = Db.selectListByQuery(query);
-//       RowUtil.printPretty(rows);
-//
-//        System.out.println("--------");
-//
-//        List<Account> accounts = RowUtil.toEntityList(rows, Account.class,0);
-//        System.out.println(accounts);
-//
-//        List<Article> articles = RowUtil.toEntityList(rows, Article.class, 1);
-//        System.out.println(articles);
-
-
-        List<Row> rowList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Row row = Row.ofKey(RowKey.AUTO);
-            row.set(ACCOUNT.USER_NAME, "zhang" + i);
-            row.set(ACCOUNT.AGE, 18);
-            rowList.add(row);
-        }
-
-        Db.insertBatch("tb_account", rowList);
-
-        for (Row row : rowList) {
-            System.out.println(">>>>>>>id: " + row.get("id"));
-        }
-
-        List<Row> rows1 = Db.selectAll("tb_account");
-        RowUtil.printPretty(rows1);
-
-        System.out.println("//////update....");
-
-        Row row = Row.ofKey("id", 5);
-        row.setRaw("age", "age + 5");
-        Db.updateById("tb_account", row);
-
-        Row row1 = Db.selectOneById("tb_account", "id", 5);
-        RowUtil.printPretty(row1);
-
-
-        System.out.println("////////////insert");
-        List<Row> rowList1 = Db.selectAll("tb_account");
-        rowList1.forEach(new Consumer<Row>() {
-            @Override
-            public void accept(Row row) {
-                row.remove("ID");
-            }
-        });
-
-        Db.insertBatch("tb_account", rowList1);
-
-        List<Row> rowList2 = Db.selectAll("tb_account");
-        RowUtil.printPretty(rowList2);
-
-
+        Db.insert("tb_account",row);
+        List<Row> rowList = Db.selectAll("tb_account");
+        RowUtil.printPretty(rowList);
     }
 
 }

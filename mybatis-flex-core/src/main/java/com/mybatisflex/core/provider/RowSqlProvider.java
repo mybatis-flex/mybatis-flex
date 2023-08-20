@@ -65,8 +65,11 @@ public class RowSqlProvider {
         String tableName = ProviderUtil.getTableName(params);
         String schema = ProviderUtil.getSchemaName(params);
         Row row = ProviderUtil.getRow(params);
+
+        // 先生成 SQL，再设置参数
+        String sql = DialectFactory.getDialect().forInsertRow(schema, tableName, row);
         ProviderUtil.setSqlArgs(params, RowCPI.obtainModifyValues(row));
-        return DialectFactory.getDialect().forInsertRow(schema, tableName, row);
+        return sql;
     }
 
     /**
@@ -89,14 +92,16 @@ public class RowSqlProvider {
         Set<String> modifyAttrs = new LinkedHashSet<>(RowCPI.getModifyAttrs(rows.get(0)));
         rows.forEach(row -> row.keep(modifyAttrs));
 
+        //sql: INSERT INTO `tb_table`(`name`, `sex`) VALUES (?, ?),(?, ?),(?, ?)
+        String sql = DialectFactory.getDialect().forInsertBatchWithFirstRowColumns(schema, tableName, rows);
+
         Object[] values = new Object[]{};
         for (Row row : rows) {
             values = ArrayUtil.concat(values, RowCPI.obtainModifyValues(row));
         }
         ProviderUtil.setSqlArgs(params, values);
 
-        //sql: INSERT INTO `tb_table`(`name`, `sex`) VALUES (?, ?),(?, ?),(?, ?)
-        return DialectFactory.getDialect().forInsertBatchWithFirstRowColumns(schema, tableName, rows);
+        return sql;
     }
 
     /**
@@ -115,9 +120,9 @@ public class RowSqlProvider {
         String tableName = ProviderUtil.getTableName(params);
         String[] primaryKeys = ProviderUtil.getPrimaryKeys(params);
 
+        String sql = DialectFactory.getDialect().forDeleteById(schema, tableName, primaryKeys);
         ProviderUtil.setSqlArgs(params, primaryValues);
-
-        return DialectFactory.getDialect().forDeleteById(schema, tableName, primaryKeys);
+        return sql;
     }
 
     /**
@@ -133,8 +138,9 @@ public class RowSqlProvider {
         String[] primaryKeys = ProviderUtil.getPrimaryKeys(params);
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
+        String sql = DialectFactory.getDialect().forDeleteBatchByIds(schema, tableName, primaryKeys, primaryValues);
         ProviderUtil.setSqlArgs(params, primaryValues);
-        return DialectFactory.getDialect().forDeleteBatchByIds(schema, tableName, primaryKeys, primaryValues);
+        return sql;
     }
 
     /**
@@ -152,7 +158,6 @@ public class RowSqlProvider {
 
         //优先构建 sql，再构建参数
         String sql = DialectFactory.getDialect().forDeleteByQuery(queryWrapper);
-
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         ProviderUtil.setSqlArgs(params, valueArray);
 
@@ -170,8 +175,9 @@ public class RowSqlProvider {
         String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
         Row row = ProviderUtil.getRow(params);
+        String sql = DialectFactory.getDialect().forUpdateById(schema, tableName, row);
         ProviderUtil.setSqlArgs(params, RowCPI.obtainAllModifyValues(row));
-        return DialectFactory.getDialect().forUpdateById(schema, tableName, row);
+        return sql;
     }
 
     /**
@@ -216,12 +222,14 @@ public class RowSqlProvider {
         String schema = ProviderUtil.getSchemaName(params);
         String tableName = ProviderUtil.getTableName(params);
 
+        String sql = DialectFactory.getDialect().forUpdateBatchById(schema, tableName, rows);
+
         Object[] values = FlexConsts.EMPTY_ARRAY;
         for (Row row : rows) {
             values = ArrayUtil.concat(values, RowCPI.obtainAllModifyValues(row));
         }
         ProviderUtil.setSqlArgs(params, values);
-        return DialectFactory.getDialect().forUpdateBatchById(schema, tableName, rows);
+        return sql;
     }
 
     /**
@@ -242,6 +250,8 @@ public class RowSqlProvider {
         // 执行 onUpdate 监听器
         tableInfo.invokeOnUpdateListener(entity);
 
+        String sql = DialectFactory.getDialect().forUpdateEntity(tableInfo, entity, false);
+
         Object[] updateValues = tableInfo.buildUpdateSqlArgs(entity, false, false);
         Object[] primaryValues = tableInfo.buildPkSqlArgs(entity);
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
@@ -249,8 +259,7 @@ public class RowSqlProvider {
         FlexAssert.assertAreNotNull(primaryValues, "The value of primary key must not be null, entity[%s]", entity);
 
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(updateValues, primaryValues, tenantIdArgs));
-
-        return DialectFactory.getDialect().forUpdateEntity(tableInfo, entity, false);
+        return sql;
     }
 
     /**
@@ -289,9 +298,10 @@ public class RowSqlProvider {
         String[] primaryKeys = ProviderUtil.getPrimaryKeys(params);
         Object[] primaryValues = ProviderUtil.getPrimaryValues(params);
 
+        String sql = DialectFactory.getDialect().forSelectOneById(schema, tableName, primaryKeys, primaryValues);
         ProviderUtil.setSqlArgs(params, primaryValues);
 
-        return DialectFactory.getDialect().forSelectOneById(schema, tableName, primaryKeys, primaryValues);
+        return sql;
     }
 
     /**
