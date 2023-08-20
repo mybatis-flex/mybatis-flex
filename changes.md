@@ -1,6 +1,33 @@
 # MyBatis-Flex ChangeLog
 
 
+## v1.5.8 20230820:
+- 新增：Row 以及 Entity 在新增时，添加 setRaw 的支持
+- 新增：数据库方言添加对 lealone 数据库的支持，感谢 @hopper
+- 新增：QueryChain 添加新 of 方法，用于支持通过 Entity 创建 QueryChain 对象，感谢 @liibang
+- 新增：提供多线程情况下子父线程获取切换数据源功能，感谢 @lifejwang11
+- 优化：设置乐观锁未设置值的异常信息国际化
+- 优化：设置 @Table 的名称配置支持 "schema.tableName" 配置
+- 优化：重构移除乐观锁、逻辑删除、多租户的全局默认字段配置，用户需手动配置生效
+- 优化：添加逻辑删除、乐观锁、多租户的全局配置的 spring 配置文件提示功能
+- 优化：重构用户手写的条件中是否包含该表，感谢 @Suomm
+- 优化：重构获取 join 连表信息时携带别名，感谢 @Suomm
+- 优化：重构 QueryWrapper 的括号生成，以动态添加子 where 条件，感谢 @Suomm
+- 优化：添加 Conditional 接口用于统一 Condition 的 api，感谢 @Suomm
+- 修复：druid 数据源的某些场景下，数据加密无法使用的问题
+- 修复：修复 MybatisKeyGeneratorUtil 类在某些情况下可能得空指针异常问题，感谢 @norkts
+- 修复：SqlOperator 遗漏了 NOT_EQUALS 操作符 的问题，感谢 @Suomm
+- 修复：Relation 注解查询，忽略字段使用的泛型错误的问题，感谢 @Suomm
+- 修复：DbChain 的 setRaw 方法指向错误的问题，感谢 @Suomm
+- 文档：添加 set 和 setRaw 区别的相关文档
+- 文档：修改代码生成器的相关文档错别字，感谢 @PatrickSt
+- 文档：改正了注解处理器中的内容，将其修改为正确的注解处理器，感谢 @CloudPlayer
+- 文档：优化 Gradle 和 KAPT 的相关文档，感谢 @Suomm
+- 文档：添加乐观锁、逻辑删除、多租户的全局配置的相关文档，感谢 @Suomm
+- 文档：添加多线程情况下子父线程获取切换数据源功能的相关文档，感谢 @lifejwang11
+
+
+
 ## v1.5.7 20230812:
 - 新增：QueryWrapper 添加对 delete 和 update 的 left join 支持
 - 新增：RelationManager.addIgnoreRelations() 添加对 lambda 的支持
