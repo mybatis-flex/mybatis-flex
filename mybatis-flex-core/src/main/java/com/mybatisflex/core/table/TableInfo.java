@@ -414,9 +414,14 @@ public class TableInfo {
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
         String[] insertColumns = obtainInsertColumns(entity, ignoreNulls);
 
+        Map<String, RawValue> rawValueMap = obtainUpdateRawValueMap(entity);
+
         List<Object> values = new ArrayList<>(insertColumns.length);
         for (String insertColumn : insertColumns) {
             if (onInsertColumns == null || !onInsertColumns.containsKey(insertColumn)) {
+                if (rawValueMap.containsKey(insertColumn)) {
+                    continue;
+                }
                 Object value = buildColumnSqlArg(metaObject, insertColumn);
                 if (ignoreNulls && value == null) {
                     continue;

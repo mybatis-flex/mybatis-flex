@@ -523,12 +523,16 @@ public class CommonsDialectImpl implements IDialect {
         String[] insertColumns = tableInfo.obtainInsertColumns(entity, ignoreNulls);
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
 
+        Map<String, RawValue> rawValueMap = tableInfo.obtainUpdateRawValueMap(entity);
+
         StringJoiner sqlFields = new StringJoiner(DELIMITER);
         StringJoiner sqlValues = new StringJoiner(DELIMITER);
 
         for (String insertColumn : insertColumns) {
             sqlFields.add(wrap(insertColumn));
-            if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
+            if (rawValueMap.containsKey(insertColumn)) {
+                sqlValues.add(rawValueMap.get(insertColumn).toSql(this));
+            } else if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                 sqlValues.add(onInsertColumns.get(insertColumn));
             } else {
                 sqlValues.add(PLACEHOLDER);

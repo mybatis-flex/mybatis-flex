@@ -96,7 +96,7 @@ public class AccountTester {
         System.out.println(">>>>> : " + (accountBaseMapper == accountMapper));
 
         Account account = accountBaseMapper.selectOneById(1);
-        System.out.println(">>>> account: "  + account);
+        System.out.println(">>>> account: " + account);
     }
 
     @Test
@@ -174,7 +174,7 @@ public class AccountTester {
 
 
         UpdateChain.of(Account.class)
-            .set(Account::getUserName,"zhangsan123")
+            .set(Account::getUserName, "zhangsan123")
 //            .leftJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
             .where(Account::getId).eq(1)
 //            .and(ARTICLE.ID.ge(0))
@@ -203,6 +203,21 @@ public class AccountTester {
         accounts = accountMapper.selectAll();
         System.out.println(accounts);
 
+    }
+
+
+    @Test
+    public void testInsertWithRaw() {
+        Account account = new Account();
+        account.setUserName("michael");
+
+        Account newAccount = UpdateWrapper.of(account)
+//            .setRaw("birthday", "now()")
+//            .setRaw(ACCOUNT.BIRTHDAY, "now()")
+            .setRaw(Account::getBirthday, "now()")
+            .toEntity();
+
+        accountMapper.insert(newAccount);
     }
 
 

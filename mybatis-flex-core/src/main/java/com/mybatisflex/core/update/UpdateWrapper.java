@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * @author michael
  */
-public interface UpdateWrapper extends PropertySetter<UpdateWrapper>, Serializable {
+public interface UpdateWrapper<T> extends PropertySetter<UpdateWrapper<T>>, Serializable {
 
     default Map<String, Object> getUpdates() {
         ModifyAttrsRecordHandler handler = (ModifyAttrsRecordHandler) ((ProxyObject) this).getHandler();
@@ -37,11 +37,11 @@ public interface UpdateWrapper extends PropertySetter<UpdateWrapper>, Serializab
     }
 
     @Override
-    default UpdateWrapper set(String property, Object value, boolean isEffective) {
+    default UpdateWrapper<T> set(String property, Object value, boolean isEffective) {
         if (isEffective) {
             if (value instanceof QueryWrapper
-                || value instanceof QueryColumn
-                || value instanceof QueryCondition) {
+                    || value instanceof QueryColumn
+                    || value instanceof QueryCondition) {
                 getUpdates().put(property, new RawValue(value));
             } else {
                 getUpdates().put(property, value);
@@ -51,11 +51,11 @@ public interface UpdateWrapper extends PropertySetter<UpdateWrapper>, Serializab
     }
 
     @Override
-    default UpdateWrapper set(QueryColumn property, Object value, boolean isEffective) {
+    default UpdateWrapper<T> set(QueryColumn property, Object value, boolean isEffective) {
         if (isEffective) {
             if (value instanceof QueryWrapper
-                || value instanceof QueryColumn
-                || value instanceof QueryCondition) {
+                    || value instanceof QueryColumn
+                    || value instanceof QueryCondition) {
                 getUpdates().put(property.getName(), new RawValue(value));
             } else {
                 getUpdates().put(property.getName(), value);
@@ -65,11 +65,11 @@ public interface UpdateWrapper extends PropertySetter<UpdateWrapper>, Serializab
     }
 
     @Override
-    default <T> UpdateWrapper set(LambdaGetter<T> property, Object value, boolean isEffective) {
+    default <E> UpdateWrapper<T> set(LambdaGetter<E> property, Object value, boolean isEffective) {
         if (isEffective) {
             if (value instanceof QueryWrapper
-                || value instanceof QueryColumn
-                || value instanceof QueryCondition) {
+                    || value instanceof QueryColumn
+                    || value instanceof QueryCondition) {
                 getUpdates().put(LambdaUtil.getFieldName(property), new RawValue(value));
             } else {
                 getUpdates().put(LambdaUtil.getFieldName(property), value);
@@ -79,15 +79,16 @@ public interface UpdateWrapper extends PropertySetter<UpdateWrapper>, Serializab
     }
 
     @Override
-    default UpdateWrapper setRaw(String property, Object value, boolean isEffective) {
+    default UpdateWrapper<T> setRaw(String property, Object value, boolean isEffective) {
         if (isEffective) {
             getUpdates().put(property, new RawValue(value));
         }
         return this;
     }
 
+
     @Override
-    default UpdateWrapper setRaw(QueryColumn property, Object value, boolean isEffective) {
+    default UpdateWrapper<T> setRaw(QueryColumn property, Object value, boolean isEffective) {
         if (isEffective) {
             getUpdates().put(property.getName(), new RawValue(value));
         }
@@ -95,19 +96,29 @@ public interface UpdateWrapper extends PropertySetter<UpdateWrapper>, Serializab
     }
 
     @Override
-    default <T> UpdateWrapper setRaw(LambdaGetter<T> property, Object value, boolean isEffective) {
+    default <E> UpdateWrapper<T> setRaw(LambdaGetter<E> property, Object value, boolean isEffective) {
         if (isEffective) {
             getUpdates().put(LambdaUtil.getFieldName(property), new RawValue(value));
         }
         return this;
     }
 
-    static UpdateWrapper of(Object entity) {
+
+    static <T> UpdateWrapper<T> of(T entity) {
         if (entity instanceof UpdateWrapper) {
-            return (UpdateWrapper) entity;
+            return (UpdateWrapper<T>) entity;
         } else {
-            return (UpdateWrapper) UpdateEntity.ofNotNull(entity);
+            return (UpdateWrapper<T>) UpdateEntity.ofNotNull(entity);
         }
+    }
+
+    static <T> UpdateWrapper<T> of(Class<T> tClass) {
+        return (UpdateWrapper<T>) UpdateEntity.of(tClass);
+    }
+
+
+    default T toEntity() {
+        return (T) this;
     }
 
 }

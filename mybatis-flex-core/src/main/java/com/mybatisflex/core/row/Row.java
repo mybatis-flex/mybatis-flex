@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
-public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper {
+public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper<Row> {
 
     //主键，多个主键用英文逗号隔开
     private Set<RowKey> primaryKeys;

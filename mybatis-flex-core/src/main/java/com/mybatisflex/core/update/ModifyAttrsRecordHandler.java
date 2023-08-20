@@ -34,7 +34,6 @@ class ModifyAttrsRecordHandler implements MethodHandler {
         return updates;
     }
 
-
     @Override
     public Object invoke(Object self, Method originalMethod, Method proxyMethod, Object[] args) throws Throwable {
 

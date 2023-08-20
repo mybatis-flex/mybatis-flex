@@ -27,8 +27,8 @@ public class DataSourceInitListener implements ApplicationListener<ContextRefres
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        FlexDataSource dataSource = (FlexDataSource) FlexGlobalConfig.getDefaultConfig()
-            .getConfiguration().getEnvironment().getDataSource();
+        FlexDataSource dataSource = FlexGlobalConfig.getDefaultConfig()
+            .getDataSource();
 
         System.out.println("onApplicationEvent>>>> datasource:" + dataSource);
     }
