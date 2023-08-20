@@ -43,8 +43,8 @@ public class RawFragment extends QueryCondition {
     boolean containsTable(String... tables) {
         for (String table : tables) {
             String[] tableNameWithAlisa = StringUtil.getTableNameWithAlisa(table);
-            if (content.contains(tableNameWithAlisa[1])
-                || content.contains(tableNameWithAlisa[0])) {
+            if (content.contains(tableNameWithAlisa[0])
+                || (tableNameWithAlisa[1] != null && content.contains(tableNameWithAlisa[1]))) {
                 return true;
             }
         }
