@@ -62,12 +62,15 @@ public class ColumnConfig implements Serializable {
     private JdbcType jdbcType;
 
     /**
-     * 属性的类型。
+     * <p>属性的类型。
+     *
+     * <p>原始类型直接写类型名称，例如：int/long/float/double/boolean<br/>
+     * 对象类型请写对应类的全限定名，例如：java.lang.String/com.example.enums.Gender
      */
     private String propertyType;
 
     /**
-     * 属性的默认值
+     * 属性的默认值，例如：long 类型默认值：0L，枚举类型默认值：Gender.MALE。
      */
     private String propertyDefaultValue;
 
