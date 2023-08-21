@@ -17,13 +17,13 @@ spring:
 #    init:
 #      schema-locations: classpath:schema.sql
 #      data-locations: classpath:data.sql
-mybatis-flex:
-  admin-config:
-    enable: true
-    endpoint: http://localhost/admin
-    secret-key: secretKey
-  mapper-locations:
-    - classpath*:/mapper/*.xml
+#mybatis-flex:
+#  admin-config:
+#    enable: true
+#    endpoint: http://localhost/admin
+#    secret-key: secretKey
+#  mapper-locations:
+#    - classpath*:/mapper/*.xml
 #  global-config:
 #    print-banner: false
 #    key-config:
@@ -36,13 +36,13 @@ mybatis-flex:
 #      url: jdbc:mysql://localhost:3306/flex_test
 #      username: root
 #      password: 12345678
-#mybatis-flex:
-#  datasource:
-#    ds3333:
-#      url: jdbc:mysql://127.0.0.1:3306/flex_test
-#      username: root
-#      password: 131496
-#    ds2:
-#      url: jdbc:mysql://127.0.0.1:3306/flex_test1
-#      username: root
-#      password: 131496
+mybatis-flex:
+  datasource:
+    ds1:
+      url: jdbc:mysql://127.0.0.1:3306/flex_test
+      username: root
+      password: 123456
+    ds2:
+      url: jdbc:mysql://127.0.0.1:3306/flex_test
+      username: root
+      password: 123456

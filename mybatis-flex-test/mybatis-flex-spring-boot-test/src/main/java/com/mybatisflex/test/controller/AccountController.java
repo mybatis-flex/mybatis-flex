@@ -130,4 +130,19 @@ public class AccountController {
         return ">>>>>ds: " + DataSourceKey.get();
     }
 
+
+    @GetMapping("/multids")
+    @Transactional
+    @UseDataSource("ds1")
+    public String multids(){
+        Db.selectAll("tb_account");
+
+        DataSourceKey.use("ds2");
+
+        Db.selectAll("tb_account");
+
+        Db.updateById("tb_account",Row.ofKey("id",1).set("user_name","newUserName"));
+        return "ok";
+    }
+
 }

@@ -18,23 +18,23 @@ package com.mybatisflex.spring;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.apache.ibatis.transaction.Transaction;
-import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
+import org.apache.ibatis.transaction.TransactionFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.Properties;
 
 /**
  * @author life
+ * @author michael
  */
-public class FlexTransactionFactory extends SpringManagedTransactionFactory {
+public class FlexTransactionFactory implements TransactionFactory {
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Transaction newTransaction(DataSource dataSource, TransactionIsolationLevel level, boolean autoCommit) {
-        return new FlexSpringTransaction((FlexDataSource) dataSource, autoCommit);
+        return new FlexSpringTransaction((FlexDataSource) dataSource);
     }
 
     /**
@@ -42,14 +42,6 @@ public class FlexTransactionFactory extends SpringManagedTransactionFactory {
      */
     @Override
     public Transaction newTransaction(Connection conn) {
-        throw new UnsupportedOperationException("New Spring transactions require a DataSource");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setProperties(Properties props) {
-        // not needed in this version
+        throw new UnsupportedOperationException("New Flex transactions require a DataSource");
     }
 }

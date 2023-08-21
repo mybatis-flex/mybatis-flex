@@ -29,6 +29,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class MultiDataSourceTester {
 
@@ -57,6 +58,16 @@ public class MultiDataSourceTester {
         //设置 SQL 审计收集器
         MessageCollector collector = new ConsoleMessageCollector();
         AuditManager.setMessageCollector(collector);
+
+        Db.tx(new Supplier<Boolean>() {
+            @Override
+            public Boolean get() {
+                Db.selectAll(null, "tb_account");
+                DataSourceKey.use("ds2");
+                Db.selectAll(null, "tb_account");
+                return true;
+            }
+        });
 
 
         //默认查询 db1
