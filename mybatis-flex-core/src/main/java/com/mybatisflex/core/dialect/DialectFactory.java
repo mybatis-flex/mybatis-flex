@@ -107,6 +107,8 @@ public class DialectFactory {
             case CUBRID:
             case GOLDILOCKS:
             case CSIIDB:
+            case HIVE:
+            case DORIS:
                 return new CommonsDialectImpl(KeywordWrap.BACK_QUOTE, LimitOffsetProcessor.MYSQL);
             case CLICK_HOUSE:
                 return new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.MYSQL);

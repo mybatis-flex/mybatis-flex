@@ -169,7 +169,9 @@ public class DbTypeUtil {
             return DbType.GREENPLUM;
         } else if (jdbcUrl.contains(":lealone:")) {
             return DbType.LEALONE;
-        }  else {
+        }  else if (jdbcUrl.contains(":hive2:")) {
+            return DbType.HIVE;
+        } else {
             return DbType.OTHER;
         }
     }
