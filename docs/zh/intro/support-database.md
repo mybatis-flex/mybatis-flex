@@ -42,6 +42,10 @@ MyBatis-Flex 支持的数据库类型，如下表格所示，我们还可以通�
 | informix | Informix 数据库 |
 | greenplum | Greenplum 数据库 |
 | uxdb | 优炫数据库 |
+| Doris | Doris数据库 |
+| Hive SQL | Hive 数据库 |
+| lealone | Lealone 数据库 |
+| sinodb | 星瑞格数据库 |
 
 
 ## 数据库方言
