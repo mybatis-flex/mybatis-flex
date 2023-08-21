@@ -93,6 +93,13 @@
 - [MyBatis-Flex 视频教程 - 39 Db + Row](https://www.bilibili.com/video/BV1wp4y1g7by)
 - [MyBatis-Flex 视频教程 - 40 批量操作](https://www.bilibili.com/video/BV1PV4y1Y73a)
 - [MyBatis-Flex 视频教程 - 41 IService 接口介绍](https://www.bilibili.com/video/BV14F411Z7EQ)
+- [MyBatis-Flex 视频教程 - 42 数据权限的使用](https://www.bilibili.com/video/BV1Ju4y197xr)
+- [MyBatis-Flex 视频教程 - 43 链式操作](https://www.bilibili.com/video/BV1Wu411J7Hu)
+- [MyBatis-Flex 视频教程 - 44 多数据源的配置](https://www.bilibili.com/video/BV1f8411X7gW)
+- [MyBatis-Flex 视频教程 - 45 多数据源的切换](https://www.bilibili.com/video/BV1544y1F7Wv)
+- [MyBatis-Flex 视频教程 - 46 动态添加数据源](https://www.bilibili.com/video/BV1tm4y1H712)
+- [MyBatis-Flex 视频教程 - 47 数据源加密](https://www.bilibili.com/video/BV1GF41117GC)
+- [MyBatis-Flex 视频教程 - 48 事务的管理](https://www.bilibili.com/video/BV1oP411p7Wk)
 
 
 
