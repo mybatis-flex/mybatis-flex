@@ -69,14 +69,14 @@ public class FlexSpringTransaction implements Transaction {
 
     @Override
     public void commit() throws SQLException {
-        if (!isTransaction && !autoCommit) {
+        if (isHoldConnection() && !isTransaction && !autoCommit) {
             getConnection().commit();
         }
     }
 
     @Override
     public void rollback() throws SQLException {
-        if (!isTransaction && !autoCommit) {
+        if (isHoldConnection() && !isTransaction && !autoCommit) {
             getConnection().rollback();
         }
     }
@@ -89,5 +89,9 @@ public class FlexSpringTransaction implements Transaction {
     @Override
     public Integer getTimeout() throws SQLException {
         return null;
+    }
+
+    private boolean isHoldConnection() {
+        return !connectionMap.isEmpty();
     }
 }
