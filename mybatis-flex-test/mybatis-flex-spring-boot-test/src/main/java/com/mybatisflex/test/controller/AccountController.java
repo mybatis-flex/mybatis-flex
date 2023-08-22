@@ -34,7 +34,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
-@UseDataSource("ds3333")
+@UseDataSource("ds1")
 public class AccountController {
 
     @Resource
@@ -57,8 +57,8 @@ public class AccountController {
     public String add(@RequestBody Account account) {
         jdbcTemplate.queryForObject("select count(*) from tb_account",Integer.class);
         DataSourceKey.use("ds2");
-        jdbcTemplate.update("INSERT INTO `flex_test`.`tb_account` ( `user_name`, `age`, `birthday`, `gender`, `is_delete`) VALUES ( '王五', 18, '2023-07-04 15:00:26', NULL, 000);");
-        DataSourceKey.use("ds3333");
+        jdbcTemplate.update("INSERT INTO `flex_test`.`tb_account` ( `user_name`, `age`, `birthday`, `is_delete`) VALUES ( '王五', 18, '2023-07-04 15:00:26', 0);");
+        DataSourceKey.use("ds1");
         accountMapper.insert(account);
         DataSourceKey.use("ds2");
         accountMapper.insert(account);

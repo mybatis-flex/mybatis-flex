@@ -18,7 +18,7 @@ package com.mybatisflex.spring;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.apache.ibatis.transaction.Transaction;
-import org.apache.ibatis.transaction.TransactionFactory;
+import org.mybatis.spring.transaction.SpringManagedTransactionFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -27,7 +27,7 @@ import java.sql.Connection;
  * @author life
  * @author michael
  */
-public class FlexTransactionFactory implements TransactionFactory {
+public class FlexTransactionFactory extends SpringManagedTransactionFactory {
 
     /**
      * {@inheritDoc}
