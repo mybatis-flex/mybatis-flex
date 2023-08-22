@@ -27,7 +27,7 @@ public class GoodOnSetListener implements SetListener {
     @Override
     public Object onSet(Object entity, String property, Object value) {
         System.out.println("Good: " + property + " --- " + value);
-        return null;
+        return value;
     }
 
 }
