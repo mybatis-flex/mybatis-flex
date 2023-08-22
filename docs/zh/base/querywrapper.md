@@ -890,8 +890,6 @@ SELECT * FROM "tb_account" ORDER BY "id" DESC ROWS 20 TO 30
 
 ## Lambda 扩展
 
-虽然 MyBaits-Flex 也支持 lambda 方式，但是并不推荐使用，建议在一些简单的场景下使用，以下是示例：
-
 简单示例：
 ```java
 QueryWrapper query = QueryWrapper.create();
