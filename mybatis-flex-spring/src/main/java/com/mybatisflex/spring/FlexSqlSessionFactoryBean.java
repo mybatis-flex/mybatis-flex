@@ -74,7 +74,7 @@ import static org.springframework.util.StringUtils.tokenizeToStringArray;
 /**
  * 参考：https://github.com/mybatis/spring/blob/master/src/main/java/org/mybatis/spring/SqlSessionFactoryBean.java
  *
- * <p>在 MyBatis 官方的 SqlSessionFactoryBean 基础上,替换le  FlexSqlSessionFactoryBean。
+ * <p>在 MyBatis 官方的 SqlSessionFactoryBean 基础上,替换了  FlexSqlSessionFactoryBean。
  *
  * <p>源于 {@link SqlSessionFactoryBean}，主要是用于构建 {@link com.mybatisflex.core.mybatis.FlexConfiguration }，而不是使用原生的 {@link Configuration}。
  *
