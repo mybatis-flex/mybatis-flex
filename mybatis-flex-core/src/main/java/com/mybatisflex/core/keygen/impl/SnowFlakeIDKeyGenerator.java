@@ -79,11 +79,12 @@ public class SnowFlakeIDKeyGenerator implements IKeyGenerator {
     /**
      * 时间起始标记点，一旦确定不能变动（2023-04-02 13:01:00）。
      */
-    protected static long twepoch = 1680411660000L;
+    private static long twepoch = 1680411660000L;
     /**
      * 可容忍的时间偏移量。
      */
-    protected static long offsetPeriod = 5L;
+    private static long offsetPeriod = 5L;
+
     /**
      * 工作机器 ID。
      */
@@ -92,6 +93,7 @@ public class SnowFlakeIDKeyGenerator implements IKeyGenerator {
      * 数据中心 ID。
      */
     private final long dataCenterId;
+
     /**
      * IP 地址信息，用来生成工作机器 ID 和数据中心 ID。
      */
@@ -244,4 +246,51 @@ public class SnowFlakeIDKeyGenerator implements IKeyGenerator {
         return currentTimeMillis;
     }
 
+    public static long getTwepoch() {
+        return twepoch;
+    }
+
+    public static void setTwepoch(long twepoch) {
+        SnowFlakeIDKeyGenerator.twepoch = twepoch;
+    }
+
+    public static long getOffsetPeriod() {
+        return offsetPeriod;
+    }
+
+    public static void setOffsetPeriod(long offsetPeriod) {
+        SnowFlakeIDKeyGenerator.offsetPeriod = offsetPeriod;
+    }
+
+    public long getWorkerId() {
+        return workerId;
+    }
+
+    public long getDataCenterId() {
+        return dataCenterId;
+    }
+
+    public InetAddress getAddress() {
+        return address;
+    }
+
+    public void setAddress(InetAddress address) {
+        this.address = address;
+    }
+
+    public long getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(long sequence) {
+        this.sequence = sequence;
+    }
+
+    public long getLastTimeMillis() {
+        return lastTimeMillis;
+    }
+
+    public void setLastTimeMillis(long lastTimeMillis) {
+        this.lastTimeMillis = lastTimeMillis;
+    }
 }
