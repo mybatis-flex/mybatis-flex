@@ -75,7 +75,8 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder fields = new StringBuilder();
         StringBuilder paramsOrPlaceholder = new StringBuilder();
 
-        Set<String> modifyAttrs = RowCPI.getModifyAttrs(row);
+        //插入数据时，需要包含主键
+        Set<String> modifyAttrs = row.keySet();
         int index = 0;
         for (String attr : modifyAttrs) {
             fields.append(wrap(attr));
