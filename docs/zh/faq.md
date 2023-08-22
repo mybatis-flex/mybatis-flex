@@ -244,3 +244,62 @@ public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Excepti
     return factoryBean.getObject();
 }
 ```
+
+## 如何在插入数据成功时，获得到主键内容？
+
+在 MyBatis-Flex 中，一个主键没有赋值的 Entity（主键内容为空），通过 BaseMapper 插入成功后，其主键会自动被赋值，例如：
+
+```java
+//创建一个没有 id 内容的 account
+Account account = new Account();
+account.setUserName("michael");
+
+//插入数据
+accountMapper.insert(account);
+
+//插入成功后，其 id 自动被赋值
+System.out.println("插入成功的 Account 的 id: " + account.getId());
+```
+
+如果使用 Db + Row，代码如下：
+
+```java
+//创建一个 row，并设置其主键类型为自增，主键字段名称为 id
+Row row = Row.ofKey(RowKey.AUTO);
+row.set("user_name", "michael");
+
+//插入数据
+Db.insert("tb_account", row);
+
+//插入成功后，其 id 自动被赋值
+System.out.println("插入成功的主键: " + row.get("id"));
+```
+
+**RowKey 的说明：**
+
+RowKey 内部定义了 4 个常量，分别为
+- `AUTO`：字段名称为 id，类型为自增。
+- `UUID`：字段名称为 id，类型为 uuid。
+- `FLEX_ID`：字段名称为 id，类型为 flexId。
+- `SNOW_FLAKE_ID`，：字段名称为 id，类型为雪花算法。
+
+如果表的主键名称不是 id，或者主键的生成类型并非以上的 4 种类型，则需要我们自定义 RowKey，可以通过 `RowKey.of()` 方法来自定自己的主键名称和类型。
+例如：
+
+
+```java
+//创建一个 rowKey，字段名称为 my_id，生成类型为雪花算法。
+//整个应用全局定义一个静态变量，然后所有 row 复用就可以
+RowKey rowKey = RowKey.of("my_id"
+    , KeyType.Generator
+    , KeyGenerators.snowFlakeId);
+
+Row row = Row.ofKey(rowKey);
+row.set("user_name", "michael");
+
+//插入数据
+Db.insert("tb_account", row);
+
+//插入成功后，其 my_id 自动被赋值
+System.out.println("插入成功的主键: " + row.get("my_id"));
+```
