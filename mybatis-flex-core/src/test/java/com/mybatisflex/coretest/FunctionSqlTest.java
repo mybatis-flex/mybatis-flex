@@ -18,7 +18,7 @@ package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.query.FunctionQueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.query.StringQueryColumn;
+import com.mybatisflex.core.query.RawQueryColumn;
 import org.junit.Test;
 
 import static com.mybatisflex.core.query.QueryMethods.*;
@@ -34,7 +34,7 @@ public class FunctionSqlTest {
     public void test() {
         String sql = QueryWrapper.create()
             .select(new FunctionQueryColumn("NOW").as("n1"))
-            .select(new FunctionQueryColumn("NOW", new StringQueryColumn("")).as("n2"))
+            .select(new FunctionQueryColumn("NOW", new RawQueryColumn("")).as("n2"))
             .select(new FunctionQueryColumn("CONCAT", ACCOUNT.USER_NAME, ACCOUNT.AGE).as("c1"))
             .from(ACCOUNT)
             .toSQL();

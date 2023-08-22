@@ -82,7 +82,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     public QueryWrapper select(String... columns) {
         for (String column : columns) {
-            addSelectColumn(new StringQueryColumn(column));
+            addSelectColumn(new RawQueryColumn(column));
         }
         return this;
     }

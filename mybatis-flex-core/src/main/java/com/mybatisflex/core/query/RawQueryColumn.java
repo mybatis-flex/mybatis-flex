@@ -23,13 +23,13 @@ import java.util.List;
 /**
  * 自定义字符串列，用于扩展
  */
-public class StringQueryColumn extends QueryColumn {
+public class RawQueryColumn extends QueryColumn {
 
     protected String content;
 
 
-    public StringQueryColumn(String content) {
-        this.content = content;
+    public RawQueryColumn(Object content) {
+        this.content = String.valueOf(content);
     }
 
     @Override
@@ -44,14 +44,14 @@ public class StringQueryColumn extends QueryColumn {
 
     @Override
     public String toString() {
-        return "StringQueryColumn{" +
+        return "RawQueryColumn{" +
             "content='" + content + '\'' +
             '}';
     }
 
     @Override
-    public StringQueryColumn clone() {
-        return (StringQueryColumn) super.clone();
+    public RawQueryColumn clone() {
+        return (RawQueryColumn) super.clone();
     }
 
 }
