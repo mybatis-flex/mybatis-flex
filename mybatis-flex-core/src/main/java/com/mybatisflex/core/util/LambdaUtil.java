@@ -42,6 +42,7 @@ public class LambdaUtil {
         return PropertyNamer.methodToProperty(methodName);
     }
 
+
     public static <T> Class<?> getImplClass(LambdaGetter<T> getter) {
         SerializedLambda lambda = getSerializedLambda(getter);
         return getImplClass(lambda, getter.getClass().getClassLoader());
@@ -50,8 +51,11 @@ public class LambdaUtil {
 
     public static <T> String getAliasName(LambdaGetter<T> getter, boolean withPrefix) {
         QueryColumn queryColumn = getQueryColumn(getter);
-        String alias = StringUtil.isNotBlank(queryColumn.getAlias()) ? queryColumn.getAlias() : queryColumn.getName();
-        return withPrefix ? queryColumn.getTable().getName() + "$" + alias : alias;
+        if (queryColumn != null) {
+            String alias = StringUtil.isNotBlank(queryColumn.getAlias()) ? queryColumn.getAlias() : queryColumn.getName();
+            return withPrefix ? queryColumn.getTable().getName() + "$" + alias : alias;
+        }
+        return getFieldName(getter);
     }
 
 
