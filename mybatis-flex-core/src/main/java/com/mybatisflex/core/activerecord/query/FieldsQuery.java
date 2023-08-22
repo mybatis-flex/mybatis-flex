@@ -51,7 +51,6 @@ public class FieldsQuery<T extends Model<T>> extends FieldsBuilder<T> {
         return this;
     }
 
-
     protected Object pkValue() {
         // 懒加载，实际用到的时候才会生成 主键值
         return ((Model<T>) delegate).pkValue();
