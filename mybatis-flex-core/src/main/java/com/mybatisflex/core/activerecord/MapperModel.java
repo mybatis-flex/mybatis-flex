@@ -78,8 +78,8 @@ public interface MapperModel<T> {
      *
      * @return {@link Optional} 链式调用
      */
-    default Optional<T> saveCallback() {
-        return saveCallback(true);
+    default Optional<T> saveOpt() {
+        return saveOpt(true);
     }
 
     /**
@@ -100,7 +100,7 @@ public interface MapperModel<T> {
      * @param ignoreNulls 是否忽略 {@code null} 值
      * @return {@link Optional} 链式调用
      */
-    default Optional<T> saveCallback(boolean ignoreNulls) {
+    default Optional<T> saveOpt(boolean ignoreNulls) {
         return save(ignoreNulls) ? Optional.of((T) this) : Optional.empty();
     }
 
@@ -122,8 +122,8 @@ public interface MapperModel<T> {
      *
      * @return {@link Optional} 链式调用
      */
-    default Optional<T> saveOrUpdateCallback() {
-        return saveOrUpdateCallback(true);
+    default Optional<T> saveOrUpdateOpt() {
+        return saveOrUpdateOpt(true);
     }
 
     /**
@@ -146,7 +146,7 @@ public interface MapperModel<T> {
      * @param ignoreNulls 是否忽略 {@code null} 值
      * @return {@link Optional} 链式调用
      */
-    default Optional<T> saveOrUpdateCallback(boolean ignoreNulls) {
+    default Optional<T> saveOrUpdateOpt(boolean ignoreNulls) {
         return saveOrUpdate(ignoreNulls) ? Optional.of((T) this) : Optional.empty();
     }
 
@@ -165,7 +165,7 @@ public interface MapperModel<T> {
      *
      * @return {@link Optional} 链式调用
      */
-    default Optional<T> removeByIdCallback() {
+    default Optional<T> removeByIdOpt() {
         return removeById() ? Optional.of((T) this) : Optional.empty();
     }
 
@@ -185,8 +185,8 @@ public interface MapperModel<T> {
      *
      * @return {@link Optional} 链式调用
      */
-    default Optional<T> updateByIdCallback() {
-        return updateByIdCallback(true);
+    default Optional<T> updateByIdOpt() {
+        return updateByIdOpt(true);
     }
 
     /**
@@ -207,7 +207,7 @@ public interface MapperModel<T> {
      * @param ignoreNulls 是否忽略 {@code null} 值
      * @return {@link Optional} 链式调用
      */
-    default Optional<T> updateByIdCallback(boolean ignoreNulls) {
+    default Optional<T> updateByIdOpt(boolean ignoreNulls) {
         return updateById(ignoreNulls) ? Optional.of((T) this) : Optional.empty();
     }
 

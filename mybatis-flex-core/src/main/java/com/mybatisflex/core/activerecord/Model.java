@@ -54,7 +54,7 @@ public abstract class Model<T extends Model<T>>
      *
      * @return {@link Optional} 链式调用
      */
-    public Optional<T> removeCallback() {
+    public Optional<T> removeOpt() {
         return remove() ? Optional.of((T) this) : Optional.empty();
     }
 
@@ -74,8 +74,8 @@ public abstract class Model<T extends Model<T>>
      *
      * @return {@link Optional} 链式调用
      */
-    public Optional<T> updateCallback() {
-        return updateCallback(true);
+    public Optional<T> updateOpt() {
+        return updateOpt(true);
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class Model<T extends Model<T>>
      * @param ignoreNulls 是否忽略 {@code null} 值
      * @return {@link Optional} 链式调用
      */
-    public Optional<T> updateCallback(boolean ignoreNulls) {
+    public Optional<T> updateOpt(boolean ignoreNulls) {
         return update(ignoreNulls) ? Optional.of((T) this) : Optional.empty();
     }
 

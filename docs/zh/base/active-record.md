@@ -205,7 +205,7 @@ User.create()
 ## 回调方法 <Badge type="tip" text="v1.5.9" />
 
 有些情况下，我们在操作完数据库后，还需要继续使用实体类的内容，例如：获取插入数据后返回的主键。此时这些返回值为 `boolean` 的方法就不满足我们的需求了，
-应该使用 `xxxCallback` 方法，在操作数据库执行成功之后返回 `Optional.of(this)`，执行失败返回 `Optional.empty()`。这样就可以进行链式的调用了。
+应该使用 `xxxOpt` 方法，在操作数据库执行成功之后返回 `Optional.of(this)`，执行失败返回 `Optional.empty()`。这样就可以进行链式的调用了。
 
 ```java
 // 插入成功之后返回主键信息

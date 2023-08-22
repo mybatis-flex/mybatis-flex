@@ -62,7 +62,7 @@ class ActiveRecordTest {
         Integer goodId = Good.create()
             .setPrice(28.0)
             .setName("摆渡人")
-            .saveCallback()
+            .saveOpt()
             .orElseThrow(RuntimeException::new)
             .getGoodId();
 
