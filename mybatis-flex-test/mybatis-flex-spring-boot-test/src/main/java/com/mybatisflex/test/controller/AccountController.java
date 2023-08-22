@@ -55,13 +55,20 @@ public class AccountController {
     @PostMapping("/account/add")
     @Transactional
     public String add(@RequestBody Account account) {
-        jdbcTemplate.queryForObject("select count(*) from tb_account",Integer.class);
+        Integer count1 = jdbcTemplate.queryForObject("select count(*) from tb_account", Integer.class);
+        System.out.println(">>>>count1: " + count1);
+
         DataSourceKey.use("ds2");
-        jdbcTemplate.update("INSERT INTO `flex_test`.`tb_account` ( `user_name`, `age`, `birthday`, `is_delete`) VALUES ( '王五', 18, '2023-07-04 15:00:26', 0);");
+        int update1 = jdbcTemplate.update("INSERT INTO `flex_test`.`tb_account` ( `user_name`, `age`, `birthday`, `is_delete`) VALUES ( '王五', 18, '2023-07-04 15:00:26', 0);");
+        System.out.println(">>>>>>>>>update1: " + update1);
+
         DataSourceKey.use("ds1");
         accountMapper.insert(account);
+
         DataSourceKey.use("ds2");
         accountMapper.insert(account);
+
+
         return "add ok!";
     }
 
