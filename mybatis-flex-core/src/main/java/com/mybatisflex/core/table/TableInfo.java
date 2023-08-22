@@ -710,6 +710,35 @@ public class TableInfo {
     }
 
 
+    /**
+     * 获取主键值
+     * @param entity
+     * @return 主键值，有多个主键时返回数组
+     */
+    public Object getPkValue(Object entity) {
+        //绝大多数情况为 1 个主键
+        if (primaryColumns.length == 1) {
+            MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
+            ColumnInfo columnInfo = columnInfoMapping.get(primaryColumns[0]);
+            return getPropertyValue(metaObject, columnInfo.property);
+        }
+        //多个主键
+        else if (primaryColumns.length > 1) {
+            MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
+            Object[] values = new Object[primaryColumns.length];
+            for (int i = 0; i < primaryColumns.length; i++) {
+                ColumnInfo columnInfo = columnInfoMapping.get(primaryColumns[i]);
+                values[i] = getPropertyValue(metaObject, columnInfo.property);
+            }
+            return values;
+        }
+        //无主键
+        else {
+            return null;
+        }
+    }
+
+
     public Object[] buildTenantIdArgs() {
         if (StringUtil.isBlank(tenantIdColumn)) {
             return null;

@@ -22,6 +22,7 @@ import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.SqlUtil;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 /**
@@ -56,9 +57,9 @@ public interface MapperModel<T> {
      *
      * @return 主键数据数组
      */
-    default Object[] pkValues() {
+    default Object pkValue() {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(getClass());
-        return tableInfo.buildPkSqlArgs(this);
+        return tableInfo.getPkValue(this);
     }
 
     /**
@@ -121,8 +122,7 @@ public interface MapperModel<T> {
      */
     default <R> R saveAndReturnId(boolean ignoreNulls) {
         baseMapper().insert((T) this, ignoreNulls);
-        Object[] pkValues = pkValues();
-        return pkValues != null && pkValues.length == 1 ? (R) pkValues[0] : (R) pkValues;
+        return (R) pkValue();
     }
 
     /**
@@ -152,7 +152,7 @@ public interface MapperModel<T> {
      * @return {@code true} 删除成功，{@code false} 删除失败
      */
     default boolean removeById() {
-        return SqlUtil.toBool(baseMapper().deleteById(pkValues()));
+        return SqlUtil.toBool(baseMapper().deleteById((Serializable) pkValue()));
     }
 
     /**
@@ -180,7 +180,7 @@ public interface MapperModel<T> {
      * @return 数据
      */
     default T oneById() {
-        return baseMapper().selectOneById(pkValues());
+        return baseMapper().selectOneById((Serializable) pkValue());
     }
 
     /**

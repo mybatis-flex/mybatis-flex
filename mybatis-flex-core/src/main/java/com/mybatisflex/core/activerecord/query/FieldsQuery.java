@@ -23,6 +23,7 @@ import com.mybatisflex.core.mybatis.MappedStatementTypes;
 import com.mybatisflex.core.query.FieldsBuilder;
 import com.mybatisflex.core.util.LambdaGetter;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,9 +51,10 @@ public class FieldsQuery<T extends Model<T>> extends FieldsBuilder<T> {
         return this;
     }
 
-    protected Object[] pkValues() {
+
+    protected Object pkValue() {
         // 懒加载，实际用到的时候才会生成 主键值
-        return ((Model<T>) delegate).pkValues();
+        return ((Model<T>) delegate).pkValue();
     }
 
     /**
@@ -61,7 +63,7 @@ public class FieldsQuery<T extends Model<T>> extends FieldsBuilder<T> {
      * @return 一条数据
      */
     public T oneById() {
-        List<T> entities = Collections.singletonList(baseMapper().selectOneById(pkValues()));
+        List<T> entities = Collections.singletonList(baseMapper().selectOneById((Serializable) pkValue()));
         FieldQueryManager.queryFields(baseMapper(), entities, fieldQueryMap);
         return entities.get(0);
     }
@@ -77,7 +79,7 @@ public class FieldsQuery<T extends Model<T>> extends FieldsBuilder<T> {
     public <R> R oneByIdAs(Class<R> asType) {
         try {
             MappedStatementTypes.setCurrentType(asType);
-            List<R> entities = Collections.singletonList((R) baseMapper().selectOneById(pkValues()));
+            List<R> entities = Collections.singletonList((R) baseMapper().selectOneById((Serializable) pkValue()));
             FieldQueryManager.queryFields(baseMapper(), entities, fieldQueryMap);
             return entities.get(0);
         } finally {
