@@ -70,6 +70,27 @@ public interface MapperModel<T> {
         return save(true);
     }
 
+
+    /**
+     * 保存数据并返回 entity 本身，并设置是否忽略 {@code null} 值。
+     *
+     * @return entity 本身
+     */
+    default T saveAndReturnSelf() {
+        return saveAndReturnSelf(true);
+    }
+
+
+    /**
+     * 保存数据并返回保存成功的 id，并设置是否忽略 {@code null} 值。
+     *
+     * @return id 值
+     */
+    default <R> R saveAndReturnId() {
+        return saveAndReturnId(true);
+    }
+
+
     /**
      * 保存数据，并设置是否忽略 {@code null} 值。
      *
@@ -78,6 +99,30 @@ public interface MapperModel<T> {
      */
     default boolean save(boolean ignoreNulls) {
         return SqlUtil.toBool(baseMapper().insert((T) this, ignoreNulls));
+    }
+
+    /**
+     * 保存数据并返回 entity 本身，并设置是否忽略 {@code null} 值。
+     *
+     * @param ignoreNulls 是否忽略 {@code null} 值
+     * @return entity 本身
+     */
+    default T saveAndReturnSelf(boolean ignoreNulls) {
+        baseMapper().insert((T) this, ignoreNulls);
+        return (T) this;
+    }
+
+
+    /**
+     * 保存数据并返回保存成功的 id，并设置是否忽略 {@code null} 值。
+     *
+     * @param ignoreNulls 是否忽略 {@code null} 值
+     * @return id 内容
+     */
+    default <R> R saveAndReturnId(boolean ignoreNulls) {
+        baseMapper().insert((T) this, ignoreNulls);
+        Object[] pkValues = pkValues();
+        return pkValues != null && pkValues.length == 1 ? (R) pkValues[0] : (R) pkValues;
     }
 
     /**
