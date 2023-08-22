@@ -195,7 +195,7 @@ spring:
 
 ## 与 Nacos 集成时出错，无法正常启动 MyBatis-Flex
 
-一般请看下是缺少 Nacos 的相关 Maven，注意添加如下的 Nacos 依赖：
+一般情况下，是因为缺少 Nacos 的相关 Maven，注意添加如下的 Nacos 依赖：
 
 ```xml
 <dependency>
