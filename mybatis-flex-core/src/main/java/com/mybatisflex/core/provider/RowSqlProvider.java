@@ -68,7 +68,7 @@ public class RowSqlProvider {
 
         // 先生成 SQL，再设置参数
         String sql = DialectFactory.getDialect().forInsertRow(schema, tableName, row);
-        ProviderUtil.setSqlArgs(params, RowCPI.obtainAllModifyValues(row));
+        ProviderUtil.setSqlArgs(params, RowCPI.obtainInsertValues(row));
         return sql;
     }
 
@@ -97,7 +97,7 @@ public class RowSqlProvider {
 
         Object[] values = new Object[]{};
         for (Row row : rows) {
-            values = ArrayUtil.concat(values, RowCPI.obtainModifyValues(row));
+            values = ArrayUtil.concat(values, RowCPI.obtainInsertValues(row));
         }
         ProviderUtil.setSqlArgs(params, values);
 

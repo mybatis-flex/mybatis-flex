@@ -547,6 +547,39 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper<
     }
 
 
+    public Object[] obtainInsertValues() {
+        List<Object> values = new ArrayList<>();
+        if (primaryKeys != null && !primaryKeys.isEmpty()) {
+            for (RowKey primaryKey : primaryKeys) {
+                if (primaryKey.before) {
+                    values.add(get(primaryKey.keyColumn));
+                }
+            }
+        }
+
+        for (String key : keySet()) {
+            Object value = get(key);
+            if (!isPk(key) && !(value instanceof RawValue)) {
+                values.add(value);
+            }
+        }
+
+        return values.toArray();
+    }
+
+    public Set<String> getInsertAttrs() {
+        Set<String> attrs = new LinkedHashSet<>();
+        if (primaryKeys != null && !primaryKeys.isEmpty()) {
+            for (RowKey primaryKey : primaryKeys) {
+                if (primaryKey.before) {
+                    attrs.add(primaryKey.keyColumn);
+                }
+            }
+        }
+        attrs.addAll(keySet());
+        return attrs;
+    }
+
     private boolean isPk(String attr) {
         if (primaryKeys != null && !primaryKeys.isEmpty()) {
             for (RowKey primaryKey : primaryKeys) {

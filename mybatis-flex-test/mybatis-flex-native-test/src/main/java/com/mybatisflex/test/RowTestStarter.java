@@ -15,11 +15,14 @@
  */
 package com.mybatisflex.test;
 
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
+import com.mybatisflex.core.keygen.KeyGenerators;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.row.RowKey;
 import com.mybatisflex.core.row.RowUtil;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.junit.BeforeClass;
@@ -36,8 +39,8 @@ public class RowTestStarter {
     public static void init() {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
-            .addScript("schema.sql")
-            .addScript("data.sql")
+            .addScript("schema_row.sql")
+            .addScript("data_row.sql")
             .build();
 
         MybatisFlexBootstrap.getInstance()
@@ -53,6 +56,19 @@ public class RowTestStarter {
     @Test
     public void testSetRaw(){
         Row row = new Row();
+        row.set("user_name","michael");
+        row.setRaw("birthday","now()");
+
+        Db.insert("tb_account",row);
+        List<Row> rowList = Db.selectAll("tb_account");
+        RowUtil.printPretty(rowList);
+    }
+
+    @Test
+    public void testCustomRowKey(){
+        RowKey rowKey = RowKey.of("id", KeyType.Generator, KeyGenerators.flexId);
+
+        Row row = Row.ofKey(rowKey);
         row.set("user_name","michael");
         row.setRaw("birthday","now()");
 

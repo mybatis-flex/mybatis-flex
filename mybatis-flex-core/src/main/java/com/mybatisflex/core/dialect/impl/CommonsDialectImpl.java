@@ -75,8 +75,8 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder fields = new StringBuilder();
         StringBuilder paramsOrPlaceholder = new StringBuilder();
 
-        //插入数据时，需要包含主键
-        Set<String> modifyAttrs = row.keySet();
+        //插入数据时，可能包含主键
+        Set<String> modifyAttrs = RowCPI.getInsertAttrs(row);
         int index = 0;
         for (String attr : modifyAttrs) {
             fields.append(wrap(attr));
@@ -112,7 +112,7 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder questions = new StringBuilder();
 
         Row firstRow = rows.get(0);
-        Set<String> attrs = RowCPI.getModifyAttrs(firstRow);
+        Set<String> attrs = RowCPI.getInsertAttrs(firstRow);
         int index = 0;
         for (String column : attrs) {
             fields.append(wrap(column));
