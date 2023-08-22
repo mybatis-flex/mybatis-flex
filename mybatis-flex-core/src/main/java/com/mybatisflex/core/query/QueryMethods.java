@@ -1832,22 +1832,22 @@ public class QueryMethods {
     /**
      * 按照表达式 f 的要求显示日期 d。
      */
-    public static QueryColumn dateFormat(String columnD, String columnF) {
-        return new FunctionQueryColumn(DATE_FORMAT, columnD, columnF);
+    public static QueryColumn dateFormat(String columnD, String format) {
+        return new FunctionQueryColumn(DATE_FORMAT, string(columnD), string(format));
     }
 
     /**
      * 按照表达式 f 的要求显示日期 d。
      */
-    public static QueryColumn dateFormat(QueryColumn columnD, QueryColumn columnF) {
-        return new FunctionQueryColumn(DATE_FORMAT, columnD, columnF);
+    public static QueryColumn dateFormat(QueryColumn columnD, String format) {
+        return new FunctionQueryColumn(DATE_FORMAT, columnD, string(format));
     }
 
     /**
      * 按照表达式 f 的要求显示日期 d。
      */
-    public static <D, F> QueryColumn dateFormat(LambdaGetter<D> columnD, LambdaGetter<F> columnF) {
-        return new FunctionQueryColumn(DATE_FORMAT, LambdaUtil.getQueryColumn(columnD), LambdaUtil.getQueryColumn(columnF));
+    public static <D, F> QueryColumn dateFormat(LambdaGetter<D> columnD, String format) {
+        return new FunctionQueryColumn(DATE_FORMAT, LambdaUtil.getQueryColumn(columnD), string(format));
     }
 
     /**
