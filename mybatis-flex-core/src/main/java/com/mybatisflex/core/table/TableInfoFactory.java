@@ -19,6 +19,10 @@ import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.query.QueryChain;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.Reflectors;
@@ -59,6 +63,10 @@ public class TableInfoFactory {
         byte[].class, Byte[].class, Byte.class,
         BigInteger.class, BigDecimal.class,
         char.class, String.class, Character.class
+    );
+
+    static final Set<Class<?>> ignoreColumnTypes = CollectionUtil.newHashSet(
+        QueryWrapper.class, QueryColumn.class, QueryCondition.class, QueryChain.class
     );
 
 
@@ -206,6 +214,9 @@ public class TableInfoFactory {
 //            }
 
             Class<?> fieldType = reflector.getGetterType(field.getName());
+            if (ignoreColumnTypes.contains(fieldType)) {
+                continue;
+            }
 
             //满足以下 3 种情况，不支持该类型
             if ((column == null || column.typeHandler() == UnknownTypeHandler.class) // 未配置 typeHandler

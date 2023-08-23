@@ -16,7 +16,6 @@
 
 package com.mybatisflex.core.activerecord.query;
 
-import com.mybatisflex.annotation.Column;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.table.TableDef;
@@ -39,7 +38,6 @@ import com.mybatisflex.core.util.LambdaUtil;
 @SuppressWarnings({"unused", "unchecked"})
 public abstract class QueryModel<T extends QueryModel<T>> {
 
-    @Column(ignore = true)
     private QueryWrapper queryWrapper;
 
     protected QueryWrapper queryWrapper() {

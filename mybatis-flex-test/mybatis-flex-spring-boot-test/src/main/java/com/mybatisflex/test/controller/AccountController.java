@@ -69,6 +69,10 @@ public class AccountController {
         DataSourceKey.use("ds2");
         accountMapper.insert(account);
 
+//        if (true) {
+//            throw new RuntimeException("ex");
+//        }
+
 
         return "add ok!";
     }
