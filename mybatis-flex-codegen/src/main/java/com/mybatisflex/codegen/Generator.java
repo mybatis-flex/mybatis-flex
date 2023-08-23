@@ -122,4 +122,31 @@ public class Generator {
         }
     }
 
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public Generator setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+        return this;
+    }
+
+    public GlobalConfig getGlobalConfig() {
+        return globalConfig;
+    }
+
+    public Generator setGlobalConfig(GlobalConfig globalConfig) {
+        this.globalConfig = globalConfig;
+        return this;
+    }
+
+    public IDialect getDialect() {
+        return dialect;
+    }
+
+    public Generator setDialect(IDialect dialect) {
+        this.dialect = dialect;
+        return this;
+    }
+
 }
