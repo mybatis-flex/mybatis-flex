@@ -65,8 +65,8 @@ public class UpdateChainTest {
     @Test
     public void testUpdateChain() {
         UpdateChain.of(Account.class)
-            .set(Account::getUserName,"张三")
-            .setRaw(Account::getAge,"age + 1")
+            .set(Account::getUserName, "张三")
+            .setRaw(Account::getAge, "age + 1")
             .where(Account::getId).eq(1)
             .update();
 
@@ -91,8 +91,8 @@ public class UpdateChainTest {
     public void testUpdateChainToSql() {
         String sql = UpdateChain.of(Account.class)
             .set(ACCOUNT.AGE, 18)
-            .set(Article::getAccountId, 4, 1 == 1)
-            .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+            .set(Article::getAccountId, 4)
+            .leftJoin(ARTICLE).as("ar").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
             .where(ACCOUNT.ID.eq(4))
             .toSQL();
 
