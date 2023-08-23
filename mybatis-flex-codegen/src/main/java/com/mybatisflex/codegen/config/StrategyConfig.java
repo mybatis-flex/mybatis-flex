@@ -87,6 +87,7 @@ public class StrategyConfig {
     public Set<String> getIgnoreColumns() {
         return ignoreColumns;
     }
+
     /**
      * 设置需要忽略的列  全局配置。
      */
@@ -121,7 +122,8 @@ public class StrategyConfig {
      * 获取表配置。
      */
     public TableConfig getTableConfig(String tableName) {
-        return tableConfigMap == null ? null : tableConfigMap.get(tableName);
+        TableConfig tableConfig = tableConfigMap == null ? null : tableConfigMap.get(tableName);
+        return tableConfig != null ? tableConfig : tableConfigMap.get(TableConfig.ALL_TABLES);
     }
 
     /**
@@ -190,7 +192,7 @@ public class StrategyConfig {
             setTableConfig(tableConfig);
         }
 
-        tableConfig.addColumnConfig(columnConfig);
+        tableConfig.setColumnConfig(columnConfig);
 
         return this;
     }
