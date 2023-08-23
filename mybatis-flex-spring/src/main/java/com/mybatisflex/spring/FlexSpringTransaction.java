@@ -48,13 +48,14 @@ public class FlexSpringTransaction implements Transaction {
             autoCommit = connection.getAutoCommit();
             return connection;
         }
-        // 非事务
-        else if (!isConnectionTransactional) {
-            return connection;
-        }
-        // 在事务中
-        else {
+        // 在事务中，通过 FlexDataSource 去获取
+        // FlexDataSource 内部会进行 connection 缓存以及多数据源下的 key 判断
+        else if (isConnectionTransactional) {
             return dataSource.getConnection();
+        }
+        // 非事务，返回当前链接
+        else {
+            return connection;
         }
     }
 
