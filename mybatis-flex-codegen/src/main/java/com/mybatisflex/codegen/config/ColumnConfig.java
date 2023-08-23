@@ -260,16 +260,16 @@ public class ColumnConfig implements Serializable {
         return this;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static final class Builder {
 
         private final ColumnConfig columnConfig;
 
         private Builder() {
             this.columnConfig = new ColumnConfig();
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         public Builder columnName(String columnName) {

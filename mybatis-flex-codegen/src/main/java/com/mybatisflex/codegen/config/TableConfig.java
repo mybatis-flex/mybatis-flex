@@ -28,6 +28,8 @@ import java.util.Map;
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class TableConfig {
 
+    public static final String ALL_TABLES = "*";
+
     /**
      * 数据库的 schema（模式）。
      */
@@ -36,7 +38,7 @@ public class TableConfig {
     /**
      * 表名。
      */
-    private String tableName;
+    private String tableName = ALL_TABLES;
 
     /**
      * 默认为 驼峰属性 转换为 下划线字段。
@@ -144,7 +146,7 @@ public class TableConfig {
         return this;
     }
 
-    public TableConfig addColumnConfig(ColumnConfig columnConfig) {
+    public TableConfig setColumnConfig(ColumnConfig columnConfig) {
         if (this.columnConfigMap == null) {
             this.columnConfigMap = new HashMap<>();
         }
@@ -156,16 +158,16 @@ public class TableConfig {
         return this.columnConfigMap == null ? null : this.columnConfigMap.get(columnName);
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static final class Builder {
 
         private final TableConfig tableConfig;
 
         private Builder() {
             this.tableConfig = new TableConfig();
-        }
-
-        public static Builder builder() {
-            return new Builder();
         }
 
         public Builder schema(String schema) {
@@ -204,7 +206,7 @@ public class TableConfig {
         }
 
         public Builder columnConfig(ColumnConfig columnConfigMap) {
-            this.tableConfig.addColumnConfig(columnConfigMap);
+            this.tableConfig.setColumnConfig(columnConfigMap);
             return this;
         }
 
