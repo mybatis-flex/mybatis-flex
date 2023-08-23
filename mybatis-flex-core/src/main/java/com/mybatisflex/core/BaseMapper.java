@@ -1157,7 +1157,7 @@ public interface BaseMapper<T> {
                 page.setTotalRow(number == null ? Page.INIT_VALUE : number.longValue());
             }
 
-            if (!page.isEmpty()) {
+            if (page.hasRecords()) {
                 List<E> entities = sqlSession.selectList(dataSelectId, preparedParams);
                 page.setRecords(entities);
             }

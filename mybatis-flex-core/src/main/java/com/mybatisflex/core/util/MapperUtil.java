@@ -153,7 +153,7 @@ public class MapperUtil {
                 page.setTotalRow(mapper.selectCountByQuery(countQueryWrapper));
             }
 
-            if (page.isEmpty()) {
+            if (!page.hasRecords()) {
                 return page;
             }
 

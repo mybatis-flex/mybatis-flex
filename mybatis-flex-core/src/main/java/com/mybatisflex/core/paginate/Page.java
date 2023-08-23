@@ -249,12 +249,12 @@ public class Page<T> implements Serializable {
     }
 
     /**
-     * 当前页是否为空。
+     * 当前页是否有记录（有内容）。
      *
-     * @return {@code true} 空页，{@code false} 非空页
+     * @return {@code true} 有内容，{@code false} 没有内容
      */
-    public boolean isEmpty() {
-        return getTotalRow() == 0 || getPageNumber() > getTotalPage();
+    public boolean hasRecords() {
+        return getTotalRow() > 0 && getPageNumber() <= getTotalPage();
     }
 
     /**

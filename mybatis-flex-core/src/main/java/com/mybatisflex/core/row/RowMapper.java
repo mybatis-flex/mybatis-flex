@@ -451,7 +451,7 @@ public interface RowMapper {
                 page.setTotalRow(selectCountByQuery(schema, tableName, countQueryWrapper));
             }
 
-            if (page.isEmpty()) {
+            if (!page.hasRecords()) {
                 return page;
             }
 
