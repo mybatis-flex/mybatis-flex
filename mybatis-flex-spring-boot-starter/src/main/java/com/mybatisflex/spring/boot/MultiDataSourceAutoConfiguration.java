@@ -78,7 +78,9 @@ public class MultiDataSourceAutoConfiguration {
 
         if (dataSourceProperties != null && !dataSourceProperties.isEmpty()) {
 
-            DataSourceManager.setDecipher(dataSourceDecipher);
+            if (dataSourceDecipher != null) {
+                DataSourceManager.setDecipher(dataSourceDecipher);
+            }
 
             for (Map.Entry<String, Map<String, String>> entry : dataSourceProperties.entrySet()) {
 

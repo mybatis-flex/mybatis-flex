@@ -125,6 +125,8 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
     //动态表名
     protected final DynamicTableProcessor dynamicTableProcessor;
+
+    //动态 schema 处理器
     protected final DynamicSchemaProcessor dynamicSchemaProcessor;
 
     //多租户
@@ -163,6 +165,8 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
 
         //动态表名
         this.dynamicTableProcessor = dynamicTableProcessorProvider.getIfAvailable();
+
+        //动态 schema 处理器
         this.dynamicSchemaProcessor = dynamicSchemaProcessorProvider.getIfAvailable();
 
         //多租户
@@ -194,6 +198,8 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         if (dynamicTableProcessor != null) {
             TableManager.setDynamicTableProcessor(dynamicTableProcessor);
         }
+
+        // 动态 schema 处理器配置
         if (dynamicSchemaProcessor != null) {
             TableManager.setDynamicSchemaProcessor(dynamicSchemaProcessor);
         }
