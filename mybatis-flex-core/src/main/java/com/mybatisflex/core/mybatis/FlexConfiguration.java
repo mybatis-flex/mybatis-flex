@@ -50,19 +50,21 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author michael
+ */
 public class FlexConfiguration extends Configuration {
 
     private static final Map<String, MappedStatement> dynamicMappedStatementCache = new ConcurrentHashMap<>();
 
-    public FlexConfiguration(Environment environment) {
-        super(environment);
-        setMapUnderscoreToCamelCase(true);
+    public FlexConfiguration() {
         setObjectWrapperFactory(new FlexWrapperFactory());
         initDefaultMappers();
     }
 
-    public FlexConfiguration() {
-        setMapUnderscoreToCamelCase(true);
+
+    public FlexConfiguration(Environment environment) {
+        super(environment);
         setObjectWrapperFactory(new FlexWrapperFactory());
         initDefaultMappers();
     }
@@ -239,7 +241,8 @@ public class FlexConfiguration extends Configuration {
             .fetchSize(ms.getFetchSize())
             .timeout(ms.getTimeout())
             .statementType(ms.getStatementType())
-            .keyGenerator(keyGenerator) // 替换主键生成器
+            // 替换主键生成器
+            .keyGenerator(keyGenerator)
             .keyProperty(ms.getKeyProperties() == null ? null : String.join(",", ms.getKeyProperties()))
             .keyColumn(ms.getKeyColumns() == null ? null : String.join(",", ms.getKeyColumns()))
             .databaseId(databaseId)
@@ -282,7 +285,8 @@ public class FlexConfiguration extends Configuration {
             .fetchSize(ms.getFetchSize())
             .timeout(ms.getTimeout())
             .statementType(ms.getStatementType())
-            .keyGenerator(keyGenerator) // 替换主键生成器
+            // 替换主键生成器
+            .keyGenerator(keyGenerator)
             .keyProperty(tableInfo.getKeyProperties())
             .keyColumn(tableInfo.getKeyColumns())
             .databaseId(databaseId)
