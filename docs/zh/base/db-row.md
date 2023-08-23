@@ -138,7 +138,7 @@ System.out.println(articles);
 
 ## Row.toObject()
 
-`Row.toObject(Other.class)` 和 `Row.toEntity(Entity.class)` 和相似。不一样的地方在于 `Row.toObject(Other.class)` 是通过去查找
+`Row.toObject(Other.class)` 和 `Row.toEntity(Entity.class)` 相似。不一样的地方在于 `Row.toObject(Other.class)` 是通过去查找
 `Other.class` 的 `setter` 方法去匹配 Row 的 key 进行赋值的。
 
 例如 `Other.class` 的代码如下：
