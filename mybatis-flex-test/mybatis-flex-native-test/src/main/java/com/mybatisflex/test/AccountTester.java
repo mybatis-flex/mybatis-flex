@@ -157,6 +157,23 @@ public class AccountTester {
     }
 
 
+    /**
+     * issues https://gitee.com/mybatis-flex/mybatis-flex/issues/I7RE0J
+     */
+    @Test
+    public void testUpdateByUpdateWrapper() {
+        Account account = new Account();
+        account.setId(1L);
+        account = UpdateWrapper.of(account)
+            .set(Account::getId,1)
+            .set(Account::getAge, 20)
+            //设置 Ignore 字段，会被自动忽略
+            .setRaw(Account::getTitle, "xxxx")
+            .toEntity();
+        accountMapper.update(account);
+    }
+
+
 
 
     @Test

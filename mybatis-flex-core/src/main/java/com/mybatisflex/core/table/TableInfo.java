@@ -362,7 +362,7 @@ public class TableInfo {
         for (int i = 0; i < columnInfoList.size(); i++) {
             ColumnInfo columnInfo = columnInfoList.get(i);
             //真正的字段（没有做忽略标识）
-            if (!columnInfo.isIgnore()){
+            if (!columnInfo.isIgnore()) {
                 columnNames.add(columnInfo.column);
 
                 columnInfoMapping.put(columnInfo.column, columnInfo);
@@ -521,6 +521,7 @@ public class TableInfo {
     }
 
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public Map<String, RawValue> obtainUpdateRawValueMap(Object entity) {
         if (!(entity instanceof UpdateWrapper)) {
             return Collections.emptyMap();
@@ -557,7 +558,13 @@ public class TableInfo {
                 return Collections.emptySet();
             }
             for (String property : updates.keySet()) {
-                String column = getColumnByProperty(property);
+//                String column = getColumnByProperty(property);
+                String column = propertyColumnMapping.get(property);
+                if (column == null) {
+                    continue;
+                }
+
+
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
                     continue;
                 }
@@ -628,12 +635,14 @@ public class TableInfo {
             if (updates.isEmpty()) {
                 return FlexConsts.EMPTY_ARRAY;
             }
-//            Set<String> properties = (Set<String>) updates;
-//            if (properties.isEmpty()) {
-//                return values.toArray();
-//            }
             for (String property : updates.keySet()) {
-                String column = getColumnByProperty(property);
+
+                String column = propertyColumnMapping.get(property);
+                if (column == null) {
+                    continue;
+                }
+
+
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
                     continue;
                 }
@@ -718,6 +727,7 @@ public class TableInfo {
 
     /**
      * 获取主键值
+     *
      * @param entity
      * @return 主键值，有多个主键时返回数组
      */

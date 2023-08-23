@@ -748,11 +748,11 @@ public class CommonsDialectImpl implements IDialect {
 
         StringJoiner stringJoiner = new StringJoiner(DELIMITER);
 
-        for (String modifyAttr : updateColumns) {
-            if (rawValueMap.containsKey(modifyAttr)) {
-                stringJoiner.add(wrap(modifyAttr) + EQUALS + rawValueMap.get(modifyAttr).toSql(this));
+        for (String updateColumn : updateColumns) {
+            if (rawValueMap.containsKey(updateColumn)) {
+                stringJoiner.add(wrap(updateColumn) + EQUALS + rawValueMap.get(updateColumn).toSql(this));
             } else {
-                stringJoiner.add(wrap(modifyAttr) + EQUALS_PLACEHOLDER);
+                stringJoiner.add(wrap(updateColumn) + EQUALS_PLACEHOLDER);
             }
         }
 
