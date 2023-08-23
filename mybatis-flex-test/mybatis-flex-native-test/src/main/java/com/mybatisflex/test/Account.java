@@ -54,6 +54,9 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
 
     private List<Article> articles;
 
+    @Column(ignore = true)
+    private String title;
+
 
     public Long getId() {
         return id;
@@ -120,6 +123,14 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
         this.articles = articles;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
@@ -130,6 +141,7 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
             ", options=" + options +
             ", isDelete=" + isDelete +
             ", articles=" + articles +
+            ", title=" + title +
             '}';
     }
 

@@ -141,6 +141,24 @@ public class AccountTester {
     }
 
 
+    /**
+     * issues https://gitee.com/mybatis-flex/mybatis-flex/issues/I7VAG8
+     */
+    @Test
+    public void testLeftJoinSelectWithIgnoreColumn() {
+        QueryWrapper queryWrapper = QueryWrapper.create();
+        queryWrapper
+            .select(ACCOUNT.ID,ACCOUNT.AGE,ARTICLE.TITLE)
+            .from(ACCOUNT)
+            .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+            .where(ACCOUNT.ID.ge(1));
+        List<Account> accounts = accountMapper.selectListByQuery(queryWrapper);
+        System.out.println(accounts);
+    }
+
+
+
+
     @Test
     public void testSelectAsToDTO() {
         List<AccountDTO> accountDTOS = accountMapper.selectListByQueryAs(QueryWrapper.create(), AccountDTO.class);
