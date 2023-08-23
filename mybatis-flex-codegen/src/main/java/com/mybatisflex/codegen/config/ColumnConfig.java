@@ -24,7 +24,10 @@ import java.io.Serializable;
 /**
  * 表字段的单独设置。
  */
+@SuppressWarnings({"rawtypes", "UnusedReturnValue", "unused"})
 public class ColumnConfig implements Serializable {
+
+    private static final long serialVersionUID = -1511605303951623381L;
 
     /**
      * 字段名称。
@@ -57,6 +60,11 @@ public class ColumnConfig implements Serializable {
     private Boolean version;
 
     /**
+     * 是否是租户 ID。
+     */
+    private Boolean tenantId;
+
+    /**
      * 配置的 jdbcType。
      */
     private JdbcType jdbcType;
@@ -82,7 +90,7 @@ public class ColumnConfig implements Serializable {
     /**
      * 脱敏方式。
      */
-    private String mask;
+    private String maskType;
 
     /**
      * 字段是否为主键。
@@ -104,139 +112,235 @@ public class ColumnConfig implements Serializable {
      */
     private Boolean keyBefore;
 
-    /**
-     * 是否是租户 ID。
-     */
-    private Boolean tenantId;
-
-    public String getColumnName() {
-        return columnName;
+    public static ColumnConfig create() {
+        return new ColumnConfig();
     }
 
-    public void setColumnName(String columnName) {
+    public String getColumnName() {
+        return this.columnName;
+    }
+
+    public ColumnConfig setColumnName(String columnName) {
         this.columnName = columnName;
+        return this;
     }
 
     public String getOnInsertValue() {
-        return onInsertValue;
+        return this.onInsertValue;
     }
 
-    public void setOnInsertValue(String onInsertValue) {
+    public ColumnConfig setOnInsertValue(String onInsertValue) {
         this.onInsertValue = onInsertValue;
+        return this;
     }
 
     public String getOnUpdateValue() {
-        return onUpdateValue;
+        return this.onUpdateValue;
     }
 
-    public void setOnUpdateValue(String onUpdateValue) {
+    public ColumnConfig setOnUpdateValue(String onUpdateValue) {
         this.onUpdateValue = onUpdateValue;
+        return this;
     }
 
     public Boolean getLarge() {
-        return isLarge;
+        return this.isLarge;
     }
 
-    public void setLarge(Boolean large) {
-        isLarge = large;
+    public ColumnConfig setLarge(Boolean large) {
+        this.isLarge = large;
+        return this;
     }
 
     public Boolean getLogicDelete() {
-        return isLogicDelete;
+        return this.isLogicDelete;
     }
 
-    public void setLogicDelete(Boolean logicDelete) {
-        isLogicDelete = logicDelete;
+    public ColumnConfig setLogicDelete(Boolean logicDelete) {
+        this.isLogicDelete = logicDelete;
+        return this;
     }
 
     public Boolean getVersion() {
-        return version;
+        return this.version;
     }
 
-    public void setVersion(Boolean version) {
+    public ColumnConfig setVersion(Boolean version) {
         this.version = version;
-    }
-
-    public JdbcType getJdbcType() {
-        return jdbcType;
-    }
-
-    public void setJdbcType(JdbcType jdbcType) {
-        this.jdbcType = jdbcType;
-    }
-
-    public Class<? extends TypeHandler> getTypeHandler() {
-        return typeHandler;
-    }
-
-    public void setTypeHandler(Class<? extends TypeHandler> typeHandler) {
-        this.typeHandler = typeHandler;
-    }
-
-    public String getMask() {
-        return mask;
-    }
-
-    public void setMask(String mask) {
-        this.mask = mask;
-    }
-
-    public boolean isPrimaryKey() {
-        return isPrimaryKey;
-    }
-
-    public void setPrimaryKey(boolean primaryKey) {
-        isPrimaryKey = primaryKey;
-    }
-
-    public KeyType getKeyType() {
-        return keyType;
-    }
-
-    public void setKeyType(KeyType keyType) {
-        this.keyType = keyType;
-    }
-
-    public String getKeyValue() {
-        return keyValue;
-    }
-
-    public void setKeyValue(String keyValue) {
-        this.keyValue = keyValue;
-    }
-
-    public Boolean getKeyBefore() {
-        return keyBefore;
-    }
-
-    public void setKeyBefore(Boolean keyBefore) {
-        this.keyBefore = keyBefore;
+        return this;
     }
 
     public Boolean getTenantId() {
-        return tenantId;
+        return this.tenantId;
     }
 
-    public void setTenantId(Boolean tenantId) {
+    public ColumnConfig setTenantId(Boolean tenantId) {
         this.tenantId = tenantId;
+        return this;
+    }
+
+    public JdbcType getJdbcType() {
+        return this.jdbcType;
+    }
+
+    public ColumnConfig setJdbcType(JdbcType jdbcType) {
+        this.jdbcType = jdbcType;
+        return this;
     }
 
     public String getPropertyType() {
-        return propertyType;
+        return this.propertyType;
     }
 
-    /**
-     * 原始类型直接写类型名称，例：int/long/float/double/boolean，对象类型请写对应类的全限定名，例：java.lang.String
-     */
-    public void setPropertyType(String propertyType) {
+    public ColumnConfig setPropertyType(String propertyType) {
         this.propertyType = propertyType;
+        return this;
     }
 
     public String getPropertyDefaultValue() {
-        return propertyDefaultValue;
+        return this.propertyDefaultValue;
     }
 
-    public void setPropertyDefaultValue(String propertyDefaultValue) {
+    public ColumnConfig setPropertyDefaultValue(String propertyDefaultValue) {
         this.propertyDefaultValue = propertyDefaultValue;
+        return this;
     }
+
+    public Class<? extends TypeHandler> getTypeHandler() {
+        return this.typeHandler;
+    }
+
+    public ColumnConfig setTypeHandler(Class<? extends TypeHandler> typeHandler) {
+        this.typeHandler = typeHandler;
+        return this;
+    }
+
+    public String getMaskType() {
+        return this.maskType;
+    }
+
+    public ColumnConfig setMaskType(String maskType) {
+        this.maskType = maskType;
+        return this;
+    }
+
+    public boolean isPrimaryKey() {
+        return this.isPrimaryKey;
+    }
+
+    public ColumnConfig setPrimaryKey(boolean primaryKey) {
+        this.isPrimaryKey = primaryKey;
+        return this;
+    }
+
+    public KeyType getKeyType() {
+        return this.keyType;
+    }
+
+    public ColumnConfig setKeyType(KeyType keyType) {
+        this.keyType = keyType;
+        return this;
+    }
+
+    public String getKeyValue() {
+        return this.keyValue;
+    }
+
+    public ColumnConfig setKeyValue(String keyValue) {
+        this.keyValue = keyValue;
+        return this;
+    }
+
+    public Boolean getKeyBefore() {
+        return this.keyBefore;
+    }
+
+    public ColumnConfig setKeyBefore(Boolean keyBefore) {
+        this.keyBefore = keyBefore;
+        return this;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+
+        private final ColumnConfig columnConfig;
+
+        private Builder() {
+            this.columnConfig = new ColumnConfig();
+        }
+
+        public Builder columnName(String columnName) {
+            this.columnConfig.setColumnName(columnName);
+            return this;
+        }
+
+        public Builder onInsertValue(String onInsertValue) {
+            this.columnConfig.setOnInsertValue(onInsertValue);
+            return this;
+        }
+
+        public Builder onUpdateValue(String onUpdateValue) {
+            this.columnConfig.setOnUpdateValue(onUpdateValue);
+            return this;
+        }
+
+        public Builder version(Boolean version) {
+            this.columnConfig.setVersion(version);
+            return this;
+        }
+
+        public Builder tenantId(Boolean tenantId) {
+            this.columnConfig.setTenantId(tenantId);
+            return this;
+        }
+
+        public Builder jdbcType(JdbcType jdbcType) {
+            this.columnConfig.setJdbcType(jdbcType);
+            return this;
+        }
+
+        public Builder propertyType(String propertyType) {
+            this.columnConfig.setPropertyType(propertyType);
+            return this;
+        }
+
+        public Builder propertyDefaultValue(String propertyDefaultValue) {
+            this.columnConfig.setPropertyDefaultValue(propertyDefaultValue);
+            return this;
+        }
+
+        public Builder typeHandler(Class<? extends TypeHandler> typeHandler) {
+            this.columnConfig.setTypeHandler(typeHandler);
+            return this;
+        }
+
+        public Builder maskType(String maskType) {
+            this.columnConfig.setMaskType(maskType);
+            return this;
+        }
+
+        public Builder keyType(KeyType keyType) {
+            this.columnConfig.setKeyType(keyType);
+            return this;
+        }
+
+        public Builder keyValue(String keyValue) {
+            this.columnConfig.setKeyValue(keyValue);
+            return this;
+        }
+
+        public Builder keyBefore(Boolean keyBefore) {
+            this.columnConfig.setKeyBefore(keyBefore);
+            return this;
+        }
+
+        public ColumnConfig build() {
+            return this.columnConfig;
+        }
+
+    }
+
 }

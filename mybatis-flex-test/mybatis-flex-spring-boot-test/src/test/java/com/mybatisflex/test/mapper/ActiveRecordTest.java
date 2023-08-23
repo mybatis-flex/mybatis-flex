@@ -58,6 +58,18 @@ class ActiveRecordTest {
     }
 
     @Test
+    void testInsertCallback() {
+        Integer goodId = Good.create()
+            .setPrice(28.0)
+            .setName("摆渡人")
+            .saveOpt()
+            .orElseThrow(RuntimeException::new)
+            .getGoodId();
+
+        System.out.println(goodId);
+    }
+
+    @Test
     void testUpdate() {
         Good.create()
             .setGoodId(11)

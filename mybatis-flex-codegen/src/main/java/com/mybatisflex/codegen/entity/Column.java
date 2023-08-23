@@ -295,8 +295,8 @@ public class Column {
         }
 
         //@ColumnMask 注解
-        if (columnConfig.getMask() != null) {
-            annotations.append("@ColumnMask(\"").append(columnConfig.getMask()).append("\")");
+        if (columnConfig.getMaskType() != null) {
+            annotations.append("@ColumnMask(\"").append(columnConfig.getMaskType()).append("\")");
         }
 
         return annotations.toString();
@@ -324,7 +324,7 @@ public class Column {
             if (columnConfig.getPropertyType() != null) {
                 addImportClass(importClasses, columnConfig.getPropertyType());
             }
-            if (columnConfig.getMask() != null) {
+            if (columnConfig.getMaskType() != null) {
                 addImportClass(importClasses, ColumnMask.class.getName());
             }
 

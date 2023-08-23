@@ -25,17 +25,20 @@ import java.util.Map;
 /**
  * 表的单独设置。
  */
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class TableConfig {
 
-    /**
-     * 表名。
-     */
-    private String tableName;
+    public static final String ALL_TABLES = "*";
 
     /**
      * 数据库的 schema（模式）。
      */
     private String schema;
+
+    /**
+     * 表名。
+     */
+    private String tableName = ALL_TABLES;
 
     /**
      * 默认为 驼峰属性 转换为 下划线字段。
@@ -58,88 +61,159 @@ public class TableConfig {
     private Class<? extends SetListener> setListenerClass;
 
     /**
-     * 对应列的配置。
-     */
-    private Map<String, ColumnConfig> columnConfigMap;
-
-    /**
      * 是否开启 Mapper 生成。
      */
     private Boolean mapperGenerateEnable = Boolean.TRUE;
 
-    public String getTableName() {
-        return tableName;
-    }
+    /**
+     * 对应列的配置。
+     */
+    private Map<String, ColumnConfig> columnConfigMap;
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public static TableConfig create() {
+        return new TableConfig();
     }
 
     public String getSchema() {
-        return schema;
+        return this.schema;
     }
 
-    public void setSchema(String schema) {
+    public TableConfig setSchema(String schema) {
         this.schema = schema;
+        return this;
+    }
+
+    public String getTableName() {
+        return this.tableName;
+    }
+
+    public TableConfig setTableName(String tableName) {
+        this.tableName = tableName;
+        return this;
     }
 
     public Boolean getCamelToUnderline() {
-        return camelToUnderline;
+        return this.camelToUnderline;
     }
 
-    public void setCamelToUnderline(Boolean camelToUnderline) {
+    public TableConfig setCamelToUnderline(Boolean camelToUnderline) {
         this.camelToUnderline = camelToUnderline;
+        return this;
     }
 
     public Class<? extends InsertListener> getInsertListenerClass() {
-        return insertListenerClass;
+        return this.insertListenerClass;
     }
 
-    public void setInsertListenerClass(Class<? extends InsertListener> insertListenerClass) {
+    public TableConfig setInsertListenerClass(Class<? extends InsertListener> insertListenerClass) {
         this.insertListenerClass = insertListenerClass;
+        return this;
     }
 
     public Class<? extends UpdateListener> getUpdateListenerClass() {
-        return updateListenerClass;
+        return this.updateListenerClass;
     }
 
-    public void setUpdateListenerClass(Class<? extends UpdateListener> updateListenerClass) {
+    public TableConfig setUpdateListenerClass(Class<? extends UpdateListener> updateListenerClass) {
         this.updateListenerClass = updateListenerClass;
+        return this;
     }
 
     public Class<? extends SetListener> getSetListenerClass() {
-        return setListenerClass;
+        return this.setListenerClass;
     }
 
-    public void setSetListenerClass(Class<? extends SetListener> setListenerClass) {
+    public TableConfig setSetListenerClass(Class<? extends SetListener> setListenerClass) {
         this.setListenerClass = setListenerClass;
-    }
-
-    public Map<String, ColumnConfig> getColumnConfigMap() {
-        return columnConfigMap;
-    }
-
-    public void setColumnConfigMap(Map<String, ColumnConfig> columnConfigMap) {
-        this.columnConfigMap = columnConfigMap;
+        return this;
     }
 
     public Boolean getMapperGenerateEnable() {
-        return mapperGenerateEnable;
+        return this.mapperGenerateEnable;
     }
 
-    public void setMapperGenerateEnable(Boolean mapperGenerateEnable) {
+    public TableConfig setMapperGenerateEnable(Boolean mapperGenerateEnable) {
         this.mapperGenerateEnable = mapperGenerateEnable;
+        return this;
     }
 
-    public void addColumnConfig(ColumnConfig columnConfig) {
-        if (columnConfigMap == null) {
-            columnConfigMap = new HashMap<>();
+    public Map<String, ColumnConfig> getColumnConfigMap() {
+        return this.columnConfigMap;
+    }
+
+    public TableConfig setColumnConfigMap(Map<String, ColumnConfig> columnConfigMap) {
+        this.columnConfigMap = columnConfigMap;
+        return this;
+    }
+
+    public TableConfig setColumnConfig(ColumnConfig columnConfig) {
+        if (this.columnConfigMap == null) {
+            this.columnConfigMap = new HashMap<>();
         }
-        columnConfigMap.put(columnConfig.getColumnName(), columnConfig);
+        this.columnConfigMap.put(columnConfig.getColumnName(), columnConfig);
+        return this;
     }
 
-    public ColumnConfig getColumnConfig(String columnName) {
-        return columnConfigMap == null ? null : columnConfigMap.get(columnName);
+    protected ColumnConfig getColumnConfig(String columnName) {
+        return this.columnConfigMap == null ? null : this.columnConfigMap.get(columnName);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+
+        private final TableConfig tableConfig;
+
+        private Builder() {
+            this.tableConfig = new TableConfig();
+        }
+
+        public Builder schema(String schema) {
+            this.tableConfig.setSchema(schema);
+            return this;
+        }
+
+        public Builder tableName(String tableName) {
+            this.tableConfig.setTableName(tableName);
+            return this;
+        }
+
+        public Builder camelToUnderline(Boolean camelToUnderline) {
+            this.tableConfig.setCamelToUnderline(camelToUnderline);
+            return this;
+        }
+
+        public Builder insertListenerClass(Class<? extends InsertListener> insertListenerClass) {
+            this.tableConfig.setInsertListenerClass(insertListenerClass);
+            return this;
+        }
+
+        public Builder updateListenerClass(Class<? extends UpdateListener> updateListenerClass) {
+            this.tableConfig.setUpdateListenerClass(updateListenerClass);
+            return this;
+        }
+
+        public Builder setListenerClass(Class<? extends SetListener> setListenerClass) {
+            this.tableConfig.setSetListenerClass(setListenerClass);
+            return this;
+        }
+
+        public Builder mapperGenerateEnable(Boolean mapperGenerateEnable) {
+            this.tableConfig.setMapperGenerateEnable(mapperGenerateEnable);
+            return this;
+        }
+
+        public Builder columnConfig(ColumnConfig columnConfigMap) {
+            this.tableConfig.setColumnConfig(columnConfigMap);
+            return this;
+        }
+
+        public TableConfig build() {
+            return this.tableConfig;
+        }
+
     }
 
 }

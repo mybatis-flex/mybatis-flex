@@ -201,3 +201,20 @@ User.create()
 ```
 
 > 获取更多关于 `Fields Query` 的信息，请点击 [这里](./relations-query.md#方案-2field-query)
+
+## 回调方法 <Badge type="tip" text="v1.5.9" />
+
+有些情况下，我们在操作完数据库后，还需要继续使用实体类的内容，例如：获取插入数据后返回的主键。此时这些返回值为 `boolean` 的方法就不满足我们的需求了，
+应该使用 `xxxOpt` 方法，在操作数据库执行成功之后返回 `Optional.of(this)`，执行失败返回 `Optional.empty()`。这样就可以进行链式的调用了。
+
+```java
+// 插入成功之后返回主键信息
+Account.create()
+    .setUserName("张三")
+    .setAge(18)
+    .setBirthday(new Date())
+    .saveCallback()
+    .orElseThrow(RuntimeException::new) // 保存失败抛出异常
+    .getId();
+```
+

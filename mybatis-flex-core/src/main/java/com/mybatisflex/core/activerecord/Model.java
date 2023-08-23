@@ -25,6 +25,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.SqlUtil;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * Active Record 模型。
@@ -48,12 +49,33 @@ public abstract class Model<T extends Model<T>>
     }
 
     /**
+     * 根据实体类构建的条件删除数据，结果使用 {@link Optional} 返回源对象回调，删除成功返回
+     * {@code Optional.of(this)}，删除失败返回 {@code Optional.empty()}。
+     *
+     * @return {@link Optional} 链式调用
+     */
+    public Optional<T> removeOpt() {
+        return remove() ? Optional.of((T) this) : Optional.empty();
+    }
+
+    /**
      * 根据实体类构建的条件更新数据（自动忽略 {@code null} 值）。
      *
      * @return {@code true} 更新成功，{@code false} 更新失败
      */
     public boolean update() {
         return update(true);
+    }
+
+    /**
+     * 根据实体类构建的条件更新数据（自动忽略 {@code null} 值），结果使用 {@link Optional}
+     * 返回源对象回调，更新成功返回 {@code Optional.of(this)}，更新失败返回
+     * {@code Optional.empty()}。
+     *
+     * @return {@link Optional} 链式调用
+     */
+    public Optional<T> updateOpt() {
+        return updateOpt(true);
     }
 
     /**
@@ -64,6 +86,18 @@ public abstract class Model<T extends Model<T>>
      */
     public boolean update(boolean ignoreNulls) {
         return SqlUtil.toBool(baseMapper().updateByQuery((T) this, ignoreNulls, queryWrapper()));
+    }
+
+    /**
+     * 根据实体类构建的条件更新数据，并设置是否忽略 {@code null} 值，结果使用 {@link Optional}
+     * 返回源对象回调，更新成功返回 {@code Optional.of(this)}，更新失败返回
+     * {@code Optional.empty()}。
+     *
+     * @param ignoreNulls 是否忽略 {@code null} 值
+     * @return {@link Optional} 链式调用
+     */
+    public Optional<T> updateOpt(boolean ignoreNulls) {
+        return update(ignoreNulls) ? Optional.of((T) this) : Optional.empty();
     }
 
     @Override
