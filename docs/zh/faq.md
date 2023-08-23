@@ -303,3 +303,7 @@ Db.insert("tb_account", row);
 //插入成功后，其 my_id 自动被赋值
 System.out.println("插入成功的主键: " + row.get("my_id"));
 ```
+
+## 如何替换 Ruoyi 项目中的 MyBatis 为 MyBatis-Flex ?
+
+参考 issue：https://gitee.com/mybatis-flex/mybatis-flex/issues/I7UX96
