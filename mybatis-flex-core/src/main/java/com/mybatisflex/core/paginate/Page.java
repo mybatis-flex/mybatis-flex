@@ -104,8 +104,8 @@ public class Page<T> implements Serializable {
      * @param pageSize   每页数据数量
      */
     public Page(Number pageNumber, Number pageSize) {
-        this.setPageNumber(pageNumber);
-        this.setPageSize(pageSize);
+        this.setPageNumber(pageNumber.longValue());
+        this.setPageSize(pageSize.longValue());
     }
 
     /**
@@ -116,9 +116,9 @@ public class Page<T> implements Serializable {
      * @param totalRow   总数居数量
      */
     public Page(Number pageNumber, Number pageSize, Number totalRow) {
-        this.setPageNumber(pageNumber);
-        this.setPageSize(pageSize);
-        this.setTotalRow(totalRow);
+        this.setPageNumber(pageNumber.longValue());
+        this.setPageSize(pageSize.longValue());
+        this.setTotalRow(totalRow.longValue());
     }
 
     /**
@@ -131,9 +131,9 @@ public class Page<T> implements Serializable {
      */
     public Page(List<T> records, Number pageNumber, Number pageSize, Number totalRow) {
         this.setRecords(records);
-        this.setPageNumber(pageNumber);
-        this.setPageSize(pageSize);
-        this.setTotalRow(totalRow);
+        this.setPageNumber(pageNumber.longValue());
+        this.setPageSize(pageSize.longValue());
+        this.setTotalRow(totalRow.longValue());
     }
 
     /**
@@ -171,11 +171,11 @@ public class Page<T> implements Serializable {
      *
      * @param pageNumber 页码
      */
-    public void setPageNumber(Number pageNumber) {
-        if (pageNumber.longValue() < 1) {
+    public void setPageNumber(long pageNumber) {
+        if (pageNumber < 1) {
             throw new IllegalArgumentException("pageNumber must greater than or equal 1，current value is: " + pageNumber);
         }
-        this.pageNumber = pageNumber.longValue();
+        this.pageNumber = pageNumber;
     }
 
     /**
@@ -192,11 +192,11 @@ public class Page<T> implements Serializable {
      *
      * @param pageSize 每页数据数量
      */
-    public void setPageSize(Number pageSize) {
-        if (pageSize == null || pageSize.longValue() < 0) {
+    public void setPageSize(long pageSize) {
+        if (pageSize < 0) {
             throw new IllegalArgumentException("pageSize must greater than or equal 0，current value is: " + pageSize);
         }
-        this.pageSize = pageSize.longValue();
+        this.pageSize = pageSize;
         this.calcTotalPage();
     }
 
@@ -232,8 +232,8 @@ public class Page<T> implements Serializable {
      *
      * @param totalRow 数据总数
      */
-    public void setTotalRow(Number totalRow) {
-        this.totalRow = totalRow == null ? INIT_VALUE : totalRow.longValue();
+    public void setTotalRow(long totalRow) {
+        this.totalRow = totalRow;
         this.calcTotalPage();
     }
 

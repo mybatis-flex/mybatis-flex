@@ -1154,7 +1154,7 @@ public interface BaseMapper<T> {
                     countSelectId = mapperClassName + "." + countSelectId;
                 }
                 Number number = sqlSession.selectOne(countSelectId, preparedParams);
-                page.setTotalRow(number);
+                page.setTotalRow(number == null ? Page.INIT_VALUE : number.longValue());
             }
 
             if (!page.isEmpty()) {
