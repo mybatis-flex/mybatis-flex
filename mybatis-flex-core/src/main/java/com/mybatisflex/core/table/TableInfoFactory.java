@@ -201,9 +201,9 @@ public class TableInfoFactory {
         for (Field field : entityFields) {
 
             Column column = field.getAnnotation(Column.class);
-            if (column != null && column.ignore()) {
-                continue; // ignore
-            }
+//            if (column != null && column.ignore()) {
+//                continue; // ignore
+//            }
 
             Class<?> fieldType = reflector.getGetterType(field.getName());
 
@@ -310,6 +310,7 @@ public class TableInfoFactory {
             columnInfo.setColumn(columnName);
             columnInfo.setProperty(field.getName());
             columnInfo.setPropertyType(fieldType);
+            columnInfo.setIgnore(column != null && column.ignore());
 
             if (column != null && column.typeHandler() != UnknownTypeHandler.class) {
                 TypeHandler<?> typeHandler;

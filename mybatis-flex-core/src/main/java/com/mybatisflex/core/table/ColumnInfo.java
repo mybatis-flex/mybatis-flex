@@ -58,6 +58,11 @@ public class ColumnInfo {
      */
     protected String maskType;
 
+    /**
+     * 是否忽略
+     */
+    protected boolean ignore;
+
 
     public String getColumn() {
         return column;
@@ -129,4 +134,12 @@ public class ColumnInfo {
         this.maskType = maskType;
     }
 
+
+    public boolean isIgnore() {
+        return ignore;
+    }
+
+    public void setIgnore(boolean ignore) {
+        this.ignore = ignore;
+    }
 }
