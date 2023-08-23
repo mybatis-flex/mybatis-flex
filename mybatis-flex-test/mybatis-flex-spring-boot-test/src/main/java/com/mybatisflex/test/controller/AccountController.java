@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @UseDataSource("ds1")
@@ -150,6 +151,14 @@ public class AccountController {
 
         Db.updateById("tb_account",Row.ofKey("id",1).set("user_name","newUserName"));
         return "ok";
+    }
+
+
+
+    @GetMapping("/map/{id}")
+//    @Transactional
+    public Map map(@PathVariable("id") Long id) {
+        return myAccountMapper.selectMapById(id);
     }
 
 }

@@ -13,32 +13,44 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.core.table;
+package com.mybatisflex.core.mybatis;
 
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
+import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.property.PropertyTokenizer;
 import org.apache.ibatis.reflection.wrapper.BeanWrapper;
+import org.apache.ibatis.reflection.wrapper.MapWrapper;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapper;
 import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 
 import java.util.Collection;
 import java.util.Map;
 
-public class EntityWrapperFactory implements ObjectWrapperFactory {
+/**
+ * @author michael
+ */
+public class FlexWrapperFactory implements ObjectWrapperFactory {
 
     @Override
     public boolean hasWrapperFor(Object object) {
         Class<?> objectClass = object.getClass();
-        if (Map.class.isAssignableFrom(objectClass) ||
-            Collection.class.isAssignableFrom(objectClass)) {
+        if (Collection.class.isAssignableFrom(objectClass)) {
             return false;
+        } else if (Map.class.isAssignableFrom(objectClass)) {
+            return true;
         }
         return TableInfoFactory.ofEntityClass(objectClass) != null;
     }
 
     @Override
     public ObjectWrapper getWrapperFor(MetaObject metaObject, Object object) {
-        return new FlexBeanWrapper(metaObject, object);
+        if (Map.class.isAssignableFrom(object.getClass())) {
+            return new FlexMapWrapper(metaObject, (Map<String, Object>) object);
+        } else {
+            return new FlexBeanWrapper(metaObject, object);
+        }
     }
 
     static class FlexBeanWrapper extends BeanWrapper {
@@ -57,7 +69,19 @@ public class EntityWrapperFactory implements ObjectWrapperFactory {
             Object v = tableInfo.invokeOnSetListener(entity, prop.getName(), value);
             super.set(prop, v);
         }
+    }
 
+
+    static class FlexMapWrapper extends MapWrapper {
+
+        public FlexMapWrapper(MetaObject metaObject, Map<String, Object> map) {
+            super(metaObject, map);
+        }
+
+        @Override
+        public String findProperty(String name, boolean useCamelCaseMapping) {
+            return useCamelCaseMapping ? StringUtil.underlineToCamel(name) : name;
+        }
     }
 
 }

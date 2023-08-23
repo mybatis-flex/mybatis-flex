@@ -24,7 +24,6 @@ import com.mybatisflex.core.mybatis.executor.FlexBatchExecutor;
 import com.mybatisflex.core.mybatis.executor.FlexReuseExecutor;
 import com.mybatisflex.core.mybatis.executor.FlexSimpleExecutor;
 import com.mybatisflex.core.row.RowMapper;
-import com.mybatisflex.core.table.EntityWrapperFactory;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.StringUtil;
@@ -58,13 +57,13 @@ public class FlexConfiguration extends Configuration {
     public FlexConfiguration(Environment environment) {
         super(environment);
         setMapUnderscoreToCamelCase(true);
-        setObjectWrapperFactory(new EntityWrapperFactory());
+        setObjectWrapperFactory(new FlexWrapperFactory());
         initDefaultMappers();
     }
 
     public FlexConfiguration() {
         setMapUnderscoreToCamelCase(true);
-        setObjectWrapperFactory(new EntityWrapperFactory());
+        setObjectWrapperFactory(new FlexWrapperFactory());
         initDefaultMappers();
     }
 

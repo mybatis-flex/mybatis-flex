@@ -20,6 +20,8 @@ import com.mybatisflex.test.model.Account;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Map;
+
 public interface MyAccountMapper extends AccountMapper {
 
 
@@ -27,5 +29,8 @@ public interface MyAccountMapper extends AccountMapper {
 
     @Select("select * from tb_account where id = #{id} and id =#{id}")
     Account selectById(@Param("id") Object id);
+
+    @Select("select * from tb_account where id = #{id}")
+    Map selectMapById(@Param("id") Object id);
 
 }
