@@ -189,6 +189,63 @@ public interface LogicDeleteProcessor {
 具体实现可以参考：[DefaultLogicDeleteProcessor](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/logicdelete/impl/DefaultLogicDeleteProcessor.java)
 
 
+## 逻辑删除时，更新删除时间和删除人
+
+有许多用户有这样的需求：
+
+>在进行逻辑删除数据时，需要更新当前表的其他字段，比如 `删除时间`、`删除人`。
+
+针对这种场景，目前有两个方案：
+
+- **方案1：重新 IService 的 removeById 方法**
+
+先更新 `deleteTime` 和 `deleteUserId`，然后再进行逻辑删除。同时需要保证这两个方法在同一个事务里进行，
+如下代码：
+
+```java
+@Component
+public class AccountService extends ServiceImpl<AccountMapper, Account> implements IService<Account> {
+
+    //重写 Service 的 removeById 方法
+    @Override
+    public boolean removeById(Serializable id) {
+        return Db.txWithResult(() -> {
+            Account account = UpdateEntity.of(Account.class);
+            account.setId((Long) id);
+            account.setDeleteTime(new Date());
+            account.setDeleteUserId("...");
+
+            super.updateById(account);
+            return super.removeById(id);
+        });
+    }
+}
+```
+
+- **方案2：自定义逻辑删除处理功能**
+
+在自定义的逻辑删除里，添加 `deleteTime` 和 `deleteUserId` 字段的更新，如下代码：
+
+```java
+public class MyLogicDeleteProcessor implements LogicDeleteProcessor {
+
+    @Override
+    public String buildLogicDeletedSet(String logicColumn, TableInfo tableInfo, IDialect dialect) {
+
+        String sql = dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicDeletedValue());
+
+        //扩展一下软删除的sql语句，增加删除时间和删除人。
+        sql += "," + dialect.wrap('deleteTime') + EQUALS + "now()";
+        sql += "," + dialect.wrap('deleteUserId') + EQUALS + SpringConextUtil.getUserId();
+
+        return sql;
+    }
+}
+```
+
+也可以参考 issue：https://gitee.com/mybatis-flex/mybatis-flex/issues/I7TT51
+
+
 ## SpringBoot 支持
 
 在 SpringBoot 项目下，直接通过 `@Configuration` 即可使用：
