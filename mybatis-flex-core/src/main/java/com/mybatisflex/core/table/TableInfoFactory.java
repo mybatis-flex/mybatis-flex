@@ -209,11 +209,9 @@ public class TableInfoFactory {
         for (Field field : entityFields) {
 
             Column column = field.getAnnotation(Column.class);
-//            if (column != null && column.ignore()) {
-//                continue; // ignore
-//            }
 
             Class<?> fieldType = reflector.getGetterType(field.getName());
+
             if (ignoreColumnTypes.contains(fieldType)) {
                 continue;
             }
@@ -223,6 +221,10 @@ public class TableInfoFactory {
                 && !fieldType.isEnum()   // 类型不是枚举
                 && !defaultSupportColumnTypes.contains(fieldType) //默认的自动类型不包含该类型
             ) {
+                // 忽略 集合 实体类 解析
+                if (column != null && column.ignore()) {
+                    continue;
+                }
                 // 集合嵌套
                 if (Collection.class.isAssignableFrom(fieldType)) {
                     Type genericType = TypeParameterResolver.resolveFieldType(field, entityClass);
@@ -289,10 +291,6 @@ public class TableInfoFactory {
                 largeColumns.add(columnName);
             }
 
-            if (column == null || !column.isLarge()) {
-                defaultQueryColumns.add(columnName);
-            }
-
             Id id = field.getAnnotation(Id.class);
             ColumnInfo columnInfo;
             if (id != null) {
@@ -322,6 +320,11 @@ public class TableInfoFactory {
             columnInfo.setProperty(field.getName());
             columnInfo.setPropertyType(fieldType);
             columnInfo.setIgnore(column != null && column.ignore());
+
+            // 默认查询列 没有忽略且不是大字段
+            if (!columnInfo.isIgnore() && (column == null || !column.isLarge())) {
+                defaultQueryColumns.add(columnName);
+            }
 
             if (column != null && column.typeHandler() != UnknownTypeHandler.class) {
                 TypeHandler<?> typeHandler;
