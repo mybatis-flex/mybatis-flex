@@ -178,4 +178,9 @@ class AccountMapperTest {
         System.out.println(account);
     }
 
+    @Test
+    void testIgnoreColumn() {
+        accountMapper.selectListByQuery(QueryWrapper.create());
+    }
+
 }

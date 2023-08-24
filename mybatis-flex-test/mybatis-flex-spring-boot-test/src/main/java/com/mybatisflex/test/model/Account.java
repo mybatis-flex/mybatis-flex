@@ -45,6 +45,9 @@ public class Account extends BaseEntity<String, Long, String> {
     @Column(isLogicDelete = true)
     private Boolean isDelete;
 
+    @Column(ignore = true)
+    private String anotherColumn;
+
 //    private Gender gender;
 //
 //    public Gender getGender() {
@@ -95,6 +98,14 @@ public class Account extends BaseEntity<String, Long, String> {
         isDelete = delete;
     }
 
+    public String getAnotherColumn() {
+        return anotherColumn;
+    }
+
+    public void setAnotherColumn(String anotherColumn) {
+        this.anotherColumn = anotherColumn;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
@@ -103,6 +114,7 @@ public class Account extends BaseEntity<String, Long, String> {
             ", age=" + age +
             ", birthday=" + birthday +
             ", isDelete=" + isDelete +
+            ", anotherColumn=" + anotherColumn +
 //                ", roles=" + roles +
             '}';
     }
