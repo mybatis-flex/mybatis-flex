@@ -1,6 +1,37 @@
 # MyBatis-Flex ChangeLog
 
 
+## v1.5.9 20230824:
+- 新增：添加对数据库 Hive SQL 和 Doris 的支持
+- 新增：ActiveRecord 添加 saveOpt 方法，用户保存数据并返回内容
+- 新增：数据查询添加对 ignore 字段自动映射的支持
+- 优化：SnowFlakeIDKeyGenerator 添加更多的参数设置的方法
+- 优化：重构 FlexSpringTransaction 使其拥有更高的性能
+- 优化：对 Mappers 进行优化和添加必要的注释，感谢 @Suomm
+- 优化：重构代码生成器，添加链式调用的支持以及必要的代码注释，感谢 @Suomm
+- 优化：重构将不为 null 的判断统一到 QueryColumnBehavior 中，方便用户自定义逻辑，感谢 @Suomm
+- 优化：修改 FlexSqlSessionFactoryBean 下的一些注释错误 ，感谢 @cainiao3853
+- 修复：在某些场景下使用 as 时出现 NPE 的问题  #I7T00C
+- 修复：Db + Row 的场景下，自定义 RowKey 时结果不正确的问题
+- 修复：QueryMethods.dateFormat 使用出错的问题 #I7TEUM
+- 修复：QueryMethods.substring 使用出错的问题 #I7TEUM
+- 修复：返回 map 时，配置 map-underscore-to-camel-case 不起作用的问题
+- 修复：数据源解密器通过 Bean 注解配置和自定义配置配置不统一的问题  #I7UHUN
+- 修复：使用 Hutool 的 BeanUtil.copyProperties 拷贝 Page 失败的问题 #I7VBUE
+- 修复：UpdateEntity 没有对 @Column(ignore = true) 的字段进行过滤的问题 #I7RE0J
+- 修复：FlexSpringTransaction 在某些场景下出错的问题，感谢 @chenjh3
+- 文档：修改 faq 下的一些错别字
+- 文档：常见问题添加如何获取保存并获取主键的相关文档
+- 文档：添加多逻辑删除时，同时更新删除人和删除时间的相关文档
+- 文档：添加批量操作时，可能无用的错误注意事项
+- 文档：优化代码生成器的相关文档，感谢 @Suomm
+- 文档：ActiveRecord 添加 saveOpt 的相关文档，感谢 @Suomm
+- 文档：修改动态表名的示例代码错误的问题，感谢 @Suomm
+- 文档：修正 gradle 文档错误的问题，感谢 @tiansai
+- 文档：修正 Db + Row 的一些描述错误的问题，感谢 @yang-zzu
+
+
+
 ## v1.5.8 20230820:
 - 新增：Row 以及 Entity 在新增时，添加 setRaw 的支持
 - 新增：数据库方言添加对 lealone 数据库的支持，感谢 @hopper
