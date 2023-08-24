@@ -122,7 +122,10 @@ public class StrategyConfig {
      * 获取表配置。
      */
     public TableConfig getTableConfig(String tableName) {
-        TableConfig tableConfig = tableConfigMap == null ? null : tableConfigMap.get(tableName);
+        if (tableConfigMap == null) {
+            return null;
+        }
+        TableConfig tableConfig = tableConfigMap.get(tableName);
         return tableConfig != null ? tableConfig : tableConfigMap.get(TableConfig.ALL_TABLES);
     }
 
