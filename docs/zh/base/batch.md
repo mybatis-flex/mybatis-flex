@@ -35,9 +35,9 @@ insert into tb_account(id,nickname, .....) values
 ```java
 List<Account> accounts = ....
 Db.executeBatch(accounts.size(), 1000, AccountMapper.class, (mapper, index) -> {
-        Account account = accounts.get(index);
-        mapper.insert(account);
-    });
+    Account account = accounts.get(index);
+    mapper.insert(account);
+});
 ```
 
 或者
@@ -46,8 +46,8 @@ Db.executeBatch(accounts.size(), 1000, AccountMapper.class, (mapper, index) -> {
 ```java
 List<Account> accounts = ....
 Db.executeBatch(accounts, 1000, AccountMapper.class, (mapper, account) -> {
-        mapper.insert(account);
-    });
+    mapper.insert(account);
+});
 ```
 
 
@@ -58,12 +58,34 @@ IService 很多批量操作的方法，也都是通过 `Db.executeBatch` 进行�
 ```java
 public boolean saveBatchSelective(Collection<Account> entities) {
 
-    int[] result = Db.executeBatch(entities, 1000,
-        AccountMapper.class, BaseMapper::insertSelective);
+    int[] result = Db.executeBatch(entities,
+        1000,
+        AccountMapper.class,
+        BaseMapper::insertSelective);
 
     return SqlUtil.toBool(result);
 }
 ```
+
+------
+
+**注意！注意！错误的用法！**
+
+在社区里看到个别同学，在使用 `Db.executeBatch` 时，未使用到参数 mapper，而是使用了其他 mapper，或者使用了 UpdateChain 等。
+
+如下所示：
+
+```java
+List<Account> accounts = ....
+Db.executeBatch(accounts, 1000, AccountMapper.class
+    , (mapper, account) -> {
+    // ↑↑↑↑↑  以上的这个 mapper，未被使用
+    UpdateChina.of(account)
+        .set(Account::getUserName, "张三")
+        .update();
+});
+```
+以上的 **错误** 示例，是因为没有用到 `mapper` 参数，因此，不仅仅 `Db.executeBatch` 返回的都是失败的内容，而且也起不到批量操作的作用。
 
 
 
