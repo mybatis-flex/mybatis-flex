@@ -213,7 +213,7 @@ Account.create()
     .setUserName("张三")
     .setAge(18)
     .setBirthday(new Date())
-    .saveCallback()
+    .saveOpt()
     .orElseThrow(RuntimeException::new) // 保存失败抛出异常
     .getId();
 ```
