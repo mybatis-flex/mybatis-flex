@@ -54,7 +54,7 @@
 </dependency>
 ```
 
-4. 配置 annotationProcessor
+4、配置 annotationProcessor
 
    `mybatis-flex-processor`提供APT服务，可以配置到annotationProcessorPaths，配置后，无需在依赖中声明`mybatis-flex-processor`依赖。
 
@@ -77,4 +77,37 @@
         </annotationProcessorPaths>
     </configuration>
 </plugin>
+```
+
+5、配置依赖管理
+
+MyBatis-Flex 提供了 `mybatis-flex-dependencies` 模块进行依赖管理，只需要在 `<dependencyManagement>` 标签下进行配置就可以了。
+
+```xml
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.mybatisflex</groupId>
+            <artifactId>mybatis-flex-dependencies</artifactId>
+            <version>${mybatis-flex.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+在使用时就可以不指定 `<version>` 标签了，例如：
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.mybatisflex</groupId>
+        <artifactId>mybatis-flex-spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.mybatisflex</groupId>
+        <artifactId>mybatis-flex-codegen</artifactId>
+    </dependency>
+</dependencies>
 ```
