@@ -133,17 +133,29 @@ public class DynamicConditionTest {
 
     @Test
     public void test08() {
-        QueryWrapper queryWrapper = QueryWrapper.create().
-            from(ACCOUNT)
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .from(ACCOUNT)
             .where(ACCOUNT.ID.eq(1)
                 .and(ACCOUNT.AGE.in(17, 18, 19).or(ACCOUNT.USER_NAME.eq("zhang san"))
-            ));
+                ));
 
         QueryCondition condition = CPI.getWhereQueryCondition(queryWrapper);
         while (condition != null) {
             System.out.println(condition.getColumn().getName());
             condition = CPI.getNextCondition(condition);
         }
+
+        System.out.println(queryWrapper.toSQL());
+    }
+
+    @Test
+    public void test09() {
+        QueryColumnBehavior.setIgnoreFunction(e -> e == null || "".equals(e));
+        QueryColumnBehavior.setSmartConvertInToEquals(false);
+
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.USER_NAME.in( ""));
 
         System.out.println(queryWrapper.toSQL());
     }

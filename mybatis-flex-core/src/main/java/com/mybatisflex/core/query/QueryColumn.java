@@ -139,7 +139,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition eq(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.EQUALS, value);
@@ -147,7 +147,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition eq(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.EQUALS, value).when(isEffective);
@@ -155,7 +155,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition eq(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.EQUALS, value).when(isEffective);
@@ -163,7 +163,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition eq(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.EQUALS, value).when(isEffective.test(value));
@@ -171,7 +171,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition ne(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value);
@@ -179,7 +179,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition ne(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value).when(isEffective);
@@ -187,7 +187,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition ne(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value).when(isEffective);
@@ -195,7 +195,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition ne(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value).when(isEffective.test(value));
@@ -203,7 +203,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition gt(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.GT, value);
@@ -211,7 +211,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition gt(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.GT, value).when(isEffective);
@@ -219,7 +219,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition gt(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.GT, value).when(isEffective);
@@ -227,7 +227,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition gt(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.GT, value).when(isEffective.test(value));
@@ -235,7 +235,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition ge(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.GE, value);
@@ -243,7 +243,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition ge(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.GE, value).when(isEffective);
@@ -251,7 +251,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition ge(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.GE, value).when(isEffective);
@@ -259,7 +259,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition ge(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.GE, value).when(isEffective.test(value));
@@ -267,7 +267,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition lt(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LT, value);
@@ -275,7 +275,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition lt(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LT, value).when(isEffective);
@@ -283,7 +283,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition lt(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LT, value).when(isEffective);
@@ -291,7 +291,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition lt(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LT, value).when(isEffective.test(value));
@@ -299,7 +299,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition le(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LE, value);
@@ -307,7 +307,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition le(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LE, value).when(isEffective);
@@ -315,7 +315,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition le(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LE, value).when(isEffective);
@@ -323,7 +323,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition le(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LE, value).when(isEffective.test(value));
@@ -331,44 +331,68 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition in(Object... value) {
-        if (value == null || value.length == 0 || (value.length == 1 && value[0] == null) || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
             return QueryCondition.createEmpty();
         }
-        if (value.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
-            return QueryCondition.create(this, SqlOperator.EQUALS, value[0]);
+        // IN 里面只有一个值的情况
+        if (value.length == 1) {
+            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
+                return QueryCondition.createEmpty();
+            }
+            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
+                return QueryCondition.create(this, SqlOperator.EQUALS, value[0]);
+            }
         }
         return QueryCondition.create(this, SqlConsts.IN, value);
     }
 
     @Override
     public QueryCondition in(Object[] value, boolean isEffective) {
-        if (value == null || value.length == 0 || (value.length == 1 && value[0] == null) || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
             return QueryCondition.createEmpty();
         }
-        if (value.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
-            return QueryCondition.create(this, SqlOperator.EQUALS, value[0]).when(isEffective);
+        // IN 里面只有一个值的情况
+        if (value.length == 1) {
+            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
+                return QueryCondition.createEmpty();
+            }
+            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
+                return QueryCondition.create(this, SqlOperator.EQUALS, value[0]).when(isEffective);
+            }
         }
         return QueryCondition.create(this, SqlConsts.IN, value).when(isEffective);
     }
 
     @Override
     public QueryCondition in(Object[] value, BooleanSupplier isEffective) {
-        if (value == null || value.length == 0 || (value.length == 1 && value[0] == null) || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
             return QueryCondition.createEmpty();
         }
-        if (value.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
-            return QueryCondition.create(this, SqlOperator.EQUALS, value[0]).when(isEffective);
+        // IN 里面只有一个值的情况
+        if (value.length == 1) {
+            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
+                return QueryCondition.createEmpty();
+            }
+            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
+                return QueryCondition.create(this, SqlOperator.EQUALS, value[0]).when(isEffective);
+            }
         }
         return QueryCondition.create(this, SqlConsts.IN, value).when(isEffective);
     }
 
     @Override
     public <T> QueryCondition in(T[] value, Predicate<T[]> isEffective) {
-        if (value == null || value.length == 0 || (value.length == 1 && value[0] == null) || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
             return QueryCondition.createEmpty();
         }
-        if (value.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
-            return QueryCondition.create(this, SqlOperator.EQUALS, value[0]).when(isEffective.test(value));
+        // IN 里面只有一个值的情况
+        if (value.length == 1) {
+            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
+                return QueryCondition.createEmpty();
+            }
+            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
+                return QueryCondition.create(this, SqlOperator.EQUALS, value[0]).when(isEffective.test(value));
+            }
         }
         return QueryCondition.create(this, SqlConsts.IN, value).when(isEffective.test(value));
     }
@@ -431,44 +455,68 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notIn(Object... value) {
-        if (value == null || value.length == 0 || (value.length == 1 && value[0] == null) || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
             return QueryCondition.createEmpty();
         }
-        if (value.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
-            return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value[0]);
+        // NOT IN 里面只有一个值的情况
+        if (value.length == 1) {
+            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
+                return QueryCondition.createEmpty();
+            }
+            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
+                return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value[0]);
+            }
         }
         return QueryCondition.create(this, SqlConsts.NOT_IN, value);
     }
 
     @Override
     public QueryCondition notIn(Object[] value, boolean isEffective) {
-        if (value == null || value.length == 0 || (value.length == 1 && value[0] == null) || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
             return QueryCondition.createEmpty();
         }
-        if (value.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
-            return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value[0]).when(isEffective);
+        // NOT IN 里面只有一个值的情况
+        if (value.length == 1) {
+            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
+                return QueryCondition.createEmpty();
+            }
+            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
+                return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value[0]).when(isEffective);
+            }
         }
         return QueryCondition.create(this, SqlConsts.NOT_IN, value).when(isEffective);
     }
 
     @Override
     public QueryCondition notIn(Object[] value, BooleanSupplier isEffective) {
-        if (value == null || value.length == 0 || (value.length == 1 && value[0] == null) || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
             return QueryCondition.createEmpty();
         }
-        if (value.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
-            return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value[0]).when(isEffective);
+        // NOT IN 里面只有一个值的情况
+        if (value.length == 1) {
+            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
+                return QueryCondition.createEmpty();
+            }
+            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
+                return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value[0]).when(isEffective);
+            }
         }
         return QueryCondition.create(this, SqlConsts.NOT_IN, value).when(isEffective);
     }
 
     @Override
     public <T> QueryCondition notIn(T[] value, Predicate<T[]> isEffective) {
-        if (value == null || value.length == 0 || (value.length == 1 && value[0] == null) || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
             return QueryCondition.createEmpty();
         }
-        if (value.length == 1 && QueryColumnBehavior.isSmartConvertInToEquals()) {
-            return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value[0]).when(isEffective.test(value));
+        // NOT IN 里面只有一个值的情况
+        if (value.length == 1) {
+            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
+                return QueryCondition.createEmpty();
+            }
+            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
+                return QueryCondition.create(this, SqlOperator.NOT_EQUALS, value[0]).when(isEffective.test(value));
+            }
         }
         return QueryCondition.create(this, SqlConsts.NOT_IN, value).when(isEffective.test(value));
     }
@@ -571,7 +619,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition like(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, "%" + value + "%");
@@ -579,7 +627,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition like(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, "%" + value + "%").when(isEffective);
@@ -587,7 +635,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition like(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, "%" + value + "%").when(isEffective);
@@ -595,7 +643,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition like(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, "%" + value + "%").when(isEffective.test(value));
@@ -603,7 +651,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition likeLeft(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, value + "%");
@@ -611,7 +659,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition likeLeft(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, value + "%").when(isEffective);
@@ -619,7 +667,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition likeLeft(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, value + "%").when(isEffective);
@@ -627,7 +675,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition likeLeft(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, value + "%").when(isEffective.test(value));
@@ -635,7 +683,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition likeRight(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, "%" + value);
@@ -643,7 +691,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition likeRight(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, "%" + value).when(isEffective);
@@ -651,7 +699,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition likeRight(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, "%" + value).when(isEffective);
@@ -659,7 +707,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition likeRight(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, "%" + value).when(isEffective.test(value));
@@ -676,7 +724,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
      * {@code LIKE value}
      */
     public QueryCondition likeRaw(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.LIKE, value).when(isEffective);
@@ -698,7 +746,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notLike(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, "%" + value + "%");
@@ -706,7 +754,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notLike(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, "%" + value + "%").when(isEffective);
@@ -714,7 +762,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notLike(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, "%" + value + "%").when(isEffective);
@@ -722,7 +770,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition notLike(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, "%" + value + "%").when(isEffective.test(value));
@@ -730,7 +778,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notLikeLeft(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, value + "%");
@@ -738,7 +786,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notLikeLeft(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, value + "%").when(isEffective);
@@ -746,7 +794,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notLikeLeft(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, value + "%").when(isEffective);
@@ -754,7 +802,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition notLikeLeft(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, value + "%").when(isEffective.test(value));
@@ -762,7 +810,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notLikeRight(Object value) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, "%" + value);
@@ -770,7 +818,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notLikeRight(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, "%" + value).when(isEffective);
@@ -778,7 +826,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notLikeRight(Object value, BooleanSupplier isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, "%" + value).when(isEffective);
@@ -786,7 +834,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T> QueryCondition notLikeRight(T value, Predicate<T> isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, "%" + value).when(isEffective.test(value));
@@ -803,7 +851,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
      * {@code NOT LIKE value}
      */
     public QueryCondition notLikeRaw(Object value, boolean isEffective) {
-        if (value == null || QueryColumnBehavior.shouldIgnoreValue(value)) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         return QueryCondition.create(this, SqlOperator.NOT_LIKE, value).when(isEffective);

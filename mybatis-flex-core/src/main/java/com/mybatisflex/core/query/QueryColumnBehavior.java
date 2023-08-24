@@ -15,23 +15,29 @@
  */
 package com.mybatisflex.core.query;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
+ * 默认 {@link QueryColumn} 行为。
+ *
  * @author michael
+ * @author 王帅
  */
 public class QueryColumnBehavior {
 
-    /**
-     * 自定义全局的自动忽略参数的方法
-     */
-    private static Predicate<Object> ignoreFunction;
+    private QueryColumnBehavior() {
+    }
 
     /**
-     * 是否自动把 in(...) 只有 1 个参数的内容转换为相等 =
+     * 自定义全局的自动忽略参数的方法。
+     */
+    private static Predicate<Object> ignoreFunction = Objects::isNull;
+
+    /**
+     * 当 {@code IN(...)} 条件只有 1 个参数时，是否自动把的内容转换为相等。
      */
     private static boolean smartConvertInToEquals = false;
-
 
     public static Predicate<Object> getIgnoreFunction() {
         return ignoreFunction;
@@ -49,11 +55,7 @@ public class QueryColumnBehavior {
         QueryColumnBehavior.smartConvertInToEquals = smartConvertInToEquals;
     }
 
-
-    static boolean shouldIgnoreValue(Object value){
-        if (ignoreFunction == null){
-            return false;
-        }
+    static boolean shouldIgnoreValue(Object value) {
         return ignoreFunction.test(value);
     }
 
