@@ -119,7 +119,10 @@ const {Layout} = DefaultTheme
           </div>
         </div>
         <div class="banner-bottom">
-          虚以待位
+            <a href="https://www.west.cn/ykj/view.asp?domain=springboot.net" target="_blank" style="height:50px;
+            background: rgb(247 247 247);width: 105px;color: #000;font-size: 18px">
+                springboot.net 域名出售
+            </a>
         </div>
       </div>
     </template>
