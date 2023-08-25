@@ -41,11 +41,8 @@ import java.util.stream.Collectors;
 public class DbChain extends QueryWrapperAdapter<DbChain> implements PropertySetter<DbChain> {
 
     private String schema;
-    private String tableName;
+    private final String tableName;
     private Row rowData;
-
-    private DbChain() {
-    }
 
     private DbChain(String tableName) {
         this.tableName = tableName;
@@ -56,22 +53,12 @@ public class DbChain extends QueryWrapperAdapter<DbChain> implements PropertySet
         this.tableName = tableName;
     }
 
-    /**
-     * 覆盖 {@link QueryWrapper} 的静态方法，仅用于查询，必须使用 {@code from(...)} 方法指定表。
-     *
-     * @deprecated 使用 {@code table(...)} 方法创建
-     */
-    @Deprecated
     public static DbChain create() {
-        return new DbChain();
+        throw new UnsupportedOperationException("please use DbChain#table(...)");
     }
 
-    /**
-     * @deprecated 覆盖 {@link QueryWrapper} 的静态方法
-     */
-    @Deprecated
     public static DbChain create(Object entity) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("please use DbChain#table(...)");
     }
 
     public static DbChain table(String tableName) {
