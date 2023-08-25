@@ -517,9 +517,54 @@ List<Account> accounts = accountMapper.selectAllWithRelations();
 > 那么我们需要添加上类名的前缀，例如：`addIgnoreRelations("A.x")`。
 
 
+## 只查询部分 Relation 注解
+
+和【忽略部分注解】相反，如下代码中配置了多个 `@Relation***` 修饰的字段：
+
+```java
+@Table(value = "tb_account")
+public class Account implements Serializable {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    private String userName;
+
+    @RelationOneToOne(targetField = "accountId")
+    private IDCard idCard;
 
 
-## 附加条件
+    @RelationOneToMany(targetField = "accountId")
+    private List<Book> books;
+
+
+    @RelationManyToMany(
+            joinTable = "tb_role_mapping",
+            joinSelfColumn = "account_id",
+            joinTargetColumn = "role_id"
+    )
+    private List<Role> roles;
+
+    //getter setter
+}
+```
+
+假设我们只想查询 `books` 和 `roles` 字段，而忽略其他所有  `@Relation***` 修饰的字段，可以通过如下的配置：
+
+```java
+RelationManager.addQueryRelations("books","roles");
+List<Account> accounts = accountMapper.selectAllWithRelations();
+```
+
+这个有一个好处是：以后 Account 代码无论如何变动，比如添加了新的 `@Relation***` 修饰的字段，那么都不会影响到原来的业务。
+
+**注意：**
+
+> `RelationManager` 的 `addIgnoreRelations` （忽略）配置优先于 `addQueryRelations`（查询），假设 `addIgnoreRelations` 和 `addQueryRelations`
+> 都配置了相同的字段，那么这个字段将会被忽略。
+
+
+## 配置额外的附加条件
 
 在一对多（`@RelationOneToMany`）、多对多（`@RelationManyToMany`） 的场景中，除了通过其关联字段查询结果以外，可能还会要求添加一些额外的条件。
 此时，我们可以通过添加 `extraCondition` 配置来满足这种场景，例如：
