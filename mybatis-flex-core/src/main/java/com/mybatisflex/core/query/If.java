@@ -15,10 +15,8 @@
  */
 package com.mybatisflex.core.query;
 
-import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.StringUtil;
 
-import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 
@@ -38,59 +36,38 @@ public class If {
      * 判断对象是否非空
      */
     public static boolean notNull(Object object) {
-        return !isNull(object);
+        return object != null;
     }
 
-    /**
-     * 查看某个对象是否为空，支持数组、集合、map 等
-     *
-     * @param object
-     * @deprecated 无泛型，多 instanceof 判断
-     */
-    @Deprecated
-    public static boolean notEmpty(Object object) {
-        if (object == null) {
-            return false;
-        }
-
-        if (object instanceof Collection) {
-            return !((Collection<?>) object).isEmpty();
-        }
-
-        if (ClassUtil.isArray(object.getClass())) {
-            return Array.getLength(object) > 0;
-        }
-
-        if (object instanceof Map) {
-            return !((Map<?, ?>) object).isEmpty();
-        }
-
-        if (object instanceof String) {
-            return StringUtil.isNotBlank((String) object);
-        }
-        return true;
+    public static <T> boolean isEmpty(T[] array) {
+        return array != null && array.length == 0;
     }
 
-
-    /**
-     * 查看某个对象是否为空数据 或者 null
-     *
-     * @param object
-     * @deprecated 无泛型，多 instanceof 判断
-     */
-    @Deprecated
-    public static boolean isEmpty(Object object) {
-        return !notEmpty(object);
+    public static <T> boolean isNotEmpty(T[] array) {
+        return !isEmpty(array);
     }
 
+    public static boolean isEmpty(Map<?, ?> map) {
+        return map != null && map.isEmpty();
+    }
+
+    public static boolean isNotEmpty(Map<?, ?> map) {
+        return !isEmpty(map);
+    }
+
+    public static boolean isEmpty(Collection<?> collection) {
+        return collection != null && collection.isEmpty();
+    }
+
+    public static boolean isNotEmpty(Collection<?> collection) {
+        return !isEmpty(collection);
+    }
 
     /**
      * 查看某个 string 对象是否有文本内容
-     *
-     * @param object
      */
-    public static boolean hasText(Object object) {
-        return object != null && StringUtil.isNotBlank((String) object);
+    public static boolean hasText(String string) {
+        return StringUtil.isNotBlank(string);
     }
 
 }
