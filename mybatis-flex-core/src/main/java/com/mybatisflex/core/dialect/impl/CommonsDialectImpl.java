@@ -32,8 +32,6 @@ import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.*;
 
 import static com.mybatisflex.core.constant.SqlConsts.*;
@@ -856,15 +854,6 @@ public class CommonsDialectImpl implements IDialect {
         }
 
 
-//        String whereConditionSql = buildWhereConditionSql(queryWrapper);
-//
-//        //不允许全量更新
-//        if (StringUtil.isBlank(whereConditionSql)) {
-//            throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
-//        }
-//
-//        sql.append(WHERE).append(whereConditionSql);
-
         List<String> endFragments = CPI.getEndFragments(queryWrapper);
         if (CollectionUtil.isNotEmpty(endFragments)) {
             for (String endFragment : endFragments) {
@@ -875,64 +864,6 @@ public class CommonsDialectImpl implements IDialect {
         return sqlBuilder.toString();
     }
 
-
-    @Override
-    public String forUpdateNumberAddByQuery(String schema, String tableName, String fieldName, Number value, QueryWrapper queryWrapper) {
-        StringBuilder sql = new StringBuilder();
-        sql.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
-        if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
-        }
-        sql.append(wrap(getRealTable(tableName))).append(SET);
-        sql.append(wrap(fieldName)).append(EQUALS).append(wrap(fieldName)).append(geZero(value) ? PLUS_SIGN : MINUS_SIGN).append(abs(value));
-
-        String whereConditionSql = buildWhereConditionSql(queryWrapper);
-
-        //不允许全量更新
-        if (StringUtil.isBlank(whereConditionSql)) {
-            throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
-        }
-
-        sql.append(WHERE).append(whereConditionSql);
-
-        List<String> endFragments = CPI.getEndFragments(queryWrapper);
-        if (CollectionUtil.isNotEmpty(endFragments)) {
-            for (String endFragment : endFragments) {
-                sql.append(BLANK).append(endFragment);
-            }
-        }
-        return sql.toString();
-    }
-
-
-    protected boolean geZero(Number number) {
-        if (number instanceof BigDecimal) {
-            return ((BigDecimal) number).signum() >= 0;
-        } else if (number instanceof BigInteger) {
-            return ((BigInteger) number).signum() >= 0;
-        } else if (number instanceof Float) {
-            return (Float) number >= 0;
-        } else if (number instanceof Double) {
-            return (Double) number >= 0;
-        } else {
-            return number.longValue() >= 0;
-        }
-    }
-
-
-    protected Number abs(Number number) {
-        if (number instanceof BigDecimal) {
-            return ((BigDecimal) number).abs();
-        } else if (number instanceof BigInteger) {
-            return ((BigInteger) number).abs();
-        } else if (number instanceof Float) {
-            return Math.abs((Float) number);
-        } else if (number instanceof Double) {
-            return Math.abs((Double) number);
-        } else {
-            return Math.abs(number.longValue());
-        }
-    }
 
 
     @Override

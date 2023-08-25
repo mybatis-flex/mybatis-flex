@@ -218,9 +218,4 @@ public class RowMapperInvoker {
         return execute(mapper -> mapper.paginate(schema, tableName, page, queryWrapper));
     }
 
-
-    public int updateNumberAddByQuery(String schema, String tableName, String fieldName, Number value, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.updateNumberAddByQuery(schema, tableName, fieldName, value, queryWrapper));
-    }
-
 }

@@ -262,28 +262,6 @@ public class RowSqlProvider {
         return sql;
     }
 
-    /**
-     * 执行类似 update table set field=field+1 where ... 的场景
-     *
-     * @param params 方法参数
-     * @return SQL 语句
-     * @see RowMapper#updateNumberAddByQuery(String, String, String, Number, QueryWrapper)
-     */
-    public static String updateNumberAddByQuery(Map params) {
-        QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        String schema = ProviderUtil.getSchemaName(params);
-        String tableName = ProviderUtil.getTableName(params);
-        String fieldName = ProviderUtil.getFieldName(params);
-        Number value = (Number) ProviderUtil.getValue(params);
-
-        //优先构建 sql，再构建参数
-        String sql = DialectFactory.getDialect().forUpdateNumberAddByQuery(schema
-            , tableName, fieldName, value, queryWrapper);
-
-        Object[] queryParams = CPI.getValueArray(queryWrapper);
-        ProviderUtil.setSqlArgs(params, queryParams);
-        return sql;
-    }
 
     /**
      * selectOneById 的 SQL 构建。

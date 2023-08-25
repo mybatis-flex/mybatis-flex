@@ -473,33 +473,6 @@ public class Db {
     }
 
 
-    /**
-     * 通过 update schema.table set field = field + 1 where ... 的这种方向更新数据库某个字段内容
-     *
-     * @param schema       模式
-     * @param tableName    表名
-     * @param fieldName    字段名
-     * @param value        递增值
-     * @param queryWrapper 条件
-     * @return 受影响行数
-     */
-    public static int updateNumberAddByQuery(String schema, String tableName, String fieldName, Number value, QueryWrapper queryWrapper) {
-        return invoker().updateNumberAddByQuery(schema, tableName, fieldName, value, queryWrapper);
-    }
-
-    /**
-     * 通过 update table set field = field + 1 where ... 的这种方向更新数据库某个字段内容
-     *
-     * @param tableName
-     * @param fieldName
-     * @param value
-     * @param queryWrapper
-     * @return
-     */
-    public static int updateNumberAddByQuery(String tableName, String fieldName, Number value, QueryWrapper queryWrapper) {
-        return invoker().updateNumberAddByQuery(null, tableName, fieldName, value, queryWrapper);
-    }
-
 
     /**
      * 批量执行工具方法

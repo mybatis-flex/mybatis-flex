@@ -364,53 +364,7 @@ public interface BaseMapper<T> {
     @UpdateProvider(type = EntitySqlProvider.class, method = "updateByQuery")
     int updateByQuery(@Param(FlexConsts.ENTITY) T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
-    /**
-     * 执行类似 {@code update table set field = field + 1 where ... } 的场景。
-     * TODO: 2023/7/27  该方法将在 v1.6.0 被删除
-     *
-     * @param fieldName    字段名
-     * @param value        值（大于等于 0 加，小于 0 减）
-     * @param queryWrapper 条件
-     * @return 受影响的行数
-     * @see EntitySqlProvider#updateNumberAddByQuery(Map, ProviderContext)
-     */
-    @Deprecated
-    @UpdateProvider(type = EntitySqlProvider.class, method = "updateNumberAddByQuery")
-    int updateNumberAddByQuery(@Param(FlexConsts.FIELD_NAME) String fieldName, @Param(FlexConsts.VALUE) Number value, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
-    /**
-     * 执行类似 {@code update table set field = field + 1 where ... } 的场景。
-     * TODO: 该方法将在 v1.6.0 被删除
-     *
-     * @param column       字段名
-     * @param value        值（大于等于 0 加，小于 0 减）
-     * @param queryWrapper 条件
-     * @return 受影响的行数
-     * @see EntitySqlProvider#updateNumberAddByQuery(Map, ProviderContext)
-     */
-    @Deprecated
-    default int updateNumberAddByQuery(QueryColumn column, Number value, QueryWrapper queryWrapper) {
-        FlexAssert.notNull(value, "value");
-        return updateNumberAddByQuery(column.getName(), value, queryWrapper);
-    }
-
-    /**
-     * 执行类似 {@code update table set field = field + 1 where ... } 的场景。
-     * TODO: 该方法将在 v1.6.0 被删除
-     *
-     * @param fn           字段名
-     * @param value        值（大于等于 0 加，小于 0 减）
-     * @param queryWrapper 条件
-     * @return 受影响的行数
-     * @see EntitySqlProvider#updateNumberAddByQuery(Map, ProviderContext)
-     */
-    @Deprecated
-    default int updateNumberAddByQuery(LambdaGetter<T> fn, Number value, QueryWrapper queryWrapper) {
-        FlexAssert.notNull(value, "value");
-        TableInfo tableInfo = TableInfoFactory.ofMapperClass(ClassUtil.getUsefulClass(getClass()));
-        String column = tableInfo.getColumnByProperty(LambdaUtil.getFieldName(fn));
-        return updateNumberAddByQuery(column, value, queryWrapper);
-    }
 
     // === 查（select） ===
 

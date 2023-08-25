@@ -85,8 +85,6 @@ public interface IDialect {
 
     String forUpdateEntityByQuery(TableInfo tableInfo, Object entity, boolean ignoreNulls, QueryWrapper queryWrapper);
 
-    String forUpdateNumberAddByQuery(String schema, String tableName, String fieldName, Number value, QueryWrapper queryWrapper);
-
     String forSelectOneEntityById(TableInfo tableInfo);
 
     String forSelectEntityListByIds(TableInfo tableInfo, Object[] primaryValues);

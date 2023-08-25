@@ -287,34 +287,6 @@ public class EntitySqlProvider {
         return sql;
     }
 
-    /**
-     * updateNumberByQuery 的 SQL 构建。
-     *
-     * @param params  方法参数
-     * @param context 上下文对象
-     * @return SQL 语句
-     * @see com.mybatisflex.core.BaseMapper#updateNumberAddByQuery(String, Number, QueryWrapper)
-     */
-    public static String updateNumberAddByQuery(Map params, ProviderContext context) {
-        QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-
-        String fieldName = ProviderUtil.getFieldName(params);
-        Number value = (Number) ProviderUtil.getValue(params);
-
-        TableInfo tableInfo = ProviderUtil.getTableInfo(context);
-
-        //处理逻辑删除 和 多租户等
-        tableInfo.appendConditions(null, queryWrapper);
-
-        //优先构建 sql，再构建参数
-        String sql = DialectFactory.getDialect().forUpdateNumberAddByQuery(tableInfo.getSchema()
-            , tableInfo.getTableName(), fieldName, value, queryWrapper);
-
-        Object[] queryParams = CPI.getValueArray(queryWrapper);
-        ProviderUtil.setSqlArgs(params, queryParams);
-
-        return sql;
-    }
 
 
     /**
