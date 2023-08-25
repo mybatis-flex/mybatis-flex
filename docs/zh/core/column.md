@@ -26,7 +26,7 @@ public @interface Column {
     String onUpdateValue() default "";
 
     /**
-     * 是否是大字段，大字段 APT 不会生成到 ALL_COLUMNS 里
+     * 是否是大字段，大字段 APT 不会生成到 DEFAULT_COLUMNS 里
      */
     boolean isLarge() default false;
 
