@@ -18,6 +18,7 @@ package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.keygen.IKeyGenerator;
 import com.mybatisflex.core.keygen.KeyGeneratorFactory;
+import com.mybatisflex.core.keygen.KeyGenerators;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,9 +34,20 @@ public class IdGenTest {
 
     @Test
     public void snowFlakeID() {
-        int size = 10;
+        int size = 10_0000;
         long[] ids = new long[size];
-        IKeyGenerator keyGenerator = KeyGeneratorFactory.getKeyGenerator("snowFlakeId");
+        IKeyGenerator keyGenerator = KeyGeneratorFactory.getKeyGenerator(KeyGenerators.snowFlakeId);
+        for (int i = 0; i < size; i++) {
+            ids[i] = (Long) keyGenerator.generate(null, null);
+        }
+        Assert.assertEquals(size, LongStream.of(ids).distinct().count());
+    }
+
+    @Test
+    public void flexID() {
+        int size = 100_0000;
+        long[] ids = new long[size];
+        IKeyGenerator keyGenerator = KeyGeneratorFactory.getKeyGenerator(KeyGenerators.flexId);
         for (int i = 0; i < size; i++) {
             ids[i] = (Long) keyGenerator.generate(null, null);
         }
