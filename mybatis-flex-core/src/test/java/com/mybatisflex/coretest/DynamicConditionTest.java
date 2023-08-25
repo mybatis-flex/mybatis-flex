@@ -17,7 +17,6 @@
 package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.query.*;
-import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.junit.Test;
 
@@ -52,7 +51,7 @@ public class DynamicConditionTest {
         String sql = QueryWrapper.create()
             .from(ACCOUNT)
             .where(ACCOUNT.ID.in(idList).when(false))
-            .where(ACCOUNT.ID.in(idList, CollectionUtil::isNotEmpty))
+            .where(ACCOUNT.ID.in(idList, If::isNotEmpty))
             .where(ACCOUNT.ID.in(idList).when(idList::isEmpty))
             .toSQL();
 
