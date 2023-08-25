@@ -68,9 +68,16 @@ public class RelationManager {
 
 
     /**
+     * 查询时，仅查询这个配置的 Relations
+     */
+    private static ThreadLocal<Set<String>> onlyQueryRelations = new ThreadLocal<>();
+
+
+    /**
      * 每次查询是否自动清除 depth  extraConditionParams ignoreRelations 的配置
      */
     private static ThreadLocal<Boolean> autoClearConfig = ThreadLocal.withInitial(() -> true);
+
 
     public static int getDefaultQueryDepth() {
         return defaultQueryDepth;
@@ -115,6 +122,11 @@ public class RelationManager {
     }
 
 
+    //////ignore relations //////
+    public static Set<String> getIgnoreRelations() {
+        return ignoreRelations.get();
+    }
+
     public static void setIgnoreRelations(Set<String> ignoreRelations) {
         RelationManager.ignoreRelations.set(ignoreRelations);
     }
@@ -141,12 +153,46 @@ public class RelationManager {
         relations.addAll(Arrays.asList(ignoreRelations));
     }
 
-    public static Set<String> getIgnoreRelations() {
-        return ignoreRelations.get();
-    }
 
     public static void clearIgnoreRelations() {
         ignoreRelations.remove();
+    }
+
+
+    //////query relations //////
+    public static Set<String> getQueryRelations() {
+        return onlyQueryRelations.get();
+    }
+
+    public static void setQueryRelations(Set<String> queryRelations) {
+        RelationManager.onlyQueryRelations.set(queryRelations);
+    }
+
+
+    public static <T> void addQueryRelations(LambdaGetter<T>... queryRelations) {
+        Set<String> relations = RelationManager.onlyQueryRelations.get();
+        if (relations == null) {
+            relations = new HashSet<>();
+            setQueryRelations(relations);
+        }
+        for (LambdaGetter<T> lambdaGetter : queryRelations) {
+            String fieldName = LambdaUtil.getFieldName(lambdaGetter);
+            relations.add(fieldName);
+        }
+    }
+
+    public static void addQueryRelations(String... queryRelations) {
+        Set<String> relations = RelationManager.onlyQueryRelations.get();
+        if (relations == null) {
+            relations = new HashSet<>();
+            setQueryRelations(relations);
+        }
+        relations.addAll(Arrays.asList(queryRelations));
+    }
+
+
+    public static void clearQueryRelations() {
+        onlyQueryRelations.remove();
     }
 
 
@@ -214,7 +260,7 @@ public class RelationManager {
 
 
     public static <Entity> void queryRelations(BaseMapper<?> mapper, List<Entity> entities) {
-        doQueryRelations(mapper, entities, 0, depthThreadLocal.get(), ignoreRelations.get());
+        doQueryRelations(mapper, entities, 0, depthThreadLocal.get(), ignoreRelations.get(), onlyQueryRelations.get());
         clearConfigIfNecessary();
     }
 
@@ -226,13 +272,14 @@ public class RelationManager {
         if (autoClearEnable != null && autoClearEnable) {
             depthThreadLocal.remove();
             extraConditionParams.remove();
+            onlyQueryRelations.remove();
             ignoreRelations.remove();
         }
     }
 
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    static <Entity> void doQueryRelations(BaseMapper<?> mapper, List<Entity> entities, int currentDepth, int maxDepth, Set<String> ignoreRelations) {
+    static <Entity> void doQueryRelations(BaseMapper<?> mapper, List<Entity> entities, int currentDepth, int maxDepth, Set<String> ignoreRelations, Set<String> queryRelations) {
         if (CollectionUtil.isEmpty(entities)) {
             return;
         }
@@ -256,6 +303,14 @@ public class RelationManager {
                     || ignoreRelations.contains(relation.getName()))) {
                     return;
                 }
+
+                //only query
+                if (queryRelations != null && !queryRelations.isEmpty()
+                    && !queryRelations.contains(relation.getSimpleName())
+                    && !queryRelations.contains(relation.getName())) {
+                    return;
+                }
+
 
                 Set<Object> targetValues;
                 List<Row> mappingRows = null;
@@ -309,7 +364,7 @@ public class RelationManager {
                     if (CollectionUtil.isNotEmpty(targetObjectList)) {
 
                         //递归查询
-                        doQueryRelations(mapper, targetObjectList, currentDepth + 1, maxDepth, ignoreRelations);
+                        doQueryRelations(mapper, targetObjectList, currentDepth + 1, maxDepth, ignoreRelations, queryRelations);
 
                         //进行内存 join
                         relation.join(entities, targetObjectList, mappingRows);
