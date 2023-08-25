@@ -134,13 +134,13 @@ public class EntityTestStarter {
             .from(Article.class)
 //                .leftJoin(Account.class).as("a").on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
             .leftJoin(Account.class).as("a").on(wrapper -> wrapper.where(Account::getId).eq(Article::getAccountId))
-            .where(Account::getId).ge(100, If::notEmpty)
+            .where(Account::getId).ge(100, If::notNull)
             .and(wrapper -> {
                 wrapper.where(Account::getId).ge(100)
                     .or(Account::getAge).gt(200)
                     .and(Article::getAccountId).eq(200)
                     .or(wrapper1 -> {
-                        wrapper1.where(Account::getId).like("a", If::notEmpty);
+                        wrapper1.where(Account::getId).like("a", If::hasText);
                     })
                 ;
             });
