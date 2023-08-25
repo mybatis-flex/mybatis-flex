@@ -1,5 +1,15 @@
 # MyBatis-Flex ChangeLog
 
+## v1.6.0 20230825:
+- 新增：添加 RelationManager.addQueryRelations() 方法用于只查询部分关联字段
+- 优化：重构移除已经标识删除的方法或类 ！！！破坏性更新
+- 修复：Oracle 下的批量操作时在某些情况下可能返回结果不正确的问题
+- 修复：代码生成器在某些情况下出现 NPE 的问题，感谢 @Suomm
+- 修复：v1.5.9 版本造成的 ignore 属性也被加入 defaultQueryColumns 默认查询列的问题，感谢 @Suomm
+- 文档：添加 RelationManager.addQueryRelations() 使用的相关文档
+- 文档：添加 mybatis-flex-dependencies 使用说明，感谢 @Suomm
+
+
 
 ## v1.5.9 20230824:
 - 新增：添加对数据库 Hive SQL 和 Doris 的支持
