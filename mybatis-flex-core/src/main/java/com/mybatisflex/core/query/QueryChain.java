@@ -18,12 +18,8 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.mybatis.Mappers;
-import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * {@link QueryWrapper} 链式调用。
@@ -56,70 +52,6 @@ public class QueryChain<T> extends QueryWrapperAdapter<QueryChain<T>> implements
     @Override
     public QueryWrapper toQueryWrapper() {
         return this;
-    }
-
-    /**
-     * @deprecated 该方法将在 1.6.0 版本移除
-     */
-    @Deprecated
-    public T oneWithRelations() {
-        return baseMapper.selectOneWithRelationsByQuery(this);
-    }
-
-    /**
-     * @deprecated 该方法将在 1.6.0 版本移除
-     */
-    @Deprecated
-    public <R> R oneWithRelationsAs(Class<R> asType) {
-        return baseMapper.selectOneWithRelationsByQueryAs(this, asType);
-    }
-
-    /**
-     * @deprecated 该方法将在 1.6.0 版本移除
-     */
-    @Deprecated
-    public Optional<T> oneWithRelationsOpt() {
-        return Optional.ofNullable(baseMapper.selectOneWithRelationsByQuery(this));
-    }
-
-    /**
-     * @deprecated 该方法将在 1.6.0 版本移除
-     */
-    @Deprecated
-    public <R> Optional<R> oneWithRelationsAsOpt(Class<R> asType) {
-        return Optional.ofNullable(baseMapper.selectOneWithRelationsByQueryAs(this, asType));
-    }
-
-    /**
-     * @deprecated 该方法将在 1.6.0 版本移除
-     */
-    @Deprecated
-    public List<T> listWithRelations() {
-        return baseMapper.selectListWithRelationsByQuery(this);
-    }
-
-    /**
-     * @deprecated 该方法将在 1.6.0 版本移除
-     */
-    @Deprecated
-    public <R> List<R> listWithRelationsAs(Class<R> asType) {
-        return baseMapper.selectListWithRelationsByQueryAs(this, asType);
-    }
-
-    /**
-     * @deprecated 该方法将在 1.6.0 版本移除
-     */
-    @Deprecated
-    public Page<T> pageWithRelations(Page<T> page) {
-        return baseMapper.paginateWithRelations(page, this);
-    }
-
-    /**
-     * @deprecated 该方法将在 1.6.0 版本移除
-     */
-    @Deprecated
-    public <R> Page<R> pageWithRelationsAs(Page<R> page, Class<R> asType) {
-        return baseMapper.paginateWithRelationsAs(page, this, asType);
     }
 
     @Override
