@@ -79,8 +79,12 @@ public class SqlUtil {
      * @param result 数据库操作返回影响条数
      * @return {@code true} 操作成功，{@code false} 操作失败。
      */
-    public static boolean toBool(Number result) {
-        return result != null && result.intValue() > 0;
+    public static boolean toBool(int result) {
+        return result > 0 || result == -2;
+    }
+
+    public static boolean toBool(long result) {
+        return result > 0;
     }
 
 
@@ -93,7 +97,7 @@ public class SqlUtil {
      */
     public static boolean toBool(int[] results) {
         for (int result : results) {
-            if (result > 0) {
+            if (toBool(result)) {
                 return true;
             }
         }
