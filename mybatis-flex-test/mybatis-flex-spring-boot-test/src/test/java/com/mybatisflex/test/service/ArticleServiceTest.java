@@ -16,6 +16,7 @@
 
 package com.mybatisflex.test.service;
 
+import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,6 +41,17 @@ class ArticleServiceTest {
             .where(ARTICLE.ID.ge(100))
             .objList()
             .forEach(System.out::println);
+    }
+
+    @Test
+    void testExists() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(ARTICLE.DEFAULT_COLUMNS)
+            .from(ARTICLE)
+            .where(ARTICLE.ACCOUNT_ID.eq(1))
+            .orderBy(ARTICLE.ACCOUNT_ID.desc());
+        boolean exists = articleService.exists(queryWrapper);
+        System.out.println(exists);
     }
 
 }
