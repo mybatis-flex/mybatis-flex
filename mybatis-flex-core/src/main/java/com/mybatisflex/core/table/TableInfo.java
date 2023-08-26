@@ -923,7 +923,7 @@ public class TableInfo {
     }
 
 
-    public QueryWrapper buildQueryWrapper(Object entity, Map<String, SqlOperator> operators) {
+    public QueryWrapper buildQueryWrapper(Object entity, SqlOperators operators) {
         QueryColumn[] queryColumns = new QueryColumn[defaultQueryColumns.length];
         for (int i = 0; i < defaultQueryColumns.length; i++) {
             queryColumns[i] = columnQueryMapping.get(defaultQueryColumns[i]);
