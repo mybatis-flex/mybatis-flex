@@ -19,6 +19,7 @@ import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.constant.SqlConsts;
+import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
@@ -922,7 +923,7 @@ public class TableInfo {
     }
 
 
-    public QueryWrapper buildQueryWrapper(Object entity) {
+    public QueryWrapper buildQueryWrapper(Object entity, SqlOperators operators) {
         QueryColumn[] queryColumns = new QueryColumn[defaultQueryColumns.length];
         for (int i = 0; i < defaultQueryColumns.length; i++) {
             queryColumns[i] = columnQueryMapping.get(defaultQueryColumns[i]);
@@ -941,7 +942,15 @@ public class TableInfo {
             Object value = metaObject.getValue(property);
             if (value != null && !"".equals(value)) {
                 QueryColumn queryColumn = buildQueryColumn(column);
-                queryWrapper.and(queryColumn.eq(value));
+                if (operators != null && operators.containsKey(property)) {
+                    SqlOperator operator = operators.get(property);
+                    if (operator == SqlOperator.LIKE || operator == SqlOperator.NOT_LIKE) {
+                        value = "%" + value + "%";
+                    }
+                    queryWrapper.and(QueryCondition.create(queryColumn, operator, value));
+                } else {
+                    queryWrapper.and(queryColumn.eq(value));
+                }
             }
         });
         return queryWrapper;

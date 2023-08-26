@@ -938,6 +938,55 @@ WHERE `a`.`id` >=  100  AND
 ```
 
 
+## Entity 转化为 QueryWrapper
+
+QueryWrapper 提供了 `create()` 方法帮助用户把 entity 转化为 QueryWrapper。
+
+简单示例：
+
+```java
+Account account = new Account();
+account.setAge(18);
+account.setUserName("michael");
+
+QueryWrapper qw = QueryWrapper.create(account);
+System.out.println(qw.toSQL());
+```
+
+输出的 SQL 内容如下：
+
+```sql
+SELECT `id`, `user_name`, `birthday`, `sex`, `age`, `is_normal`
+FROM `tb_account`
+WHERE `user_name` = 'michael'  `age` = 18
+```
+
+自定义 Entity 字段的 SQL 操作符示例：
+
+```java
+Account account = new Account();
+account.setAge(18);
+account.setUserName("michael");
+
+SqlOperators operators = SqlOperators.of()
+  .set(Account::getUserName, SqlOperator.LIKE)
+  .set(Account::getAge, SqlOperator.GE);
+
+QueryWrapper qw = QueryWrapper.create(account, operators);
+System.out.println(qw.toSQL());
+```
+
+输出的 SQL 内容如下：
+
+```sql
+SELECT `id`, `user_name`, `birthday`, `sex`, `age`, `is_normal`
+FROM `tb_account`
+WHERE `user_name` LIKE '%michael%' AND `age` >= 18
+```
+
+
+
+
 ## QueryWrapper 序列化
 
 在 `QueryWrapper` 中，由于其定义了 `循环引用` 的一些数据结构，同时，其很多属性都是 `private` 或者 `protected` 修饰且没有 `getter` `setter` 方法，

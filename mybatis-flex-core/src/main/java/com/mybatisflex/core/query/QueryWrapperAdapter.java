@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
-import com.mybatisflex.core.constant.SqlOperator;
+import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
@@ -150,7 +150,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public R where(Map<String, Object> whereConditions, Map<String, SqlOperator> operators) {
+    public R where(Map<String, Object> whereConditions, SqlOperators operators) {
         super.where(whereConditions, operators);
         return (R) this;
     }
@@ -201,13 +201,13 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public R and(Map<String, Object> whereConditions, Map<String, SqlOperator> operators) {
+    public R and(Map<String, Object> whereConditions, SqlOperators operators) {
         super.and(whereConditions, operators);
         return (R) this;
     }
 
     @Override
-    public R and(Map<String, Object> whereConditions, Map<String, SqlOperator> operators, SqlConnector innerConnector) {
+    public R and(Map<String, Object> whereConditions, SqlOperators operators, SqlConnector innerConnector) {
         super.and(whereConditions, operators, innerConnector);
         return (R) this;
     }
@@ -248,13 +248,13 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public R or(Map<String, Object> whereConditions, Map<String, SqlOperator> operators) {
+    public R or(Map<String, Object> whereConditions, SqlOperators operators) {
         super.or(whereConditions, operators);
         return (R) this;
     }
 
     @Override
-    public R or(Map<String, Object> whereConditions, Map<String, SqlOperator> operators, SqlConnector innerConnector) {
+    public R or(Map<String, Object> whereConditions, SqlOperators operators, SqlConnector innerConnector) {
         super.or(whereConditions, operators, innerConnector);
         return (R) this;
     }

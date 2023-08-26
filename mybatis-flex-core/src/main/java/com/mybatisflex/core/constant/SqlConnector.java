@@ -13,12 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.core.query;
+package com.mybatisflex.core.constant;
 
 /**
  * @author michael
  */
-
 public enum SqlConnector {
 
 

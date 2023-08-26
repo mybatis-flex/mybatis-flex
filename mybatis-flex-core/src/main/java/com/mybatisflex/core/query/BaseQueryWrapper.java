@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.ObjectUtil;
