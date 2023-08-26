@@ -1151,7 +1151,8 @@ public class TableInfo {
         columnInfoMapping.forEach((column, columnInfo) -> {
             if (index <= 0) {
                 for (String rowKey : rowKeys) {
-                    if (column.equalsIgnoreCase(rowKey)) {
+                    // 修复: 开启 mapUnderscoreToCamelCase = true 时， row 无法转换 entity 的问题
+                    if (rowKey.equalsIgnoreCase(column) || rowKey.equalsIgnoreCase(column.replace("_", ""))) {
                         setInstancePropertyValue(row, instance, metaObject, columnInfo, rowKey);
                     }
                 }
@@ -1160,7 +1161,8 @@ public class TableInfo {
                     String newColumn = i <= 0 ? column : column + "$" + i;
                     boolean fillValue = false;
                     for (String rowKey : rowKeys) {
-                        if (newColumn.equalsIgnoreCase(rowKey)) {
+                        // 修复: 开启 mapUnderscoreToCamelCase = true 时， row 无法转换 entity 的问题
+                        if (rowKey.equalsIgnoreCase(column) || rowKey.equalsIgnoreCase(column.replace("_", ""))) {
                             setInstancePropertyValue(row, instance, metaObject, columnInfo, rowKey);
                             fillValue = true;
                             break;
@@ -1190,7 +1192,7 @@ public class TableInfo {
         if (rowValue != null && !metaObject.getSetterType(columnInfo.property).isAssignableFrom(rowValue.getClass())) {
             rowValue = ConvertUtil.convert(rowValue, metaObject.getSetterType(columnInfo.property), true);
         }
-        rowValue = invokeOnSetListener(instance, columnInfo.getProperty(), rowValue);
+        rowValue = invokeOnSetListener(instance, columnInfo.property, rowValue);
         metaObject.setValue(columnInfo.property, rowValue);
     }
 
