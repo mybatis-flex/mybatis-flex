@@ -100,6 +100,11 @@
 - [MyBatis-Flex 视频教程 - 46 动态添加数据源](https://www.bilibili.com/video/BV1tm4y1H712)
 - [MyBatis-Flex 视频教程 - 47 数据源加密](https://www.bilibili.com/video/BV1GF41117GC)
 - [MyBatis-Flex 视频教程 - 48 事务的管理](https://www.bilibili.com/video/BV1oP411p7Wk)
+- [MyBatis-Flex 视频教程 - 49 游标查询](https://www.bilibili.com/video/BV1JN4y1d7AB)
+- [MyBatis-Flex 视频教程 - 50 数据缓存](https://www.bilibili.com/video/BV1cu4y1X7XL)
+- [MyBatis-Flex 视频教程 - 51 数据缓存的简单使用](https://www.bilibili.com/video/BV1F8411X7EB)
+- [MyBatis-Flex 视频教程 - 52 动态表名](https://www.bilibili.com/video/BV1D8411Q7tD)
+- [MyBatis-Flex 视频教程 - 53 Active Record 模式](https://www.bilibili.com/video/BV1Lh4y1T7Ey)
 
 
 
