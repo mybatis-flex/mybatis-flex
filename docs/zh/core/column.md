@@ -179,7 +179,7 @@ public class Tables {
 
         //在 DEFAULT_COLUMNS 中是没有 content 字段。
         public QueryColumn[] DEFAULT_COLUMNS = new QueryColumn[]{ID, TITLE, CREATED, MODIFIED};
-        public QueryColumn[] ALL_COLUMNS = new QueryColumn[]{ID, TITLE, CONTENT, CREATED, MODIFIED};
+        public QueryColumn ALL_COLUMNS = new QueryColumn("*");
     }
 }
 ```
@@ -187,11 +187,11 @@ public class Tables {
 一般的场景中，我们查询内容应该如下：
 ```java
 QueryWrapper.create()
-    //使用的是 DEFAULT_COLUMNS
-    .select(ARTICLE.DEFAULT_COLUMNS)
-    .from(DEFAULT_COLUMNS)
-    .where(...)
+    .select(ARTICLE.DEFAULT_COLUMNS) //使用的是 DEFAULT_COLUMNS
+    .from(ARTICLE);
 ```
+
+> 此外，对于一些需要过滤的列，例如：`create_time`、`update_time` 等，也可以使用 `@Column(isLarge = true)` 去忽略查询。
 
 ## isLogicDelete
 
