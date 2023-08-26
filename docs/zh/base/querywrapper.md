@@ -1073,12 +1073,7 @@ QueryWrapper query2 = QueryWrapper.create()
 此时，我们可以通过配置 QueryColumnBehavior 来自定义忽略的值。如下的代码会自动忽略 `null` 和 `空字符串`：
 
 ```java
-QueryColumnBehavior.setIgnoreFunction(new Predicate<Object>() {
-    @Override
-    public boolean test(Object o) {
-        return "".equals(o);
-    }
-});
+QueryColumnBehavior.setIgnoreFunction(o -> o == null || "".equals(o));
 ```
 
 另外，在某些场景下，开发者希望在构建 QueryWrapper 中，如果传入的值是集合或数组，则使用 `in` 逻辑，否则使用 `=`（等于）
