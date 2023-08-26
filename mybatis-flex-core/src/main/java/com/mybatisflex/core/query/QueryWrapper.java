@@ -37,12 +37,25 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * 根据实体类对象，构建查询条件
      *
      * @param entity 实体类对象
-     * @return 查询对象
+     * @return 查询对象 QueryWrapper
      */
     public static QueryWrapper create(Object entity) {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
-        return tableInfo.buildQueryWrapper(entity);
+        return tableInfo.buildQueryWrapper(entity, null);
     }
+
+    /**
+     * 根据实体类构建查询条件
+     *
+     * @param entity    实体类对象
+     * @param operators 每个属性对应的操作符
+     * @return 查询对象 QueryWrapper
+     */
+    public static QueryWrapper create(Object entity, Map<String, SqlOperator> operators) {
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
+        return tableInfo.buildQueryWrapper(entity, operators);
+    }
+
 
     @SuppressWarnings("unchecked")
     public <Q extends QueryWrapper> WithBuilder<Q> with(String name) {
@@ -657,16 +670,16 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     public QueryWrapper limit(Number rows) {
         if (rows != null) {
             setLimitRows(rows.longValue());
-        }else {
+        } else {
             setLimitRows(null);
         }
         return this;
     }
 
     public QueryWrapper offset(Number offset) {
-        if (offset!= null) {
+        if (offset != null) {
             setLimitOffset(offset.longValue());
-        }else {
+        } else {
             setLimitOffset(null);
         }
         return this;
@@ -784,7 +797,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
 
-
     /**
      * 获取 queryWrapper 的参数
      * 在构建 sql 的时候，需要保证 where 在 having 的前面
@@ -816,7 +828,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
         return joinValues == null ? FlexConsts.EMPTY_ARRAY : joinValues.toArray();
     }
-
 
 
     /**
