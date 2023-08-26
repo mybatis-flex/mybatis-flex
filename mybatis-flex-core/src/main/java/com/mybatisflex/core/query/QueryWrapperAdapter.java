@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.util.LambdaGetter;

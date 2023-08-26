@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 
+import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.IDialect;
@@ -38,6 +39,7 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
 
     //当前条件的上一个条件
     protected QueryCondition prev;
+
     //当前条件的下一个条件
     protected QueryCondition next;
 

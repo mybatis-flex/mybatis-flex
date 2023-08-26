@@ -16,6 +16,7 @@
 
 package com.mybatisflex.coretest;
 
+import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.StringUtil;
 import org.junit.Test;
