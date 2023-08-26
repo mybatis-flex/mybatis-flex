@@ -16,6 +16,7 @@
 
 package com.mybatisflex.coretest;
 
+import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
@@ -26,6 +27,7 @@ import com.mybatisflex.core.table.DynamicTableProcessor;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.table.TableManager;
+import com.mybatisflex.core.query.SqlOperators;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -199,7 +201,6 @@ public class AccountSqlTester {
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         System.out.println(Arrays.toString(valueArray));
     }
-
 
 
     @Test
@@ -575,4 +576,30 @@ public class AccountSqlTester {
 //        System.out.println(">>>>> informix: " + informixSql);
     }
 
+
+    @Test
+    public void testEntityToQueryWrapper1() {
+        Account account = new Account();
+        account.setAge(18);
+        account.setUserName("michael");
+
+        QueryWrapper qw = QueryWrapper.create(account);
+        System.out.println(qw.toSQL());
+    }
+
+
+    @Test
+    public void testEntityToQueryWrapper2() {
+        Account account = new Account();
+        account.setAge(18);
+        account.setUserName("michael");
+
+        SqlOperators operators = SqlOperators.of()
+            .set(Account::getUserName, SqlOperator.LIKE)
+            .set(Account::getAge, SqlOperator.GE);
+
+        QueryWrapper qw = QueryWrapper.create(account, operators);
+
+        System.out.println(qw.toSQL());
+    }
 }

@@ -52,7 +52,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param operators 每个属性对应的操作符
      * @return 查询对象 QueryWrapper
      */
-    public static QueryWrapper create(Object entity, Map<String, SqlOperator> operators) {
+    public static QueryWrapper create(Object entity, SqlOperators operators) {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
         return tableInfo.buildQueryWrapper(entity, operators);
     }
@@ -221,7 +221,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return and(whereConditions);
     }
 
-    public QueryWrapper where(Map<String, Object> whereConditions, Map<String, SqlOperator> operators) {
+    public QueryWrapper where(Map<String, Object> whereConditions, SqlOperators operators) {
         return and(whereConditions, operators);
     }
 
@@ -270,14 +270,14 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
 
     public QueryWrapper and(Map<String, Object> whereConditions) {
-        return and(whereConditions, Collections.emptyMap());
+        return and(whereConditions, SqlOperators.empty());
     }
 
-    public QueryWrapper and(Map<String, Object> whereConditions, Map<String, SqlOperator> operators) {
+    public QueryWrapper and(Map<String, Object> whereConditions, SqlOperators operators) {
         return connectMap(whereConditions, operators, SqlConnector.AND, SqlConnector.AND);
     }
 
-    public QueryWrapper and(Map<String, Object> whereConditions, Map<String, SqlOperator> operators, SqlConnector innerConnector) {
+    public QueryWrapper and(Map<String, Object> whereConditions, SqlOperators operators, SqlConnector innerConnector) {
         return connectMap(whereConditions, operators, SqlConnector.AND, innerConnector);
     }
 
@@ -319,20 +319,20 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
 
     public QueryWrapper or(Map<String, Object> whereConditions) {
-        return or(whereConditions, Collections.emptyMap());
+        return or(whereConditions, SqlOperators.empty());
     }
 
-    public QueryWrapper or(Map<String, Object> whereConditions, Map<String, SqlOperator> operators) {
+    public QueryWrapper or(Map<String, Object> whereConditions, SqlOperators operators) {
         return connectMap(whereConditions, operators, SqlConnector.OR, SqlConnector.AND);
     }
 
-    public QueryWrapper or(Map<String, Object> whereConditions, Map<String, SqlOperator> operators, SqlConnector innerConnector) {
+    public QueryWrapper or(Map<String, Object> whereConditions, SqlOperators operators, SqlConnector innerConnector) {
         return connectMap(whereConditions, operators, SqlConnector.OR, SqlConnector.AND);
     }
 
-    protected QueryWrapper connectMap(Map<String, Object> mapConditions, Map<String, SqlOperator> operators, SqlConnector outerConnector, SqlConnector innerConnector) {
+    protected QueryWrapper connectMap(Map<String, Object> mapConditions, SqlOperators operators, SqlConnector outerConnector, SqlConnector innerConnector) {
         if (operators == null) {
-            operators = Collections.emptyMap();
+            operators = SqlOperators.empty();
         }
         if (mapConditions != null) {
             QueryCondition condition = null;

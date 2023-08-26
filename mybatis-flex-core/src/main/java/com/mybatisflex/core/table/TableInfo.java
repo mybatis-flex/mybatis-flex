@@ -944,6 +944,9 @@ public class TableInfo {
                 QueryColumn queryColumn = buildQueryColumn(column);
                 if (operators != null && operators.containsKey(property)) {
                     SqlOperator operator = operators.get(property);
+                    if (operator == SqlOperator.LIKE || operator == SqlOperator.NOT_LIKE) {
+                        value = "%" + value + "%";
+                    }
                     queryWrapper.and(QueryCondition.create(queryColumn, operator, value));
                 } else {
                     queryWrapper.and(queryColumn.eq(value));
