@@ -1,5 +1,20 @@
 # MyBatis-Flex ChangeLog
 
+
+## v1.6.1 20230827:
+- 新增：添加 QueryWrapper.create(entity,SqlOperators) 支持通过 Entity 转换为 QueryWrapper
+- 优化：移动 SqlConnector 的包名
+- 优化：优化 IService.exists() 的效率，感谢 @Suomm
+- 修复：开启 mapUnderscoreToCamelCase = true 时， row 无法转换 entity 的问题
+- 修复：使用 QueryColumn 无法构建 UPDATE SET 语句，感谢 @Suomm
+- 修复：UpdateChain 不支持 @EnumValue 注解的问题，感谢 @Suomm
+- 文档：添加 Entity 转换为 QueryWrapper 的相关文档
+- 文档：添加 `@Column(isLarge = true)` 的其他使用方式，感谢 @Suomm
+- 文档：优化 `@Column` 注解的一些错误描述，感谢 @Suomm
+- 文档：添加关于 QueryColumnBehavior 配置的相关文档，感谢 @Suomm
+
+
+
 ## v1.6.0 20230825:
 - 新增：添加 RelationManager.addQueryRelations() 方法用于只查询部分关联字段
 - 优化：重构移除已经标识删除的方法或类 ！！！破坏性更新
