@@ -53,7 +53,7 @@ public class TableDefs implements Serializable {
 
 
     public static TableDef getTableDef(Class<?> entityClass, String tableNameWithSchema) {
-        if (TABLE_DEF_MAP.isEmpty()) {
+        if (!TABLE_DEF_MAP.containsKey(tableNameWithSchema)) {
             init(entityClass.getPackage().getName());
         }
         return TABLE_DEF_MAP.get(tableNameWithSchema);
@@ -61,7 +61,7 @@ public class TableDefs implements Serializable {
 
 
     public static QueryColumn getQueryColumn(Class<?> entityClass, String tableNameWithSchema, String column) {
-        if (TABLE_DEF_MAP.isEmpty()) {
+        if (!TABLE_DEF_MAP.containsKey(tableNameWithSchema)) {
             init(entityClass.getPackage().getName());
         }
         Map<String, QueryColumn> queryColumnMap = QUERY_COLUMN_MAP.get(tableNameWithSchema);
