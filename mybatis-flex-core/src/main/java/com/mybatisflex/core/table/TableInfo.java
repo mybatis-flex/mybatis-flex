@@ -559,11 +559,11 @@ public class TableInfo {
                 return Collections.emptySet();
             }
             for (String property : updates.keySet()) {
-//                String column = getColumnByProperty(property);
-                String column = propertyColumnMapping.get(property);
-                if (column == null) {
-                    continue;
-                }
+                String column = getColumnByProperty(property);
+//                String column = propertyColumnMapping.get(property);
+//                if (column == null) {
+//                    continue;
+//                }
 
 
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
@@ -638,10 +638,11 @@ public class TableInfo {
             }
             for (String property : updates.keySet()) {
 
-                String column = propertyColumnMapping.get(property);
-                if (column == null) {
-                    continue;
-                }
+                String column = getColumnByProperty(property);
+//                String column = propertyColumnMapping.get(property);
+//                if (column == null) {
+//                    continue;
+//                }
 
 
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
@@ -667,6 +668,16 @@ public class TableInfo {
                         TypeHandler typeHandler = columnInfo.buildTypeHandler();
                         if (typeHandler != null) {
                             value = new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
+                        }
+                    }
+
+                    // fixed: https://gitee.com/mybatis-flex/mybatis-flex/issues/I7TFBK
+                    if (value.getClass().isEnum()) {
+                        EnumWrapper enumWrapper = EnumWrapper.of(value.getClass());
+                        if (enumWrapper.hasEnumValueAnnotation()) {
+                            value = enumWrapper.getEnumValue((Enum) value);
+                        } else {
+                            value = ((Enum<?>)value).name();
                         }
                     }
                 }
