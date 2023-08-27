@@ -20,6 +20,7 @@ import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.keygen.KeyGenerators;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowKey;
@@ -32,6 +33,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 import java.util.List;
+
+import static com.mybatisflex.test.relation.onetoone.table.AccountTableDef.ACCOUNT;
 
 public class RowTestStarter {
 
@@ -74,6 +77,17 @@ public class RowTestStarter {
 
         Db.insert("tb_account",row);
         List<Row> rowList = Db.selectAll("tb_account");
+        RowUtil.printPretty(rowList);
+    }
+
+
+    //https://gitee.com/mybatis-flex/mybatis-flex/issues/I7W7HQ
+    @Test
+    public void testRow01(){
+        QueryWrapper qw = QueryWrapper.create().select("id, MAX(`tb_account`.`age`)")
+            .groupBy("id")
+            .from(ACCOUNT);
+        List<Row> rowList = Db.selectListByQuery(qw);
         RowUtil.printPretty(rowList);
     }
 
