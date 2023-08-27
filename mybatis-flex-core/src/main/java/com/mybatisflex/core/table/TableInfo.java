@@ -559,12 +559,8 @@ public class TableInfo {
                 return Collections.emptySet();
             }
             for (String property : updates.keySet()) {
-                String column = getColumnByProperty(property);
-//                String column = propertyColumnMapping.get(property);
-//                if (column == null) {
-//                    continue;
-//                }
 
+                String column = getColumnByProperty(property);
 
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
                     continue;
@@ -607,17 +603,6 @@ public class TableInfo {
 
                 columns.add(column);
             }
-
-            // 普通 entity（非 ModifyAttrsRecord） 忽略 includePrimary 的设置
-//            if (includePrimary) {
-//                for (String column : this.primaryKeys) {
-//                    Object value = getColumnValue(metaObject, column);
-//                    if (ignoreNulls && value == null) {
-//                        continue;
-//                    }
-//                    columns.add(column);
-//                }
-//            }
         }
         return columns;
     }
@@ -639,11 +624,6 @@ public class TableInfo {
             for (String property : updates.keySet()) {
 
                 String column = getColumnByProperty(property);
-//                String column = propertyColumnMapping.get(property);
-//                if (column == null) {
-//                    continue;
-//                }
-
 
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
                     continue;
