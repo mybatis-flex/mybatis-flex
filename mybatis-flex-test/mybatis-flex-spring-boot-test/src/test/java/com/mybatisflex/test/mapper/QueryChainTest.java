@@ -19,6 +19,8 @@ package com.mybatisflex.test.mapper;
 import com.mybatisflex.core.field.QueryBuilder;
 import com.mybatisflex.core.query.QueryChain;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.update.UpdateChain;
+import com.mybatisflex.test.model.Gender;
 import com.mybatisflex.test.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -80,6 +82,17 @@ class QueryChainTest {
             .one();
 
         Assertions.assertEquals(user1.toString(), user2.toString());
+    }
+
+    @Test
+    void testToSql() {
+        String sql = UpdateChain.create(userMapper)
+            .set(USER.USER_NAME, "张三")
+            .set(User::getUserId, Gender.MALE)
+            .where(USER.USER_ID.eq(1))
+            .toSQL();
+
+        System.out.println(sql);
     }
 
 }
