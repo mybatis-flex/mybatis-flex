@@ -670,6 +670,16 @@ public class TableInfo {
                             value = new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
                         }
                     }
+
+                    // fixed: https://gitee.com/mybatis-flex/mybatis-flex/issues/I7TFBK
+                    if (value.getClass().isEnum()) {
+                        EnumWrapper enumWrapper = EnumWrapper.of(value.getClass());
+                        if (enumWrapper.hasEnumValueAnnotation()) {
+                            value = enumWrapper.getEnumValue((Enum) value);
+                        } else {
+                            value = ((Enum<?>)value).name();
+                        }
+                    }
                 }
 
                 // ModifyAttrsRecord 忽略 ignoreNulls 的设置，
