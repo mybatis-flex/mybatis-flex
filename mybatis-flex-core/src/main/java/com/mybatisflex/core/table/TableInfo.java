@@ -559,11 +559,11 @@ public class TableInfo {
                 return Collections.emptySet();
             }
             for (String property : updates.keySet()) {
-//                String column = getColumnByProperty(property);
-                String column = propertyColumnMapping.get(property);
-                if (column == null) {
-                    continue;
-                }
+                String column = getColumnByProperty(property);
+//                String column = propertyColumnMapping.get(property);
+//                if (column == null) {
+//                    continue;
+//                }
 
 
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
@@ -638,10 +638,11 @@ public class TableInfo {
             }
             for (String property : updates.keySet()) {
 
-                String column = propertyColumnMapping.get(property);
-                if (column == null) {
-                    continue;
-                }
+                String column = getColumnByProperty(property);
+//                String column = propertyColumnMapping.get(property);
+//                if (column == null) {
+//                    continue;
+//                }
 
 
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
