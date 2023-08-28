@@ -80,7 +80,7 @@ public class FlexWrapperFactory implements ObjectWrapperFactory {
 
         @Override
         public String findProperty(String name, boolean useCamelCaseMapping) {
-            return useCamelCaseMapping ? StringUtil.underlineToCamel(name) : name;
+            return useCamelCaseMapping && name.contains("_") ? StringUtil.underlineToCamel(name) : name;
         }
     }
 
