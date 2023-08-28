@@ -87,7 +87,7 @@ MyBatis-Flex 提供了 `mybatis-flex-dependencies` 模块进行依赖管理，�
 <dependencyManagement>
     <dependencies>
         <dependency>
-            <groupId>com.mybatisflex</groupId>
+            <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-dependencies</artifactId>
             <version>${mybatis-flex.version}</version>
             <type>pom</type>
@@ -102,11 +102,11 @@ MyBatis-Flex 提供了 `mybatis-flex-dependencies` 模块进行依赖管理，�
 ```xml
 <dependencies>
     <dependency>
-        <groupId>com.mybatisflex</groupId>
+        <groupId>com.mybatis-flex</groupId>
         <artifactId>mybatis-flex-spring-boot-starter</artifactId>
     </dependency>
     <dependency>
-        <groupId>com.mybatisflex</groupId>
+        <groupId>com.mybatis-flex</groupId>
         <artifactId>mybatis-flex-codegen</artifactId>
     </dependency>
 </dependencies>
