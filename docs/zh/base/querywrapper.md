@@ -958,7 +958,7 @@ System.out.println(qw.toSQL());
 ```sql
 SELECT `id`, `user_name`, `birthday`, `sex`, `age`, `is_normal`
 FROM `tb_account`
-WHERE `user_name` = 'michael'  `age` = 18
+WHERE `user_name` = 'michael' and `age` = 18
 ```
 
 自定义 Entity 字段的 SQL 操作符示例：
