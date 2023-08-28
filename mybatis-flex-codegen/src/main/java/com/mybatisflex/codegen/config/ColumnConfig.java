@@ -287,6 +287,16 @@ public class ColumnConfig implements Serializable {
             return this;
         }
 
+        public Builder large(Boolean large) {
+            this.columnConfig.setLarge(large);
+            return this;
+        }
+
+        public Builder logicDelete(Boolean logicDelete) {
+            this.columnConfig.setLogicDelete(logicDelete);
+            return this;
+        }
+
         public Builder version(Boolean version) {
             this.columnConfig.setVersion(version);
             return this;
