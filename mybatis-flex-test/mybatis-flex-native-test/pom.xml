@@ -114,6 +114,12 @@
             <version>2.14.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.16.1</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.assertj</groupId>

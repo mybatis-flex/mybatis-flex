@@ -1,5 +1,6 @@
 # MyBatis-Flex ChangeLog
 
+查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)
 
 ## v1.6.1 20230827:
 - 新增：添加 QueryWrapper.create(entity,SqlOperators) 支持通过 Entity 转换为 QueryWrapper
