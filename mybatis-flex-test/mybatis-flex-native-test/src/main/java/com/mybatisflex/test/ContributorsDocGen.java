@@ -39,7 +39,7 @@ public class ContributorsDocGen {
         for (String url : urls) {
             startIndex = getMdContent(markdown, url, cookie, startIndex);
         }
-        if (startIndex != 0){
+        if (startIndex != 0) {
             markdown.append("|\n");
         }
 
@@ -53,8 +53,8 @@ public class ContributorsDocGen {
     public static void writeString(File file, StringBuilder markdown) throws IOException {
         try (FileWriter fw = new FileWriter(file, false);
              BufferedWriter bw = new BufferedWriter(fw)) {
-                bw.write(markdown.toString());
-                bw.newLine();
+            bw.write(markdown.toString());
+            bw.newLine();
         }
     }
 
@@ -70,6 +70,9 @@ public class ContributorsDocGen {
             Element img = userListItem.selectFirst("img");
             String src = img.attr("src");
             String userName = userListItem.selectFirst(".username").text();
+            if (userName.contains("@")) {
+                userName = userName.substring(0, userName.indexOf("@"));
+            }
 
             markdown.append("|");
             if (StringUtil.isNotBlank(src)) {
