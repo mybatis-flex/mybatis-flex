@@ -80,56 +80,8 @@ public class MyConfiguration {
 ```
 
 
-## 注意事项
 
-### 新增数据时
-
-```java 7
-@Table("tb_article")
-public class Article {
-
-    @Id(keyType = KeyType.Auto)
-    private Long id;
-
-    @Column(tenantId = true)
-    private Long tenantId;
-}
-```
-
-在以上的代码中，我们 **新增** Article 的时候，无论 `Article` 设置 `tenantId` 的值是什么，都会被 `TenantFactory` 返回的内容进行覆盖，
-若 `TenantFactory` 返回多个 `tenantId`，则默认使用第一个为 `Article.tenantId` 赋值。若 `TenantFactory` 返回的内容为 null 或者 空数组，
-则保留 `Article.tenantId` 设置的值。
-
-以下是代码示例：
-
-```java
-Article article = new Article();
-article.setTenantId(100);
-
-articleMapper.insert(article);
-```
-
-- 若 `TenantFactory` 返回的有值，`tenantId` 的值为 `TenantFactory` 返回数组的第一个值。
-- 若 `TenantFactory` 返回的数组为 `null` 或者 空数组，`tenantId` 的值为 `100`；
-
-### 删除、修改和查询
-
-当 Entity 被 `@Column(tenantId = true)` 标识租户列后，所有通过 `BaseMapper` 进行 删除、修改 和 查询，都会带上租户的条件。
-
-比如根据 ID 删除，那么执行的 SQL 如下：
-
-```sql
-DELETE FROM tb_article where id = ? and tenant_id = ?
-```
-当 `TenantFactory` 返回多个租户 ID 的时候，执行的 SQL 如下：
-
-```sql
-DELETE FROM tb_article where id = ? and tenant_id in (?, ?, ?)
-```
-
-同理，修改和查询，也都会带有 `tenant_id` 条件。
-
-### 忽略租户条件
+## 忽略租户条件
 
 在某些场景下，在增删改查等操作，我们可能需要忽略租户条件，
 此时可以使用TenantManager的`withoutTenantCondition`、`ignoreTenantCondition`、`restoreTenantCondition`三个方法。
@@ -190,3 +142,54 @@ public class Account {
 
 }
 ```
+
+
+
+## 注意事项
+
+### 新增数据时注意事项
+
+```java 7
+@Table("tb_article")
+public class Article {
+
+    @Id(keyType = KeyType.Auto)
+    private Long id;
+
+    @Column(tenantId = true)
+    private Long tenantId;
+}
+```
+
+在以上的代码中，我们 **新增** Article 的时候，无论 `Article` 设置 `tenantId` 的值是什么，都会被 `TenantFactory` 返回的内容进行覆盖，
+若 `TenantFactory` 返回多个 `tenantId`，则默认使用第一个为 `Article.tenantId` 赋值。若 `TenantFactory` 返回的内容为 null 或者 空数组，
+则保留 `Article.tenantId` 设置的值。
+
+以下是代码示例：
+
+```java
+Article article = new Article();
+article.setTenantId(100);
+
+articleMapper.insert(article);
+```
+
+- 若 `TenantFactory` 返回的有值，`tenantId` 的值为 `TenantFactory` 返回数组的第一个值。
+- 若 `TenantFactory` 返回的数组为 `null` 或者 空数组，`tenantId` 的值为 `100`；
+
+### 删除、修改和查询注意事项
+
+当 Entity 被 `@Column(tenantId = true)` 标识租户列后，所有通过 `BaseMapper` 进行 删除、修改 和 查询，都会带上租户的条件。
+
+比如根据 ID 删除，那么执行的 SQL 如下：
+
+```sql
+DELETE FROM tb_article where id = ? and tenant_id = ?
+```
+当 `TenantFactory` 返回多个租户 ID 的时候，执行的 SQL 如下：
+
+```sql
+DELETE FROM tb_article where id = ? and tenant_id in (?, ?, ?)
+```
+
+同理，修改和查询，也都会带有 `tenant_id` 条件。
