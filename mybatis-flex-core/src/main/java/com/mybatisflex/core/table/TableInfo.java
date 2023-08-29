@@ -645,7 +645,7 @@ public class TableInfo {
                 if (value != null) {
                     ColumnInfo columnInfo = columnInfoMapping.get(column);
                     if (columnInfo != null) {
-                        TypeHandler typeHandler = columnInfo.buildTypeHandler();
+                        TypeHandler typeHandler = columnInfo.buildTypeHandler(null);
                         if (typeHandler != null) {
                             value = new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
                         }
@@ -1083,7 +1083,7 @@ public class TableInfo {
                     , columnInfo.propertyType)
                     .jdbcType(columnInfo.getJdbcType())
                     .flags(flags)
-                    .typeHandler(columnInfo.buildTypeHandler())
+                    .typeHandler(columnInfo.buildTypeHandler(configuration))
                     .build();
                 resultMappings.add(mapping);
                 existMappingColumns.add(mapping.getColumn());
@@ -1100,7 +1100,7 @@ public class TableInfo {
                         , columnInfo.propertyType)
                         .jdbcType(columnInfo.getJdbcType())
                         .flags(flags)
-                        .typeHandler(columnInfo.buildTypeHandler())
+                        .typeHandler(columnInfo.buildTypeHandler(configuration))
                         .build();
                     resultMappings.add(mapping);
                     existMappingColumns.add(mapping.getColumn());
@@ -1115,7 +1115,7 @@ public class TableInfo {
         Object value = getPropertyValue(metaObject, columnInfo.property);
 
         if (value != null) {
-            TypeHandler typeHandler = columnInfo.buildTypeHandler();
+            TypeHandler typeHandler = columnInfo.buildTypeHandler(null);
             if (typeHandler != null) {
                 return new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
             }
@@ -1180,7 +1180,7 @@ public class TableInfo {
 
     private void setInstancePropertyValue(Row row, Object instance, MetaObject metaObject, ColumnInfo columnInfo, String rowKey) {
         Object rowValue = row.get(rowKey);
-        TypeHandler<?> typeHandler = columnInfo.buildTypeHandler();
+        TypeHandler<?> typeHandler = columnInfo.buildTypeHandler(null);
         if (typeHandler != null) {
             try {
                 //通过 typeHandler 转换数据

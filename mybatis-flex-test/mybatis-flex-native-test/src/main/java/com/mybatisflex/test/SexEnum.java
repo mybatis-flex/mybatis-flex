@@ -50,4 +50,12 @@ public enum SexEnum {
     public void setDesc(String desc) {
         this.desc = desc;
     }
+
+    @Override
+    public String toString() {
+        return "SexEnum{" +
+            "code=" + code +
+            ", desc='" + desc + '\'' +
+            '}';
+    }
 }

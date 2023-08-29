@@ -83,7 +83,7 @@ public class AccountTester {
 
     @Test
     public void testExecutor() {
-        DbChain.create()
+        DbChain.table("tb_account")
             .select(ACCOUNT.ALL_COLUMNS)
             .from(ACCOUNT)
             .where(ACCOUNT.ID.ge(1))

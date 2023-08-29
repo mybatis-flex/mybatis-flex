@@ -16,6 +16,7 @@
 package com.mybatisflex.core.mybatis;
 
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.handler.CompositeEnumTypeHandler;
 import com.mybatisflex.core.keygen.MultiEntityKeyGenerator;
 import com.mybatisflex.core.keygen.MultiRowKeyGenerator;
 import com.mybatisflex.core.keygen.MybatisKeyGeneratorUtil;
@@ -59,6 +60,7 @@ public class FlexConfiguration extends Configuration {
 
     public FlexConfiguration() {
         setObjectWrapperFactory(new FlexWrapperFactory());
+        setDefaultEnumTypeHandler(CompositeEnumTypeHandler.class);
         initDefaultMappers();
     }
 
@@ -66,6 +68,7 @@ public class FlexConfiguration extends Configuration {
     public FlexConfiguration(Environment environment) {
         super(environment);
         setObjectWrapperFactory(new FlexWrapperFactory());
+        setDefaultEnumTypeHandler(CompositeEnumTypeHandler.class);
         initDefaultMappers();
     }
 
