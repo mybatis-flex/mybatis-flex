@@ -54,11 +54,11 @@ public class DbChain extends QueryWrapperAdapter<DbChain> implements PropertySet
     }
 
     public static DbChain create() {
-        throw new UnsupportedOperationException("please use DbChain#table(...)");
+        throw new UnsupportedOperationException("Please use DbChain#table(...) to replace DbChain.create()");
     }
 
     public static DbChain create(Object entity) {
-        throw new UnsupportedOperationException("please use DbChain#table(...)");
+        throw new UnsupportedOperationException("Please use DbChain#table(...) to replace DbChain.create(entity)");
     }
 
     public static DbChain table(String tableName) {
