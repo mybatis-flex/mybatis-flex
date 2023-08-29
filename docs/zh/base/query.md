@@ -6,7 +6,22 @@
 
 <!--@include:./parts/base-mapper-query-methods.md-->
 
+**select..As 使用注意事项：**
 
+假设项目中有 `User.java` 的 Entity 类以及 `UserVo.java` 两个类。而 `User.java` 的代码如下
+
+```java
+public class User {
+
+    @Column(typeHandler=xxxHandler.class)
+    private String attr1;
+
+    //getter setter
+}
+```
+
+`User.java` 的 `attr1` 属性配置了 `typeHandler`，当我们通过 `userMapper.select...As(UserVo.class)` 查询得到 `UserVo` 的时候，
+也同样需要在 `UserVo` 的 `attr1` 属性中也配置上 `@Column(typeHandler=xxxHandler.class)`，两者才能得到相同的结果。
 
 ## 游标查询
 
