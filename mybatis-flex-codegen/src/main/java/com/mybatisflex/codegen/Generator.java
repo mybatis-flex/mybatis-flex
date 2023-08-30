@@ -30,6 +30,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 代码生成器。
@@ -55,10 +56,17 @@ public class Generator {
     }
 
     public void generate() {
-        try (Connection conn = dataSource.getConnection();) {
+        try (Connection conn = dataSource.getConnection()) {
 
             dbMeta = conn.getMetaData();
             List<Table> tables = buildTables(conn);
+
+            if (tables.isEmpty()) {
+                System.err.printf("table %s not found.%n", globalConfig.getGenerateTables());
+                return;
+            } else {
+                System.out.printf("find tables: %s%n", tables.stream().map(Table::getName).collect(Collectors.toSet()));
+            }
 
             for (Table table : tables) {
                 Collection<IGenerator> generators = GeneratorFactory.getGenerators();
