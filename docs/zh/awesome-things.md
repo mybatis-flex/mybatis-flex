@@ -63,10 +63,10 @@
 - [MyBatis-Flex 视频教程 - 52 动态表名](https://www.bilibili.com/video/BV1D8411Q7tD)
 - [MyBatis-Flex 视频教程 - 53 Active Record 模式](https://www.bilibili.com/video/BV1Lh4y1T7Ey)
 - [MyBatis-Flex 视频教程 - 56 MyBatis-Flex APT 配置](https://www.bilibili.com/video/BV1fh4y1T7o1)
-- [MyBatis-Flex 视频教程 - 57代码生成器（风格一）](https://www.bilibili.com/video/BV1o14y1C7pJ)
-- [MyBatis-Flex 视频教程 - 58代码生成器（风格二）](https://www.bilibili.com/video/BV14P411h7eM)
-- [MyBatis-Flex 视频教程 - 59自定义代码生成器](https://www.bilibili.com/video/BV1uu4y1v7Yg)
-- [MyBatis-Flex 视频教程 - 60课程总结](https://www.bilibili.com/video/BV1kN4y1R7Zx)
+- [MyBatis-Flex 视频教程 - 57 代码生成器（风格一）](https://www.bilibili.com/video/BV1o14y1C7pJ)
+- [MyBatis-Flex 视频教程 - 58 代码生成器（风格二）](https://www.bilibili.com/video/BV14P411h7eM)
+- [MyBatis-Flex 视频教程 - 59 自定义代码生成器](https://www.bilibili.com/video/BV1uu4y1v7Yg)
+- [MyBatis-Flex 视频教程 - 60 课程总结](https://www.bilibili.com/video/BV1kN4y1R7Zx)
 
 
 -----
