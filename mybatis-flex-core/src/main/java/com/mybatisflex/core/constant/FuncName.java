@@ -142,7 +142,7 @@ public class FuncName {
     public static final String WEEKDAY = "WEEKDAY";
     public static final String WEEKOFYEAR = "WEEKOFYEAR";
     public static final String YEAR = "YEAR";
-
+    public static final String GROUP_CONCAT = "GROUP_CONCAT";
     private FuncName() {
     }
 
