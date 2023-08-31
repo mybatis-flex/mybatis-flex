@@ -178,7 +178,12 @@ public class AccountTester {
 
     @Test
     public void testSelectAsToDTO() {
-        List<AccountDTO> accountDTOS = accountMapper.selectListByQueryAs(QueryWrapper.create(), AccountDTO.class);
+        QueryWrapper queryWrapper = QueryWrapper.create();
+//        queryWrapper.select(ACCOUNT.ALL_COLUMNS,ARTICLE.TITLE.as(AccountDTO::getPermissions))
+        queryWrapper.select(ACCOUNT.ALL_COLUMNS,ACCOUNT.USER_NAME.as(AccountDTO::getTestOtherField))
+//        queryWrapper.select(ACCOUNT.ALL_COLUMNS)
+            .from(ACCOUNT).leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
+        List<AccountDTO> accountDTOS = accountMapper.selectListByQueryAs(queryWrapper, AccountDTO.class);
         System.out.println(accountDTOS);
     }
 

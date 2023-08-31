@@ -48,6 +48,11 @@ public class AccountDTO {
 
     private List<Article> articles;
 
+//    @Column(ignore = true)
+    private List<String> permissions;
+
+    private String testOtherField;
+
 
     public Long getId() {
         return id;
@@ -105,6 +110,32 @@ public class AccountDTO {
         this.articles = articles;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getTestOtherField() {
+        return testOtherField;
+    }
+
+    public void setTestOtherField(String testOtherField) {
+        this.testOtherField = testOtherField;
+    }
+
+    public List<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<String> permissions) {
+        this.permissions = permissions;
+    }
+
+
+
     @Override
     public String toString() {
         return "AccountDTO{" +
@@ -115,7 +146,7 @@ public class AccountDTO {
             ", options=" + options +
             ", isDelete=" + isDelete +
             ", articles=" + articles +
+            ", permissions=" + permissions +
             '}';
     }
-
 }

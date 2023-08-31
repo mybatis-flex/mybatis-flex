@@ -19,21 +19,26 @@ import com.mybatisflex.core.transaction.TransactionContext;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
-import org.apache.ibatis.executor.resultset.DefaultResultSetHandler;
+import org.apache.ibatis.executor.resultset.ResultSetWrapper;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ResultMap;
+import org.apache.ibatis.mapping.ResultMapping;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.type.TypeHandler;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author michael
- * 用于增强对 Cursor 查询处理
+ * 用于增强对 Cursor 查询处理，以及 List<String> 的自动映射问题
  */
-public class FlexResultSetHandler extends DefaultResultSetHandler {
+public class FlexResultSetHandler extends FlexDefaultResultSetHandler {
 
     public FlexResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler
         , ResultHandler<?> resultHandler, BoundSql boundSql, RowBounds rowBounds) {
@@ -57,6 +62,43 @@ public class FlexResultSetHandler extends DefaultResultSetHandler {
     }
 
 
+    /**
+     * 修复当实体类中存在 List<String> 或者 List<Integer> 等自动映射出错的问题
+     * 本质问题应该出现 mybatis 判断有误
+     *
+     * https://gitee.com/mybatis-flex/mybatis-flex/issues/I7XBQS
+     * https://gitee.com/mybatis-flex/mybatis-flex/issues/I7X7G7
+     *
+     * @param rsw
+     * @param resultMap
+     * @param columnPrefix
+     * @throws SQLException
+     */
+    @Override
+    protected Object createPrimitiveResultObject(ResultSetWrapper rsw, ResultMap resultMap, String columnPrefix)
+        throws SQLException {
+        final Class<?> resultType = resultMap.getType();
+        final String columnName;
+        final TypeHandler<?> typeHandler;
+        if (!resultMap.getResultMappings().isEmpty()) {
+            final List<ResultMapping> resultMappingList = resultMap.getResultMappings();
+            final ResultMapping mapping = resultMappingList.get(0);
+            columnName = prependPrefix(mapping.getColumn(), columnPrefix);
+            typeHandler = mapping.getTypeHandler();
+        } else {
+            columnName = rsw.getColumnNames().get(0);
+            typeHandler = rsw.getTypeHandler(resultType, columnName);
+        }
+
+        List<String> mappedColumnNames = rsw.getMappedColumnNames(resultMap, columnPrefix);
+        if (columnName != null && mappedColumnNames.contains(columnName.toUpperCase(Locale.ENGLISH))) {
+            return typeHandler.getResult(rsw.getResultSet(), columnName);
+        }
+        return null;
+    }
+
+
+
     static class FlexCursor<T> implements Cursor<T> {
 
         private final Cursor<T> originalCursor;
@@ -68,8 +110,7 @@ public class FlexResultSetHandler extends DefaultResultSetHandler {
 
         @Override
         public void close() {
-            // do nothing
-            // 由 TransactionContext 去关闭
+            // do nothing，由 TransactionContext 去关闭
         }
 
         @Override

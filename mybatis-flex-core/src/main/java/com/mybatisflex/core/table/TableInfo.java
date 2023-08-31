@@ -39,7 +39,6 @@ import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
-import org.apache.ibatis.type.UnknownTypeHandler;
 import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.Field;
@@ -657,7 +656,7 @@ public class TableInfo {
                         if (enumWrapper.hasEnumValueAnnotation()) {
                             value = enumWrapper.getEnumValue((Enum) value);
                         } else {
-                            value = ((Enum<?>)value).name();
+                            value = ((Enum<?>) value).name();
                         }
                     }
                 }
@@ -1038,12 +1037,16 @@ public class TableInfo {
                     // List<String> List<Integer> 等
                     String columnName = TableInfoFactory.getColumnName(camelToUnderline, field, field.getAnnotation(Column.class));
                     // 映射 <result column="..."/>
-                    String nestedResultMapId = entityClass.getName() + "." + field.getName();
+
                     ResultMapping resultMapping = new ResultMapping.Builder(configuration, null)
                         .column(columnName)
-                        .typeHandler(new UnknownTypeHandler(configuration))
+                        .typeHandler(configuration.getTypeHandlerRegistry().getTypeHandler(genericClass))
                         .build();
-                    ResultMap nestedResultMap = new ResultMap.Builder(configuration, nestedResultMapId, genericClass, Collections.singletonList(resultMapping)).build();
+
+                    String nestedResultMapId = entityClass.getName() + "." + field.getName();
+                    ResultMap nestedResultMap = new ResultMap.Builder(configuration, nestedResultMapId, genericClass
+                        , Collections.singletonList(resultMapping)).build();
+
                     configuration.addResultMap(nestedResultMap);
                     // 映射 <collection property="..." ofType="genericClass">
                     resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
