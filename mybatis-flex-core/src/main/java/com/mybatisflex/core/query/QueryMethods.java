@@ -2572,4 +2572,12 @@ public class QueryMethods {
         return new RawFragment(raw, params);
     }
 
+
+    /**
+     * 分组值拼接
+     */
+    public static QueryColumn groupConcat(QueryColumn columnX) {
+        return new FunctionQueryColumn(GROUP_CONCAT,columnX);
+    }
+
 }
