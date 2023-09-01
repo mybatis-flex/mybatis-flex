@@ -65,7 +65,7 @@ public class FlexResultSetHandler extends FlexDefaultResultSetHandler {
     /**
      * 修复当实体类中存在 List<String> 或者 List<Integer> 等自动映射出错的问题
      * 本质问题应该出现 mybatis 判断有误
-     *
+     * <p>
      * https://gitee.com/mybatis-flex/mybatis-flex/issues/I7XBQS
      * https://gitee.com/mybatis-flex/mybatis-flex/issues/I7X7G7
      *
@@ -78,25 +78,23 @@ public class FlexResultSetHandler extends FlexDefaultResultSetHandler {
     protected Object createPrimitiveResultObject(ResultSetWrapper rsw, ResultMap resultMap, String columnPrefix)
         throws SQLException {
         final Class<?> resultType = resultMap.getType();
-        final String columnName;
-        final TypeHandler<?> typeHandler;
         if (!resultMap.getResultMappings().isEmpty()) {
             final List<ResultMapping> resultMappingList = resultMap.getResultMappings();
             final ResultMapping mapping = resultMappingList.get(0);
-            columnName = prependPrefix(mapping.getColumn(), columnPrefix);
-            typeHandler = mapping.getTypeHandler();
-        } else {
-            columnName = rsw.getColumnNames().get(0);
-            typeHandler = rsw.getTypeHandler(resultType, columnName);
-        }
+            String columnName = prependPrefix(mapping.getColumn(), columnPrefix);
+            TypeHandler<?> typeHandler = mapping.getTypeHandler();
 
-        List<String> mappedColumnNames = rsw.getMappedColumnNames(resultMap, columnPrefix);
-        if (columnName != null && mappedColumnNames.contains(columnName.toUpperCase(Locale.ENGLISH))) {
+            List<String> mappedColumnNames = rsw.getMappedColumnNames(resultMap, columnPrefix);
+            if (columnName != null && mappedColumnNames.contains(columnName.toUpperCase(Locale.ENGLISH))) {
+                return typeHandler.getResult(rsw.getResultSet(), columnName);
+            }
+            return null;
+        } else {
+            String columnName = rsw.getColumnNames().get(0);
+            TypeHandler<?> typeHandler = rsw.getTypeHandler(resultType, columnName);
             return typeHandler.getResult(rsw.getResultSet(), columnName);
         }
-        return null;
     }
-
 
 
     static class FlexCursor<T> implements Cursor<T> {
