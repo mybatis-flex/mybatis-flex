@@ -7,7 +7,7 @@
 > 课程简介：该课程由 [王帅](https://gitee.com/Suomm) 老师录制主讲， [王帅](https://gitee.com/Suomm) 老师也是除了作者以外，对 MyBatis-Flex 代码贡献最大的 committer。
 > 其无论对 MyBatis 还是 MyBatis-Flex，都有非常深入的理解。
 
-课程地址：
+::: details 课程目录（点击展开）
 
 - [MyBatis-Flex 视频教程 - 01 课程介绍](https://www.bilibili.com/video/BV11h411A7cU)
 - [MyBatis-Flex 视频教程 - 02 MyBatis-Flex 简介](https://www.bilibili.com/video/BV1GW4y1f7vt)
@@ -67,7 +67,7 @@
 - [MyBatis-Flex 视频教程 - 58 代码生成器（风格二）](https://www.bilibili.com/video/BV14P411h7eM)
 - [MyBatis-Flex 视频教程 - 59 自定义代码生成器](https://www.bilibili.com/video/BV1uu4y1v7Yg)
 - [MyBatis-Flex 视频教程 - 60 课程总结](https://www.bilibili.com/video/BV1kN4y1R7Zx)
-
+:::
 
 -----
 

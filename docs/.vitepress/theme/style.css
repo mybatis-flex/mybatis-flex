@@ -17,3 +17,7 @@
     background-color: #f3f3f3;
     font-weight: 600;
 }
+
+.vp-doc .custom-block a{
+    color: var(--vp-c-brand);
+}
