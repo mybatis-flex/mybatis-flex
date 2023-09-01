@@ -642,9 +642,59 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
+    /**
+     * <p>动态排序。
+     *
+     * <p>排序规则：
+     * <ul>
+     *     <li>{@code null} 不排序
+     *     <li>{@code true} 升序
+     *     <li>{@code false} 降序
+     * </ul>
+     *
+     * @param column 列
+     * @param asc    是否升序
+     * @return {@link QueryWrapper}
+     */
+    public QueryWrapper orderBy(QueryColumn column, Boolean asc) {
+        if (asc != null) {
+            if (asc) {
+                addOrderBy(column.asc());
+            } else {
+                addOrderBy(column.desc());
+            }
+        }
+        return this;
+    }
+
     public QueryWrapper orderBy(QueryOrderBy... orderBys) {
         for (QueryOrderBy queryOrderBy : orderBys) {
             addOrderBy(queryOrderBy);
+        }
+        return this;
+    }
+
+    /**
+     * <p>动态排序。
+     *
+     * <p>排序规则：
+     * <ul>
+     *     <li>{@code null} 不排序
+     *     <li>{@code true} 升序
+     *     <li>{@code false} 降序
+     * </ul>
+     *
+     * @param column 列
+     * @param asc    是否升序
+     * @return {@link QueryWrapper}
+     */
+    public <T> QueryWrapper orderBy(LambdaGetter<T> column, Boolean asc) {
+        if (asc != null) {
+            if (asc) {
+                addOrderBy(LambdaUtil.getQueryColumn(column).asc());
+            } else {
+                addOrderBy(LambdaUtil.getQueryColumn(column).desc());
+            }
         }
         return this;
     }
@@ -654,6 +704,30 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return new QueryOrderByBuilder<>(this, getter);
     }
 
+    /**
+     * <p>动态排序。
+     *
+     * <p>排序规则：
+     * <ul>
+     *     <li>{@code null} 不排序
+     *     <li>{@code true} 升序
+     *     <li>{@code false} 降序
+     * </ul>
+     *
+     * @param column 列
+     * @param asc    是否升序
+     * @return {@link QueryWrapper}
+     */
+    public QueryWrapper orderBy(String column, Boolean asc) {
+        if (asc != null) {
+            if (asc) {
+                addOrderBy(new RawQueryColumn(column).asc());
+            } else {
+                addOrderBy(new RawQueryColumn(column).desc());
+            }
+        }
+        return this;
+    }
 
     public QueryWrapper orderBy(String... orderBys) {
         if (orderBys == null || orderBys.length == 0) {
