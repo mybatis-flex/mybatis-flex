@@ -3,6 +3,11 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.6.3 20230901:
+- 修复：紧急修复 v1.6.2 分页查询无法查询数据列表的问题
+
+
+
 ## v1.6.2 20230831:
 - 新增：添加一个 mysql 函数 GROUP_CONCAT，感谢 @shen_jun_feng
 - 优化：优化 TableDefs 的多一次判断可能影响性能的问题
