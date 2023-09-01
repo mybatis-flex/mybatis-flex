@@ -566,14 +566,32 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
+    public R orderBy(QueryColumn column, Boolean asc) {
+        super.orderBy(column, asc);
+        return (R) this;
+    }
+
+    @Override
     public R orderBy(QueryOrderBy... orderBys) {
         super.orderBy(orderBys);
         return (R) this;
     }
 
     @Override
+    public <T> R orderBy(LambdaGetter<T> column, Boolean asc) {
+        super.orderBy(column, asc);
+        return (R) this;
+    }
+
+    @Override
     public <T> QueryOrderByBuilder<R> orderBy(LambdaGetter<T> getter) {
         return (QueryOrderByBuilder<R>) super.orderBy(getter);
+    }
+
+    @Override
+    public R orderBy(String column, Boolean asc) {
+        super.orderBy(column, asc);
+        return (R) this;
     }
 
     @Override
