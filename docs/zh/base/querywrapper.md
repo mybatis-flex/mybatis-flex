@@ -691,6 +691,26 @@ SELECT * FROM tb_account
 ORDER BY age ASC, user_name DESC NULLS LAST
 ```
 
+## orderBy 动态排序
+
+```java
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .select()
+    .from(ACCOUNT)
+    // 动态条件取值：true 升序 false 降序 null 不排序。
+    .orderBy(ACCOUNT.ID, true)
+    .orderBy(ACCOUNT.BIRTHDAY, false)
+    .orderBy(ACCOUNT.USER_NAME, null);
+```
+
+其查询生成的 Sql 如下：
+
+```sql
+SELECT *
+FROM `tb_account`
+ORDER BY `id` ASC, `birthday` DESC
+```
+
 ## hint
 
 Hint 是数据库厂商（比如 Oracle、MySQL、达梦等）提供的一种 SQL语法，它允许用户在 SQL 语句中插入相关的语法，从而影响 SQL 的执行方式。

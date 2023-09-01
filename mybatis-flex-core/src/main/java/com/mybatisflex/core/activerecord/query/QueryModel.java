@@ -355,13 +355,28 @@ public abstract class QueryModel<T extends QueryModel<T>> {
         return (T) this;
     }
 
+    public T orderBy(QueryColumn column, Boolean asc) {
+        queryWrapper().orderBy(column, asc);
+        return (T) this;
+    }
+
     public T orderBy(String... orderBys) {
         queryWrapper().orderBy(orderBys);
         return (T) this;
     }
 
+    public T orderBy(String column, Boolean asc) {
+        queryWrapper().orderBy(column, asc);
+        return (T) this;
+    }
+
     public <E> OrderByBuilder<T> orderBy(LambdaGetter<E> column) {
         return new OrderByBuilder<>((T) this, column);
+    }
+
+    public <E> T orderBy(LambdaGetter<E> column, Boolean asc) {
+        queryWrapper().orderBy(column, asc);
+        return (T) this;
     }
 
     public T limit(Number rows) {
