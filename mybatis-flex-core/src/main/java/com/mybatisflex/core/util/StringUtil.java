@@ -104,6 +104,24 @@ public class StringUtil {
         return sb.toString();
     }
 
+
+    /**
+     * 删除字符串中的字符
+     */
+    public static String deleteChar(String string,char deleteChar) {
+        if (isBlank(string)) {
+            return "";
+        }
+        char[] chars = string.toCharArray();
+        StringBuilder sb = new StringBuilder(string.length());
+        for (char aChar : chars) {
+            if (aChar != deleteChar){
+               sb.append(aChar);
+            }
+        }
+        return sb.toString();
+    }
+
     /**
      * 字符串为 null 或者内部字符全部为 ' ', '\t', '\n', '\r' 这四类字符时返回 true
      */

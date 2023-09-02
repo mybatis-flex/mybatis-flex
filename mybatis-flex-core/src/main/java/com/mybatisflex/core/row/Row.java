@@ -258,8 +258,12 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper<
     }
 
     public Object getIgnoreCase(String key) {
+        String camelKey = null;
+        if (key.contains("_")) {
+            camelKey = StringUtil.deleteChar(key, '_');
+        }
         for (String innerKey : keySet()) {
-            if (innerKey.equalsIgnoreCase(key)) {
+            if (innerKey.equalsIgnoreCase(key) || (camelKey != null && camelKey.equalsIgnoreCase(innerKey))) {
                 return super.get(innerKey);
             }
         }
