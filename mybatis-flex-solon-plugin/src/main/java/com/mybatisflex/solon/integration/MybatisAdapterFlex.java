@@ -50,11 +50,6 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
         super(dsWrap);
 
         factoryBuilderPlus = new FlexSqlSessionFactoryBuilder();
-
-        dsWrap.context().getBeanAsync(FlexSqlSessionFactoryBuilder.class, bean -> {
-            factoryBuilderPlus = bean;
-        });
-
         initAfter(dsWrap);
     }
 
@@ -62,11 +57,6 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
         super(dsWrap, dsProps);
 
         factoryBuilderPlus = new FlexSqlSessionFactoryBuilder();
-
-        dsWrap.context().getBeanAsync(FlexSqlSessionFactoryBuilder.class, bean -> {
-            factoryBuilderPlus = bean;
-        });
-
         initAfter(dsWrap);
     }
 
