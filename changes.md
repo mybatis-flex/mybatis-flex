@@ -3,6 +3,15 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+
+## v1.6.4 20230903:
+- 新增：QueryWrapper 添加动态排序功能的支持，感谢 @Suomm
+- 优化：Solon 取消无必要的 FlexSqlSessionFactoryBuilder 注入，感谢 @noear_admin
+- 修复：开启 mapUnderscoreToCamelCase 配置后，@Relations 关联查询可能无法正常查询的问题
+- 文档：添加动态排序的相关文档，感谢 @Suomm
+
+
+
 ## v1.6.3 20230901:
 - 修复：紧急修复 v1.6.2 分页查询无法查询数据列表的问题
 
