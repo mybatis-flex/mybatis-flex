@@ -126,4 +126,12 @@ https://www.bilibili.com/video/BV1kF411r7ky
 ![](../assets/images/mybatis-flex-helper/04.png)
 
 
+## MyBatis-Flex-Admin
 
+![](../assets/images/mybatis-flex-admin.png)
+
+**MyBatis-Flex-Admin** 是一个基于 MyBatis-Flex 开发的 SQL 执行日志平台和 SQL 审计平台，整个项目只有 5 张表，也是一个绝佳的 MyBatis-Flex 学习项目。
+
+该项目使用前后端分离的方式，后端使用 SpringBoot 2.x + MyBatis-Flex，前台有 React 和 Vue 两个版本，开源地址（当前正在开发中）：
+
+https://gitee.com/mybatis-flex/mybatis-flex-admin

@@ -156,6 +156,8 @@ TypeHandler 扫描路径，如果配置了该属性，SqlSessionFactoryBean 会�
 
 ## admin-config
 
+通过对 admin-config 的配置，可以把当前应用执行的 SQL，发送到 **MyBatis-Flex-Admin** 进行审计，详情点击 [这里](/zh/awesome-things.html#mybatis-flex-admin)。
+
 ### enable
 
 - 类型：`boolean`
@@ -176,6 +178,19 @@ MyBatis-Flex-Admin 连接端点。
 - 默认值：`null`
 
 MyBatis-Flex-Admin 连接密钥。
+
+---
+示例代码：
+
+```yaml
+mybatis-flex:
+  admin-config:
+    enable: true
+    endpoint: http://admin-host:8080/message/collect
+    secret-key: secretKey
+```
+
+> secret-key 配置的内容，必须要和 MyBatis-Flex-Admin 项目配置的 `mybatis-flex.admin.message-secret-key` 完全一致，才能正常收集 SQL 执行日志。
 
 ## seata-config
 

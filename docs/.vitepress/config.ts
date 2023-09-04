@@ -28,7 +28,6 @@ export default defineConfig({
             {text: '帮助文档', link: '/zh/intro/what-is-mybatisflex'},
             {text: '🆘 常见问题', link: '/zh/faq'},
             {text: '周边 / 视频教程', link: '/zh/awesome-things'},
-            // {text: '周边', link: '/zh/awesome-things'},
             {text: 'ChangeLog', link: '/zh/changes'},
             {
                 text: '获取源码', items: [
@@ -36,6 +35,7 @@ export default defineConfig({
                     {text: 'Github', link: 'https://github.com/mybatis-flex/mybatis-flex'},
                     {text: '示例代码', link: 'https://gitee.com/mybatis-flex/mybatis-flex-samples'},
                     {text: '性能测试代码', link: 'https://gitee.com/mybatis-flex/mybatis-benchmark'},
+                    {text: 'MyBatis-Flex-Admin', link: 'https://gitee.com/mybatis-flex/mybatis-flex-admin'},
                 ]
             },
         ],
