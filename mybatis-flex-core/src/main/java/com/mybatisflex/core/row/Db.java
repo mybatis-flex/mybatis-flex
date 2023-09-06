@@ -127,9 +127,7 @@ public class Db {
      * @param batchSize 每次提交的数据量
      */
     public static int[] insertBatch(String schema, String tableName, Collection<Row> rows, int batchSize) {
-        return executeBatch(rows, batchSize, RowMapper.class, (mapper, row) -> {
-            mapper.insert(schema, tableName, row);
-        });
+        return executeBatch(rows, batchSize, RowMapper.class, (mapper, row) -> mapper.insert(schema, tableName, row));
     }
 
     /**
@@ -140,9 +138,7 @@ public class Db {
      * @param batchSize 每次提交的数据量
      */
     public static int[] insertBatch(String tableName, Collection<Row> rows, int batchSize) {
-        return executeBatch(rows, batchSize, RowMapper.class, (mapper, row) -> {
-            mapper.insert(null, tableName, row);
-        });
+        return executeBatch(rows, batchSize, RowMapper.class, (mapper, row) -> mapper.insert(null, tableName, row));
     }
 
     /**

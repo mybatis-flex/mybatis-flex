@@ -976,7 +976,7 @@ public class TableInfo {
 
     public List<QueryColumn> getDefaultQueryColumn() {
         return Arrays.stream(defaultQueryColumns)
-            .map(name -> columnQueryMapping.get(name))
+            .map(columnQueryMapping::get)
             .collect(Collectors.toList());
     }
 

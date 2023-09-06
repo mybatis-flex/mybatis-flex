@@ -47,12 +47,7 @@ public class TenantManagerTester {
         AuditManager.setMessageCollector(new ConsoleMessageCollector());
 
         //配置 tenantFactory
-        TenantManager.setTenantFactory(new TenantFactory() {
-            @Override
-            public Object[] getTenantIds() {
-                return new Object[]{1};
-            }
-        });
+        TenantManager.setTenantFactory(() -> new Object[]{1});
 
         TenantAccountMapper mapper = MybatisFlexBootstrap.getInstance().getMapper(TenantAccountMapper.class);
         List<TenantAccount> tenantAccounts = TenantManager.withoutTenantCondition(mapper::selectAll);

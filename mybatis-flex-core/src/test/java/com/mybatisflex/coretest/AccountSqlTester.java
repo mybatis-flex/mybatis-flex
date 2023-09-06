@@ -70,12 +70,7 @@ public class AccountSqlTester {
             .where(ACCOUNT01.ID.ge(100))
             .and(ACCOUNT.SEX.eq(1));
 
-        TableManager.setDynamicTableProcessor(new DynamicTableProcessor() {
-            @Override
-            public String process(String tableName) {
-                return tableName + "_01";
-            }
-        });
+        TableManager.setDynamicTableProcessor(tableName -> tableName + "_01");
         TableManager.setDynamicTableProcessor(original -> original + "_01");
 
         System.out.println(query.toSQL());
