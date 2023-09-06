@@ -46,6 +46,18 @@ public class TenantManager {
         }
     }
 
+    /**
+     * 忽略 tenant 条件
+     */
+    public static void withoutTenantCondition(Runnable runnable) {
+        try {
+            ignoreTenantCondition();
+            runnable.run();
+        } finally {
+            restoreTenantCondition();
+        }
+    }
+
 
     /**
      * 忽略 tenant 条件

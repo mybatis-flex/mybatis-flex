@@ -61,6 +61,18 @@ public class LogicDeleteManager {
     }
 
     /**
+     * 跳过逻辑删除字段处理，直接进行数据库物理操作。
+     */
+    public static void execWithoutLogicDelete(Runnable runnable) {
+        try {
+            skipLogicDelete();
+            runnable.run();
+        } finally {
+            restoreLogicDelete();
+        }
+    }
+
+    /**
      * 跳过逻辑删除字段处理。
      */
     public static void skipLogicDelete() {
