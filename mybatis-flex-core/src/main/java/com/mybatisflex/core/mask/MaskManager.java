@@ -74,6 +74,18 @@ public class MaskManager {
     /**
      * 跳过脱敏处理
      */
+    public static void execWithoutMask(Runnable runnable) {
+        try {
+            skipMask();
+            runnable.run();
+        } finally {
+            restoreMask();
+        }
+    }
+
+    /**
+     * 跳过脱敏处理
+     */
     public static void skipMask() {
         skipFlags.set(Boolean.TRUE);
     }
