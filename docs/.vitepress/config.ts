@@ -36,6 +36,7 @@ export default defineConfig({
                     {text: '示例代码', link: 'https://gitee.com/mybatis-flex/mybatis-flex-samples'},
                     {text: '性能测试代码', link: 'https://gitee.com/mybatis-flex/mybatis-benchmark'},
                     {text: 'MyBatis-Flex-Admin', link: 'https://gitee.com/mybatis-flex/mybatis-flex-admin'},
+                    {text: 'MyBatis-Flex-Kotlin', link: 'https://gitee.com/mybatis-flex/mybatis-flex-kotlin'},
                 ]
             },
         ],
