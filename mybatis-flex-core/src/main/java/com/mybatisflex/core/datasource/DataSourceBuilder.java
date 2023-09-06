@@ -70,7 +70,7 @@ public class DataSourceBuilder {
             setDataSourceProperties(dataSourceObject);
             return (DataSource) dataSourceObject;
         } catch (Exception e) {
-            throw FlexExceptions.wrap(LocalizedFormats.DATASOURCE_CAN_NOT_INSTANCE, dataSourceClassName);
+            throw FlexExceptions.wrap(e, LocalizedFormats.DATASOURCE_CAN_NOT_INSTANCE, dataSourceClassName);
         }
     }
 
