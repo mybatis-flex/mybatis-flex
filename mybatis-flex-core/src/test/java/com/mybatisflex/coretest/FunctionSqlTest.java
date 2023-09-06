@@ -17,6 +17,7 @@
 package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.query.FunctionQueryColumn;
+import com.mybatisflex.core.query.QueryOrderBy;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.RawQueryColumn;
 import org.junit.Test;
@@ -69,6 +70,17 @@ public class FunctionSqlTest {
             .select()
             .from(ACCOUNT)
             .where(findInSet(number(100), ACCOUNT.ID).gt(0))
+            .toSQL();
+
+        System.out.println(sql);
+    }
+
+    @Test
+    public void test05() {
+        String sql = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+            .orderBy(new QueryOrderBy(rand(), ""))
             .toSQL();
 
         System.out.println(sql);
