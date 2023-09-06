@@ -59,14 +59,11 @@ public class MultiDataSourceTester {
         MessageCollector collector = new ConsoleMessageCollector();
         AuditManager.setMessageCollector(collector);
 
-        Db.tx(new Supplier<Boolean>() {
-            @Override
-            public Boolean get() {
-                Db.selectAll(null, "tb_account");
-                DataSourceKey.use("ds2");
-                Db.selectAll(null, "tb_account");
-                return true;
-            }
+        Db.tx(() -> {
+            Db.selectAll(null, "tb_account");
+            DataSourceKey.use("ds2");
+            Db.selectAll(null, "tb_account");
+            return true;
         });
 
 

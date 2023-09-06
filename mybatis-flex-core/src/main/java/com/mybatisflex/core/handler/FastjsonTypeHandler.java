@@ -22,6 +22,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * @author michael
@@ -96,10 +97,10 @@ public class FastjsonTypeHandler extends BaseJsonTypeHandler<Object> {
                 } else {
                     if (this.ownerType != null) {
                         if (this.ownerType.equals(that.ownerType)) {
-                            return this.rawType != null ? this.rawType.equals(that.rawType) : that.rawType == null;
+                            return Objects.equals(this.rawType, that.rawType);
                         }
                     } else if (that.ownerType == null) {
-                        return this.rawType != null ? this.rawType.equals(that.rawType) : that.rawType == null;
+                        return Objects.equals(this.rawType, that.rawType);
                     }
 
                     return false;

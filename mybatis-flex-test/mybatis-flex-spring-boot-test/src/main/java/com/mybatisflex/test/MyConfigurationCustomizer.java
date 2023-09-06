@@ -50,12 +50,9 @@ public class MyConfigurationCustomizer implements ConfigurationCustomizer, MyBat
     @Override
     public void customize(FlexGlobalConfig globalConfig) {
 
-        DataSourceDecipher decipher = new DataSourceDecipher() {
-            @Override
-            public String decrypt(DataSourceProperty property, String value) {
-                System.out.println(">>>>>> decipher.decrypt");
-                return value;
-            }
+        DataSourceDecipher decipher = (property, value) -> {
+            System.out.println(">>>>>> decipher.decrypt");
+            return value;
         };
         DataSourceManager.setDecipher(decipher);
 

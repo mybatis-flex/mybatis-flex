@@ -36,16 +36,13 @@ public class DataSourceDecipherTester {
         dataSource.setUsername("root123");
         dataSource.setPassword("123456---0000");
 
-        DataSourceManager.setDecipher(new DataSourceDecipher() {
-            @Override
-            public String decrypt(DataSourceProperty property, String value) {
-                if (property == DataSourceProperty.USERNAME) {
-                    return value.substring(0, 4);
-                } else if (property == DataSourceProperty.PASSWORD) {
-                    return value.substring(0, 6);
-                }
-                return value;
+        DataSourceManager.setDecipher((property, value) -> {
+            if (property == DataSourceProperty.USERNAME) {
+                return value.substring(0, 4);
+            } else if (property == DataSourceProperty.PASSWORD) {
+                return value.substring(0, 6);
             }
+            return value;
         });
 
         MybatisFlexBootstrap.getInstance()

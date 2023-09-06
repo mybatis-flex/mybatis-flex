@@ -176,18 +176,15 @@ public class EntityTestStarter {
 //        Page<ArticleDTO01> paginate = accountMapper.paginateAs(Page.of(1, 10), asWrapper, ArticleDTO01.class);
 //        System.out.println(paginate);
 
-        Db.tx(new Supplier<Boolean>() {
-            @Override
-            public Boolean get() {
-                Cursor<Account> accounts = accountMapper.selectCursorByQuery(asWrapper);
-                System.out.println(accounts.isOpen());
-                for (Account account : accounts) {
-                    System.out.println(accounts.isOpen());
-                    System.out.println(account);
-                }
-                System.out.println(accounts.isOpen());
-                return true;
+        Db.tx(() -> {
+            Cursor<Account> accounts1 = accountMapper.selectCursorByQuery(asWrapper);
+            System.out.println(accounts1.isOpen());
+            for (Account account : accounts1) {
+                System.out.println(accounts1.isOpen());
+                System.out.println(account);
             }
+            System.out.println(accounts1.isOpen());
+            return true;
         });
 
 //        Cursor<Account> accounts = accountMapper.selectCursorByQuery(asWrapper);
