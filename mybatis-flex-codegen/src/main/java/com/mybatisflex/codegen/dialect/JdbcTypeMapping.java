@@ -22,6 +22,7 @@ import java.util.Map;
 
 /**
  * 字段类型映射。
+ * @author michael
  */
 public class JdbcTypeMapping {
 
@@ -33,6 +34,7 @@ public class JdbcTypeMapping {
 
     static {
         registerMapping("[B", "byte[]");
+        registerMapping("oracle.jdbc.OracleBlob", "byte[]");
     }
 
     public static void registerMapping(Class<?> from, Class<?> to) {
