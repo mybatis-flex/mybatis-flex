@@ -42,7 +42,7 @@ public class Account {
 1、通过 `MaskManager` 注册新的脱敏规则：
 
 ```java
-MaskManager.registerMaskProcesser("自定义规则名称"
+MaskManager.registerMaskProcessor("自定义规则名称"
         , data -> {
             return data;
         })
