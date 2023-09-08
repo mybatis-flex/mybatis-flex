@@ -1,14 +1,26 @@
 # 在 Kotlin 中使用 Mybatis-Flex
 
-> Mybatis-Flex-Kotlin 是一个 [Mybatis-Flex](https://mybatis-flex.com) 框架的扩展模块，
-> 它继承了 Mybatis-Flex 轻量的特性，同时拥有 Kotlin 特有的扩展方法、中缀表达式与DSL等语法支持，
-> 使其拥有了更高的灵活性。让我们可以更加轻松的在 Kotlin 中使用 Mybaits-Flex 所带来的开发效率和开发体验。
+MyBatis-Flex-Kotlin 基于 Mybatis-Flex 的 Kotlin 扩展模块，方便 Kotlin 开发者使用 MyBatis-Flex 进行开发。
+
+
+它继承了 Mybatis-Flex 轻量的特性，同时拥有 Kotlin 特有的扩展方法、中缀表达式与DSL等语法支持，
+使其拥有了更高的灵活性。让我们可以更加轻松的在 Kotlin 中使用 Mybaits-Flex 所带来的开发效率和开发体验。
+
+
+
+Git 地址：https://gitee.com/mybatis-flex/mybatis-flex-kotlin
+
 
 ## 特征
 
 - 轻量：只基于 Mybatis-Flex 核心库 ，只做扩展不做改变
 - 简明：使用 DSL 让查询语句更加简单明了
 - 快捷：结合 Kotlin 特性快速对数据库进行操作
+
+## 快速开始
+
+点击链接进入详情：
+https://gitee.com/mybatis-flex/mybatis-flex-kotlin#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B
 
 ## 亮点
 
@@ -48,6 +60,9 @@
   >  (少依赖一个模块且不用开启注解处理器功能)
 - 属性类型约束：使用泛型➕扩展方法对操作的属性进行类型约束:
   > 如: Account 中 age 属性为 Int 类型,那么 `Account::age between (17 to 19)`而 `Account::age between ("17" to "19")`则会报错提醒
+
+
+
 ## 总结
 引入 Mybatis-Flex-Kotlin 扩展模块在 Kotlin 中使用 Mybaits-Flex 能够基于 Kotlin 强大的语法特性可以让我们更加轻松方便地操作数据库，极大提高了开发效率和开发体验。
 > 如何引入 Mybatis-Flex-Kotlin 扩展模块在 Kotlin 中使用 :
