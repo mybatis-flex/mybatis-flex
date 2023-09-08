@@ -197,7 +197,7 @@ public interface LogicDeleteProcessor {
 
 针对这种场景，目前有两个方案：
 
-- **方案1：重新 IService 的 removeById 方法**
+- **方案1：重写 IService 的 removeById 方法**
 
 先更新 `deleteTime` 和 `deleteUserId`，然后再进行逻辑删除。同时需要保证这两个方法在同一个事务里进行，
 如下代码：
