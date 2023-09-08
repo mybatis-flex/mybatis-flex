@@ -8,7 +8,7 @@ MyBatis-Flex-Kotlin 基于 Mybatis-Flex 的 Kotlin 扩展模块，方便 Kotlin 
 
 
 
-Git 地址：https://gitee.com/mybatis-flex/mybatis-flex-kotlin
+Git 地址：https://github.com/KAMO030/MyBatis-Flex-Kotlin
 
 
 ## 特征
@@ -20,7 +20,7 @@ Git 地址：https://gitee.com/mybatis-flex/mybatis-flex-kotlin
 ## 快速开始
 
 点击链接进入详情：
-https://gitee.com/mybatis-flex/mybatis-flex-kotlin#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B
+https://github.com/KAMO030/MyBatis-Flex-Kotlin#%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B
 
 ## 亮点
 
