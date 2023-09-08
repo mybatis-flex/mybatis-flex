@@ -24,30 +24,39 @@
       }.start()
     ```
 - 快速查询数据：通过DSL➕泛型快速编写查询语句并查询:  (快速查询提供三个函数：all, filter 和 query )
-  - `all<Account>()` 查泛型对应的表的所有数据
-  - `filter<Account>(vararg columns: QueryColumn?, condition: ()->QueryCondition)` 按条件查泛型对应的表的数据
-  - `query<Account>(queryScope: QueryScope.()->Unit)` 较复杂查泛型对应的表的数据,如分组排序等
+  >- `all<Account>()` 查泛型对应的表的所有数据
+  >- `filter<Account>(vararg columns: QueryColumn?, condition: ()->QueryCondition)` 按条件查泛型对应的表的数据
+  >- `query<Account>(queryScope: QueryScope.()->Unit)` 较复杂查泛型对应的表的数据 (如分组,排序等)
 - 简明地构建条件：通过中缀表达式➕扩展方法能更加简单明了的构建条件:
-  * **【原生方式】**
-    ```kotlin
-    val queryWrapper = QueryWrapper.create()
-            .select(Account::id.column(), Account::userName.column())
-            .where(Account::age.column().`in`(17, 18, 19))
-            .orderBy(Account::id.column().desc())
-    mapper<AccountMapper>().selectListByQuery(queryWrapper)
-    ```
-  * **【扩展方式】**
-    ```kotlin
-    query<Account> {
-      select { listOf(Account::id, Account::userName) }
-      where { Account::age `in` (17..19) } orderBy -Account::id
-    }
-    ```
+
+    * **【原生方式】**
+      ```kotlin
+      val queryWrapper = QueryWrapper.create()
+              .select(Account::id.column(), Account::userName.column())
+              .where(Account::age.column().`in`(17, 18, 19))
+              .orderBy(Account::id.column().desc())
+      mapper<AccountMapper>().selectListByQuery(queryWrapper)
+      ```
+
+    * **【扩展方式】**
+      ```kotlin
+      query<Account> {
+        select { listOf(Account::id, Account::userName) }
+        where { Account::age `in` (17..19) } orderBy -Account::id
+      }
+      ```
+
 - 摆脱APT: 使用扩展方法摆脱对 APT(注解处理器) 的使用,直接使用属性引用让代码更加灵活优雅:
   >  使用APT: `ACCOUNT.ID eq 1` ,使用属性引用: `Account::id eq 1`
+  >
   >  (少依赖一个模块且不用开启注解处理器功能)
 - 属性类型约束：使用泛型➕扩展方法对操作的属性进行类型约束:
-  > 如: Account 中 age 属性为 Int 类型,那么 `Account::age between (17 to 19)`而 `Account::age between ("17" to "19")`则会报错提醒
+  > 如: Account 中 age 属性为 Int 类型
+  >
+  > 那么使用between时后续参数也必须是Int： `Account::age between (17 to 19)`
+  >
+  > 而如果写成String：`Account::age between ("17" to "19")`则会报错提醒
+
 ## 总结
 引入 Mybatis-Flex-Kotlin 扩展模块在 Kotlin 中使用 Mybaits-Flex 能够基于 Kotlin 强大的语法特性可以让我们更加轻松方便地操作数据库，极大提高了开发效率和开发体验。
 > 如何引入 Mybatis-Flex-Kotlin 扩展模块在 Kotlin 中使用 :
