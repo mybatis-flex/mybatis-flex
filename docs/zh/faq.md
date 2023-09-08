@@ -307,3 +307,26 @@ System.out.println("插入成功的主键: " + row.get("my_id"));
 ## 如何替换 Ruoyi 项目中的 MyBatis 为 MyBatis-Flex ?
 
 参考 issue：https://gitee.com/mybatis-flex/mybatis-flex/issues/I7UX96
+
+
+## MyBatis-Flex 如何 activiti6 以及 Flowable 等工作流引擎集成？
+
+当 MyBatis-Flex 与 activiti6 （或者 Flowable）集成时，需要覆盖其自动配置；添加 mybatis-flex 的事务管理器（FlexTransactionManager）和 DataSource（FlexDataSource）
+注入到 ProcessEngineConfiguration，配置代码如下：
+
+```java
+@Bean
+public ProcessEngineConfiguration processEngineConfiguration(
+        SqlSessionFactory sqlSessionFactory,
+        PlatformTransactionManager annotationDrivenTransactionManager) {
+
+    SpringProcessEngineConfiguration processEngineConfiguration = new SpringProcessEngineConfiguration();
+
+    // 指定 MyBatis-Flex  数据源
+    processEngineConfiguration.setDataSource(sqlSessionFactory.getConfiguration().getEnvironment().getDataSource());
+
+    // 配置 MyBatis-Flex  的事务管理器
+    processEngineConfiguration.setTransactionManager(annotationDrivenTransactionManager);
+    ...
+}
+```
