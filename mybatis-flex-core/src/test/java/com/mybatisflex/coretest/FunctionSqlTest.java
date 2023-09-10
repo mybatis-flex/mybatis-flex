@@ -86,4 +86,15 @@ public class FunctionSqlTest {
         System.out.println(sql);
     }
 
+    @Test
+    public void test06() {
+        String sql = QueryWrapper.create()
+            .select(column("(select role_name from tb_role where id = ?)", 1))
+            .select(ACCOUNT.USER_NAME)
+            .from(ACCOUNT)
+            .toSQL();
+
+        System.out.println(sql);
+    }
+
 }
