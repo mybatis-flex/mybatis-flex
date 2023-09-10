@@ -2406,8 +2406,8 @@ public class QueryMethods {
     /**
      * 构建自定义列。
      */
-    public static QueryColumn column(String column) {
-        return new RawQueryColumn(column);
+    public static QueryColumn column(String column, Object... params) {
+        return new RawQueryColumn(column, params);
     }
 
     /**
