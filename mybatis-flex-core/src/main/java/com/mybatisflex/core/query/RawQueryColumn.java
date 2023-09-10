@@ -23,13 +23,15 @@ import java.util.List;
 /**
  * 自定义字符串列，用于扩展
  */
-public class RawQueryColumn extends QueryColumn {
+public class RawQueryColumn extends QueryColumn implements HasParamsColumn {
 
     protected String content;
+    protected Object[] params;
 
 
-    public RawQueryColumn(Object content) {
+    public RawQueryColumn(Object content, Object... params) {
         this.content = String.valueOf(content);
+        this.params = params;
     }
 
     @Override
@@ -52,6 +54,11 @@ public class RawQueryColumn extends QueryColumn {
     @Override
     public RawQueryColumn clone() {
         return (RawQueryColumn) super.clone();
+    }
+
+    @Override
+    public Object[] getParamValues() {
+        return params;
     }
 
 }
