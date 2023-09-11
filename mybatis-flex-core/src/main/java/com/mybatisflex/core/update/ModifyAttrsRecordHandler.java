@@ -15,10 +15,12 @@
  */
 package com.mybatisflex.core.update;
 
-
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.core.util.FieldWrapper;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.javassist.util.proxy.MethodHandler;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -44,12 +46,29 @@ class ModifyAttrsRecordHandler implements MethodHandler {
             && originalMethod.getParameterCount() == 1) {
             String property = StringUtil.firstCharToLowerCase(originalMethod.getName().substring(3));
             updates.put(property, args[0]);
+
+            //去除有忽略注解的字段
+            Field field = getField(originalMethod.getDeclaringClass(), property);
+            if (field != null) {
+                Column column = field.getAnnotation(Column.class);
+                if (column != null && column.ignore()) {
+                    updates.remove(property);
+                }
+            }
         }
 
         return proxyMethod.invoke(self, args);
     }
-
+    
+    private Field getField(Class<?> clazz, String fieldName) {
+        try {
+            FieldWrapper fw = FieldWrapper.of(clazz, fieldName);
+            if (fw != null) {
+                return fw.getField();
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
 
 }
-
-
