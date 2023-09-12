@@ -24,8 +24,9 @@ import java.io.Serializable;
  * @since 2023-05-15
  */
 @SuppressWarnings("unused")
-public class EntityConfig {
+public class EntityConfig implements Serializable {
 
+    private static final long serialVersionUID = -6790274333595436008L;
     /**
      * Entity 类的前缀。
      */

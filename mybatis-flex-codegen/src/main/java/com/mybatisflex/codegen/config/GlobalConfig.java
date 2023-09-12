@@ -17,6 +17,7 @@ package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.codegen.template.ITemplate;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +33,8 @@ import java.util.function.UnaryOperator;
  * @since 2023-05-15
  */
 @SuppressWarnings("unused")
-public class GlobalConfig {
+public class GlobalConfig implements Serializable {
+    private static final long serialVersionUID = 5033600623041298000L;
 
     // === 必须配置 ===
 

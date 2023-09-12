@@ -17,6 +17,8 @@ package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.core.util.StringUtil;
 
+import java.io.Serializable;
+
 /**
  * 生成 TableDef 的配置。
  *
@@ -24,8 +26,9 @@ import com.mybatisflex.core.util.StringUtil;
  * @since 2023-05-15
  */
 @SuppressWarnings("unused")
-public class TableDefConfig {
+public class TableDefConfig implements Serializable {
 
+    private static final long serialVersionUID = 8137903163796008036L;
     /**
      * TableDef 类的前缀。
      */
