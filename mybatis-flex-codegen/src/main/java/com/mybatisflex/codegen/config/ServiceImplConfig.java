@@ -15,6 +15,8 @@
  */
 package com.mybatisflex.codegen.config;
 
+import java.io.Serializable;
+
 /**
  * 生成 ServiceImpl 的配置。
  *
@@ -22,8 +24,9 @@ package com.mybatisflex.codegen.config;
  * @since 2023-05-15
  */
 @SuppressWarnings("unused")
-public class ServiceImplConfig {
+public class ServiceImplConfig implements Serializable {
 
+    private static final long serialVersionUID = 17115432462168151L;
     /**
      * ServiceImpl 类的前缀。
      */

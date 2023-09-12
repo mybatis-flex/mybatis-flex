@@ -17,6 +17,8 @@ package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.core.BaseMapper;
 
+import java.io.Serializable;
+
 /**
  * 生成 Mapper 的配置。
  *
@@ -24,8 +26,9 @@ import com.mybatisflex.core.BaseMapper;
  * @since 2023-05-15
  */
 @SuppressWarnings("unused")
-public class MapperConfig {
+public class MapperConfig implements Serializable {
 
+    private static final long serialVersionUID = 1937442008907641534L;
     /**
      * Mapper 类的前缀。
      */
