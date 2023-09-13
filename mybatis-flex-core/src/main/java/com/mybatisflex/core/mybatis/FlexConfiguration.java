@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.mybatis;
 
+import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.handler.CompositeEnumTypeHandler;
 import com.mybatisflex.core.keygen.MultiEntityKeyGenerator;
@@ -28,6 +29,7 @@ import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.StringUtil;
+import java.util.List;
 import org.apache.ibatis.executor.CachingExecutor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
@@ -53,6 +55,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author michael
+ * @author life
  */
 public class FlexConfiguration extends Configuration {
 
@@ -177,8 +180,17 @@ public class FlexConfiguration extends Configuration {
         else if (StringUtil.endsWithAny(ms.getId(), "selectOneById", "selectListByIds"
             , "selectListByQuery", "selectCursorByQuery")) {
             ms = replaceResultMap(ms, getTableInfo(ms));
+        }else{
+            List<ResultMap> resultMaps1 = ms.getResultMaps();
+            //根据resultMap里面的class进行
+            for (ResultMap resultMap:resultMaps1) {
+                //获取结果的类型
+                Class<?> clazz =resultMap.getType();
+                if (clazz.getDeclaredAnnotation(Table.class) !=null){//判断是否为表实体类
+                    ms = replaceResultMap(ms, getTableInfo(ms));
+                }
+            }
         }
-
         super.addMappedStatement(ms);
     }
 
