@@ -29,7 +29,6 @@ import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.StringUtil;
-import java.util.List;
 import org.apache.ibatis.executor.CachingExecutor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
@@ -50,6 +49,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -180,13 +180,14 @@ public class FlexConfiguration extends Configuration {
         else if (StringUtil.endsWithAny(ms.getId(), "selectOneById", "selectListByIds"
             , "selectListByQuery", "selectCursorByQuery")) {
             ms = replaceResultMap(ms, getTableInfo(ms));
-        }else{
-            List<ResultMap> resultMaps1 = ms.getResultMaps();
-            //根据resultMap里面的class进行
-            for (ResultMap resultMap:resultMaps1) {
+        } else {
+            List<ResultMap> resultMaps = ms.getResultMaps();
+            //根据 resultMap 里面的 class 进行判断
+            for (ResultMap resultMap : resultMaps) {
                 //获取结果的类型
-                Class<?> clazz =resultMap.getType();
-                if (clazz.getDeclaredAnnotation(Table.class) !=null){//判断是否为表实体类
+                Class<?> clazz = resultMap.getType();
+                //判断是否为表实体类
+                if (clazz.getDeclaredAnnotation(Table.class) != null) {
                     ms = replaceResultMap(ms, getTableInfo(ms));
                 }
             }
