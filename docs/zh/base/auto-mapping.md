@@ -71,7 +71,7 @@ public class Account {
 `AccountMapper` 方法直接查询，例如：
 
 ```java
-QueryWrapper qw = new QeuryWrapper();
+QueryWrapper qw = new QueryWrapper();
 qw.select(ACCOUNT.ALL_COLUMNS)
     .where(ACCOUNT.ID.ge(100));
 
