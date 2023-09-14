@@ -3,6 +3,27 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.6.5 20230914:
+- 新增：代码生成器为 Oracle 的 JdbcTypeMapping 类型 OracleBlob 添加映射处理
+- 新增：LogicDeleteManager 和 TenantManager 添加 Runnable 无返回值重载，感谢 @Suomm
+- 新增：RawQueryColumn 添加参数占位符的支持功能，感谢 @Suomm
+- 新增：代码生成器添加关于 solon Controller 生成的代码模板，感谢 @ZhuHJay
+- 新增：UpdateEntity 添加自动去除有忽略注解的字段的功能，感谢 @aqnghu
+- 优化：代码生成器配置类添加 Serializable 接口实现的支持，方便自定义缓存保存，感谢 @zoufang162
+- 优化：使用 lambda 优化部分写法，感谢 @handy-git
+- 优化：使用 try-with-resources 释放 Connection，感谢 @handy-git
+- 优化：DataSourceBuilder 出错时，吞掉原始的 exception 的 message 信息的问题 #I7YYRF
+- 优化：`@Table` 注解增加 `@Inherited` 修饰，感谢 @jerryzhengsz1
+- 修复：当工作流引擎 activti6 整合 MyBatis-Flex 可能出现 NPE 的问题
+- 修复：通过 XML 自定义的 SQL 查询不兼容自定义枚举使用的问题，感谢 @lifejwang11
+- 文档：更新关于 MyBatis-Flex-Admin 的相关文档
+- 文档：添加关于 MyBatis-Flex-Kotlin 的相关文档 感谢 @kamo-sama
+- 文档：修正自定义脱敏处理器的示例代码错误，感谢 @wang_yong_ji
+- 文档：添加关于 MyBatis-Flex 与 activiti6 以及 Flowable 等工作流引擎集成的相关文档，感谢 @simple_wind
+- 文档：修复逻辑删除文档的个别错别字，感谢 @cainiao3853
+- 文档：修正自定义映射的相关代码示例错误，感谢 @tycms
+
+
 
 ## v1.6.4 20230903:
 - 新增：QueryWrapper 添加动态排序功能的支持，感谢 @Suomm
