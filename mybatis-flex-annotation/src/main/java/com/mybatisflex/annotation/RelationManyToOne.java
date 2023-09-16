@@ -68,6 +68,14 @@ public @interface RelationManyToOne {
     String targetField() default "";
 
     /**
+     * 目标实体类的字段绑定
+     * <p>
+     * 当字段不为空串时,只进行某个字段赋值(使用对应字段类型接收)
+     * @return 属性名称
+     */
+    String targetFieldBind() default "";
+
+    /**
      * 中间表名称，一对一的关系是通过通过中间表维护时，需要添加此项配置。
      *
      * @return 中间表名称
