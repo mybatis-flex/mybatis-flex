@@ -93,4 +93,16 @@ public class UserVO5 implements Serializable {
     public void setRoleNameList(List<String> roleNameList) {
         this.roleNameList = roleNameList;
     }
+
+    @Override
+    public String toString() {
+        return "UserVO5{" +
+            "userId=" + userId +
+            ", userName='" + userName + '\'' +
+            ", password='" + password + '\'' +
+            ", idNumberCustomFieldName='" + idNumberCustomFieldName + '\'' +
+            ", orderIdList=" + orderIdList +
+            ", roleNameList=" + roleNameList +
+            '}';
+    }
 }

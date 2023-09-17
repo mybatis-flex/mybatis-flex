@@ -68,7 +68,7 @@ public @interface RelationManyToMany {
     String targetField() default "";
 
     /**
-     * 目标实体类的字段绑定
+     * 目标对象的关系实体类的属性绑定
      * <p>
      * 当字段不为空串时,只进行某个字段赋值(使用对应字段类型接收)
      * @return 属性名称
