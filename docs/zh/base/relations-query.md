@@ -354,7 +354,7 @@ public class Account implements Serializable {
 
 Relation结果集只使用某个字段值-`since v1.6.6`
 
-`RelationOneToOne`、`RelationOneToMany`、`RelationManyToOne`、`RelationManyToMany`新增属性`targetFieldBind`
+`RelationOneToOne`、`RelationOneToMany`、`RelationManyToOne`、`RelationManyToMany`新增属性`valueField`
 ```java {7-11}
     /**
      * 目标对象的关系实体类的属性绑定
@@ -362,9 +362,9 @@ Relation结果集只使用某个字段值-`since v1.6.6`
      * 当字段不为空串时,只进行某个字段赋值(使用对应字段类型接收)
      * @return 属性名称
      */
-    String targetFieldBind() default "";
+    String valueField() default "";
 ```
-> 注解其他属性配置使用不变，当配置了`targetFieldBind`值时，只提取目标对象关系实体类的该属性
+> 注解其他属性配置使用不变，当配置了`valueField`值时，只提取目标对象关系实体类的该属性
 >
 > 注意：因为不是对象接收，所以该配置需要强制配置注解`targetTable`属性(因为是某个字段接收，并不是某个实体对应的表，所以需要增加`targetTable`获取目标表信息)
 >
@@ -389,7 +389,7 @@ public class UserVO5 implements Serializable {
             selfField = "userId",
             targetTable = "tb_id_card",
             targetField = "id",
-            targetFieldBind = "idNumber"
+            valueField = "idNumber"
     )
     //该处可以定义其他属性名，不一定要是目标对象的字段名
     private String idNumberCustomFieldName;
@@ -398,7 +398,7 @@ public class UserVO5 implements Serializable {
             selfField = "userId",
             targetTable = "tb_user_order",
             targetField = "userId",
-            targetFieldBind = "orderId"
+            valueField = "orderId"
     )
     private List<Integer> orderIdList;
 
@@ -406,7 +406,7 @@ public class UserVO5 implements Serializable {
             selfField = "userId",
             targetTable = "tb_role",
             targetField = "roleId",
-            targetFieldBind = "roleName",
+            valueField = "roleName",
             joinTable = "tb_user_role",
             joinSelfColumn = "user_id",
             joinTargetColumn = "role_id"

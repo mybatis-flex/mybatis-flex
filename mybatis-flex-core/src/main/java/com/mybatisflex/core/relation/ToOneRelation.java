@@ -24,10 +24,10 @@ import java.util.List;
 class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
 
-    public ToOneRelation(String selfField, String targetSchema, String targetTable, String targetField, String targetFieldBind,
+    public ToOneRelation(String selfField, String targetSchema, String targetTable, String targetField, String valueField,
                          String joinTable, String joinSelfColumn, String joinTargetColumn,
                          String dataSource, Class<SelfEntity> selfEntityClass, Field relationField, String[] selectColumns) {
-        super(selfField, targetSchema, targetTable, targetField, targetFieldBind,
+        super(selfField, targetSchema, targetTable, targetField, valueField,
             joinTable, joinSelfColumn, joinTargetColumn,
             dataSource, selfEntityClass, relationField,
             null, selectColumns
@@ -54,9 +54,9 @@ class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                 for (Object targetObject : targetObjectList) {
                     Object targetValue = targetFieldWrapper.get(targetObject);
                     if (targetValue != null && targetMappingValue.equals(targetValue.toString())) {
-                        if (onlyTargetFieldBind) {
+                        if (onlyQueryValueField) {
                             //仅绑定某个字段
-                            relationFieldWrapper.set(FieldWrapper.of(targetObject.getClass(), targetFieldBind).get(targetObject), selfEntity);
+                            relationFieldWrapper.set(FieldWrapper.of(targetObject.getClass(), valueField).get(targetObject), selfEntity);
                         } else {
                             relationFieldWrapper.set(targetObject, selfEntity);
                         }

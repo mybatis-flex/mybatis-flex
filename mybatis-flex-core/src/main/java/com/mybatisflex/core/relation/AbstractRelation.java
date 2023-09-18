@@ -46,8 +46,10 @@ abstract class AbstractRelation<SelfEntity> {
     protected String targetSchema;
     protected String targetTable;
     protected Field targetField;
-    protected String targetFieldBind;
-    protected boolean onlyTargetFieldBind;
+
+    protected String valueField;
+    protected boolean onlyQueryValueField;
+
     protected Class<?> targetEntityClass;
     protected TableInfo targetTableInfo;
     protected FieldWrapper targetFieldWrapper;
@@ -64,7 +66,7 @@ abstract class AbstractRelation<SelfEntity> {
     protected QueryColumn conditionColumn;
     protected String[] selectColumns;
 
-    public AbstractRelation(String selfField, String targetSchema, String targetTable, String targetField, String targetFieldBind,
+    public AbstractRelation(String selfField, String targetSchema, String targetTable, String targetField, String valueField,
                             String joinTable, String joinSelfColumn, String joinTargetColumn,
                             String dataSource, Class<SelfEntity> entityClass, Field relationField,
                             String extraCondition, String[] selectColumns
@@ -93,14 +95,14 @@ abstract class AbstractRelation<SelfEntity> {
         this.targetField = ClassUtil.getFirstField(targetEntityClass, field -> field.getName().equals(targetField));
         this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
 
-        this.targetFieldBind = targetFieldBind;
-        this.onlyTargetFieldBind = StringUtil.isNotBlank(targetFieldBind);
+        this.valueField = valueField;
+        this.onlyQueryValueField = StringUtil.isNotBlank(valueField);
 
         this.conditionColumn = column(targetTable, targetTableInfo.getColumnByProperty(this.targetField.getName()));
 
-        if (onlyTargetFieldBind) {
+        if (onlyQueryValueField) {
             //仅绑定字段时只需要查询关联列和该字段列即可
-            this.selectColumns = new String[]{conditionColumn.getName(), targetTableInfo != null ? targetTableInfo.getColumnByProperty(this.targetFieldBind) : StringUtil.camelToUnderline(this.targetFieldBind)};
+            this.selectColumns = new String[]{conditionColumn.getName(), targetTableInfo != null ? targetTableInfo.getColumnByProperty(this.valueField) : StringUtil.camelToUnderline(this.valueField)};
         } else {
             if (ArrayUtil.isNotEmpty(selectColumns)) {
                 if (ArrayUtil.contains(selectColumns, conditionColumn.getName())) {
@@ -259,20 +261,20 @@ abstract class AbstractRelation<SelfEntity> {
         this.targetTable = targetTable;
     }
 
-    public String getTargetFieldBind() {
-        return targetFieldBind;
+    public String getValueField() {
+        return valueField;
     }
 
-    public void setTargetFieldBind(String targetFieldBind) {
-        this.targetFieldBind = targetFieldBind;
+    public void setValueField(String valueField) {
+        this.valueField = valueField;
     }
 
-    public boolean isOnlyTargetFieldBind() {
-        return onlyTargetFieldBind;
+    public boolean isOnlyQueryValueField() {
+        return onlyQueryValueField;
     }
 
-    public void setOnlyTargetFieldBind(boolean onlyTargetFieldBind) {
-        this.onlyTargetFieldBind = onlyTargetFieldBind;
+    public void setOnlyQueryValueField(boolean onlyQueryValueField) {
+        this.onlyQueryValueField = onlyQueryValueField;
     }
 
     public String getJoinTable() {

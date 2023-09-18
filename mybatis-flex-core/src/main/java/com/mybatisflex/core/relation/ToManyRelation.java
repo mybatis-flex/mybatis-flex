@@ -31,11 +31,11 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
     protected long limit = 0;
 
 
-    public ToManyRelation(String selfField, String targetSchema, String targetTable, String targetField, String targetFieldBind,
+    public ToManyRelation(String selfField, String targetSchema, String targetTable, String targetField, String valueField,
                           String joinTable, String joinSelfColumn, String joinTargetColumn,
                           String dataSource, Class<SelfEntity> selfEntityClass, Field relationField,
                           String extraCondition, String[] selectColumns) {
-        super(selfField, targetSchema, targetTable, targetField, targetFieldBind,
+        super(selfField, targetSchema, targetTable, targetField, valueField,
             joinTable, joinSelfColumn, joinTargetColumn,
             dataSource, selfEntityClass, relationField,
             extraCondition, selectColumns
@@ -101,9 +101,9 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                     for (Object targetObject : targetObjectList) {
                         Object targetValue = targetFieldWrapper.get(targetObject);
                         if (targetValue != null && targetMappingValues.contains(targetValue.toString())) {
-                            if (onlyTargetFieldBind) {
+                            if (onlyQueryValueField) {
                                 //仅绑定某个字段
-                                collection.add(FieldWrapper.of(targetObject.getClass(), targetFieldBind).get(targetObject));
+                                collection.add(FieldWrapper.of(targetObject.getClass(), valueField).get(targetObject));
                             } else {
                                 collection.add(targetObject);
                             }

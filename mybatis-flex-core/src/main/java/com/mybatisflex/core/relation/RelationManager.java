@@ -361,7 +361,7 @@ public class RelationManager {
 
                     //仅绑定字段:As目标实体类 不进行字段绑定:As映射类型
                     QueryWrapper queryWrapper = relation.buildQueryWrapper(targetValues);
-                    List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, relation.isOnlyTargetFieldBind() ? relation.getTargetEntityClass() : relation.getMappingType());
+                    List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, relation.isOnlyQueryValueField() ? relation.getTargetEntityClass() : relation.getMappingType());
                     if (CollectionUtil.isNotEmpty(targetObjectList)) {
 
                         //递归查询

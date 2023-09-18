@@ -26,7 +26,7 @@ class ManyToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
             , annotation.targetSchema()
             , annotation.targetTable()
             , getDefaultPrimaryProperty(annotation.targetField(), getTargetEntityClass(entityClass, relationField), "@RelationManyToMany.targetField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
-            , annotation.targetFieldBind()
+            , annotation.valueField()
             , annotation.joinTable()
             , annotation.joinSelfColumn()
             , annotation.joinTargetColumn()

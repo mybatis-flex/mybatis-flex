@@ -73,7 +73,7 @@ public @interface RelationOneToOne {
      * 当字段不为空串时,只进行某个字段赋值(使用对应字段类型接收)
      * @return 属性名称
      */
-    String targetFieldBind() default "";
+    String valueField() default "";
 
     /**
      * 中间表名称，一对一的关系是通过通过中间表维护时，需要添加此项配置。

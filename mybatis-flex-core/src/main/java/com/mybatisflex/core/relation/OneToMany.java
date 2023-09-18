@@ -27,7 +27,7 @@ class OneToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
             , annotation.targetSchema()
             , annotation.targetTable()
             , annotation.targetField()
-            , annotation.targetFieldBind()
+            , annotation.valueField()
             , annotation.joinTable()
             , annotation.joinSelfColumn()
             , annotation.joinTargetColumn()

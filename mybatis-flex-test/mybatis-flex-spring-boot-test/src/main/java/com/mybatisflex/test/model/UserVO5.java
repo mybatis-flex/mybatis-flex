@@ -23,7 +23,7 @@ public class UserVO5 implements Serializable {
         selfField = "userId",
         targetTable = "tb_id_card",
         targetField = "id",
-        targetFieldBind = "idNumber"
+        valueField = "idNumber"
     )
     private String idNumberCustomFieldName;
 
@@ -31,7 +31,7 @@ public class UserVO5 implements Serializable {
         selfField = "userId",
         targetTable = "tb_user_order",
         targetField = "userId",
-        targetFieldBind = "orderId"
+        valueField = "orderId"
     )
     private List<Integer> orderIdList;
 
@@ -39,7 +39,7 @@ public class UserVO5 implements Serializable {
         selfField = "userId",
         targetTable = "tb_role",
         targetField = "roleId",
-        targetFieldBind = "roleName",
+        valueField = "roleName",
         joinTable = "tb_user_role",
         joinSelfColumn = "user_id",
         joinTargetColumn = "role_id"
