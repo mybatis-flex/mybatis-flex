@@ -352,6 +352,111 @@ public class Account implements Serializable {
 }
 ```
 
+Relation结果集只使用某个字段值-`since v1.6.6`
+
+`RelationOneToOne`、`RelationOneToMany`、`RelationManyToOne`、`RelationManyToMany`新增属性`targetFieldBind`
+```java {7-11}
+    /**
+     * 目标对象的关系实体类的属性绑定
+     * <p>
+     * 当字段不为空串时,只进行某个字段赋值(使用对应字段类型接收)
+     * @return 属性名称
+     */
+    String targetFieldBind() default "";
+```
+> 注解其他属性配置使用不变，当配置了`targetFieldBind`值时，只提取目标对象关系实体类的该属性
+>
+> 注意：因为不是对象接收，所以该配置需要强制配置注解`targetTable`属性(因为是某个字段接收，并不是某个实体对应的表，所以需要增加`targetTable`获取目标表信息)
+>
+> 示例场景：有个业务有个操作日志，操作日志中有个createBy(操作人字段)，此时在日志详情或者说日志列表中需要显示操作人名称，且只需要这一个字段，此时使用实体接收会导致不必要的字段出现，接口文档也会变得混乱。该场景也可以使用`Field Query`和`Join Query`实现
+>
+假设一个账户
+- 每个账户有一个唯一对应的`id_number`列在表`tb_id_card`中
+- 每个账户拥有多个订单`tb_user_order`
+- 一个账户可以有多个角色，一个角色也可以分配给多个账户，他们通过中间表`tb_user_role`进行关系映射
+
+```java {7-11}
+@Table("tb_user")
+public class UserVO5 implements Serializable {
+    private static final long serialVersionUID = 474700189859144273L;
+
+    @Id
+    private Integer userId;
+    private String userName;
+    private String password;
+
+    @RelationOneToOne(
+            selfField = "userId",
+            targetTable = "tb_id_card",
+            targetField = "id",
+            targetFieldBind = "idNumber"
+    )
+    //该处可以定义其他属性名，不一定要是目标对象的字段名
+    private String idNumberCustomFieldName;
+
+    @RelationOneToMany(
+            selfField = "userId",
+            targetTable = "tb_user_order",
+            targetField = "userId",
+            targetFieldBind = "orderId"
+    )
+    private List<Integer> orderIdList;
+
+    @RelationManyToMany(
+            selfField = "userId",
+            targetTable = "tb_role",
+            targetField = "roleId",
+            targetFieldBind = "roleName",
+            joinTable = "tb_user_role",
+            joinSelfColumn = "user_id",
+            joinTargetColumn = "role_id"
+    )
+    private List<String> roleNameList;
+
+    //getter setter toString
+}
+```
+进行查询
+```java
+List<UserVO5> userVO5List = userMapper.selectListWithRelationsByQueryAs(QueryWrapper.create(), UserVO5.class);
+System.out.println(userVO5List);
+```
+输出结果
+```json
+[{
+        userId = 1,
+        userName = '张三',
+        password = '12345678',
+        idNumberCustomFieldName = 'F281C807-C40B-472D-82F5-6130199C6328',
+        orderIdList = [1],
+        roleNameList = [普通用户]
+    },
+    {
+        userId = 2,
+        userName = '李四',
+        password = '87654321',
+        idNumberCustomFieldName = '6176E9AD-36EF-4201-A5F7-CCE89B254952',
+        orderIdList = [3, 2],
+        roleNameList = [普通用户, 贵族用户]
+    },
+    {
+        userId = 3,
+        userName = '王五',
+        password = '09897654',
+        idNumberCustomFieldName = 'A038E6EA-1FDE-4191-AA41-06F78E91F6C2',
+        orderIdList = [6, 5, 4],
+        roleNameList = [普通用户, 贵族用户, 超级贵族用户]
+    },
+    {
+        userId = 4,
+        userName = '苏六',
+        password = '45678345',
+        idNumberCustomFieldName = 'A33E8BAA-93F2-4E28-A161-15CF7D0AE6D0',
+        orderIdList = [],
+        roleNameList = [普通用户, 贵族用户, 超级贵族用户, 管理员用户]
+}]
+```
+
 ## 父子关系查询
 
 比如在一些系统中，比如菜单会有一些父子关系，例如菜单表如下：

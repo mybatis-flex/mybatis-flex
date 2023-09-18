@@ -46,6 +46,8 @@ abstract class AbstractRelation<SelfEntity> {
     protected String targetSchema;
     protected String targetTable;
     protected Field targetField;
+    protected String targetFieldBind;
+    protected boolean onlyTargetFieldBind;
     protected Class<?> targetEntityClass;
     protected TableInfo targetTableInfo;
     protected FieldWrapper targetFieldWrapper;
@@ -62,7 +64,7 @@ abstract class AbstractRelation<SelfEntity> {
     protected QueryColumn conditionColumn;
     protected String[] selectColumns;
 
-    public AbstractRelation(String selfField, String targetSchema, String targetTable, String targetField,
+    public AbstractRelation(String selfField, String targetSchema, String targetTable, String targetField, String targetFieldBind,
                             String joinTable, String joinSelfColumn, String joinTargetColumn,
                             String dataSource, Class<SelfEntity> entityClass, Field relationField,
                             String extraCondition, String[] selectColumns
@@ -82,25 +84,33 @@ abstract class AbstractRelation<SelfEntity> {
         this.selfField = ClassUtil.getFirstField(entityClass, field -> field.getName().equals(selfField));
         this.selfFieldWrapper = FieldWrapper.of(entityClass, selfField);
 
-
-        this.targetEntityClass = relationFieldWrapper.getMappingType();
+        //以使用者注解配置为主
+        this.targetTableInfo = StringUtil.isBlank(targetTable) ? TableInfoFactory.ofEntityClass(relationFieldWrapper.getMappingType()) : TableInfoFactory.ofTableName(targetTable);
+        this.targetEntityClass = targetTableInfo != null ? targetTableInfo.getEntityClass() : relationFieldWrapper.getMappingType();
         this.targetSchema = targetSchema;
-        this.targetTable = targetTable;
+        this.targetTable = targetTableInfo != null ? targetTableInfo.getTableName() : targetTable;
 
         this.targetField = ClassUtil.getFirstField(targetEntityClass, field -> field.getName().equals(targetField));
         this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
 
-        this.targetTableInfo = TableInfoFactory.ofEntityClass(targetEntityClass);
+        this.targetFieldBind = targetFieldBind;
+        this.onlyTargetFieldBind = StringUtil.isNotBlank(targetFieldBind);
 
         this.conditionColumn = column(targetTable, targetTableInfo.getColumnByProperty(this.targetField.getName()));
 
-        if (ArrayUtil.isNotEmpty(selectColumns)) {
-            if (ArrayUtil.contains(selectColumns, conditionColumn.getName())) {
-                this.selectColumns = selectColumns;
-            } else {
-                //需要追加 conditionColumn，因为进行内存 join 的时候，需要用到这个内容进行对比
-                this.selectColumns = ArrayUtil.concat(selectColumns, new String[]{conditionColumn.getName()});
+        if (onlyTargetFieldBind) {
+            //仅绑定字段时只需要查询关联列和该字段列即可
+            this.selectColumns = new String[]{conditionColumn.getName(), targetTableInfo != null ? targetTableInfo.getColumnByProperty(this.targetFieldBind) : StringUtil.camelToUnderline(this.targetFieldBind)};
+        } else {
+            if (ArrayUtil.isNotEmpty(selectColumns)) {
+                if (ArrayUtil.contains(selectColumns, conditionColumn.getName())) {
+                    this.selectColumns = selectColumns;
+                } else {
+                    //需要追加 conditionColumn，因为进行内存 join 的时候，需要用到这个内容进行对比
+                    this.selectColumns = ArrayUtil.concat(selectColumns, new String[]{conditionColumn.getName()});
+                }
             }
+
         }
 
         initExtraCondition(extraCondition);
@@ -247,6 +257,22 @@ abstract class AbstractRelation<SelfEntity> {
 
     public void setTargetTable(String targetTable) {
         this.targetTable = targetTable;
+    }
+
+    public String getTargetFieldBind() {
+        return targetFieldBind;
+    }
+
+    public void setTargetFieldBind(String targetFieldBind) {
+        this.targetFieldBind = targetFieldBind;
+    }
+
+    public boolean isOnlyTargetFieldBind() {
+        return onlyTargetFieldBind;
+    }
+
+    public void setOnlyTargetFieldBind(boolean onlyTargetFieldBind) {
+        this.onlyTargetFieldBind = onlyTargetFieldBind;
     }
 
     public String getJoinTable() {
