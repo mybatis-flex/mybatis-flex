@@ -48,9 +48,17 @@ public class UpdateChain<T> extends QueryWrapperAdapter<UpdateChain<T>> implemen
         return new UpdateChain<>(baseMapper);
     }
 
+    public static <T> UpdateChain<T> of(BaseMapper<T> baseMapper) {
+        return new UpdateChain<>(baseMapper);
+    }
+
     public static <T> UpdateChain<T> of(T entityObject) {
         Class<T> entityClass = (Class<T>) ClassUtil.getUsefulClass(entityObject.getClass());
         BaseMapper<T> baseMapper = Mappers.ofEntityClass(entityClass);
+        return new UpdateChain<>(baseMapper, entityObject);
+    }
+
+    public static <T> UpdateChain<T> of(T entityObject, BaseMapper<T> baseMapper) {
         return new UpdateChain<>(baseMapper, entityObject);
     }
 
