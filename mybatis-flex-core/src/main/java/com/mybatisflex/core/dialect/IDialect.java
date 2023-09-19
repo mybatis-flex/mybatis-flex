@@ -29,6 +29,8 @@ public interface IDialect {
 
     String wrap(String keyword);
 
+    String wrapColumnAlias(String keyword);
+
     default String getRealTable(String table) {
         return TableManager.getRealTable(table);
     }

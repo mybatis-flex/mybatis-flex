@@ -42,7 +42,7 @@ public class RawQueryColumn extends QueryColumn implements HasParamsColumn {
 
     @Override
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
-        return content + WrapperUtil.buildAlias(alias, dialect);
+        return content + WrapperUtil.buildColumnAlias(alias, dialect);
     }
 
     @Override

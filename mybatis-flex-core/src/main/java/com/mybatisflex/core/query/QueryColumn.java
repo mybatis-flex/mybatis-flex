@@ -946,7 +946,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
 
     String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
-        return toConditionSql(queryTables, dialect) + WrapperUtil.buildAlias(alias, dialect);
+        return toConditionSql(queryTables, dialect) + WrapperUtil.buildColumnAlias(alias, dialect);
     }
 
 
