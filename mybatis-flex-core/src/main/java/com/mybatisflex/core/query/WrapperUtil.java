@@ -148,7 +148,7 @@ class WrapperUtil {
     }
 
     static String withAlias(String sql, String alias, IDialect dialect) {
-        return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT + getAsKeyWord(dialect) + buildColumnAlias(alias, dialect);
+        return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT + buildColumnAlias(alias, dialect);
     }
 
     static String buildAlias(String alias, IDialect dialect) {
