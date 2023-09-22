@@ -3,6 +3,20 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+
+## v1.6.6 20230922:
+- 新增：UpdateChain.of 使用 Mapper 进行构造方便在批量操作使用的功能
+- 新增：QueryWrapper.select(Iterable) 方法，方便 Kotlin 扩展
+- 新增：Relation 注解新增 valueField 配置，当不为空串时值进行某个字段赋值，感谢 @ice-samll
+- 优化：转驼峰方法多次转换保持结果一致，感谢 @617054137
+- 优化：生成列别名规范，保持用户原始的列别名命名，感谢 @font-c
+- 修复：Db 或 MyBatis 原生查询驼峰转换需处理不包含下划线的字段，感谢 @617054137
+- 测试：增加 Relation 注解单字段赋值 Springboot 测试，感谢 @ice-samll
+- 文档：添加 Relation 注解单字段赋值的相关文档，感谢 @ice-samll
+- 文档：添加关于批量操作使用 UpdateChain 的相关示例
+
+
+
 ## v1.6.5 20230914:
 - 新增：代码生成器为 Oracle 的 JdbcTypeMapping 类型 OracleBlob 添加映射处理
 - 新增：LogicDeleteManager 和 TenantManager 添加 Runnable 无返回值重载，感谢 @Suomm
