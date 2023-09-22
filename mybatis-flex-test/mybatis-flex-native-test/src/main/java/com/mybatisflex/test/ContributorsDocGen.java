@@ -73,11 +73,12 @@ public class ContributorsDocGen {
             if (userName.contains("@")) {
                 userName = userName.substring(0, userName.indexOf("@"));
             }
+            if (StringUtil.isBlank(src)) {
+                src = "https://api.dicebear.com/7.x/initials/svg?seed=" + userName;
+            }
 
             markdown.append("|");
-            if (StringUtil.isNotBlank(src)) {
-                markdown.append("![](" + src + ")");
-            }
+            markdown.append("![](" + src + ")");
             markdown.append(userName);
 
             startIndex++;
