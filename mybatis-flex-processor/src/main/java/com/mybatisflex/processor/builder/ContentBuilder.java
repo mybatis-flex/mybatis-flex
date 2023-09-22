@@ -69,6 +69,9 @@ public class ContentBuilder {
         content.append("import com.mybatisflex.core.table.TableDef;\n\n");
         content.append("// Auto generate by mybatis-flex, do not modify it.\n");
         content.append("public class ").append(tableDefClassName).append(" extends TableDef {\n\n");
+
+        //TableDef 类的属性名称
+        String tableDefPropertyName = null;
         if (!allInTablesEnable) {
             String entityComment = tableInfo.getEntityComment();
             if (!StrUtil.isBlank(entityComment)) {
@@ -76,9 +79,13 @@ public class ContentBuilder {
                     .append("     * ").append(entityComment.trim()).append("\n")
                     .append("     */\n");
             }
-            content.append("    public static final ").append(tableDefClassName).append(' ').append(StrUtil.buildFieldName(tableInfo.getEntitySimpleName().concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle))
+            tableDefPropertyName = StrUtil.buildFieldName(tableInfo.getEntitySimpleName().concat(tableDefInstanceSuffix != null ? tableDefInstanceSuffix.trim() : ""), tableDefPropertiesNameStyle);
+            content.append("    public static final ").append(tableDefClassName).append(' ').append(tableDefPropertyName)
                 .append(" = new ").append(tableDefClassName).append("();\n\n");
         }
+
+
+        String finalTableDefPropertyName = tableDefPropertyName;
         columnInfos.forEach(columnInfo -> {
             String comment = columnInfo.getComment();
             if (!StrUtil.isBlank(comment)) {
@@ -86,8 +93,16 @@ public class ContentBuilder {
                     .append("     * ").append(comment.trim()).append("\n")
                     .append("     */\n");
             }
+
+            // QueryColumn 属性定义的名称
+            String columnPropertyName = StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle);
+
+            //当字段名称和表名一样时，自动为字段添加一个小尾巴 "_"，例如 account_
+            if (columnPropertyName.equals(finalTableDefPropertyName)) {
+                columnPropertyName = columnPropertyName + "_";
+            }
             content.append("    public final QueryColumn ")
-                .append(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle))
+                .append(columnPropertyName)
                 .append(" = new QueryColumn(this, \"")
                 .append(columnInfo.getColumn()).append("\"");
             if (columnInfo.getAlias() != null && columnInfo.getAlias().length > 0) {
@@ -102,7 +117,11 @@ public class ContentBuilder {
         StringJoiner defaultColumnJoiner = new StringJoiner(", ");
         columnInfos.forEach(columnInfo -> {
             if (defaultColumns.contains(columnInfo.getColumn())) {
-                defaultColumnJoiner.add(StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle));
+                String columnPropertyName = StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle);
+                if (columnPropertyName.equals(finalTableDefPropertyName)) {
+                    columnPropertyName = columnPropertyName + "_";
+                }
+                defaultColumnJoiner.add(columnPropertyName);
             }
         });
         content.append("\n    /**\n")
