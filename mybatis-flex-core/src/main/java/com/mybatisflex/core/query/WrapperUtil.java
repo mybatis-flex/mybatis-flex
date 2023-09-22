@@ -122,7 +122,7 @@ class WrapperUtil {
             if (enumWrapper.hasEnumValueAnnotation()) {
                 paras.add(enumWrapper.getEnumValue((Enum) value));
             } else {
-                paras.add(((Enum<?>)value).name());
+                paras.add(((Enum<?>) value).name());
             }
         } else {
             paras.add(value);
@@ -148,7 +148,7 @@ class WrapperUtil {
     }
 
     static String withAlias(String sql, String alias, IDialect dialect) {
-        return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT + getAsKeyWord(dialect) + buildColumnAlias(alias, dialect);
+        return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT + buildColumnAlias(alias, dialect);
     }
 
     static String buildAlias(String alias, IDialect dialect) {

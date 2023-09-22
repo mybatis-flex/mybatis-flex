@@ -10,6 +10,7 @@
 - 新增：Relation 注解新增 valueField 配置，当不为空串时值进行某个字段赋值，感谢 @ice-samll
 - 优化：转驼峰方法多次转换保持结果一致，感谢 @617054137
 - 优化：生成列别名规范，保持用户原始的列别名命名，感谢 @font-c
+- 修复：QueryWrapper 在某些场景下构建 SQL 会出现两个 AS 关键字的问题
 - 修复：Db 或 MyBatis 原生查询驼峰转换需处理不包含下划线的字段，感谢 @617054137
 - 测试：增加 Relation 注解单字段赋值 Springboot 测试，感谢 @ice-samll
 - 文档：添加 Relation 注解单字段赋值的相关文档，感谢 @ice-samll
