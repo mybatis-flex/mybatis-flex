@@ -37,6 +37,15 @@ public class DataSourceManager {
         DataSourceManager.decipher = decipher;
     }
 
+    private static DataSourceShardingStrategy dataSourceShardingStrategy;
+
+    public static DataSourceShardingStrategy getDataSourceShardingStrategy() {
+        return dataSourceShardingStrategy;
+    }
+
+    public static void setDataSourceShardingStrategy(DataSourceShardingStrategy dataSourceShardingStrategy) {
+        DataSourceManager.dataSourceShardingStrategy = dataSourceShardingStrategy;
+    }
 
     public static void decryptDataSource(DataSource dataSource) {
         if (decipher == null) {
@@ -87,4 +96,7 @@ public class DataSourceManager {
     }
 
 
+    static String getByShardingStrategy(String dataSource, Object mapper, Method method, Object[] args) {
+        return dataSourceShardingStrategy != null ? dataSourceShardingStrategy.doSharding(dataSource, mapper, method, args) : null;
+    }
 }
