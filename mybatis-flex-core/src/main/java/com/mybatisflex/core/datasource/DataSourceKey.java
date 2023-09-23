@@ -32,8 +32,6 @@ public class DataSourceKey {
      */
     private static ThreadLocal<String> manualKeyThreadLocal = new ThreadLocal<>();
 
-    public static String manualKey;
-
     private DataSourceKey() {
     }
 
