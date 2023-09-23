@@ -98,7 +98,8 @@ abstract class AbstractRelation<SelfEntity> {
         this.valueField = valueField;
         this.onlyQueryValueField = StringUtil.isNotBlank(valueField);
 
-        this.conditionColumn = column(targetTable, targetTableInfo.getColumnByProperty(this.targetField.getName()));
+        this.conditionColumn = targetTableInfo == null ? column(targetTable, StringUtil.camelToUnderline(this.targetField.getName()))
+            : column(targetTable, targetTableInfo.getColumnByProperty(this.targetField.getName()));
 
         if (onlyQueryValueField) {
             //仅绑定字段时只需要查询关联列和该字段列即可
