@@ -188,7 +188,8 @@ public class FlexConfiguration extends Configuration {
                 Class<?> clazz = resultMap.getType();
                 //判断是否为表实体类
                 if (clazz.getDeclaredAnnotation(Table.class) != null) {
-                    ms = replaceResultMap(ms, getTableInfo(ms));
+                    TableInfo tableInfo = TableInfoFactory.ofEntityClass(clazz);
+                    ms = replaceResultMap(ms, tableInfo);
                 }
             }
         }
