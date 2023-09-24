@@ -232,6 +232,10 @@ public class MybatisFlexProcessor extends AbstractProcessor {
         return SourceVersion.latestSupported();
     }
 
+
+    /**
+     * 通过 classElement 操作起所有字段，生成 ColumnInfo 并填充 columnInfos 结合
+     */
     private void fillColumnInfoList(Set<ColumnInfo> columnInfos, List<String> defaultColumns, TypeElement baseElement, TypeElement classElement, boolean camelToUnderline) {
         for (Element fieldElement : classElement.getEnclosedElements()) {
 

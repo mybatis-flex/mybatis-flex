@@ -15,7 +15,7 @@
  */
 package com.mybatisflex.core.update;
 
-
+import com.mybatisflex.core.util.FieldWrapper;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.javassist.util.proxy.MethodHandler;
 
@@ -42,7 +42,15 @@ class ModifyAttrsRecordHandler implements MethodHandler {
             && methodName.length() > 3
             && Character.isUpperCase(methodName.charAt(3))
             && originalMethod.getParameterCount() == 1) {
+
             String property = StringUtil.firstCharToLowerCase(originalMethod.getName().substring(3));
+
+            //标识 @Column(ignore=true) 的字段，不去更新
+            FieldWrapper fw = FieldWrapper.of(originalMethod.getDeclaringClass(), property);
+            if (fw != null && fw.isIgnore()) {
+                return proxyMethod.invoke(self, args);
+            }
+
             updates.put(property, args[0]);
         }
 
@@ -51,5 +59,3 @@ class ModifyAttrsRecordHandler implements MethodHandler {
 
 
 }
-
-

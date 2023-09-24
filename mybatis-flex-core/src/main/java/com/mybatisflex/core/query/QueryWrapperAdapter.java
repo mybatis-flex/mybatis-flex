@@ -78,6 +78,12 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
+    public R select(Iterable<QueryColumn> queryColumns) {
+        super.select(queryColumns);
+        return (R) this;
+    }
+
+    @Override
     public R select(QueryColumn[]... queryColumns) {
         super.select(queryColumns);
         return (R) this;

@@ -62,6 +62,10 @@ public class CommonsDialectImpl implements IDialect {
         return ASTERISK.equals(keyword) ? keyword : keywordWrap.wrap(keyword);
     }
 
+    @Override
+    public String wrapColumnAlias(String keyword) {
+        return ASTERISK.equals(keyword) ? keyword : keywordWrap.getPrefix() + keyword + keywordWrap.getSuffix();
+    }
 
     @Override
     public String forHint(String hintString) {
@@ -863,7 +867,6 @@ public class CommonsDialectImpl implements IDialect {
 
         return sqlBuilder.toString();
     }
-
 
 
     @Override

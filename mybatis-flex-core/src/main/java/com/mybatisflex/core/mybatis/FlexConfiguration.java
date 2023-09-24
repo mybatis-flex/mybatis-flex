@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.mybatis;
 
+import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.handler.CompositeEnumTypeHandler;
 import com.mybatisflex.core.keygen.MultiEntityKeyGenerator;
@@ -48,11 +49,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author michael
+ * @author life
  */
 public class FlexConfiguration extends Configuration {
 
@@ -177,8 +180,19 @@ public class FlexConfiguration extends Configuration {
         else if (StringUtil.endsWithAny(ms.getId(), "selectOneById", "selectListByIds"
             , "selectListByQuery", "selectCursorByQuery")) {
             ms = replaceResultMap(ms, getTableInfo(ms));
+        } else {
+            List<ResultMap> resultMaps = ms.getResultMaps();
+            //根据 resultMap 里面的 class 进行判断
+            for (ResultMap resultMap : resultMaps) {
+                //获取结果的类型
+                Class<?> clazz = resultMap.getType();
+                //判断是否为表实体类
+                if (clazz.getDeclaredAnnotation(Table.class) != null) {
+                    TableInfo tableInfo = TableInfoFactory.ofEntityClass(clazz);
+                    ms = replaceResultMap(ms, tableInfo);
+                }
+            }
         }
-
         super.addMappedStatement(ms);
     }
 

@@ -20,6 +20,8 @@ import com.mybatisflex.codegen.generator.GeneratorFactory;
 import com.mybatisflex.codegen.template.ITemplate;
 import com.mybatisflex.codegen.template.impl.EnjoyTemplate;
 
+import java.io.Serializable;
+
 /**
  * 模板配置。
  *
@@ -27,8 +29,9 @@ import com.mybatisflex.codegen.template.impl.EnjoyTemplate;
  * @since 2023-05-17
  */
 @SuppressWarnings("unused")
-public class TemplateConfig {
+public class TemplateConfig implements Serializable {
 
+    private static final long serialVersionUID = 6700855804948021101L;
     /**
      * 生成代码的模板引擎。
      */

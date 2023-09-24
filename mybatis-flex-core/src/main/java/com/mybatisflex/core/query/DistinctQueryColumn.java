@@ -39,7 +39,7 @@ public class DistinctQueryColumn extends QueryColumn {
         String sql = SqlConsts.DISTINCT + StringUtil.join(SqlConsts.DELIMITER, queryColumns, queryColumn ->
             queryColumn.toSelectSql(queryTables, dialect));
 
-        return sql + WrapperUtil.buildAlias(alias, dialect);
+        return sql + WrapperUtil.buildColumnAlias(alias, dialect);
     }
 
 

@@ -68,7 +68,7 @@ public class OperatorQueryCondition extends QueryCondition {
 
     @Override
     public Object getValue() {
-        return WrapperUtil.getValues(childCondition);
+        return checkEffective() ? WrapperUtil.getValues(childCondition) : null;
     }
 
     @Override

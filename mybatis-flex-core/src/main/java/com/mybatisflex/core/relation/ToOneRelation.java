@@ -16,6 +16,7 @@
 package com.mybatisflex.core.relation;
 
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.util.FieldWrapper;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -23,10 +24,10 @@ import java.util.List;
 class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
 
-    public ToOneRelation(String selfField, String targetSchema, String targetTable, String targetField,
+    public ToOneRelation(String selfField, String targetSchema, String targetTable, String targetField, String valueField,
                          String joinTable, String joinSelfColumn, String joinTargetColumn,
                          String dataSource, Class<SelfEntity> selfEntityClass, Field relationField, String[] selectColumns) {
-        super(selfField, targetSchema, targetTable, targetField,
+        super(selfField, targetSchema, targetTable, targetField, valueField,
             joinTable, joinSelfColumn, joinTargetColumn,
             dataSource, selfEntityClass, relationField,
             null, selectColumns
@@ -53,7 +54,12 @@ class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                 for (Object targetObject : targetObjectList) {
                     Object targetValue = targetFieldWrapper.get(targetObject);
                     if (targetValue != null && targetMappingValue.equals(targetValue.toString())) {
-                        relationFieldWrapper.set(targetObject, selfEntity);
+                        if (onlyQueryValueField) {
+                            //仅绑定某个字段
+                            relationFieldWrapper.set(FieldWrapper.of(targetObject.getClass(), valueField).get(targetObject), selfEntity);
+                        } else {
+                            relationFieldWrapper.set(targetObject, selfEntity);
+                        }
                         break;
                     }
                 }

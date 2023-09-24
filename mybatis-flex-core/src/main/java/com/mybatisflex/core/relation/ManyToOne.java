@@ -27,6 +27,7 @@ class ManyToOne<SelfEntity> extends ToOneRelation<SelfEntity> {
             , annotation.targetTable()
             , getDefaultPrimaryProperty(annotation.targetField(), getTargetEntityClass(entityClass, relationField)
                 , "@RelationManyToOne.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")
+            , annotation.valueField()
             , annotation.joinTable()
             , annotation.joinSelfColumn()
             , annotation.joinTargetColumn()

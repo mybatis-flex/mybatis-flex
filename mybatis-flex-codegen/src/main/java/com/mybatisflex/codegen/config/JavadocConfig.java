@@ -18,6 +18,7 @@ package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.core.util.StringUtil;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
@@ -31,8 +32,9 @@ import java.util.function.UnaryOperator;
  * @since 2023-05-17
  */
 @SuppressWarnings("unused")
-public class JavadocConfig {
+public class JavadocConfig implements Serializable {
 
+    private static final long serialVersionUID = -4280345489968397327L;
     /**
      * 作者。
      */

@@ -87,7 +87,18 @@ Db.executeBatch(accounts, 1000, AccountMapper.class
 ```
 以上的 **错误** 示例，是因为没有用到 `mapper` 参数，因此，不仅仅 `Db.executeBatch` 返回的都是失败的内容，而且也起不到批量操作的作用。
 
+以上代码需要修改为：
 
+```java
+List<Account> accounts = ....
+Db.executeBatch(accounts, 1000, AccountMapper.class
+    , (mapper, account) -> {
+
+    UpdateChina.of(mapper) //使用 mapper 参数，才能起到批量执行的效果
+        .set(Account::getUserName, "张三")
+        .update();
+});
+```
 
 ## `Db.updateBatch` 方法
 

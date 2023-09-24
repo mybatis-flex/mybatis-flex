@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.datasource;
 
+import java.lang.reflect.Method;
 import java.util.function.Supplier;
 
 /**
@@ -31,8 +32,6 @@ public class DataSourceKey {
      * 通过手动编码指定的 key
      */
     private static ThreadLocal<String> manualKeyThreadLocal = new ThreadLocal<>();
-
-    public static String manualKey;
 
     private DataSourceKey() {
     }
@@ -87,5 +86,10 @@ public class DataSourceKey {
 
     public static void setManualKeyThreadLocal(ThreadLocal<String> manualKeyThreadLocal) {
         DataSourceKey.manualKeyThreadLocal = manualKeyThreadLocal;
+    }
+
+    public static String getByShardingStrategy(String dataSource, Object mapper, Method method, Object[] args) {
+        String shardingDsKey = DataSourceManager.getByShardingStrategy(dataSource, mapper, method, args);
+        return shardingDsKey != null ? shardingDsKey : dataSource;
     }
 }

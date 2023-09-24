@@ -19,6 +19,7 @@ import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,9 +27,10 @@ import java.util.Map;
  * 表的单独设置。
  */
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class TableConfig {
+public class TableConfig implements Serializable {
 
     public static final String ALL_TABLES = "*";
+    private static final long serialVersionUID = -2568968178699265858L;
 
     /**
      * 数据库的 schema（模式）。

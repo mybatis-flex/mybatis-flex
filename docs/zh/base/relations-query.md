@@ -352,6 +352,92 @@ public class Account implements Serializable {
 }
 ```
 
+## 只查询一个字段值 <Badge type="tip" text="v1.6.6" />
+
+`RelationOneToOne`、`RelationOneToMany`、`RelationManyToOne`、`RelationManyToMany`新增属性`valueField`
+```java 7
+/**
+ * 目标对象的关系实体类的属性绑定
+ * <p>
+ * 当字段不为空串时,只进行某个字段赋值(使用对应字段类型接收)
+ * @return 属性名称
+ */
+String valueField() default "";
+```
+> 注解其他属性配置使用不变，当配置了`valueField`值时，只提取目标对象关系实体类的该属性
+>
+> **使用场景**：例如，操作日志中有个 `createBy` (操作人)字段，此时在日志信息中需要显示操作人名称，且只需要这一个字段，此时使用实体接收会导致不必要的字段出现，接口文档也会变得混乱。
+
+
+
+假设一个账户实体类 `UserVO5.java`
+- 每个账户有一个唯一对应的`id_number`列在表`tb_id_card`中
+- 一个账户可以有多个角色，一个角色也可以分配给多个账户，他们通过中间表`tb_user_role`进行关系映射
+
+```java {12,21,29}
+@Table("tb_user")
+public class UserVO5 {
+    @Id
+    private Integer userId;
+    private String userName;
+    private String password;
+
+    @RelationOneToOne(
+            selfField = "userId",
+            targetTable = "tb_id_card",
+            targetField = "id",
+            valueField = "idNumber"
+    )
+    //该处可以定义其他属性名，不一定要是目标对象的字段名
+    private String idNumberCustomFieldName;
+
+
+    @RelationManyToMany(
+            selfField = "userId",
+            targetTable = "tb_role",
+            targetField = "roleId",
+            valueField = "roleName",
+            joinTable = "tb_user_role",
+            joinSelfColumn = "user_id",
+            joinTargetColumn = "role_id"
+    )
+    private List<String> roleNameList;
+
+    //getter setter toString
+}
+```
+进行查询
+```java
+List<UserVO5> userVO5List = userMapper.selectListWithRelationsByQueryAs(QueryWrapper.create(), UserVO5.class);
+System.out.println(JSON.toJSONString(userVO5List));
+```
+输出结果
+```json {6,7,13,14,20,21}
+[
+    {
+        userId = 1,
+        userName = '张三',
+        password = '12345678',
+        idNumberCustomFieldName = 'F281C807-C40B-472D-82F5-6130199C6328',
+        roleNameList = [普通用户]
+    },
+    {
+        userId = 2,
+        userName = '李四',
+        password = '87654321',
+        idNumberCustomFieldName = '6176E9AD-36EF-4201-A5F7-CCE89B254952',
+        roleNameList = [普通用户, 贵族用户]
+    },
+    {
+        userId = 3,
+        userName = '王五',
+        password = '09897654',
+        idNumberCustomFieldName = 'A038E6EA-1FDE-4191-AA41-06F78E91F6C2',
+        roleNameList = [普通用户, 贵族用户, 超级贵族用户]
+    }
+]
+```
+
 ## 父子关系查询
 
 比如在一些系统中，比如菜单会有一些父子关系，例如菜单表如下：

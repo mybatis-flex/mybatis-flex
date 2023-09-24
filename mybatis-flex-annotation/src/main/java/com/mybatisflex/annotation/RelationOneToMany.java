@@ -68,6 +68,14 @@ public @interface RelationOneToMany {
     String targetField();
 
     /**
+     * 目标对象的关系实体类的属性绑定
+     * <p>
+     * 当字段不为空串时,只进行某个字段赋值(使用对应字段类型接收)
+     * @return 属性名称
+     */
+    String valueField() default "";
+
+    /**
      * 当映射是一个 map 时，使用哪个内容来当做 map 的 Key
      * @return 指定的列
      */

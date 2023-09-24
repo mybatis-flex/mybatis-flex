@@ -118,6 +118,15 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
+    public QueryWrapper select(Iterable<QueryColumn> queryColumns) {
+        for (QueryColumn column : queryColumns) {
+            if (column != null) {
+                addSelectColumn(column);
+            }
+        }
+        return this;
+    }
+
     public QueryWrapper select(QueryColumn[]... queryColumns) {
         for (QueryColumn[] columnArray : queryColumns) {
             if (columnArray != null) {

@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.util;
 
+import com.mybatisflex.annotation.Column;
 import org.apache.ibatis.reflection.Reflector;
 
 import java.lang.reflect.*;
@@ -27,6 +28,7 @@ public class FieldWrapper {
     public static Map<Class<?>, Map<String, FieldWrapper>> cache = new ConcurrentHashMap<>();
 
     private Field field;
+    private boolean isIgnore = false;
     private Class<?> fieldType;
     private Class<?> mappingType;
     private Class<?> keyType;
@@ -69,6 +71,10 @@ public class FieldWrapper {
                     fieldWrapper.fieldType = findField.getType();
                     initMappingTypeAndKeyType(clazz, findField, fieldWrapper);
 
+                    Column column = findField.getAnnotation(Column.class);
+                    if (column != null && column.ignore()) {
+                        fieldWrapper.isIgnore = true;
+                    }
 
                     fieldWrapper.setterMethod = setter;
 
@@ -137,5 +143,9 @@ public class FieldWrapper {
 
     public Field getField() {
         return field;
+    }
+
+    public boolean isIgnore() {
+        return isIgnore;
     }
 }

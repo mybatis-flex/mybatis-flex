@@ -16,6 +16,8 @@
 
 package com.mybatisflex.codegen.config;
 
+import java.io.Serializable;
+
 /**
  * 生成 MapperXml 的配置。
  *
@@ -23,8 +25,9 @@ package com.mybatisflex.codegen.config;
  * @since 2023-05-17
  */
 @SuppressWarnings("unused")
-public class MapperXmlConfig {
+public class MapperXmlConfig implements Serializable {
 
+    private static final long serialVersionUID = 7836897652282634412L;
     /**
      * MapperXml 文件的前缀。
      */
