@@ -24,7 +24,7 @@ import java.lang.annotation.*;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-@Inherited
+//@Inherited 需要注释，否则会在 vo 等继承 model 的实体类中，生成多余的、或冲突的 tableDef
 public @interface Table {
 
     /**
