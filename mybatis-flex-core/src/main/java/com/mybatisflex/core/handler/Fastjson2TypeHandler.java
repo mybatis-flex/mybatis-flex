@@ -45,22 +45,22 @@ public class Fastjson2TypeHandler extends BaseJsonTypeHandler<Object> {
         this.propertyType = propertyType;
         this.genericType = genericType;
         this.type = TypeReference.collectionType((Class<? extends Collection>) propertyType, genericType);
-        this.isInterface = ((Class<?>) ((ParameterizedType)type).getActualTypeArguments()[0]).isInterface();
+        this.isInterface = ((Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0]).isInterface();
     }
 
     @Override
     protected Object parseJson(String json) {
         if (genericType != null && Collection.class.isAssignableFrom(propertyType)) {
-            if(isInterface){
-                return JSON.parseArray(json, Object.class,JSONReader.Feature.SupportAutoType);
-            }else {
+            if (isInterface) {
+                return JSON.parseArray(json, Object.class, JSONReader.Feature.SupportAutoType);
+            } else {
                 return JSON.parseObject(json, type);
             }
 
         } else {
-            if(isInterface){
-                return JSON.parseObject(json, Object.class,JSONReader.Feature.SupportAutoType);
-            }else {
+            if (isInterface) {
+                return JSON.parseObject(json, Object.class, JSONReader.Feature.SupportAutoType);
+            } else {
                 return JSON.parseObject(json, propertyType);
             }
         }
@@ -68,13 +68,13 @@ public class Fastjson2TypeHandler extends BaseJsonTypeHandler<Object> {
 
     @Override
     protected String toJson(Object object) {
-        if(isInterface){
+        if (isInterface) {
             return JSON.toJSONString(object
                 , JSONWriter.Feature.WriteMapNullValue
                 , JSONWriter.Feature.WriteNullListAsEmpty
                 , JSONWriter.Feature.WriteNullStringAsEmpty, JSONWriter.Feature.WriteClassName
             );
-        }else {
+        } else {
             return JSON.toJSONString(object
                 , JSONWriter.Feature.WriteMapNullValue
                 , JSONWriter.Feature.WriteNullListAsEmpty
