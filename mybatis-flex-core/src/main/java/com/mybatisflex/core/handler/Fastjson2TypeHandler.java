@@ -20,6 +20,7 @@ import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.TypeReference;
 
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -33,11 +34,11 @@ public class Fastjson2TypeHandler extends BaseJsonTypeHandler<Object> {
     private Class<?> genericType;
     private Type type;
 
-    private boolean isInterface = false;
+    private boolean supportAutoType = false;
 
     public Fastjson2TypeHandler(Class<?> propertyType) {
         this.propertyType = propertyType;
-        this.isInterface = propertyType.isInterface();
+        this.supportAutoType = propertyType.isInterface() || Modifier.isAbstract(propertyType.getModifiers());
     }
 
 
@@ -45,20 +46,25 @@ public class Fastjson2TypeHandler extends BaseJsonTypeHandler<Object> {
         this.propertyType = propertyType;
         this.genericType = genericType;
         this.type = TypeReference.collectionType((Class<? extends Collection>) propertyType, genericType);
-        this.isInterface = ((Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0]).isInterface();
+
+        Type actualTypeArgument = ((ParameterizedType) type).getActualTypeArguments()[0];
+        if (actualTypeArgument instanceof Class) {
+            this.supportAutoType = ((Class<?>) actualTypeArgument).isInterface()
+                || Modifier.isAbstract(((Class<?>) actualTypeArgument).getModifiers());
+        }
     }
 
     @Override
     protected Object parseJson(String json) {
         if (genericType != null && Collection.class.isAssignableFrom(propertyType)) {
-            if (isInterface) {
+            if (supportAutoType) {
                 return JSON.parseArray(json, Object.class, JSONReader.Feature.SupportAutoType);
             } else {
                 return JSON.parseObject(json, type);
             }
 
         } else {
-            if (isInterface) {
+            if (supportAutoType) {
                 return JSON.parseObject(json, Object.class, JSONReader.Feature.SupportAutoType);
             } else {
                 return JSON.parseObject(json, propertyType);
@@ -68,7 +74,7 @@ public class Fastjson2TypeHandler extends BaseJsonTypeHandler<Object> {
 
     @Override
     protected String toJson(Object object) {
-        if (isInterface) {
+        if (supportAutoType) {
             return JSON.toJSONString(object
                 , JSONWriter.Feature.WriteMapNullValue
                 , JSONWriter.Feature.WriteNullListAsEmpty
