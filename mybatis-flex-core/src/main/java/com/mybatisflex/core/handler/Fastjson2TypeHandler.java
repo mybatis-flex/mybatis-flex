@@ -16,9 +16,11 @@
 package com.mybatisflex.core.handler;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.TypeReference;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
@@ -31,8 +33,11 @@ public class Fastjson2TypeHandler extends BaseJsonTypeHandler<Object> {
     private Class<?> genericType;
     private Type type;
 
+    private boolean isInterface = false;
+
     public Fastjson2TypeHandler(Class<?> propertyType) {
         this.propertyType = propertyType;
+        this.isInterface = propertyType.isInterface();
     }
 
 
@@ -40,24 +45,41 @@ public class Fastjson2TypeHandler extends BaseJsonTypeHandler<Object> {
         this.propertyType = propertyType;
         this.genericType = genericType;
         this.type = TypeReference.collectionType((Class<? extends Collection>) propertyType, genericType);
+        this.isInterface = ((Class<?>) ((ParameterizedType)type).getActualTypeArguments()[0]).isInterface();
     }
 
     @Override
     protected Object parseJson(String json) {
         if (genericType != null && Collection.class.isAssignableFrom(propertyType)) {
-            return JSON.parseObject(json, type);
+            if(isInterface){
+                return JSON.parseArray(json, Object.class,JSONReader.Feature.SupportAutoType);
+            }else {
+                return JSON.parseObject(json, type);
+            }
+
         } else {
-            return JSON.parseObject(json, propertyType);
+            if(isInterface){
+                return JSON.parseObject(json, Object.class,JSONReader.Feature.SupportAutoType);
+            }else {
+                return JSON.parseObject(json, propertyType);
+            }
         }
     }
 
     @Override
     protected String toJson(Object object) {
-        return JSON.toJSONString(object
-            , JSONWriter.Feature.WriteMapNullValue
-            , JSONWriter.Feature.WriteNullListAsEmpty
-            , JSONWriter.Feature.WriteNullStringAsEmpty
-        );
+        if(isInterface){
+            return JSON.toJSONString(object
+                , JSONWriter.Feature.WriteMapNullValue
+                , JSONWriter.Feature.WriteNullListAsEmpty
+                , JSONWriter.Feature.WriteNullStringAsEmpty, JSONWriter.Feature.WriteClassName
+            );
+        }else {
+            return JSON.toJSONString(object
+                , JSONWriter.Feature.WriteMapNullValue
+                , JSONWriter.Feature.WriteNullListAsEmpty
+                , JSONWriter.Feature.WriteNullStringAsEmpty
+            );
+        }
     }
-
 }
