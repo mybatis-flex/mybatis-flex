@@ -1,17 +1,20 @@
 # 读写分离
 
-MyBatis-Flex 的读写分离功能是基于 【多数据源】 功能来实现的。
+MyBatis-Flex 的读写分离功能是基于 【[多数据源](./multi-datasource.md)】 功能来实现的。
 
-读写分离的功能，要求当前的环境必须是多个数据库（也可理解为多个数据源），其原理是：
-让主数据库（master）处理事务性操作，比如：增、删、改（INSERT、DELETE、UPDATE），而从数据库（slave）处理 SELECT 查询操作。
+读写分离的功能，要求当前环境必须是多个数据库（也可理解为多个数据源），其原理是：
+让主数据库（master）处理事务性操作，比如：增、删、改（INSERT、DELETE、UPDATE），而从数据库（slave）处理查询（SELECT）操作。
 
-在 MyBatis 框架中，我们知道： 所有关于数据库的的操作都是通过 Mapper 来实现的，Mapper 里的一个方法，往往是和一个 SQL 一一对应。
+
+## 实现原理
+
+在 MyBatis 框架中，我们知道： 所有关于数据库的的操作都是通过 Mapper 来进行的，Mapper 里的一个方法，往往是和一个执行 SQL 一一对应。
 
 因此，在 MyBatis-Flex 中，提供了一种基于 Mapper 方法的读写分离策略。
 
-## 分片策略
+## 数据源分片策略
 
-自定义 `DataSourceShardingStrategy` 例如：
+在 MyBatis-Flex 框架中，我们需要通过实现 `DataSourceShardingStrategy` 接口来自定义自己的数据源读写分离策略（分片策略）例如：
 
 ```java
 public class MyStrategy implements DataSourceShardingStrategy {
@@ -27,7 +30,7 @@ public class MyStrategy implements DataSourceShardingStrategy {
 
 doSharding 的参数分别为：
 
-- currentDataSourceKey：当前由用户端已配置的 key
+- currentDataSourceKey：当前使用的数据源 key
 - mapper：当前的 mapper 对象
 - mapperMethod: 当前的 mapper 方法
 - methodArgs：当前的 mapper 方法的参数内容
@@ -68,7 +71,7 @@ mybatis-flex:
       password: 123456
 ```
 以上配置中，一共有 4 个数据源，分别为 `master`、`slave1`、`slave2`、`other`。
-假设我们的需求是：在 增删改 时，走 master，而在查询时，自动使用 `slave1`、`slave2` 进行负载均衡。
+我们的需求是：在 增删改 时，走 master 数据源，而在查询时，随机自动使用 `slave1`、`slave2` 数据源进行负载均衡。
 
 
 那么，我们的分片策略代码如下：
@@ -95,3 +98,7 @@ public class MyStrategy implements DataSourceShardingStrategy {
     }
 }
 ```
+
+## 注意事项
+
+> MyBatis-Flex 的读写分离组件，只进行数据查询和数据操作时的读写分离，并不涉及主从数据库之间的数据同步，主从数据库同步需要用户自己在数据库服务器，通过第三方组件去实现。

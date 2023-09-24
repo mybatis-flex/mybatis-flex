@@ -60,7 +60,56 @@ public interface TenantFactory {
 除了显示租户自己的数据以外，还包含下级租户的数据，这种场景则要求 `getTenantIds` 返回多个值。
 - **场景3**：忽略租户条件，由代码自定义条件查询，此项要求 `getTenantIds` 返回 null 或者 空数组。
 
+**注意！注意！注意！**
+> 在整个应用中，应该只有一个 `TenantFactory` 实例，然后再通过其 `getTenantIds()` 方法里去获取当前的租户 ID，在 Spring 常见中，我们可以通过在
+> RequestContextHolder 中去获取当前的租户 ID。在其他框架中，我们可以通过自定义 ThreadLocal 去获取 TenantId。
 
+## 示例代码
+
+```java
+public class MyTenantFactory implements TenantFactory {
+
+    public Object[] getTenantIds(){
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        Long tenantId =  attributes.getAttribute("tenantId", RequestAttributes.SCOPE_REQUEST);
+
+        return new Object[]{tenantId};
+    }
+}
+```
+
+当然，`MyTenantFactory` 需要正常工作，我们需要在 Spring 拦截器里，需要通过 request 去获取当前的租户 ID，并设置到 request 的 attribute，如下代码所示：
+
+```java
+public class TenantInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request
+        , HttpServletResponse response, Object handler) throws Exception {
+
+        //通过 request 去获取租户 ID
+        Long tenantId = getTenantIdByReuqest(request);
+
+        //设置租户ID到 request 的 attribute
+        request.setAttribute("tenantId", tenantId);
+
+        return true;
+    }
+}
+```
+
+同时，在 `WebMvcConfigurer` 中，通过重写 `addInterceptors` 方法添加一下我们自定义的多租户拦截器：`TenantInterceptor`。
+
+```java
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new TenantInterceptor());
+    }
+}
+```
 
 
 ## SpringBoot 支持
@@ -69,10 +118,9 @@ public interface TenantFactory {
 ```java
 @Configuration
 public class MyConfiguration {
-
     @Bean
     public TenantFactory tenantFactory(){
-        TenantFactory tenantFactory = new ....;
+        TenantFactory tenantFactory = new MyTenantFactory();
         return tenantFactory;
     }
 
