@@ -3,6 +3,23 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.6.7 20230925:
+- 新增：多数据源添加 DataSourceShardingStrategy 接口，用于读写分离
+- 新增：Fastjson2TypeHandler 添加对接口或者抽象类的支持，感谢 @617054137
+- 优化：DataSourceKey 移除不必要的属性定义
+- 优化：代码生成器升级 enjoy 模块，以适配 JDK21
+- 优化：Table 注解移除 @Inherited ，以解决 VO 等继承 model 的实体类中，生成多余的、或冲突的 tableDef
+- 修复：APT 在类名和字段名相同的情况下，构建的 TableDef 出错的问题
+- 修复：FlexConfiguration 在某些情况下替换 resultMap 时出错的问题
+- 修复：AbstractRelation 在某些极端情况下出现 NPE 的问题
+- 修复：查询条件 OperatorQueryCondition 参数值未检查 effective 的问题，感谢 @wanggaoquan
+- 修复：查询条件 OperatorSelectCondition 参数值未检查 effective 的问题，感谢 @wanggaoquan
+- 修复：QueryWrapper 在某些情况下构建的 SQL 会出现两次 as 的问题，感谢 @cnscoo
+- 文档：优化 kotlin 文档的 git 链接顺序与完善文档内容，感谢 @kamo-sama
+- 文档：多租户添加相关的代码示例
+- 文档：添加读写分离的相关文档
+
+
 
 ## v1.6.6 20230922:
 - 新增：UpdateChain.of 使用 Mapper 进行构造方便在批量操作使用的功能
