@@ -41,7 +41,7 @@ public class PatientVO1 implements Serializable {
 
     @RelationOneToMany(
         selfField = "diseaseIds",
-        splitBy = ",", //使用 , 进行分割
+        selfFieldSplitBy = ",", //使用 , 进行分割
         targetTable = "tb_disease", //只获取某个字段值需要填入目标表名
         targetField = "diseaseId", //测试目标字段是字符串类型是否正常转换
         valueField = "name" //测试只获取某个字段值是否正常
@@ -50,14 +50,14 @@ public class PatientVO1 implements Serializable {
 
     @RelationOneToMany(
         selfField = "tagIds",
-        splitBy = "/", //使用 / 进行分割
+        selfFieldSplitBy = "/", //使用 / 进行分割
         targetField = "tagId" //测试目标字段是数字类型是否正常转换
     )
     private List<Tag> tagList;
 
     @RelationOneToMany(
         selfField = "diseaseIds",
-        splitBy = ",", //使用 , 进行分割
+        selfFieldSplitBy = ",", //使用 , 进行分割
         targetField = "diseaseId", //测试目标字段是字符串类型是否正常转换
         mapKeyField = "diseaseId" //测试Map映射
     )

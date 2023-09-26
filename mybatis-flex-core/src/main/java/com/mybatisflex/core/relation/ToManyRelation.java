@@ -29,8 +29,7 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
     protected FieldWrapper mapKeyFieldWrapper;
     protected String orderBy;
     protected long limit = 0;
-    protected String splitBy;
-
+    protected String selfFieldSplitBy;
 
 
     public ToManyRelation(String selfField, String targetSchema, String targetTable, String targetField, String valueField,
@@ -52,16 +51,16 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
      */
     @Override
     public QueryWrapper buildQueryWrapper(Set<Object> targetValues) {
-        if (StringUtil.isNotBlank(splitBy) && CollectionUtil.isNotEmpty(targetValues)) {
+        if (StringUtil.isNotBlank(selfFieldSplitBy) && CollectionUtil.isNotEmpty(targetValues)) {
             Set<Object> newTargetValues = new HashSet<>();
             for (Object targetValue : targetValues) {
                 if (targetValue == null) {
                     continue;
                 }
                 if (!(targetValue instanceof String)) {
-                    throw FlexExceptions.wrap("被切割字段只支持String类型");
+                    throw FlexExceptions.wrap("split field only support String type, but current type is: \"" + targetValue.getClass().getName() + "\"");
                 }
-                String[] splitValues = ((String) targetValue).split(splitBy);
+                String[] splitValues = ((String) targetValue).split(selfFieldSplitBy);
                 for (String splitValue : splitValues) {
                     //优化分割后的数据类型(防止在数据库查询时候出现隐式转换)
                     newTargetValues.add(ConvertUtil.convert(splitValue, targetFieldWrapper.getFieldType()));
@@ -102,8 +101,8 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                         }
                     }
                 } else {
-                    if (StringUtil.isNotBlank(splitBy)) {
-                        String[] splitValues = ((String) selfValue).split(splitBy);
+                    if (StringUtil.isNotBlank(selfFieldSplitBy)) {
+                        String[] splitValues = ((String) selfValue).split(selfFieldSplitBy);
                         targetMappingValues.addAll(Arrays.asList(splitValues));
                     } else {
                         targetMappingValues.add((String) selfValue);

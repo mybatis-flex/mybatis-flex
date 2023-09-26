@@ -230,9 +230,9 @@ public class Account implements Serializable {
 
 > 多对多注解 `@RelationManyToMany` 也是如此。
 
-**splitBy 分割查询** <Badge type="tip" text="v1.6.8" />
+**selfFieldSplitBy 分割查询** <Badge type="tip" text="v1.6.8" />
 
-若 `selfField` 是一个 `由字符拼接而成的列表(如 1,2,3)`，那么，我们可以通过配置 `splitBy` 来指定使用 `selfField` 的值根据字符切割后查询，
+若 `selfField` 是一个 `由字符拼接而成的列表(如 1,2,3)`，那么，我们可以通过配置 `selfFieldSplitBy` 来指定使用 `selfField` 的值根据字符切割后查询，
 如下代码所示：
 
 ```java 8
@@ -263,7 +263,7 @@ public class PatientVO1 implements Serializable {
 
     @RelationOneToMany(
         selfField = "diseaseIds",
-        splitBy = ",", //使用 , 进行分割
+        selfFieldSplitBy = ",", //使用 , 进行分割
         targetTable = "tb_disease", //只获取某个字段值需要填入目标表名
         targetField = "diseaseId", //测试目标字段是字符串类型是否正常转换
         valueField = "name" //测试只获取某个字段值是否正常
@@ -272,14 +272,14 @@ public class PatientVO1 implements Serializable {
 
     @RelationOneToMany(
         selfField = "tagIds",
-        splitBy = "/", //使用 / 进行分割
+        selfFieldSplitBy = "/", //使用 / 进行分割
         targetField = "tagId" //测试目标字段是数字类型是否正常转换
     )
     private List<Tag> tagList;
 
     @RelationOneToMany(
         selfField = "diseaseIds",
-        splitBy = ",", //使用 , 进行分割
+        selfFieldSplitBy = ",", //使用 , 进行分割
         targetField = "diseaseId", //测试目标字段是字符串类型是否正常转换
         mapKeyField = "diseaseId" //测试Map映射
     )
