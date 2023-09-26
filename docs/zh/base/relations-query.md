@@ -230,7 +230,128 @@ public class Account implements Serializable {
 
 > 多对多注解 `@RelationManyToMany` 也是如此。
 
+**splitBy 分割查询** <Badge type="tip" text="v1.6.8" />
 
+若 `selfField` 是一个 `由字符拼接而成的列表(如 1,2,3)`，那么，我们可以通过配置 `splitBy` 来指定使用 `selfField` 的值根据字符切割后查询，
+如下代码所示：
+
+```java 8
+@Table(value = "tb_patient")
+public class PatientVO1 implements Serializable {
+    private static final long serialVersionUID = -2298625009592638988L;
+
+    /**
+     * ID
+     */
+    @Id
+    private Integer patientId;
+
+    /**
+     * 姓名
+     */
+    private String name;
+
+    /**
+     * 所患病症(对应字符串类型) 英文逗号 分割
+     */
+    private String diseaseIds;
+
+    /**
+     * 患者标签(对应数字类型) / 分割
+     */
+    private String tagIds;
+
+    @RelationOneToMany(
+        selfField = "diseaseIds",
+        splitBy = ",", //使用 , 进行分割
+        targetTable = "tb_disease", //只获取某个字段值需要填入目标表名
+        targetField = "diseaseId", //测试目标字段是字符串类型是否正常转换
+        valueField = "name" //测试只获取某个字段值是否正常
+    )
+    private List<String> diseaseNameList;
+
+    @RelationOneToMany(
+        selfField = "tagIds",
+        splitBy = "/", //使用 / 进行分割
+        targetField = "tagId" //测试目标字段是数字类型是否正常转换
+    )
+    private List<Tag> tagList;
+
+    @RelationOneToMany(
+        selfField = "diseaseIds",
+        splitBy = ",", //使用 , 进行分割
+        targetField = "diseaseId", //测试目标字段是字符串类型是否正常转换
+        mapKeyField = "diseaseId" //测试Map映射
+    )
+    private Map<String, Disease> diseaseMap;
+
+    //getter setter toString
+}
+```
+
+进行查询
+```java
+PatientVO1 patientVO1 = patientMapper.selectOneWithRelationsByQueryAs(QueryWrapper.create().orderBy(PatientVO1::getPatientId, false).limit(1), PatientVO1.class);
+System.out.println(JSON.toJSONString(patientVO1));
+```
+
+其执行的 SQL 如下：
+
+```sql
+SELECT `patient_id`, `name`, `disease_ids`, `tag_ids` FROM `tb_patient` ORDER BY `patient_id` DESC LIMIT 1;
+
+SELECT disease_id, name FROM `tb_disease` WHERE `disease_id` IN ('1', '2', '3', '4');
+SELECT `tag_id`, `name` FROM `tb_tag` WHERE `tag_id` IN (1, 2, 3);
+SELECT `disease_id`, `name` FROM `tb_disease` WHERE `disease_id` IN ('1', '2', '3', '4');
+```
+
+查询结果：
+```json
+{
+  "patientId": 4,
+  "name": "赵六",
+  "diseaseIds": "1,2,3,4",
+  "tagIds": "1/2/3",
+  "diseaseNameList": [
+    "心脑血管疾病",
+    "消化系统疾病",
+    "神经系统疾病",
+    "免疫系统疾病"
+  ],
+  "tagList": [
+    {
+      "name": "VIP",
+      "tagId": 1
+    },
+    {
+      "name": "JAVA开发",
+      "tagId": 2
+    },
+    {
+      "name": "Web开发",
+      "tagId": 3
+    }
+  ],
+  "diseaseMap": {
+    "1": {
+      "diseaseId": "1",
+      "name": "心脑血管疾病"
+    },
+    "2": {
+      "diseaseId": "2",
+      "name": "消化系统疾病"
+    },
+    "3": {
+      "diseaseId": "3",
+      "name": "神经系统疾病"
+    },
+    "4": {
+      "diseaseId": "4",
+      "name": "免疫系统疾病"
+    }
+  }
+}
+```
 
 ## 多对一 `@RelationManyToOne`
 

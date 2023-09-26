@@ -35,6 +35,7 @@ class OneToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
             , annotation.extraCondition()
             , annotation.selectColumns());
 
+        this.splitBy = annotation.splitBy();
         this.orderBy = annotation.orderBy();
         this.limit = annotation.limit();
 
