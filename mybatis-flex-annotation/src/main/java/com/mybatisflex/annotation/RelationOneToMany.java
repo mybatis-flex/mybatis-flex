@@ -35,6 +35,12 @@ public @interface RelationOneToMany {
     String selfField() default "";
 
     /**
+     * 当前字段值根据字符串分割
+     * @return 分割字符串
+     */
+    String splitBy() default "";
+
+    /**
      * <p>
      * 目标实体类对应的表的 schema 模式。
      *

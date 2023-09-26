@@ -29,6 +29,8 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
     protected FieldWrapper mapKeyFieldWrapper;
     protected String orderBy;
     protected long limit = 0;
+    protected String splitBy;
+
 
 
     public ToManyRelation(String selfField, String targetSchema, String targetTable, String targetField, String valueField,
@@ -40,6 +42,34 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
             dataSource, selfEntityClass, relationField,
             extraCondition, selectColumns
         );
+    }
+
+    /**
+     * 构建查询目标对象的 QueryWrapper
+     *
+     * @param targetValues 条件的值
+     * @return QueryWrapper
+     */
+    @Override
+    public QueryWrapper buildQueryWrapper(Set<Object> targetValues) {
+        if (StringUtil.isNotBlank(splitBy) && CollectionUtil.isNotEmpty(targetValues)) {
+            Set<Object> newTargetValues = new HashSet<>();
+            for (Object targetValue : targetValues) {
+                if (targetValue == null) {
+                    continue;
+                }
+                if (!(targetValue instanceof String)) {
+                    throw FlexExceptions.wrap("被切割字段只支持String类型");
+                }
+                String[] splitValues = ((String) targetValue).split(splitBy);
+                for (String splitValue : splitValues) {
+                    //优化分割后的数据类型(防止在数据库查询时候出现隐式转换)
+                    newTargetValues.add(ConvertUtil.convert(splitValue, targetFieldWrapper.getFieldType()));
+                }
+            }
+            targetValues = newTargetValues;
+        }
+        return super.buildQueryWrapper(targetValues);
     }
 
 
@@ -72,7 +102,12 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                         }
                     }
                 } else {
-                    targetMappingValues.add((String) selfValue);
+                    if (StringUtil.isNotBlank(splitBy)) {
+                        String[] splitValues = ((String) selfValue).split(splitBy);
+                        targetMappingValues.addAll(Arrays.asList(splitValues));
+                    } else {
+                        targetMappingValues.add((String) selfValue);
+                    }
                 }
 
                 if (targetMappingValues.isEmpty()) {
