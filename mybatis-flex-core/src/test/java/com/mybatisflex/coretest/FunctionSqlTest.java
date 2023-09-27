@@ -96,5 +96,15 @@ public class FunctionSqlTest {
 
         System.out.println(sql);
     }
+    @Test
+    public void testReplaceString() {
+        String sql = QueryWrapper.create()
+            .select(ACCOUNT.USER_NAME)
+            .from(ACCOUNT)
+            .where(ACCOUNT.USER_NAME.eq(replace("nsg_contract.primer_name","' '","''")))
+            .toSQL();
+
+        System.out.println(sql);
+    }
 
 }

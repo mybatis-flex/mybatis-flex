@@ -1005,7 +1005,7 @@ public class QueryMethods {
      * 用字符串 s2 代替字符串 s 中的字符串 s1。
      */
     public static QueryColumn replace(String columnS, String columnS1, String columnS2) {
-        return new FunctionQueryColumn(REPLACE, columnS, columnS1, columnS2);
+        return new StringFunctionQueryColumn(REPLACE, columnS, columnS1, columnS2);
     }
 
     /**
