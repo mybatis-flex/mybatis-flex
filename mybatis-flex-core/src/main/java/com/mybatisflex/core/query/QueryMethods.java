@@ -2438,6 +2438,13 @@ public class QueryMethods {
         return new SelectQueryColumn(queryWrapper);
     }
 
+    /**
+     * 构建所有列
+     */
+    public static QueryColumn allColumns(){
+        return  column("*");
+    }
+
     // === IF 函数 ===
 
     /**
