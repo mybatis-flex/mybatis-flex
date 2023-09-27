@@ -80,7 +80,7 @@ List<Account> accounts = ....
 Db.executeBatch(accounts, 1000, AccountMapper.class
     , (mapper, account) -> {
     // ↑↑↑↑↑  以上的这个 mapper，未被使用
-    UpdateChina.of(account)
+    UpdateChain.of(account)
         .set(Account::getUserName, "张三")
         .update();
 });
@@ -94,7 +94,7 @@ List<Account> accounts = ....
 Db.executeBatch(accounts, 1000, AccountMapper.class
     , (mapper, account) -> {
 
-    UpdateChina.of(mapper) //使用 mapper 参数，才能起到批量执行的效果
+    UpdateChain.of(mapper) //使用 mapper 参数，才能起到批量执行的效果
         .set(Account::getUserName, "张三")
         .update();
 });
