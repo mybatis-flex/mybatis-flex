@@ -15,24 +15,16 @@
  */
 package com.mybatisflex.core.audit;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 默认的审计消息收集器，其收集消息后，定时通过消息发送器{@link MessageReporter}把消息发送过去
  */
-public class ScheduledMessageCollector implements MessageCollector, Runnable {
+public class ScheduledMessageCollector extends AbstractMessageCollector {
 
     private final ScheduledExecutorService scheduler;
-    private final MessageReporter messageSender;
-
-    private final List<AuditMessage> messages = Collections.synchronizedList(new ArrayList<>());
-    private final ReentrantReadWriteLock rrwLock = new ReentrantReadWriteLock();
 
     public ScheduledMessageCollector() {
         this(10, new ConsoleMessageReporter());
@@ -40,45 +32,17 @@ public class ScheduledMessageCollector implements MessageCollector, Runnable {
 
 
     public ScheduledMessageCollector(long period, MessageReporter messageSender) {
-        this.messageSender = messageSender;
+        super(messageSender);
         this.scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
             Thread thread = new Thread(runnable, "ScheduledMessageCollector");
             thread.setDaemon(true);
             return thread;
         });
-        this.scheduler.scheduleAtFixedRate(this, period, period, TimeUnit.SECONDS);
-    }
-
-
-    @Override
-    public void collect(AuditMessage message) {
-        try {
-            rrwLock.readLock().lock();
-            messages.add(message);
-        } finally {
-            rrwLock.readLock().unlock();
-        }
-    }
-
-
-    @Override
-    public void run() {
-        if (messages.isEmpty()) {
-            return;
-        }
-        List<AuditMessage> sendMessages;
-        try {
-            rrwLock.writeLock().lock();
-            sendMessages = new ArrayList<>(messages);
-            messages.clear();
-        } finally {
-            rrwLock.writeLock().unlock();
-        }
-        messageSender.sendMessages(sendMessages);
+        this.scheduler.scheduleAtFixedRate(this::doSendMessages, period, period, TimeUnit.SECONDS);
     }
 
     public void release() {
-        run(); //clear the messages
+        doSendMessages(); //clear the messages
         scheduler.shutdown();
     }
 
