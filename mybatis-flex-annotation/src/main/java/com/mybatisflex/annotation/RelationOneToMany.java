@@ -38,7 +38,7 @@ public @interface RelationOneToMany {
      * 当前字段值根据字符串分割
      * @return 分割字符串
      */
-    String selfFieldSplitBy() default "";
+    String selfValueSplitBy() default "";
 
     /**
      * <p>
