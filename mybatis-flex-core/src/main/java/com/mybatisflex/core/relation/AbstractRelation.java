@@ -88,10 +88,10 @@ abstract class AbstractRelation<SelfEntity> {
 
         //以使用者注解配置为主
         this.targetTableInfo = StringUtil.isBlank(targetTable) ? TableInfoFactory.ofEntityClass(relationFieldWrapper.getMappingType()) : TableInfoFactory.ofTableName(targetTable);
-        this.targetEntityClass = targetTableInfo != null ? targetTableInfo.getEntityClass() : relationFieldWrapper.getMappingType();
         this.targetSchema = targetSchema;
         this.targetTable = targetTableInfo != null ? targetTableInfo.getTableName() : targetTable;
 
+        this.targetEntityClass = relationFieldWrapper.getMappingType();
         this.targetField = ClassUtil.getFirstField(targetEntityClass, field -> field.getName().equals(targetField));
         this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
 
