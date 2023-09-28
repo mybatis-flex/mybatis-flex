@@ -3,6 +3,17 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.6.8 20230928:
+- 新增：`@RelationOneToMany` 添加支持 selfValueSplitBy 字符分割的配置支持，感谢 @ice-samll
+- 新增：添加构建所有列方法 QueryMethods.allColumns()，感谢 @guanmengyuan
+- 修复：修复 QueryMethods.replace 无法支持空格替换的问题
+- 修复：ManyToOne 在某些场景下出错 IllegalArgumentException 错误的问题
+- 测试：添加关于 `@RelationOneToMany` 的 selfValueSplitBy 测试代码，感谢 @ice-samll
+- 文档：添加关于 `@RelationOneToMany` 的 selfValueSplitBy 的使用文档，感谢 @ice-samll
+- 文档：修改将批量操作文档中的相关错别字，感谢 @dataprince
+
+
+
 ## v1.6.7 20230925:
 - 新增：多数据源添加 DataSourceShardingStrategy 接口，用于读写分离
 - 新增：Fastjson2TypeHandler 添加对接口或者抽象类的支持，感谢 @617054137
