@@ -579,6 +579,28 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 SELECT * FROM tb_account
 WHERE id >= ?
 ```
+## where 使用 SQL 函数
+你可以通过使用QueryMethods类下的函数实现where对指定列运算后作为条件进行查询（QueryMethods位于mybatisflex.core.query下）。
+
+```java 1,5
+        QueryWrapper qw = QueryWrapper.create();
+        qw.select(USER.ID,
+                USER.USER_ALIAS,
+                USER.PASSWORD,
+                USER.USER_NAME.as("userName"))
+                .where(
+                       QueryMethods.abs(USER.ID).eq(1)
+                )
+                .from(USER);
+```
+
+其查询生成的 Sql 如下：
+
+
+```sql
+SELECT `id`, `alias`, `pwd`, `name` AS `userName` FROM `user` WHERE ABS(`id`) = 1
+```
+
 
 ## where select
 ```java
