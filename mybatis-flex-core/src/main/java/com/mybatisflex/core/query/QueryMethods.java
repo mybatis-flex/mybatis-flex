@@ -15,9 +15,14 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.mybatisflex.core.constant.FuncName.*;
 
@@ -2439,10 +2444,35 @@ public class QueryMethods {
     }
 
     /**
-     * 构建所有列
+     * 构建所有列。
      */
-    public static QueryColumn allColumns(){
-        return  column("*");
+    public static QueryColumn allColumns() {
+        return column("*");
+    }
+
+    /**
+     * 构建所有列。
+     */
+    public static Iterable<QueryColumn> allColumns(Class<?>... classes) {
+        List<QueryColumn> queryColumns = new ArrayList<>(classes.length);
+        for (Class<?> aClass : classes) {
+            TableInfo tableInfo = TableInfoFactory.ofEntityClass(aClass);
+            QueryTable queryTable = new QueryTable(tableInfo.getSchema(), tableInfo.getTableName());
+            queryColumns.add(new QueryColumn(queryTable, "*"));
+        }
+        return queryColumns;
+    }
+
+    /**
+     * 构建默认列。
+     */
+    public static Iterable<QueryColumn> defaultColumns(Class<?>... classes) {
+        List<QueryColumn> queryColumns = new ArrayList<>();
+        for (Class<?> aClass : classes) {
+            TableInfo tableInfo = TableInfoFactory.ofEntityClass(aClass);
+            queryColumns.addAll(tableInfo.getDefaultQueryColumn());
+        }
+        return queryColumns;
     }
 
     // === IF 函数 ===
@@ -2584,7 +2614,7 @@ public class QueryMethods {
      * 分组值拼接
      */
     public static QueryColumn groupConcat(QueryColumn columnX) {
-        return new FunctionQueryColumn(GROUP_CONCAT,columnX);
+        return new FunctionQueryColumn(GROUP_CONCAT, columnX);
     }
 
 }
