@@ -2519,6 +2519,21 @@ public class QueryMethods {
         return new FunctionQueryColumn("IFNULL", LambdaUtil.getQueryColumn(nullColumn), LambdaUtil.getQueryColumn(elseColumn));
     }
 
+    /**
+     * IFNULL 函数。
+     */
+    public static <N> QueryColumn ifNull(LambdaGetter<N> nullColumn, QueryColumn elseColumn) {
+        return ifNull(LambdaUtil.getQueryColumn(nullColumn), elseColumn);
+    }
+
+    /**
+     * IFNULL 函数。
+     */
+    public static <N> QueryColumn ifNull(LambdaGetter<N> nullColumn, String elseColumn) {
+        return ifNull(nullColumn, new QueryColumn(elseColumn));
+    }
+
+
     // === 构建 QueryCondition 查询条件 ===
 
     /**
