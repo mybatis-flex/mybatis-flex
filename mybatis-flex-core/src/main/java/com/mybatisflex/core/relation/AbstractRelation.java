@@ -91,7 +91,9 @@ abstract class AbstractRelation<SelfEntity> {
         this.targetSchema = targetSchema;
         this.targetTable = targetTableInfo != null ? targetTableInfo.getTableName() : targetTable;
 
-        this.targetEntityClass = relationFieldWrapper.getMappingType();
+        //当指定了 valueField 的时候，一般是 String Integer 等基本数据类型
+        this.targetEntityClass = StringUtil.isNotBlank(valueField) ? targetTableInfo.getEntityClass(): relationFieldWrapper.getMappingType();
+
         this.targetField = ClassUtil.getFirstField(targetEntityClass, field -> field.getName().equals(targetField));
         this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
 
