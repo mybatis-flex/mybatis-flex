@@ -152,6 +152,16 @@ public interface IService<T> {
     }
 
     /**
+     * <p>根据实体主键删除数据。
+     *
+     * @param entity 实体类对象
+     * @return {@code true} 删除成功，{@code false} 删除失败。
+     */
+    default boolean removeById(T entity) {
+        return SqlUtil.toBool(getMapper().delete(entity));
+    }
+
+    /**
      * <p>根据数据主键删除数据。
      *
      * @param id 数据主键
@@ -284,6 +294,26 @@ public interface IService<T> {
         return getMapper().selectOneById(id);
     }
 
+    /**
+     * <p>根据实体主键查询数据。
+     *
+     * @param entity    实体对象，必须包含有主键
+     * @return 查询结果数据
+     */
+    default T getOneByEntity(T entity) {
+        return getMapper().selectOneByEntity(entity);
+    }
+
+    /**
+     * <p>根据实体主键查询数据。
+     *
+     * @param entity    实体对象，必须包含有主键
+     * @return 查询结果数据
+     * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
+     */
+    default Optional<T> getByEntityOpt(T entity) {
+        return Optional.ofNullable(getOneByEntity(entity));
+    }
     /**
      * <p>根据数据主键查询一条数据。
      *
