@@ -49,6 +49,7 @@ import static com.mybatisflex.core.query.QueryMethods.count;
  * @author 王帅
  * @author yangs
  * @author lhzsdnu
+ * @author 王超
  */
 @SuppressWarnings({"varargs", "unchecked", "unused"})
 public interface BaseMapper<T> {
@@ -197,10 +198,10 @@ public interface BaseMapper<T> {
     /**
      * 根据实体主键来删除数据。
      *
-     * @param entity    实体对象，必须包含有主键
+     * @param entity 实体对象，必须包含有主键
      * @return 受影响的行数
      */
-    default int delete( T entity){
+    default int delete(T entity) {
         FlexAssert.notNull(entity, "entity can not be null");
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
         Object[] pkArgs = tableInfo.buildPkSqlArgs(entity);
@@ -378,16 +379,15 @@ public interface BaseMapper<T> {
     int updateByQuery(@Param(FlexConsts.ENTITY) T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 
-
     // === 查（select） ===
 
     /**
      * 根据实体主键查询数据。
      *
-     * @param entity    实体对象，必须包含有主键
+     * @param entity 实体对象，必须包含有主键
      * @return 实体类数据
      */
-    default T selectOneByEntity(T entity){
+    default T selectOneByEntityId(T entity) {
         FlexAssert.notNull(entity, "entity can not be null");
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
         Object[] pkArgs = tableInfo.buildPkSqlArgs(entity);

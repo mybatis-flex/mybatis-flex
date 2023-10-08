@@ -300,8 +300,8 @@ public interface IService<T> {
      * @param entity    实体对象，必须包含有主键
      * @return 查询结果数据
      */
-    default T getOneByEntity(T entity) {
-        return getMapper().selectOneByEntity(entity);
+    default T getOneByEntityId(T entity) {
+        return getMapper().selectOneByEntityId(entity);
     }
 
     /**
@@ -311,8 +311,8 @@ public interface IService<T> {
      * @return 查询结果数据
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
-    default Optional<T> getByEntityOpt(T entity) {
-        return Optional.ofNullable(getOneByEntity(entity));
+    default Optional<T> getByEntityIdOpt(T entity) {
+        return Optional.ofNullable(getOneByEntityId(entity));
     }
     /**
      * <p>根据数据主键查询一条数据。
