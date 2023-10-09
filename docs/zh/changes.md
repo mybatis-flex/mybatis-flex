@@ -7,6 +7,7 @@
 - 新增：添加 SQL 审计模块的计数消息收集器，感谢 @Suomm
 - 新增：QueryWrapper 的 Lambda 方式支持 allColumns 和 defaultColumns 构建功能，感谢 @Suomm
 - 新增：Mapper 增加 Entity 作为入参进行查询与删除和查询的方法，这有利于对多主键实体类的删除和查询，感谢 @Watcher.Wang
+- 新增：添加 ifNull 函数 lambda 下缺失的非 lambda elseColumn 参数的支持，感谢 @guanmengyuan
 - 优化：重构抽象 SQL 审计模块的消息收集器，感谢 @Suomm
 - 优化：SpringBoot-starter 模块的 autoconfigure-processor 默认添加 optional 配置，感谢 @Freeman Liu
 - 修复：当 `@Relation` 注解使用 `valueField` 配置时，在某些情况下抛出 IllegalStateException 异常的问题
