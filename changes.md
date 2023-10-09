@@ -3,6 +3,20 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.6.9 20231009:
+- 新增：添加 SQL 审计模块的计数消息收集器，感谢 @Suomm
+- 新增：QueryWrapper 的 Lambda 方式支持 allColumns 和 defaultColumns 构建功能，感谢 @Suomm
+- 新增：Mapper 增加 Entity 作为入参进行查询与删除和查询的方法，这有利于对多主键实体类的删除和查询，感谢 @Watcher.Wang
+- 优化：重构抽象 SQL 审计模块的消息收集器，感谢 @Suomm
+- 优化：SpringBoot-starter 模块的 autoconfigure-processor 默认添加 optional 配置，感谢 @Freeman Liu
+- 修复：当 `@Relation` 注解使用 `valueField` 配置时，在某些情况下抛出 IllegalStateException 异常的问题
+- 修复：在 FlexConfiguration 替换 ResultMap 时，替换了用户自定义的配置可能导致异常的问题
+- 测试：测试环境添加一个 SQL 格式化的相关依赖，感谢 @Suomm
+- 测试：添加关于 Lambda 方式 SQL 列构建测试，感谢 @Suomm
+- 文档：添加在 where 部分使用 SQL 函数的相关文档，感谢 @shaoerkuai
+
+
+
 ## v1.6.8 20230928:
 - 新增：`@RelationOneToMany` 添加支持 selfValueSplitBy 字符分割的配置支持，感谢 @ice-samll
 - 新增：添加构建所有列方法 QueryMethods.allColumns()，感谢 @guanmengyuan

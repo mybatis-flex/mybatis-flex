@@ -13,7 +13,7 @@ body:
         attributes:
             label: 这个问题是否已经存在：
             options:
-                -   label: 我确定已经把 MyBatis-Flex 升级到最新版本 v1.6.8，并已搜索过现有的问题 (https://gitee.com/mybatis-flex/mybatis-flex/issues)
+                -   label: 我确定已经把 MyBatis-Flex 升级到最新版本 v1.6.9，并已搜索过现有的问题 (https://gitee.com/mybatis-flex/mybatis-flex/issues)
                     required: true
     -   type: textarea
         id: question-description
