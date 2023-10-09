@@ -157,11 +157,12 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
     }
 
     protected void connect(QueryCondition nextCondition, SqlConnector connector) {
+
         if (this.next != null) {
             this.next.connect(nextCondition, connector);
         } else {
+            nextCondition.connector = connector;
             this.next = nextCondition;
-            this.connector = connector;
             nextCondition.prev = this;
         }
     }
@@ -171,8 +172,8 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         //检测是否生效
         if (checkEffective()) {
             QueryCondition prevEffectiveCondition = getPrevEffectiveCondition();
-            if (prevEffectiveCondition != null) {
-                sql.append(prevEffectiveCondition.connector);
+            if (prevEffectiveCondition != null && this.connector != null) {
+                sql.append(this.connector);
             }
             //列
             sql.append(getColumn().toConditionSql(queryTables, dialect));
@@ -208,6 +209,11 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
     }
 
 
+    /**
+     * 获取上一个 “有效” 的条件
+     *
+     * @return QueryCondition
+     */
     protected QueryCondition getPrevEffectiveCondition() {
         if (prev == null) {
             return null;

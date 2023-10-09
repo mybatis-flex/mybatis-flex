@@ -134,7 +134,7 @@ public class CPI {
         queryWrapper.addJoin(join);
     }
 
-    public static QueryCondition getPrevCondition(QueryCondition queryCondition) {
+    public static QueryCondition getPrevEffectiveCondition(QueryCondition queryCondition) {
         return queryCondition.getPrevEffectiveCondition();
     }
 

@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.constant.SqlConnector;
+import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.ObjectUtil;
 import com.mybatisflex.core.util.StringUtil;
@@ -114,10 +115,10 @@ public class Brackets extends QueryCondition {
             String childSql = childCondition.toSql(queryTables, dialect);
             if (StringUtil.isNotBlank(childSql)) {
                 QueryCondition prevEffectiveCondition = getPrevEffectiveCondition();
-                if (prevEffectiveCondition != null) {
-                    childSql = prevEffectiveCondition.connector + "(" + childSql + ")";
+                if (prevEffectiveCondition != null && this.connector != null) {
+                    childSql = this.connector + SqlConsts.BRACKET_LEFT + childSql + SqlConsts.BRACKET_RIGHT;
                 } else if (StringUtil.isNotBlank(sqlNext)) {
-                    childSql = "(" + childSql + ")";
+                    childSql = SqlConsts.BRACKET_LEFT + childSql + SqlConsts.BRACKET_RIGHT;
                 }
                 sql.append(childSql);
             } else {
