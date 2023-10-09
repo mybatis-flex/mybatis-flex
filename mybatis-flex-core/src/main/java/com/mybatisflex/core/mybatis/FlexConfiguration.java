@@ -187,13 +187,23 @@ public class FlexConfiguration extends Configuration {
                 //获取结果的类型
                 Class<?> clazz = resultMap.getType();
                 //判断是否为表实体类
-                if (clazz.getDeclaredAnnotation(Table.class) != null) {
+                if (clazz.getDeclaredAnnotation(Table.class) != null && isDefaultResultMap(ms.getId(), resultMap.getId())) {
                     TableInfo tableInfo = TableInfoFactory.ofEntityClass(clazz);
                     ms = replaceResultMap(ms, tableInfo);
                 }
             }
         }
         super.addMappedStatement(ms);
+    }
+
+    /**
+     * 是否为默认的 resultMap，也就是未配置 resultMap
+     *
+     * @return
+     */
+    private boolean isDefaultResultMap(String statementId, String resultMapId) {
+        // 参考 {@code  MapperBuilderAssistant.getStatementResultMaps}
+        return resultMapId.equals(statementId + "-Inline");
     }
 
 
