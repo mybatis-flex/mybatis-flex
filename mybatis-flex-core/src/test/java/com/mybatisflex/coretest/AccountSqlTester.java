@@ -74,6 +74,8 @@ public class AccountSqlTester {
         ,query.toSQL());
 
         System.out.println(query.toSQL());
+        // 重置dynamicTableProcessor，防止影响其他的测试用例
+        TableManager.setDynamicTableProcessor(null);
     }
 
 
@@ -93,6 +95,8 @@ public class AccountSqlTester {
             ,query.toSQL());
 
         System.out.println(query.toSQL());
+        // 重置dynamicTableProcessor，防止影响其他的测试用例
+        TableManager.setDynamicTableProcessor(null);
     }
 
 
@@ -495,12 +499,20 @@ public class AccountSqlTester {
             .leftJoin(ACCOUNT).as("a1").on(ACCOUNT.ID.eq(ACCOUNT.AGE).and(ACCOUNT.USER_NAME.like("a")))
             .where(ACCOUNT.AGE.ge(10));
 
+        Assert.assertEquals("SELECT `a0`.* " +
+            "FROM `tb_account` AS `a0` " +
+            "LEFT JOIN `tb_account` AS `a1` " +
+            "ON `a1`.`id` = `a0`.`age` AND `a1`.`user_name` LIKE '%a%' " +
+            "WHERE `a0`.`age` >= 10", queryWrapper.toSQL());
+
         System.out.println(queryWrapper.toSQL());
 
         QueryWrapper queryWrapper1 = QueryWrapper.create()
             .select(ACCOUNT.ID)
             .from(ACCOUNT)
             .where(ACCOUNT.AGE.ge(10));
+
+        Assert.assertEquals("SELECT `id` FROM `tb_account` WHERE `age` >= 10", queryWrapper1.toSQL());
 
         System.out.println(queryWrapper1.toSQL());
     }
@@ -564,6 +576,13 @@ public class AccountSqlTester {
             );
 
         String sql = dialect.forSelectByQuery(queryWrapper);
+
+        Assert.assertEquals("SELECT *, CONVERT(NVARCHAR(30), GETDATE(), 126) AS `result` " +
+                "FROM `tb_account` " +
+                "WHERE `user_name` LIKE ? " +
+                "AND CONVERT(NVARCHAR(30), GETDATE(), 126) IN (SELECT `id` FROM `tb_account` WHERE `id` >= ?)"
+            ,sql);
+
         System.out.println(sql);
     }
 
@@ -579,6 +598,10 @@ public class AccountSqlTester {
                     .end().as("result"))
             .from(ACCOUNT)
             .and(ACCOUNT.USER_NAME.like("michael"));
+
+        Assert.assertEquals("SELECT *, (CASE WHEN `id` = 100 THEN 100 WHEN `id` >= 200 THEN 200 ELSE 300 END) AS `result` " +
+            "FROM `tb_account` " +
+            "WHERE `user_name` LIKE '%michael%'", queryWrapper.toSQL());
 
         System.out.println(queryWrapper.toSQL());
     }
@@ -598,6 +621,10 @@ public class AccountSqlTester {
             .and(ACCOUNT.USER_NAME.like("michael"));
 
         String sql = dialect.forSelectByQuery(queryWrapper);
+
+        Assert.assertEquals("SELECT *, (CASE `id` WHEN 100 THEN 100 WHEN 200 THEN 200 ELSE 300 END) AS `result` " +
+            "FROM `tb_account` WHERE `user_name` LIKE ?", sql);
+
         System.out.println(sql);
     }
 
@@ -617,6 +644,11 @@ public class AccountSqlTester {
             .and(ACCOUNT.USER_NAME.like("michael"));
 
         String sql = dialect.forSelectByQuery(queryWrapper);
+
+        Assert.assertEquals("SELECT *, (CASE `id` WHEN 100 THEN 100 WHEN 200 THEN 200 ELSE CONVERT(varchar, GETDATE(), 126) END) AS `result` " +
+            "FROM `tb_account` " +
+            "WHERE `user_name` LIKE ?", sql);
+
         System.out.println(sql);
     }
 
@@ -633,10 +665,14 @@ public class AccountSqlTester {
 
         IDialect dialect1 = new CommonsDialectImpl();
         String sql1 = dialect1.buildSelectSql(queryWrapper);
+        Assert.assertEquals("SELECT * FROM `tb_account` ORDER BY `id` DESC LIMIT 20, 10", sql1);
         System.out.println(sql1);
 
         IDialect dialect2 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.ORACLE);
         String sql2 = dialect2.buildSelectSql(queryWrapper);
+        Assert.assertEquals("SELECT * FROM (SELECT TEMP_DATAS.*, ROWNUM RN " +
+            "FROM (SELECT * FROM \"tb_account\" ORDER BY \"id\" DESC) TEMP_DATAS WHERE ROWNUM <= 30) " +
+            "WHERE RN > 20", sql2);
         System.out.println(sql2);
 
 //        IDialect dialect3 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.DB2);
@@ -645,19 +681,23 @@ public class AccountSqlTester {
 
         IDialect dialect4 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.POSTGRESQL);
         String sql4 = dialect4.buildSelectSql(queryWrapper);
+        Assert.assertEquals("SELECT * FROM \"tb_account\" ORDER BY \"id\" DESC LIMIT 10 OFFSET 20", sql4);
         System.out.println(sql4);
 
         IDialect dialect5 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.INFORMIX);
         String sql5 = dialect5.buildSelectSql(queryWrapper);
+        Assert.assertEquals("SELECT SKIP 20 FIRST 10 * FROM \"tb_account\" ORDER BY \"id\" DESC", sql5);
         System.out.println(sql5);
 
         IDialect dialect6 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.SYBASE);
         String sql6 = dialect6.buildSelectSql(queryWrapper);
+        Assert.assertEquals("SELECT TOP 10 START AT 21 * FROM \"tb_account\" ORDER BY \"id\" DESC", sql6);
         System.out.println(sql6);
 
 
         IDialect dialect7 = new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.FIREBIRD);
         String sql7 = dialect7.buildSelectSql(queryWrapper);
+        Assert.assertEquals("SELECT * FROM \"tb_account\" ORDER BY \"id\" DESC ROWS 20 TO 30", sql7);
         System.out.println(sql7);
     }
 
@@ -687,6 +727,15 @@ public class AccountSqlTester {
 //                .and("bbb.id > ?",100)
             .orderBy(ACCOUNT.ID.desc())
             .limit(10, 10);
+
+        Assert.assertEquals("SELECT DISTINCT `b1`.`id`, `a1`.*, `b1`.`id` AS `article_id`, MAX(`a1`.`sex`), COUNT(DISTINCT `b1`.`id`) " +
+            "FROM `tb_account` AS `a1` LEFT JOIN `tb_article` AS `b1` ON `b1`.`account_id` = `a1`.`id` " +
+            "WHERE `a1`.`id` >= (SELECT `id` FROM `tb_article` AS `cc` WHERE `id` = 111) " +
+            "AND `a1`.`user_name` LIKE '%michael%' " +
+            "AND `b1`.`id` IN (SELECT `tb_article`.`id` FROM `aaa`) " +
+            "AND NOT EXISTS (SELECT 1 FROM `aaa` WHERE `tb_article`.`id` >= 333) " +
+            "GROUP BY `a1`.`id` HAVING `b1`.`id` >= 0 " +
+            "ORDER BY `a1`.`id` DESC LIMIT 10, 10", queryWrapper.toSQL());
 
         System.out.println(queryWrapper.toSQL());
 
