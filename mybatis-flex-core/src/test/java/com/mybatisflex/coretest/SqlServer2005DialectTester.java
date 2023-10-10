@@ -21,6 +21,7 @@ import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
 import com.mybatisflex.core.query.QueryWrapper;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
@@ -41,6 +42,10 @@ public class SqlServer2005DialectTester {
         IDialect dialect = new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER_2005);
         String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
+        Assert.assertEquals("WITH temp_datas AS(" +
+            "SELECT ROW_NUMBER() OVER ( ORDER BY [id] DESC) as __rn, * FROM [tb_account] WHERE [id] IN (?, ?) AND [sex] = ?" +
+            ") " +
+            "SELECT * FROM temp_datas WHERE __rn BETWEEN 11 AND 20 ORDER BY __rn", sql);
     }
 
 

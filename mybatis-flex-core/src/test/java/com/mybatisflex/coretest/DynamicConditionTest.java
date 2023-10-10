@@ -23,7 +23,9 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
+import static org.junit.Assert.assertEquals;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 
 /**
@@ -43,6 +45,7 @@ public class DynamicConditionTest {
             .toSQL();
 
         System.out.println(sql);
+        assertEquals("SELECT * FROM `tb_account` WHERE `age` >= 18", sql);
     }
 
     @Test
@@ -57,6 +60,7 @@ public class DynamicConditionTest {
             .toSQL();
 
         System.out.println(sql);
+        assertEquals("SELECT * FROM `tb_account` WHERE `id` IN (1, 2, 3)", sql);
     }
 
     @Test
@@ -67,6 +71,7 @@ public class DynamicConditionTest {
             .toSQL();
 
         System.out.println(sql);
+        assertEquals("SELECT * FROM `tb_account` WHERE `id` = '1'", sql);
     }
 
     @Test
@@ -77,6 +82,7 @@ public class DynamicConditionTest {
             .toSQL();
 
         System.out.println(sql);
+        assertEquals("SELECT * FROM `tb_account` WHERE `id` BETWEEN  '1' AND '2' ", sql);
     }
 
     @Test
@@ -95,6 +101,7 @@ public class DynamicConditionTest {
         }
 
         System.out.println(queryWrapper.toSQL());
+        assertEquals("SELECT * FROM `tb_account` WHERE `id` IN (1, 2, 3) AND `age` >= 18", queryWrapper.toSQL());
     }
 
     @Test
@@ -112,6 +119,7 @@ public class DynamicConditionTest {
         }
 
         System.out.println(queryWrapper.toSQL());
+        assertEquals("SELECT * FROM `tb_account` WHERE `id` IN (1, 2, 3) OR `user_name` = 'zhang san'", queryWrapper.toSQL());
     }
 
     @Test
@@ -129,6 +137,7 @@ public class DynamicConditionTest {
         }
 
         System.out.println(queryWrapper.toSQL());
+        assertEquals("SELECT * FROM `tb_account` WHERE `id` IN (1, 2, 3) OR `user_name` = 'zhang san'", queryWrapper.toSQL());
     }
 
     @Test
@@ -146,6 +155,7 @@ public class DynamicConditionTest {
         }
 
         System.out.println(queryWrapper.toSQL());
+        assertEquals("SELECT * FROM `tb_account` WHERE `id` = 1 AND (`age` IN (17, 18, 19) OR `user_name` = 'zhang san')", queryWrapper.toSQL());
     }
 
     @Test
@@ -158,6 +168,9 @@ public class DynamicConditionTest {
             .where(ACCOUNT.USER_NAME.in( ""));
 
         System.out.println(queryWrapper.toSQL());
+        assertEquals("SELECT * FROM `tb_account`", queryWrapper.toSQL());
+        // 重置QueryColumnBehavior
+        QueryColumnBehavior.setIgnoreFunction(Objects::isNull);
     }
 
 }

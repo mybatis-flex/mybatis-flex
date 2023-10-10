@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static org.junit.Assert.assertEquals;
 import static com.mybatisflex.core.query.QueryMethods.select;
 import static com.mybatisflex.core.query.QueryMethods.union;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
@@ -40,6 +41,10 @@ public class WithSQLTester {
             .where(ACCOUNT.SEX.eq(1));
 
         System.out.println(query.toSQL());
+        assertEquals("WITH CTE AS (" +
+            "SELECT * FROM `tb_article` WHERE `id` >= 100" +
+            ") " +
+            "SELECT * FROM `tb_account` WHERE `sex` = 1", query.toSQL());
     }
 
 
@@ -53,6 +58,10 @@ public class WithSQLTester {
             .where(ACCOUNT.SEX.eq(1));
 
         System.out.println(query.toSQL());
+        assertEquals("WITH RECURSIVE CTE AS (" +
+            "SELECT * FROM `tb_article` WHERE `id` >= 100" +
+            ") " +
+            "SELECT * FROM `tb_account` WHERE `sex` = 1", query.toSQL());
     }
 
     @Test
@@ -66,6 +75,10 @@ public class WithSQLTester {
             .where(ACCOUNT.SEX.eq(1));
 
         System.out.println(query.toSQL());
+        assertEquals("WITH RECURSIVE CTE(id, value) AS (" +
+            "SELECT * FROM `tb_article` WHERE `id` >= 100" +
+            ") " +
+            "SELECT * FROM `tb_account` WHERE `sex` = 1", query.toSQL());
     }
 
 
@@ -83,6 +96,12 @@ public class WithSQLTester {
             .where(ACCOUNT.SEX.eq(1));
 
         System.out.println(query.toSQL());
+        assertEquals("WITH CTE AS (" +
+            "SELECT * FROM `tb_article` WHERE `id` >= 100" +
+            "), xxx AS (" +
+            "SELECT * FROM `tb_article` WHERE `id` >= 200" +
+            ") " +
+            "SELECT * FROM `tb_account` WHERE `sex` = 1", query.toSQL());
     }
 
     @Test
@@ -102,6 +121,10 @@ public class WithSQLTester {
             .where(ACCOUNT.SEX.eq(1));
 
         System.out.println(query.toSQL());
+        assertEquals("WITH RECURSIVE CTE AS (" +
+            "SELECT * FROM `tb_article` WHERE `id` >= 100), xxx(id, name) AS (VALUES (a, b)  UNION (SELECT * FROM `tb_article` WHERE `id` >= 200)" +
+            ") " +
+            "SELECT * FROM `tb_account` WHERE `sex` = 1", query.toSQL());
     }
 
 }

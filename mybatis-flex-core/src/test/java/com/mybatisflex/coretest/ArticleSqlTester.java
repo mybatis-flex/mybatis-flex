@@ -24,6 +24,7 @@ import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.CollectionUtil;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
 
 
@@ -39,6 +40,7 @@ public class ArticleSqlTester {
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
+        assertEquals("SELECT * FROM `tb_article`", sql);
     }
 
     @Test
@@ -51,6 +53,8 @@ public class ArticleSqlTester {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forInsertEntity(tableInfo, article, false);
         System.out.println(sql);
+        assertEquals("INSERT INTO `tb_article`(`uuid`, `account_id`, `title`, `content`, `created`, `modified`, `is_delete`, `version`) " +
+            "VALUES (?, ?, ?, ?, now(), now(), ?, ?)", sql);
     }
 
 
@@ -64,6 +68,8 @@ public class ArticleSqlTester {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forInsertEntity(tableInfo, article, true);
         System.out.println(sql);
+        assertEquals("INSERT INTO `tb_article`(`uuid`, `account_id`, `content`, `created`, `modified`) " +
+            "VALUES (?, ?, ?, now(), now())", sql);
     }
 
 
@@ -81,6 +87,8 @@ public class ArticleSqlTester {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forInsertEntityBatch(tableInfo, CollectionUtil.newArrayList(article1, article2));
         System.out.println(sql);
+        assertEquals("INSERT INTO `tb_article`(`uuid`, `account_id`, `title`, `content`, `created`, `modified`, `is_delete`, `version`) " +
+            "VALUES (?, ?, ?, ?, now(), now(), ?, ?), (?, ?, ?, ?, now(), now(), ?, ?)", sql);
     }
 
 
@@ -90,6 +98,7 @@ public class ArticleSqlTester {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forDeleteEntityById(tableInfo);
         System.out.println(sql);
+        assertEquals("UPDATE `tb_article` SET `is_delete` = 1 WHERE `id` = ?  AND `uuid` = ?  AND `is_delete` = 0", sql);
     }
 
 
@@ -99,6 +108,7 @@ public class ArticleSqlTester {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forDeleteEntityBatchByIds(tableInfo, new Object[]{1, 2, 3});
         System.out.println(sql);
+        assertEquals("UPDATE `tb_article` SET `is_delete` = 1 WHERE ((`id` = ?  AND `uuid` = ? )) AND `is_delete` = 0", sql);
     }
 
 
@@ -113,6 +123,9 @@ public class ArticleSqlTester {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forUpdateEntity(tableInfo, article, true);
         System.out.println(sql);
+        assertEquals("UPDATE `tb_article` " +
+            "SET `account_id` = ? , `content` = ? , `modified` = now(), `version` = `version` + 1  " +
+            "WHERE `id` = ?  AND `uuid` = ?  AND `is_delete` = 0 AND `version` = 1", sql);
     }
 
 
@@ -130,6 +143,7 @@ public class ArticleSqlTester {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forUpdateEntityByQuery(tableInfo, article, true, queryWrapper);
         System.out.println(sql);
+        assertEquals("UPDATE `tb_article` SET `account_id` = ? , `content` = ? , `modified` = now(), `version` = `version` + 1  WHERE `id` >= ?", sql);
     }
 
 }

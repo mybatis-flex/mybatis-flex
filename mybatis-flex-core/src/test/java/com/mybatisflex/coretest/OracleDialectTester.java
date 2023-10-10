@@ -26,6 +26,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 
 public class OracleDialectTester {
@@ -40,6 +41,7 @@ public class OracleDialectTester {
         IDialect dialect = new OracleDialect();
         String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
+        assertEquals("SELECT * FROM TB_ACCOUNT", sql);
     }
 
     @Test
@@ -67,6 +69,11 @@ public class OracleDialectTester {
         IDialect dialect = new OracleDialect();
         String sql = dialect.forInsertEntityBatch(TableInfoFactory.ofEntityClass(Account.class), accounts);
         System.out.println(sql);
+        assertEquals("INSERT ALL  " +
+            "INTO TB_ACCOUNT (ID, USER_NAME, BIRTHDAY, SEX, AGE, IS_NORMAL, IS_DELETE) VALUES (?, ?, ?, ?, ?, ?, ?) " +
+            "INTO TB_ACCOUNT (ID, USER_NAME, BIRTHDAY, SEX, AGE, IS_NORMAL, IS_DELETE) VALUES (?, ?, ?, ?, ?, ?, ?) " +
+            "INTO TB_ACCOUNT (ID, USER_NAME, BIRTHDAY, SEX, AGE, IS_NORMAL, IS_DELETE) VALUES (?, ?, ?, ?, ?, ?, ?) " +
+            "SELECT 1 FROM DUAL", sql);
     }
 
 
@@ -95,6 +102,11 @@ public class OracleDialectTester {
         IDialect dialect = new OracleDialect();
         String sql = dialect.forInsertBatchWithFirstRowColumns(null, "tb_account", accounts);
         System.out.println(sql);
+        assertEquals("INSERT ALL  " +
+            "INTO TB_ACCOUNT (USERNAME, AGE, SEX) VALUES (?, ?, ?) " +
+            "INTO TB_ACCOUNT (USERNAME, AGE, SEX) VALUES (?, ?, ?) " +
+            "INTO TB_ACCOUNT (USERNAME, AGE, SEX) VALUES (?, ?, ?) " +
+            "SELECT 1 FROM DUAL", sql);
     }
 
 }

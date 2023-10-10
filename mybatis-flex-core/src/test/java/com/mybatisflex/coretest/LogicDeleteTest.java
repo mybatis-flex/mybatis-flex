@@ -24,6 +24,7 @@ import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 /**
  * 逻辑删除测试。
  *
@@ -38,19 +39,25 @@ public class LogicDeleteTest {
 
     @Test
     public void test() {
-        print("DefaultLogicDeleteProcessor", new DefaultLogicDeleteProcessor());
-        print("BooleanLogicDeleteProcessor", new BooleanLogicDeleteProcessor());
-        print("IntegerLogicDeleteProcessor", new IntegerLogicDeleteProcessor());
-        print("DateTimeLogicDeleteProcessor", new DateTimeLogicDeleteProcessor());
-        print("TimeStampLogicDeleteProcessor", new TimeStampLogicDeleteProcessor());
-        print("PrimaryKeyLogicDeleteProcessor", new PrimaryKeyLogicDeleteProcessor());
+        print("DefaultLogicDeleteProcessor", new DefaultLogicDeleteProcessor(), "`deleted` = 1", "`deleted` = 0");
+        print("BooleanLogicDeleteProcessor", new BooleanLogicDeleteProcessor(), "`deleted` = true", "`deleted` = false");
+        print("IntegerLogicDeleteProcessor", new IntegerLogicDeleteProcessor(), "`deleted` = 1", "`deleted` = 0");
+        print("DateTimeLogicDeleteProcessor", new DateTimeLogicDeleteProcessor(), "`deleted` = NOW()", "`deleted` IS NULL");
+        print("TimeStampLogicDeleteProcessor", new TimeStampLogicDeleteProcessor(), null, "`deleted` = 0");
+        print("PrimaryKeyLogicDeleteProcessor", new PrimaryKeyLogicDeleteProcessor(), "`deleted` = `id`", "`deleted` IS NULL");
     }
 
-    public void print(String type, LogicDeleteProcessor processor) {
+    public void print(String type, LogicDeleteProcessor processor, String logicDeletedCondition, String logicNormalCondition) {
         System.out.println("===== " + type + " =====");
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Account.class);
-        System.out.println(processor.buildLogicDeletedSet(logicColumn, tableInfo, dialect));
-        System.out.println(processor.buildLogicNormalCondition(logicColumn, tableInfo, dialect));
+        String actualLogicDeletedCondition = processor.buildLogicDeletedSet(logicColumn, tableInfo, dialect);
+        System.out.println(actualLogicDeletedCondition);
+        if (logicDeletedCondition != null) {
+            assertEquals(actualLogicDeletedCondition, logicDeletedCondition);
+        }
+        String actualLogicNormalCondition = processor.buildLogicNormalCondition(logicColumn, tableInfo, dialect);
+        System.out.println(actualLogicNormalCondition);
+        assertEquals(actualLogicNormalCondition, logicNormalCondition);
     }
 
 }

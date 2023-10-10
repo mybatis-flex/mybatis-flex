@@ -22,6 +22,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.RawQueryColumn;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static com.mybatisflex.core.query.QueryMethods.*;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 
@@ -40,6 +41,7 @@ public class FunctionSqlTest {
             .from(ACCOUNT)
             .toSQL();
         System.out.println(sql);
+        assertEquals("SELECT NOW() AS `n1`, NOW() AS `n2`, CONCAT(`user_name`, `age`) AS `c1` FROM `tb_account`", sql);
     }
 
     @Test
@@ -51,6 +53,7 @@ public class FunctionSqlTest {
             .where(not(ACCOUNT.ID.eq(1)))
             .toSQL();
         System.out.println(sql);
+        assertEquals("SELECT CONCAT_WS('abc', `user_name`, `birthday`), ABS(-3) FROM `tb_account` WHERE NOT (`id` = 1)", sql);
     }
 
     @Test
@@ -62,6 +65,7 @@ public class FunctionSqlTest {
             .toSQL();
 
         System.out.println(sql);
+        assertEquals("SELECT * FROM `tb_account` WHERE UPPER(`user_name`) LIKE UPPER('ws')", sql);
     }
 
     @Test
@@ -73,6 +77,7 @@ public class FunctionSqlTest {
             .toSQL();
 
         System.out.println(sql);
+        assertEquals("SELECT * FROM `tb_account` WHERE FIND_IN_SET(100, `id`) > 0", sql);
     }
 
     @Test
@@ -84,6 +89,7 @@ public class FunctionSqlTest {
             .toSQL();
 
         System.out.println(sql);
+        assertEquals("SELECT * FROM `tb_account` ORDER BY RAND()", sql);
     }
 
     @Test
@@ -95,6 +101,7 @@ public class FunctionSqlTest {
             .toSQL();
 
         System.out.println(sql);
+        assertEquals("SELECT (select role_name from tb_role where id = 1), `user_name` FROM `tb_account`", sql);
     }
     @Test
     public void testReplaceString() {
@@ -105,6 +112,7 @@ public class FunctionSqlTest {
             .toSQL();
 
         System.out.println(sql);
+        assertEquals("SELECT `user_name` FROM `tb_account` WHERE `user_name` = REPLACE(nsg_contract.primer_name, ' ', '')", sql);
     }
 
 }
