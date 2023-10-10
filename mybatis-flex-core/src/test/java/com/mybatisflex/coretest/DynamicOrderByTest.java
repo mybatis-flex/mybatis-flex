@@ -17,6 +17,7 @@
 package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.query.QueryWrapper;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
@@ -40,6 +41,10 @@ public class DynamicOrderByTest {
             .orderBy(ACCOUNT.BIRTHDAY, null);
 
         System.out.println(queryWrapper.toSQL());
+        Assert.assertEquals("SELECT `ac`.`id`, `ac`.`user_name` AS `name`, `ac`.`age` " +
+            "FROM `tb_account` AS `ac` " +
+            "LEFT JOIN `tb_article` AS `ar` ON `ar`.`account_id` = `ac`.`id` " +
+            "ORDER BY `ac`.`user_name` ASC, `ac`.`age` DESC, name ASC", queryWrapper.toSQL());
     }
 
 }

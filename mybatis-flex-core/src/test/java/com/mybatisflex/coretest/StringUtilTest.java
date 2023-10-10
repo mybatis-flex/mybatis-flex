@@ -17,6 +17,7 @@
 package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.util.StringUtil;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class StringUtilTest {
@@ -26,9 +27,11 @@ public class StringUtilTest {
         String testString1 = "aa_bb_";
         String underlineToCamel = StringUtil.underlineToCamel(testString1);
         System.out.println(underlineToCamel);
+        Assert.assertEquals("aaBb", underlineToCamel);
 
         String underline = StringUtil.camelToUnderline(underlineToCamel);
         System.out.println(underline);
+        Assert.assertEquals("aa_bb", underline);
     }
 
 }

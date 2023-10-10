@@ -18,7 +18,10 @@ package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DbTypeUtil;
+import org.junit.Assert;
 import org.junit.Test;
+
+import static com.mybatisflex.core.dialect.DbType.SQLSERVER_2005;
 
 public class DbTypeUtilTest {
 
@@ -27,6 +30,7 @@ public class DbTypeUtilTest {
         String url01 = "jdbc:sqlserver://127.0.0.1";
         DbType dbType01 = DbTypeUtil.parseDbType(url01);
         System.out.println(dbType01);
+        Assert.assertEquals(dbType01, SQLSERVER_2005);
     }
 
 }

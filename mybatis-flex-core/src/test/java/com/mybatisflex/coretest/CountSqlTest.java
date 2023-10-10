@@ -20,6 +20,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.MapperUtil;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
 
@@ -43,6 +44,12 @@ public class CountSqlTest {
         QueryWrapper optimized = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
 
         System.out.println(optimized.toSQL());
+
+        assertEquals("SELECT COUNT(*) AS `total` " +
+            "FROM `tb_account` " +
+            "LEFT JOIN `tb_article` AS `a1` ON `a1`.`account_id` = `tb_account`.`id` " +
+            "LEFT JOIN `tb_article` AS `a2` ON `a2`.`account_id` = `tb_account`.`id` " +
+            "WHERE `a1`.`account_id` IN (1, 2, 3)", optimized.toSQL());
     }
 
     @Test
@@ -59,6 +66,12 @@ public class CountSqlTest {
         QueryWrapper optimized = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
 
         System.out.println(optimized.toSQL());
+
+        assertEquals("SELECT COUNT(*) AS `total` " +
+            "FROM `tb_account` " +
+            "LEFT JOIN `tb_article` AS `a1` ON `a1`.`account_id` = `tb_account`.`id` " +
+            "LEFT JOIN `tb_article` AS `a2` ON `a2`.`account_id` = `tb_account`.`id` " +
+            "WHERE  a1.account_id IN (1, 2, 3) ", optimized.toSQL());
     }
 
     @Test
@@ -75,6 +88,12 @@ public class CountSqlTest {
         QueryWrapper optimized = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
 
         System.out.println(optimized.toSQL());
+
+        assertEquals("SELECT COUNT(*) AS `total` " +
+            "FROM `tb_account` AS `a` " +
+            "LEFT JOIN `tb_article` AS `a1` ON  a1.account_id = a.id  " +
+            "LEFT JOIN `tb_article` AS `a2` ON  a1.account_id = a.id  " +
+            "WHERE  a1.account_id IN (1, 2, 3) ", optimized.toSQL());
     }
 
 }

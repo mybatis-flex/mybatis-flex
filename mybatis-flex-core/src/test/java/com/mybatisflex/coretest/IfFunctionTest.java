@@ -19,6 +19,7 @@ package com.mybatisflex.coretest;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static com.mybatisflex.core.query.QueryMethods.*;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 
@@ -35,6 +36,7 @@ public class IfFunctionTest {
             .from(ACCOUNT)
             .where(ACCOUNT.ID.eq(1));
         System.out.println(queryWrapper.toSQL());
+        assertEquals("SELECT IF(`age` >= 6, `is_normal`, `is_delete`) AS `type` FROM `tb_account` WHERE `id` = 1", queryWrapper.toSQL());
     }
 
     @Test
@@ -45,6 +47,7 @@ public class IfFunctionTest {
             .from(ACCOUNT)
             .where(ACCOUNT.ID.eq(1));
         System.out.println(queryWrapper.toSQL());
+        assertEquals("SELECT IF(`age` >= 18, '成年人', IF(`age` <= 8, '未上学', '已上学')) AS `type` FROM `tb_account` WHERE `id` = 1", queryWrapper.toSQL());
     }
 
     @Test
@@ -54,6 +57,7 @@ public class IfFunctionTest {
             .from(ACCOUNT)
             .where(ACCOUNT.ID.eq(1));
         System.out.println(queryWrapper.toSQL());
+        assertEquals("SELECT IFNULL(`id`, 0) FROM `tb_account` WHERE `id` = 1", queryWrapper.toSQL());
     }
 
     @Test
@@ -62,6 +66,7 @@ public class IfFunctionTest {
             .select(ifNull(null_(), number(0)))
             .from(ACCOUNT);
         System.out.println(queryWrapper.toSQL());
+        assertEquals("SELECT IFNULL(NULL, 0) FROM `tb_account`", queryWrapper.toSQL());
     }
 
 }

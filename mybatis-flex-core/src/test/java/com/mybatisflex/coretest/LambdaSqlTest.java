@@ -20,6 +20,7 @@ import com.github.vertical_blank.sqlformatter.SqlFormatter;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static com.mybatisflex.core.query.QueryMethods.allColumns;
 import static com.mybatisflex.core.query.QueryMethods.defaultColumns;
 
@@ -44,6 +45,13 @@ public class LambdaSqlTest {
             .where(Account::getAge).ge(18);
 
         printSQL(queryWrapper);
+        assertEquals("SELECT\n" +
+            "  *\n" +
+            "FROM\n" +
+            "  ` tb_account `\n" +
+            "  JOIN ` tb_article ` ON ` tb_article `.` account_id ` = ` tb_account `.` id `\n" +
+            "WHERE\n" +
+            "  ` tb_account `.` age ` >= 18", SqlFormatter.format(queryWrapper.toSQL()));
     }
 
     @Test
@@ -55,6 +63,14 @@ public class LambdaSqlTest {
             .where(Account::getAge).ge(18);
 
         printSQL(queryWrapper);
+        assertEquals("SELECT\n" +
+            "  ` tb_account `.*,\n" +
+            "  ` tb_article `.*\n" +
+            "FROM\n" +
+            "  ` tb_account `\n" +
+            "  JOIN ` tb_article ` ON ` tb_article `.` account_id ` = ` tb_account `.` id `\n" +
+            "WHERE\n" +
+            "  ` tb_account `.` age ` >= 18", SqlFormatter.format(queryWrapper.toSQL()));
     }
 
     @Test
@@ -66,6 +82,14 @@ public class LambdaSqlTest {
             .where(Account::getAge).ge(18);
 
         printSQL(queryWrapper);
+        assertEquals("SELECT\n" +
+            "  ` ac `.*,\n" +
+            "  ` ar `.*\n" +
+            "FROM\n" +
+            "  ` tb_account ` AS ` ac `\n" +
+            "  JOIN ` tb_article ` AS ` ar ` ON ` ar `.` account_id ` = ` ac `.` id `\n" +
+            "WHERE\n" +
+            "  ` ac `.` age ` >= 18", SqlFormatter.format(queryWrapper.toSQL()));
     }
 
     @Test
@@ -79,6 +103,21 @@ public class LambdaSqlTest {
             .where(Account::getAge).ge(18);
 
         printSQL(queryWrapper);
+        assertEquals("SELECT\n" +
+            "  ` ac `.` id `,\n" +
+            "  ` ac `.` user_name `,\n" +
+            "  ` ac `.` birthday `,\n" +
+            "  ` ac `.` sex `,\n" +
+            "  ` ac `.` age `,\n" +
+            "  ` ac `.` is_normal `,\n" +
+            "  ` ac `.` is_delete `,\n" +
+            "  ` ar `.` title `,\n" +
+            "  ` ar `.` content `\n" +
+            "FROM\n" +
+            "  ` tb_account ` AS ` ac `\n" +
+            "  JOIN ` tb_article ` AS ` ar ` ON ` ar `.` account_id ` = ` ac `.` id `\n" +
+            "WHERE\n" +
+            "  ` ac `.` age ` >= 18", SqlFormatter.format(queryWrapper.toSQL()));
     }
 
     @Test
@@ -91,6 +130,20 @@ public class LambdaSqlTest {
             .where(Account::getAge).ge(18);
 
         printSQL(queryWrapper);
+        assertEquals("SELECT\n" +
+            "  ` ac `.` id `,\n" +
+            "  ` ac `.` user_name `,\n" +
+            "  ` ac `.` birthday `,\n" +
+            "  ` ac `.` sex `,\n" +
+            "  ` ac `.` age `,\n" +
+            "  ` ac `.` is_normal `,\n" +
+            "  ` ac `.` is_delete `,\n" +
+            "  ` ar `.*\n" +
+            "FROM\n" +
+            "  ` tb_account ` AS ` ac `\n" +
+            "  JOIN ` tb_article ` AS ` ar ` ON ` ar `.` account_id ` = ` ac `.` id `\n" +
+            "WHERE\n" +
+            "  ` ac `.` age ` >= 18", SqlFormatter.format(queryWrapper.toSQL()));
     }
 
 }
