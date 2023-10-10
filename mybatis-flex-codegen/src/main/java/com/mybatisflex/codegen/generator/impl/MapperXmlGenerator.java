@@ -66,7 +66,7 @@ public class MapperXmlGenerator implements IGenerator {
         Map<String, Object> params = new HashMap<>(2);
         params.put("table", table);
         params.put("packageConfig", packageConfig);
-
+        params.putAll(globalConfig.getCustomConfig());
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, mapperXmlFile);
 
         System.out.println("MapperXML ---> " + mapperXmlFile);

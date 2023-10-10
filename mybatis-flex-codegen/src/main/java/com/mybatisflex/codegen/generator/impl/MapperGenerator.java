@@ -69,7 +69,7 @@ public class MapperGenerator implements IGenerator {
         params.put("mapperConfig", mapperConfig);
         params.put("packageConfig", packageConfig);
         params.put("javadocConfig", globalConfig.getJavadocConfig());
-
+        params.putAll(globalConfig.getCustomConfig());
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, mapperJavaFile);
 
         System.out.println("Mapper ---> " + mapperJavaFile);

@@ -233,6 +233,13 @@ public class GlobalConfig implements Serializable {
         customConfig.put(key, value);
     }
 
+    public Map<String, Object> getCustomConfig() {
+        return customConfig;
+    }
+
+    public void setCustomConfig(Map<String, Object> customConfig) {
+        this.customConfig = customConfig;
+    }
     // === 分项配置 ===
 
     /**
