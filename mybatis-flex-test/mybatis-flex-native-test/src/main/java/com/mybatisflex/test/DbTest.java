@@ -19,8 +19,8 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
-import com.mybatisflex.core.row.RowUtil;
 import org.apache.ibatis.session.Configuration;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -64,7 +64,10 @@ public class DbTest {
     @Test
     public void test01() {
         List<Row> rows = Db.selectAll(tb_account);
-        RowUtil.printPretty(rows);
+
+        rows.stream()
+            .map(row -> row.get("OPTIONS"))
+            .forEach(Assert::assertNull);
     }
 
 }
