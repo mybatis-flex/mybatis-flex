@@ -391,6 +391,21 @@ public class AccountSqlTester {
         System.out.println(query.toSQL());
     }
 
+    //https://gitee.com/mybatis-flex/mybatis-flex/issues/I7EAY9
+    @Test
+    public void testGroup184() {
+        QueryWrapper query = QueryWrapper .create()
+            .select(left(ACCOUNT.AGE, 6).as("regionCode"))
+            .from(ACCOUNT)
+            .groupBy("regionCode");
+
+        Assert.assertEquals("SELECT LEFT(`age`, 6) AS `regionCode` FROM `tb_account` " +
+                "GROUP BY regionCode"
+            ,query.toSQL());
+
+        System.out.println(query.toSQL());
+    }
+
     @Test
     public void testHavingSql() {
         QueryWrapper query = QueryWrapper.create()
