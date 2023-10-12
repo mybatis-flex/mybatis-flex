@@ -20,7 +20,6 @@ import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.StringUtil;
 import org.junit.Test;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -171,6 +170,18 @@ public class DynamicConditionTest {
         assertEquals("SELECT * FROM `tb_account`", queryWrapper.toSQL());
         // 重置QueryColumnBehavior
         QueryColumnBehavior.setIgnoreFunction(Objects::isNull);
+    }
+
+    @Test
+    public void test10() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+            // 满足忽略规则，但动态条件又是true
+            .where(ACCOUNT.USER_NAME.eq(null).when(true));
+        String sql = queryWrapper.toSQL();
+        System.out.println(sql);
+        assertEquals("SELECT * FROM `tb_account`", sql);
     }
 
 }

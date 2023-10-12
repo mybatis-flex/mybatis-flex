@@ -46,9 +46,22 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
     //两个条件直接的连接符
     protected SqlConnector connector;
 
+    /**
+     * 是否为空条件，默认false
+     */
+    private boolean empty = false;
+
+    protected boolean notEmpty() {
+        return !empty;
+    }
+
+    protected QueryCondition setEmpty(boolean empty) {
+        this.empty = empty;
+        return this;
+    }
 
     public static QueryCondition createEmpty() {
-        return new QueryCondition().when(false);
+        return new QueryCondition().when(false).setEmpty(true);
     }
 
 
@@ -111,7 +124,9 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
      * @return {@link QueryCondition}
      */
     public QueryCondition when(boolean effective) {
-        this.effective = effective;
+        if (notEmpty()) {
+            this.effective = effective;
+        }
         return this;
     }
 
@@ -123,7 +138,9 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
      * @return {@link QueryCondition}
      */
     public QueryCondition when(BooleanSupplier fn) {
-        this.effective = fn.getAsBoolean();
+        if (notEmpty()) {
+            this.effective = fn.getAsBoolean();
+        }
         return this;
     }
 
