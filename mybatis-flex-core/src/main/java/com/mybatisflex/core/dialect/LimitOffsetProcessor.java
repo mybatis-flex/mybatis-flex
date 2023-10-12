@@ -113,7 +113,10 @@ public interface LimitOffsetProcessor {
                 limitOffset = 0L;
             }
 
+            // fix-bug:#I87AOA QueryWrapper 构建的SQL 与 执行的SQL不一致
             List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+            List<QueryTable> joinTables = CPI.getJoinTables(queryWrapper);
+            List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
             String originalSQL = sql.toString();
             String orderByString;
             List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
@@ -123,7 +126,7 @@ public interface LimitOffsetProcessor {
                 StringBuilder orderBySql = new StringBuilder(ORDER_BY);
                 int index = 0;
                 for (QueryOrderBy orderBy : orderBys) {
-                    orderBySql.append(orderBy.toSql(queryTables, dialect));
+                    orderBySql.append(orderBy.toSql(allTables, dialect));
                     if (index != orderBys.size() - 1) {
                         orderBySql.append(DELIMITER);
                     }
