@@ -124,9 +124,7 @@ WHERE  `id` >= 100 AND `age` = 18
 ### `page()` 系列方法
 
 - page(page)：分页查询数据列表
-- pageWithRelations(page)：分页查询数据列表及其关联数据
 - pageAs(page)：分页查询数据列表，并直接转换为 vo、dto 等
-- pageWithRelationsAs(page)：分页查询数据列表，及其关联数据，并直接转换为 vo、dto 等
 
 ### `obj()` 系列方法
 
