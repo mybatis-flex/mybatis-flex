@@ -30,9 +30,16 @@ public class QueryColumnBehavior {
     }
 
     /**
+     * 内置的可选的忽略规则
+     */
+    public static final Predicate<Object> IGNORE_NULL = Objects::isNull;
+    public static final Predicate<Object> IGNORE_EMPTY = o -> o == null || "".equals(o);
+    public static final Predicate<Object> IGNORE_BLANK = o -> o == null || "".equals(o.toString().trim());
+
+    /**
      * 自定义全局的自动忽略参数的方法。
      */
-    private static Predicate<Object> ignoreFunction = Objects::isNull;
+    private static Predicate<Object> ignoreFunction = IGNORE_NULL;
 
     /**
      * 当 {@code IN(...)} 条件只有 1 个参数时，是否自动把的内容转换为相等。
