@@ -1,4 +1,5 @@
 - **`selectOneById(id)`**：根据主键查询数据。
+- **`selectOneByEntityId(entity)`**：根据实体主键查询数据，便于对复合主键实体类的查询。
 - **`selectOneByMap(whereConditions)`**：根据 Map 构建的条件来查询数据。
 - **`selectOneByCondition(whereConditions)`**：根据查询条件查询数据。
 - **`selectOneByQuery(queryWrapper)`**：根据查询条件来查询 1 条数据。

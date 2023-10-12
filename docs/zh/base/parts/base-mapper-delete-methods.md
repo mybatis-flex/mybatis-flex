@@ -1,4 +1,5 @@
 - **`deleteById(id)`**：根据主键删除数据。如果是多个主键的情况下，需要传入数组，例如：`new Integer[]{100,101}`。
+- **`delete(entity)`**：根据实体主键来删除数据。相比deleteById(id)，此方法更便于对复合主键实体类的删除。
 - **`deleteBatchByIds(ids)`**：根据多个主键批量删除数据。
 - **`deleteBatchByIds(ids, size)`**：根据多个主键批量删除数据。
 - **`deleteByMap(whereConditions)`**：根据 Map 构建的条件来删除数据。

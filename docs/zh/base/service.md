@@ -49,6 +49,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
 - **remove(query)**：根据 `QueryWrapper` 构建的条件来删除数据。
 - **remove(condition)**：根据 `QueryCondition` 构建的条件来删除数据。
 - **removeById(id)**：根据主键删除数据，复合主键需要传入一个数组。
+- **removeById(entity)**：根据实体主键删除数据，相比removeById(id)，此方法更便于对复合主键实体类的删除。。
 - **removeByIds(ids)**：根据主键的集合，批量删除多条数据。
 - **removeByMap(map)**：根据 `Map<字段名，值>` 组成的条件删除数据，字段名和值的关系为相等的关系；同时，防止 "不小心" 全表删除数据，Map 的值不允许为 null 或者空数据。
 
@@ -74,6 +75,8 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
 
 - **getById(id)**：根据主键查询数据。
 - **getByIdOpt(id)**：根据主键查询数据，并封装为 `Optional` 返回。
+- **getOneByEntityId(entity)**：根据实体主键查询数据。
+- **getByEntityIdOpt(entity)**：根据实体主键查询数据，并封装为 `Optional` 返回。
 - **getOne(query)**: 根据 `QueryWrapper` 构建的条件查询一条数据。
 - **getOne(condition)**: 根据 `QueryCondition` 构建的条件查询一条数据。
 - **getOneOpt(query)**: 根据`QueryWrapper` 构建的条件查询一条数据，并封装为 `Optional` 返回。
