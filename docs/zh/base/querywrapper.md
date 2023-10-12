@@ -1110,13 +1110,18 @@ QueryWrapper query2 = QueryWrapper.create()
 ## QueryColumnBehavior <Badge type="tip" text="^ v1.5.7" />
 
 在以上的内容中，我们知道 MyBatis-Flex 会自动忽略 `null` 值的条件，但是在实际开发中，有的开发者希望除了自动忽略 `null`
-值以外，还可以自动忽略其他值，比如 `空字符串` 等。
+值以外，还可以自动忽略其他值，内置的规则有`null`(默认) 、`空字符串`、`空白字符串` ，当然也可以自定义。
 
 
-此时，我们可以通过配置 QueryColumnBehavior 来自定义忽略的值。如下的代码会自动忽略 `null` 和 `空字符串`：
+此时，我们可以通过配置 QueryColumnBehavior 来自定义忽略的值。
 
 ```java
-QueryColumnBehavior.setIgnoreFunction(o -> o == null || "".equals(o));
+// 使用内置规则自动忽略 null 和 空字符串
+QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_EMPTY);
+// 使用内置规则自动忽略 null 和 空白字符串
+QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_BLANK);
+// 其他自定义规则
+QueryColumnBehavior.setIgnoreFunction(o -> {...});
 ```
 
 另外，在某些场景下，开发者希望在构建 QueryWrapper 中，如果传入的值是集合或数组，则使用 `in` 逻辑，否则使用 `=`（等于）
