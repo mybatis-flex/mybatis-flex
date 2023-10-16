@@ -19,6 +19,7 @@ package com.mybatisflex.test.common;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.RawQueryTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -89,6 +90,15 @@ class QueryWrapperTest {
         QueryCondition whereQueryCondition = CPI.getWhereQueryCondition(queryWrapper);
         boolean contained = CPI.containsTable(whereQueryCondition, "tb_user_role");
         Assertions.assertTrue(contained);
+    }
+
+    @Test
+    void test04() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select("*")
+            .from(new RawQueryTable("select * from app"));
+
+        System.out.println(queryWrapper.toSQL());
     }
 
 }
