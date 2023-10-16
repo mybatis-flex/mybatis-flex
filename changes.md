@@ -2,6 +2,22 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+
+## v1.7.1 20231016:
+- 新增：QueryColumnBehavior 增加内置的忽略规则，方便使用，感谢 @chenjh3
+- 优化：代码生成器提供了 GlobalConfig 的 customConfig 的 getter/setter，感谢 @qq925966998
+- 优化：代码生成器参数列表加入 customConfig，感谢 @qq925966998
+- 修复：某些场景下group by 字段错误的增加了表别名，而导致生产的sql错误，github #184
+- 修复：某些场景下 QueryWrapper 打印的 SQL 与 执行的 SQL 不一致的问题，感谢 @chenjh3
+- 修复：当条件满足忽略规则，when 又设置为 true 时，NPE 异常的问题，感谢 @chenjh3 #I86T6H
+- 测试：添加 Db + Row 的一些测试，感谢 @Suomm
+- 测试：重置 dynamicTableProcessor 防止影响其他的测试用例，感谢 @chenjh3
+- 测试：把测试代码中所有的测试用例都加上断言判断，感谢 @chenjh3
+- 文档：QueryWrapper 中添加关于多主键查询和删除的相关文档，感谢 @wchopper
+- 文档：修改一些已经移除的方法但是文档中还存着的问题，感谢 @HunnyOvO
+
+
+
 ## v1.7.0 20231009:
 - 修复：紧急修复当上一个条件失效时，错误的使用上上个条件作为连接符的问题
 - 测试：单元测试更加更多的断言代码
