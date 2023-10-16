@@ -71,6 +71,11 @@ public abstract class QueryModel<T extends QueryModel<T>> {
         return (T) this;
     }
 
+    public T select(Iterable<QueryColumn> queryColumns) {
+        queryWrapper().select(queryColumns);
+        return (T) this;
+    }
+
     public <E> T select(LambdaGetter<E>... columns) {
         queryWrapper().select(columns);
         return (T) this;
