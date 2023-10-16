@@ -25,7 +25,6 @@ import com.mybatisflex.core.keygen.RowKeyGenerator;
 import com.mybatisflex.core.mybatis.executor.FlexBatchExecutor;
 import com.mybatisflex.core.mybatis.executor.FlexReuseExecutor;
 import com.mybatisflex.core.mybatis.executor.FlexSimpleExecutor;
-import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.StringUtil;
@@ -64,7 +63,6 @@ public class FlexConfiguration extends Configuration {
     public FlexConfiguration() {
         setObjectWrapperFactory(new FlexWrapperFactory());
         setDefaultEnumTypeHandler(CompositeEnumTypeHandler.class);
-        initDefaultMappers();
     }
 
 
@@ -72,18 +70,7 @@ public class FlexConfiguration extends Configuration {
         super(environment);
         setObjectWrapperFactory(new FlexWrapperFactory());
         setDefaultEnumTypeHandler(CompositeEnumTypeHandler.class);
-        initDefaultMappers();
     }
-
-
-    /**
-     * 设置 mybatis-flex 默认的 Mapper
-     * 当前只有 RowMapper {@link RowMapper}
-     */
-    private void initDefaultMappers() {
-        addMapper(RowMapper.class);
-    }
-
 
     /**
      * 为原生 sql 设置参数

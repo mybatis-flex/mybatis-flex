@@ -18,6 +18,7 @@ package com.mybatisflex.core.mybatis;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.row.RowMapper;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.exceptions.ExceptionFactory;
 import org.apache.ibatis.executor.ErrorContext;
@@ -84,12 +85,23 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
 
         SqlSessionFactory sessionFactory = super.build(configuration);
 
+        // 设置mybatis的默认mapper,
+        initDefaultMappers(configuration);
+
         // 设置全局配置的 sessionFactory
         initGlobalConfig(configuration, sessionFactory);
 
         printBanner();
 
         return sessionFactory;
+    }
+
+    /**
+     * 设置 mybatis-flex 默认的 Mapper
+     * 当前只有 RowMapper {@link RowMapper}
+     */
+    private void initDefaultMappers(Configuration configuration) {
+        configuration.addMapper(RowMapper.class);
     }
 
 

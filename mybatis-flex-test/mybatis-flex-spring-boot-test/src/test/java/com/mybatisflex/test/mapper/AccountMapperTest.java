@@ -67,6 +67,18 @@ class AccountMapperTest {
 //        Assertions.assertEquals(2, count);
     }
 
+    /**
+     * 测试db执行的情况下, sql日志打印情况
+     */
+    @Test
+    void testDbSqlLogger() {
+        QueryWrapper wrapper = QueryWrapper.create()
+            .select(ACCOUNT.ALL_COLUMNS)
+            .from(ACCOUNT);
+
+        Db.selectOneByQuery(wrapper);
+    }
+
     @Test
     void testInsert() {
         Account account = new Account();
