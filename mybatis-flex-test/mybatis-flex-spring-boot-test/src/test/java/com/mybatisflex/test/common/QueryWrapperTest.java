@@ -95,8 +95,8 @@ class QueryWrapperTest {
     @Test
     void test04() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-            .select("*")
-            .from(new RawQueryTable("select * from app"));
+            .select("a.*")
+            .from(new RawQueryTable("(select * from app) as a"));
 
         System.out.println(queryWrapper.toSQL());
     }
