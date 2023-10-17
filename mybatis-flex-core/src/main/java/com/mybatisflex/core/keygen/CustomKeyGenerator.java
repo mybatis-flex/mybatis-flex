@@ -69,10 +69,15 @@ public class CustomKeyGenerator implements KeyGenerator {
     @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
         Object entity = ((Map) parameter).get(FlexConsts.ENTITY);
-        Configuration configuration = ms.getConfiguration();
-        MetaObject metaParam = configuration.newMetaObject(parameter);
-        Object generateId = keyGenerator.generate(entity, idInfo.getColumn());
         try {
+            Object existId = tableInfo.getValue(entity, idInfo.getProperty());
+            // 若用户主动设置了主键，则使用用户自己设置的主键，不再生成主键
+            if (existId != null){
+                return;
+            }
+            Configuration configuration = ms.getConfiguration();
+            MetaObject metaParam = configuration.newMetaObject(parameter);
+            Object generateId = keyGenerator.generate(entity, idInfo.getColumn());
             MetaObject metaObjectForProperty = metaParam.metaObjectForProperty(FlexConsts.ENTITY);
             Invoker setInvoker = tableInfo.getReflector().getSetInvoker(idInfo.getProperty());
             Object id = ConvertUtil.convert(generateId, setInvoker.getType());

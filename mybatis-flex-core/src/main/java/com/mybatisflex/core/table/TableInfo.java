@@ -718,6 +718,10 @@ public class TableInfo {
         return values;
     }
 
+    public Object getValue(Object entity, String property) {
+        FieldWrapper fieldWrapper = FieldWrapper.of(entityClass, property);
+        return fieldWrapper.get(entity);
+    }
 
     /**
      * 获取主键值
@@ -1119,7 +1123,6 @@ public class TableInfo {
     private Object buildColumnSqlArg(MetaObject metaObject, String column) {
         ColumnInfo columnInfo = columnInfoMapping.get(column);
         Object value = getPropertyValue(metaObject, columnInfo.property);
-
         if (value != null) {
             TypeHandler typeHandler = columnInfo.buildTypeHandler(null);
             if (typeHandler != null) {
@@ -1137,7 +1140,7 @@ public class TableInfo {
     }
 
 
-    private Object getPropertyValue(MetaObject metaObject, String property) {
+    public Object getPropertyValue(MetaObject metaObject, String property) {
         if (property != null && metaObject.hasGetter(property)) {
             return metaObject.getValue(property);
         }

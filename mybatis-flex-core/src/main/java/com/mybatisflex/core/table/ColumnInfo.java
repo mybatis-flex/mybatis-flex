@@ -35,7 +35,7 @@ public class ColumnInfo {
     protected String[] alias;
 
     /**
-     * java entity 定义的属性名称。
+     * java entity 定义的属性名称（field name）。
      */
     protected String property;
 

@@ -20,6 +20,7 @@ import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
+import com.mybatisflex.core.keygen.KeyGeneratorFactory;
 import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.query.If;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -28,6 +29,7 @@ import com.mybatisflex.core.update.UpdateChain;
 import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
 import com.mybatisflex.mapper.Account6Mapper;
+import com.mybatisflex.mapper.Account7Mapper;
 import com.mybatisflex.mapper.ArticleMapper;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.junit.Assert;
@@ -59,11 +61,14 @@ public class AccountTester {
         FlexGlobalConfig.getDefaultConfig()
             .setLogicDeleteColumn("is_delete");
 
+        KeyGeneratorFactory.register("test", new TestKeyGenerator());
+
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
             .setDataSource(dataSource)
             .setLogImpl(StdOutImpl.class)
             .addMapper(AccountMapper.class)
             .addMapper(Account6Mapper.class)
+            .addMapper(Account7Mapper.class)
             .addMapper(ArticleMapper.class)
             .start();
 
@@ -151,7 +156,7 @@ public class AccountTester {
     public void testLeftJoinSelectWithIgnoreColumn() {
         QueryWrapper queryWrapper = QueryWrapper.create();
         queryWrapper
-            .select(ACCOUNT.ID,ACCOUNT.AGE,ARTICLE.TITLE)
+            .select(ACCOUNT.ID, ACCOUNT.AGE, ARTICLE.TITLE)
             .from(ACCOUNT)
             .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
             .where(ACCOUNT.ID.ge(1));
@@ -168,7 +173,7 @@ public class AccountTester {
         Account account = new Account();
         account.setId(1L);
         account = UpdateWrapper.of(account)
-            .set(Account::getId,1)
+            .set(Account::getId, 1)
             .set(Account::getAge, 20)
             //设置 Ignore 字段，会被自动忽略
             .setRaw(Account::getTitle, "xxxx")
@@ -177,13 +182,11 @@ public class AccountTester {
     }
 
 
-
-
     @Test
     public void testSelectAsToDTO() {
         QueryWrapper queryWrapper = QueryWrapper.create();
 //        queryWrapper.select(ACCOUNT.ALL_COLUMNS,ARTICLE.TITLE.as(AccountDTO::getPermissions))
-        queryWrapper.select(ACCOUNT.ALL_COLUMNS,ACCOUNT.USER_NAME.as(AccountDTO::getTestOtherField))
+        queryWrapper.select(ACCOUNT.ALL_COLUMNS, ACCOUNT.USER_NAME.as(AccountDTO::getTestOtherField))
 //        queryWrapper.select(ACCOUNT.ALL_COLUMNS)
             .from(ACCOUNT).leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
         List<AccountDTO> accountDTOS = accountMapper.selectListByQueryAs(queryWrapper, AccountDTO.class);
@@ -277,7 +280,7 @@ public class AccountTester {
         account1.setUserName("michael");
         account1.setAge(5);
 
-        Assert.assertEquals(mapper.insertSelective(account1),1);
+        Assert.assertEquals(mapper.insertSelective(account1), 1);
 
 
         Account6 account2 = new Account6();
@@ -285,7 +288,34 @@ public class AccountTester {
         account2.setUserName("michael");
         account2.setAge(5);
 
-        Assert.assertEquals(mapper.insertSelective(account2),1);
+        Assert.assertEquals(mapper.insertSelective(account2), 1);
+    }
+
+
+    /**
+     * issues https://gitee.com/mybatis-flex/mybatis-flex/issues/I88TX1
+     */
+    @Test
+    public void testInsertWithEntityId() {
+        Account7Mapper mapper = MybatisFlexBootstrap.getInstance()
+            .getMapper(Account7Mapper.class);
+
+        Account7 account1 = new Account7();
+        account1.setId(1L);
+        account1.setUserName("michael");
+        account1.setAge(5);
+
+        int result1 = mapper.insert(account1);
+        Assert.assertEquals(result1, 1);
+
+
+        Account7 account2 = new Account7();
+//        account2.setId(1L); 不设置主键，自动生成主键
+        account2.setUserName("michael");
+        account2.setAge(5);
+
+        int result2 = mapper.insert(account2);
+        Assert.assertEquals(result2, 1);
     }
 
 

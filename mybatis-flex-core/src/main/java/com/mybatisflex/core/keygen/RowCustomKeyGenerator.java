@@ -55,8 +55,13 @@ public class RowCustomKeyGenerator implements KeyGenerator {
     @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
         Row row = (Row) ((Map) parameter).get(FlexConsts.ROW);
-        Object generateId = keyGenerator.generate(row, rowKey.getKeyColumn());
         try {
+            Object existId = row.get(rowKey.getKeyColumn());
+            // 若用户主动设置了主键，则使用用户自己设置的主键，不再生成主键
+            if (existId != null) {
+                return;
+            }
+            Object generateId = keyGenerator.generate(row, rowKey.getKeyColumn());
             row.put(rowKey.getKeyColumn(), generateId);
         } catch (Exception e) {
             throw FlexExceptions.wrap(e);
