@@ -45,7 +45,7 @@ try{
 ```java
 TableManager.setDynamicSchemaProcessor(new DynamicSchemaProcessor() {
     @Override
-    public String process(String schema) {
+    public String process(String schema, String table) {
         return schema + "_01";
     }
 });
