@@ -50,6 +50,20 @@ class QueryWrapperTest {
             .groupBy(ROLE.ROLE_KEY)
             .having(ROLE.ROLE_ID.eq(USER_ROLE.ROLE_ID))
             .orderBy(ROLE.ROLE_NAME.asc());
+
+        Assertions.assertEquals("SELECT /*+ hint */ `u`.`user_id`, `r`.* " +
+                "FROM `tb_user` AS `u` " +
+                "LEFT JOIN `tb_user_role` AS `ur` ON `u`.`user_id` = `ur`.`user_id` " +
+                "LEFT JOIN `tb_role` AS `r` ON `r`.`role_id` = `ur`.`role_id` " +
+                "WHERE `u`.`user_id` = 3 AND `u`.`user_id` = `r`.`role_id` OR `u`.`user_id` IN (4, 5, 6) " +
+                "GROUP BY `r`.`role_key` " +
+                "HAVING `r`.`role_id` = `ur`.`role_id` " +
+                "ORDER BY `r`.`role_name` ASC"
+            ,queryWrapper.toSQL());
+
+        System.out.println(queryWrapper.toSQL());
+
+
         System.out.println(queryWrapper.toSQL());
     }
 
@@ -72,6 +86,19 @@ class QueryWrapperTest {
             .groupBy(ROLE.ROLE_NAME)
             .having(ROLE.ROLE_ID.ge(7))
             .orderBy(ROLE.ROLE_NAME.asc());
+
+        Assertions.assertEquals("SELECT COUNT(DISTINCT `u`.`user_id`), " +
+                "CASE WHEN `u`.`user_id` = 3 THEN 'x3' WHEN `u`.`user_id` = 5 " +
+                "THEN 'x4' END, DISTINCT `u`.`user_id` + 4, `u`.`user_name`, `r`.* " +
+                "FROM `tb_user` AS `u` " +
+                "LEFT JOIN `tb_user_role` AS `ur` ON `ur`.`user_id` = `u`.`user_id` " +
+                "LEFT JOIN `tb_role` AS `r` ON `ur`.`role_id` = `r`.`role_id` " +
+                "WHERE `u`.`user_id` = 3 AND `r`.`role_name` IN (1, 2, 3) OR `r`.`role_id` >= `u`.`user_id` " +
+                "GROUP BY `r`.`role_name` " +
+                "HAVING `r`.`role_id` >= 7 " +
+                "ORDER BY `r`.`role_name` ASC"
+            ,queryWrapper.toSQL());
+
         System.out.println(queryWrapper.toSQL());
     }
 
@@ -89,6 +116,7 @@ class QueryWrapperTest {
         System.out.println(queryWrapper.toSQL());
         QueryCondition whereQueryCondition = CPI.getWhereQueryCondition(queryWrapper);
         boolean contained = CPI.containsTable(whereQueryCondition, "tb_user_role");
+
         Assertions.assertTrue(contained);
     }
 
@@ -97,6 +125,9 @@ class QueryWrapperTest {
         QueryWrapper queryWrapper = QueryWrapper.create()
             .select("a.*")
             .from(new RawQueryTable("(select * from app) as a"));
+
+        Assertions.assertEquals("SELECT a.* FROM (select * from app) as a"
+            ,queryWrapper.toSQL());
 
         System.out.println(queryWrapper.toSQL());
     }
