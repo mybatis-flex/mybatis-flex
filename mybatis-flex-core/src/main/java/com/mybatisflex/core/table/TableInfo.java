@@ -448,10 +448,12 @@ public class TableInfo {
     public String[] obtainInsertColumns(Object entity, boolean ignoreNulls) {
         if (!ignoreNulls) {
             return ArrayUtil.concat(insertPrimaryKeys, columns);
-        } else {
+        }
+        // 忽略 null 字段，
+        else {
             MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
             List<String> retColumns = new ArrayList<>();
-            for (String insertColumn : columns) {
+            for (String insertColumn : allColumns) {
                 if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                     retColumns.add(insertColumn);
                 } else {
@@ -462,7 +464,7 @@ public class TableInfo {
                     retColumns.add(insertColumn);
                 }
             }
-            return ArrayUtil.concat(insertPrimaryKeys, retColumns.toArray(new String[0]));
+            return retColumns.toArray(new String[0]);
         }
     }
 

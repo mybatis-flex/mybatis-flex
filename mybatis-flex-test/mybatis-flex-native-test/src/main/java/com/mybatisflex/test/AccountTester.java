@@ -30,6 +30,7 @@ import com.mybatisflex.core.util.UpdateEntity;
 import com.mybatisflex.mapper.Account6Mapper;
 import com.mybatisflex.mapper.ArticleMapper;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -271,12 +272,20 @@ public class AccountTester {
         Account6Mapper mapper = MybatisFlexBootstrap.getInstance()
             .getMapper(Account6Mapper.class);
 
-        Account6 account = new Account6();
-        account.setUserName("michael");
-        account.setAge(5);
+        Account6 account1 = new Account6();
+        account1.setId(1L);
+        account1.setUserName("michael");
+        account1.setAge(5);
+
+        Assert.assertEquals(mapper.insertSelective(account1),1);
 
 
-        mapper.insertSelective(account);
+        Account6 account2 = new Account6();
+//        account2.setId(1L); 不设置主键
+        account2.setUserName("michael");
+        account2.setAge(5);
+
+        Assert.assertEquals(mapper.insertSelective(account2),1);
     }
 
 

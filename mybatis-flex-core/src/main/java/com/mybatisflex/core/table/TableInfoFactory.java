@@ -396,6 +396,8 @@ public class TableInfoFactory {
             tableInfo.setDefaultQueryColumns(defaultQueryColumns.toArray(new String[0]));
         }
 
+        // 此处需要保证顺序先设置 PrimaryKey，在设置其他 Column，
+        // 否则会影响 SQL 的字段构建顺序
         tableInfo.setPrimaryKeyList(idInfos);
         tableInfo.setColumnInfoList(columnInfoList);
 
