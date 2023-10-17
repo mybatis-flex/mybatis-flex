@@ -311,43 +311,6 @@ public class RelationManager {
                     return;
                 }
 
-
-                Set<Object> targetValues;
-                List<Row> mappingRows = null;
-
-                //通过中间表关联查询
-                if (relation.isRelationByMiddleTable()) {
-                    targetValues = new HashSet<>();
-                    Set selfFieldValues = relation.getSelfFieldValues(entities);
-                    QueryWrapper queryWrapper = QueryWrapper.create().select()
-                        .from(relation.getJoinTable());
-                    if (selfFieldValues.size() > 1) {
-                        queryWrapper.where(column(relation.getJoinSelfColumn()).in(selfFieldValues));
-                    } else {
-                        queryWrapper.where(column(relation.getJoinSelfColumn()).eq(selfFieldValues.iterator().next()));
-                    }
-
-                    mappingRows = mapper.selectListByQueryAs(queryWrapper, Row.class);
-                    if (CollectionUtil.isEmpty(mappingRows)) {
-                        return;
-                    }
-
-                    for (Row mappingData : mappingRows) {
-                        Object targetValue = mappingData.getIgnoreCase(relation.getJoinTargetColumn());
-                        if (targetValue != null) {
-                            targetValues.add(targetValue);
-                        }
-                    }
-                }
-                //通过外键字段关联查询
-                else {
-                    targetValues = relation.getSelfFieldValues(entities);
-                }
-
-                if (CollectionUtil.isEmpty(targetValues)) {
-                    return;
-                }
-
                 //注解配置的数据源
                 String configDsKey = relation.getDataSource();
                 if (StringUtil.isBlank(configDsKey) && currentDsKey != null) {
@@ -357,6 +320,42 @@ public class RelationManager {
                 try {
                     if (StringUtil.isNotBlank(configDsKey)) {
                         DataSourceKey.use(configDsKey);
+                    }
+
+                    Set<Object> targetValues;
+                    List<Row> mappingRows = null;
+
+                    //通过中间表关联查询
+                    if (relation.isRelationByMiddleTable()) {
+                        targetValues = new HashSet<>();
+                        Set selfFieldValues = relation.getSelfFieldValues(entities);
+                        QueryWrapper queryWrapper = QueryWrapper.create().select()
+                            .from(relation.getJoinTable());
+                        if (selfFieldValues.size() > 1) {
+                            queryWrapper.where(column(relation.getJoinSelfColumn()).in(selfFieldValues));
+                        } else {
+                            queryWrapper.where(column(relation.getJoinSelfColumn()).eq(selfFieldValues.iterator().next()));
+                        }
+
+                        mappingRows = mapper.selectListByQueryAs(queryWrapper, Row.class);
+                        if (CollectionUtil.isEmpty(mappingRows)) {
+                            return;
+                        }
+
+                        for (Row mappingData : mappingRows) {
+                            Object targetValue = mappingData.getIgnoreCase(relation.getJoinTargetColumn());
+                            if (targetValue != null) {
+                                targetValues.add(targetValue);
+                            }
+                        }
+                    }
+                    //通过外键字段关联查询
+                    else {
+                        targetValues = relation.getSelfFieldValues(entities);
+                    }
+
+                    if (CollectionUtil.isEmpty(targetValues)) {
+                        return;
                     }
 
                     //仅绑定字段:As目标实体类 不进行字段绑定:As映射类型
