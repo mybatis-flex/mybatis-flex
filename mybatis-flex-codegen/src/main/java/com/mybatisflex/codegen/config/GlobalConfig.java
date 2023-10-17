@@ -53,9 +53,8 @@ public class GlobalConfig implements Serializable {
     private TableDefConfig tableDefConfig;
     private MapperXmlConfig mapperXmlConfig;
 
-    // === 其他配置 ===
-
-    private Map<String, Object> customConfig;
+    // === 其他自定义配置 ===
+    private Map<String, Object> customConfig = new HashMap<>();
 
     // === 是否启用生成 ===
 
@@ -220,16 +219,10 @@ public class GlobalConfig implements Serializable {
     // === 自定义配置 ===
 
     public Object getCustomConfig(String key) {
-        if (customConfig != null) {
-            return customConfig.get(key);
-        }
-        return null;
+        return customConfig.get(key);
     }
 
     public void setCustomConfig(String key, Object value) {
-        if (customConfig == null) {
-            customConfig = new HashMap<>();
-        }
         customConfig.put(key, value);
     }
 
