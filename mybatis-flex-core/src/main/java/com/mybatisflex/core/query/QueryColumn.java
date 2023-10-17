@@ -399,7 +399,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition in(Collection<?> value) {
-        if (value == null) {
+        if (value == null || value.isEmpty()) {
             return QueryCondition.createEmpty();
         }
         return in(value.toArray());
@@ -407,7 +407,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition in(Collection<?> value, boolean isEffective) {
-        if (value == null) {
+        if (value == null || value.isEmpty()) {
             return QueryCondition.createEmpty();
         }
         return in(value.toArray()).when(isEffective);
@@ -415,7 +415,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition in(Collection<?> value, BooleanSupplier isEffective) {
-        if (value == null) {
+        if (value == null || value.isEmpty()) {
             return QueryCondition.createEmpty();
         }
         return in(value.toArray()).when(isEffective);
@@ -423,7 +423,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T extends Collection<?>> QueryCondition in(T value, Predicate<T> isEffective) {
-        if (value == null) {
+        if (value == null || value.isEmpty()) {
             return QueryCondition.createEmpty();
         }
         return in(value.toArray()).when(isEffective.test(value));
@@ -523,7 +523,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notIn(Collection<?> value) {
-        if (value == null) {
+        if (value == null || value.isEmpty()) {
             return QueryCondition.createEmpty();
         }
         return notIn(value.toArray());
@@ -531,7 +531,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notIn(Collection<?> value, boolean isEffective) {
-        if (value == null) {
+        if (value == null || value.isEmpty()) {
             return QueryCondition.createEmpty();
         }
         return notIn(value.toArray()).when(isEffective);
@@ -539,7 +539,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notIn(Collection<?> value, BooleanSupplier isEffective) {
-        if (value == null) {
+        if (value == null || value.isEmpty()) {
             return QueryCondition.createEmpty();
         }
         return notIn(value.toArray()).when(isEffective);
@@ -547,7 +547,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public <T extends Collection<?>> QueryCondition notIn(T value, Predicate<T> isEffective) {
-        if (value == null) {
+        if (value == null || value.isEmpty()) {
             return QueryCondition.createEmpty();
         }
         return notIn(value.toArray()).when(isEffective.test(value));
@@ -579,41 +579,65 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition between(Object start, Object end) {
+        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlOperator.BETWEEN, new Object[]{start, end});
     }
 
     @Override
     public QueryCondition between(Object start, Object end, boolean isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlOperator.BETWEEN, new Object[]{start, end}).when(isEffective);
     }
 
     @Override
     public QueryCondition between(Object start, Object end, BooleanSupplier isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlOperator.BETWEEN, new Object[]{start, end}).when(isEffective);
     }
 
     @Override
     public <S, E> QueryCondition between(S start, E end, BiPredicate<S, E> isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlOperator.BETWEEN, new Object[]{start, end}).when(isEffective.test(start, end));
     }
 
     @Override
     public QueryCondition notBetween(Object start, Object end) {
+        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlOperator.NOT_BETWEEN, new Object[]{start, end});
     }
 
     @Override
     public QueryCondition notBetween(Object start, Object end, boolean isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlOperator.NOT_BETWEEN, new Object[]{start, end}).when(isEffective);
     }
 
     @Override
     public QueryCondition notBetween(Object start, Object end, BooleanSupplier isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlOperator.NOT_BETWEEN, new Object[]{start, end}).when(isEffective);
     }
 
     @Override
     public <S, E> QueryCondition notBetween(S start, E end, BiPredicate<S, E> isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
+            return QueryCondition.createEmpty();
+        }
         return QueryCondition.create(this, SqlOperator.NOT_BETWEEN, new Object[]{start, end}).when(isEffective.test(start, end));
     }
 
@@ -717,6 +741,9 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
      * {@code LIKE value}
      */
     public QueryCondition likeRaw(Object value) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
+            return QueryCondition.createEmpty();
+        }
         return likeRaw(value, true);
     }
 
@@ -734,6 +761,9 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
      * {@code LIKE value}
      */
     public QueryCondition likeRaw(Object value, BooleanSupplier isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
+            return QueryCondition.createEmpty();
+        }
         return likeRaw(value, isEffective.getAsBoolean());
     }
 
@@ -741,6 +771,9 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
      * {@code LIKE value}
      */
     public <T> QueryCondition likeRaw(T value, Predicate<T> isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
+            return QueryCondition.createEmpty();
+        }
         return likeRaw(value, isEffective.test(value));
     }
 
@@ -844,6 +877,9 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
      * {@code NOT LIKE value}
      */
     public QueryCondition notLikeRaw(Object value) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
+            return QueryCondition.createEmpty();
+        }
         return likeRaw(value, true);
     }
 
@@ -861,6 +897,9 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
      * {@code NOT LIKE value}
      */
     public QueryCondition notLikeRaw(Object value, BooleanSupplier isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
+            return QueryCondition.createEmpty();
+        }
         return likeRaw(value, isEffective.getAsBoolean());
     }
 
@@ -868,6 +907,9 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
      * {@code NOT LIKE value}
      */
     public <T> QueryCondition notLikeRaw(T value, Predicate<T> isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
+            return QueryCondition.createEmpty();
+        }
         return likeRaw(value, isEffective.test(value));
     }
 
