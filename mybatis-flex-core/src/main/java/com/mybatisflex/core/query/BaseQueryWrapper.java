@@ -54,6 +54,7 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
      * <p>Title: clear. </p>
      * <p>Description: Default QueryWrapper values. </p>
      * <p>Notice: When adding new attributes, it is necessary to supplement here. </p>
+     *
      * @author dragon
      */
     public void clear() {
@@ -95,11 +96,12 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
 
 
     protected T setWhereQueryCondition(QueryCondition queryCondition) {
-        if (whereQueryCondition != null) {
-            queryCondition.connect(whereQueryCondition, SqlConnector.AND);
+        if (queryCondition != null) {
+            if (whereQueryCondition != null) {
+                queryCondition.connect(whereQueryCondition, SqlConnector.AND);
+            }
+            whereQueryCondition = queryCondition;
         }
-
-        whereQueryCondition = queryCondition;
         return (T) this;
     }
 
@@ -120,7 +122,6 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
         if (groupByColumns == null) {
             groupByColumns = new ArrayList<>();
         }
-
         groupByColumns.add(queryColumn);
         return (T) this;
     }
