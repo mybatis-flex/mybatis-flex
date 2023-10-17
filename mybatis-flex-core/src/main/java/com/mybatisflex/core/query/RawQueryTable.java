@@ -17,8 +17,13 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.util.StringUtil;
+
+import java.util.Objects;
 
 /**
+ * 原生查询表。
+ *
  * @author 王帅
  * @since 2023-10-16
  */
@@ -32,7 +37,32 @@ public class RawQueryTable extends QueryTable {
 
     @Override
     public String toSql(IDialect dialect) {
-        return this.content;
+        return this.content + WrapperUtil.buildAlias(alias, dialect);
+    }
+
+    @Override
+    boolean isSameTable(QueryTable table) {
+        if (table == null) {
+            return false;
+        }
+        // 只比较别名，不比较内容
+        if (StringUtil.isNotBlank(alias)
+            && StringUtil.isNotBlank(table.alias)) {
+            return Objects.equals(alias, table.alias);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "RawQueryTable{" +
+            "content='" + content + '\'' +
+            '}';
+    }
+
+    @Override
+    public RawQueryTable clone() {
+        return (RawQueryTable) super.clone();
     }
 
 }

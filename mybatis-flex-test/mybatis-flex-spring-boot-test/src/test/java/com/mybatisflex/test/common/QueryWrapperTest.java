@@ -59,7 +59,7 @@ class QueryWrapperTest {
                 "GROUP BY `r`.`role_key` " +
                 "HAVING `r`.`role_id` = `ur`.`role_id` " +
                 "ORDER BY `r`.`role_name` ASC"
-            ,queryWrapper.toSQL());
+            , queryWrapper.toSQL());
 
         System.out.println(queryWrapper.toSQL());
 
@@ -97,7 +97,7 @@ class QueryWrapperTest {
                 "GROUP BY `r`.`role_name` " +
                 "HAVING `r`.`role_id` >= 7 " +
                 "ORDER BY `r`.`role_name` ASC"
-            ,queryWrapper.toSQL());
+            , queryWrapper.toSQL());
 
         System.out.println(queryWrapper.toSQL());
     }
@@ -124,10 +124,10 @@ class QueryWrapperTest {
     void test04() {
         QueryWrapper queryWrapper = QueryWrapper.create()
             .select("a.*")
-            .from(new RawQueryTable("(select * from app) as a"));
+            .from(new RawQueryTable("(select * from app)").as("a"));
 
-        Assertions.assertEquals("SELECT a.* FROM (select * from app) as a"
-            ,queryWrapper.toSQL());
+        Assertions.assertEquals("SELECT a.* FROM (select * from app) AS `a`"
+            , queryWrapper.toSQL());
 
         System.out.println(queryWrapper.toSQL());
     }
