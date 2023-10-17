@@ -46,7 +46,7 @@ public class FlexTransactionAutoConfiguration implements TransactionManagementCo
      */
     private final FlexTransactionManager flexTransactionManager = new FlexTransactionManager();
 
-    @Bean
+    @Bean(name = "transactionManager")
     @Override
     public PlatformTransactionManager annotationDrivenTransactionManager() {
         return flexTransactionManager;
