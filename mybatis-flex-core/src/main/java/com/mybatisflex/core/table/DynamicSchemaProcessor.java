@@ -17,6 +17,6 @@ package com.mybatisflex.core.table;
 
 public interface DynamicSchemaProcessor {
 
-    String process(String schema);
+    String process(String schema, String table);
 
 }

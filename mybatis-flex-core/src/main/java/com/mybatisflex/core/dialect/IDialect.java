@@ -35,8 +35,8 @@ public interface IDialect {
         return TableManager.getRealTable(table);
     }
 
-    default String getRealSchema(String schema) {
-        return TableManager.getRealSchema(schema);
+    default String getRealSchema(String schema, String table) {
+        return TableManager.getRealSchema(schema, table);
     }
 
     String forHint(String hintString);

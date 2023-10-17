@@ -97,7 +97,7 @@ public class TableManager {
     }
 
 
-    public static String getRealSchema(String schema) {
+    public static String getRealSchema(String schema, String table) {
         Map<String, String> mapping = schemaMappingTL.get();
         if (mapping != null) {
             String dynamicSchema = mapping.get(schema);
@@ -110,7 +110,7 @@ public class TableManager {
             return schema;
         }
 
-        String dynamicSchema = dynamicSchemaProcessor.process(schema);
+        String dynamicSchema = dynamicSchemaProcessor.process(schema, table);
         return StringUtil.isNotBlank(dynamicSchema) ? dynamicSchema : schema;
     }
 

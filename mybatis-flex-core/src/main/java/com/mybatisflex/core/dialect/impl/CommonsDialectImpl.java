@@ -96,12 +96,13 @@ public class CommonsDialectImpl implements IDialect {
             index++;
         }
 
+        String table = getRealTable(tableName);
         StringBuilder sql = new StringBuilder();
         sql.append(INSERT_INTO);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
         }
-        sql.append(wrap(getRealTable(tableName)));
+        sql.append(wrap(table));
         sql.append(BRACKET_LEFT).append(fields).append(BRACKET_RIGHT);
         sql.append(VALUES).append(BRACKET_LEFT).append(paramsOrPlaceholder).append(BRACKET_RIGHT);
         return sql.toString();
@@ -131,13 +132,13 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-
+        String table = getRealTable(tableName);
         StringBuilder sql = new StringBuilder();
         sql.append(INSERT_INTO);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
         }
-        sql.append(wrap(getRealTable(tableName)));
+        sql.append(wrap(table));
         sql.append(BLANK).append(BRACKET_LEFT)
             .append(fields)
             .append(BRACKET_RIGHT).append(BLANK);
@@ -148,12 +149,13 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forDeleteById(String schema, String tableName, String[] primaryKeys) {
+        String table = getRealTable(tableName);
         StringBuilder sql = new StringBuilder();
         sql.append(DELETE_FROM);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
         }
-        sql.append(wrap(getRealTable(tableName)));
+        sql.append(wrap(table));
         sql.append(WHERE);
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
@@ -167,12 +169,14 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forDeleteBatchByIds(String schema, String tableName, String[] primaryKeys, Object[] ids) {
+        String table = getRealTable(tableName);
         StringBuilder sql = new StringBuilder();
         sql.append(DELETE_FROM);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
         }
-        sql.append(wrap(getRealTable(tableName)));
+
+        sql.append(wrap(table));
         sql.append(WHERE);
 
         //多主键的场景
@@ -210,17 +214,18 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forUpdateById(String schema, String tableName, Row row) {
+        String table = getRealTable(tableName);
         StringBuilder sql = new StringBuilder();
-
         Set<String> modifyAttrs = RowCPI.getModifyAttrs(row);
         Map<String, RawValue> rawValueMap = RowCPI.getRawValueMap(row);
         String[] primaryKeys = RowCPI.obtainsPrimaryKeyStrings(row);
 
         sql.append(UPDATE);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
         }
-        sql.append(wrap(getRealTable(tableName))).append(SET);
+
+        sql.append(wrap(table)).append(SET);
         int index = 0;
         for (Map.Entry<String, Object> e : row.entrySet()) {
             String colName = e.getKey();
@@ -314,11 +319,12 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectOneById(String schema, String tableName, String[] primaryKeys, Object[] primaryValues) {
+        String table = getRealTable(tableName);
         StringBuilder sql = new StringBuilder(SELECT_ALL_FROM);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
         }
-        sql.append(wrap(getRealTable(tableName))).append(WHERE);
+        sql.append(wrap(table)).append(WHERE);
         for (int i = 0; i < primaryKeys.length; i++) {
             if (i > 0) {
                 sql.append(AND);

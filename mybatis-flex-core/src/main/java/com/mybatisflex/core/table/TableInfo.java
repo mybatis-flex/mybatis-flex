@@ -143,7 +143,8 @@ public class TableInfo {
 
     public String getWrapSchemaAndTableName(IDialect dialect) {
         if (StringUtil.isNotBlank(schema)) {
-            return dialect.wrap(dialect.getRealSchema(schema)) + "." + dialect.wrap(dialect.getRealTable(tableName));
+            String table = dialect.getRealTable(tableName);
+            return dialect.wrap(dialect.getRealSchema(schema, table)) + "." + dialect.wrap(table);
         } else {
             return dialect.wrap(dialect.getRealTable(tableName));
         }
