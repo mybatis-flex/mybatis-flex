@@ -19,7 +19,7 @@ import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
-import com.mybatisflex.mapper.Account05Mapper;
+import com.mybatisflex.mapper.Account5Mapper;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
@@ -36,7 +36,7 @@ public class AccountInsertWithArrayAttrTestStarter {
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
             .setDataSource(dataSource)
-            .addMapper(Account05Mapper.class)
+            .addMapper(Account5Mapper.class)
             .start();
 
         //开启审计功能
@@ -50,9 +50,9 @@ public class AccountInsertWithArrayAttrTestStarter {
 //        Db.insertBySql(insertSql,null,"lisi",null,null,null,null,null);
 
 
-        Account05Mapper accountMapper = bootstrap.getMapper(Account05Mapper.class);
+        Account5Mapper accountMapper = bootstrap.getMapper(Account5Mapper.class);
 
-        Account05 account = new Account05();
+        Account5 account = new Account5();
         account.setId(3L);
         account.setUserName("lisi");
         account.setDataScope(new Long[]{1L, 2L});

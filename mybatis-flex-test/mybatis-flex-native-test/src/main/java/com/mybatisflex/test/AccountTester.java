@@ -27,6 +27,7 @@ import com.mybatisflex.core.row.DbChain;
 import com.mybatisflex.core.update.UpdateChain;
 import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
+import com.mybatisflex.mapper.Account6Mapper;
 import com.mybatisflex.mapper.ArticleMapper;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.junit.BeforeClass;
@@ -61,6 +62,7 @@ public class AccountTester {
             .setDataSource(dataSource)
             .setLogImpl(StdOutImpl.class)
             .addMapper(AccountMapper.class)
+            .addMapper(Account6Mapper.class)
             .addMapper(ArticleMapper.class)
             .start();
 
@@ -258,6 +260,23 @@ public class AccountTester {
             .toEntity();
 
         accountMapper.insert(newAccount);
+    }
+
+
+    /**
+     * issues https://gitee.com/mybatis-flex/mybatis-flex/issues/I873OZ
+     */
+    @Test
+    public void testInsertSelective01() {
+        Account6Mapper mapper = MybatisFlexBootstrap.getInstance()
+            .getMapper(Account6Mapper.class);
+
+        Account6 account = new Account6();
+        account.setUserName("michael");
+        account.setAge(5);
+
+
+        mapper.insertSelective(account);
     }
 
 

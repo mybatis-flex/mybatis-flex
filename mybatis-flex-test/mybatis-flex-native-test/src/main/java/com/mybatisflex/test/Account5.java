@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @Table(value = "tb_account", dataSource = "ds2", onSet = AccountOnSetListener.class)
-public class Account05 extends BaseEntity implements Serializable, AgeAware {
+public class Account5 extends BaseEntity implements Serializable, AgeAware {
 
     private static final long serialVersionUID = 1L;
 
