@@ -103,6 +103,12 @@ public @interface RelationManyToOne {
      */
     String dataSource() default "";
 
+
+    /**
+     * 查询时，追加的额外条件。
+     */
+    String extraCondition() default "";
+
     /**
      * 查询（加载）指定的列
      */
