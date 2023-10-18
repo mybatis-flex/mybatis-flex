@@ -1137,7 +1137,7 @@ WHERE `user_name` LIKE '%michael%' AND `age` >= 18
 
 ## Map 转化为 QueryWrapper
 
-方法同 [Entity 转化为 QueryWrapper](./#entity-转化为-querywrapper) 类似，只需要把 entity 变量替换为 map 即可。
+方法同 [Entity 转化为 QueryWrapper](#entity-转化为-querywrapper) 类似，只需要把 entity 变量替换为 map 即可。
 
 ## QueryWrapper 序列化
 
