@@ -26,7 +26,9 @@ import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.*;
 
 import java.util.*;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
@@ -325,7 +327,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         }
         return this;
     }
-
 
     public QueryWrapper or(Map<String, Object> whereConditions) {
         return or(whereConditions, SqlOperators.empty());
@@ -784,6 +785,1470 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         setHint(hint);
         return this;
     }
+
+
+    /////////MyBatis-Plus 兼容方法///////////////
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper eq(String column, Object value) {
+        and(QueryMethods.column(column).eq(value));
+        return this;
+    }
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper eq(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).eq(value));
+        return this;
+    }
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper eq(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).eq(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper eq(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).eq(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper eq(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).eq(value, isEffective));
+        return this;
+    }
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper eq(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).eq(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper ne(String column, Object value) {
+        and(QueryMethods.column(column).ne(value));
+        return this;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper ne(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).ne(value));
+        return this;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper ne(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).ne(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper ne(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).ne(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper ne(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).ne(value, isEffective));
+        return this;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper ne(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).ne(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper gt(String column, Object value) {
+        and(QueryMethods.column(column).gt(value));
+        return this;
+    }
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper gt(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).gt(value));
+        return this;
+    }
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper gt(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).gt(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper gt(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).gt(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper gt(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).gt(value, isEffective));
+        return this;
+    }
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper gt(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).gt(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper ge(String column, Object value) {
+        and(QueryMethods.column(column).ge(value));
+        return this;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper ge(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).ge(value));
+        return this;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper ge(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).ge(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper ge(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).ge(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper ge(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).ge(value, isEffective));
+        return this;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper ge(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).ge(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper lt(String column, Object value) {
+        and(QueryMethods.column(column).lt(value));
+        return this;
+    }
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper lt(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).lt(value));
+        return this;
+    }
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper lt(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).lt(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper lt(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).lt(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper lt(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).lt(value, isEffective));
+        return this;
+    }
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper lt(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).lt(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper le(String column, Object value) {
+        and(QueryMethods.column(column).le(value));
+        return this;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper le(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).le(value));
+        return this;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper le(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).le(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper le(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).le(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper le(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).le(value, isEffective));
+        return this;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper le(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).le(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    public QueryWrapper in(String column, Object... values) {
+        and(QueryMethods.column(column).in(values));
+        return this;
+    }
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    public <T> QueryWrapper in(LambdaGetter<T> column, Object... values) {
+        and(QueryMethods.column(column).in(values));
+        return this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    public QueryWrapper in(String column, QueryWrapper queryWrapper) {
+        and(QueryMethods.column(column).in(queryWrapper));
+        return this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    public <T> QueryWrapper in(LambdaGetter<T> column, QueryWrapper queryWrapper) {
+        and(QueryMethods.column(column).in(queryWrapper));
+        return this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    public QueryWrapper in(String column, Collection<?> values) {
+        and(QueryMethods.column(column).in(values));
+        return this;
+    }
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    public <T> QueryWrapper in(LambdaGetter<T> column, Collection<?> values) {
+        and(QueryMethods.column(column).in(values));
+        return this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    public QueryWrapper in(String column, Object[] values, boolean isEffective) {
+        and(QueryMethods.column(column).in(values, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    public <T> QueryWrapper in(LambdaGetter<T> column, Object[] values, boolean isEffective) {
+        and(QueryMethods.column(column).in(values, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    public QueryWrapper in(String column, Collection<?> values, boolean isEffective) {
+        and(QueryMethods.column(column).in(values, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    public <T> QueryWrapper in(LambdaGetter<T> column, Collection<?> values, boolean isEffective) {
+        and(QueryMethods.column(column).in(values, isEffective));
+        return this;
+    }
+
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    public QueryWrapper in(String column, QueryWrapper queryWrapper, boolean isEffective) {
+        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    public <T> QueryWrapper in(LambdaGetter<T> column, QueryWrapper queryWrapper, boolean isEffective) {
+        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    public QueryWrapper in(String column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    public <T> QueryWrapper in(LambdaGetter<T> column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    public QueryWrapper notIn(String column, Object... values) {
+        and(QueryMethods.column(column).notIn(values));
+        return this;
+    }
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    public <T> QueryWrapper notIn(LambdaGetter<T> column, Object... values) {
+        and(QueryMethods.column(column).notIn(values));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    public QueryWrapper notIn(String column, QueryWrapper queryWrapper) {
+        and(QueryMethods.column(column).notIn(queryWrapper));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    public <T> QueryWrapper notIn(LambdaGetter<T> column, QueryWrapper queryWrapper) {
+        and(QueryMethods.column(column).notIn(queryWrapper));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    public QueryWrapper notIn(String column, Collection<?> values) {
+        and(QueryMethods.column(column).notIn(values));
+        return this;
+    }
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    public <T> QueryWrapper notIn(LambdaGetter<T> column, Collection<?> values) {
+        and(QueryMethods.column(column).notIn(values));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    public QueryWrapper notIn(String column, Object[] values, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(values, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    public <T> QueryWrapper notIn(LambdaGetter<T> column, Object[] values, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(values, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    public QueryWrapper notIn(String column, Collection<?> values, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(values, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    public <T> QueryWrapper notIn(LambdaGetter<T> column, Collection<?> values, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(values, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    public QueryWrapper notIn(String column, QueryWrapper queryWrapper, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    public <T> QueryWrapper notIn(LambdaGetter<T> column, QueryWrapper queryWrapper, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    public QueryWrapper notIn(String column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    public <T> QueryWrapper notIn(LambdaGetter<T> column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public QueryWrapper between(String column, Object start, Object end) {
+        and(QueryMethods.column(column).between(start, end));
+        return this;
+    }
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public <T> QueryWrapper between(LambdaGetter<T> column, Object start, Object end) {
+        and(QueryMethods.column(column).between(start, end));
+        return this;
+    }
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public QueryWrapper between(String column, Object start, Object end, boolean isEffective) {
+        and(QueryMethods.column(column).between(start, end, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public <T> QueryWrapper between(LambdaGetter<T> column, Object start, Object end, boolean isEffective) {
+        and(QueryMethods.column(column).between(start, end, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public QueryWrapper between(String column, Object start, Object end, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).between(start, end, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public <T> QueryWrapper between(LambdaGetter<T> column, Object start, Object end, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).between(start, end, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public QueryWrapper notBetween(String column, Object start, Object end) {
+        and(QueryMethods.column(column).notBetween(start, end));
+        return this;
+    }
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public <T> QueryWrapper notBetween(LambdaGetter<T> column, Object start, Object end) {
+        and(QueryMethods.column(column).notBetween(start, end));
+        return this;
+    }
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public QueryWrapper notBetween(String column, Object start, Object end, boolean isEffective) {
+        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public <T> QueryWrapper notBetween(LambdaGetter<T> column, Object start, Object end, boolean isEffective) {
+        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public QueryWrapper notBetween(String column, Object start, Object end, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    public <T> QueryWrapper notBetween(LambdaGetter<T> column, Object start, Object end, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper like(String column, Object value) {
+        and(QueryMethods.column(column).like(value));
+        return this;
+    }
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper like(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).like(value));
+        return this;
+    }
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper like(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).like(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper like(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).like(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper like(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).like(value, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper like(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).like(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper likeLeft(String column, Object value) {
+        and(QueryMethods.column(column).likeLeft(value));
+        return this;
+    }
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper likeLeft(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).likeLeft(value));
+        return this;
+    }
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper likeLeft(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).likeLeft(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper likeLeft(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).likeLeft(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper likeLeft(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).likeLeft(value, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper likeLeft(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).likeLeft(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper likeRight(String column, Object value) {
+        and(QueryMethods.column(column).likeRight(value));
+        return this;
+    }
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper likeRight(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).likeRight(value));
+        return this;
+    }
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper likeRight(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).likeRight(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper likeRight(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).likeRight(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper likeRight(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).likeRight(value, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper likeRight(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).likeRight(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper notLike(String column, Object value) {
+        and(QueryMethods.column(column).notLike(value));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper notLike(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).notLike(value));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper notLike(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLike(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper notLike(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLike(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper notLike(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLike(value, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper notLike(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLike(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper notLikeLeft(String column, Object value) {
+        and(QueryMethods.column(column).notLikeLeft(value));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper notLikeLeft(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).notLikeLeft(value));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper notLikeLeft(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLikeLeft(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper notLikeLeft(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLikeLeft(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper notLikeLeft(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLikeLeft(value, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper notLikeLeft(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLikeLeft(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    public QueryWrapper notLikeRight(String column, Object value) {
+        and(QueryMethods.column(column).notLikeRight(value));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    public <T> QueryWrapper notLikeRight(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).notLikeRight(value));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper notLikeRight(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLikeRight(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper notLikeRight(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLikeRight(value).when(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    public <V> QueryWrapper notLikeRight(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLikeRight(value, isEffective));
+        return this;
+    }
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    public <T, V> QueryWrapper notLikeRight(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLikeRight(value, isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column 列名
+     */
+    public QueryWrapper isNull(String column) {
+        and(QueryMethods.column(column).isNull());
+        return this;
+    }
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column 列名, lambda 展示
+     */
+    public <T> QueryWrapper isNull(LambdaGetter<T> column) {
+        and(QueryMethods.column(column).isNull());
+        return this;
+    }
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column      列名
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper isNull(String column, boolean isEffective) {
+        and(QueryMethods.column(column).isNull(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column      列名, lambda 展示
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper isNull(LambdaGetter<T> column, boolean isEffective) {
+        and(QueryMethods.column(column).isNull(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column      列名
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper isNull(String column, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).isNull(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column      列名, lambda 展示
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper isNull(LambdaGetter<T> column, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).isNull(isEffective));
+        return this;
+    }
+
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column 列名
+     */
+    public QueryWrapper isNotNull(String column) {
+        and(QueryMethods.column(column).isNotNull());
+        return this;
+    }
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column 列名, lambda 展示
+     */
+    public <T> QueryWrapper isNotNull(LambdaGetter<T> column) {
+        and(QueryMethods.column(column).isNotNull());
+        return this;
+    }
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column      列名
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper isNotNull(String column, boolean isEffective) {
+        and(QueryMethods.column(column).isNotNull(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column      列名, lambda 展示
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper isNotNull(LambdaGetter<T> column, boolean isEffective) {
+        and(QueryMethods.column(column).isNotNull(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column      列名
+     * @param isEffective 是否有效
+     */
+    public QueryWrapper isNotNull(String column, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).isNotNull(isEffective));
+        return this;
+    }
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column      列名, lambda 展示
+     * @param isEffective 是否有效
+     */
+    public <T> QueryWrapper isNotNull(LambdaGetter<T> column, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).isNotNull(isEffective));
+        return this;
+    }
+
+
+    ////////内部方法////////
 
     /**
      * 获取 queryWrapper 的参数

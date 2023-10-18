@@ -20,8 +20,11 @@ import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * {@link QueryWrapper} 泛型适配器。
@@ -91,7 +94,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
 
     @Override
     public R select(QueryColumn[] queryColumns, QueryColumn... queryColumns2) {
-        super.select(queryColumns,queryColumns2);
+        super.select(queryColumns, queryColumns2);
         return (R) this;
     }
 
@@ -635,6 +638,1591 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
         super.hint(hint);
         return (R) this;
     }
+
+
+    /////////MyBatis-Plus 兼容方法///////////////
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R eq(String column, Object value) {
+        and(QueryMethods.column(column).eq(value));
+        return (R) this;
+    }
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R eq(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).eq(value));
+        return (R) this;
+    }
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R eq(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).eq(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R eq(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).eq(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R eq(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).eq(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 等于 {@code =}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R eq(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).eq(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R ne(String column, Object value) {
+        and(QueryMethods.column(column).ne(value));
+        return (R) this;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R ne(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).ne(value));
+        return (R) this;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R ne(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).ne(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R ne(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).ne(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R ne(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).ne(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 不等于 {@code !=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R ne(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).ne(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R gt(String column, Object value) {
+        and(QueryMethods.column(column).gt(value));
+        return (R) this;
+    }
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R gt(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).gt(value));
+        return (R) this;
+    }
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R gt(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).gt(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R gt(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).gt(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R gt(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).gt(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 大于 {@code >}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R gt(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).gt(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R ge(String column, Object value) {
+        and(QueryMethods.column(column).ge(value));
+        return (R) this;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R ge(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).ge(value));
+        return (R) this;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R ge(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).ge(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R ge(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).ge(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R ge(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).ge(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 大于等于 {@code >=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R ge(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).ge(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R lt(String column, Object value) {
+        and(QueryMethods.column(column).lt(value));
+        return (R) this;
+    }
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R lt(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).lt(value));
+        return (R) this;
+    }
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R lt(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).lt(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R lt(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).lt(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R lt(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).lt(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 小于 {@code <}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R lt(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).lt(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R le(String column, Object value) {
+        and(QueryMethods.column(column).le(value));
+        return (R) this;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R le(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).le(value));
+        return (R) this;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R le(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).le(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R le(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).le(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R le(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).le(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * 小于等于 {@code <=}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R le(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).le(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    @Override
+    public R in(String column, Object... values) {
+        and(QueryMethods.column(column).in(values));
+        return (R) this;
+    }
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    @Override
+    public <T> R in(LambdaGetter<T> column, Object... values) {
+        and(QueryMethods.column(column).in(values));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    @Override
+    public R in(String column, QueryWrapper queryWrapper) {
+        and(QueryMethods.column(column).in(queryWrapper));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    @Override
+    public <T> R in(LambdaGetter<T> column, QueryWrapper queryWrapper) {
+        and(QueryMethods.column(column).in(queryWrapper));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    @Override
+    public R in(String column, Collection<?> values) {
+        and(QueryMethods.column(column).in(values));
+        return (R) this;
+    }
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    @Override
+    public <T> R in(LambdaGetter<T> column, Collection<?> values) {
+        and(QueryMethods.column(column).in(values));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    @Override
+    public R in(String column, Object[] values, boolean isEffective) {
+        and(QueryMethods.column(column).in(values, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    @Override
+    public <T> R in(LambdaGetter<T> column, Object[] values, boolean isEffective) {
+        and(QueryMethods.column(column).in(values, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    @Override
+    public R in(String column, Collection<?> values, boolean isEffective) {
+        and(QueryMethods.column(column).in(values, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    @Override
+    public <T> R in(LambdaGetter<T> column, Collection<?> values, boolean isEffective) {
+        and(QueryMethods.column(column).in(values, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    @Override
+    public R in(String column, QueryWrapper queryWrapper, boolean isEffective) {
+        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    @Override
+    public <T> R in(LambdaGetter<T> column, QueryWrapper queryWrapper, boolean isEffective) {
+        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    @Override
+    public R in(String column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    @Override
+    public <T> R in(LambdaGetter<T> column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    @Override
+    public R notIn(String column, Object... values) {
+        and(QueryMethods.column(column).notIn(values));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    @Override
+    public <T> R notIn(LambdaGetter<T> column, Object... values) {
+        and(QueryMethods.column(column).notIn(values));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    @Override
+    public R notIn(String column, QueryWrapper queryWrapper) {
+        and(QueryMethods.column(column).notIn(queryWrapper));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    @Override
+    public <T> R notIn(LambdaGetter<T> column, QueryWrapper queryWrapper) {
+        and(QueryMethods.column(column).notIn(queryWrapper));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    @Override
+    public R notIn(String column, Collection<?> values) {
+        and(QueryMethods.column(column).notIn(values));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    @Override
+    public <T> R notIn(LambdaGetter<T> column, Collection<?> values) {
+        and(QueryMethods.column(column).notIn(values));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    @Override
+    public R notIn(String column, Object[] values, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(values, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    @Override
+    public <T> R notIn(LambdaGetter<T> column, Object[] values, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(values, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名
+     * @param values 条件的值
+     */
+    @Override
+    public R notIn(String column, Collection<?> values, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(values, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column 列名, lambda 展示
+     * @param values 值
+     */
+    @Override
+    public <T> R notIn(LambdaGetter<T> column, Collection<?> values, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(values, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    @Override
+    public R notIn(String column, QueryWrapper queryWrapper, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    @Override
+    public <T> R notIn(LambdaGetter<T> column, QueryWrapper queryWrapper, boolean isEffective) {
+        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名
+     * @param queryWrapper 条件的值
+     */
+    @Override
+    public R notIn(String column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT IN(value)}
+     *
+     * @param column       列名, lambda 展示
+     * @param queryWrapper 值
+     */
+    @Override
+    public <T> R notIn(LambdaGetter<T> column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public R between(String column, Object start, Object end) {
+        and(QueryMethods.column(column).between(start, end));
+        return (R) this;
+    }
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public <T> R between(LambdaGetter<T> column, Object start, Object end) {
+        and(QueryMethods.column(column).between(start, end));
+        return (R) this;
+    }
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public R between(String column, Object start, Object end, boolean isEffective) {
+        and(QueryMethods.column(column).between(start, end, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public <T> R between(LambdaGetter<T> column, Object start, Object end, boolean isEffective) {
+        and(QueryMethods.column(column).between(start, end, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public R between(String column, Object start, Object end, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).between(start, end, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public <T> R between(LambdaGetter<T> column, Object start, Object end, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).between(start, end, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public R notBetween(String column, Object start, Object end) {
+        and(QueryMethods.column(column).notBetween(start, end));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public <T> R notBetween(LambdaGetter<T> column, Object start, Object end) {
+        and(QueryMethods.column(column).notBetween(start, end));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public R notBetween(String column, Object start, Object end, boolean isEffective) {
+        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public <T> R notBetween(LambdaGetter<T> column, Object start, Object end, boolean isEffective) {
+        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public R notBetween(String column, Object start, Object end, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT BETWEEN start AND end}
+     *
+     * @param column 列名
+     * @param start  开始的值
+     * @param end    结束的值
+     */
+    @Override
+    public <T> R notBetween(LambdaGetter<T> column, Object start, Object end, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R like(String column, Object value) {
+        and(QueryMethods.column(column).like(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R like(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).like(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R like(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).like(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R like(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).like(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R like(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).like(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE %value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R like(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).like(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R likeLeft(String column, Object value) {
+        and(QueryMethods.column(column).likeLeft(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R likeLeft(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).likeLeft(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R likeLeft(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).likeLeft(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R likeLeft(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).likeLeft(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R likeLeft(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).likeLeft(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R likeLeft(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).likeLeft(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R likeRight(String column, Object value) {
+        and(QueryMethods.column(column).likeRight(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R likeRight(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).likeRight(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R likeRight(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).likeRight(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R likeRight(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).likeRight(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R likeRight(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).likeRight(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code LIKE %value}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R likeRight(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).likeRight(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R notLike(String column, Object value) {
+        and(QueryMethods.column(column).notLike(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R notLike(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).notLike(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R notLike(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLike(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R notLike(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLike(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R notLike(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLike(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE %value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R notLike(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLike(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R notLikeLeft(String column, Object value) {
+        and(QueryMethods.column(column).notLikeLeft(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R notLikeLeft(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).notLikeLeft(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R notLikeLeft(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLikeLeft(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R notLikeLeft(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLikeLeft(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R notLikeLeft(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLikeLeft(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE value%}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R notLikeLeft(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLikeLeft(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column 列名
+     * @param value  条件的值
+     */
+    @Override
+    public R notLikeRight(String column, Object value) {
+        and(QueryMethods.column(column).notLikeRight(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column 列名, lambda 展示
+     * @param value  值
+     */
+    @Override
+    public <T> R notLikeRight(LambdaGetter<T> column, Object value) {
+        and(QueryMethods.column(column).notLikeRight(value));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R notLikeRight(String column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLikeRight(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R notLikeRight(LambdaGetter<T> column, Object value, boolean isEffective) {
+        and(QueryMethods.column(column).notLikeRight(value).when(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column      列名
+     * @param value       条件的值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <V> R notLikeRight(String column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLikeRight(value, isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code NOT LIKE %value}
+     *
+     * @param column      列名, lambda 展示
+     * @param value       值
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T, V> R notLikeRight(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
+        and(QueryMethods.column(column).notLikeRight(value, isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column 列名
+     */
+    @Override
+    public R isNull(String column) {
+        and(QueryMethods.column(column).isNull());
+        return (R) this;
+    }
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column 列名, lambda 展示
+     */
+    @Override
+    public <T> R isNull(LambdaGetter<T> column) {
+        and(QueryMethods.column(column).isNull());
+        return (R) this;
+    }
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column      列名
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R isNull(String column, boolean isEffective) {
+        and(QueryMethods.column(column).isNull(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column      列名, lambda 展示
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R isNull(LambdaGetter<T> column, boolean isEffective) {
+        and(QueryMethods.column(column).isNull(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column      列名
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R isNull(String column, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).isNull(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code IS NULL}
+     *
+     * @param column      列名, lambda 展示
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R isNull(LambdaGetter<T> column, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).isNull(isEffective));
+        return (R) this;
+    }
+
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column 列名
+     */
+    @Override
+    public R isNotNull(String column) {
+        and(QueryMethods.column(column).isNotNull());
+        return (R) this;
+    }
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column 列名, lambda 展示
+     */
+    @Override
+    public <T> R isNotNull(LambdaGetter<T> column) {
+        and(QueryMethods.column(column).isNotNull());
+        return (R) this;
+    }
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column      列名
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R isNotNull(String column, boolean isEffective) {
+        and(QueryMethods.column(column).isNotNull(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column      列名, lambda 展示
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R isNotNull(LambdaGetter<T> column, boolean isEffective) {
+        and(QueryMethods.column(column).isNotNull(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column      列名
+     * @param isEffective 是否有效
+     */
+    @Override
+    public R isNotNull(String column, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).isNotNull(isEffective));
+        return (R) this;
+    }
+
+    /**
+     * {@code IS NOT NULL}
+     *
+     * @param column      列名, lambda 展示
+     * @param isEffective 是否有效
+     */
+    @Override
+    public <T> R isNotNull(LambdaGetter<T> column, BooleanSupplier isEffective) {
+        and(QueryMethods.column(column).isNotNull(isEffective));
+        return (R) this;
+    }
+
 
     @Override
     public R clone() {

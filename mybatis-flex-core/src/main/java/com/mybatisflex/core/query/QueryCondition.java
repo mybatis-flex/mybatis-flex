@@ -130,7 +130,6 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         return this;
     }
 
-
     /**
      * 动态条件构造。
      *
