@@ -69,6 +69,11 @@
 - [MyBatis-Flex 视频教程 - 60 课程总结](https://www.bilibili.com/video/BV1kN4y1R7Zx)
 :::
 
+课程地址：
+
+https://www.bilibili.com/video/BV11h411A7cU
+
+
 -----
 
 
