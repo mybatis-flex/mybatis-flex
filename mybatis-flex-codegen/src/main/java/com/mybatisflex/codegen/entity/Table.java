@@ -130,7 +130,6 @@ public class Table {
     }
 
     public void addColumn(Column column) {
-
         //主键
         if (primaryKeys != null && primaryKeys.contains(column.getName())) {
             column.setPrimaryKey(true);

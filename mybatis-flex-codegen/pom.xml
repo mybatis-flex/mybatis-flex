@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-core</artifactId>
-            <version>${mybatis-flex.version}</version>
+            <version>1.7.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.mybatis-flex</groupId>

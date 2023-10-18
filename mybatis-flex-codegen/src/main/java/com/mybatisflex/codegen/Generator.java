@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 /**
  * 代码生成器。
+ *
  * @author michael
  */
 public class Generator {
@@ -41,8 +42,6 @@ public class Generator {
     protected DataSource dataSource;
     protected GlobalConfig globalConfig;
     protected IDialect dialect = IDialect.DEFAULT;
-
-    protected DatabaseMetaData dbMeta = null;
 
     public Generator(DataSource dataSource, GlobalConfig globalConfig) {
         this.dataSource = dataSource;
@@ -56,31 +55,38 @@ public class Generator {
     }
 
     public void generate() {
+        generate(getTables());
+    }
+
+    public void generate(List<Table> tables) {
+        if (tables == null || tables.isEmpty()) {
+            System.err.printf("table %s not found.%n", globalConfig.getGenerateTables());
+            return;
+        } else {
+            System.out.printf("find tables: %s%n", tables.stream().map(Table::getName).collect(Collectors.toSet()));
+        }
+
+        for (Table table : tables) {
+            Collection<IGenerator> generators = GeneratorFactory.getGenerators();
+            for (IGenerator generator : generators) {
+                generator.generate(table, globalConfig);
+            }
+        }
+        System.out.println("Code is generated successfully.");
+    }
+
+
+    public List<Table> getTables() {
         try (Connection conn = dataSource.getConnection()) {
-
-            dbMeta = conn.getMetaData();
-            List<Table> tables = buildTables(conn);
-
-            if (tables.isEmpty()) {
-                System.err.printf("table %s not found.%n", globalConfig.getGenerateTables());
-                return;
-            } else {
-                System.out.printf("find tables: %s%n", tables.stream().map(Table::getName).collect(Collectors.toSet()));
-            }
-
-            for (Table table : tables) {
-                Collection<IGenerator> generators = GeneratorFactory.getGenerators();
-                for (IGenerator generator : generators) {
-                    generator.generate(table, globalConfig);
-                }
-            }
-            System.out.println("Code is generated successfully.");
+            DatabaseMetaData dbMeta = conn.getMetaData();
+            return buildTables(dbMeta, conn);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    protected void buildPrimaryKey(Connection conn, Table table) throws SQLException {
+    protected void buildPrimaryKey(DatabaseMetaData dbMeta, Connection conn, Table table) throws SQLException {
         try (ResultSet rs = dbMeta.getPrimaryKeys(conn.getCatalog(), null, table.getName())) {
             while (rs.next()) {
                 String primaryKey = rs.getString("COLUMN_NAME");
@@ -89,11 +95,11 @@ public class Generator {
         }
     }
 
-    private List<Table> buildTables(Connection conn) throws SQLException {
+    protected List<Table> buildTables(DatabaseMetaData dbMeta, Connection conn) throws SQLException {
         StrategyConfig strategyConfig = globalConfig.getStrategyConfig();
         String schemaName = strategyConfig.getGenerateSchema();
         List<Table> tables = new ArrayList<>();
-        try (ResultSet rs = getTablesResultSet(conn, schemaName)) {
+        try (ResultSet rs = getTablesResultSet(dbMeta, conn, schemaName)) {
             while (rs.next()) {
                 String tableName = rs.getString("TABLE_NAME");
                 if (!strategyConfig.isSupportGenerate(tableName)) {
@@ -111,7 +117,7 @@ public class Generator {
                 table.setComment(remarks);
 
 
-                buildPrimaryKey(conn, table);
+                buildPrimaryKey(dbMeta, conn, table);
 
                 dialect.buildTableColumns(schemaName, table, globalConfig, dbMeta, conn);
 
@@ -122,7 +128,7 @@ public class Generator {
     }
 
 
-    protected ResultSet getTablesResultSet(Connection conn, String schema) throws SQLException {
+    protected ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String schema) throws SQLException {
         if (globalConfig.getStrategyConfig().isGenerateForView()) {
             return dialect.getTablesResultSet(dbMeta, conn, schema, new String[]{"TABLE", "VIEW"});
         } else {
