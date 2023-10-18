@@ -59,6 +59,27 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return tableInfo.buildQueryWrapper(entity, operators);
     }
 
+    /**
+     * 根据 Map 对象，构建查询条件
+     *
+     * @param map Map 对象
+     * @return 查询对象 QueryWrapper
+     */
+    public static QueryWrapper create(Map map) {
+        return create().where(map);
+    }
+
+    /**
+     * 根据 Map 构建查询条件
+     *
+     * @param map       Map 对象
+     * @param operators 每个属性对应的操作符
+     * @return 查询对象 QueryWrapper
+     */
+    public static QueryWrapper create(Map map, SqlOperators operators) {
+        return create().where(map, operators);
+    }
+
 
     @SuppressWarnings("unchecked")
     public <Q extends QueryWrapper> WithBuilder<Q> with(String name) {
@@ -1329,7 +1350,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         and(QueryMethods.column(column).in(values, isEffective));
         return this;
     }
-
 
 
     /**

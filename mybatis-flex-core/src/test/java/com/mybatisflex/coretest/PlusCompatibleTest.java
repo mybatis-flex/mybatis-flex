@@ -35,7 +35,7 @@ public class PlusCompatibleTest {
             .eq("column1", value1, If::hasText)
             .ge(Account::getAge, 18)
             .or(qw -> {
-                qw.like("column2", "value2");
+                qw.likeLeft("column2", "value2");
             })
             .or(q1 -> {
                 q1.eq("column3", "value3")
@@ -44,7 +44,7 @@ public class PlusCompatibleTest {
 
         Assert.assertEquals("SELECT * FROM `user` " +
                 "WHERE `tb_account`.`age` >= 18 " +
-                "OR (column2 LIKE '%value2%') " +
+                "OR (column2 LIKE 'value2%') " +
                 "OR (column3 = 'value3' AND `tb_account`.`sex` >= 0)"
             , queryWrapper.toSQL());
 
