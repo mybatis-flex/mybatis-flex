@@ -3,6 +3,25 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.7.2 20231018:
+- 新增：QueryWrapper 添加对 MyBatis-Plus 的兼容 API，方便喜欢 MyBatis-Flex 的用户进行迁移
+- 新增：QueryModel #select()方法 添加 Iterable queryColumns，感谢 @guan-meng-yuan
+- 新增：QueryWrapper 添加 RawQueryTable 的支持，感谢 @Suomm
+- 新增：RelationToOne 注解添加对 extraCondition 配置的支持 #I88MJU
+- 新增：重构 DynamicSchemaProcessor，添加 table 参数，方便通过 table 获取 schema #I88REA
+- 优化：在 insert 时，若 entity 有主键，则直接使用 entity 的主键，不再通过主键生成器来生成 #I88TX1
+- 优化：RelationManager 前置数据源的设置，否则关联查询注解可能造成数据源设置冲突
+- 修复：使用 Db 无法使用指定 Logger 打印日志问题，感谢 @aohanaohan #I88C41
+- 修复：MyBatis-Flex 与 spring-data-jpa 混用时候，出现事务管理器冲突错误的问题，感谢 @tocken
+- 修复：CPI.setWhereQueryCondition 传入 null 时，出现 NPE 的问题 #I88DFH
+- 修复：代码生成器未做自定义配置时，生成代码时出现 NPE 的问题 #I88UIZ
+- 测试：为测试添加更多的断言已保证测试安全
+- 文档：QueryWrapper 添加关于自定义字符串列名的相关文档
+- 文档：QueryWrapper 添加关于 MyBatis-Plus 兼容 API 的相关文档
+- 文档：QueryWrapper 添加关于 Map 转化为 QueryWrapper 的相关文档
+
+
+
 ## v1.7.1 20231016:
 - 新增：QueryColumnBehavior 增加内置的忽略规则，方便使用，感谢 @chenjh3
 - 优化：代码生成器提供了 GlobalConfig 的 customConfig 的 getter/setter，感谢 @qq925966998
