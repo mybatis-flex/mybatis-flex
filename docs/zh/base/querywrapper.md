@@ -1073,19 +1073,29 @@ qw.eq("column1", 0, false); // MyBatis-Flex 在最后一个参数
 
 ```java
 QueryWrapper qw = new QueryWrapper();
-qw.liekLeft("column", "value");
+qw.likeLeft("name", "3");
 ```
 MyBatis-Plus 生成的 where 条件是：
 
 ```sql
-where column like '%value'
+where name like '%3'
 ```
 
 而 MyBatis-Flex 生成的 where 条件是：
 
 ```sql
-where column like 'value%'
+where name like '3%'
 ```
+
+因此，假设数据表的内容如下：
+
+```shell
+name
+————
+123
+345
+```
+相同的代码 `qw.likeLeft("name", "3")`，MyBatis-Flex 匹配到的内容是 `345`，而 MyBatis-Plus 匹配到的内容是 `123`。
 
 
 
