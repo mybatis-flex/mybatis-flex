@@ -64,7 +64,8 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String wrapColumnAlias(String keyword) {
-        return ASTERISK.equals(keyword) ? keyword : keywordWrap.getPrefix() + keyword + keywordWrap.getSuffix();
+//        return ASTERISK.equals(keyword) ? keyword : keywordWrap.getPrefix() + keyword + keywordWrap.getSuffix();
+        return ASTERISK.equals(keyword) ? keyword : keywordWrap.wrap(keyword);
     }
 
     @Override
