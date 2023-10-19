@@ -25,10 +25,9 @@ import java.util.Map;
 
 /**
  * 默认方言抽象类。
- *
  * @author michael
  */
-public abstract class JdbcDialect implements IDialect {
+public abstract class AbstractJdbcDialect implements IDialect {
 
     @Override
     public void buildTableColumns(String schemaName, Table table, GlobalConfig globalConfig, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
@@ -79,15 +78,6 @@ public abstract class JdbcDialect implements IDialect {
         return dbMeta.getTables(conn.getCatalog(), schema, null, types);
     }
 
-    /**
-     * 构建查询所有数据的 SQL 语句。
-     *
-     * @param schema    模式
-     * @param tableName 表名
-     * @return 全量查询 SQL 语句
-     */
-    abstract String forBuildColumnsSql(String schema, String tableName);
-
 
     /**
      * 构建 remarks 的 ResultSet
@@ -102,6 +92,18 @@ public abstract class JdbcDialect implements IDialect {
     protected ResultSet forRemarks(String schemaName, Table table, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
         return dbMeta.getColumns(conn.getCatalog(), null, table.getName(), null);
     }
+
+
+    /**
+     * 构建查询所有数据的 SQL 语句。
+     *
+     * @param schema    模式
+     * @param tableName 表名
+     * @return 全量查询 SQL 语句
+     */
+    protected abstract String forBuildColumnsSql(String schema, String tableName);
+
+
 
 
 }

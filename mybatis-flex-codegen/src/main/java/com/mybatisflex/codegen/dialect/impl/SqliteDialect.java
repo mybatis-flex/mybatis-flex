@@ -13,9 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.codegen.dialect;
+package com.mybatisflex.codegen.dialect.impl;
 
 import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.dialect.IDialect;
 import com.mybatisflex.codegen.entity.Column;
 import com.mybatisflex.codegen.entity.Table;
 
@@ -25,6 +26,7 @@ import java.sql.*;
 
 /**
  * Sqlite 方言实现。
+ * @author michael
  */
 public class SqliteDialect implements IDialect {
 
