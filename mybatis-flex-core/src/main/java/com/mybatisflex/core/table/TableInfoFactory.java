@@ -50,7 +50,7 @@ public class TableInfoFactory {
     private TableInfoFactory() {
     }
 
-    static final Set<Class<?>> defaultSupportColumnTypes = CollectionUtil.newHashSet(
+    public static final Set<Class<?>> defaultSupportColumnTypes = CollectionUtil.newHashSet(
         int.class, Integer.class,
         short.class, Short.class,
         long.class, Long.class,
