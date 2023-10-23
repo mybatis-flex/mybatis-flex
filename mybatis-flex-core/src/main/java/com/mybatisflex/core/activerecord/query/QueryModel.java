@@ -344,8 +344,8 @@ public abstract class QueryModel<T extends QueryModel<T>> {
         queryWrapper().groupBy(columns);
         return (T) this;
     }
-
-    public <E> T groupBy(LambdaGetter<E>... columns) {
+    @SafeVarargs
+    public final  <E> T groupBy(LambdaGetter<E>... columns) {
         queryWrapper().groupBy(columns);
         return (T) this;
     }
