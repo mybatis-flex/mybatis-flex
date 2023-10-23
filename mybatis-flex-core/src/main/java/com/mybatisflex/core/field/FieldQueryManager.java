@@ -26,6 +26,8 @@ import com.mybatisflex.core.util.CollectionUtil;
 import java.lang.reflect.Array;
 import java.util.*;
 
+import static com.mybatisflex.core.table.TableInfoFactory.defaultSupportColumnTypes;
+
 /**
  * 属性查询管理。
  *
@@ -87,6 +89,8 @@ public class FieldQueryManager {
                     Class<?> componentType = filedType.getComponentType();
                     List<?> objects = mapper.selectListByQueryAs(queryWrapper, componentType);
                     value = getArrayValue(componentType, objects);
+                } else if (defaultSupportColumnTypes.contains(filedType)) {
+                    value = mapper.selectObjectByQueryAs(queryWrapper, filedType);
                 } else {
                     value = mapper.selectOneByQueryAs(queryWrapper, filedType);
                     // 循环查询嵌套类
