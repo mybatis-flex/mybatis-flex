@@ -75,8 +75,8 @@ public abstract class QueryModel<T extends QueryModel<T>> {
         queryWrapper().select(queryColumns);
         return (T) this;
     }
-
-    public <E> T select(LambdaGetter<E>... columns) {
+    @SafeVarargs
+    public final <E> T select(LambdaGetter<E>... columns) {
         queryWrapper().select(columns);
         return (T) this;
     }
