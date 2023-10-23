@@ -1,10 +1,12 @@
 package com.mybatisflex.test.common;
 
 import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexAssert;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
+import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.CollectionUtil;
@@ -44,9 +46,9 @@ class ListenerTest {
 
         //执行测试 ===> Listener列表比对
 
-        Map<Class<?>, List<InsertListener>> tempInsertListenerMap = new ConcurrentHashMap<>();//替代原本的缓存Map
+        Map<Class<?>, List<InsertListener>> tempOnInsertListenerMap = new ConcurrentHashMap<>();//替代原本的缓存Map
 
-        List<InsertListener> insertListeners = MapUtil.computeIfAbsent(tempInsertListenerMap, AccountMissingListenerTestModel.class, aClass -> {
+        List<InsertListener> insertListeners = MapUtil.computeIfAbsent(tempOnInsertListenerMap, AccountMissingListenerTestModel.class, aClass -> {
             List<InsertListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
                 .getSupportedInsertListener(AccountMissingListenerTestModel.class, CollectionUtil.isNotEmpty(tableInfo.getOnInsertListeners()));
             List<InsertListener> allListeners = CollectionUtil.merge(tableInfo.getOnInsertListeners(), globalListeners);
@@ -62,8 +64,21 @@ class ListenerTest {
         }
 
         //执行测试 ===> 插入结果比对
-//        BaseMapper baseMapper = Mappers.ofEntityClass(accountMissingListenerTestModel.getClass());
-//        baseMapper.insert(accountMissingListenerTestModel);
+        BaseMapper baseMapper = Mappers.ofEntityClass(accountMissingListenerTestModel.getClass());
+        baseMapper.insert(accountMissingListenerTestModel);
 
+        AccountMissingListenerTestModel dbData = (AccountMissingListenerTestModel) baseMapper.selectOneById(accountMissingListenerTestModel.getId());
+
+        if (dbData.getDelete() == null || dbData.getDelete() != false) {
+            throw FlexExceptions.wrap("缺失的InsertListener【%s】", LogicDeleteInsertListener.class.getSimpleName());
+        }
+
+        if (dbData.getAge() == null || dbData.getAge() != 18) {
+            throw FlexExceptions.wrap("缺失的InsertListener【%s】", AccountAgeInsertListener.class.getSimpleName());
+        }
+
+        if (dbData.getUserName() == null || !dbData.getUserName().equals("测试缺失的监听器-userName")) {
+            throw FlexExceptions.wrap("缺失的InsertListener【%s】", AccountTableAnnoInsertListener.class.getSimpleName());
+        }
     }
 }
