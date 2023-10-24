@@ -1,7 +1,11 @@
 package com.mybatisflex.test.model;
 
 import com.mybatisflex.annotation.*;
-import com.mybatisflex.test.listener.missionListenerFix.*;
+import com.mybatisflex.test.listener.missingListenerFix.AccountAgeInsertListenerFlag;
+import com.mybatisflex.test.listener.missingListenerFix.AccountTableAnnoInsertListener;
+import com.mybatisflex.test.listener.missingListenerFix.BaseLogicDelete;
+
+import java.util.Objects;
 
 /**
  * 缺失的监听器测试
@@ -46,6 +50,28 @@ public class AccountMissingListenerTestModel extends BaseLogicDelete implements 
         this.age = age;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AccountMissingListenerTestModel that = (AccountMissingListenerTestModel) o;
+        return Objects.equals(id, that.id) && Objects.equals(userName, that.userName) && Objects.equals(age, that.age) && Objects.equals(getDelete(), that.getDelete());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userName, age, getDelete());
+    }
+
+    @Override
+    public String toString() {
+        return "AccountMissingListenerTestModel{" +
+            "id=" + id +
+            ", userName='" + userName + '\'' +
+            ", age=" + age +
+            ", isDelete=" + getDelete() +
+            '}';
+    }
 }
 
 
