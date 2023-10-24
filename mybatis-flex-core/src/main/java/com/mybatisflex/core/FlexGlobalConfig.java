@@ -221,13 +221,15 @@ public class FlexGlobalConfig {
 
     private void doGetSupportedSetListener(Class<?> childClass, Map<Class<?>, SetListener> listeners) {
         SetListener setListener = null;
+        Class<?> listenersMapKey = null;
         while (setListener == null && childClass != null) {
             setListener = entitySetListeners.get(childClass);
+            listenersMapKey = childClass.getSuperclass() == null ? childClass : childClass.getSuperclass();
             childClass = childClass.getSuperclass();
         }
 
         if (setListener != null) {
-            listeners.put(childClass, setListener);
+            listeners.put(listenersMapKey, setListener);
         }
     }
 
@@ -264,13 +266,15 @@ public class FlexGlobalConfig {
 
     private void doGetSupportedUpdateListener(Class<?> childClass, Map<Class<?>, UpdateListener> listeners) {
         UpdateListener updateListener = null;
+        Class<?> listenersMapKey = null;
         while (updateListener == null && childClass != null) {
             updateListener = entityUpdateListeners.get(childClass);
+            listenersMapKey = childClass.getSuperclass() == null ? childClass : childClass.getSuperclass();
             childClass = childClass.getSuperclass();
         }
 
         if (updateListener != null) {
-            listeners.put(childClass, updateListener);
+            listeners.put(listenersMapKey, updateListener);
         }
     }
 
@@ -307,13 +311,15 @@ public class FlexGlobalConfig {
 
     private void doGetSupportedInsertListener(Class<?> childClass, Map<Class<?>, InsertListener> listeners) {
         InsertListener insertListener = null;
+        Class<?> listenersMapKey = null;
         while (insertListener == null && childClass != null) {
             insertListener = entityInsertListeners.get(childClass);
+            listenersMapKey = childClass.getSuperclass() == null ? childClass : childClass.getSuperclass();
             childClass = childClass.getSuperclass();
         }
 
         if (insertListener != null) {
-            listeners.put(childClass, insertListener);
+            listeners.put(listenersMapKey, insertListener);
         }
     }
 
