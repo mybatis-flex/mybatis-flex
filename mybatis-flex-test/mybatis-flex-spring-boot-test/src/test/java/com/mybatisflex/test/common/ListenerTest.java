@@ -3,16 +3,14 @@ package com.mybatisflex.test.common;
 import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.FlexGlobalConfig;
-import com.mybatisflex.core.exception.FlexAssert;
-import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.CollectionUtil;
-import com.mybatisflex.test.listener.missionListenerFix.*;
+import com.mybatisflex.test.listener.missingListenerFix.*;
 import com.mybatisflex.test.model.AccountMissingListenerTestModel;
 import org.apache.ibatis.util.MapUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -45,7 +43,6 @@ class ListenerTest {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(AccountMissingListenerTestModel.class);
 
         //执行测试 ===> Listener列表比对
-
         Map<Class<?>, List<InsertListener>> tempOnInsertListenerMap = new ConcurrentHashMap<>();//替代原本的缓存Map
 
         List<InsertListener> insertListeners = MapUtil.computeIfAbsent(tempOnInsertListenerMap, AccountMissingListenerTestModel.class, aClass -> {
@@ -56,29 +53,35 @@ class ListenerTest {
             return allListeners;
         });
 
-        List<? extends Class<? extends InsertListener>> resolvedInsertListeners = insertListeners.stream().map(insertListener -> insertListener.getClass()).collect(Collectors.toList());
-        for (Class<?> clazz : CollectionUtil.newArrayList(LogicDeleteInsertListener.class, AccountAgeInsertListener.class, AccountTableAnnoInsertListener.class)) {
-            if (!resolvedInsertListeners.contains(clazz)) {
-                throw FlexExceptions.wrap("缺失的InsertListener【%s】", clazz.getSimpleName());
-            }
-        }
+        List<Class<? extends InsertListener>> resolvedInsertListeners = insertListeners.stream().map(InsertListener::getClass).collect(Collectors.toList());
+        List<Class<? extends InsertListener>> expectedInsertListeners = CollectionUtil.newArrayList(LogicDeleteInsertListener.class, AccountAgeInsertListener.class, AccountTableAnnoInsertListener.class);
+
+        Assertions.assertTrue(
+            () -> {
+                for (Class<?> clazz : expectedInsertListeners) {
+                    if (!resolvedInsertListeners.contains(clazz)) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+            String.format("InsertListener与预期结果不一致\n预期Listener列表:%s\n实际Listener列表:%s", expectedInsertListeners, resolvedInsertListeners)
+        );
 
         //执行测试 ===> 插入结果比对
         BaseMapper baseMapper = Mappers.ofEntityClass(accountMissingListenerTestModel.getClass());
         baseMapper.insert(accountMissingListenerTestModel);
 
+        //实际执行结果
         AccountMissingListenerTestModel dbData = (AccountMissingListenerTestModel) baseMapper.selectOneById(accountMissingListenerTestModel.getId());
 
-        if (dbData.getDelete() == null || dbData.getDelete() != false) {
-            throw FlexExceptions.wrap("缺失的InsertListener【%s】", LogicDeleteInsertListener.class.getSimpleName());
-        }
+        //预期数据
+        AccountMissingListenerTestModel expectedData = new AccountMissingListenerTestModel();
+        expectedData.setId(dbData.getId());
+        expectedData.setUserName("测试缺失的监听器-userName");
+        expectedData.setAge(18);
+        expectedData.setDelete(false);
 
-        if (dbData.getAge() == null || dbData.getAge() != 18) {
-            throw FlexExceptions.wrap("缺失的InsertListener【%s】", AccountAgeInsertListener.class.getSimpleName());
-        }
-
-        if (dbData.getUserName() == null || !dbData.getUserName().equals("测试缺失的监听器-userName")) {
-            throw FlexExceptions.wrap("缺失的InsertListener【%s】", AccountTableAnnoInsertListener.class.getSimpleName());
-        }
+        Assertions.assertEquals(expectedData, dbData);
     }
 }

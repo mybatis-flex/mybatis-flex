@@ -1,4 +1,4 @@
-package com.mybatisflex.test.listener.missionListenerFix;
+package com.mybatisflex.test.listener.missingListenerFix;
 
 import com.mybatisflex.annotation.InsertListener;
 
