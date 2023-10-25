@@ -88,7 +88,7 @@ abstract class AbstractRelation<SelfEntity> {
 
         //以使用者注解配置为主
         this.targetTableInfo = StringUtil.isBlank(targetTable) ? TableInfoFactory.ofEntityClass(relationFieldWrapper.getMappingType()) : TableInfoFactory.ofTableName(targetTable);
-        this.targetSchema = targetSchema;
+        this.targetSchema = targetTableInfo != null ? targetTableInfo.getSchema() : targetSchema;
         this.targetTable = targetTableInfo != null ? targetTableInfo.getTableName() : targetTable;
 
         //当指定了 valueField 的时候，一般是 String Integer 等基本数据类型
