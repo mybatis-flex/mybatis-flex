@@ -125,7 +125,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public <T> QueryWrapper select(LambdaGetter<T>... lambdaGetters) {
-        for (LambdaGetter<T> lambdaGetter : lambdaGetters) {
+        for (LambdaGetter<?> lambdaGetter : lambdaGetters) {
             QueryColumn queryColumn = LambdaUtil.getQueryColumn(lambdaGetter);
             addSelectColumn(queryColumn);
         }
@@ -660,7 +660,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         addGroupByColumns(LambdaUtil.getQueryColumn(column));
         return this;
     }
-
     public <T> QueryWrapper groupBy(LambdaGetter<T>... columns) {
         for (LambdaGetter<T> column : columns) {
             groupBy(LambdaUtil.getQueryColumn(column));

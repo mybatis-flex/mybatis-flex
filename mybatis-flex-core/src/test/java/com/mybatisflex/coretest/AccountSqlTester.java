@@ -21,10 +21,7 @@ import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
-import com.mybatisflex.core.query.DistinctQueryColumn;
-import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.query.RawQueryColumn;
-import com.mybatisflex.core.query.SqlOperators;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.table.TableManager;
@@ -557,6 +554,24 @@ public class AccountSqlTester {
         Assert.assertEquals("UPDATE `tb_account` SET `is_delete` = 1 WHERE `id` = ?  AND `is_delete` = 0"
             ,sql);
 
+        System.out.println(sql);
+    }
+
+
+    /**
+     * test https://gitee.com/mybatis-flex/mybatis-flex/issues/I8ASWS
+     */
+    @Test
+    public void testDeleteWithJoin() {
+        QueryWrapper qw = QueryWrapper.create()
+                .from(ACCOUNT).leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+                .where(ACCOUNT.USER_NAME.eq("x"));
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forDeleteByQuery(qw);
+        Assert.assertEquals("DELETE `tb_account` FROM `tb_account` " +
+                "LEFT JOIN `tb_article` ON `tb_account`.`id` = `tb_article`.`account_id` " +
+                "WHERE `tb_account`.`user_name` = ?"
+            ,sql);
         System.out.println(sql);
     }
 

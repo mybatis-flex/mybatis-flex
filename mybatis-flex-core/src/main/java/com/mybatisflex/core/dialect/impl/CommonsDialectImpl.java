@@ -491,6 +491,23 @@ public class CommonsDialectImpl implements IDialect {
         if (StringUtil.isNotBlank(hint)) {
             sqlBuilder.append(BLANK).append(hint).deleteCharAt(sqlBuilder.length() - 1);
         }
+
+        //delete with join
+        if (joinTables != null && !joinTables.isEmpty()) {
+            if (queryTables == null || queryTables.isEmpty()) {
+                throw new IllegalArgumentException("Delete with join sql must designate the from table.");
+            } else if (queryTables.size() != 1) {
+                throw new IllegalArgumentException("Delete with join sql must has 1 table only. but current has " + queryTables.size());
+            }
+            QueryTable queryTable = queryTables.get(0);
+            String table = getRealTable(queryTable.getName());
+            if (StringUtil.isNotBlank(queryTable.getSchema())) {
+                sqlBuilder.append(wrap(getRealSchema(queryTable.getSchema(), table))).append(REFERENCE);
+            }
+            sqlBuilder.append(BLANK).append(wrap(getRealTable(table)));
+        }
+
+
         sqlBuilder.append(FROM).append(StringUtil.join(DELIMITER, queryTables, queryTable -> queryTable.toSql(this)));
 
         buildJoinSql(sqlBuilder, queryWrapper, allTables);
