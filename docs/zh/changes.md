@@ -3,6 +3,21 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+
+## v1.7.3 20231027:
+- 新增：添加 Delete SQL 多表关联查询删除的支持
+- 新增：代码生成器添加 `Generator.getTables()` 方法，方便在某些场景下去获取所有表信息
+- 优化：重写 CommonsDialectImpl.wrapColumnAlias 方法，SQL 不对 as 关键字进行关键字包裹
+- 优化：代码生成器优化 IDialect，添加 AbstractJdbcDialect.java
+- 优化：QueryModel 的一些泛型方法添加 @SafeVarargs，消除 IDE 警告，感谢 @guan-meng-yuan
+- 修复：修复 fieldMapping 基础类型查询 null 的情况，感谢 @guan-meng-yuan
+- 修复：多全局 Listener 配置可能缺失问题，感谢 @ice-samll
+- 修复：表关联的从表配置 schema，查询从表时 schema 丢失问题，感谢 @font-c
+- 测试：添加 filedMapping 的相关代码测试，感谢 @guan-meng-yuan
+- 测试：添加全局 Listener 缺失修复的数据库插入测试，感谢 @ice-samll
+
+
+
 ## v1.7.2 20231018:
 - 新增：QueryWrapper 添加对 MyBatis-Plus 的兼容 API，方便喜欢 MyBatis-Flex 的用户进行迁移
 - 新增：QueryModel #select()方法 添加 Iterable queryColumns，感谢 @guan-meng-yuan
