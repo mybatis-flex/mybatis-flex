@@ -2564,6 +2564,13 @@ public class QueryMethods {
         return QueryCondition.createEmpty();
     }
 
+    /**
+     * 括号条件。
+     */
+    public static QueryCondition bracket(QueryCondition condition) {
+        return new Brackets(condition);
+    }
+
     // === 构建 QueryWrapper 查询 ===
 
     /**
