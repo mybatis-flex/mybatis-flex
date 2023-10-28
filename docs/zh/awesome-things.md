@@ -62,6 +62,8 @@
 - [MyBatis-Flex 视频教程 - 51 数据缓存的简单使用](https://www.bilibili.com/video/BV1F8411X7EB)
 - [MyBatis-Flex 视频教程 - 52 动态表名](https://www.bilibili.com/video/BV1D8411Q7tD)
 - [MyBatis-Flex 视频教程 - 53 Active Record 模式](https://www.bilibili.com/video/BV1Lh4y1T7Ey)
+- [MyBatis-Flex 视频教程 - 54 SQL 审计](https://www.bilibili.com/video/BV1kh4y127kz)
+- [MyBatis-Flex 视频教程 - 55 SQL 打印](https://www.bilibili.com/video/BV1914y1C7Xk)
 - [MyBatis-Flex 视频教程 - 56 MyBatis-Flex APT 配置](https://www.bilibili.com/video/BV1fh4y1T7o1)
 - [MyBatis-Flex 视频教程 - 57 代码生成器（风格一）](https://www.bilibili.com/video/BV1o14y1C7pJ)
 - [MyBatis-Flex 视频教程 - 58 代码生成器（风格二）](https://www.bilibili.com/video/BV14P411h7eM)
