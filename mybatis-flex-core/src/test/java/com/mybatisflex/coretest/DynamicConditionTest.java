@@ -20,12 +20,14 @@ import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.StringUtil;
 import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
+import static com.mybatisflex.core.query.QueryMethods.bracket;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
+import static org.junit.Assert.assertEquals;
 
 /**
  * 动态条件测试。
@@ -182,6 +184,25 @@ public class DynamicConditionTest {
         String sql = queryWrapper.toSQL();
         System.out.println(sql);
         assertEquals("SELECT * FROM `tb_account`", sql);
+    }
+
+    @Test
+    public void test11() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+            .where(ACCOUNT.IS_DELETE.eq(0))
+            .and(ACCOUNT.ID.ge("1").and(bracket(ACCOUNT.AGE.ge(18).or(ACCOUNT.USER_NAME.ge("zs")))))
+            .or(ACCOUNT.BIRTHDAY.le("2023-10-28 22:13:36"));
+
+        String printSql = queryWrapper.toSQL();
+
+        assertEquals("SELECT * FROM `tb_account` " +
+            "WHERE `is_delete` = 0 " +
+            "AND (`id` >= '1' AND (`age` >= 18 OR `user_name` >= 'zs')) " +
+            "OR `birthday` <= '2023-10-28 22:13:36'", printSql);
+
+        System.out.println(printSql);
     }
 
 }
