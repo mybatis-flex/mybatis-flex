@@ -535,7 +535,8 @@ WHERE user_name LIKE  ?
 boolean flag = false;
 QueryWrapper queryWrapper = QueryWrapper.create()
     .select().from(ACCOUNT)
-    .where(ACCOUNT.ID.ge(100).when(flag)) // when....
+    .where(ACCOUNT.ID.ge(100, flag))
+    // 等同于 .where(ACCOUNT.ID.ge(100).when(flag))
     .and(ACCOUNT.USER_NAME.like("michael"));
 ```
 
@@ -553,7 +554,7 @@ String name = null;
 QueryWrapper queryWrapper = QueryWrapper.create()
     .select().from(ACCOUNT)
     .where(ACCOUNT.ID.ge(100)) // when....
-    .and(ACCOUNT.USER_NAME.like(name).when(StringUtil::isNotBlank));
+    .and(ACCOUNT.USER_NAME.like(name, StringUtil::isNotBlank));
 ```
 
 其查询生成的 Sql 如下：
