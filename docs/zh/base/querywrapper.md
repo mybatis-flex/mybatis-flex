@@ -1228,7 +1228,27 @@ byte[] bytes = fst.asByteArray(wrapper);
 QueryWrapper newWrapper = (QueryWrapper) fst.asObject(bytes);
 ```
 
+## QueryWrapper 克隆
 
+当我们想对 `QueryWrapper` 进行改造而不想影响之前构建出来的 `QueryWrapper` 时，可以使用 `clone()` 方法，克隆出来一份
+`QueryWrapper` 进行操作，示例：
+
+```java 6
+QueryWrapper queryWrapper = QueryWrapper.create()
+    .from(ACCOUNT)
+    .select(ACCOUNT.DEFAULT_COLUMNS)
+    .where(ACCOUNT.ID.eq(1));
+
+QueryWrapper clone = queryWrapper.clone();
+
+// 清空 SELECT 语句
+CPI.setSelectColumns(clone, null);
+// 重新设置 SELECT 语句
+clone.select(ACCOUNT.ID, ACCOUNT.USER_NAME);
+
+System.out.println(queryWrapper.toSQL());
+System.out.println(clone.toSQL());
+```
 
 ## 特别注意事项!!!
 在 QueryWrapper 的条件构建中，如果传入 null 值，则自动忽略该条件，这有许多的好处，不需要额外的通过 `when()` 方法判断。但是也带来一些额外的知识记忆点，
