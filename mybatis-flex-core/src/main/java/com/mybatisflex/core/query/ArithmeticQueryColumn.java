@@ -22,11 +22,12 @@ import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.mybatisflex.core.constant.SqlConsts.*;
 
-public class ArithmeticQueryColumn extends QueryColumn {
+public class ArithmeticQueryColumn extends QueryColumn implements HasParamsColumn {
 
     private List<ArithmeticInfo> arithmeticInfos;
 
@@ -112,6 +113,16 @@ public class ArithmeticQueryColumn extends QueryColumn {
             sql.append(arithmeticInfos.get(i).toSql(queryTables, dialect, i));
         }
         return SqlConsts.BRACKET_LEFT + sql + SqlConsts.BRACKET_RIGHT;
+    }
+
+    @Override
+    public Object[] getParamValues() {
+        return arithmeticInfos.stream()
+            .map(arithmeticInfo -> arithmeticInfo.value)
+            .filter(value -> value instanceof HasParamsColumn)
+            .map(value -> ((HasParamsColumn) value).getParamValues())
+            .flatMap(Arrays::stream)
+            .toArray();
     }
 
 
