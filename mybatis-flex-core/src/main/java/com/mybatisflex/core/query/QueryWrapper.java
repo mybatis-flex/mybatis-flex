@@ -23,9 +23,20 @@ import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.*;
+import com.mybatisflex.core.util.ArrayUtil;
+import com.mybatisflex.core.util.ClassUtil;
+import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
+import com.mybatisflex.core.util.SqlUtil;
+import com.mybatisflex.core.util.StringUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -240,12 +251,12 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper where(String sql) {
-        this.setWhereQueryCondition(new RawFragment(sql));
+        this.setWhereQueryCondition(new RawQueryCondition(sql));
         return this;
     }
 
     public QueryWrapper where(String sql, Object... params) {
-        this.setWhereQueryCondition(new RawFragment(sql, params));
+        this.setWhereQueryCondition(new RawQueryCondition(sql, params));
         return this;
     }
 
@@ -270,12 +281,12 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper and(String sql) {
-        this.addWhereQueryCondition(new RawFragment(sql), SqlConnector.AND);
+        this.addWhereQueryCondition(new RawQueryCondition(sql), SqlConnector.AND);
         return this;
     }
 
     public QueryWrapper and(String sql, Object... params) {
-        this.addWhereQueryCondition(new RawFragment(sql, params), SqlConnector.AND);
+        this.addWhereQueryCondition(new RawQueryCondition(sql, params), SqlConnector.AND);
         return this;
     }
 
@@ -319,12 +330,12 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper or(String sql) {
-        this.addWhereQueryCondition(new RawFragment(sql), SqlConnector.OR);
+        this.addWhereQueryCondition(new RawQueryCondition(sql), SqlConnector.OR);
         return this;
     }
 
     public QueryWrapper or(String sql, Object... params) {
-        this.addWhereQueryCondition(new RawFragment(sql, params), SqlConnector.OR);
+        this.addWhereQueryCondition(new RawQueryCondition(sql, params), SqlConnector.OR);
         return this;
     }
 
@@ -766,7 +777,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         }
         for (String queryOrderBy : orderBys) {
             if (StringUtil.isNotBlank(queryOrderBy)) {
-                addOrderBy(new StringQueryOrderBy(queryOrderBy));
+                addOrderBy(new RawQueryOrderBy(queryOrderBy));
             }
         }
         return this;

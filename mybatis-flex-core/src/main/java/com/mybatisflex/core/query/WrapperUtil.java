@@ -98,7 +98,7 @@ class WrapperUtil {
         Object value = condition.getValue();
         if (value == null
             || value instanceof QueryColumn
-            || value instanceof RawFragment) {
+            || value instanceof RawQueryCondition) {
             getValues(condition.next, params);
             return;
         }
@@ -133,8 +133,8 @@ class WrapperUtil {
     static String buildValue(Object value) {
         if (value instanceof Number || value instanceof Boolean) {
             return String.valueOf(value);
-        } else if (value instanceof RawFragment) {
-            return ((RawFragment) value).getContent();
+        } else if (value instanceof RawQueryCondition) {
+            return ((RawQueryCondition) value).getContent();
         } else if (value instanceof QueryColumn) {
             return ((QueryColumn) value).toConditionSql(null, DialectFactory.getDialect());
         } else {

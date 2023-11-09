@@ -22,25 +22,45 @@ import com.mybatisflex.core.util.SqlUtil;
 import java.util.List;
 
 /**
- * 排序字段
+ * 原生排序字段。
+ *
+ * @author michael
+ * @author 王帅
  */
-public class StringQueryOrderBy extends QueryOrderBy {
+public class RawQueryOrderBy extends QueryOrderBy {
 
-    private final String orderBy;
+    protected String content;
 
-    public StringQueryOrderBy(String orderBy) {
-        SqlUtil.keepOrderBySqlSafely(orderBy);
-        this.orderBy = orderBy;
+    public RawQueryOrderBy(String content) {
+        this(content, true);
+    }
+
+    public RawQueryOrderBy(String content, boolean checkAvailable) {
+        if (checkAvailable) {
+            SqlUtil.keepOrderBySqlSafely(content);
+        }
+        this.content = content;
     }
 
     @Override
     public String toSql(List<QueryTable> queryTables, IDialect dialect) {
-        return orderBy;
+        return content;
     }
 
     @Override
-    public StringQueryOrderBy clone() {
-        return (StringQueryOrderBy) super.clone();
+    public String toString() {
+        return "RawQueryOrderBy{" +
+            "content='" + content + '\'' +
+            '}';
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    @Override
+    public RawQueryOrderBy clone() {
+        return (RawQueryOrderBy) super.clone();
     }
 
 }

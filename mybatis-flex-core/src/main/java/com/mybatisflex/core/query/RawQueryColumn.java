@@ -22,13 +22,15 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 自定义字符串列，用于扩展
+ * 原生列。
+ *
+ * @author michael
+ * @author 王帅
  */
 public class RawQueryColumn extends QueryColumn implements HasParamsColumn {
 
     protected String content;
     protected Object[] params;
-
 
     public RawQueryColumn(Object content, Object... params) {
         this.content = String.valueOf(content);
@@ -51,6 +53,14 @@ public class RawQueryColumn extends QueryColumn implements HasParamsColumn {
             "content='" + content + '\'' +
             ", params='" + Arrays.toString(params) + '\'' +
             '}';
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public Object[] getParams() {
+        return params;
     }
 
     @Override

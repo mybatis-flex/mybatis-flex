@@ -2628,14 +2628,14 @@ public class QueryMethods {
      * 构建原生查询条件。
      */
     public static QueryCondition raw(String raw) {
-        return new RawFragment(raw);
+        return new RawQueryCondition(raw);
     }
 
     /**
      * 构建原生查询条件，并附带参数。
      */
     public static QueryCondition raw(String raw, Object... params) {
-        return new RawFragment(raw, params);
+        return new RawQueryCondition(raw, params);
     }
 
 

@@ -37,7 +37,7 @@ public class Joiner<M> {
     }
 
     public M on(String on) {
-        join.on(new RawFragment(on));
+        join.on(new RawQueryCondition(on));
         return queryWrapper;
     }
 

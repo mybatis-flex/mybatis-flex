@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 public class RawQueryTable extends QueryTable {
 
-    private final String content;
+    protected String content;
 
     public RawQueryTable(String content) {
         this.content = content;
@@ -58,6 +58,10 @@ public class RawQueryTable extends QueryTable {
         return "RawQueryTable{" +
             "content='" + content + '\'' +
             '}';
+    }
+
+    public String getContent() {
+        return content;
     }
 
     @Override

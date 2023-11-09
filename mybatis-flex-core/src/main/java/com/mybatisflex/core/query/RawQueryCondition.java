@@ -22,19 +22,20 @@ import com.mybatisflex.core.util.StringUtil;
 import java.util.List;
 
 /**
- * SQL 原生片段
+ * 原生条件。
+ *
+ * @author michael
+ * @author 王帅
  */
-public class RawFragment extends QueryCondition {
-
+public class RawQueryCondition extends QueryCondition {
 
     protected String content;
 
-
-    public RawFragment(String content) {
+    public RawQueryCondition(String content) {
         this.content = content;
     }
 
-    public RawFragment(String content, Object... paras) {
+    public RawQueryCondition(String content, Object... paras) {
         this.content = content;
         this.setValue(paras);
     }
@@ -72,13 +73,19 @@ public class RawFragment extends QueryCondition {
     }
 
     @Override
-    public RawFragment clone() {
-        return (RawFragment) super.clone();
+    public String toString() {
+        return "RawQueryCondition{" +
+            "content='" + content + '\'' +
+            '}';
     }
-
 
     public String getContent() {
         return content;
+    }
+
+    @Override
+    public RawQueryCondition clone() {
+        return (RawQueryCondition) super.clone();
     }
 
 }

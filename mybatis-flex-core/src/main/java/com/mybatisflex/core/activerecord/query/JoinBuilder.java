@@ -19,7 +19,7 @@ package com.mybatisflex.core.activerecord.query;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.Join;
 import com.mybatisflex.core.query.QueryCondition;
-import com.mybatisflex.core.query.RawFragment;
+import com.mybatisflex.core.query.RawQueryCondition;
 
 /**
  * Lambda joins 构建器。
@@ -43,7 +43,7 @@ public class JoinBuilder<R extends QueryModel<R>> {
     }
 
     public R on(String on) {
-        join.on(new RawFragment(on));
+        join.on(new RawQueryCondition(on));
         return queryModel;
     }
 

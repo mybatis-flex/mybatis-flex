@@ -149,11 +149,11 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
 
 
     public QueryCondition and(String sql) {
-        return and(new RawFragment(sql));
+        return and(new RawQueryCondition(sql));
     }
 
     public QueryCondition and(String sql, Object... params) {
-        return and(new RawFragment(sql, params));
+        return and(new RawQueryCondition(sql, params));
     }
 
     public QueryCondition and(QueryCondition nextCondition) {
@@ -161,11 +161,11 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
     }
 
     public QueryCondition or(String sql) {
-        return or(new RawFragment(sql));
+        return or(new RawQueryCondition(sql));
     }
 
     public QueryCondition or(String sql, Object... params) {
-        return or(new RawFragment(sql, params));
+        return or(new RawQueryCondition(sql, params));
     }
 
     public QueryCondition or(QueryCondition nextCondition) {
@@ -208,8 +208,8 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
                     .append(SqlConsts.BRACKET_RIGHT);
             }
             //原生sql
-            else if (value instanceof RawFragment) {
-                sql.append(((RawFragment) value).getContent());
+            else if (value instanceof RawQueryCondition) {
+                sql.append(((RawQueryCondition) value).getContent());
             }
             //正常查询，构建问号
             else {
@@ -251,7 +251,7 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             || SqlConsts.IS_NOT_NULL.equals(logic)
             || value instanceof QueryColumn
             || value instanceof QueryWrapper
-            || value instanceof RawFragment) {
+            || value instanceof RawQueryCondition) {
             //do nothing
         }
 
