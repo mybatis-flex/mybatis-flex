@@ -320,6 +320,23 @@ SELECT (`id` + (`age` + 100)) AS `x100` FROM `tb_account`
 ```
 
 
+## select 取相反数
+
+```java
+import static com.mybatisflex.core.query.QueryMethods.*;
+
+QueryWrapper queryWrapper = QueryWrapper.create()
+    // 负数常量需要手动加括号，不能写成 number(-1)
+    .select(negative(column("(-1)")))
+    .select(negative(abs(ACCOUNT.AGE)).as("opp"))
+    .select(negative(ACCOUNT.ID.add(ACCOUNT.AGE)))
+    .from(ACCOUNT);
+```
+
+```sql
+SELECT -(-1), -ABS(`age`) AS `opp`, -(`id` + `age`) FROM `tb_account`
+```
+
 ## select case...when
 
 **示例 1：**
