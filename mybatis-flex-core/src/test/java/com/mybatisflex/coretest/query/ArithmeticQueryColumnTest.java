@@ -31,7 +31,10 @@ public class ArithmeticQueryColumnTest {
         return dialect.forSelectByQuery(queryWrapper);
     }
 
+    @Test
+    public void testAddWithCondition(){
 
+    }
     @Test
     public void testAdd() {
         QueryWrapper query = new QueryWrapper()
