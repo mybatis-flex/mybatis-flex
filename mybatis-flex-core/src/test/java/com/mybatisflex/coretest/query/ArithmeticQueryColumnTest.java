@@ -21,7 +21,9 @@ import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static com.mybatisflex.core.query.QueryMethods.abs;
 import static com.mybatisflex.core.query.QueryMethods.column;
+import static com.mybatisflex.core.query.QueryMethods.negative;
 import static com.mybatisflex.core.query.QueryMethods.number;
 import static com.mybatisflex.core.query.QueryMethods.sum;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
@@ -156,5 +158,19 @@ public class ArithmeticQueryColumnTest {
         Assert.assertEquals("SELECT ABS(-1) + 7 FROM `tb_account`", sql);
     }
 
+    @Test
+    public void testNegative() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(negative(column("(-1)")))
+            .select(negative(abs(ACCOUNT.AGE)).as("opp"))
+            .select(negative(ACCOUNT.ID.add(ACCOUNT.AGE)))
+            .from(ACCOUNT);
+
+        String sql = queryWrapper.toSQL();
+
+        System.out.println(sql);
+
+        Assert.assertEquals("SELECT -(-1), -ABS(`age`) AS `opp`, -(`id` + `age`) FROM `tb_account`", sql);
+    }
 
 }
