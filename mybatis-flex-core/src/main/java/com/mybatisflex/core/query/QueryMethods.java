@@ -2409,6 +2409,13 @@ public class QueryMethods {
     }
 
     /**
+     * 构建相反数。
+     */
+    public static QueryColumn negative(QueryColumn queryColumn) {
+        return new NegativeQueryColumn(queryColumn);
+    }
+
+    /**
      * 构建自定义列。
      */
     public static QueryColumn column(String column, Object... params) {
