@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.mybatis;
 
+import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.annotations.AutomapConstructor;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.binding.MapperMethod.ParamMap;
@@ -767,7 +768,8 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
                                                                 List<Object> constructorArgs, Constructor<?> constructor, boolean foundValues) throws SQLException {
         for (int i = 0; i < constructor.getParameterTypes().length; i++) {
             Class<?> parameterType = constructor.getParameterTypes()[i];
-            String columnName = rsw.getColumnNames().get(i);
+            Parameter parameter = constructor.getParameters()[i];
+            String columnName = StringUtil.camelToUnderline(parameter.getName());
             TypeHandler<?> typeHandler = rsw.getTypeHandler(parameterType, columnName);
             Object value = typeHandler.getResult(rsw.getResultSet(), columnName);
             constructorArgTypes.add(parameterType);
