@@ -70,7 +70,7 @@ public class MapperInvocationHandler implements InvocationHandler {
             //最终通过数据源 自定义分片 策略去获取
             String shardingDataSourceKey = DataSourceKey.getByShardingStrategy(dataSourceKey, proxy, method, args);
             if (shardingDataSourceKey != null && !shardingDataSourceKey.equals(dataSourceKey)) {
-                DataSourceKey.use(dataSourceKey);
+                DataSourceKey.use(shardingDataSourceKey);
                 needClearDsKey = true;
             }
 
