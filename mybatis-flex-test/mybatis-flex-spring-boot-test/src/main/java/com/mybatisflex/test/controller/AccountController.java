@@ -117,8 +117,14 @@ public class AccountController {
         account.setUserName("haha1111");
         accountMapper.update(account);
 
-        //嵌套事务
-        accountService.update2();
+        try {
+            //嵌套事务
+            accountService.update2();
+        }catch (Exception e){
+//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            System.out.println(">>>>>>e"+e);
+        }
+
 
         return accountMapper.selectOneById(id);
     }
