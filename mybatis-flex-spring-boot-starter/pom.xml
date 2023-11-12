@@ -101,6 +101,12 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-core</artifactId>
+            <version>1.7.3</version>
+        </dependency>
+
     </dependencies>
 
     <build>

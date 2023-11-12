@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-annotation</artifactId>
-            <version>${mybatis-flex.version}</version>
+            <version>1.7.3</version>
         </dependency>
     </dependencies>
 

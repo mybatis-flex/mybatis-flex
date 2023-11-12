@@ -98,6 +98,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-annotation</artifactId>
+            <version>1.7.3</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
