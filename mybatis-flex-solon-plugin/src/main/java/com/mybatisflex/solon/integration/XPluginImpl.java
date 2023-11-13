@@ -18,6 +18,7 @@ package com.mybatisflex.solon.integration;
 
 import org.apache.ibatis.solon.integration.MybatisAdapterManager;
 import org.noear.solon.core.AopContext;
+import org.noear.solon.core.AppContext;
 import org.noear.solon.core.Plugin;
 
 /**
@@ -28,10 +29,17 @@ import org.noear.solon.core.Plugin;
  */
 public class XPluginImpl implements Plugin {
 
+    //兼容 2.5 以下版本
     @Override
-    public void start(AopContext context) {
+    public void start(AopContext context) throws Throwable {
         // 此插件的 solon.plugin.priority 会大于 mybatis-solon-plugin 的值
         MybatisAdapterManager.setAdapterFactory(new MybatisAdapterFactoryFlex());
     }
 
+    //兼容 2.5 以上版本
+    @Override
+    public void start(AppContext context) throws Throwable {
+        // 此插件的 solon.plugin.priority 会大于 mybatis-solon-plugin 的值
+        MybatisAdapterManager.setAdapterFactory(new MybatisAdapterFactoryFlex());
+    }
 }
