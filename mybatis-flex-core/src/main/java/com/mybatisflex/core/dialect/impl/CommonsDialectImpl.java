@@ -362,9 +362,9 @@ public class CommonsDialectImpl implements IDialect {
                 .entrySet()
                 .stream()
                 // 需要处理别名的情况
+                .filter(e -> StringUtil.isNotBlank(e.getValue().getName()))
                 .filter(e -> StringUtil.isBlank(e.getValue().getAlias()))
                 .filter(e -> !"*".equals(e.getValue().getName()))
-                .filter(e -> StringUtil.isNotBlank(e.getValue().getName()))
                 // 将相同字段对象放在一个集合里
                 .collect(Collectors.groupingBy(e -> e.getValue().getName(),
                     Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList)))
