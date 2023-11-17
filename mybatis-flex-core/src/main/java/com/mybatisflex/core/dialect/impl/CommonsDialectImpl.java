@@ -362,6 +362,7 @@ public class CommonsDialectImpl implements IDialect {
                 .entrySet()
                 .stream()
                 // 需要处理别名的情况
+                .filter(e -> StringUtil.isBlank(e.getValue().getAlias()))
                 .filter(e -> !"*".equals(e.getValue().getName()))
                 .filter(e -> StringUtil.isNotBlank(e.getValue().getName()))
                 // 将相同字段对象放在一个集合里
@@ -373,8 +374,7 @@ public class CommonsDialectImpl implements IDialect {
                 .filter(e -> e.size() > 1)
                 // 合并所有需要加别名的字段
                 .flatMap(Collection::stream)
-                // 过滤出来需要添加别名的列
-                .filter(e -> StringUtil.isBlank(e.getValue().getAlias()))
+                // 过滤出来可以添加别名的列
                 .filter(e -> e.getValue().getTable() != null)
                 .filter(e -> StringUtil.isNotBlank(e.getValue().getTable().getName()))
                 // 添加别名并放回原集合索引位置
