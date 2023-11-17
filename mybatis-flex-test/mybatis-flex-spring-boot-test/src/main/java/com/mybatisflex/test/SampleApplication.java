@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.test;
 
+import com.github.vertical_blank.sqlformatter.SqlFormatter;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.audit.MessageCollector;
@@ -50,11 +51,11 @@ public class SampleApplication implements CommandLineRunner, ApplicationListener
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         System.out.println("onApplicationEvent");
-        //开启审计功能
+        // 开启审计功能
         AuditManager.setAuditEnable(true);
-
-//设置 SQL 审计收集器
-        MessageCollector collector = new ConsoleMessageCollector();
+        // 设置 SQL 审计收集器
+        MessageCollector collector = new ConsoleMessageCollector((sql, tookTimeMillis) ->
+            System.out.println(SqlFormatter.format(sql)));
         AuditManager.setMessageCollector(collector);
     }
 
