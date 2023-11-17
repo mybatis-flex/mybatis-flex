@@ -989,14 +989,14 @@ public class TableInfo {
 
 
     public ResultMap buildResultMap(Configuration configuration) {
-        return doBuildResultMap(configuration, new HashSet<>(), new HashSet<>(), false, getTableNameWithSchema());
+        return doBuildResultMap(configuration, new HashSet<>(), false, getTableNameWithSchema());
     }
 
-    private ResultMap doBuildResultMap(Configuration configuration, Set<String> resultMapIds, Set<String> existMappingColumns, boolean isNested, String nestedPrefix) {
+    private ResultMap doBuildResultMap(Configuration configuration, Set<String> resultMapIds, boolean isNested, String nestedPrefix) {
 
         String resultMapId = isNested ? "nested-" + nestedPrefix + ":" + entityClass.getName() : entityClass.getName();
 
-        //是否有循环引用
+        // 是否有循环引用
         boolean withCircularReference = resultMapIds.contains(resultMapId) || resultMapIds.contains(entityClass.getName());
         if (withCircularReference) {
             return null;
@@ -1007,19 +1007,18 @@ public class TableInfo {
         if (configuration.hasResultMap(resultMapId)) {
             return configuration.getResultMap(resultMapId);
         }
-        List<ResultMapping> resultMappings = new ArrayList<>();
 
+        List<ResultMapping> resultMappings = new ArrayList<>();
 
         // <resultMap> 标签下的 <id> 标签映射
         for (IdInfo idInfo : primaryKeyList) {
-            doBuildColumnResultMapping(configuration, existMappingColumns, resultMappings, idInfo, CollectionUtil.newArrayList(ResultFlag.ID), isNested);
+            doBuildColumnResultMapping(configuration, resultMappings, idInfo, CollectionUtil.newArrayList(ResultFlag.ID));
         }
 
         // <resultMap> 标签下的 <result> 标签映射
         for (ColumnInfo columnInfo : columnInfoList) {
-            doBuildColumnResultMapping(configuration, existMappingColumns, resultMappings, columnInfo, Collections.emptyList(), isNested);
+            doBuildColumnResultMapping(configuration, resultMappings, columnInfo, Collections.emptyList());
         }
-
 
         // <resultMap> 标签下的 <association> 标签映射
         if (associationType != null) {
@@ -1027,7 +1026,7 @@ public class TableInfo {
                 // 获取嵌套类型的信息，也就是 javaType 属性
                 TableInfo tableInfo = TableInfoFactory.ofEntityClass(fieldType);
                 // 构建嵌套类型的 ResultMap 对象，也就是 <association> 标签下的内容
-                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, existMappingColumns, true, nestedPrefix);
+                ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, true, nestedPrefix);
                 if (nestedResultMap != null) {
                     resultMappings.add(new ResultMapping.Builder(configuration, fieldName)
                         .javaType(fieldType)
@@ -1044,16 +1043,12 @@ public class TableInfo {
                     // List<String> List<Integer> 等
                     String columnName = TableInfoFactory.getColumnName(camelToUnderline, field, field.getAnnotation(Column.class));
                     // 映射 <result column="..."/>
-
                     ResultMapping resultMapping = new ResultMapping.Builder(configuration, null)
                         .column(columnName)
                         .typeHandler(configuration.getTypeHandlerRegistry().getTypeHandler(genericClass))
                         .build();
-
                     String nestedResultMapId = entityClass.getName() + "." + field.getName();
-                    ResultMap nestedResultMap = new ResultMap.Builder(configuration, nestedResultMapId, genericClass
-                        , Collections.singletonList(resultMapping)).build();
-
+                    ResultMap nestedResultMap = new ResultMap.Builder(configuration, nestedResultMapId, genericClass, Collections.singletonList(resultMapping)).build();
                     configuration.addResultMap(nestedResultMap);
                     // 映射 <collection property="..." ofType="genericClass">
                     resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
@@ -1064,7 +1059,7 @@ public class TableInfo {
                     // 获取集合泛型类型的信息，也就是 ofType 属性
                     TableInfo tableInfo = TableInfoFactory.ofEntityClass(genericClass);
                     // 构建嵌套类型的 ResultMap 对象，也就是 <collection> 标签下的内容
-                    ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, existMappingColumns, true, nestedPrefix);
+                    ResultMap nestedResultMap = tableInfo.doBuildResultMap(configuration, resultMapIds, true, nestedPrefix);
                     if (nestedResultMap != null) {
                         resultMappings.add(new ResultMapping.Builder(configuration, field.getName())
                             .javaType(field.getType())
@@ -1081,42 +1076,55 @@ public class TableInfo {
         return resultMap;
     }
 
+    private void doBuildColumnResultMapping(Configuration configuration, List<ResultMapping> resultMappings
+        , ColumnInfo columnInfo, List<ResultFlag> flags) {
 
-    private void doBuildColumnResultMapping(Configuration configuration, Set<String> existMappingColumns, List<ResultMapping> resultMappings
-        , ColumnInfo columnInfo, List<ResultFlag> flags, boolean isNested) {
-        String[] columns = ArrayUtil.concat(new String[]{columnInfo.column, columnInfo.property}, columnInfo.alias);
-        for (String column : columns) {
-            if (!existMappingColumns.contains(column)) {
-                ResultMapping mapping = new ResultMapping.Builder(configuration
+        // userName -> user_name
+        resultMappings.add(new ResultMapping.Builder(configuration
+            , columnInfo.property
+            , columnInfo.column
+            , columnInfo.propertyType)
+            .jdbcType(columnInfo.getJdbcType())
+            .flags(flags)
+            .typeHandler(columnInfo.buildTypeHandler(configuration))
+            .build());
+
+        // userName -> tb_user$user_name
+        resultMappings.add(new ResultMapping.Builder(configuration
+            , columnInfo.property
+            , tableName + "$" + columnInfo.column
+            , columnInfo.propertyType)
+            .jdbcType(columnInfo.getJdbcType())
+            .flags(flags)
+            .typeHandler(columnInfo.buildTypeHandler(configuration))
+            .build());
+
+        if (!Objects.equals(columnInfo.column, columnInfo.property)) {
+            // userName -> userName
+            resultMappings.add(new ResultMapping.Builder(configuration
+                , columnInfo.property
+                , columnInfo.property
+                , columnInfo.propertyType)
+                .jdbcType(columnInfo.getJdbcType())
+                .flags(flags)
+                .typeHandler(columnInfo.buildTypeHandler(configuration))
+                .build());
+        }
+
+        if (ArrayUtil.isNotEmpty(columnInfo.alias)) {
+            for (String alias : columnInfo.alias) {
+                // userName -> alias
+                resultMappings.add(new ResultMapping.Builder(configuration
                     , columnInfo.property
-                    , column
+                    , alias
                     , columnInfo.propertyType)
                     .jdbcType(columnInfo.getJdbcType())
                     .flags(flags)
                     .typeHandler(columnInfo.buildTypeHandler(configuration))
-                    .build();
-                resultMappings.add(mapping);
-                existMappingColumns.add(mapping.getColumn());
+                    .build());
             }
         }
 
-        if (isNested) {
-            for (String column : columns) {
-                column = tableName + "$" + column;
-                if (!existMappingColumns.contains(column)) {
-                    ResultMapping mapping = new ResultMapping.Builder(configuration
-                        , columnInfo.property
-                        , column
-                        , columnInfo.propertyType)
-                        .jdbcType(columnInfo.getJdbcType())
-                        .flags(flags)
-                        .typeHandler(columnInfo.buildTypeHandler(configuration))
-                        .build();
-                    resultMappings.add(mapping);
-                    existMappingColumns.add(mapping.getColumn());
-                }
-            }
-        }
     }
 
 
