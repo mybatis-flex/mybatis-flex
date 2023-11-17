@@ -25,7 +25,6 @@ import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowCPI;
 import com.mybatisflex.core.table.TableInfo;
-import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.update.RawValue;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.CollectionUtil;
@@ -33,6 +32,9 @@ import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.mybatisflex.core.constant.SqlConsts.*;
 
@@ -351,36 +353,33 @@ public class CommonsDialectImpl implements IDialect {
 
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 
-        int queryTablesCount = queryTables == null ? 0 : queryTables.size();
-        int joinTablesCount = joinTables != null ? joinTables.size() : 0;
-
-        //多表查询时，自动映射
-        if (queryTablesCount > 0 && queryTablesCount + joinTablesCount > 1) {
-            QueryTable firstTable = queryTables.get(0);
-            if (!(firstTable instanceof SelectQueryTable)) {
-                TableInfo tableInfo = TableInfoFactory.ofTableName(firstTable.getName());
-                if (tableInfo != null && selectColumns != null && !selectColumns.isEmpty()) {
-                    String[] firstTableColumns = tableInfo.getAllColumns();
-                    for (int i = 0; i < selectColumns.size(); i++) {
-                        QueryColumn selectColumn = selectColumns.get(i);
-                        QueryTable selectColumnTable = selectColumn.getTable();
-                        String selectColumnName = selectColumn.getName();
-
-                        //用户未配置别名的情况下，自动未用户添加别名
-                        if (selectColumnTable != null
-                            && selectColumnName != null
-                            && !"*".equals(selectColumnName)
-                            && StringUtil.isBlank(selectColumn.getAlias())
-                            && !(selectColumnTable instanceof SelectQueryTable)
-                            && !CPI.isSameTable(firstTable, selectColumnTable)
-                            && ArrayUtil.contains(firstTableColumns, selectColumnName)
-                        ) {
-                            QueryColumn newSelectColumn = selectColumn.as(selectColumnTable.getName() + "$" + selectColumnName);
-                            selectColumns.set(i, newSelectColumn);
-                        }
-                    }
-                }
-            }
+        // 多个表，需要处理重名字段
+        if (allTables.size() > 1) {
+            IntStream.range(0, selectColumns.size())
+                .boxed()
+                // 生成 索引-字段值 对应关系
+                .collect(Collectors.toMap(Function.identity(), selectColumns::get))
+                .entrySet()
+                .stream()
+                // 需要处理别名的情况
+                .filter(e -> !"*".equals(e.getValue().getName()))
+                .filter(e -> StringUtil.isNotBlank(e.getValue().getName()))
+                // 将相同字段对象放在一个集合里
+                .collect(Collectors.groupingBy(e -> e.getValue().getName(),
+                    Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList)))
+                .values()
+                .stream()
+                // 过滤出来重名的字段
+                .filter(e -> e.size() > 1)
+                // 合并所有需要加别名的字段
+                .flatMap(Collection::stream)
+                // 过滤出来需要添加别名的列
+                .filter(e -> StringUtil.isBlank(e.getValue().getAlias()))
+                .filter(e -> e.getValue().getTable() != null)
+                .filter(e -> StringUtil.isNotBlank(e.getValue().getTable().getName()))
+                // 添加别名并放回原集合索引位置
+                .forEach(e -> selectColumns.set(e.getKey(),
+                    e.getValue().as(e.getValue().getTable().getName() + "$" + e.getValue().getName())));
         }
 
         StringBuilder sqlBuilder = new StringBuilder();
