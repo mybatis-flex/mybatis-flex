@@ -46,11 +46,11 @@ public class CaseSearchQueryColumn extends QueryColumn implements HasParamsColum
         StringBuilder sql = new StringBuilder(SqlConsts.CASE);
         sql.append(SqlConsts.BLANK).append(queryColumn.toSelectSql(queryTables, dialect));
         for (When when : whens) {
-            sql.append(SqlConsts.WHEN).append(WrapperUtil.buildValue(when.searchValue));
-            sql.append(SqlConsts.THEN).append(WrapperUtil.buildValue(when.thenValue));
+            sql.append(SqlConsts.WHEN).append(WrapperUtil.buildValue(queryTables, when.searchValue));
+            sql.append(SqlConsts.THEN).append(WrapperUtil.buildValue(queryTables, when.thenValue));
         }
         if (elseValue != null) {
-            sql.append(SqlConsts.ELSE).append(WrapperUtil.buildValue(elseValue));
+            sql.append(SqlConsts.ELSE).append(WrapperUtil.buildValue(queryTables, elseValue));
         }
         sql.append(SqlConsts.END);
         return sql.toString();
