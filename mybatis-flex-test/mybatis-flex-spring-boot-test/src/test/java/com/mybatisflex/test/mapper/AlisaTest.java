@@ -114,4 +114,15 @@ class AlisaTest {
         printList(queryWrapper);
     }
 
+    @Test
+    void test06() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(SYS_USER.ID, SYS_USER.USER_NAME, SYS_USER.AGE, SYS_USER.BIRTHDAY)
+            .select(SYS_ROLE.CREATE_BY.as("sys_role$create_by"))
+            .from(SYS_USER.as("u"))
+            .leftJoin(SYS_ROLE).as("r").on(SYS_USER.ID.eq(SYS_ROLE.ID));
+
+        printList(queryWrapper);
+    }
+
 }
