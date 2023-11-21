@@ -136,7 +136,23 @@ public class ContentBuilder {
             : StrUtil.firstCharToLowerCase(tableInfo.getEntitySimpleName());
         content.append("    public ").append(tableDefClassName).append("() {\n")
             .append("        super").append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n")
-            .append("    }\n\n}\n");
+            .append("    }\n\n");
+        // 生成字符串常量 - 列名常量
+        content.append("    public static class Columns {\n");
+        columnInfos.forEach(columnInfo -> {
+            String columnPropertyName = StrUtil.buildFieldName(columnInfo.getProperty(), tableDefPropertiesNameStyle);
+            content.append("        public static final String ").append(columnPropertyName).append(" = \"")
+                .append(columnInfo.getColumn()).append("\";\n");
+        });
+        content.append("    }\n\n");
+        // 生成字符串常量 - 其它常量
+        content.append("    public static class Metas {\n");
+        content.append("        public static final String SCHEMA = \"").append(schema).append("\";\n");
+        content.append("        public static final String TABLE_NAME = \"").append(tableName).append("\";\n");
+        content.append("    }\n\n");
+
+        // end of tableDef class
+        content.append("\n}\n");
         return content.toString();
     }
 
