@@ -115,6 +115,9 @@ public class TableInfoFactory {
 
 
     private static Class<?> getEntityClass(Class<?> mapperClass) {
+        if (mapperClass == null || mapperClass == Object.class) {
+            return null;
+        }
         return getEntityClass(mapperClass, null);
     }
 
