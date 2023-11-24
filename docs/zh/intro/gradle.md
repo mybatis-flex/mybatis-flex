@@ -10,7 +10,7 @@
 
 ```kotlin
 dependencies {
-    implementation("com.mybatis-flex:mybatis-flex-core:1.7.4")
+    implementation("com.mybatis-flex:mybatis-flex-core:1.7.5")
 }
 ```
 
@@ -18,7 +18,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.mybatis-flex:mybatis-flex-core:1.7.4'
+    implementation 'com.mybatis-flex:mybatis-flex-core:1.7.5'
 }
 ```
 
@@ -28,7 +28,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("com.mybatis-flex:mybatis-flex-spring:1.7.4")
+    implementation("com.mybatis-flex:mybatis-flex-spring:1.7.5")
 }
 ```
 
@@ -36,7 +36,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.mybatis-flex:mybatis-flex-spring:1.7.4'
+    implementation 'com.mybatis-flex:mybatis-flex-spring:1.7.5'
 }
 ```
 
@@ -46,7 +46,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("com.mybatis-flex:mybatis-flex-spring-boot-starter:1.7.4")
+    implementation("com.mybatis-flex:mybatis-flex-spring-boot-starter:1.7.5")
 }
 ```
 
@@ -54,7 +54,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.mybatis-flex:mybatis-flex-spring-boot-starter:1.7.4'
+    implementation 'com.mybatis-flex:mybatis-flex-spring-boot-starter:1.7.5'
 }
 ```
 
@@ -70,7 +70,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    annotationProcessor("com.mybatis-flex:mybatis-flex-processor:1.7.4")
+    annotationProcessor("com.mybatis-flex:mybatis-flex-processor:1.7.5")
 }
 ```
 
@@ -78,6 +78,6 @@ dependencies {
 
 ```groovy
 dependencies {
-    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.7.4'
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.7.5'
 }
 ```
