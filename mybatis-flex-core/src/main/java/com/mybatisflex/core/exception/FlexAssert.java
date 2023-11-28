@@ -83,7 +83,7 @@ public final class FlexAssert {
      */
     public static <T> void notEmpty(T[] array, String param) {
         if (array == null || array.length == 0) {
-            throw FlexExceptions.wrap(param);
+            throw FlexExceptions.wrap(LocalizedFormats.ARRAY_NULL_OR_EMPTY, param);
         }
     }
 
