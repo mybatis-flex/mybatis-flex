@@ -1,4 +1,8 @@
-![](./docs/assets/images/logo_en.png)
+<h4 align="right"><strong>English</strong> | <a href="https://github.com/mybatis-flex/mybatis-flex/blob/main/readme_zh.md">简体中文</a></h4>
+
+<p align="center">
+    <img src="./docs/assets/images/logo_en.png"/>
+</p>
 
 # MyBatis-Flex is an elegant Mybatis Enhancement Framework.
 
@@ -33,20 +37,19 @@
 
 ## Features
 
-- 1、MyBatis-Flex is very lightweight, and it only depends on Mybatis and no other third-party dependencies
-- 2、Basic CRUD operator and paging query of Entity class
-- 3、Row mapping support, you can add, delete, modify and query the database without entity classes
-- 4、Support multiple databases, and expand through dialects flexibly.
-- 5、Support combined primary keys and different primary key content generation strategies
-- 6、Extremely friendly SQL query, IDE automatically prompts and no worries about mistakes
-- 7、More little surprises
+1. MyBatis-Flex is very lightweight, and it only depends on Mybatis and no other third-party dependencies
+2. Basic CRUD operator and paging query of Entity class
+3. Row mapping support, you can add, delete, modify and query the database without entity classes
+4. Support multiple databases, and expand through dialects flexibly
+5. Support combined primary keys and different primary key content generation strategies
+6. Extremely friendly SQL query, IDE automatically prompts and no worries about mistakes
+7. More little surprises
 
-## hello world（Without Spring）
+## hello world(Without Spring)
 
 **step 1: write entity class**
 
 ```java
-
 @Table("tb_account")
 public class Account {
 
@@ -56,7 +59,7 @@ public class Account {
     private Date birthday;
     private int sex;
 
-    //getter setter
+    // getter setter
 }
 ```
 
@@ -64,13 +67,13 @@ public class Account {
 
 ```java
 public interface AccountMapper extends BaseMapper<Account> {
-    //only Mapper interface define.
+    // only Mapper interface define
 }
 ```
 
 **step 3: start query data**
 
-e.g. 1： query by primary key
+e.g. 1: query by primary key
 
 ```java
 class HelloWorld {
@@ -90,7 +93,7 @@ class HelloWorld {
                 .getMapper(AccountMapper.class);
 
 
-        //id=100
+        // id = 100
         Account account = mapper.selectOneById(100);
     }
 }
@@ -99,7 +102,7 @@ class HelloWorld {
 e.g.2: query list
 
 ```java
-//use QueryWrapper to build query conditions
+// use QueryWrapper to build query conditions
 QueryWrapper query = QueryWrapper.create()
         .select()
         .from(ACCOUNT)
@@ -116,7 +119,7 @@ List<Account> accounts = mapper.selectListByQuery(query);
 e.g.3: paging query
 
 ```java
-//use QueryWrapper to build query conditions
+// use QueryWrapper to build query conditions
 QueryWrapper query = QueryWrapper.create()
         .select()
         .from(ACCOUNT)
@@ -138,7 +141,7 @@ Page<Account> accountPage = mapper.paginate(5, 10, query);
 ### select *
 
 ```java
-QueryWrapper query=new QueryWrapper();
+QueryWrapper query = new QueryWrapper();
 query.select().from(ACCOUNT)
 
 // SQL:
@@ -148,7 +151,7 @@ query.select().from(ACCOUNT)
 ### select columns
 
 ```java
-QueryWrapper query=new QueryWrapper();
+QueryWrapper query = new QueryWrapper();
 query.select(ACCOUNT.ID,ACCOUNT.USER_NAME).from(ACCOUNT)
 
 // SQL:
@@ -175,7 +178,7 @@ QueryWrapper query = new QueryWrapper()
 ### select functions
 
 ```java
- QueryWrapper query=new QueryWrapper()
+ QueryWrapper query = new QueryWrapper()
         .select(
             ACCOUNT.ID,
             ACCOUNT.USER_NAME,
@@ -193,7 +196,7 @@ QueryWrapper query = new QueryWrapper()
 ### where
 
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .where(ACCOUNT.ID.ge(100))
@@ -208,7 +211,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ### exists, not exists
 
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .where(ACCOUNT.ID.ge(100))
@@ -229,7 +232,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ### and (...) or (...)
 
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .where(ACCOUNT.ID.ge(100))
@@ -246,7 +249,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ### group by
 
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .groupBy(ACCOUNT.USER_NAME);
@@ -259,7 +262,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ### having
 
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+QueryWrapper queryWrapper = QueryWrapper.create()
     .select()
     .from(ACCOUNT)
     .groupBy(ACCOUNT.USER_NAME)
@@ -275,7 +278,7 @@ QueryWrapper queryWrapper=QueryWrapper.create()
 ### orderBy
 
 ```java
-QueryWrapper queryWrapper=QueryWrapper.create()
+QueryWrapper queryWrapper = QueryWrapper.create()
         .select()
         .from(ACCOUNT)
         .orderBy(ACCOUNT.AGE.asc(), ACCOUNT.USER_NAME.desc().nullsLast());
@@ -342,19 +345,17 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 ### Questions？
 
-**1、how to generate "ACCOUNT" class for QueryWrapper by Account.java ?**
+**1. How to generate "ACCOUNT" class for QueryWrapper by Account.java ?**
 
-build the project by IDE, or execute maven build command: `mvn clean package`
+Build the project by IDE, or execute maven build command: `mvn clean package`
 
 ![](./docs/assets/images/build_idea.png)
 
-
-
 ## More Samples
 
-- 1、[Mybatis-Flex Only (Native)](./mybatis-flex-test/mybatis-flex-native-test)
-- 2、[Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
-- 3、[Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
+1. [Mybatis-Flex Only (Native)](./mybatis-flex-test/mybatis-flex-native-test)
+2. [Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
+3. [Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
 
 
 
