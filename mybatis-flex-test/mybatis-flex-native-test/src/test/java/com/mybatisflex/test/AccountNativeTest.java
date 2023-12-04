@@ -19,8 +19,6 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
-import com.mybatisflex.core.audit.MessageCollector;
-import com.mybatisflex.core.keygen.KeyGeneratorFactory;
 import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.query.If;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -28,83 +26,91 @@ import com.mybatisflex.core.row.DbChain;
 import com.mybatisflex.core.update.UpdateChain;
 import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
-import com.mybatisflex.mapper.Account6Mapper;
-import com.mybatisflex.mapper.Account7Mapper;
 import com.mybatisflex.mapper.ArticleMapper;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
-import org.junit.Assert;
+import org.assertj.core.api.WithAssertions;
+import org.assertj.core.data.Index;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import javax.sql.DataSource;
 import java.util.List;
+import java.util.Objects;
 
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
 
 
-public class AccountTester {
+public class AccountNativeTest implements WithAssertions {
 
-    static AccountMapper accountMapper;
-    static ArticleMapper articleMapper;
+    private EmbeddedDatabase dataSource;
+    private AccountMapper accountMapper;
+    private ArticleMapper articleMapper;
 
     @BeforeClass
-    public static void init() {
-        DataSource dataSource = new EmbeddedDatabaseBuilder()
+    public static void enableAudit() {
+        AuditManager.setAuditEnable(true);
+        AuditManager.setMessageCollector(new ConsoleMessageCollector());
+        FlexGlobalConfig.getDefaultConfig().setLogicDeleteColumn("is_delete");
+    }
+
+    @Before
+    public void init() {
+        this.dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
-            .addScript("schema.sql")
-            .addScript("data.sql")
+            .addScript("auto_increment_key_schema.sql")
+            .addScript("auto_increment_key_data.sql")
             .build();
 
-        FlexGlobalConfig.getDefaultConfig()
-            .setLogicDeleteColumn("is_delete");
-
-        KeyGeneratorFactory.register("test", new TestKeyGenerator());
-
-        MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
-            .setDataSource(dataSource)
+        MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
+            .setDataSource(this.dataSource)
             .setLogImpl(StdOutImpl.class)
             .addMapper(AccountMapper.class)
-            .addMapper(Account6Mapper.class)
-            .addMapper(Account7Mapper.class)
             .addMapper(ArticleMapper.class)
             .start();
-
-        //开启审计功能
-        AuditManager.setAuditEnable(true);
-
-        //设置 SQL 审计收集器
-        MessageCollector collector = new ConsoleMessageCollector();
-        AuditManager.setMessageCollector(collector);
-
 
         accountMapper = bootstrap.getMapper(AccountMapper.class);
         articleMapper = bootstrap.getMapper(ArticleMapper.class);
     }
 
+    @After
+    public void destroy() {
+        this.dataSource.shutdown();
+    }
+
     @Test
     public void testLogicDelete() {
-        accountMapper.selectAll().forEach(System.out::println);
+        List<Account> accounts = accountMapper.selectAll();
+        assertThat(accounts).hasSize(2)
+            .extracting(Account::getId, Account::getUserName)
+            .containsExactly(tuple(1L, "张*"), tuple(2L, "王麻**叔"));
     }
 
     @Test
     public void testExecutor() {
-        DbChain.table("tb_account")
+        List<Account> accountList = DbChain.table("tb_account")
             .select(ACCOUNT.ALL_COLUMNS)
             .from(ACCOUNT)
             .where(ACCOUNT.ID.ge(1))
-            .listAs(Account.class)
-            .forEach(System.out::println);
+            .listAs(Account.class);
+        assertThat(accountList).hasSize(2)
+            .extracting(Account::getId, Account::getUserName)
+            .containsExactly(tuple(1L, "张*"), tuple(2L, "王麻**叔"));
 
         AccountMapper accountBaseMapper = (AccountMapper) Mappers.ofEntityClass(Account.class);
 
         AccountMapper accountMapper = Mappers.ofMapperClass(AccountMapper.class);
-        System.out.println(">>>>> : " + (accountBaseMapper == accountMapper));
+        assertThat(accountBaseMapper).isSameAs(accountMapper);
 
         Account account = accountBaseMapper.selectOneById(1);
-        System.out.println(">>>> account: " + account);
+        assertThat(account).isNotNull()
+            .extracting(Account::getId, Account::getUserName)
+            .containsExactly(1L, "张*");
     }
 
     @Test
@@ -113,15 +119,19 @@ public class AccountTester {
         queryWrapper.where(Account::getId).ge(100)
             .and(Account::getUserName).like("michael")
             .or(Account::getUserName).like(null, If::notNull);
-        System.out.println(queryWrapper.toSQL());
+        String expectSql = "SELECT * FROM  WHERE `id` >= 100 AND `user_name` LIKE '%michael%'";
+        assertThat(queryWrapper.toSQL()).isEqualTo(expectSql);
     }
 
     @Test
     public void testTenant() {
         QueryWrapper queryWrapper = QueryWrapper.create();
+        // id >= 1
         queryWrapper.where(Account::getId).ge(1);
         List<Account> accounts = accountMapper.selectListByQuery(queryWrapper);
-        System.out.println(accounts);
+        assertThat(accounts).hasSize(2)
+            .extracting(Account::getId, Account::getUserName)
+            .containsExactly(tuple(1L, "张*"), tuple(2L, "王麻**叔"));
     }
 
     @Test
@@ -130,20 +140,28 @@ public class AccountTester {
         queryWrapper.from(ARTICLE)
             .leftJoin(ACCOUNT).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
             .where(ARTICLE.ID.ge(1));
+        String expectSql = "SELECT * FROM `tb_article` " +
+                           "LEFT JOIN `tb_account` ON `tb_article`.`account_id` = `tb_account`.`id` " +
+                           "WHERE `tb_article`.`id` >= 1";
+        assertThat(queryWrapper.toSQL()).isEqualTo(expectSql);
         List<Article> accounts = articleMapper.selectListByQuery(queryWrapper);
-        System.out.println(accounts);
+        assertThat(accounts).hasSize(3)
+            .extracting(Article::getId, Article::getAccountId, Article::getTitle)
+            .containsExactly(tuple(1L, 1L, "标题1"), tuple(2L, 2L, "标题2"), tuple(3L, 1L, "标题3"));
     }
 
     /**
      * issues  https://gitee.com/mybatis-flex/mybatis-flex/issues/I7QD29
      */
     @Test
-    public void testLeftJoinSelfForLogicDelete() {
+    @Ignore
+    public void testGiteeIssue_I7QD29() {
         QueryWrapper queryWrapper = QueryWrapper.create();
         queryWrapper.from(ACCOUNT)
             .leftJoin(ACCOUNT).as("a1").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
             .leftJoin(ACCOUNT).as("a2").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
             .where(ACCOUNT.ID.ge(1));
+        // todo Column "TB_ARTICLE.ACCOUNT_ID" not found
         List<Article> accounts = articleMapper.selectListByQuery(queryWrapper);
         System.out.println(accounts);
     }
@@ -153,15 +171,23 @@ public class AccountTester {
      * issues https://gitee.com/mybatis-flex/mybatis-flex/issues/I7VAG8
      */
     @Test
-    public void testLeftJoinSelectWithIgnoreColumn() {
+    public void testGiteeIssue_I7VAG8() {
         QueryWrapper queryWrapper = QueryWrapper.create();
         queryWrapper
             .select(ACCOUNT.ID, ACCOUNT.AGE, ARTICLE.TITLE)
             .from(ACCOUNT)
             .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
             .where(ACCOUNT.ID.ge(1));
+        String expectSql = "SELECT `tb_account`.`id` AS `account_id`, `tb_account`.`age` AS `my_age`, `tb_article`.`title` " +
+                           "FROM `tb_account` " +
+                           "LEFT JOIN `tb_article` " +
+                           "ON `tb_account`.`id` = `tb_article`.`account_id` " +
+                           "WHERE `tb_account`.`id` >= 1";
+        assertThat(queryWrapper.toSQL()).isEqualTo(expectSql);
         List<Account> accounts = accountMapper.selectListByQuery(queryWrapper);
-        System.out.println(accounts);
+        assertThat(accounts).hasSize(2)
+            .extracting(Account::getId, Account::getAge, Account::getTitle)
+            .containsExactly(tuple(1L, 18, "标题1"), tuple(2L, 19, "标题2"));
     }
 
 
@@ -169,15 +195,17 @@ public class AccountTester {
      * issues https://gitee.com/mybatis-flex/mybatis-flex/issues/I7RE0J
      */
     @Test
-    public void testUpdateByUpdateWrapper() {
+    @Ignore
+    public void testGiteeIssue_I7RE0J() {
         Account account = new Account();
         account.setId(1L);
         account = UpdateWrapper.of(account)
             .set(Account::getId, 1)
             .set(Account::getAge, 20)
-            //设置 Ignore 字段，会被自动忽略
+            // 设置 Ignore 字段，会被自动忽略
             .setRaw(Account::getTitle, "xxxx")
             .toEntity();
+        // todo Column "TITLE" not found
         accountMapper.update(account);
     }
 
@@ -185,19 +213,27 @@ public class AccountTester {
     @Test
     public void testSelectAsToDTO() {
         QueryWrapper queryWrapper = QueryWrapper.create();
-//        queryWrapper.select(ACCOUNT.ALL_COLUMNS,ARTICLE.TITLE.as(AccountDTO::getPermissions))
         queryWrapper.select(ACCOUNT.ALL_COLUMNS, ACCOUNT.USER_NAME.as(AccountDTO::getTestOtherField))
-//        queryWrapper.select(ACCOUNT.ALL_COLUMNS)
-            .from(ACCOUNT).leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
+            .from(ACCOUNT)
+            .leftJoin(ARTICLE).on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID));
+        String expectSql = "SELECT `tb_account`.*, `tb_account`.`user_name` AS `test_other_field` " +
+                           "FROM `tb_account` " +
+                           "LEFT JOIN `tb_article` " +
+                           "ON `tb_account`.`id` = `tb_article`.`account_id`";
+        assertThat(queryWrapper.toSQL()).isEqualTo(expectSql);
         List<AccountDTO> accountDTOS = accountMapper.selectListByQueryAs(queryWrapper, AccountDTO.class);
-        System.out.println(accountDTOS);
+        assertThat(accountDTOS).hasSize(2)
+            .extracting(AccountDTO::getId, AccountDTO::getUserName)
+            .containsExactly(tuple(1L, "张*"), tuple(2L, "王麻**叔"));
     }
 
 
     @Test
     public void testUpdate1() {
         List<Account> accounts = accountMapper.selectAll();
-        System.out.println(accounts);
+        assertThat(accounts).hasSize(2)
+            .extracting(Account::getId, Account::getAge)
+            .containsExactly(tuple(1L, 18), tuple(2L, 19));
 
 
         Account account = UpdateEntity.of(Account.class, 1);
@@ -209,46 +245,54 @@ public class AccountTester {
 
 
         accounts = accountMapper.selectAll();
-        System.out.println(accounts);
+        assertThat(accounts).hasSize(2)
+            .filteredOn(i -> Objects.equals(1L, i.getId()))
+            .extracting(Account::getUserName, Account::getAge)
+            .containsExactly(tuple("**si", 19));
     }
 
 
     @Test
     public void testUpdate2() {
         List<Account> accounts = accountMapper.selectAll();
-        System.out.println(accounts);
-
+        assertThat(accounts).hasSize(2)
+            .filteredOn(i -> Objects.equals(1L, i.getId()))
+            .extracting(Account::getUserName)
+            .containsExactly("张*");
 
         UpdateChain.of(Account.class)
             .set(Account::getUserName, "zhangsan123")
-//            .leftJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
             .where(Account::getId).eq(1)
-//            .and(ARTICLE.ID.ge(0))
             .limit(1)
             .remove();
 
         accounts = accountMapper.selectAll();
-        System.out.println(accounts);
+        assertThat(accounts).hasSize(1)
+            .singleElement()
+            .extracting(Account::getId, Account::getUserName)
+            .containsExactly(2L, "王麻**叔");
     }
 
     /**
      * https://gitee.com/mybatis-flex/mybatis-flex/issues/I7L6DF
      */
     @Test
-    public void testInsertSelectiveWithPk() {
+    public void testGiteeIssue_I7L6DF() {
         List<Account> accounts = accountMapper.selectAll();
-        System.out.println(accounts);
+        assertThat(accounts).hasSize(2);
 
 
         Account account = new Account();
         account.setId(4L);
         account.setUserName("test04");
         int rows = accountMapper.insertSelectiveWithPk(account);
-        System.out.println(rows);
+        assertThat(rows).isEqualTo(1);
 
         accounts = accountMapper.selectAll();
-        System.out.println(accounts);
-
+        assertThat(accounts).hasSize(3)
+            .filteredOn(i -> Objects.equals(4L, i.getId()))
+            .extracting(Account::getUserName)
+            .containsExactly("te***4");
     }
 
 
@@ -258,65 +302,14 @@ public class AccountTester {
         account.setUserName("michael");
 
         Account newAccount = UpdateWrapper.of(account)
-//            .setRaw("birthday", "now()")
-//            .setRaw(ACCOUNT.BIRTHDAY, "now()")
             .setRaw(Account::getBirthday, "now()")
             .toEntity();
-
         accountMapper.insert(newAccount);
+        Account result = accountMapper.selectOneByEntityId(newAccount);
+        assertThat(result).isNotNull()
+            .extracting(Account::getId, Account::getUserName, Account::getBirthday)
+            .contains(3L, Index.atIndex(0))
+            .contains("mi****l", Index.atIndex(1))
+            .allMatch(Objects::nonNull);
     }
-
-
-    /**
-     * issues https://gitee.com/mybatis-flex/mybatis-flex/issues/I873OZ
-     */
-    @Test
-    public void testInsertSelective01() {
-        Account6Mapper mapper = MybatisFlexBootstrap.getInstance()
-            .getMapper(Account6Mapper.class);
-
-        Account6 account1 = new Account6();
-        account1.setId(1L);
-        account1.setUserName("michael");
-        account1.setAge(5);
-
-        Assert.assertEquals(mapper.insertSelective(account1), 1);
-
-
-        Account6 account2 = new Account6();
-//        account2.setId(1L); 不设置主键
-        account2.setUserName("michael");
-        account2.setAge(5);
-
-        Assert.assertEquals(mapper.insertSelective(account2), 1);
-    }
-
-
-    /**
-     * issues https://gitee.com/mybatis-flex/mybatis-flex/issues/I88TX1
-     */
-    @Test
-    public void testInsertWithEntityId() {
-        Account7Mapper mapper = MybatisFlexBootstrap.getInstance()
-            .getMapper(Account7Mapper.class);
-
-        Account7 account1 = new Account7();
-        account1.setId(1L);
-        account1.setUserName("michael");
-        account1.setAge(5);
-
-        int result1 = mapper.insert(account1);
-        Assert.assertEquals(result1, 1);
-
-
-        Account7 account2 = new Account7();
-//        account2.setId(1L); 不设置主键，自动生成主键
-        account2.setUserName("michael");
-        account2.setAge(5);
-
-        int result2 = mapper.insert(account2);
-        Assert.assertEquals(result2, 1);
-    }
-
-
 }

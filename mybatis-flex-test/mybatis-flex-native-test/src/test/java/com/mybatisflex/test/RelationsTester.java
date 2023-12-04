@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.test.relation.onetoone;
+package com.mybatisflex.test;
 
 import com.alibaba.fastjson.JSON;
 import com.mybatisflex.core.MybatisFlexBootstrap;
@@ -26,6 +26,10 @@ import com.mybatisflex.core.relation.RelationManager;
 import com.mybatisflex.test.relation.mapper.AccountMapper;
 import com.mybatisflex.test.relation.mapper.BookMapper;
 import com.mybatisflex.test.relation.mapper.MenuMapper;
+import com.mybatisflex.test.relation.onetoone.Account;
+import com.mybatisflex.test.relation.onetoone.AccountDTO;
+import com.mybatisflex.test.relation.onetoone.Book;
+import com.mybatisflex.test.relation.onetoone.Menu;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -73,7 +77,7 @@ public class RelationsTester {
 
     @Test
     public void testOneToOne() {
-        List<Account> accounts = accountMapper.selectAllWithRelations();
+        List<com.mybatisflex.test.relation.onetoone.Account> accounts = accountMapper.selectAllWithRelations();
         System.out.println(JSON.toJSONString(accounts));
     }
 
@@ -88,7 +92,7 @@ public class RelationsTester {
 
     @Test
     public void testManyToMany1() {
-        List<Account> accounts = accountMapper.selectAll();
+        List<com.mybatisflex.test.relation.onetoone.Account> accounts = accountMapper.selectAll();
         System.out.println(">>>>>>1: " + accounts);
         RelationManager.queryRelations(accountMapper, accounts);
         System.out.println(">>>>>>2: " + accounts);
@@ -96,7 +100,7 @@ public class RelationsTester {
 
     @Test
     public void testAsDto() {
-        List<AccountDTO> accounts = accountMapper.selectListWithRelationsByQueryAs(QueryWrapper.create(), AccountDTO.class);
+        List<com.mybatisflex.test.relation.onetoone.AccountDTO> accounts = accountMapper.selectListWithRelationsByQueryAs(QueryWrapper.create(), AccountDTO.class);
         System.out.println(">>>>>>1: " + accounts);
     }
 
