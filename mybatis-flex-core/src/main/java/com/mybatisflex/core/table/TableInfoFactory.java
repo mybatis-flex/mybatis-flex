@@ -118,17 +118,62 @@ public class TableInfoFactory {
         if (mapperClass == null || mapperClass == Object.class) {
             return null;
         }
+        return getEntityClass(mapperClass, null);
+    }
+
+    private static Class<?> getEntityClass(Class<?> mapperClass, Type[] actualTypeArguments) {
+        // 检查基接口
         Type[] genericInterfaces = mapperClass.getGenericInterfaces();
-        if (genericInterfaces.length == 1) {
-            Type type = genericInterfaces[0];
+        for (Type type : genericInterfaces) {
             if (type instanceof ParameterizedType) {
-                Type actualTypeArgument = ((ParameterizedType) type).getActualTypeArguments()[0];
-                return actualTypeArgument instanceof Class ? (Class<?>) actualTypeArgument : null;
+                // 泛型基接口
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                Type rawType = parameterizedType.getRawType();
+                Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                adjustTypeArguments(mapperClass, actualTypeArguments, typeArguments);
+                if (rawType == BaseMapper.class) {
+                    // 找到了
+                    if (typeArguments[0] instanceof Class) {
+                        return (Class<?>) typeArguments[0];
+                    }
+                } else if (rawType instanceof Class) {
+                    // 其他泛型基接口
+                    Class<?> entityClass = getEntityClass((Class<?>) rawType, typeArguments);
+                    if (entityClass != null) {
+                        return entityClass;
+                    }
+                }
             } else if (type instanceof Class) {
-                return getEntityClass((Class<?>) type);
+                // 其他基接口
+                Class<?> entityClass = getEntityClass((Class<?>) type);
+                if (entityClass != null) {
+                    return entityClass;
+                }
             }
         }
-        return getEntityClass(mapperClass.getSuperclass());
+        // 检查基类
+        Class<?> superclass = mapperClass.getSuperclass();
+        if (superclass == null || superclass == Object.class) {
+            return null;
+        }
+        Type[] typeArguments = superclass.getTypeParameters();
+        adjustTypeArguments(mapperClass, actualTypeArguments, typeArguments);
+        return getEntityClass(superclass, typeArguments);
+    }
+
+    private static void adjustTypeArguments(Class<?> subclass, Type[] subclassTypeArguments, Type[] typeArguments) {
+        for (int i = 0; i < typeArguments.length; i++) {
+            if (typeArguments[i] instanceof TypeVariable) {
+                TypeVariable<?> typeVariable = (TypeVariable<?>) typeArguments[i];
+                TypeVariable<?>[] typeParameters = subclass.getTypeParameters();
+                for (int j = 0; j < typeParameters.length; j++) {
+                    if (Objects.equals(typeVariable.getName(), typeParameters[j].getName())) {
+                        typeArguments[i] = subclassTypeArguments[j];
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 
