@@ -18,6 +18,7 @@ public class DB2105Dialect extends CommonsDialectImpl {
       //TODO: 根据DatabaseMetaData获取数据库厂商名和版本号
     public static final String DB2_1005_PRODUCT_VERSION = "1005";
     public static final String DB2_PRODUCT_NAME = "DB2";
+    private static final Pattern pattern = Pattern.compile("(\\S+)\\s+(\\S*)\\s*("+NULLS_FIRST.trim()+"|"+NULLS_LAST.trim()+")");
 
 
     public DB2105Dialect(KeywordWrap keywordWrap, LimitOffsetProcessor limitOffsetProcessor) {
@@ -43,7 +44,6 @@ public class DB2105Dialect extends CommonsDialectImpl {
     }
 
     private  String convertOderbySqlForDB2105(String sql) {
-        Pattern pattern = Pattern.compile("(\\S+)\\s+(\\S+)\\s+("+NULLS_FIRST.trim()+"|"+NULLS_LAST.trim()+")");
         Matcher matcher = pattern.matcher(sql);
         if (matcher.find()) {
             String column = matcher.group(1);
