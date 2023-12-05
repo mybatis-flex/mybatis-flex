@@ -3,6 +3,7 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
+import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.mapper.Account6Mapper;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -28,6 +29,8 @@ public class Account6Test implements WithAssertions {
     private EmbeddedDatabase dataSource;
     private Account6Mapper mapper;
 
+    private static final String DATA_SOURCE_KEY = "none_key";
+
     @BeforeClass
     public static void enableAudit() {
         AuditManager.setAuditEnable(true);
@@ -43,10 +46,12 @@ public class Account6Test implements WithAssertions {
             .build();
 
         MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
-            .setDataSource(this.dataSource)
+            .setDataSource(DATA_SOURCE_KEY, this.dataSource)
             .setLogImpl(StdOutImpl.class)
             .addMapper(Account6Mapper.class)
             .start();
+
+        DataSourceKey.use(DATA_SOURCE_KEY);
 
         mapper = bootstrap.getMapper(Account6Mapper.class);
     }
@@ -54,6 +59,7 @@ public class Account6Test implements WithAssertions {
     @After
     public void destroy() {
         this.dataSource.shutdown();
+        DataSourceKey.clear();
     }
 
     /**

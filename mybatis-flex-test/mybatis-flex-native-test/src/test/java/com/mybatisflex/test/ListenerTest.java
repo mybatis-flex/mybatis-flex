@@ -18,13 +18,16 @@ package com.mybatisflex.test;
 
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
+import com.mybatisflex.core.datasource.DataSourceKey;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.assertj.core.api.WithAssertions;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import javax.sql.DataSource;
 import java.util.Date;
 
 /**
@@ -35,9 +38,14 @@ import java.util.Date;
  */
 public class ListenerTest implements WithAssertions {
 
-    @Test
-    public void onInsertInterface() {
-        DataSource dataSource = new EmbeddedDatabaseBuilder()
+    private static final String DATA_SOURCE_KEY = "listener";
+
+    private AccountMapper accountMapper;
+    private EmbeddedDatabase dataSource;
+
+    @Before
+    public void init() {
+        dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
             .addScript("auto_increment_key_schema.sql")
             .build();
@@ -48,11 +56,22 @@ public class ListenerTest implements WithAssertions {
 
         MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
             .setLogImpl(StdOutImpl.class)
-            .setDataSource(dataSource)
+            .setDataSource(DATA_SOURCE_KEY, dataSource)
             .addMapper(AccountMapper.class)
             .start();
 
-        AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
+        DataSourceKey.use(DATA_SOURCE_KEY);
+        accountMapper = bootstrap.getMapper(AccountMapper.class);
+    }
+
+    @After
+    public void destroy() {
+        this.dataSource.shutdown();
+        DataSourceKey.clear();
+    }
+
+    @Test
+    public void onInsertInterface() {
         Account account = new Account();
         account.setAge(-2);
         account.setUserName("on insert");

@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS `tb_account`
 (
-    `id`        INTEGER auto_increment,
+    `id`        INTEGER,
     `user_name` VARCHAR(100),
-    `age`       Integer
+    `age`       Integer,
+    PRIMARY KEY(id)
 );
-
 
 CREATE TABLE IF NOT EXISTS `tb_idcard`
 (
@@ -13,39 +13,38 @@ CREATE TABLE IF NOT EXISTS `tb_idcard`
     `content`    text
 );
 
-
 CREATE TABLE IF NOT EXISTS `tb_idcard_mapping`
 (
     `account_id` Integer,
     `idcard_id`      Integer
 );
 
-
-
-
 CREATE TABLE IF NOT EXISTS `tb_book`
 (
-    `id`        INTEGER auto_increment,
+    `id`        INTEGER,
     `account_id` Integer,
     `title`      VARCHAR(100),
-    `content`    text
+    `content`    text,
+    PRIMARY KEY(id)
 );
 
 CREATE TABLE IF NOT EXISTS `tb_role`
 (
-    `id`        INTEGER auto_increment,
-    `name`      VARCHAR(100)
+    `id`        INTEGER,
+    `name`      VARCHAR(100),
+    PRIMARY KEY(id)
 );
 
 CREATE TABLE IF NOT EXISTS `tb_role_mapping`
 (
-    `account_id`        INTEGER ,
+    `account_id`   INTEGER ,
     `role_id`      INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS `tb_menu`
 (
-    `id`        INTEGER auto_increment,
-    `parent_id`        INTEGER,
-    `name`      VARCHAR(100)
+    `id`        INTEGER,
+    `parent_id` INTEGER,
+    `name`      VARCHAR(100),
+    PRIMARY KEY(id)
 );

@@ -1,0 +1,85 @@
+[
+    {
+        "id": 1,
+        "userName": "孙悟空",
+        "age": 18,
+        "idCard": null,
+        "books": [],
+        "roles": [],
+        "rolesMap": {
+            "3": {
+                "id": 3,
+                "name": "角色3",
+                "accounts": [
+                    {
+                        "id": 1,
+                        "userName": "孙悟空",
+                        "age": 18,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    },
+                    {
+                        "id": 2,
+                        "userName": "猪八戒",
+                        "age": 19,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "id": 2,
+        "userName": "猪八戒",
+        "age": 19,
+        "idCard": null,
+        "books": [],
+        "roles": [],
+        "rolesMap": {
+            "2": {
+                "id": 2,
+                "name": "角色2",
+                "accounts": [
+                    {
+                        "id": 2,
+                        "userName": "猪八戒",
+                        "age": 19,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    }
+                ]
+            },
+            "3": {
+                "id": 3,
+                "name": "角色3",
+                "accounts": [
+                    {
+                        "id": 1,
+                        "userName": "孙悟空",
+                        "age": 18,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    },
+                    {
+                        "id": 2,
+                        "userName": "猪八戒",
+                        "age": 19,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    }
+                ]
+            }
+        }
+    }
+]

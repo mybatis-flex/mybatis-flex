@@ -16,13 +16,11 @@
 
 package com.mybatisflex.test;
 
-import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.row.DbChain;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowKey;
-import com.mybatisflex.core.row.RowUtil;
 import lombok.SneakyThrows;
 import org.assertj.core.api.WithAssertions;
 import org.junit.After;
@@ -46,6 +44,7 @@ public class DbChainTest implements WithAssertions {
 
     private static final String[] PROPERTIES = new String[]{"ID", "USER_NAME", "AGE", "BIRTHDAY"};
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final String ENVIRONMENT_ID = "db_chain";
 
     private EmbeddedDatabase database;
 
@@ -63,9 +62,13 @@ public class DbChainTest implements WithAssertions {
             .addScript("auto_increment_key_data.sql")
             .build();
 
-        new MybatisFlexBootstrap()
-            .setDataSource(this.database)
-            .start();
+        // Environment environment = new Environment(ENVIRONMENT_ID, new JdbcTransactionFactory(), this.database);
+        // FlexConfiguration configuration = new FlexConfiguration(environment);
+        // configuration.addMapper(RowMapper.class);
+        // FlexGlobalConfig flexGlobalConfig = new FlexGlobalConfig();
+        // flexGlobalConfig.setConfiguration(configuration);
+        // flexGlobalConfig.setSqlSessionFactory(new DefaultSqlSessionFactory(configuration));
+        // FlexGlobalConfig.setConfig(environment.getId(), flexGlobalConfig, false);
     }
 
     @After
@@ -122,7 +125,6 @@ public class DbChainTest implements WithAssertions {
         assertThat(count).isEqualTo(1L);
 
         List<Row> tb_account = DbChain.table("tb_account").list();
-        RowUtil.printPretty(tb_account);
 
         assertThat(tb_account).hasSize(1)
             .extracting(PROPERTIES)

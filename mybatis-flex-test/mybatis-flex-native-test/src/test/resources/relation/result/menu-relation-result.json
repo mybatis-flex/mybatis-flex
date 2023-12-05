@@ -1,0 +1,120 @@
+[
+    {
+        "id": 1,
+        "parentId": 0,
+        "name": "顶级菜单1",
+        "parent": null,
+        "children": [
+            {
+                "id": 4,
+                "parentId": 1,
+                "name": "子菜单4",
+                "parent": {
+                    "id": 1,
+                    "parentId": 0,
+                    "name": "顶级菜单1",
+                    "parent": null,
+                    "children": null
+                },
+                "children": [
+                    {
+                        "id": 9,
+                        "parentId": 4,
+                        "name": "子菜单9",
+                        "parent": null,
+                        "children": null
+                    },
+                    {
+                        "id": 10,
+                        "parentId": 4,
+                        "name": "子菜单10",
+                        "parent": null,
+                        "children": null
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "parentId": 1,
+                "name": "子菜单5",
+                "parent": {
+                    "id": 1,
+                    "parentId": 0,
+                    "name": "顶级菜单1",
+                    "parent": null,
+                    "children": null
+                },
+                "children": [
+                    {
+                        "id": 11,
+                        "parentId": 5,
+                        "name": "子菜单11",
+                        "parent": null,
+                        "children": null
+                    },
+                    {
+                        "id": 12,
+                        "parentId": 5,
+                        "name": "子菜单12",
+                        "parent": null,
+                        "children": null
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "parentId": 0,
+        "name": "顶级菜单2",
+        "parent": null,
+        "children": []
+    },
+    {
+        "id": 3,
+        "parentId": 0,
+        "name": "顶级菜单3",
+        "parent": null,
+        "children": [
+            {
+                "id": 6,
+                "parentId": 3,
+                "name": "子菜单6",
+                "parent": {
+                    "id": 3,
+                    "parentId": 0,
+                    "name": "顶级菜单3",
+                    "parent": null,
+                    "children": null
+                },
+                "children": []
+            },
+            {
+                "id": 7,
+                "parentId": 3,
+                "name": "子菜单7",
+                "parent": {
+                    "id": 3,
+                    "parentId": 0,
+                    "name": "顶级菜单3",
+                    "parent": null,
+                    "children": null
+                },
+                "children": []
+            },
+            {
+                "id": 8,
+                "parentId": 3,
+                "name": "子菜单8",
+                "parent": {
+                    "id": 3,
+                    "parentId": 0,
+                    "name": "顶级菜单3",
+                    "parent": null,
+                    "children": null
+                },
+                "children": []
+            }
+        ]
+    }
+]

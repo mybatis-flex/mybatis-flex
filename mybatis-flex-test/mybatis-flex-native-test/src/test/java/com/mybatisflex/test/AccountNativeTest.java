@@ -19,6 +19,7 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
+import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.query.If;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -52,6 +53,8 @@ public class AccountNativeTest implements WithAssertions {
     private AccountMapper accountMapper;
     private ArticleMapper articleMapper;
 
+    private static final String DATA_SOURCE_KEY = "auto_increment";
+
     @BeforeClass
     public static void enableAudit() {
         AuditManager.setAuditEnable(true);
@@ -68,11 +71,13 @@ public class AccountNativeTest implements WithAssertions {
             .build();
 
         MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
-            .setDataSource(this.dataSource)
+            .setDataSource(DATA_SOURCE_KEY, this.dataSource)
             .setLogImpl(StdOutImpl.class)
             .addMapper(AccountMapper.class)
             .addMapper(ArticleMapper.class)
             .start();
+
+        DataSourceKey.use(DATA_SOURCE_KEY);
 
         accountMapper = bootstrap.getMapper(AccountMapper.class);
         articleMapper = bootstrap.getMapper(ArticleMapper.class);
@@ -81,6 +86,7 @@ public class AccountNativeTest implements WithAssertions {
     @After
     public void destroy() {
         this.dataSource.shutdown();
+        DataSourceKey.clear();
     }
 
     @Test
@@ -154,18 +160,20 @@ public class AccountNativeTest implements WithAssertions {
      * issues  https://gitee.com/mybatis-flex/mybatis-flex/issues/I7QD29
      */
     @Test
-    @Ignore
     public void testGiteeIssue_I7QD29() {
         QueryWrapper queryWrapper = QueryWrapper.create();
         queryWrapper.from(ACCOUNT)
-            .leftJoin(ACCOUNT).as("a1").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
-            .leftJoin(ACCOUNT).as("a2").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+            .leftJoin(ARTICLE).as("a1").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+            .leftJoin(ARTICLE).as("a2").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
             .where(ACCOUNT.ID.ge(1));
-        // todo Column "TB_ARTICLE.ACCOUNT_ID" not found
         List<Article> accounts = articleMapper.selectListByQuery(queryWrapper);
-        System.out.println(accounts);
+        String expectSql = "SELECT * FROM `tb_account` " +
+                           "LEFT JOIN `tb_article` AS `a1` ON `tb_account`.`id` = `a1`.`account_id` AND `a1`.`is_delete` = 0 " +
+                           "LEFT JOIN `tb_article` AS `a2` ON `tb_account`.`id` = `a1`.`account_id` AND `a2`.`is_delete` = 0 " +
+                           "WHERE `tb_account`.`id` >= 1";
+        assertThat(queryWrapper.toSQL()).isEqualTo(expectSql);
+        assertThat(accounts).hasSize(9);
     }
-
 
     /**
      * issues https://gitee.com/mybatis-flex/mybatis-flex/issues/I7VAG8
@@ -205,7 +213,7 @@ public class AccountNativeTest implements WithAssertions {
             // 设置 Ignore 字段，会被自动忽略
             .setRaw(Account::getTitle, "xxxx")
             .toEntity();
-        // todo Column "TITLE" not found
+        // todo title not found
         accountMapper.update(account);
     }
 

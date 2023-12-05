@@ -19,6 +19,7 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
+import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.query.QueryChain;
 import com.mybatisflex.core.update.UpdateChain;
 import lombok.SneakyThrows;
@@ -44,6 +45,8 @@ public class UpdateChainTest implements WithAssertions {
     private AccountMapper accountMapper;
     private EmbeddedDatabase dataSource;
 
+    private static final String DATA_SOURCE_KEY = "ds2";
+
     @BeforeClass
     public static void enableAudit() {
         AuditManager.setAuditEnable(true);
@@ -59,16 +62,19 @@ public class UpdateChainTest implements WithAssertions {
             .build();
 
         MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
-            .setDataSource(this.dataSource)
+            .setDataSource(DATA_SOURCE_KEY, this.dataSource)
             .setLogImpl(StdOutImpl.class)
             .addMapper(AccountMapper.class)
             .start();
+
+        DataSourceKey.use(DATA_SOURCE_KEY);
         accountMapper = bootstrap.getMapper(AccountMapper.class);
     }
 
     @After
     public void destroy() {
         this.dataSource.shutdown();
+        DataSourceKey.clear();
     }
 
     @Test

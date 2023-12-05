@@ -18,6 +18,7 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
+import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.mapper.Account5Mapper;
 import org.assertj.core.api.WithAssertions;
 import org.junit.After;
@@ -34,6 +35,8 @@ public class AccountInsertWithArrayAttrTest implements WithAssertions {
     private Account5Mapper accountMapper;
     private EmbeddedDatabase dataSource;
 
+    private static final String DATA_SOURCE_KEY = "data05";
+
     @BeforeClass
     public static void enableAudit() {
         AuditManager.setAuditEnable(true);
@@ -49,9 +52,11 @@ public class AccountInsertWithArrayAttrTest implements WithAssertions {
             .build();
 
         MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
-            .setDataSource(dataSource)
+            .setDataSource(DATA_SOURCE_KEY, dataSource)
             .addMapper(Account5Mapper.class)
             .start();
+
+        DataSourceKey.use(DATA_SOURCE_KEY);
 
         accountMapper = bootstrap.getMapper(Account5Mapper.class);
     }
@@ -59,6 +64,7 @@ public class AccountInsertWithArrayAttrTest implements WithAssertions {
     @After
     public void destroy() {
         this.dataSource.shutdown();
+        DataSourceKey.clear();
     }
 
     @Test
@@ -70,7 +76,7 @@ public class AccountInsertWithArrayAttrTest implements WithAssertions {
         account.setDataScope(new Long[]{1L, 2L});
         accountMapper.insertWithPk(account, false);
 
-        // todo 查询有问题，会抛出 argument type mismatch
+        // todo argument type mismatch
         Account5 result = accountMapper.selectOneById(3L);
         assertThat(result).isNotNull()
             .extracting(Account5::getUserName, Account5::getDataScope)
