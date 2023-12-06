@@ -1,4 +1,4 @@
-<h4 align="right"><strong>English</strong> | <a href="https://github.com/mybatis-flex/mybatis-flex/blob/main/readme_zh.md">简体中文</a></h4>
+<h4 align="right"><strong>English</strong> | <a href="./readme_zh.md">简体中文</a></h4>
 
 <p align="center">
     <img src="./docs/assets/images/logo_en.png"/>
