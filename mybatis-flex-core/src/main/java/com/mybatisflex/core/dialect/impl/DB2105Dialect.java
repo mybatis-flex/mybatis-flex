@@ -1,17 +1,63 @@
 package com.mybatisflex.core.dialect.impl;
 
+import static com.mybatisflex.core.constant.SqlConsts.DELIMITER;
+import static com.mybatisflex.core.constant.SqlConsts.NULLS_FIRST;
+import static com.mybatisflex.core.constant.SqlConsts.NULLS_LAST;
+import static com.mybatisflex.core.constant.SqlConsts.ORDER_BY;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryOrderBy;
+import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.query.QueryWrapper;
 
 public class DB2105Dialect extends CommonsDialectImpl {
       //TODO: 根据DatabaseMetaData获取数据库厂商名和版本号
     public static final String DB2_1005_PRODUCT_VERSION = "1005";
     public static final String DB2_PRODUCT_NAME = "DB2";
+    private static final Pattern pattern = Pattern.compile("(\\S+)\\s+(\\S*)\\s*("+NULLS_FIRST.trim()+"|"+NULLS_LAST.trim()+")");
 
 
     public DB2105Dialect(KeywordWrap keywordWrap, LimitOffsetProcessor limitOffsetProcessor) {
         super(keywordWrap, limitOffsetProcessor);
     }
+
+ @Override
+    protected void buildOrderBySql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, List<QueryTable> queryTables) {
+        List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
+        if (orderBys != null && !orderBys.isEmpty()) {
+            sqlBuilder.append(ORDER_BY);
+            int index = 0;
+            for (QueryOrderBy orderBy : orderBys) {
+                String orderBySql = orderBy.toSql(queryTables, this);
+                orderBySql = convertOderbySqlForDB2105(orderBySql);  // 转换SQL语句
+                sqlBuilder.append(orderBySql);
+                if (index != orderBys.size() - 1) {
+                    sqlBuilder.append(DELIMITER);
+                }
+                index++;
+            }
+        }
+    }
+
+    private  String convertOderbySqlForDB2105(String sql) {
+        Matcher matcher = pattern.matcher(sql);
+        if (matcher.find()) {
+            String column = matcher.group(1);
+            String orderType = matcher.group(2);
+            String nullOrder = matcher.group(3);
+            if (NULLS_FIRST.trim().equals(nullOrder)) {
+                sql = "CASE WHEN " + column + " IS NULL THEN 0 ELSE 1 END, " + column+" "+orderType;
+            } else if (NULLS_LAST.trim().equals(nullOrder)) {
+                sql = "CASE WHEN " + column + " IS NULL THEN 1 ELSE 0 END, " + column+" "+orderType;
+            }
+        }
+        return sql;
+    }
+
 
     public interface DB2105LimitOffsetProcessor {
         LimitOffsetProcessor DB2105 = (dialect, sql, queryWrapper, limitRows, limitOffset) -> {
