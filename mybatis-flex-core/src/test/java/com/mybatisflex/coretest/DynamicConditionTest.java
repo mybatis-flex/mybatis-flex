@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.mybatisflex.core.query.QueryMethods.bracket;
+import static com.mybatisflex.core.query.QueryMethods.raw;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 import static org.junit.Assert.assertEquals;
 
@@ -203,6 +204,27 @@ public class DynamicConditionTest {
             "OR `birthday` <= '2023-10-28 22:13:36'", printSql);
 
         System.out.println(printSql);
+
+
+        QueryWrapper queryWrapper2 = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+            .where(ACCOUNT.IS_DELETE.eq(0))
+            .and(ACCOUNT.ID.ge("1").and(ACCOUNT.AGE.ge(18).or(ACCOUNT.USER_NAME.ge("zs"))))
+            .or(ACCOUNT.BIRTHDAY.le("2023-10-28 22:13:36"));
+        System.out.println(queryWrapper2.toSQL());
+
+        assertEquals(printSql,queryWrapper2.toSQL());
+    }
+
+
+    @Test
+    public void test12() {
+        QueryWrapper qw = QueryWrapper.create()
+            .select().from(ACCOUNT)
+            .where(ACCOUNT.IS_DELETE.eq(0))
+            .or(raw("1 = 1").or(ACCOUNT.ID.eq(123)));
+        System.out.println(qw.toSQL());
     }
 
 }

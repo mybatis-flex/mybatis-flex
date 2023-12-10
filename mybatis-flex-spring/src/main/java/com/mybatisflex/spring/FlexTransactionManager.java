@@ -26,6 +26,7 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
 
 /**
  * MyBatis-Flex 事务支持。
+ *
  * @author michael
  */
 public class FlexTransactionManager extends AbstractPlatformTransactionManager {
@@ -95,17 +96,17 @@ public class FlexTransactionManager extends AbstractPlatformTransactionManager {
             this.prevXid = prevXid;
         }
 
-       public void setRollbackOnly(){
+        public void setRollbackOnly() {
             ROLLBACK_ONLY_XIDS.set(prevXid);
         }
 
-        public void clear(){
+        public void clear() {
             ROLLBACK_ONLY_XIDS.remove();
         }
 
         @Override
         public boolean isRollbackOnly() {
-            return currentXid.equals(ROLLBACK_ONLY_XIDS.get());
+            return currentXid != null && currentXid.equals(ROLLBACK_ONLY_XIDS.get());
         }
     }
 

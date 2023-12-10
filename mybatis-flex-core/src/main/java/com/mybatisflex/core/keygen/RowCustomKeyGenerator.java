@@ -20,6 +20,7 @@ import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowKey;
+import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -58,11 +59,11 @@ public class RowCustomKeyGenerator implements KeyGenerator {
         try {
             Object existId = row.get(rowKey.getKeyColumn());
             // 若用户主动设置了主键，则使用用户自己设置的主键，不再生成主键
-            if (existId != null) {
-                return;
+            // 只有主键为 null 或者 空字符串时，对主键进行设置
+            if (existId == null || (existId instanceof String && StringUtil.isBlank((String) existId))) {
+                Object generateId = keyGenerator.generate(row, rowKey.getKeyColumn());
+                row.put(rowKey.getKeyColumn(), generateId);
             }
-            Object generateId = keyGenerator.generate(row, rowKey.getKeyColumn());
-            row.put(rowKey.getKeyColumn(), generateId);
         } catch (Exception e) {
             throw FlexExceptions.wrap(e);
         }

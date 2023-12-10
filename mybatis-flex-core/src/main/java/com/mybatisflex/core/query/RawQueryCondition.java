@@ -43,9 +43,9 @@ public class RawQueryCondition extends QueryCondition {
     @Override
     boolean containsTable(String... tables) {
         for (String table : tables) {
-            String[] tableNameWithAlisa = StringUtil.getTableNameWithAlisa(table);
-            if (content.contains(tableNameWithAlisa[0])
-                || (tableNameWithAlisa[1] != null && content.contains(tableNameWithAlisa[1]))) {
+            String[] tableNameWithAlias = StringUtil.getTableNameWithAlias(table);
+            if (content.contains(tableNameWithAlias[0])
+                || (tableNameWithAlias[1] != null && content.contains(tableNameWithAlias[1]))) {
                 return true;
             }
         }

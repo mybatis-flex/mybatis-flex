@@ -42,6 +42,7 @@ public enum DbType {
      * DB2
      */
     DB2("db2", "DB2 数据库"),
+    DB2_1005("db2_1005", "DB2 10.5版本数据库"),
 
     /**
      * H2

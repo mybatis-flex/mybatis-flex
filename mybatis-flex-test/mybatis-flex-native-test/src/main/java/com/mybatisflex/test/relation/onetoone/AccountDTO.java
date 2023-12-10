@@ -45,7 +45,8 @@ public class AccountDTO implements Serializable {
     @RelationManyToMany(
         joinTable = "tb_role_mapping",
         joinSelfColumn = "account_id",
-        joinTargetColumn = "role_id"
+        joinTargetColumn = "role_id",
+        selfField = "id"
     )
     private List<Role> roles;
 

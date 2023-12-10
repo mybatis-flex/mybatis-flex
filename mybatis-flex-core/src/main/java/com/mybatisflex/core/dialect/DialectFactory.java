@@ -16,15 +16,15 @@
 package com.mybatisflex.core.dialect;
 
 
+import java.util.EnumMap;
+import java.util.Map;
+import org.apache.ibatis.util.MapUtil;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
+import com.mybatisflex.core.dialect.impl.DB2105Dialect;
 import com.mybatisflex.core.dialect.impl.DmDialect;
 import com.mybatisflex.core.dialect.impl.OracleDialect;
 import com.mybatisflex.core.util.ObjectUtil;
-import org.apache.ibatis.util.MapUtil;
-
-import java.util.EnumMap;
-import java.util.Map;
 
 /**
  * 方言工厂类，用于创建方言
@@ -139,6 +139,8 @@ public class DialectFactory {
             case FIREBIRD:
             case DB2:
                 return new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.DERBY);
+            case DB2_1005:
+                return new DB2105Dialect(KeywordWrap.NONE, DB2105Dialect.DB2105LimitOffsetProcessor.DB2105);
             case SQLSERVER:
                 return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER);
             case SQLSERVER_2005:

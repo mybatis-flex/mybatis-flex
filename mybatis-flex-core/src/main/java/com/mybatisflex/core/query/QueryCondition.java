@@ -295,7 +295,7 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
             return nextContainsTable(tables);
         }
         for (String table : tables) {
-            String tableName = StringUtil.getTableNameWithAlisa(table)[0];
+            String tableName = StringUtil.getTableNameWithAlias(table)[0];
             if (column.table != null && tableName.equals(column.table.name)) {
                 return true;
             }

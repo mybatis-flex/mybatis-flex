@@ -24,7 +24,7 @@ import com.mybatisflex.core.mask.Masks;
 
 import java.io.Serializable;
 
-@Table(value = "tb_account", dataSource = "ds2", onSet = AccountOnSetListener.class)
+@Table(value = "tb_account6", dataSource = "ds2", onSet = AccountOnSetListener.class)
 public class Account6 extends BaseEntity implements Serializable, AgeAware {
 
     private static final long serialVersionUID = 1L;

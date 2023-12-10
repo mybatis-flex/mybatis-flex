@@ -3,6 +3,27 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.7.5 20231124:
+- 修复：主键 ID 当传入空字符串时，调用 `insert` 方法不会依据 `@Id` 自动生成主键 id 的问题
+- 修复：`FlexTransactionManager` 空指针异常的问题
+- 修复：`@ColumnMask`，`typeHandler` 一起使用时冲突导致 `@ColumnMask` 不生效的问题
+
+
+
+## v1.7.4 20231120:
+- 新增：QueryMethods 添加 bracket 在极特殊场景下用于构建括号的支持，感谢 @Suomm
+- 新增：QueryWrapper 添加取相反数的 SQL 构建，感谢 @Suomm
+- 优化：重命名 RawFragment 为 RawQueryCondition，保持 Raw 的风格统一，感谢 @Suomm
+- 优化：solon-plugin 升级 solon 升为 2.5.3，感谢 @noear_admin
+- 修复：ArithmeticQueryColumn 算术运算无法拼接条件的问题，感谢 @uanmengyuan
+- 修复：读写分离自定义分离策略不生效的问题 #I8FP0K
+- 修复：使用 @Transactional 嵌套时，默认事务传播机制与预期不符 #202
+- 修复：case when 别名丢失的问题，感谢 @x-core
+- 文档：添加关于 QueryWrapper 克隆测试的相关文档，感谢 @Suomm
+- 文档：添加关于 QueryWrapper 取相反数的 SQL 构建文档，感谢 @Suomm
+- 文档：优化 QueryWrapper 的相关文档，感谢 @Suomm
+
+
 
 ## v1.7.3 20231027:
 - 新增：添加 Delete SQL 多表关联查询删除的支持

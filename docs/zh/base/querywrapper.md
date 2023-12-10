@@ -682,29 +682,6 @@ AND (sex =  ? OR sex =  ? )
 OR (age IN (?,?,?) AND user_name LIKE ? )
 ```
 
-## where 括号
-
-
-
-```java 6
-QueryWrapper queryWrapper = QueryWrapper.create()
-    .select()
-    .from(ACCOUNT)
-    .where(ACCOUNT.IS_DELETE.eq(0))
-    .and(ACCOUNT.ID.ge("1").and(
-        bracket(ACCOUNT.AGE.ge(18).or(ACCOUNT.USER_NAME.ge("zs")))
-    ))
-    .or(ACCOUNT.BIRTHDAY.le(new Date()));
-```
-
-其生成的 SQL 为：
-
-```sql
-SELECT * FROM `tb_account`
-WHERE `is_delete` = 0
-AND (`id` >= '1' AND (`age` >= 18 OR `user_name` >= 'zs'))
-OR `birthday` <= '2023-10-28 22:13:36'
-```
 
 ## 自定义字符串列名
 

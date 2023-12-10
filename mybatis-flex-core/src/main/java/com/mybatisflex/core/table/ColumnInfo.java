@@ -16,6 +16,7 @@
 package com.mybatisflex.core.table;
 
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.mask.CompositeMaskTypeHandler;
 import com.mybatisflex.core.mask.MaskTypeHandler;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.session.Configuration;
@@ -53,6 +54,11 @@ public class ColumnInfo {
      * 自定义 TypeHandler。
      */
     protected TypeHandler typeHandler;
+
+    /**
+     * 最终使用和构建出来的 typeHandler
+     */
+    protected TypeHandler buildTypeHandler;
 
     /**
      * 数据脱敏类型。
@@ -107,23 +113,33 @@ public class ColumnInfo {
 
     public TypeHandler buildTypeHandler(Configuration configuration) {
 
-        //优先使用自定义的 typeHandler
-        if (typeHandler != null) {
-            return typeHandler;
-        }
-        //枚举
-        else if (propertyType.isEnum()) {
-            if (configuration == null){
-                configuration = FlexGlobalConfig.getDefaultConfig().getConfiguration();
-            }
-            this.typeHandler =  configuration.getTypeHandlerRegistry().getTypeHandler(propertyType);
-        }
-        //若用户未定义 typeHandler，而配置了数据脱敏，则使用脱敏的 handler 处理
-        else if (StringUtil.isNotBlank(maskType)) {
-            typeHandler = new MaskTypeHandler(maskType);
+        if (buildTypeHandler != null) {
+            return buildTypeHandler;
         }
 
-        return typeHandler;
+        //脱敏规则配置
+        else if (StringUtil.isNotBlank(maskType)) {
+            if (typeHandler != null) {
+                buildTypeHandler = new CompositeMaskTypeHandler(maskType, typeHandler);
+            } else {
+                buildTypeHandler = new MaskTypeHandler(maskType);
+            }
+        }
+
+        //用户自定义的 typeHandler
+        else if (typeHandler != null) {
+            buildTypeHandler = typeHandler;
+        }
+
+        //枚举
+        else if (propertyType.isEnum()) {
+            if (configuration == null) {
+                configuration = FlexGlobalConfig.getDefaultConfig().getConfiguration();
+            }
+            buildTypeHandler = configuration.getTypeHandlerRegistry().getTypeHandler(propertyType);
+        }
+
+        return buildTypeHandler;
     }
 
     public void setTypeHandler(TypeHandler typeHandler) {

@@ -130,13 +130,13 @@ class WrapperUtil {
 
     }
 
-    static String buildValue(Object value) {
+    static String buildValue(List<QueryTable> queryTables, Object value) {
         if (value instanceof Number || value instanceof Boolean) {
             return String.valueOf(value);
         } else if (value instanceof RawQueryCondition) {
             return ((RawQueryCondition) value).getContent();
         } else if (value instanceof QueryColumn) {
-            return ((QueryColumn) value).toConditionSql(null, DialectFactory.getDialect());
+            return ((QueryColumn) value).toConditionSql(queryTables, DialectFactory.getDialect());
         } else {
             return SqlConsts.SINGLE_QUOTE + value + SqlConsts.SINGLE_QUOTE;
         }

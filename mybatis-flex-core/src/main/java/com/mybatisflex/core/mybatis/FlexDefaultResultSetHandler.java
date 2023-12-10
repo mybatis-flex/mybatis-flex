@@ -768,8 +768,12 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
                                                                 List<Object> constructorArgs, Constructor<?> constructor, boolean foundValues) throws SQLException {
         for (int i = 0; i < constructor.getParameterTypes().length; i++) {
             Class<?> parameterType = constructor.getParameterTypes()[i];
-            Parameter parameter = constructor.getParameters()[i];
-            String columnName = StringUtil.camelToUnderline(parameter.getName());
+
+            // https://github.com/mybatis-flex/mybatis-flex/pull/201
+            // Parameter parameter = constructor.getParameters()[i];
+            // String columnName = StringUtil.camelToUnderline(parameter.getName());
+
+            String columnName = rsw.getColumnNames().get(i);
             TypeHandler<?> typeHandler = rsw.getTypeHandler(parameterType, columnName);
             Object value = typeHandler.getResult(rsw.getResultSet(), columnName);
             constructorArgTypes.add(parameterType);

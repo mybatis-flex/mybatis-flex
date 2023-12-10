@@ -18,12 +18,16 @@ package com.mybatisflex.test;
 
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
+import com.mybatisflex.core.datasource.DataSourceKey;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.assertj.core.api.WithAssertions;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import javax.sql.DataSource;
 import java.util.Date;
 
 /**
@@ -34,33 +38,51 @@ import java.util.Date;
  */
 public class ListenerTest implements WithAssertions {
 
-    // 注册父类接口监听器
-//    @Test
-    public void onInsertInterface() throws Exception {
-        DataSource dataSource = new EmbeddedDatabaseBuilder()
+    private static final String DATA_SOURCE_KEY = "listener";
+
+    private AccountMapper accountMapper;
+    private EmbeddedDatabase dataSource;
+
+    @Before
+    public void init() {
+        dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
-            .addScript("schema.sql")
+            .addScript("auto_increment_key_schema.sql")
             .build();
         // 注册全局监听器
         FlexGlobalConfig defaultConfig = FlexGlobalConfig.getDefaultConfig();
+        // age < 0，将其设置为 0
         defaultConfig.registerInsertListener(new AgeHandleListener(), AgeAware.class);
 
-        MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
+        MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
             .setLogImpl(StdOutImpl.class)
-            .setDataSource(dataSource)
+            .setDataSource(DATA_SOURCE_KEY, dataSource)
             .addMapper(AccountMapper.class)
             .start();
 
-        AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
+        DataSourceKey.use(DATA_SOURCE_KEY);
+        accountMapper = bootstrap.getMapper(AccountMapper.class);
+    }
+
+    @After
+    public void destroy() {
+        this.dataSource.shutdown();
+        DataSourceKey.clear();
+    }
+
+    @Test
+    public void onInsertInterface() {
         Account account = new Account();
         account.setAge(-2);
         account.setUserName("on insert");
-        account.setBirthday(new Date());
+        Date birthday = new Date();
+        account.setBirthday(birthday);
         accountMapper.insert(account);
 
         Account one = accountMapper.selectOneById(account.getId());
-        System.out.println(one);
-//        assertThat(one.getAge()).isEqualTo(1);
+        assertThat(one).isNotNull()
+            .extracting(Account::getId, Account::getUserName, Account::getAge, Account::getBirthday)
+            .containsExactly(1L, "on******t", 0, birthday);
     }
 
 }
