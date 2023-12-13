@@ -18,12 +18,25 @@ package com.mybatisflex.core.table;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.mask.CompositeMaskTypeHandler;
 import com.mybatisflex.core.mask.MaskTypeHandler;
+import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.type.*;
+
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.*;
+import java.time.chrono.JapaneseDate;
+import java.util.Date;
 
 public class ColumnInfo {
+
+    private static final Class<?>[] needGetTypeHandlerTypes = {
+        Date.class, java.sql.Date.class, Time.class, Timestamp.class,
+        Instant.class, LocalDate.class, LocalDateTime.class, LocalTime.class, OffsetDateTime.class, OffsetTime.class, ZonedDateTime.class,
+        Year.class, Month.class, YearMonth.class, JapaneseDate.class,
+        byte[].class, Byte[].class, Byte.class,
+    };
 
     /**
      * 数据库列名。
@@ -132,7 +145,7 @@ public class ColumnInfo {
         }
 
         //枚举
-        else if (propertyType.isEnum()) {
+        else if (propertyType.isEnum() || ArrayUtil.contains(needGetTypeHandlerTypes, propertyType)) {
             if (configuration == null) {
                 configuration = FlexGlobalConfig.getDefaultConfig().getConfiguration();
             }
