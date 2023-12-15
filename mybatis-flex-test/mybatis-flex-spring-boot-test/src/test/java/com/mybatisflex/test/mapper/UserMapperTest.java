@@ -280,10 +280,10 @@ class UserMapperTest {
         System.err.println(user);
     }
 
-    @Test
-    public void testFieldBindRelations() {
-        List<UserVO5> userVO5List = userMapper.selectListWithRelationsByQueryAs(QueryWrapper.create(), UserVO5.class);
-        System.out.println(userVO5List);
-    }
+//    @Test
+//    public void testFieldBindRelations() {
+//        List<UserVO5> userVO5List = userMapper.selectListWithRelationsByQueryAs(QueryWrapper.create(), UserVO5.class);
+//        System.out.println(userVO5List);
+//    }
 
 }

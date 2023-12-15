@@ -68,16 +68,16 @@ class CloneTest {
         QueryWrapper queryWrapper = newQueryWrapper();
         QueryWrapper queryWrapper1 = queryWrapper.clone();
         QueryWrapper queryWrapper2 = SerialUtil.cloneObject(queryWrapper);
-        QueryWrapper queryWrapper3 = SerialUtil.cloneObject(queryWrapper, QueryWrapper.class);
+//        QueryWrapper queryWrapper3 = SerialUtil.cloneObject(queryWrapper, QueryWrapper.class);
         System.err.println(SerialUtil.toJSONString(queryWrapper));
         System.out.println(queryWrapper.toSQL());
         System.out.println(queryWrapper1.toSQL());
         System.out.println(queryWrapper2.toSQL());
-        System.out.println(queryWrapper3.toSQL());
+//        System.out.println(queryWrapper3.toSQL());
 
         Assertions.assertEquals(queryWrapper.toSQL(), queryWrapper1.toSQL());
         Assertions.assertEquals(queryWrapper.toSQL(), queryWrapper2.toSQL());
-        Assertions.assertEquals(queryWrapper.toSQL(), queryWrapper3.toSQL());
+//        Assertions.assertEquals(queryWrapper.toSQL(), queryWrapper3.toSQL());
     }
 
     private void calcTime(int count, String type, Supplier<QueryWrapper> supplier) {

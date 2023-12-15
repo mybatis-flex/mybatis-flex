@@ -19,6 +19,7 @@ package com.mybatisflex.test.mapper;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.entity.Inner;
 import com.mybatisflex.test.entity.Outer;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,12 +44,8 @@ class OuterMapperTest {
     void testInsert() {
         Outer outer = new Outer();
         outer.setName("outer 01");
-        outerMapper.insertSelective(outer);
-
-        Inner inner = new Inner();
-        inner.setId(2);
-        inner.setType("inner type");
-        innerMapper.insertWithPk(inner);
+        int result = outerMapper.insertSelective(outer);
+        Assertions.assertEquals(result,1);
     }
 
     @Test

@@ -7,7 +7,7 @@ spring:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/flex_test
     username: root
-    password: 12345678
+    password: 123456
   #    driver-class-name:
   #  datasource:
   #    driver-class-name: org.h2.Driver

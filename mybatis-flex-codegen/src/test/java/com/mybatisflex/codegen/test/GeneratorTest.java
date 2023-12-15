@@ -92,7 +92,7 @@ public class GeneratorTest {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
         dataSource.setUsername("root");
-        dataSource.setPassword("12345678");
+        dataSource.setPassword("123456");
 
         GlobalConfig globalConfig = new GlobalConfig();
 
@@ -156,7 +156,7 @@ public class GeneratorTest {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
         dataSource.setUsername("root");
-        dataSource.setPassword("12345678");
+        dataSource.setPassword("123456");
 
         //通过 datasource 和 globalConfig 创建代码生成器
         new Generator(dataSource, globalConfig()).generate();
@@ -232,7 +232,7 @@ public class GeneratorTest {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
         dataSource.setUsername("root");
-        dataSource.setPassword("12345678");
+        dataSource.setPassword("123456");
 
         GlobalConfig globalConfig = new GlobalConfig();
 
@@ -283,7 +283,7 @@ public class GeneratorTest {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
         dataSource.setUsername("root");
-        dataSource.setPassword("12345678");
+        dataSource.setPassword("123456");
 
         GlobalConfig globalConfig = new GlobalConfig();
 
