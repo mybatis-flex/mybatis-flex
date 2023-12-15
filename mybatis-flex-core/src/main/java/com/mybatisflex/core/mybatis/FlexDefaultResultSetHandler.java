@@ -290,9 +290,21 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
             if (parentMapping != null) {
                 handleRowValues(rsw, resultMap, null, RowBounds.DEFAULT, parentMapping);
             } else if (resultHandler == null) {
-                DefaultResultHandler defaultResultHandler = new DefaultResultHandler(objectFactory);
-                handleRowValues(rsw, resultMap, defaultResultHandler, rowBounds, null);
-                multipleResults.add(defaultResultHandler.getResultList());
+                if(resultMap.getId().startsWith("com.mybatisflex.core.row.RowMapper.selectMap")){
+                    ResultSet resultSet = rsw.getResultSet();
+                    skipRows(resultSet, rowBounds);
+                    Map<Object,Object> row = new HashMap<>();
+                    while (!resultSet.isClosed() && resultSet.next()) {
+                        row.put(resultSet.getObject(1),resultSet.getObject(2));
+                    }
+                    List<Map<Object,Object>> mapArrayList = new ArrayList<>(1);
+                    mapArrayList.add(row);
+                    multipleResults.add(mapArrayList);
+                }else {
+                    DefaultResultHandler defaultResultHandler = new DefaultResultHandler(objectFactory);
+                    handleRowValues(rsw, resultMap, defaultResultHandler, rowBounds, null);
+                    multipleResults.add(defaultResultHandler.getResultList());
+                }
             } else {
                 handleRowValues(rsw, resultMap, resultHandler, rowBounds, null);
             }

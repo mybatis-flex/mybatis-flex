@@ -854,6 +854,48 @@ public class Db {
         return invoker().selectObjectByQuery(null, null, queryWrapper);
     }
 
+    /**
+     * 根据 queryWrapper 查询内容，数据返回为Map  第一列的值作为key 第二列的值作为value
+     *
+     * @param queryWrapper query 封装
+     * @return 数据内容
+     */
+    public static Map selectMap(QueryWrapper queryWrapper) {
+        return invoker().selectMapByQuery(null, null, queryWrapper);
+    }
+
+    /**
+     * 查询某个内容，数据返回为Map  第一列的值作为key 第二列的值作为value
+     *
+     * @param sql  sql 内容
+     * @param args sql 参数
+     */
+    public static Map selectMap(String sql, Object... args) {
+        return invoker().selectMap(sql, args);
+    }
+
+    /**
+     * 根据 queryWrapper 查询内容，数据返回为Map  第一列的值作为key 第二列的值作为value
+     *
+     * @param schema       模式
+     * @param tableName    表名
+     * @param queryWrapper query 封装
+     * @return 数据内容
+     */
+    public static Map selectMap(String schema, String tableName, QueryWrapper queryWrapper) {
+        return invoker().selectMapByQuery(schema, tableName, queryWrapper);
+    }
+
+    /**
+     * 根据 queryWrapper 查询内容，数据返回为Map  第一列的值作为key 第二列的值作为value
+     *
+     * @param tableName    表名
+     * @param queryWrapper query 封装
+     * @return 数据内容
+     */
+    public static Map selectMap(String tableName, QueryWrapper queryWrapper) {
+        return invoker().selectMapByQuery(null, tableName, queryWrapper);
+    }
 
     /**
      * 查询某列内容，数据返回应该有 多行 1 列
