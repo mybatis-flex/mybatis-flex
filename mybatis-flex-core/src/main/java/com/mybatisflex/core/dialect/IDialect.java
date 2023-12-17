@@ -91,4 +91,32 @@ public interface IDialect {
 
     String forSelectEntityListByIds(TableInfo tableInfo, Object[] primaryValues);
 
+    /**
+     * 权限处理
+     *
+     * @param queryWrapper queryWrapper
+     * @param operateType 操作类型
+     */
+    default void prepareAuth(QueryWrapper queryWrapper, OperateType operateType) {
+    }
+
+    /**
+     * 权限处理
+     *
+     * @param schema    schema
+     * @param tableName 表名
+     * @param sql       sql
+     * @param operateType 操作类型
+     */
+    default void prepareAuth(String schema, String tableName, StringBuilder sql, OperateType operateType) {
+    }
+
+    /**
+     * 权限处理
+     * @param tableInfo tableInfo
+     * @param sql sql
+     * @param operateType 操作类型
+     */
+    default void prepareAuth(TableInfo tableInfo, StringBuilder sql, OperateType operateType) {
+    }
 }

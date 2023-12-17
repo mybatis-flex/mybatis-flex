@@ -18,6 +18,7 @@ package com.mybatisflex.core.dialect.impl;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
+import com.mybatisflex.core.dialect.OperateType;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
@@ -164,6 +165,7 @@ public class CommonsDialectImpl implements IDialect {
             }
             sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
+        prepareAuth(schema, table, sql, OperateType.DELETE);
         return sql.toString();
     }
 
@@ -205,11 +207,13 @@ public class CommonsDialectImpl implements IDialect {
                 sql.append(wrap(primaryKeys[0])).append(EQUALS_PLACEHOLDER);
             }
         }
+        prepareAuth(schema, table, sql, OperateType.DELETE);
         return sql.toString();
     }
 
     @Override
     public String forDeleteByQuery(QueryWrapper queryWrapper) {
+        prepareAuth(queryWrapper, OperateType.DELETE);
         return buildDeleteSql(queryWrapper);
     }
 
@@ -252,12 +256,13 @@ public class CommonsDialectImpl implements IDialect {
             }
             sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
-
+        prepareAuth(schema, table, sql, OperateType.UPDATE);
         return sql.toString();
     }
 
     @Override
     public String forUpdateByQuery(QueryWrapper queryWrapper, Row row) {
+        prepareAuth(queryWrapper, OperateType.UPDATE);
         StringBuilder sqlBuilder = new StringBuilder();
 
         Set<String> modifyAttrs = RowCPI.getModifyAttrs(row);
@@ -332,11 +337,13 @@ public class CommonsDialectImpl implements IDialect {
             }
             sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
+        prepareAuth(schema, table, sql, OperateType.SELECT);
         return sql.toString();
     }
 
     @Override
     public String forSelectByQuery(QueryWrapper queryWrapper) {
+        prepareAuth(queryWrapper, OperateType.SELECT);
         return buildSelectSql(queryWrapper);
     }
 
@@ -664,6 +671,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //租户ID
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
+        prepareAuth(tableInfo, sql, OperateType.DELETE);
         return sql.toString();
     }
 
@@ -723,7 +731,7 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(BRACKET_RIGHT).append(AND).append(buildLogicNormalCondition(logicDeleteColumn, tableInfo));
 
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
-
+        prepareAuth(tableInfo, sql, OperateType.DELETE);
         return sql.toString();
     }
 
@@ -738,6 +746,7 @@ public class CommonsDialectImpl implements IDialect {
         }
 
 
+        prepareAuth(queryWrapper, OperateType.DELETE);
         //逻辑删除
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
         List<QueryTable> joinTables = CPI.getJoinTables(queryWrapper);
@@ -823,12 +832,13 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(AND).append(wrap(versionColumn)).append(EQUALS).append(versionValue);
         }
 
-
+        prepareAuth(tableInfo, sql, OperateType.UPDATE);
         return sql.toString();
     }
 
     @Override
     public String forUpdateEntityByQuery(TableInfo tableInfo, Object entity, boolean ignoreNulls, QueryWrapper queryWrapper) {
+        prepareAuth(queryWrapper, OperateType.UPDATE);
         StringBuilder sqlBuilder = new StringBuilder();
 
         Set<String> updateColumns = tableInfo.obtainUpdateColumns(entity, ignoreNulls, true);
@@ -916,7 +926,7 @@ public class CommonsDialectImpl implements IDialect {
         //多租户
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
-
+        prepareAuth(tableInfo, sql, OperateType.SELECT);
         return sql.toString();
     }
 
@@ -972,7 +982,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //多租户
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
-
+        prepareAuth(tableInfo, sql, OperateType.SELECT);
         return sql.toString();
     }
 
