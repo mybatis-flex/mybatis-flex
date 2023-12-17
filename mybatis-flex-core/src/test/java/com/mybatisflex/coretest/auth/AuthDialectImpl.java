@@ -21,6 +21,9 @@ public class AuthDialectImpl extends CommonsDialectImpl {
     @Override
     public void prepareAuth(QueryWrapper queryWrapper, OperateType operateType) {
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        if (queryTables == null || queryTables.isEmpty()) {
+            return;
+        }
         for (QueryTable queryTable : queryTables) {
             if (PROJECT.getTableName().equals(queryTable.getName())) {
                 queryWrapper.and(PROJECT.INSERT_USER_ID.eq(1));
