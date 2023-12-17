@@ -111,6 +111,7 @@ public class LambdaSqlTest {
             "  ` ac `.` age `,\n" +
             "  ` ac `.` is_normal `,\n" +
             "  ` ac `.` is_delete `,\n" +
+            "  ` ac `.` insert_user_id `,\n" +
             "  ` ar `.` title `,\n" +
             "  ` ar `.` content `\n" +
             "FROM\n" +
@@ -138,6 +139,7 @@ public class LambdaSqlTest {
             "  ` ac `.` age `,\n" +
             "  ` ac `.` is_normal `,\n" +
             "  ` ac `.` is_delete `,\n" +
+            "  ` ac `.` insert_user_id `,\n" +
             "  ` ar `.*\n" +
             "FROM\n" +
             "  ` tb_account ` AS ` ac `\n" +

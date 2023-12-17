@@ -42,6 +42,11 @@ public class Account {
     @Column(isLogicDelete = true)
     private Boolean isDelete;
 
+    /**
+     * 创建人
+     */
+    private String insertUserId;
+
 
     public Long getId() {
         return id;
@@ -99,4 +104,11 @@ public class Account {
         isDelete = delete;
     }
 
+    public String getInsertUserId() {
+        return insertUserId;
+    }
+
+    public void setInsertUserId(String insertUserId) {
+        this.insertUserId = insertUserId;
+    }
 }
