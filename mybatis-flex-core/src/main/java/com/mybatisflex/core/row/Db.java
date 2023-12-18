@@ -860,8 +860,8 @@ public class Db {
      * @param queryWrapper query 封装
      * @return 数据内容
      */
-    public static Map selectMap(QueryWrapper queryWrapper) {
-        return invoker().selectMapByQuery(null, null, queryWrapper);
+    public static Map selectFirstAndSecondColumnsAsMap(QueryWrapper queryWrapper) {
+        return invoker().selectFirstAndSecondColumnsAsMapByQuery(null, null, queryWrapper);
     }
 
     /**
@@ -870,8 +870,8 @@ public class Db {
      * @param sql  sql 内容
      * @param args sql 参数
      */
-    public static Map selectMap(String sql, Object... args) {
-        return invoker().selectMap(sql, args);
+    public static Map selectFirstAndSecondColumnsAsMap(String sql, Object... args) {
+        return invoker().selectFirstAndSecondColumnsAsMap(sql, args);
     }
 
     /**
@@ -882,8 +882,8 @@ public class Db {
      * @param queryWrapper query 封装
      * @return 数据内容
      */
-    public static Map selectMap(String schema, String tableName, QueryWrapper queryWrapper) {
-        return invoker().selectMapByQuery(schema, tableName, queryWrapper);
+    public static Map selectFirstAndSecondColumnsAsMap(String schema, String tableName, QueryWrapper queryWrapper) {
+        return invoker().selectFirstAndSecondColumnsAsMapByQuery(schema, tableName, queryWrapper);
     }
 
     /**
@@ -893,8 +893,8 @@ public class Db {
      * @param queryWrapper query 封装
      * @return 数据内容
      */
-    public static Map selectMap(String tableName, QueryWrapper queryWrapper) {
-        return invoker().selectMapByQuery(null, tableName, queryWrapper);
+    public static Map selectFirstAndSecondColumnsAsMap(String tableName, QueryWrapper queryWrapper) {
+        return invoker().selectFirstAndSecondColumnsAsMapByQuery(null, tableName, queryWrapper);
     }
 
     /**

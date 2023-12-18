@@ -27,6 +27,9 @@ String listsql = "select * from tb_account where age > ?"
 List<Row> rows = Db.selectListBySql(listsql,18);
 
 
+//查询所有大于 18 岁用户的Id和用户名对应的Map
+Map map = Db.selectFirstAndSecondColumnsAsMap("select id,user_name from tb_account where age >?",18);
+
 //分页查询：每页 10 条数据，查询第 3 页的年龄大于 18 的用户
 QueryWrapper query=QueryWrapper.create()
     .where(ACCOUNT.AGE.ge(18));

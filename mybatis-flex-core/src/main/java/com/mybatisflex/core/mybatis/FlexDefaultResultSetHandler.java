@@ -290,7 +290,7 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
             if (parentMapping != null) {
                 handleRowValues(rsw, resultMap, null, RowBounds.DEFAULT, parentMapping);
             } else if (resultHandler == null) {
-                if(resultMap.getId().startsWith("com.mybatisflex.core.row.RowMapper.selectMap")){
+                if(resultMap.getId().startsWith("com.mybatisflex.core.row.RowMapper.selectFirstAndSecondColumnsAsMap")){
                     ResultSet resultSet = rsw.getResultSet();
                     skipRows(resultSet, rowBounds);
                     Map<Object,Object> row = new HashMap<>();

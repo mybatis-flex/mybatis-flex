@@ -74,8 +74,8 @@ public class DbTest {
 
     @Test
     public void test02() {
-        Map map = Db.selectMap(QueryWrapper.create().from(tb_account));
-        Map map2 = Db.selectMap("select * from tb_account");
+        Map map = Db.selectFirstAndSecondColumnsAsMap(QueryWrapper.create().from(tb_account));
+        Map map2 = Db.selectFirstAndSecondColumnsAsMap("select * from tb_account");
         System.out.println(map);
         System.out.println(map2);
         Assert.assertEquals(map,map2);

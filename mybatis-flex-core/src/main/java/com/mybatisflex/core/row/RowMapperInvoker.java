@@ -189,11 +189,11 @@ public class RowMapperInvoker {
     public List<Row> selectAll(String schema, String tableName) {
         return execute(mapper -> mapper.selectAll(schema, tableName));
     }
-    public Map selectMapByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
-        return execute(mapper -> mapper.selectMapByQuery(schema, tableName, queryWrapper));
+    public Map selectFirstAndSecondColumnsAsMapByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.selectFirstAndSecondColumnsAsMapByQuery(schema, tableName, queryWrapper));
     }
-    public Map selectMap(String sql, Object... args) {
-        return execute(mapper -> mapper.selectMap(sql, args));
+    public Map selectFirstAndSecondColumnsAsMap(String sql, Object... args) {
+        return execute(mapper -> mapper.selectFirstAndSecondColumnsAsMap(sql, args));
     }
     public Object selectObjectByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
         return execute(mapper -> mapper.selectObjectByQuery(schema, tableName, queryWrapper));
