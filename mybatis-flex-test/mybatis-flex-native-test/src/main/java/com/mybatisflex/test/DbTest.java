@@ -17,6 +17,7 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
 import org.apache.ibatis.session.Configuration;
@@ -28,6 +29,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 王帅
@@ -68,6 +70,15 @@ public class DbTest {
         rows.stream()
             .map(row -> row.get("OPTIONS"))
             .forEach(Assert::assertNull);
+    }
+
+    @Test
+    public void test02() {
+        Map map = Db.selectFirstAndSecondColumnsAsMap(QueryWrapper.create().from(tb_account));
+        Map map2 = Db.selectFirstAndSecondColumnsAsMap("select * from tb_account");
+        System.out.println(map);
+        System.out.println(map2);
+        Assert.assertEquals(map,map2);
     }
 
 }

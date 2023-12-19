@@ -24,6 +24,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -188,7 +189,12 @@ public class RowMapperInvoker {
     public List<Row> selectAll(String schema, String tableName) {
         return execute(mapper -> mapper.selectAll(schema, tableName));
     }
-
+    public Map selectFirstAndSecondColumnsAsMapByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
+        return execute(mapper -> mapper.selectFirstAndSecondColumnsAsMapByQuery(schema, tableName, queryWrapper));
+    }
+    public Map selectFirstAndSecondColumnsAsMap(String sql, Object... args) {
+        return execute(mapper -> mapper.selectFirstAndSecondColumnsAsMap(sql, args));
+    }
     public Object selectObjectByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
         return execute(mapper -> mapper.selectObjectByQuery(schema, tableName, queryWrapper));
     }

@@ -327,6 +327,12 @@ public interface RowMapper {
     Object selectObject(@Param(FlexConsts.SQL) String sql, @Param(FlexConsts.SQL_ARGS) Object... args);
 
 
+    @SelectProvider(value = RowSqlProvider.class, method = RowSqlProvider.METHOD_RAW_SQL)
+    Map selectFirstAndSecondColumnsAsMap(@Param(FlexConsts.SQL) String sql, @Param(FlexConsts.SQL_ARGS) Object... args);
+
+    @SelectProvider(type = RowSqlProvider.class, method = "selectListByQuery")
+    Map selectFirstAndSecondColumnsAsMapByQuery(@Param(FlexConsts.SCHEMA_NAME) String schema
+        , @Param(FlexConsts.TABLE_NAME) String tableName, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
     /**
      * 通过 sql 查询多行数据，sql 执行的结果应该只有 1 列
      *
@@ -452,5 +458,6 @@ public interface RowMapper {
         }
 
     }
+
 
 }
