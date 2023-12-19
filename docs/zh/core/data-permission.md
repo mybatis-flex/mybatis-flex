@@ -79,3 +79,57 @@ public class MyServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
 }
 ```
 当然，在 `IService` 中，除了 `list` 方法以外，还有其他的查询方法，可能也需要复写。
+
+## 方式3：使用自定义数据方言 `IDialect`
+在自定义方言中，重写 `prepareAuth` 方法，根据自己的需求对 `QueryWrapper`、`sql`语句进行处理，添加额外条件， 以下是示例代码：
+```java
+public class AuthDialectImpl extends CommonsDialectImpl {
+
+    @Override
+    public void prepareAuth(QueryWrapper queryWrapper, OperateType operateType) {
+        List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
+        if (queryTables == null || queryTables.isEmpty()) {
+            return;
+        }
+        for (QueryTable queryTable : queryTables) {
+            if (PROJECT.getTableName().equals(queryTable.getName())) {
+                queryWrapper.and(PROJECT.INSERT_USER_ID.eq(1));
+            }
+        }
+        super.prepareAuth(queryWrapper, operateType);
+    }
+
+    @Override
+    public void prepareAuth(String schema, String tableName, StringBuilder sql, OperateType operateType) {
+        if (PROJECT.getTableName().equals(tableName)) {
+            sql.append(AND).append(wrap("insert_user_id")).append(EQUALS).append(1);
+        }
+        super.prepareAuth(schema, tableName, sql, operateType);
+    }
+
+    @Override
+    public void prepareAuth(TableInfo tableInfo, StringBuilder sql, OperateType operateType) {
+        if (PROJECT.getTableName().equals(tableInfo.getTableName())) {
+            sql.append(AND).append(wrap("insert_user_id")).append(EQUALS).append(1);
+        }
+        super.prepareAuth(tableInfo, sql, operateType);
+    }
+}
+```
+对`QueryWrapper`的表做筛选可参考 **方式1**
+在项目启动时通过 `DialectFactory` 注册 `AuthDialectImpl`，以spring boot项目为例：
+
+```
+@Configuration
+public class MybatisFlexConfig implements MyBatisFlexCustomizer {
+
+    @Override
+    public void customize(FlexGlobalConfig flexGlobalConfig) {
+        
+
+        // 注册查询权限监听方言
+        DialectFactory.registerDialect(DbType.MYSQL, new AuthDialectImpl());
+    }
+}
+```
+单元测试请参考源码中的`com.mybatisflex.coretest.AuthTest`类
