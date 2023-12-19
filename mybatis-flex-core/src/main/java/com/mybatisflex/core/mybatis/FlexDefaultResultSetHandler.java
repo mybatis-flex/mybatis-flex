@@ -55,6 +55,7 @@ import java.util.*;
 
 /**
  * 复制于 DefaultResultSetHandler，并开放若干方法，方便子类重写
+ *
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Iwao AVE!
@@ -290,17 +291,17 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
             if (parentMapping != null) {
                 handleRowValues(rsw, resultMap, null, RowBounds.DEFAULT, parentMapping);
             } else if (resultHandler == null) {
-                if(resultMap.getId().startsWith("com.mybatisflex.core.row.RowMapper.selectFirstAndSecondColumnsAsMap")){
+                if (resultMap.getId().equals("com.mybatisflex.core.row.RowMapper.selectFirstAndSecondColumnsAsMap")) {
                     ResultSet resultSet = rsw.getResultSet();
                     skipRows(resultSet, rowBounds);
-                    Map<Object,Object> row = new HashMap<>();
+                    Map<Object, Object> row = new HashMap<>();
                     while (!resultSet.isClosed() && resultSet.next()) {
-                        row.put(resultSet.getObject(1),resultSet.getObject(2));
+                        row.put(resultSet.getObject(1), resultSet.getObject(2));
                     }
-                    List<Map<Object,Object>> mapArrayList = new ArrayList<>(1);
+                    List<Map<Object, Object>> mapArrayList = new ArrayList<>(1);
                     mapArrayList.add(row);
                     multipleResults.add(mapArrayList);
-                }else {
+                } else {
                     DefaultResultHandler defaultResultHandler = new DefaultResultHandler(objectFactory);
                     handleRowValues(rsw, resultMap, defaultResultHandler, rowBounds, null);
                     multipleResults.add(defaultResultHandler.getResultList());
