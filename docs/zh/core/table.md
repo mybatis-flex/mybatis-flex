@@ -161,7 +161,7 @@ public class MySetListener implements SetListener {
 方法如下：
 
 ```java
-MyInsertListener insertListener = new MyInsertLister();
+MyInsertListener insertListener = new MyInsertListener();
 MyUpdateListener updateListener = new MyUpdateListener();
 MySetListener setListener = new MySetListener();
 
