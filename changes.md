@@ -2,7 +2,7 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
-## v1.7.5 20231223:
+## v1.7.6 20231223:
 - 新增：Db.selectFirstAndSecondColumnsAsMap 方法：查询结果的第一列作为 key，第二列作为 value，感谢 @617054137
 - 新增：方言添加添加权限处理统一入口 prepareAuth，感谢 @bf109f
 - 优化：在数组异常时不显示数组为空异常信息的问题，感谢 @Suomm
