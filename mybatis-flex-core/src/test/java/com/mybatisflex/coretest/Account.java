@@ -98,5 +98,4 @@ public class Account {
     public void setDelete(Boolean delete) {
         isDelete = delete;
     }
-
 }

@@ -11,7 +11,9 @@ export default defineConfig({
     // logo: '/assets/images/logo02.png',
 
     themeConfig: {
-        outlineTitle:'章节',
+        outline:{
+          label:"章节"
+        },
         search: {
             provider: 'local'
         },

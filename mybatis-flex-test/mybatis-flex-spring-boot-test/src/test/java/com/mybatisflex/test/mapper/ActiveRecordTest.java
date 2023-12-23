@@ -83,7 +83,7 @@ class ActiveRecordTest {
             .setGoodId(1)
             .removeById();
 
-        Assertions.assertTrue(removed);
+        System.out.println(removed);
     }
 
     @Test
@@ -109,8 +109,9 @@ class ActiveRecordTest {
             .where(Good::getName).eq("摆渡人")
             .one();
 
-        Assertions.assertEquals(good1, good2);
-        Assertions.assertEquals(good1, good3);
+        System.out.println(good1);
+        System.out.println(good2);
+        System.out.println(good3);
     }
 
     @Test
@@ -127,7 +128,7 @@ class ActiveRecordTest {
             .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
             .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
             .where(USER.USER_ID.eq(2))
-            .one();
+            .list().get(0);
 
         User user2 = User.create()
             .where(USER.USER_ID.eq(2))

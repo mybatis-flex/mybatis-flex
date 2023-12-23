@@ -1,0 +1,155 @@
+[
+    {
+        "id": 1,
+        "userName": "孙悟空",
+        "age": 18,
+        "idCard": null,
+        "books": [],
+        "roles": [
+            {
+                "id": 1,
+                "name": "角色1",
+                "accounts": [
+                    {
+                        "id": 1,
+                        "userName": "孙悟空",
+                        "age": 18,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    },
+                    {
+                        "id": 2,
+                        "userName": "猪八戒",
+                        "age": 19,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "name": "角色3",
+                "accounts": [
+                    {
+                        "id": 1,
+                        "userName": "孙悟空",
+                        "age": 18,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    },
+                    {
+                        "id": 2,
+                        "userName": "猪八戒",
+                        "age": 19,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "userName": "猪八戒",
+        "age": 19,
+        "idCard": null,
+        "books": [],
+        "roles": [
+            {
+                "id": 1,
+                "name": "角色1",
+                "accounts": [
+                    {
+                        "id": 1,
+                        "userName": "孙悟空",
+                        "age": 18,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    },
+                    {
+                        "id": 2,
+                        "userName": "猪八戒",
+                        "age": 19,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "name": "角色2",
+                "accounts": [
+                    {
+                        "id": 2,
+                        "userName": "猪八戒",
+                        "age": 19,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "name": "角色3",
+                "accounts": [
+                    {
+                        "id": 1,
+                        "userName": "孙悟空",
+                        "age": 18,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    },
+                    {
+                        "id": 2,
+                        "userName": "猪八戒",
+                        "age": 19,
+                        "idCard": null,
+                        "books": [],
+                        "roles": [],
+                        "rolesMap": null
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "userName": "沙和尚",
+        "age": 19,
+        "idCard": null,
+        "books": [],
+        "roles": null
+    },
+    {
+        "id": 4,
+        "userName": "六耳猕猴",
+        "age": 19,
+        "idCard": null,
+        "books": [],
+        "roles": null
+    },
+    {
+        "id": 5,
+        "userName": "王麻子叔叔",
+        "age": 19,
+        "idCard": null,
+        "books": [],
+        "roles": null
+    }
+]

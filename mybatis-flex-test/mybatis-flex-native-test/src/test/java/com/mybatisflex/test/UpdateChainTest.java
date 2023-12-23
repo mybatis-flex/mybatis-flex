@@ -19,50 +19,66 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
-import com.mybatisflex.core.audit.MessageCollector;
+import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.query.QueryChain;
 import com.mybatisflex.core.update.UpdateChain;
+import lombok.SneakyThrows;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
+import org.assertj.core.api.WithAssertions;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import javax.sql.DataSource;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.List;
 
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
 
-public class UpdateChainTest {
+public class UpdateChainTest implements WithAssertions {
 
-    static AccountMapper accountMapper;
+    private AccountMapper accountMapper;
+    private EmbeddedDatabase dataSource;
+
+    private static final String DATA_SOURCE_KEY = "ds2";
 
     @BeforeClass
-    public static void init() {
-        DataSource dataSource = new EmbeddedDatabaseBuilder()
+    public static void enableAudit() {
+        AuditManager.setAuditEnable(true);
+        AuditManager.setMessageCollector(new ConsoleMessageCollector());
+    }
+
+    @Before
+    public void init() {
+        this.dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
             .addScript("schema.sql")
             .addScript("data.sql")
             .build();
 
-        MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
-            .setDataSource(dataSource)
+        MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
+            .setDataSource(DATA_SOURCE_KEY, this.dataSource)
             .setLogImpl(StdOutImpl.class)
             .addMapper(AccountMapper.class)
             .start();
 
-        //开启审计功能
-        AuditManager.setAuditEnable(true);
-
-        //设置 SQL 审计收集器
-        MessageCollector collector = new ConsoleMessageCollector();
-        AuditManager.setMessageCollector(collector);
-
+        DataSourceKey.use(DATA_SOURCE_KEY);
         accountMapper = bootstrap.getMapper(AccountMapper.class);
+    }
 
+    @After
+    public void destroy() {
+        this.dataSource.shutdown();
+        DataSourceKey.clear();
     }
 
     @Test
+    @SneakyThrows
     public void testUpdateChain() {
         UpdateChain.of(Account.class)
             .set(Account::getUserName, "张三")
@@ -71,7 +87,19 @@ public class UpdateChainTest {
             .update();
 
         Account account = accountMapper.selectOneById(1);
-        System.out.println(account);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String toParse = "2020-01-11";
+        assertThat(account).isNotNull()
+            .extracting(
+                Account::getUserName, Account::getAge,
+                Account::getSex, Account::getBirthday,
+                Account::getOptions, Account::getDelete,
+                Account::getArticles, Account::getTitle)
+            .containsExactly(
+                "张*", 19,
+                SexEnum.TYPE1, format.parse(toParse),
+                Collections.singletonMap("key", "value1"), false,
+                Collections.emptyList(), null);
     }
 
     @Test
@@ -82,9 +110,10 @@ public class UpdateChainTest {
             .and(Account::getAge).eq(18)
             .update();
 
-        QueryChain.of(accountMapper)
-            .list()
-            .forEach(System.out::println);
+        List<Account> list = QueryChain.of(accountMapper).list();
+        assertThat(list).hasSize(2)
+            .extracting(Account::getId, Account::getUserName, Account::getAge)
+            .containsExactly(tuple(1L, "张*", 18), tuple(2L, "王麻**叔", 19));
     }
 
     @Test
@@ -96,7 +125,11 @@ public class UpdateChainTest {
             .where(ACCOUNT.ID.eq(4))
             .toSQL();
 
-        System.out.println(sql);
+        String expectSQL = "UPDATE `tb_account` " +
+                           "LEFT JOIN `tb_article` AS `ar` ON `tb_account`.`id` = `ar`.`account_id` " +
+                           "SET `age` = 18 , `accountId` = 4  WHERE `id` = 4";
+
+        assertThat(sql).isEqualTo(expectSQL);
     }
 
 }

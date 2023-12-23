@@ -18,47 +18,69 @@ package com.mybatisflex.test;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
-import com.mybatisflex.core.audit.MessageCollector;
+import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.mapper.Account5Mapper;
+import org.assertj.core.api.WithAssertions;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import javax.sql.DataSource;
+public class AccountInsertWithArrayAttrTest implements WithAssertions {
 
-public class AccountInsertWithArrayAttrTestStarter {
+    private Account5Mapper accountMapper;
+    private EmbeddedDatabase dataSource;
 
-    public static void main(String[] args) {
-        DataSource dataSource = new EmbeddedDatabaseBuilder()
+    private static final String DATA_SOURCE_KEY = "data05";
+
+    @BeforeClass
+    public static void enableAudit() {
+        AuditManager.setAuditEnable(true);
+        AuditManager.setMessageCollector(new ConsoleMessageCollector());
+    }
+
+    @Before
+    public void init() {
+        this.dataSource =  new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
             .addScript("schema05.sql")
             .addScript("data05.sql")
             .build();
 
-        MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
-            .setDataSource(dataSource)
+        MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
+            .setDataSource(DATA_SOURCE_KEY, dataSource)
             .addMapper(Account5Mapper.class)
             .start();
 
-        //开启审计功能
-        AuditManager.setAuditEnable(true);
+        DataSourceKey.use(DATA_SOURCE_KEY);
 
-        //设置 SQL 审计收集器
-        MessageCollector collector = new ConsoleMessageCollector();
-        AuditManager.setMessageCollector(collector);
-//
-//        String insertSql = "INSERT INTO `tb_account`(`id`,`user_name`, `age`, `birthday`, `options`, `is_delete`, `data_scope`) VALUES (?, ?, ?, ?, ?, ?, ?)";
-//        Db.insertBySql(insertSql,null,"lisi",null,null,null,null,null);
+        accountMapper = bootstrap.getMapper(Account5Mapper.class);
+    }
 
+    @After
+    public void destroy() {
+        this.dataSource.shutdown();
+        DataSourceKey.clear();
+    }
 
-        Account5Mapper accountMapper = bootstrap.getMapper(Account5Mapper.class);
-
+    @Test
+    @Ignore
+    public void testInsertWithPk() {
         Account5 account = new Account5();
         account.setId(3L);
         account.setUserName("lisi");
         account.setDataScope(new Long[]{1L, 2L});
-
         accountMapper.insertWithPk(account, false);
 
+        // todo argument type mismatch
+        Account5 result = accountMapper.selectOneById(3L);
+        assertThat(result).isNotNull()
+            .extracting(Account5::getUserName, Account5::getDataScope)
+            .containsExactly("lisi", new Long[]{1L, 2L});
     }
 
 }

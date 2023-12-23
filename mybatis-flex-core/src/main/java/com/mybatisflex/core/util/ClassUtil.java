@@ -16,6 +16,8 @@
 package com.mybatisflex.core.util;
 
 
+import org.apache.ibatis.javassist.util.proxy.ProxyObject;
+
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,10 +74,13 @@ public class ClassUtil {
             return getJdkProxySuperClass(clazz);
         }
 
+//        if (ProxyObject.class.isAssignableFrom(clazz)){
+//            return (Class<T>) clazz.getSuperclass();
+//        }
+
         //ControllerTest$ServiceTest$$EnhancerByGuice$$40471411#hello   -------> Guice
         //com.demo.blog.Blog$$EnhancerByCGLIB$$69a17158  ----> CGLIB
         //io.jboot.test.app.TestAppListener_$$_jvstb9f_0 ------> javassist
-
         final String name = clazz.getName();
         if (name.contains(ENHANCER_BY) || name.contains(JAVASSIST_BY)) {
             return (Class<T>) clazz.getSuperclass();

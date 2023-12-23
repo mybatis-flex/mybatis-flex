@@ -32,11 +32,13 @@ public class UpdateEntity {
 
 
     public static <T> T of(Class<T> clazz) {
+        clazz = ClassUtil.getUsefulClass(clazz);
         return ModifyAttrsRecordProxyFactory.getInstance().get(clazz);
     }
 
 
     public static <T> T of(Class<T> clazz, Object id) {
+        clazz = ClassUtil.getUsefulClass(clazz);
         T newEntity = ModifyAttrsRecordProxyFactory.getInstance().get(clazz);
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(clazz);
         List<IdInfo> primaryKeyList = tableInfo.getPrimaryKeyList();

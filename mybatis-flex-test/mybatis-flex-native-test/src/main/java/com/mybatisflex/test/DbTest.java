@@ -17,8 +17,12 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
+import com.mybatisflex.core.audit.AuditManager;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.update.UpdateWrapper;
+import com.mybatisflex.core.util.UpdateEntity;
 import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -27,7 +31,9 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 王帅
@@ -70,4 +76,25 @@ public class DbTest {
             .forEach(Assert::assertNull);
     }
 
+    @Test
+    public void test02() {
+        Map map = Db.selectFirstAndSecondColumnsAsMap(QueryWrapper.create().from(tb_account));
+        Map map2 = Db.selectFirstAndSecondColumnsAsMap("select * from tb_account");
+        System.out.println(map);
+        System.out.println(map2);
+
+    }
+    @Test
+    public void test03() {
+        Account account = UpdateEntity.of(Account.class,1);
+        account.setAge(1);
+        List<Account> accounts = new ArrayList<>();
+        accounts.add(account);
+        Account account2 = UpdateEntity.of(Account.class,2);
+        account2.setAge(2);
+        UpdateWrapper updateWrapper = UpdateWrapper.of(account2);
+        updateWrapper.setRaw("age","age+1");
+        accounts.add(account2);
+        Db.updateEntitiesBatch(accounts);
+    }
 }

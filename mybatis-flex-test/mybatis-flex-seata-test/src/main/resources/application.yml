@@ -6,15 +6,18 @@ mybatis-flex:
     accountdb:
       url: jdbc:mysql://127.0.0.1:3306/db_account
       username: root
-      password: 131496
+      password: 123456
+      break-after-acquire-failure: true
     orderdb:
       url: jdbc:mysql://127.0.0.1:3306/db_order
       username: root
-      password: 131496
+      password: 123456
+      break-after-acquire-failure: true
     stockdb:
       url: jdbc:mysql://127.0.0.1:3306/db_stock
       username: root
-      password: 131496
+      password: 123456
+      break-after-acquire-failure: true
 server:
   port: 2010
 seata:

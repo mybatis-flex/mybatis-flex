@@ -2,6 +2,24 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.7.6 20231223:
+- 新增：Db.selectFirstAndSecondColumnsAsMap 方法：查询结果的第一列作为 key，第二列作为 value，感谢 @617054137
+- 新增：方言添加添加权限处理统一入口 prepareAuth，感谢 @bf109f
+- 优化：在数组异常时不显示数组为空异常信息的问题，感谢 @Suomm
+- 优化：修改 QueryCondition 的类的相关错别字，感谢 @Suomm
+- 优化：升级 MyBatis 相关依赖到最新版本，感谢 @tocken
+- 修复：DB2 v10.5 不支持 offset 关键字进行分页的问题，感谢 @farukonfly
+- 修复：DB2 v10.5 不支持 Nulls First 或 Nulls Last 语法的问题，感谢 @farukonfly
+- 修复：FieldWrapper 对有泛型 Entity 进行部分更新时报错的问题，感谢 @617054137
+- 修复：Db.updateEntitiesBatch 更新部分字段时，在某些场景下报错的问题，感谢 @617054137
+- 修复：字段类型为 YearMonth,Year 等时更新出错的问题 #I8CGVM
+- 修复：main 方法直接调用 updateChain 方法构建 sql 时调用 toSQL 出错的问题 #I8NF9T
+- 测试：优化单元测试，移除 println，添加更多的断言，感谢 @mofan
+- 文档：添加 SpringBoot 3.2 版本启动失败解决办法，感谢 @Suomm
+- 文档：优化英文文档的相关内容，感谢 @mofan
+- 文档：更新 table 中的示例代码错误，感谢 @jtxfd_admin
+
+
 
 ## v1.7.5 20231124:
 - 修复：主键 ID 当传入空字符串时，调用 `insert` 方法不会依据 `@Id` 自动生成主键 id 的问题

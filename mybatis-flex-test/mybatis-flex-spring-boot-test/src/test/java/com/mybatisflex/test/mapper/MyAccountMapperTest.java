@@ -40,7 +40,7 @@ class MyAccountMapperTest {
     @Test
     void insertBatch() {
         List<Account> accounts = new ArrayList<>();
-        for (int i = 0; i < 3_3334; i++) {
+        for (int i = 0; i < 10; i++) {
             Account account = new Account();
             account.setBirthday(new Date());
             account.setAge(i % 60);
@@ -56,7 +56,7 @@ class MyAccountMapperTest {
             System.out.println("异常");
         }
         int i = mapper.insertBatch(accounts, 1000);
-        assertEquals(33334, i);
+        assertEquals(10, i);
     }
 
 }

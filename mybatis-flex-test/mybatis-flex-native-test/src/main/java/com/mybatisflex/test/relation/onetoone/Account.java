@@ -17,7 +17,6 @@
 package com.mybatisflex.test.relation.onetoone;
 
 import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.RelationManyToMany;
 import com.mybatisflex.annotation.Table;
 
@@ -28,7 +27,7 @@ import java.util.Map;
 @Table(value = "tb_account")
 public class Account implements Serializable {
 
-    @Id(keyType = KeyType.Auto)
+    @Id
     private Long id;
 
     private String userName;

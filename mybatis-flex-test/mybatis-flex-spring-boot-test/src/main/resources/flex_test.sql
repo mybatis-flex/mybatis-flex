@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS `tb_account`;
 CREATE TABLE `tb_account`
 (
     `id`        int                                                           NOT NULL AUTO_INCREMENT,
-    `user_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `user_name` varchar(100) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     `age`       int                                                           NULL DEFAULT NULL,
     `birthday`  datetime                                                      NULL DEFAULT NULL,
     `gender`    int                                                           NULL DEFAULT NULL,
@@ -17,7 +17,6 @@ CREATE TABLE `tb_account`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 5
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -38,14 +37,13 @@ CREATE TABLE `tb_article`
 (
     `id`         int                                                           NOT NULL AUTO_INCREMENT,
     `account_id` int                                                           NULL DEFAULT NULL,
-    `title`      varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-    `content`    text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci         NULL,
+    `title`      varchar(100) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+    `content`    text CHARACTER SET utf8mb4         NULL,
     `is_delete`  int                                                           NULL DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 3
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -65,13 +63,12 @@ DROP TABLE IF EXISTS `tb_good`;
 CREATE TABLE `tb_good`
 (
     `good_id` int                                                           NOT NULL AUTO_INCREMENT,
-    `name`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `name`    varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     `price`   decimal(10, 2)                                                NULL DEFAULT NULL,
     PRIMARY KEY (`good_id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 10
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -105,11 +102,10 @@ DROP TABLE IF EXISTS `tb_id_card`;
 CREATE TABLE `tb_id_card`
 (
     `id`        int                                                           NOT NULL AUTO_INCREMENT,
-    `id_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `id_number` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -131,12 +127,11 @@ DROP TABLE IF EXISTS `tb_inner`;
 CREATE TABLE `tb_inner`
 (
     `id`   int                                                           NOT NULL AUTO_INCREMENT,
-    `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `type` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 2
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -157,7 +152,6 @@ CREATE TABLE `tb_order`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 6
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -186,7 +180,6 @@ CREATE TABLE `tb_order_good`
     `good_id`  int NOT NULL
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -226,12 +219,11 @@ DROP TABLE IF EXISTS `tb_outer`;
 CREATE TABLE `tb_outer`
 (
     `id`   int                                                           NOT NULL AUTO_INCREMENT,
-    `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `name` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -247,13 +239,12 @@ DROP TABLE IF EXISTS `tb_role`;
 CREATE TABLE `tb_role`
 (
     `role_id`   int                                                           NOT NULL AUTO_INCREMENT,
-    `role_key`  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-    `role_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `role_key`  varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+    `role_name` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`role_id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 5
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -275,13 +266,12 @@ DROP TABLE IF EXISTS `tb_user`;
 CREATE TABLE `tb_user`
 (
     `user_id`   int                                                           NOT NULL AUTO_INCREMENT,
-    `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-    `password`  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `user_name` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
+    `password`  varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`user_id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -306,7 +296,6 @@ CREATE TABLE `tb_user_order`
     `order_id` int NOT NULL
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -335,7 +324,6 @@ CREATE TABLE `tb_user_role`
     `role_id` int NOT NULL
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------

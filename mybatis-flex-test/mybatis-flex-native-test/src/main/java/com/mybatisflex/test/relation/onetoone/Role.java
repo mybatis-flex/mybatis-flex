@@ -16,6 +16,7 @@
 
 package com.mybatisflex.test.relation.onetoone;
 
+import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.RelationManyToMany;
 import com.mybatisflex.annotation.Table;
 
@@ -25,6 +26,7 @@ import java.util.List;
 @Table(value = "tb_role")
 public class Role implements Serializable {
 
+    @Id
     private Long id;
     private String name;
 

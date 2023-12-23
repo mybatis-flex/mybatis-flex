@@ -127,14 +127,14 @@ const {Layout} = DefaultTheme
                             src="/assets/images/ad/topiam_20230909.png" style="width: 105px;height: 50px"></a>
                     </div>
                     <div class="banner">
-                        虚以待位
+                        虚位以待
                     </div>
                     <div class="banner">
-                        虚以待位
+                        虚位以待
                     </div>
                 </div>
                 <div class="banner-bottom">
-                    虚以待位
+                    虚位以待
                 </div>
             </div>
         </template>
