@@ -26,6 +26,7 @@ import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ArrayUtil;
+import com.mybatisflex.core.util.ClassUtil;
 import org.apache.ibatis.javassist.util.proxy.ProxyObject;
 
 import java.util.*;
@@ -245,13 +246,8 @@ public class RowSqlProvider {
 
         FlexAssert.notNull(entity, "entity can not be null");
 
-        Class<?> entityClass = entity.getClass();
-        //如果是代理mybatis代理对象
-        if(entity instanceof ProxyObject){
-            entityClass = entityClass.getSuperclass();
-        }
         // 该 Mapper 是通用 Mapper  无法通过 ProviderContext 获取，直接使用 TableInfoFactory
-        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
 
         // 执行 onUpdate 监听器
         tableInfo.invokeOnUpdateListener(entity);
