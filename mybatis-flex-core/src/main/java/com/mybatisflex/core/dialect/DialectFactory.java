@@ -111,6 +111,7 @@ public class DialectFactory {
             case DORIS:
                 return new CommonsDialectImpl(KeywordWrap.BACK_QUOTE, LimitOffsetProcessor.MYSQL);
             case CLICK_HOUSE:
+            case GBASE_8S:
                 return new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.MYSQL);
             case DM:
                 return new DmDialect();
