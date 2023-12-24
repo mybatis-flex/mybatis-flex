@@ -19,6 +19,11 @@ package com.mybatisflex.test.common;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mybatisflex.core.query.QueryCondition;
 
 import java.io.*;
 
@@ -71,4 +76,26 @@ public class SerialUtil {
         return parseObject(toJSONString(obj), tClass);
     }
 
+
+    /**
+     * 使用jackson对QueryWrapper进行序列化反序列化操作，需要注意QueryCondition的protected属性以及prev和next的递归问题。
+     *
+     * @return Jackson序列化映射
+     */
+    public static ObjectMapper jacksonMapper(){
+        ObjectMapper mapper = new ObjectMapper();
+        // 为了将QueryWrapper里的protected属性可见
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC);
+        // 避免QueryCondition里的prev和next在序列化时出现递归调用错误
+        mapper.addMixIn(QueryCondition.class,QueryConditionMixIn.class);
+        return mapper;
+    }
+
+    /**
+     * 因无法修改QueryCondition而添加的映射属性包装
+     */
+    class QueryConditionMixIn{
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        protected QueryCondition prev;
+    }
 }
