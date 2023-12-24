@@ -1,5 +1,6 @@
 package com.mybatisflex.core.dialect.impl;
 
+import static com.mybatisflex.core.constant.FuncName.SUBSTRING;
 import static com.mybatisflex.core.constant.SqlConsts.DELIMITER;
 import static com.mybatisflex.core.constant.SqlConsts.NULLS_FIRST;
 import static com.mybatisflex.core.constant.SqlConsts.NULLS_LAST;
@@ -18,14 +19,24 @@ public class DB2105Dialect extends CommonsDialectImpl {
       //TODO: 根据DatabaseMetaData获取数据库厂商名和版本号
     public static final String DB2_1005_PRODUCT_VERSION = "1005";
     public static final String DB2_PRODUCT_NAME = "DB2";
-    private static final Pattern pattern = Pattern.compile("(\\S+)\\s+(\\S*)\\s*("+NULLS_FIRST.trim()+"|"+NULLS_LAST.trim()+")");
-
+    private static final Pattern ORDERBY_PATTERN = Pattern.compile("(\\S+)\\s+(\\S*)\\s*("+NULLS_FIRST.trim()+"|"+NULLS_LAST.trim()+")");
+    private static final Pattern SUBSTRING_PATTERN = Pattern.compile("((?i)"+SUBSTRING.trim()+")(\\s*)(\\(.*?\\))");
 
     public DB2105Dialect(KeywordWrap keywordWrap, LimitOffsetProcessor limitOffsetProcessor) {
         super(keywordWrap, limitOffsetProcessor);
     }
 
- @Override
+    @Override
+    public String buildSelectSql(QueryWrapper queryWrapper){
+        String sql = super.buildSelectSql(queryWrapper);
+        if(sql!=null){
+            Matcher matcher = SUBSTRING_PATTERN.matcher(sql);
+            sql = matcher.replaceAll("SUBSTR$2$3");
+        }
+        return sql;
+    }
+
+    @Override
     protected void buildOrderBySql(StringBuilder sqlBuilder, QueryWrapper queryWrapper, List<QueryTable> queryTables) {
         List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
         if (orderBys != null && !orderBys.isEmpty()) {
@@ -33,7 +44,7 @@ public class DB2105Dialect extends CommonsDialectImpl {
             int index = 0;
             for (QueryOrderBy orderBy : orderBys) {
                 String orderBySql = orderBy.toSql(queryTables, this);
-                orderBySql = convertOderbySqlForDB2105(orderBySql);  // 转换SQL语句
+                orderBySql = convertOrderBySqlForDB2105(orderBySql);  // 转换SQL语句
                 sqlBuilder.append(orderBySql);
                 if (index != orderBys.size() - 1) {
                     sqlBuilder.append(DELIMITER);
@@ -43,8 +54,8 @@ public class DB2105Dialect extends CommonsDialectImpl {
         }
     }
 
-    private  String convertOderbySqlForDB2105(String sql) {
-        Matcher matcher = pattern.matcher(sql);
+    private  String convertOrderBySqlForDB2105(String sql) {
+        Matcher matcher = ORDERBY_PATTERN.matcher(sql);
         if (matcher.find()) {
             String column = matcher.group(1);
             String orderType = matcher.group(2);
