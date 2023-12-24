@@ -30,6 +30,7 @@ import org.apache.ibatis.type.TypeHandler;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -84,7 +85,7 @@ public class FlexResultSetHandler extends FlexDefaultResultSetHandler {
             String columnName = prependPrefix(mapping.getColumn(), columnPrefix);
             TypeHandler<?> typeHandler = mapping.getTypeHandler();
 
-            List<String> mappedColumnNames = rsw.getMappedColumnNames(resultMap, columnPrefix);
+            Collection<String> mappedColumnNames = rsw.getMappedColumnNames(resultMap, columnPrefix);
             if (columnName != null && mappedColumnNames.contains(columnName.toUpperCase(Locale.ENGLISH))) {
                 return typeHandler.getResult(rsw.getResultSet(), columnName);
             }
