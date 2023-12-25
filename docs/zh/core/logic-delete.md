@@ -10,7 +10,7 @@
 
 ## MyBatis-Flex 逻辑删除示例
 
-假设在 tb_account 表中，存在一个为 is_deleted 的字段，用来标识该数据的逻辑删除，那么 tb_account 表
+假设在 tb_account 表中，存在一个为 is_delete 的字段，用来标识该数据的逻辑删除，那么 tb_account 表
 对应的 "Account.java" 实体类应该配置如下：
 
 ```java
