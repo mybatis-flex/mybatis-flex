@@ -58,13 +58,9 @@ public class FieldWrapper {
 
                     String setterName = "set" + StringUtil.firstCharToUpperCase(fieldName);
                     Method setter = ClassUtil.getFirstMethod(clazz, method ->
-                        method.getParameterCount() == 1
-                            && Modifier.isPublic(method.getModifiers())
-                            && method.getName().equals(setterName));
-
-                    if (setter == null) {
-                        throw new IllegalStateException("Can not find method \"set" + StringUtil.firstCharToUpperCase(fieldName) + "\" in class: " + clazz);
-                    }
+                            method.getParameterCount() == 1
+                                    && Modifier.isPublic(method.getModifiers())
+                                    && method.getName().equals(setterName));
 
                     fieldWrapper = new FieldWrapper();
                     fieldWrapper.field = findField;
@@ -80,8 +76,8 @@ public class FieldWrapper {
 
                     String[] getterNames = new String[]{"get" + StringUtil.firstCharToUpperCase(fieldName), "is" + StringUtil.firstCharToUpperCase(fieldName)};
                     fieldWrapper.getterMethod = ClassUtil.getFirstMethod(clazz, method -> method.getParameterCount() == 0
-                        && Modifier.isPublic(method.getModifiers())
-                        && ArrayUtil.contains(getterNames, method.getName()));
+                            && Modifier.isPublic(method.getModifiers())
+                            && ArrayUtil.contains(getterNames, method.getName()));
 
                     wrapperMap.put(fieldName, fieldWrapper);
                 }
@@ -120,6 +116,9 @@ public class FieldWrapper {
 
     public void set(Object value, Object to) {
         try {
+            if (setterMethod == null) {
+                throw new IllegalStateException("Can not find method \"set" + StringUtil.firstCharToUpperCase(field.getName()) + "\" in class: " + to.getClass());
+            }
             setterMethod.invoke(to, value);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -128,6 +127,9 @@ public class FieldWrapper {
 
     public Object get(Object target) {
         try {
+            if (getterMethod == null) {
+                throw new IllegalStateException("Can not find method \"get" + StringUtil.firstCharToUpperCase(field.getName()) + ", is" + StringUtil.firstCharToUpperCase(field.getName()) + "\" in class: " + target.getClass());
+            }
             return getterMethod.invoke(target);
         } catch (Exception e) {
             throw new RuntimeException(e);
