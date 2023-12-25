@@ -32,7 +32,8 @@
   >- `all<实体类>()` 查泛型对应的表的所有数据
   >- `filter<实体类>(vararg KProperty<*>, ()->QueryCondition)` 按条件查泛型对应的表的数据
   >- `query<实体类>(QueryScope.()->Unit)` 较复杂查泛型对应的表的数据 (如: 分组,排序等)
-
+  >- `paginateWith(pageNumber: Number, pageSize: Number, totalRow: Number? = null, queryConditionGet: () -> QueryCondition): Page<实体类>`
+     与 `paginate(pageNumber: Number, pageSize: Number, totalRow: Number? = null, init: QueryScope.() -> Unit): Page<实体类>` 使用分页的条件查询与较复杂查询
 - 简明地构建查询：通过中缀表达式➕扩展方法能更加简单明了的构建条件:
 
     * **【对比原生】**
