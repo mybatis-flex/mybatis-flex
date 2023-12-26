@@ -49,6 +49,7 @@
         <module>mybatis-flex-test</module>
         <module>mybatis-flex-processor</module>
         <module>mybatis-flex-dependencies</module>
+        <module>mybatis-flex-spring-boot-3-starter</module>
     </modules>
 
     <properties>
