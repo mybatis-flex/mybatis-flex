@@ -2565,6 +2565,13 @@ public class QueryMethods {
     }
 
     /**
+     * {@code NOT (column)} 或 {@code NOT column}
+     */
+    public static <N> QueryColumn not(LambdaGetter<N> column) {
+        return new FunctionQueryColumn("NOT", LambdaUtil.getQueryColumn(column));
+    }
+
+    /**
      * 空条件。
      */
     public static QueryCondition noCondition() {
