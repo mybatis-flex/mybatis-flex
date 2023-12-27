@@ -9,7 +9,7 @@
         <version>1.7.6</version>
     </parent>
 
-    <artifactId>mybatis-flex-spring-boot-3-starter</artifactId>
+    <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

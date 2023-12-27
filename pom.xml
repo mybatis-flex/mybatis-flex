@@ -45,11 +45,11 @@
         <module>mybatis-flex-core</module>
         <module>mybatis-flex-spring</module>
         <module>mybatis-flex-spring-boot-starter</module>
+        <module>mybatis-flex-spring-boot3-starter</module>
         <module>mybatis-flex-solon-plugin</module>
         <module>mybatis-flex-test</module>
         <module>mybatis-flex-processor</module>
         <module>mybatis-flex-dependencies</module>
-        <module>mybatis-flex-spring-boot-3-starter</module>
     </modules>
 
     <properties>
