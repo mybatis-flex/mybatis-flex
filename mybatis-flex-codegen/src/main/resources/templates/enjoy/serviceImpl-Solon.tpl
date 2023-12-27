@@ -4,7 +4,7 @@ import com.mybatisflex.solon.service.impl.ServiceImpl;
 import #(packageConfig.entityPackage).#(table.buildEntityClassName());
 import #(packageConfig.mapperPackage).#(table.buildMapperClassName());
 import #(packageConfig.servicePackage).#(table.buildServiceClassName());
-import org.noear.solon.annotation.ProxyComponent;
+import org.noear.solon.annotation.Component;
 
 /**
  * #(table.getComment()) 服务层实现。
@@ -12,7 +12,7 @@ import org.noear.solon.annotation.ProxyComponent;
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())
  */
-@ProxyComponent
+@Component
 public class #(table.buildServiceImplClassName()) extends ServiceImpl<#(table.buildMapperClassName()), #(table.buildEntityClassName())> implements #(table.buildServiceClassName()) {
 
 }
