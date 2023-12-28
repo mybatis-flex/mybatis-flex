@@ -22,10 +22,18 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.update.UpdateChain;
 import com.mybatisflex.test.model.Gender;
 import com.mybatisflex.test.model.User;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.testcontainers.containers.BindMode;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.utility.DockerImageName;
+
+import java.util.Collections;
 
 import static com.mybatisflex.test.model.table.RoleTableDef.ROLE;
 import static com.mybatisflex.test.model.table.UserRoleTableDef.USER_ROLE;
@@ -38,8 +46,27 @@ import static com.mybatisflex.test.model.table.UserTableDef.USER;
 @SpringBootTest
 class QueryChainTest {
 
+    static final String TEST_DDL = QueryChainTest.class.getClassLoader().getResource("flex_test.sql").getPath();
+    static GenericContainer<?> mysql = new GenericContainer<>(DockerImageName.parse("mysql:8.2.0"))
+        .waitingFor(Wait.forLogMessage(".*ready for connections.*\\n", 1))
+        // bind DDL to container /docker-entrypoint-initdb.d and it will execute automatically
+        .withFileSystemBind(TEST_DDL, "/docker-entrypoint-initdb.d/flex_test.sql", BindMode.READ_ONLY)
+        .withEnv("MYSQL_DATABASE", "flex_test")
+        .withEnv("MYSQL_ROOT_PASSWORD", "123456");
+
     @Autowired
     UserMapper userMapper;
+
+    @BeforeAll
+    public static void start() {
+        mysql.setPortBindings(Collections.singletonList("3306:3306"));
+        mysql.start();
+    }
+
+    @AfterAll
+    public static void stop() {
+        mysql.stop();
+    }
 
     @Test
     void testFields() {
