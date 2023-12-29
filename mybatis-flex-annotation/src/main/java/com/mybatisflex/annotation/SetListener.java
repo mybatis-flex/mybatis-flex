@@ -26,7 +26,7 @@ public interface SetListener extends Listener {
      * @param entity   实体类
      * @param property 属性名
      * @param value    属性值
-     * @return 实体类
+     * @return 属性值
      */
     Object onSet(Object entity, String property, Object value);
 
