@@ -376,7 +376,7 @@ public interface IService<T> {
      * @return 查询结果数据
      */
     default T getOne(QueryCondition condition) {
-        return getOne(query().where(condition));
+        return getOne(query().where(condition).limit(1));
     }
 
     /**
