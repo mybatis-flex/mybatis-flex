@@ -22,6 +22,7 @@ import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.mybatisflex.core.constant.FuncName.*;
@@ -2344,6 +2345,12 @@ public class QueryMethods {
      */
     public static DistinctQueryColumn distinct(QueryColumn... columns) {
         return new DistinctQueryColumn(columns);
+    }
+
+    @SafeVarargs
+    public static <T> DistinctQueryColumn distinct(LambdaGetter<T>... columns) {
+        return new DistinctQueryColumn(Arrays.stream(columns)
+            .map(LambdaUtil::getQueryColumn).toArray(QueryColumn[]::new));
     }
 
     // === CASE THEN ELSE ===
