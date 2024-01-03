@@ -245,9 +245,13 @@ public class RowSqlProvider {
         Object entity = ProviderUtil.getEntity(params);
 
         FlexAssert.notNull(entity, "entity can not be null");
-
+        Class<?> entityClass = entity.getClass();
+        //如果是代理mybatis代理对象
+        if(entity instanceof ProxyObject){
+            entityClass = entityClass.getSuperclass();
+        }
         // 该 Mapper 是通用 Mapper  无法通过 ProviderContext 获取，直接使用 TableInfoFactory
-        TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
 
         // 执行 onUpdate 监听器
         tableInfo.invokeOnUpdateListener(entity);
