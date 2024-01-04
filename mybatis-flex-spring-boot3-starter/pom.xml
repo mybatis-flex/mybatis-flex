@@ -6,14 +6,12 @@
     <parent>
         <groupId>com.mybatis-flex</groupId>
         <artifactId>parent</artifactId>
-        <version>1.7.6</version>
+        <version>1.7.7</version>
     </parent>
 
     <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -21,7 +19,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-spring-boot-starter</artifactId>
-            <version>1.7.6</version>
+            <version>1.7.7</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.mybatis</groupId>
