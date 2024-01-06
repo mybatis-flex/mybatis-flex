@@ -479,7 +479,7 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
 
     private boolean applyPropertyMappings(ResultSetWrapper rsw, ResultMap resultMap, MetaObject metaObject,
                                           ResultLoaderMap lazyLoader, String columnPrefix) throws SQLException {
-        final List<String> mappedColumnNames = rsw.getMappedColumnNames(resultMap, columnPrefix);
+        final Collection<String> mappedColumnNames = rsw.getMappedColumnNames(resultMap, columnPrefix);
         boolean foundValues = false;
         final List<ResultMapping> propertyMappings = resultMap.getPropertyResultMappings();
         for (ResultMapping propertyMapping : propertyMappings) {
@@ -1178,7 +1178,7 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
             if (resultMapping.isSimple()) {
                 final String column = prependPrefix(resultMapping.getColumn(), columnPrefix);
                 final TypeHandler<?> th = resultMapping.getTypeHandler();
-                List<String> mappedColumnNames = rsw.getMappedColumnNames(resultMap, columnPrefix);
+                Collection<String> mappedColumnNames = rsw.getMappedColumnNames(resultMap, columnPrefix);
                 // Issue #114
                 if (column != null && mappedColumnNames.contains(column.toUpperCase(Locale.ENGLISH))) {
                     final Object value = th.getResult(rsw.getResultSet(), column);

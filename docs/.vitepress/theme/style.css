@@ -1,12 +1,8 @@
 :root {
-    --vp-c-brand: #F06C33;
-    --vp-c-brand-light: #FFCC00;
-    --vp-c-brand-lighter: #FFCC99;
-    --vp-c-brand-dark: #FF9933;
-    --vp-c-brand-darker: #CC6600;
-
-    --vp-custom-block-tip-border: #FFCC99;
-    --vp-custom-block-tip-text: #F06C33;
+    --vp-c-brand-1:#F06C33;
+    --vp-home-hero-name-color:#F06C33;
+    --vp-button-brand-bg:#F06C33;
+    --vp-button-brand-hover-bg:#ff986b;
 }
 
 .vp-doc .custom-block p {

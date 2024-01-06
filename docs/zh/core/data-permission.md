@@ -119,7 +119,7 @@ public class AuthDialectImpl extends CommonsDialectImpl {
 对`QueryWrapper`的表做筛选可参考 **方式1**
 在项目启动时通过 `DialectFactory` 注册 `AuthDialectImpl`，以spring boot项目为例：
 
-```
+```java
 @Configuration
 public class MybatisFlexConfig implements MyBatisFlexCustomizer {
 

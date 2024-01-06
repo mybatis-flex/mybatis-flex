@@ -22,6 +22,7 @@ import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.mybatisflex.core.constant.FuncName.*;
@@ -2346,6 +2347,12 @@ public class QueryMethods {
         return new DistinctQueryColumn(columns);
     }
 
+    @SafeVarargs
+    public static <T> DistinctQueryColumn distinct(LambdaGetter<T>... columns) {
+        return new DistinctQueryColumn(Arrays.stream(columns)
+            .map(LambdaUtil::getQueryColumn).toArray(QueryColumn[]::new));
+    }
+
     // === CASE THEN ELSE ===
 
     /**
@@ -2562,6 +2569,13 @@ public class QueryMethods {
      */
     public static QueryCondition not(QueryCondition childCondition) {
         return new OperatorQueryCondition("NOT ", childCondition);
+    }
+
+    /**
+     * {@code NOT (column)} 或 {@code NOT column}
+     */
+    public static <N> QueryColumn not(LambdaGetter<N> column) {
+        return new FunctionQueryColumn("NOT", LambdaUtil.getQueryColumn(column));
     }
 
     /**

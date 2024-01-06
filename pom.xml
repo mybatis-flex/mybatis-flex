@@ -7,7 +7,7 @@
     <groupId>com.mybatis-flex</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.7.6</version>
+    <version>1.7.7</version>
 
     <name>mybatis-flex</name>
     <url>https://mybatis-flex.com</url>
@@ -45,6 +45,7 @@
         <module>mybatis-flex-core</module>
         <module>mybatis-flex-spring</module>
         <module>mybatis-flex-spring-boot-starter</module>
+        <module>mybatis-flex-spring-boot3-starter</module>
         <module>mybatis-flex-solon-plugin</module>
         <module>mybatis-flex-test</module>
         <module>mybatis-flex-processor</module>
@@ -55,9 +56,9 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
-        <mybatis-flex.version>1.7.6</mybatis-flex.version>
+        <mybatis-flex.version>1.7.7</mybatis-flex.version>
 
-        <mybatis.version>3.5.14</mybatis.version>
+        <mybatis.version>3.5.15</mybatis.version>
         <mybatis-spring.version>2.1.2</mybatis-spring.version>
         <mybatis-freemarker.version>1.2.4</mybatis-freemarker.version>
         <mybatis-velocity.version>2.1.2</mybatis-velocity.version>
