@@ -16,6 +16,7 @@
 
 package com.mybatisflex.test.mapper;
 
+import com.mybatisflex.test.TestInfrastructure;
 import com.mybatisflex.test.model.Account;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 2023/4/24 19:37
  */
 @SpringBootTest
-class MyAccountMapperTest {
+class MyAccountMapperTest extends TestInfrastructure {
 
     @Autowired
     private MyAccountMapper mapper;
