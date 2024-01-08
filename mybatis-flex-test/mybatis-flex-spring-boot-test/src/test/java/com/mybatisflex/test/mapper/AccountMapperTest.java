@@ -19,18 +19,16 @@ package com.mybatisflex.test.mapper;
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
-import com.mybatisflex.core.row.Row;
+import com.mybatisflex.test.TestInfrastructure;
 import com.mybatisflex.test.model.Account;
 import com.mybatisflex.test.model.AccountVO;
 import com.mybatisflex.test.model.AccountVO2;
-import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
-import java.util.List;
 
 import static com.mybatisflex.core.query.QueryMethods.*;
 import static com.mybatisflex.test.model.table.AccountTableDef.ACCOUNT;
@@ -44,7 +42,7 @@ import static com.mybatisflex.test.model.table.UserTableDef.USER;
  */
 @SpringBootTest
 @SuppressWarnings("all")
-class AccountMapperTest {
+class AccountMapperTest extends TestInfrastructure {
 
     @Autowired
     private AccountMapper accountMapper;

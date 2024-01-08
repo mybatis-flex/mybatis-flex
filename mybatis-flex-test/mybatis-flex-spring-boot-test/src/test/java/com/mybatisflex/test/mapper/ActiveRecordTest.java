@@ -18,6 +18,7 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.test.TestInfrastructure;
 import com.mybatisflex.test.model.Good;
 import com.mybatisflex.test.model.User;
 import org.junit.jupiter.api.Assertions;
@@ -34,7 +35,7 @@ import static com.mybatisflex.test.model.table.UserTableDef.USER;
  * @since 2023-07-23
  */
 @SpringBootTest
-class ActiveRecordTest {
+class ActiveRecordTest extends TestInfrastructure {
 
     @Test
     void testMapper() {
