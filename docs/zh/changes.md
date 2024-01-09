@@ -2,6 +2,22 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+
+## v1.7.7 20240104:
+- 新增：添加 spring-boot3 新模块，用于 springboot v3 下使用，感谢 @Suomm
+- 新增：QueryMethods 添加 NOT (column) 函数，感谢 @wittplus
+- 优化：更新 Solon 下的 @ProxyComponent 为 @Component，感谢 @citysoft
+- 优化：修改 com.mybatisflex.annotation.SetListener 的注释错误，感谢 @whzzone
+- 优化：修改 GBase_8s 数据库类型 sql 语句无反义处理
+- 优化：升级 MyBatis 到 3.5.15 最新版本 #I8PQLC
+- 修复：IService.getOne 没有添加 limit 1 的问题
+- 修复：Db.updateEntitiesBatch 更新部分字段时报错的问题，感谢 @617054137
+- 文档：更新在 Kotlin 下使用的相关文档，感谢 @kamo-sama
+- 文档：优化示例代码提交语言标识，感谢 @bf109f
+- 文档：更新存在一个为 is_deleted 的字段中拼写错误，感谢 @shuangtao
+
+
+
 ## v1.7.6 20231223:
 - 新增：Db.selectFirstAndSecondColumnsAsMap 方法：查询结果的第一列作为 key，第二列作为 value，感谢 @617054137
 - 新增：方言添加添加权限处理统一入口 prepareAuth，感谢 @bf109f

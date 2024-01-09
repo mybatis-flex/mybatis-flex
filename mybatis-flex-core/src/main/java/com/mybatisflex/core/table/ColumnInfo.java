@@ -149,7 +149,9 @@ public class ColumnInfo {
             if (configuration == null) {
                 configuration = FlexGlobalConfig.getDefaultConfig().getConfiguration();
             }
-            buildTypeHandler = configuration.getTypeHandlerRegistry().getTypeHandler(propertyType);
+            if (configuration != null) {
+                buildTypeHandler = configuration.getTypeHandlerRegistry().getTypeHandler(propertyType);
+            }
         }
 
         return buildTypeHandler;

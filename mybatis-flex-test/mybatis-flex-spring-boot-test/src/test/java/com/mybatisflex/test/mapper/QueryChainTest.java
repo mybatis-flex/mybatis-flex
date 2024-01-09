@@ -20,6 +20,7 @@ import com.mybatisflex.core.field.QueryBuilder;
 import com.mybatisflex.core.query.QueryChain;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.update.UpdateChain;
+import com.mybatisflex.test.TestInfrastructure;
 import com.mybatisflex.test.model.Gender;
 import com.mybatisflex.test.model.User;
 import org.junit.jupiter.api.Assertions;
@@ -36,7 +37,7 @@ import static com.mybatisflex.test.model.table.UserTableDef.USER;
  * @since 2023-08-08
  */
 @SpringBootTest
-class QueryChainTest {
+class QueryChainTest extends TestInfrastructure {
 
     @Autowired
     UserMapper userMapper;

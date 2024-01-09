@@ -18,6 +18,7 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.test.TestInfrastructure;
 import com.mybatisflex.test.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ import static com.mybatisflex.test.model.table.UserTableDef.USER;
  */
 @SpringBootTest
 @SuppressWarnings("all")
-class UserMapperTest {
+class UserMapperTest extends TestInfrastructure {
 
     @Autowired
     private UserMapper userMapper;

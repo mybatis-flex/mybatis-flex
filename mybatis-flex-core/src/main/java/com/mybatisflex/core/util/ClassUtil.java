@@ -70,13 +70,14 @@ public class ClassUtil {
     }
 
     public static <T> Class<T> getUsefulClass(Class<T> clazz) {
+
+        if (ProxyObject.class.isAssignableFrom(clazz)) {
+            return (Class<T>) clazz.getSuperclass();
+        }
+
         if (isProxy(clazz)) {
             return getJdkProxySuperClass(clazz);
         }
-
-//        if (ProxyObject.class.isAssignableFrom(clazz)){
-//            return (Class<T>) clazz.getSuperclass();
-//        }
 
         //ControllerTest$ServiceTest$$EnhancerByGuice$$40471411#hello   -------> Guice
         //com.demo.blog.Blog$$EnhancerByCGLIB$$69a17158  ----> CGLIB

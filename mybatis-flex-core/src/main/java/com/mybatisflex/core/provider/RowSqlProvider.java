@@ -247,8 +247,8 @@ public class RowSqlProvider {
         FlexAssert.notNull(entity, "entity can not be null");
 
         // 该 Mapper 是通用 Mapper  无法通过 ProviderContext 获取，直接使用 TableInfoFactory
-        TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
 
+        TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
         // 执行 onUpdate 监听器
         tableInfo.invokeOnUpdateListener(entity);
 

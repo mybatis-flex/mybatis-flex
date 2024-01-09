@@ -82,19 +82,28 @@ public class DbTest {
         Map map2 = Db.selectFirstAndSecondColumnsAsMap("select * from tb_account");
         System.out.println(map);
         System.out.println(map2);
+        assert map.equals(map2);
 
     }
     @Test
     public void test03() {
-        Account account = UpdateEntity.of(Account.class,1);
-        account.setAge(1);
-        List<Account> accounts = new ArrayList<>();
-        accounts.add(account);
-        Account account2 = UpdateEntity.of(Account.class,2);
-        account2.setAge(2);
-        UpdateWrapper updateWrapper = UpdateWrapper.of(account2);
-        updateWrapper.setRaw("age","age+1");
-        accounts.add(account2);
-        Db.updateEntitiesBatch(accounts);
+        try {
+            Account account = UpdateEntity.of(Account.class, 1);
+            account.setAge(1);
+            List<Account> accounts = new ArrayList<>();
+            accounts.add(account);
+            Account account2 = UpdateEntity.of(Account.class, 2);
+            account2.setAge(2);
+            UpdateWrapper updateWrapper = UpdateWrapper.of(account2);
+            updateWrapper.setRaw("age", "age+1");
+            accounts.add(account2);
+            Account account3 = new Account();
+            account3.setId(3L);
+            account3.setAge(4);
+            accounts.add(account3);
+            Db.updateEntitiesBatch(accounts);
+        }catch (Exception e){
+            assert false;
+        }
     }
 }

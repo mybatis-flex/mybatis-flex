@@ -1,5 +1,6 @@
 package com.mybatisflex.test.mapper;
 
+import com.mybatisflex.test.TestInfrastructure;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,7 +14,7 @@ import javax.annotation.Resource;
  */
 @SpringBootTest
 @SuppressWarnings("all")
-public class PatientMapperTest {
+public class PatientMapperTest extends TestInfrastructure {
 
     @Resource
     private PatientMapper patientMapper;

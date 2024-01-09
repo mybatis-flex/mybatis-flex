@@ -17,7 +17,7 @@
 package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.test.entity.Inner;
+import com.mybatisflex.test.TestInfrastructure;
 import com.mybatisflex.test.entity.Outer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ import static com.mybatisflex.test.entity.table.OuterTableDef.OUTER;
  * @since 2023-07-01
  */
 @SpringBootTest
-class OuterMapperTest {
+class OuterMapperTest extends TestInfrastructure {
 
     @Autowired
     private OuterMapper outerMapper;
