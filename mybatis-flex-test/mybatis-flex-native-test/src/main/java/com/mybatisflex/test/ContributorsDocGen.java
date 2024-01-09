@@ -30,6 +30,7 @@ public class ContributorsDocGen {
         List<String> urls = Arrays.asList(
             "https://gitee.com/mybatis-flex/mybatis-flex/contributors?ref=main"
             , "https://gitee.com/mybatis-flex/mybatis-flex/contributors?page=2&ref=main"
+            , "https://gitee.com/mybatis-flex/mybatis-flex/contributors?page=3&ref=main"
         );
         StringBuilder markdown = new StringBuilder();
         markdown.append("|     |     |     |     |     |\n" +
