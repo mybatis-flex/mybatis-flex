@@ -57,7 +57,6 @@ VALUES (1, '张三', 18, '2020-01-11'),
 需要添加的 Maven 主要依赖示例：
 
 ```xml
-
 <dependencies>
     <dependency>
         <groupId>com.mybatis-flex</groupId>
@@ -81,6 +80,35 @@ VALUES (1, '张三', 18, '2020-01-11'),
     </dependency>
 </dependencies>
 ```
+
+**注意**： 如果您当前使用的是 SpringBoot v3.x 版本，需要把依赖 `mybatis-flex-spring-boot-starter` 修改为：`mybatis-flex-spring-boot3-starter`,
+如下代码所示：
+
+```xml 4
+<dependencies>
+    <dependency>
+        <groupId>com.mybatis-flex</groupId>
+        <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
+        <version>1.7.7</version>
+    </dependency>
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.zaxxer</groupId>
+        <artifactId>HikariCP</artifactId>
+    </dependency>
+    <!-- for test only -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
 
 **第 3 步：对 Spring Boot 项目进行配置**
 

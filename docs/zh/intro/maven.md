@@ -38,9 +38,9 @@
 </dependency>
 ``````
 
-3、用到了 Spring Boot 的场景
+3、用到了 SpringBoot v2.x  的场景
 
-```xml
+```xml 3
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-spring-boot-starter</artifactId>
@@ -54,7 +54,23 @@
 </dependency>
 ```
 
-4、配置 annotationProcessor
+4、用到了 SpringBoot v3.x  的场景
+
+```xml 3
+<dependency>
+    <groupId>com.mybatis-flex</groupId>
+    <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
+    <version>1.7.7</version>
+</dependency>
+<dependency>
+    <groupId>com.mybatis-flex</groupId>
+    <artifactId>mybatis-flex-processor</artifactId>
+    <version>1.7.7</version>
+    <scope>provided</scope>
+</dependency>
+```
+
+5、配置 annotationProcessor
 
    `mybatis-flex-processor`提供APT服务，可以配置到annotationProcessorPaths，配置后，无需在依赖中声明`mybatis-flex-processor`依赖。
 
@@ -79,7 +95,7 @@
 </plugin>
 ```
 
-5、配置依赖管理
+6、配置依赖管理
 
 MyBatis-Flex 提供了 `mybatis-flex-dependencies` 模块进行依赖管理，只需要在 `<dependencyManagement>` 标签下进行配置就可以了。
 
