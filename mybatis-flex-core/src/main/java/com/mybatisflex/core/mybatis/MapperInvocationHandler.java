@@ -76,6 +76,11 @@ public class MapperInvocationHandler implements InvocationHandler {
 
             //优先获取用户自己配置的 dbType
             DbType dbType = DialectFactory.getHintDbType();
+            DbType dbTypeGlobal = DialectFactory.getGlobalDbType();
+            //当前线程没有设置dbType,但是全局设置了dbTypeGlobal，那么就使用全局的dbTypeGlobal
+            if(dbTypeGlobal!=null&&dbType==null){
+                dbType = dbTypeGlobal ;
+            }
             if (dbType == null) {
                 if (dataSourceKey != null && dataSource != null) {
                     dbType = dataSource.getDbType(dataSourceKey);
