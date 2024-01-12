@@ -327,9 +327,8 @@ public class AccountSqlTester {
             .from(ARTICLE);
         Assert.assertEquals("SELECT COUNT(1) AS `temp_count_one` FROM `tb_article`"
             , query.toSQL());
+
         System.out.println(query.toSQL());
-
-
     }
 
     @Test
