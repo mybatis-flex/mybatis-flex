@@ -2626,7 +2626,7 @@ public class QueryMethods {
      * SELECT COUNT(1) as temp_count_one FROM table
      */
     public static QueryWrapper selectCountOne() {
-        return select(count("1").as("temp_count_one"));
+        return select(count(new RawQueryColumn("1")).as("temp_count_one"));
     }
 
     /**
