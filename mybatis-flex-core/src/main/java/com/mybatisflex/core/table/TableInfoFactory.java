@@ -266,6 +266,16 @@ public class TableInfoFactory {
                 continue;
             }
 
+            //忽略 Relation 字段
+            //fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I8SKOP
+            if (field.isAnnotationPresent(RelationOneToOne.class)
+                || field.isAnnotationPresent(RelationOneToMany.class)
+                || field.isAnnotationPresent(RelationManyToOne.class)
+                || field.isAnnotationPresent(RelationManyToMany.class))
+            {
+                continue;
+            }
+
             Column columnAnnotation = field.getAnnotation(Column.class);
 
             //满足以下 3 种情况，不支持该类型
