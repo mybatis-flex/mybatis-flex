@@ -19,11 +19,17 @@ package com.mybatisflex.core.audit;
 public class ConsoleMessageCollector implements MessageCollector {
 
     private SqlDebugPrinter printer = (sql, dsName, tookTimeMillis) -> {
-        if (tookTimeMillis != null) {
-            System.out.println("Flex exec dsName >>> " + dsName + " sql took " + tookTimeMillis + " ms >>>  " + sql);
-        } else {
-            System.out.println("Flex exec dsName >>> " + dsName + " sql >>>  " + sql);
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("Flex exec");
+        if (dsName != null) {
+            buffer.append("dsName >>> ").append(dsName);
         }
+        if (tookTimeMillis != null) {
+            buffer.append(" sql took ").append(tookTimeMillis).append(" ms >>>  ").append(sql);
+        } else {
+            buffer.append(" sql >>> ").append(sql);
+        }
+        System.out.println(buffer);
     };
 
     public ConsoleMessageCollector() {
