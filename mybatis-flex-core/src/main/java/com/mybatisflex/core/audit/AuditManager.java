@@ -16,6 +16,8 @@
 package com.mybatisflex.core.audit;
 
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.datasource.DataSourceKey;
+import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.ParameterMode;
@@ -98,6 +100,10 @@ public class AuditManager {
         AuditMessage auditMessage = messageFactory.create();
         if (auditMessage == null) {
             return supplier.execute();
+        }
+        String key = DataSourceKey.get();
+        if (StringUtil.isNotBlank(key)) {
+            auditMessage.setDsName(key);
         }
         auditMessage.setQueryTime(clock.getTick());
         try {

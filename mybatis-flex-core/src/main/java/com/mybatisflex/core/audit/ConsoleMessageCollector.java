@@ -18,11 +18,11 @@ package com.mybatisflex.core.audit;
 
 public class ConsoleMessageCollector implements MessageCollector {
 
-    private SqlDebugPrinter printer = (sql, tookTimeMillis) -> {
+    private SqlDebugPrinter printer = (sql, dsName, tookTimeMillis) -> {
         if (tookTimeMillis != null) {
-            System.out.println("Flex exec sql took " + tookTimeMillis + " ms >>>  " + sql);
+            System.out.println("Flex exec dsName >>> " + dsName + " sql took " + tookTimeMillis + " ms >>>  " + sql);
         } else {
-            System.out.println("Flex exec sql >>>  " + sql);
+            System.out.println("Flex exec dsName >>> " + dsName + " sql >>>  " + sql);
         }
     };
 
@@ -35,12 +35,12 @@ public class ConsoleMessageCollector implements MessageCollector {
 
     @Override
     public void collect(AuditMessage message) {
-        printer.print(message.getFullSql(), message.getElapsedTime());
+        printer.print(message.getFullSql(), message.getDsName(), message.getElapsedTime());
     }
 
     public interface SqlDebugPrinter {
 
-        void print(String sql, Long tookTimeMillis);
+        void print(String sql, String dsName, Long tookTimeMillis);
 
     }
 
