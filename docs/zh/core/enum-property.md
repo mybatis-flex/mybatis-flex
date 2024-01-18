@@ -8,7 +8,7 @@ public class Account{
 
     @Id(keyType = KeyType.Auto)
     private Long id;
-    
+
     private TypeEnum typeEnum;
 }
 ```
@@ -30,16 +30,42 @@ public enum TypeEnum {
 
     @EnumValue
     private int code;
-    
+
     private String desc;
 
     TypeEnum(int code, String desc) {
         this.code = code;
         this.desc = desc;
     }
-    
+
     //getter
 }
+```
+```java
+public interface BaseEnum {
+    @EnumValue
+    Integer getCode();
+    String getDesc();
+}
+
+```
+```java
+@Getter
+@AllArgsConstructor
+public enum EnableEnum implements BaseEnum {
+    /**
+     * 启用
+     */
+    ENABLE(1, "启用"),
+    /**
+     * 禁用
+     */
+    DISABLE(0, "禁用"),
+    ;
+    private final int code;
+    private final String desc;
+}
+
 ```
 
 通过注解 `@EnumValue` 为 `code` 属性标注后，当我们保存 Account 内容到数据库时，MyBatis-Flex 会自动使用 `code` 属性值进行保存，同时在读取数据库内容的时候，MyBatis-Flex 自动把数据库的值转换为
@@ -49,7 +75,7 @@ public enum TypeEnum {
 
 - 1、@EnumValue 注解标识的属性，要求必须是 public 修饰，或者有 get 方法。
 
-- 2、当配置了 @EnumValue 时，QueryWrapper 构建时，传入枚举，自动使用该值进行 SQL 参数拼接。例如： 
+- 2、当配置了 @EnumValue 时，QueryWrapper 构建时，传入枚举，自动使用该值进行 SQL 参数拼接。例如：
 
 ```java
 QueryWrapper query = QueryWrapper.create();
@@ -63,4 +89,6 @@ query.select().from(ACCOUNT)
 select * from tb_account
 where type_enum = 1
 ```
- 
+- 3、支持在当前方法使用注解，也支持在基类接口上使用注解。优先取字段上的注解。如果字段没有注解，则会找方法上的注解，如果枚举类当前方法没有注解，则会去找父类或者父接口的方法寻找存在注解的方法。
+
+
