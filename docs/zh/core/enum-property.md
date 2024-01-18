@@ -43,7 +43,7 @@ public enum TypeEnum {
 ```
 ```java
 public interface BaseEnum {
-    @EnumValue
+    @EnumValue  // 当注解写在枚举基类接口里
     Integer getCode();
     String getDesc();
 }
@@ -74,8 +74,10 @@ public enum EnableEnum implements BaseEnum {
 **注意事项**
 
 - 1、@EnumValue 注解标识的属性，要求必须是 public 修饰，或者有 get 方法。
+- 2、@EnumValue 注解标识支持在 get 方法使用注解，也支持在基类接口上的get方法上使用注解。
+- 3、枚举注解优先级。 优先取字段上的注解。如果字段没有注解，则会找方法上的注解，如果枚举类当前方法没有注解，则会去找父类或者父接口的方法寻找存在注解的方法。
 
-- 2、当配置了 @EnumValue 时，QueryWrapper 构建时，传入枚举，自动使用该值进行 SQL 参数拼接。例如：
+- 4、当配置了 @EnumValue 时，QueryWrapper 构建时，传入枚举，自动使用该值进行 SQL 参数拼接。例如：
 
 ```java
 QueryWrapper query = QueryWrapper.create();
@@ -89,6 +91,5 @@ query.select().from(ACCOUNT)
 select * from tb_account
 where type_enum = 1
 ```
-- 3、支持在当前方法使用注解，也支持在基类接口上使用注解。优先取字段上的注解。如果字段没有注解，则会找方法上的注解，如果枚举类当前方法没有注解，则会去找父类或者父接口的方法寻找存在注解的方法。
 
 

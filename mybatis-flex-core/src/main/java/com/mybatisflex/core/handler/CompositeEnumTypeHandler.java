@@ -36,11 +36,20 @@ public class CompositeEnumTypeHandler<E extends Enum<E>> implements TypeHandler<
     private final TypeHandler<E> delegate;
 
     public CompositeEnumTypeHandler(Class<E> enumClass) {
+        boolean isNotFind = false;
         List<Field> enumDbValueFields = ClassUtil.getAllFields(enumClass, f -> f.getAnnotation(EnumValue.class) != null);
-        List<Method> enumDbValueMethods = ClassUtil.getAllMethods(enumClass, m -> m.getAnnotation(EnumValue.class) != null);
-        List<Method> enumDbInterfaceMethodList = Arrays.stream(enumClass.getInterfaces())
-            .flatMap(inter -> ClassUtil.getAllMethods(inter, m -> m.getAnnotation(EnumValue.class) != null).stream()).collect(Collectors.toList());
-        if (enumDbValueFields.isEmpty() && enumDbValueMethods.isEmpty() && enumDbInterfaceMethodList.isEmpty()) {
+        if (enumDbValueFields.isEmpty()) {
+            List<Method> enumDbValueMethods = ClassUtil.getAllMethods(enumClass, m -> m.getAnnotation(EnumValue.class) != null);
+            if (enumDbValueMethods.isEmpty()) {
+                List<Method> enumDbInterfaceMethodList = Arrays.stream(enumClass.getInterfaces())
+                    .flatMap(inter -> ClassUtil.getAllMethods(inter, m -> m.getAnnotation(EnumValue.class) != null).stream())
+                    .collect(Collectors.toList());
+                if (enumDbInterfaceMethodList.isEmpty()) {
+                    isNotFind = true;
+                }
+            }
+        }
+        if (isNotFind) {
             delegate = new EnumTypeHandler<>(enumClass);
         } else {
             delegate = new FlexEnumTypeHandler<>(enumClass);
