@@ -70,6 +70,13 @@ public class EnumWrapper<E extends Enum<E>> {
                 this.getterMethod = getter;
             }
         }
+
+        if (!hasEnumValueAnnotation) {
+            Method enumValueMethod = ClassUtil.getFirstMethod(enumClass, method -> method.getAnnotation(EnumValue.class) != null);
+            if (enumValueMethod != null) {
+                this.getterMethod = enumValueMethod;
+            }
+        }
     }
 
 
