@@ -134,7 +134,8 @@ const {Layout} = DefaultTheme
                     </div>
                 </div>
                 <div class="banner-bottom">
-                    虚位以待
+                    <a href="https://www.diboot.com/?from=mf" target="_blank"><img
+                        src="https://www.diboot.com/diboot_mf.png" data-expired="20250116"></a>
                 </div>
             </div>
         </template>
