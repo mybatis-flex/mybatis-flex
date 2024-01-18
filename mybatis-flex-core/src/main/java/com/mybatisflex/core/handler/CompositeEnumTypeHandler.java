@@ -41,12 +41,7 @@ public class CompositeEnumTypeHandler<E extends Enum<E>> implements TypeHandler<
         if (enumDbValueFields.isEmpty()) {
             List<Method> enumDbValueMethods = ClassUtil.getAllMethods(enumClass, m -> m.getAnnotation(EnumValue.class) != null);
             if (enumDbValueMethods.isEmpty()) {
-                List<Method> enumDbInterfaceMethodList = Arrays.stream(enumClass.getInterfaces())
-                    .flatMap(inter -> ClassUtil.getAllMethods(inter, m -> m.getAnnotation(EnumValue.class) != null).stream())
-                    .collect(Collectors.toList());
-                if (enumDbInterfaceMethodList.isEmpty()) {
-                    isNotFound = true;
-                }
+                isNotFound = true;
             }
         }
         if (isNotFound) {
