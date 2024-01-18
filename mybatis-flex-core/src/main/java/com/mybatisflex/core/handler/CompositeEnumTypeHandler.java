@@ -27,7 +27,9 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CompositeEnumTypeHandler<E extends Enum<E>> implements TypeHandler<E> {
 
@@ -36,7 +38,9 @@ public class CompositeEnumTypeHandler<E extends Enum<E>> implements TypeHandler<
     public CompositeEnumTypeHandler(Class<E> enumClass) {
         List<Field> enumDbValueFields = ClassUtil.getAllFields(enumClass, f -> f.getAnnotation(EnumValue.class) != null);
         List<Method> enumDbValueMethods = ClassUtil.getAllMethods(enumClass, m -> m.getAnnotation(EnumValue.class) != null);
-        if (enumDbValueFields.isEmpty() && enumDbValueMethods.isEmpty()) {
+        List<Method> enumDbInterfaceMethodList = Arrays.stream(enumClass.getInterfaces())
+            .flatMap(inter -> ClassUtil.getAllMethods(inter, m -> m.getAnnotation(EnumValue.class) != null).stream()).collect(Collectors.toList());
+        if (enumDbValueFields.isEmpty() && enumDbValueMethods.isEmpty() && enumDbInterfaceMethodList.isEmpty()) {
             delegate = new EnumTypeHandler<>(enumClass);
         } else {
             delegate = new FlexEnumTypeHandler<>(enumClass);
