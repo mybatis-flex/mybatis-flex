@@ -36,7 +36,7 @@ public class CompositeEnumTypeHandler<E extends Enum<E>> implements TypeHandler<
     private final TypeHandler<E> delegate;
 
     public CompositeEnumTypeHandler(Class<E> enumClass) {
-        boolean isNotFind = false;
+        boolean isNotFound = false;
         List<Field> enumDbValueFields = ClassUtil.getAllFields(enumClass, f -> f.getAnnotation(EnumValue.class) != null);
         if (enumDbValueFields.isEmpty()) {
             List<Method> enumDbValueMethods = ClassUtil.getAllMethods(enumClass, m -> m.getAnnotation(EnumValue.class) != null);
@@ -45,11 +45,11 @@ public class CompositeEnumTypeHandler<E extends Enum<E>> implements TypeHandler<
                     .flatMap(inter -> ClassUtil.getAllMethods(inter, m -> m.getAnnotation(EnumValue.class) != null).stream())
                     .collect(Collectors.toList());
                 if (enumDbInterfaceMethodList.isEmpty()) {
-                    isNotFind = true;
+                    isNotFound = true;
                 }
             }
         }
-        if (isNotFind) {
+        if (isNotFound) {
             delegate = new EnumTypeHandler<>(enumClass);
         } else {
             delegate = new FlexEnumTypeHandler<>(enumClass);
