@@ -17,21 +17,26 @@ package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.spring.FlexTransactionManager;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
+import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
 /**
  * MyBatis-Flex 事务自动配置。
+ *
  * @author michael
  */
 @ConditionalOnClass(Db.class)
 @Configuration(proxyBeanMethods = false)
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 @AutoConfigureAfter({MybatisFlexAutoConfiguration.class})
 @AutoConfigureBefore({TransactionAutoConfiguration.class})
 public class FlexTransactionAutoConfiguration implements TransactionManagementConfigurer {
@@ -46,8 +51,9 @@ public class FlexTransactionAutoConfiguration implements TransactionManagementCo
      */
     private final FlexTransactionManager flexTransactionManager = new FlexTransactionManager();
 
-    @Bean(name = "transactionManager")
+    @NonNull
     @Override
+    @Bean(name = "transactionManager")
     public PlatformTransactionManager annotationDrivenTransactionManager() {
         return flexTransactionManager;
     }
