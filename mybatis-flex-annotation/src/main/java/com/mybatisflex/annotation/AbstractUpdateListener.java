@@ -16,20 +16,31 @@
 
 package com.mybatisflex.annotation;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 /**
  * 类型支持 update 监听器。
  *
  * @author snow
+ * @author robot.luo
  * @since 2023/4/28
  */
 public abstract class AbstractUpdateListener<T> implements UpdateListener {
 
     /**
-     * 该监听器支持的 entity 类型。
-     *
-     * @return type
+     * 支持的类型
      */
-    public abstract Class<T> supportType();
+    private final Class<T> supportType;
+
+    @SuppressWarnings("unchecked")
+    protected AbstractUpdateListener() {
+        Type[] params = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments();
+        if (params.length == 0) {
+            throw new IllegalArgumentException(this.getClass().getSimpleName() + "继承AbstractUpdateListener请指定泛型");
+        }
+        supportType = (Class<T>) params[0];
+    }
 
     /**
      * 更新操作的前置操作。
@@ -41,7 +52,6 @@ public abstract class AbstractUpdateListener<T> implements UpdateListener {
     @Override
     @SuppressWarnings("unchecked")
     public void onUpdate(Object entity) {
-        Class<T> supportType = supportType();
         if (supportType.isInstance(entity)) {
             T object = (T) entity;
             doUpdate(object);
