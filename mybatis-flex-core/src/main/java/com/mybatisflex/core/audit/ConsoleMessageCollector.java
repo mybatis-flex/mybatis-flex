@@ -26,18 +26,6 @@ public class ConsoleMessageCollector implements MessageCollector {
         }
     };
 
-    private SqlDebugExtPrinter extPrinter = (sql, dsName, tookTimeMillis) -> {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("Flex exec");
-        buffer.append("dsName >>> ").append(dsName);
-        if (tookTimeMillis != null) {
-            buffer.append(" sql took ").append(tookTimeMillis).append(" ms >>>  ").append(sql);
-        } else {
-            buffer.append(" sql >>> ").append(sql);
-        }
-        System.out.println(buffer);
-    };
-
     public ConsoleMessageCollector() {
     }
 
@@ -45,30 +33,14 @@ public class ConsoleMessageCollector implements MessageCollector {
         this.printer = printer;
     }
 
-
-    public ConsoleMessageCollector(SqlDebugExtPrinter printer) {
-        this.extPrinter = printer;
-    }
-
     @Override
     public void collect(AuditMessage message) {
-        if (message.getDsName() == null) {
-            printer.print(message.getFullSql(), message.getElapsedTime());
-        } else {
-            extPrinter.print(message.getFullSql(), message.getDsName(), message.getElapsedTime());
-        }
+        printer.print(message.getFullSql(), message.getElapsedTime());
     }
 
     public interface SqlDebugPrinter {
 
         void print(String sql, Long tookTimeMillis);
-
-    }
-
-
-    public interface SqlDebugExtPrinter {
-
-        void print(String sql, String dsName, Long tookTimeMillis);
 
     }
 
