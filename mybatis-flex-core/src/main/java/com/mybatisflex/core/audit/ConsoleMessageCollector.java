@@ -18,12 +18,18 @@ package com.mybatisflex.core.audit;
 
 public class ConsoleMessageCollector implements MessageCollector {
 
-    private SqlDebugPrinter printer = (sql, dsName, tookTimeMillis) -> {
+    private SqlDebugPrinter printer = (sql, tookTimeMillis) -> {
+        if (tookTimeMillis != null) {
+            System.out.println("Flex exec sql took " + tookTimeMillis + " ms >>>  " + sql);
+        } else {
+            System.out.println("Flex exec sql >>>  " + sql);
+        }
+    };
+
+    private SqlDebugExtPrinter extPrinter = (sql, dsName, tookTimeMillis) -> {
         StringBuilder buffer = new StringBuilder();
         buffer.append("Flex exec");
-        if (dsName != null) {
-            buffer.append("dsName >>> ").append(dsName);
-        }
+        buffer.append("dsName >>> ").append(dsName);
         if (tookTimeMillis != null) {
             buffer.append(" sql took ").append(tookTimeMillis).append(" ms >>>  ").append(sql);
         } else {
@@ -39,12 +45,28 @@ public class ConsoleMessageCollector implements MessageCollector {
         this.printer = printer;
     }
 
+
+    public ConsoleMessageCollector(SqlDebugExtPrinter printer) {
+        this.extPrinter = printer;
+    }
+
     @Override
     public void collect(AuditMessage message) {
-        printer.print(message.getFullSql(), message.getDsName(), message.getElapsedTime());
+        if (message.getDsName() == null) {
+            printer.print(message.getFullSql(), message.getElapsedTime());
+        } else {
+            extPrinter.print(message.getFullSql(), message.getDsName(), message.getElapsedTime());
+        }
     }
 
     public interface SqlDebugPrinter {
+
+        void print(String sql, Long tookTimeMillis);
+
+    }
+
+
+    public interface SqlDebugExtPrinter {
 
         void print(String sql, String dsName, Long tookTimeMillis);
 

@@ -22,19 +22,29 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CompositeEnumTypeHandler<E extends Enum<E>> implements TypeHandler<E> {
 
     private final TypeHandler<E> delegate;
 
     public CompositeEnumTypeHandler(Class<E> enumClass) {
+        boolean isNotFound = false;
         List<Field> enumDbValueFields = ClassUtil.getAllFields(enumClass, f -> f.getAnnotation(EnumValue.class) != null);
         if (enumDbValueFields.isEmpty()) {
+            List<Method> enumDbValueMethods = ClassUtil.getAllMethods(enumClass, m -> m.getAnnotation(EnumValue.class) != null);
+            if (enumDbValueMethods.isEmpty()) {
+                isNotFound = true;
+            }
+        }
+        if (isNotFound) {
             delegate = new EnumTypeHandler<>(enumClass);
         } else {
             delegate = new FlexEnumTypeHandler<>(enumClass);
