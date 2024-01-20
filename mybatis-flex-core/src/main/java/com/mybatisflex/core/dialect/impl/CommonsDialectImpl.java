@@ -22,7 +22,15 @@ import com.mybatisflex.core.dialect.OperateType;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
-import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.Join;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryOrderBy;
+import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.UnionWrapper;
+import com.mybatisflex.core.query.With;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowCPI;
 import com.mybatisflex.core.table.TableInfo;
@@ -32,12 +40,44 @@ import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.mybatisflex.core.constant.SqlConsts.*;
+import static com.mybatisflex.core.constant.SqlConsts.AND;
+import static com.mybatisflex.core.constant.SqlConsts.ASTERISK;
+import static com.mybatisflex.core.constant.SqlConsts.BLANK;
+import static com.mybatisflex.core.constant.SqlConsts.BRACKET_LEFT;
+import static com.mybatisflex.core.constant.SqlConsts.BRACKET_RIGHT;
+import static com.mybatisflex.core.constant.SqlConsts.DELETE;
+import static com.mybatisflex.core.constant.SqlConsts.DELETE_FROM;
+import static com.mybatisflex.core.constant.SqlConsts.DELIMITER;
+import static com.mybatisflex.core.constant.SqlConsts.EMPTY;
+import static com.mybatisflex.core.constant.SqlConsts.EQUALS;
+import static com.mybatisflex.core.constant.SqlConsts.EQUALS_PLACEHOLDER;
+import static com.mybatisflex.core.constant.SqlConsts.FROM;
+import static com.mybatisflex.core.constant.SqlConsts.GROUP_BY;
+import static com.mybatisflex.core.constant.SqlConsts.HAVING;
+import static com.mybatisflex.core.constant.SqlConsts.HINT_END;
+import static com.mybatisflex.core.constant.SqlConsts.HINT_START;
+import static com.mybatisflex.core.constant.SqlConsts.INSERT_INTO;
+import static com.mybatisflex.core.constant.SqlConsts.OR;
+import static com.mybatisflex.core.constant.SqlConsts.ORDER_BY;
+import static com.mybatisflex.core.constant.SqlConsts.PLACEHOLDER;
+import static com.mybatisflex.core.constant.SqlConsts.REFERENCE;
+import static com.mybatisflex.core.constant.SqlConsts.SELECT;
+import static com.mybatisflex.core.constant.SqlConsts.SELECT_ALL_FROM;
+import static com.mybatisflex.core.constant.SqlConsts.SEMICOLON;
+import static com.mybatisflex.core.constant.SqlConsts.SET;
+import static com.mybatisflex.core.constant.SqlConsts.UPDATE;
+import static com.mybatisflex.core.constant.SqlConsts.VALUES;
+import static com.mybatisflex.core.constant.SqlConsts.WHERE;
 
 /**
  * 通用的方言设计，其他方言可以继承于当前 CommonsDialectImpl
@@ -360,8 +400,8 @@ public class CommonsDialectImpl implements IDialect {
 
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 
-        // 多个表，需要处理重名字段
-        if (allTables.size() > 1) {
+        // 多个表，非 SELECT * 时，需要处理重名字段
+        if (allTables.size() > 1 && selectColumns != null && selectColumns.size() > 1) {
             IntStream.range(0, selectColumns.size())
                 .boxed()
                 // 生成 索引-字段值 对应关系
