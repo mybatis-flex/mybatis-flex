@@ -81,9 +81,10 @@ class AlisaTest {
     @Test
     void test03() {
         QueryWrapper queryWrapper = QueryWrapper.create()
-            .select(SYS_USER.ALL_COLUMNS)
-            .select(SYS_ROLE.ALL_COLUMNS)
-            .select(SYS_DEPT.ALL_COLUMNS)
+            // 调整 SELECT 顺序
+            .select(SYS_ROLE.DEFAULT_COLUMNS)
+            .select(SYS_DEPT.DEFAULT_COLUMNS)
+            .select(SYS_USER.DEFAULT_COLUMNS)
             .from(SYS_USER.as("u"))
             .leftJoin(SYS_ROLE).as("r").on(SYS_USER.ID.eq(SYS_ROLE.ID))
             .leftJoin(SYS_DEPT).as("d").on(SYS_USER.ID.eq(SYS_DEPT.ID));
@@ -104,6 +105,7 @@ class AlisaTest {
     @Test
     void test05() {
         QueryWrapper queryWrapper = QueryWrapper.create()
+            // 不支持的情况
             .select(column("`u`.`create_by`"))
             .select(column("`u`.`update_by`"))
             .select(column("`d`.`create_by`"))
@@ -117,6 +119,8 @@ class AlisaTest {
     @Test
     void test06() {
         QueryWrapper queryWrapper = QueryWrapper.create()
+            // SELECT 里没有重名列 例如：id
+            // 不指定别名会映射到嵌套对象里面去
             .select(SYS_USER.ID, SYS_USER.USER_NAME, SYS_USER.AGE, SYS_USER.BIRTHDAY)
             .select(SYS_ROLE.CREATE_BY.as("sys_role$create_by"))
             .from(SYS_USER.as("u"))
