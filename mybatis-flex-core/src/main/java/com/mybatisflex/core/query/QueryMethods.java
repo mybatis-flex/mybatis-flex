@@ -2609,24 +2609,24 @@ public class QueryMethods {
     }
 
     /**
-     * SELECT 1 FROM table
+     * SELECT 1 as temp_one FROM table
      */
     public static QueryWrapper selectOne() {
-        return select(column("1"));
+        return select(column("1").as("temp_one"));
     }
 
     /**
-     * SELECT COUNT(*) FROM table
+     * SELECT COUNT(*) as temp_count FROM table
      */
     public static QueryWrapper selectCount() {
-        return select(count());
+        return select(count().as("temp_count"));
     }
 
     /**
-     * SELECT COUNT(1) FROM table
+     * SELECT COUNT(1) as temp_count_one FROM table
      */
     public static QueryWrapper selectCountOne() {
-        return select(count("1"));
+        return select(count(new RawQueryColumn("1")).as("temp_count_one"));
     }
 
     /**
