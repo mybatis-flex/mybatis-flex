@@ -89,12 +89,6 @@ public class SysUser extends BaseEntity {
     }
 
     @Override
-    @ColumnAlias("user_create_by")
-    public String getCreateBy() {
-        return super.getCreateBy();
-    }
-
-    @Override
     public String toString() {
         return "SysUser{" +
             "id=" + id +
