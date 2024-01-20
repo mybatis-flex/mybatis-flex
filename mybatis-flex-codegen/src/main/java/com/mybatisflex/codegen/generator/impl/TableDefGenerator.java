@@ -69,6 +69,7 @@ public class TableDefGenerator implements IGenerator {
         params.put("packageConfig", packageConfig);
         params.put("tableDefConfig", tableDefConfig);
         params.put("javadocConfig", globalConfig.getJavadocConfig());
+        params.put("entityConfig", globalConfig.getEntityConfig());
         params.putAll(globalConfig.getCustomConfig());
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, tableDefJavaFile);
 

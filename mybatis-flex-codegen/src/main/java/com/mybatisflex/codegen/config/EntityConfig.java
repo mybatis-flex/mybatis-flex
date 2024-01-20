@@ -78,6 +78,11 @@ public class EntityConfig implements Serializable {
     private String dataSource;
 
     /**
+     * 项目jdk版本
+     */
+    private int jdkVersion;
+
+    /**
      * 获取类前缀。
      */
     public String getClassPrefix() {
@@ -226,6 +231,21 @@ public class EntityConfig implements Serializable {
      */
     public EntityConfig setDataSource(String dataSource) {
         this.dataSource = dataSource;
+        return this;
+    }
+
+    /**
+     * 获取项目jdk版本
+     */
+    public int getJdkVersion() {
+        return jdkVersion;
+    }
+
+    /**
+     * 设置项目jdk版本
+     */
+    public EntityConfig setJdkVersion(int jdkVersion) {
+        this.jdkVersion = jdkVersion;
         return this;
     }
 

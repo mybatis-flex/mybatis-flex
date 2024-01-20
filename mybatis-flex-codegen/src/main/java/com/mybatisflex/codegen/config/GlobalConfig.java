@@ -942,6 +942,20 @@ public class GlobalConfig implements Serializable {
         getEntityConfig().setDataSource(dataSource);
     }
 
+    /**
+     * @see EntityConfig#getJdkVersion()
+     */
+    public int getEntityJdkVersion() {
+        return getEntityConfig().getJdkVersion();
+    }
+
+    /**
+     * @see EntityConfig#setJdkVersion(int)
+     */
+    public void setEntityJdkVersion(int jdkVersion) {
+        getEntityConfig().setJdkVersion(jdkVersion);
+    }
+
     public boolean isMapperGenerateEnable() {
         return mapperGenerateEnable;
     }
