@@ -110,6 +110,8 @@ public class AuditManager {
             T result = supplier.execute();
             if (result instanceof Collection) {
                 auditMessage.setQueryCount(((Collection) result).size());
+            } else if (result instanceof Integer) {
+                auditMessage.setQueryCount((int) result);
             } else if (result != null) {
                 auditMessage.setQueryCount(1);
             }
