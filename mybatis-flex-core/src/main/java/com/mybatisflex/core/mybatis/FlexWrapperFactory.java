@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.mybatis;
 
+import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.StringUtil;
@@ -44,9 +45,15 @@ public class FlexWrapperFactory implements ObjectWrapperFactory {
         return TableInfoFactory.ofEntityClass(objectClass) != null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public ObjectWrapper getWrapperFor(MetaObject metaObject, Object object) {
         if (Map.class.isAssignableFrom(object.getClass())) {
+            if (object.getClass() == Row.class){
+                //取消 row 的 user_name 转换为 userName，否则再次保存时无法进行保存
+                //https://github.com/mybatis-flex/mybatis-flex/issues/244
+                return new MapWrapper(metaObject, (Map<String, Object>) object);
+            }
             return new FlexMapWrapper(metaObject, (Map<String, Object>) object);
         } else {
             return new FlexBeanWrapper(metaObject, object);
@@ -80,7 +87,7 @@ public class FlexWrapperFactory implements ObjectWrapperFactory {
 
         @Override
         public String findProperty(String name, boolean useCamelCaseMapping) {
-            return useCamelCaseMapping && ( Character.isUpperCase(name.charAt(0))  || name.contains("_")) ? StringUtil.underlineToCamel(name) : name;
+            return useCamelCaseMapping && (Character.isUpperCase(name.charAt(0)) || name.contains("_")) ? StringUtil.underlineToCamel(name) : name;
         }
     }
 
