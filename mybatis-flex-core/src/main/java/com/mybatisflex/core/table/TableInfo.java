@@ -80,6 +80,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -1029,16 +1030,21 @@ public class TableInfo {
         Stream<Class<?>> ct = collectionType == null ? Stream.empty() : collectionType.values().stream();
         Stream<Class<?>> at = associationType == null ? Stream.empty() : associationType.values().stream();
 
-        // 预加载所有的列，重复列去重
-        Set<String> existedColumns = Stream.concat(at, ct)
+        // 预加载所有重复列，用于判断重名属性
+        List<String> existedColumns = Stream.concat(at, ct)
             .map(TableInfoFactory::ofEntityClass)
             .flatMap(e -> Arrays.stream(e.allColumns))
-            .collect(Collectors.toSet());
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+            .entrySet()
+            .stream()
+            .filter(e -> e.getValue().intValue() > 1)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
 
         return doBuildResultMap(configuration, new HashSet<>(), existedColumns, false, getTableNameWithSchema());
     }
 
-    private ResultMap doBuildResultMap(Configuration configuration, Set<String> resultMapIds, Set<String> existedColumns, boolean isNested, String nestedPrefix) {
+    private ResultMap doBuildResultMap(Configuration configuration, Set<String> resultMapIds, List<String> existedColumns, boolean isNested, String nestedPrefix) {
 
         String resultMapId = isNested ? "nested-" + nestedPrefix + ":" + entityClass.getName() : entityClass.getName();
 
@@ -1123,42 +1129,35 @@ public class TableInfo {
     }
 
     private void doBuildColumnResultMapping(Configuration configuration, List<ResultMapping> resultMappings
-        , Set<String> existedColumns, ColumnInfo columnInfo, List<ResultFlag> flags, boolean isNested) {
+        , List<String> existedColumns, ColumnInfo columnInfo, List<ResultFlag> flags, boolean isNested) {
 
         if (!isNested) {
-            // userName -> user_name
-            resultMappings.add(new ResultMapping.Builder(configuration
-                , columnInfo.property
-                , columnInfo.column
-                , columnInfo.propertyType)
-                .jdbcType(columnInfo.getJdbcType())
-                .flags(flags)
-                .typeHandler(columnInfo.buildTypeHandler(configuration))
-                .build());
-        }
-
-        if (existedColumns.contains(columnInfo.column)) {
-            // userName -> tb_user$user_name
-            resultMappings.add(new ResultMapping.Builder(configuration
-                , columnInfo.property
-                , tableName + "$" + columnInfo.column
-                , columnInfo.propertyType)
-                .jdbcType(columnInfo.getJdbcType())
-                .flags(flags)
-                .typeHandler(columnInfo.buildTypeHandler(configuration))
-                .build());
-        }
-
-        if (!Objects.equals(columnInfo.column, columnInfo.property)) {
-            // userName -> userName
-            resultMappings.add(new ResultMapping.Builder(configuration
-                , columnInfo.property
-                , columnInfo.property
-                , columnInfo.propertyType)
-                .jdbcType(columnInfo.getJdbcType())
-                .flags(flags)
-                .typeHandler(columnInfo.buildTypeHandler(configuration))
-                .build());
+            if (existedColumns.contains(columnInfo.column)) {
+                // userName -> tb_user$user_name
+                resultMappings.add(new ResultMapping.Builder(configuration
+                    , columnInfo.property
+                    , tableName + "$" + columnInfo.column
+                    , columnInfo.propertyType)
+                    .jdbcType(columnInfo.getJdbcType())
+                    .flags(flags)
+                    .typeHandler(columnInfo.buildTypeHandler(configuration))
+                    .build());
+            }
+            buildDefaultResultMapping(configuration, resultMappings, columnInfo, flags);
+        } else {
+            if (existedColumns.contains(columnInfo.column)) {
+                // userName -> tb_user$user_name
+                resultMappings.add(new ResultMapping.Builder(configuration
+                    , columnInfo.property
+                    , tableName + "$" + columnInfo.column
+                    , columnInfo.propertyType)
+                    .jdbcType(columnInfo.getJdbcType())
+                    .flags(flags)
+                    .typeHandler(columnInfo.buildTypeHandler(configuration))
+                    .build());
+            } else {
+                buildDefaultResultMapping(configuration, resultMappings, columnInfo, flags);
+            }
         }
 
         if (ArrayUtil.isNotEmpty(columnInfo.alias)) {
@@ -1175,6 +1174,30 @@ public class TableInfo {
             }
         }
 
+    }
+
+    private void buildDefaultResultMapping(Configuration configuration, List<ResultMapping> resultMappings, ColumnInfo columnInfo, List<ResultFlag> flags) {
+        // userName -> user_name
+        resultMappings.add(new ResultMapping.Builder(configuration
+            , columnInfo.property
+            , columnInfo.column
+            , columnInfo.propertyType)
+            .jdbcType(columnInfo.getJdbcType())
+            .flags(flags)
+            .typeHandler(columnInfo.buildTypeHandler(configuration))
+            .build());
+
+        if (!Objects.equals(columnInfo.column, columnInfo.property)) {
+            // userName -> userName
+            resultMappings.add(new ResultMapping.Builder(configuration
+                , columnInfo.property
+                , columnInfo.property
+                , columnInfo.propertyType)
+                .jdbcType(columnInfo.getJdbcType())
+                .flags(flags)
+                .typeHandler(columnInfo.buildTypeHandler(configuration))
+                .build());
+        }
     }
 
 
