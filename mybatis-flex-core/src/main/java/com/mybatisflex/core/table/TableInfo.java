@@ -1030,10 +1030,12 @@ public class TableInfo {
         Stream<Class<?>> ct = collectionType == null ? Stream.empty() : collectionType.values().stream();
         Stream<Class<?>> at = associationType == null ? Stream.empty() : associationType.values().stream();
 
-        // 预加载所有重复列，用于判断重名属性
-        List<String> existedColumns = Stream.concat(at, ct)
+        Stream<String> nestedColumns = Stream.concat(at, ct)
             .map(TableInfoFactory::ofEntityClass)
-            .flatMap(e -> Arrays.stream(e.allColumns))
+            .flatMap(e -> Arrays.stream(e.allColumns));
+
+        // 预加载所有重复列，用于判断重名属性
+        List<String> existedColumns = Stream.concat(Arrays.stream(allColumns), nestedColumns)
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
             .entrySet()
             .stream()
