@@ -17,13 +17,16 @@
 package com.mybatisflex.test.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.alisa.SysUser;
+import org.apache.ibatis.mapping.ResultMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.mybatisflex.core.query.QueryMethods.column;
@@ -120,11 +123,24 @@ class AlisaTest {
     void test06() {
         QueryWrapper queryWrapper = QueryWrapper.create()
             // SELECT 里没有重名列 例如：id
-            // 不指定别名会映射到嵌套对象里面去
             .select(SYS_USER.ID, SYS_USER.USER_NAME, SYS_USER.AGE, SYS_USER.BIRTHDAY)
             .select(SYS_ROLE.CREATE_BY.as("sys_role$create_by"))
             .from(SYS_USER.as("u"))
             .leftJoin(SYS_ROLE).as("r").on(SYS_USER.ID.eq(SYS_ROLE.ID));
+
+        Object[] objects = FlexGlobalConfig.getDefaultConfig()
+            .getConfiguration()
+            .getResultMaps()
+            .toArray();
+
+        Object[] resultMaps = Arrays.stream(objects)
+            .filter(e -> e instanceof ResultMap)
+            .map(e -> (ResultMap) e)
+            .filter(e -> e.getId().contains("Sys"))
+            .filter(e -> !e.getId().contains("select"))
+            .toArray();
+
+        System.out.println(resultMaps.length);
 
         printList(queryWrapper);
     }
