@@ -2,6 +2,7 @@
 #set(withSwagger = entityConfig.isWithSwagger())
 #set(swaggerVersion = entityConfig.getSwaggerVersion())
 #set(withActiveRecord = entityConfig.isWithActiveRecord())
+#set(jdkVersion = entityConfig.getJdkVersion())
 #set(entityClassName = table.buildEntityClassName())
 package #(packageConfig.entityPackage);
 
@@ -30,6 +31,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 #end
 #end
+#if(jdkVersion >= 14)
+import java.io.Serial;
+#end
 
 /**
  * #(table.getComment()) 实体类。
@@ -57,6 +61,11 @@ import lombok.NoArgsConstructor;
 #end
 #(table.buildTableAnnotation())
 public class #(entityClassName)#if(withActiveRecord) extends Model<#(entityClassName)>#else#(table.buildExtends())#(table.buildImplements())#end  {
+
+    #if(jdkVersion >= 14)
+    @Serial
+    #end
+    private static final long serialVersionUID = 1L;
 
 #for(column : table.columns)
     #set(comment = javadocConfig.formatColumnComment(column.comment))

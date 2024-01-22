@@ -1,9 +1,14 @@
 #set(tableDefClassName = table.buildTableDefClassName())
 #set(schema = table.schema == null ? "" : table.schema)
+#set(jdkVersion = entityConfig.getJdkVersion())
 package #(packageConfig.tableDefPackage);
 
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.table.TableDef;
+
+#if(jdkVersion >= 14)
+import java.io.Serial;
+#end
 
 /**
  * #(table.getComment()) 表定义层。
@@ -12,6 +17,11 @@ import com.mybatisflex.core.table.TableDef;
  * @since #(javadocConfig.getSince())
  */
 public class #(tableDefClassName) extends TableDef {
+
+    #if(jdkVersion >= 14)
+    @Serial
+    #end
+    private static final long serialVersionUID = 1L;
 
     /**
      * #(table.getComment())

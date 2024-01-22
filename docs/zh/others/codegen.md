@@ -68,6 +68,8 @@ public class Codegen {
         //设置生成 entity 并启用 Lombok
         globalConfig.setEntityGenerateEnable(true);
         globalConfig.setEntityWithLombok(true);
+        //设置项目的JDK版本，项目的JDK为14及以上时建议设置该项，小于14则可以不设置
+        globalConfig.setJdkVersion(17);
 
         //设置生成 mapper
         globalConfig.setMapperGenerateEnable(true);
@@ -97,7 +99,8 @@ public class Codegen {
 
         //设置生成 entity 并启用 Lombok
         globalConfig.enableEntity()
-                .setWithLombok(true);
+                .setWithLombok(true)
+                .setJdkVersion(17);
 
         //设置生成 mapper
         globalConfig.enableMapper();
@@ -292,6 +295,7 @@ globalConfig.getTemplateConfig()
 | setSwaggerVersion(EntityConfig.SwaggerVersion) | Swagger 注解版本                     | SwaggerVersion.FOX |
 | setWithActiveRecord(boolean)                   | 是否生成 Active Record 模式的 Entity    | false              |
 | setDataSource(String)                          | 统一使用的数据源                         | null               |
+| setJdkVersion(int)                             | 设置项目的jdk版本                       | 0                  |
 
 ```java
 globalConfig.getEntityConfig()
