@@ -17,14 +17,19 @@
 package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.constant.SqlConnector;
+import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.StringUtil;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static com.mybatisflex.core.query.QueryColumnBehavior.CONVERT_EQUALS_TO_IS_NULL;
+import static com.mybatisflex.core.query.QueryColumnBehavior.getConditionCaster;
 import static com.mybatisflex.core.query.QueryMethods.bracket;
 import static com.mybatisflex.core.query.QueryMethods.raw;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
@@ -227,4 +232,80 @@ public class DynamicConditionTest {
         System.out.println(qw.toSQL());
     }
 
+
+    private void assertConditionEquals(QueryCondition expect, QueryCondition actual) {
+        Assert.assertEquals(expect.getColumn(), actual.getColumn());
+        Assert.assertEquals(expect.getLogic(), actual.getLogic());
+        Assert.assertEquals(expect.getValue(), actual.getValue());
+    }
+
+    @Test
+    public void testCastFunction1() {
+        QueryCondition condition = QueryCondition.create(new QueryColumn("id"), SqlOperator.IN, new Object[] {null});
+        Assert.assertSame(condition, getConditionCaster().apply(condition));
+    }
+
+    @Test
+    public void testCastFunction2() {
+        QueryColumn column = new QueryColumn("id");
+        QueryColumnBehavior.setConditionCaster(CONVERT_EQUALS_TO_IS_NULL);
+
+        QueryCondition condition = QueryCondition.create(column, SqlOperator.EQUALS, null);
+        QueryCondition expect = column.isNull();
+        QueryCondition actual = getConditionCaster().apply(condition);
+
+        assertConditionEquals(expect, actual);
+    }
+
+    @Test
+    public void testCastFunction3() {
+        QueryColumn column = new QueryColumn("id");
+        QueryColumnBehavior.setConditionCaster(CONVERT_EQUALS_TO_IS_NULL);
+        QueryColumnBehavior.setSmartConvertInToEquals(true);
+
+        QueryCondition condition = QueryCondition.create(column, SqlOperator.EQUALS, null);
+        QueryCondition expect = column.isNull();
+        QueryCondition actual = getConditionCaster().apply(condition);
+
+        assertConditionEquals(expect, actual);
+    }
+
+    @Test
+    public void testCastFunction4() {
+        QueryColumn column = new QueryColumn("id");
+        QueryColumnBehavior.setConditionCaster(CONVERT_EQUALS_TO_IS_NULL);
+        QueryColumnBehavior.setSmartConvertInToEquals(true);
+
+        QueryCondition condition = QueryCondition.create(column, SqlOperator.IN, new Object[] { 1 });
+        QueryCondition expect = QueryCondition.create(column, SqlOperator.EQUALS, 1);
+        QueryCondition actual = getConditionCaster().apply(condition);
+
+        assertConditionEquals(expect, actual);
+    }
+
+    @Test
+    public void testCastFunction5() {
+        QueryColumn column = new QueryColumn("id");
+        QueryColumnBehavior.setConditionCaster(CONVERT_EQUALS_TO_IS_NULL);
+        QueryColumnBehavior.setSmartConvertInToEquals(true);
+
+        QueryCondition condition = QueryCondition.create(column, SqlOperator.IN, new Object[] { null });
+        QueryCondition expect = column.isNull();
+        QueryCondition actual = getConditionCaster().apply(condition);
+
+        assertConditionEquals(expect, actual);
+    }
+
+    @Test
+    public void testCastFunction6() {
+        QueryColumn column = new QueryColumn("id");
+        QueryColumnBehavior.setConditionCaster(CONVERT_EQUALS_TO_IS_NULL);
+        QueryColumnBehavior.setSmartConvertInToEquals(true);
+
+        QueryCondition condition = QueryCondition.create(column, SqlOperator.IN, Collections.singletonList(null));
+        QueryCondition expect = column.isNull();
+        QueryCondition actual = getConditionCaster().apply(condition);
+
+        assertConditionEquals(expect, actual);
+    }
 }
