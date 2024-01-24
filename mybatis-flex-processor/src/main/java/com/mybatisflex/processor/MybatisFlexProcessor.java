@@ -39,10 +39,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.JavaFileObject;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
@@ -50,12 +47,11 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.time.chrono.JapaneseDate;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 /**
  * MyBatis Flex Processor.
  *
- * @author 王帅
+ * @author 王帅, CloudPlayer
  * @since 2023-06-22
  */
 public class MybatisFlexProcessor extends AbstractProcessor {
@@ -140,12 +136,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
             // 获取需要生成的类，开始构建文件
             Set<? extends Element> elementsAnnotatedWith = roundEnv.getElementsAnnotatedWith(Table.class);
 
-            int size = elementsAnnotatedWith.size();
-            int index = 0;
-
             for (Element entityClassElement : elementsAnnotatedWith) {
-
-                index++;
 
                 // 获取 Table 注解
                 Table table = entityClassElement.getAnnotation(Table.class);
@@ -189,7 +180,8 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 String tableDefClassName = entityClassName.concat(tableDefClassSuffix);
                 String tableDefContent = ContentBuilder.buildTableDef(tableInfo, allInTablesEnable, tableDefPackage, tableDefClassName
                     , tableDefPropertiesNameStyle, tableDefInstanceSuffix, columnInfos, defaultColumns);
-                processGenClass(genPath, tableDefPackage, tableDefClassName, tableDefContent);
+                // 将文件所依赖的 Element 传入 Filer 中，表示此 TableDef 依赖这个类，以保证增量编译时不丢失内容。
+                processGenClass(genPath, tableDefPackage, tableDefClassName, tableDefContent, entityClassElement);
 
                 if (allInTablesEnable) {
                     // 标记 entity 类，如果没有配置 Tables 生成位置，以 entity 位置为准
@@ -204,17 +196,17 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     String mapperClassName = entityClassName.concat("Mapper");
                     boolean mapperAnnotationEnable = "true".equalsIgnoreCase(mapperAnnotation);
                     String mapperClassContent = ContentBuilder.buildMapper(tableInfo, realMapperPackage, mapperClassName, mapperBaseClass, mapperAnnotationEnable);
-                    processGenClass(genPath, realMapperPackage, mapperClassName, mapperClassContent);
+                    // 生成的 Mapper 依赖于此 Element。
+                    processGenClass(genPath, realMapperPackage, mapperClassName, mapperClassContent, entityClassElement);
                 }
-
-                // handle NPE, ensure TableDef already generate.
-                if (index == size && allInTablesEnable) {
-                    // 生成 Tables 文件
-                    String realTablesPackage = StrUtil.isBlank(allInTablesPackage) ? StrUtil.buildTableDefPackage(entityClassReference) : allInTablesPackage;
-                    String realTablesClassName = StrUtil.isBlank(allInTablesClassName) ? "Tables" : allInTablesClassName;
-                    String tablesContent = ContentBuilder.buildTables(importBuilder, fieldBuilder, realTablesPackage, allInTablesClassName);
-                    processGenClass(genPath, realTablesPackage, realTablesClassName, tablesContent);
-                }
+            }
+            // 确定了要生成 Tables 类，且拥有至少一个被 Table 注解的类时再生成 Tables 类。
+            if (allInTablesEnable && entityClassReference != null) {
+                // 生成 Tables 文件
+                String realTablesPackage = StrUtil.isBlank(allInTablesPackage) ? StrUtil.buildTableDefPackage(entityClassReference) : allInTablesPackage;
+                String realTablesClassName = StrUtil.isBlank(allInTablesClassName) ? "Tables" : allInTablesClassName;
+                String tablesContent = ContentBuilder.buildTables(importBuilder, fieldBuilder, realTablesPackage, allInTablesClassName);
+                processGenClass(genPath, realTablesPackage, realTablesClassName, tablesContent, elementsAnnotatedWith.toArray(new Element[0]));
             }
         }
         return false;
@@ -259,7 +251,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 final String[] typeHandlerClass = {""};
                 List<? extends AnnotationMirror> annotationMirrors = fieldElement.getAnnotationMirrors();
                 for (AnnotationMirror annotationMirror : annotationMirrors) {
-                    annotationMirror.getElementValues().forEach((BiConsumer<ExecutableElement, AnnotationValue>) (executableElement, annotationValue) -> {
+                    annotationMirror.getElementValues().forEach((executableElement, annotationValue) -> {
                         if ("typeHandler".contentEquals(executableElement.getSimpleName())) {
                             typeHandlerClass[0] = annotationValue.toString();
                         }
@@ -346,12 +338,12 @@ public class MybatisFlexProcessor extends AbstractProcessor {
     }
 
 
-    private void processGenClass(String genBasePath, String genPackageName, String className, String genContent) {
+    private void processGenClass(String genBasePath, String genPackageName, String className, String genContent, Element... elements) {
         Writer writer = null;
         try {
-            JavaFileObject sourceFile = filer.createSourceFile(genPackageName + "." + className);
+            JavaFileObject sourceFile = filer.createSourceFile(genPackageName + "." + className, elements);
             if (genBasePath == null || genBasePath.trim().length() == 0) {
-                writer = sourceFile.openWriter();
+                writer = new OutputStreamWriter(sourceFile.openOutputStream(), configuration.get(ConfigurationKey.CHARSET));
                 writer.write(genContent);
                 writer.flush();
                 return;
