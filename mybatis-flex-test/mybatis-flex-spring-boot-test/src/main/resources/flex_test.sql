@@ -1,5 +1,6 @@
 SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
+SET
+FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
 -- Table structure for tb_account
@@ -7,12 +8,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `tb_account`;
 CREATE TABLE `tb_account`
 (
-    `id`        int                                                           NOT NULL AUTO_INCREMENT,
+    `id`        int NOT NULL AUTO_INCREMENT,
     `user_name` varchar(100) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
-    `age`       int                                                           NULL DEFAULT NULL,
-    `birthday`  datetime                                                      NULL DEFAULT NULL,
-    `gender`    int                                                           NULL DEFAULT NULL,
-    `is_delete` tinyint(3) UNSIGNED ZEROFILL                                  NULL DEFAULT NULL,
+    `age`       int NULL DEFAULT NULL,
+    `birthday`  datetime NULL DEFAULT NULL,
+    `gender`    int NULL DEFAULT NULL,
+    `is_delete` tinyint(3) UNSIGNED ZEROFILL NULL DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 5
@@ -35,11 +36,11 @@ VALUES (5, '王五', 18, '2023-07-04 15:00:26', NULL, 000);
 DROP TABLE IF EXISTS `tb_article`;
 CREATE TABLE `tb_article`
 (
-    `id`         int                                                           NOT NULL AUTO_INCREMENT,
-    `account_id` int                                                           NULL DEFAULT NULL,
+    `id`         int NOT NULL AUTO_INCREMENT,
+    `account_id` int NULL DEFAULT NULL,
     `title`      varchar(100) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
-    `content`    text CHARACTER SET utf8mb4         NULL,
-    `is_delete`  int                                                           NULL DEFAULT NULL,
+    `content`    text CHARACTER SET utf8mb4 NULL,
+    `is_delete`  int NULL DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 3
@@ -62,9 +63,9 @@ VALUES (3, 1, '标题3', '内容3', 0);
 DROP TABLE IF EXISTS `tb_good`;
 CREATE TABLE `tb_good`
 (
-    `good_id` int                                                           NOT NULL AUTO_INCREMENT,
+    `good_id` int NOT NULL AUTO_INCREMENT,
     `name`    varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
-    `price`   decimal(10, 2)                                                NULL DEFAULT NULL,
+    `price`   decimal(10, 2) NULL DEFAULT NULL,
     PRIMARY KEY (`good_id`) USING BTREE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 10
@@ -101,7 +102,7 @@ VALUES (10, '近代化学导论', 67.00);
 DROP TABLE IF EXISTS `tb_id_card`;
 CREATE TABLE `tb_id_card`
 (
-    `id`        int                                                           NOT NULL AUTO_INCREMENT,
+    `id`        int NOT NULL AUTO_INCREMENT,
     `id_number` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
@@ -126,7 +127,7 @@ VALUES (4, 'A33E8BAA-93F2-4E28-A161-15CF7D0AE6D0');
 DROP TABLE IF EXISTS `tb_inner`;
 CREATE TABLE `tb_inner`
 (
-    `id`   int                                                           NOT NULL AUTO_INCREMENT,
+    `id`   int NOT NULL AUTO_INCREMENT,
     `type` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
@@ -146,7 +147,7 @@ VALUES (2, 'inner type');
 DROP TABLE IF EXISTS `tb_order`;
 CREATE TABLE `tb_order`
 (
-    `order_id`    int      NOT NULL AUTO_INCREMENT,
+    `order_id`    int NOT NULL AUTO_INCREMENT,
     `create_time` datetime NULL DEFAULT NULL,
     PRIMARY KEY (`order_id`) USING BTREE
 ) ENGINE = InnoDB
@@ -218,7 +219,7 @@ VALUES (6, 10);
 DROP TABLE IF EXISTS `tb_outer`;
 CREATE TABLE `tb_outer`
 (
-    `id`   int                                                           NOT NULL AUTO_INCREMENT,
+    `id`   int NOT NULL AUTO_INCREMENT,
     `name` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
@@ -238,7 +239,7 @@ VALUES (1, 'outer 01');
 DROP TABLE IF EXISTS `tb_role`;
 CREATE TABLE `tb_role`
 (
-    `role_id`   int                                                           NOT NULL AUTO_INCREMENT,
+    `role_id`   int NOT NULL AUTO_INCREMENT,
     `role_key`  varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     `role_name` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`role_id`) USING BTREE
@@ -265,7 +266,7 @@ VALUES (4, 'admin', '管理员用户');
 DROP TABLE IF EXISTS `tb_user`;
 CREATE TABLE `tb_user`
 (
-    `user_id`   int                                                           NOT NULL AUTO_INCREMENT,
+    `user_id`   int NOT NULL AUTO_INCREMENT,
     `user_name` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     `password`  varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL,
     PRIMARY KEY (`user_id`) USING BTREE
@@ -352,4 +353,5 @@ VALUES (4, 4);
 INSERT INTO `tb_user_role`
 VALUES (5, 1);
 
-SET FOREIGN_KEY_CHECKS = 1;
+SET
+FOREIGN_KEY_CHECKS = 1;
