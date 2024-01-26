@@ -53,17 +53,21 @@ MyBatis-Flex 使用了 APT 技术，这个 `ACCOUNT` 是自动生成的。
 :::
 
 ## select *
-
 ```java
-QueryWrapper query = new QueryWrapper();
-query.select(ACCOUNT.ID, ACCOUNT.USER_NAME)
-    .from(ACCOUNT)
+QueryWrapper query1 = new QueryWrapper();
+query1.select(ACCOUNT.ID, ACCOUNT.USER_NAME)
+    .from(ACCOUNT);
+
+QueryWrapper query2 = new QueryWrapper();
+query2.select().from(ACCOUNT);
 ```
 
 其查询生成的 Sql 如下：
 
 ```sql
-SELECT id, user_name FROM tb_account
+SELECT id, user_name FROM tb_account;
+
+SELECT * FROM tb_account;
 ```
 
 ## select ... as
@@ -112,12 +116,12 @@ WHERE a.id = b.account_id
 示例 ：
 
 ```java
-QueryWrapper query=new QueryWrapper()
+QueryWrapper query = new QueryWrapper()
         .select(
-        ACCOUNT.ID,
-        ACCOUNT.USER_NAME,
-        max(ACCOUNT.BIRTHDAY),
-        avg(ACCOUNT.SEX).as("sex_avg")
+            ACCOUNT.ID,
+            ACCOUNT.USER_NAME,
+            max(ACCOUNT.BIRTHDAY),
+            avg(ACCOUNT.SEX).as("sex_avg")
         ).from(ACCOUNT);
 ```
 
