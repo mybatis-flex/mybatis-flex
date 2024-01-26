@@ -44,7 +44,6 @@ public class PackageConfig implements Serializable {
      * Entity 所在包。
      */
     private String entityPackage;
-
     /**
      * Mapper 所在包。
      */
