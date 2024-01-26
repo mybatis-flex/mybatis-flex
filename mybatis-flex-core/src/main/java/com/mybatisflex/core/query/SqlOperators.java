@@ -36,17 +36,13 @@ public class SqlOperators extends HashMap<String, SqlOperator> {
         return new SqlOperators();
     }
 
-    public static <T> SqlOperators of(
-        LambdaGetter<T> getter, SqlOperator operator
-    ) {
+    public static <T> SqlOperators of( LambdaGetter<T> getter, SqlOperator operator ) {
         SqlOperators map = new SqlOperators(1);
         map.put(LambdaUtil.getFieldName(getter), operator);
         return map;
     }
 
-    public static <T> SqlOperators of(
-        String fieldName, SqlOperator operator
-    ) {
+    public static <T> SqlOperators of(String fieldName, SqlOperator operator) {
         SqlOperators map = new SqlOperators(1);
         map.put(fieldName, operator);
         return map;
@@ -64,8 +60,14 @@ public class SqlOperators extends HashMap<String, SqlOperator> {
         return this;
     }
 
-    public <T> SqlOperators set(String fieldName, SqlOperator operator) {
+    public SqlOperators set(String fieldName, SqlOperator operator) {
         this.put(fieldName, operator);
         return this;
     }
+
+    public SqlOperators set(QueryColumn column, SqlOperator operator) {
+        this.put(column.getName(), operator);
+        return this;
+    }
+
 }
