@@ -28,6 +28,10 @@ public class ControllerConfig implements Serializable {
 
     private static final long serialVersionUID = 8391630904705910611L;
     /**
+     * 代码生成目录，当未配置时，使用 PackageConfig 的配置
+     */
+    private String sourceDir;
+    /**
      * Controller 类的前缀。
      */
     private String classPrefix = "";
@@ -58,6 +62,14 @@ public class ControllerConfig implements Serializable {
 
     public String buildSuperClassName() {
         return superClass.getSimpleName();
+    }
+
+    public String getSourceDir() {
+        return sourceDir;
+    }
+
+    public void setSourceDir(String sourceDir) {
+        this.sourceDir = sourceDir;
     }
 
     /**

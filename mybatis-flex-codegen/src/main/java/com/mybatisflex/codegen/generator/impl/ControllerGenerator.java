@@ -21,6 +21,7 @@ import com.mybatisflex.codegen.config.PackageConfig;
 import com.mybatisflex.codegen.constant.TemplateConst;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -54,8 +55,10 @@ public class ControllerGenerator implements IGenerator {
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         ControllerConfig controllerConfig = globalConfig.getControllerConfig();
 
+        String sourceDir = StringUtil.isNotBlank(controllerConfig.getSourceDir()) ? controllerConfig.getSourceDir() : packageConfig.getSourceDir();
+
         String controllerPackagePath = packageConfig.getControllerPackage().replace(".", "/");
-        File controllerJavaFile = new File(packageConfig.getSourceDir(), controllerPackagePath + "/" +
+        File controllerJavaFile = new File(sourceDir, controllerPackagePath + "/" +
             table.buildControllerClassName() + ".java");
 
 

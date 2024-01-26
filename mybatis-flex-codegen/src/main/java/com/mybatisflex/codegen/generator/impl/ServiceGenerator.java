@@ -21,6 +21,7 @@ import com.mybatisflex.codegen.config.ServiceConfig;
 import com.mybatisflex.codegen.constant.TemplateConst;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -54,8 +55,10 @@ public class ServiceGenerator implements IGenerator {
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         ServiceConfig serviceConfig = globalConfig.getServiceConfig();
 
+        String sourceDir = StringUtil.isNotBlank(serviceConfig.getSourceDir()) ? serviceConfig.getSourceDir() : packageConfig.getSourceDir();
+
         String servicePackagePath = packageConfig.getServicePackage().replace(".", "/");
-        File serviceJavaFile = new File(packageConfig.getSourceDir(), servicePackagePath + "/" +
+        File serviceJavaFile = new File(sourceDir, servicePackagePath + "/" +
             table.buildServiceClassName() + ".java");
 
 

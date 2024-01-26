@@ -30,6 +30,10 @@ public class TableDefConfig implements Serializable {
 
     private static final long serialVersionUID = 8137903163796008036L;
     /**
+     * 代码生成目录，当未配置时，使用 PackageConfig 的配置
+     */
+    private String sourceDir;
+    /**
      * TableDef 类的前缀。
      */
     private String classPrefix = "";
@@ -66,6 +70,14 @@ public class TableDefConfig implements Serializable {
             default:
                 return StringUtil.firstCharToLowerCase(property);
         }
+    }
+
+    public String getSourceDir() {
+        return sourceDir;
+    }
+
+    public void setSourceDir(String sourceDir) {
+        this.sourceDir = sourceDir;
     }
 
     /**

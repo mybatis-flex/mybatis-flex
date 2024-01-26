@@ -21,6 +21,7 @@ import com.mybatisflex.codegen.config.PackageConfig;
 import com.mybatisflex.codegen.constant.TemplateConst;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -54,8 +55,10 @@ public class MapperGenerator implements IGenerator {
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         MapperConfig mapperConfig = globalConfig.getMapperConfig();
 
+        String sourceDir = StringUtil.isNotBlank(mapperConfig.getSourceDir()) ? mapperConfig.getSourceDir() : packageConfig.getSourceDir();
+
         String mapperPackagePath = packageConfig.getMapperPackage().replace(".", "/");
-        File mapperJavaFile = new File(packageConfig.getSourceDir(), mapperPackagePath + "/" +
+        File mapperJavaFile = new File(sourceDir, mapperPackagePath + "/" +
             table.buildMapperClassName() + ".java");
 
 
