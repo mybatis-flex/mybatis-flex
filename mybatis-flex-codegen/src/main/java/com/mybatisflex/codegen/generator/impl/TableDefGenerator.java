@@ -21,6 +21,7 @@ import com.mybatisflex.codegen.config.TableDefConfig;
 import com.mybatisflex.codegen.constant.TemplateConst;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.generator.IGenerator;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.io.File;
 import java.util.HashMap;
@@ -54,8 +55,10 @@ public class TableDefGenerator implements IGenerator {
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         TableDefConfig tableDefConfig = globalConfig.getTableDefConfig();
 
+        String sourceDir = StringUtil.isNotBlank(tableDefConfig.getSourceDir()) ? tableDefConfig.getSourceDir() : packageConfig.getSourceDir();
+
         String tableDefPackagePath = packageConfig.getTableDefPackage().replace(".", "/");
-        File tableDefJavaFile = new File(packageConfig.getSourceDir(), tableDefPackagePath + "/" +
+        File tableDefJavaFile = new File(sourceDir, tableDefPackagePath + "/" +
             table.buildTableDefClassName() + ".java");
 
 

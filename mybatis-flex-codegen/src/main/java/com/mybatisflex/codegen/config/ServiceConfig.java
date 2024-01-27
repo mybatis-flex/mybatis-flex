@@ -31,6 +31,11 @@ public class ServiceConfig implements Serializable {
 
     private static final long serialVersionUID = -2152473328300910220L;
     /**
+     * 代码生成目录，当未配置时，使用 PackageConfig 的配置
+     */
+    private String sourceDir;
+
+    /**
      * Service 类的前缀。
      */
     private String classPrefix = "";
@@ -56,6 +61,14 @@ public class ServiceConfig implements Serializable {
 
     public String buildSuperClassName() {
         return superClass.getSimpleName();
+    }
+
+    public String getSourceDir() {
+        return sourceDir;
+    }
+
+    public void setSourceDir(String sourceDir) {
+        this.sourceDir = sourceDir;
     }
 
     /**

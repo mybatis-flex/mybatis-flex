@@ -30,6 +30,11 @@ public class MapperConfig implements Serializable {
 
     private static final long serialVersionUID = 1937442008907641534L;
     /**
+     * 代码生成目录，当未配置时，使用 PackageConfig 的配置
+     */
+    private String sourceDir;
+
+    /**
      * Mapper 类的前缀。
      */
     private String classPrefix = "";
@@ -60,6 +65,14 @@ public class MapperConfig implements Serializable {
 
     public String buildSuperClassName() {
         return superClass.getSimpleName();
+    }
+
+    public String getSourceDir() {
+        return sourceDir;
+    }
+
+    public void setSourceDir(String sourceDir) {
+        this.sourceDir = sourceDir;
     }
 
     /**
