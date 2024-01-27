@@ -15,7 +15,15 @@
  */
 package com.mybatisflex.core.table;
 
-import com.mybatisflex.annotation.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.ColumnAlias;
+import com.mybatisflex.annotation.ColumnMask;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.annotation.NoneListener;
+import com.mybatisflex.annotation.SetListener;
+import com.mybatisflex.annotation.Table;
+import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
@@ -31,17 +39,46 @@ import org.apache.ibatis.io.ResolverUtil;
 import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.type.*;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeException;
+import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.apache.ibatis.type.UnknownTypeHandler;
 import org.apache.ibatis.util.MapUtil;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZonedDateTime;
 import java.time.chrono.JapaneseDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -263,16 +300,6 @@ public class TableInfoFactory {
             }
 
             if (isIgnoreField) {
-                continue;
-            }
-
-            //忽略 Relation 字段
-            //fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I8SKOP
-            if (field.isAnnotationPresent(RelationOneToOne.class)
-                || field.isAnnotationPresent(RelationOneToMany.class)
-                || field.isAnnotationPresent(RelationManyToOne.class)
-                || field.isAnnotationPresent(RelationManyToMany.class))
-            {
                 continue;
             }
 
