@@ -17,7 +17,6 @@
 package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.test.TestInfrastructure;
 import com.mybatisflex.test.model.Account;
 import com.mybatisflex.test.model.Article;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 @SpringBootTest
-public class CombinedMapperTest extends TestInfrastructure {
+public class CombinedMapperTest {
 
     @Autowired
     private AccountMapper accountMapper;

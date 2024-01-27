@@ -2,7 +2,6 @@ package com.mybatisflex.test.service;
 
 import com.mybatisflex.test.mapper.FieldMappingInnerMapper;
 import com.mybatisflex.test.mapper.FieldMappingMapper;
-import com.mybatisflex.test.TestInfrastructure;
 import com.mybatisflex.test.model.FieldMapping;
 import com.mybatisflex.test.model.FieldMappingInner;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Date;
 
 @SpringBootTest
-class FieldMappingTest extends TestInfrastructure {
+class FieldMappingTest {
     @Autowired
     FieldMappingMapper fieldMappingMapper;
     @Autowired

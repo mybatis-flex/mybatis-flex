@@ -17,7 +17,6 @@
 package com.mybatisflex.test.service;
 
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.test.TestInfrastructure;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +28,7 @@ import static com.mybatisflex.test.model.table.ArticleTableDef.ARTICLE;
  * @since 2023-07-22
  */
 @SpringBootTest
-class ArticleServiceTest extends TestInfrastructure {
+class ArticleServiceTest {
 
     @Autowired
     ArticleService articleService;

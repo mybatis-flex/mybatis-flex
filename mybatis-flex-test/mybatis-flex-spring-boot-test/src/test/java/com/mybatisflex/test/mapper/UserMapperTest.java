@@ -18,8 +18,13 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.test.TestInfrastructure;
-import com.mybatisflex.test.model.*;
+import com.mybatisflex.test.model.OrderInfo;
+import com.mybatisflex.test.model.User;
+import com.mybatisflex.test.model.UserInfo;
+import com.mybatisflex.test.model.UserVO;
+import com.mybatisflex.test.model.UserVO1;
+import com.mybatisflex.test.model.UserVO2;
+import com.mybatisflex.test.model.UserVO3;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +48,7 @@ import static com.mybatisflex.test.model.table.UserTableDef.USER;
  */
 @SpringBootTest
 @SuppressWarnings("all")
-class UserMapperTest extends TestInfrastructure {
+class UserMapperTest {
 
     @Autowired
     private UserMapper userMapper;

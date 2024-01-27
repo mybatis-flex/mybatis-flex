@@ -18,7 +18,6 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.test.TestInfrastructure;
 import com.mybatisflex.test.model.Good;
 import com.mybatisflex.test.model.User;
 import org.junit.jupiter.api.Assertions;
@@ -35,7 +34,7 @@ import static com.mybatisflex.test.model.table.UserTableDef.USER;
  * @since 2023-07-23
  */
 @SpringBootTest
-class ActiveRecordTest extends TestInfrastructure {
+class ActiveRecordTest {
 
     @Test
     void testMapper() {
@@ -125,11 +124,14 @@ class ActiveRecordTest extends TestInfrastructure {
 
     @Test
     void testRelation() {
-        User user1 = User.create().select(USER.ALL_COLUMNS, ROLE.ALL_COLUMNS)
+        User user1 = User.create()
+            .as("u")
+            .select(USER.DEFAULT_COLUMNS, ROLE.DEFAULT_COLUMNS)
             .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
             .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
             .where(USER.USER_ID.eq(2))
-            .list().get(0);
+            .list()
+            .get(0);
 
         User user2 = User.create()
             .where(USER.USER_ID.eq(2))
