@@ -47,10 +47,7 @@ public class QueryColumnBehavior {
      */
     public static final Function<? super QueryCondition, ? extends QueryCondition> CONVERT_IN_TO_EQUALS = it -> {
         Object value = it.value;
-        if (value == null) {
-            return it;
-        }
-        if (it.logic.equalsIgnoreCase(SqlConsts.IN)) {
+        if (it.logic.equalsIgnoreCase(SqlConsts.IN) || it.logic.equalsIgnoreCase(SqlConsts.NOT_IN)) {
             Object firstValue;
             if (value instanceof Iterable<?>) {
                 Iterator<?> iter = ((Iterable<?>) value).iterator();
@@ -70,7 +67,9 @@ public class QueryColumnBehavior {
             } else {
                 return it;
             }
-            return QueryCondition.create(it.column, SqlOperator.EQUALS, firstValue);  // 将 in 转换为 =
+
+            SqlOperator operator = it.logic.equalsIgnoreCase(SqlConsts.IN) ? SqlOperator.EQUALS : SqlOperator.NOT_EQUALS;
+            return QueryCondition.create(it.column, operator, firstValue);  // 将 in 转换为 =
         } else {
             return it;
         }
@@ -79,7 +78,8 @@ public class QueryColumnBehavior {
     /**
      * 如果使用了 = 来比较 null ，则将其转为 is null 。
      */
-    public static final Function<? super QueryCondition, ? extends QueryCondition> CONVERT_EQUALS_TO_IS_NULL = it -> it.value == null ? it.column.isNull() : it;
+    public static final Function<? super QueryCondition, ? extends QueryCondition> CONVERT_EQUALS_TO_IS_NULL = it ->
+        it.value == null && it.logic.equalsIgnoreCase(SqlConsts.EQUALS) ? it.column.isNull() : it;
     /**
      * 自定义全局的自动忽略参数的方法。
      */
