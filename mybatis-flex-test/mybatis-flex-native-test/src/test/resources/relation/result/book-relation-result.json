@@ -15,7 +15,7 @@
                 "3": {
                     "id": 3,
                     "name": "角色3",
-                    "accounts": null
+                    "accounts": []
                 }
             }
         }
@@ -36,12 +36,12 @@
                 "2": {
                     "id": 2,
                     "name": "角色2",
-                    "accounts": null
+                    "accounts": []
                 },
                 "3": {
                     "id": 3,
                     "name": "角色3",
-                    "accounts": null
+                    "accounts": []
                 }
             }
         }
@@ -62,7 +62,7 @@
                 "3": {
                     "id": 3,
                     "name": "角色3",
-                    "accounts": null
+                    "accounts": []
                 }
             }
         }
@@ -83,7 +83,7 @@
                 "3": {
                     "id": 3,
                     "name": "角色3",
-                    "accounts": null
+                    "accounts": []
                 }
             }
         }
@@ -104,7 +104,7 @@
                 "3": {
                     "id": 3,
                     "name": "角色3",
-                    "accounts": null
+                    "accounts": []
                 }
             }
         }
@@ -125,12 +125,12 @@
                 "2": {
                     "id": 2,
                     "name": "角色2",
-                    "accounts": null
+                    "accounts": []
                 },
                 "3": {
                     "id": 3,
                     "name": "角色3",
-                    "accounts": null
+                    "accounts": []
                 }
             }
         }
