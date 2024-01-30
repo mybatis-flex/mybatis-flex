@@ -958,7 +958,16 @@ public class TableInfo {
 
 
     public QueryWrapper buildQueryWrapper(Object entity, SqlOperators operators) {
-        QueryWrapper queryWrapper = QueryWrapper.create().from(getTableNameWithSchema());
+        QueryColumn[] queryColumns = new QueryColumn[defaultQueryColumns.length];
+        for (int i = 0; i < defaultQueryColumns.length; i++) {
+            queryColumns[i] = columnQueryMapping.get(defaultQueryColumns[i]);
+        }
+
+        QueryWrapper queryWrapper = QueryWrapper.create();
+
+        String tableNameWithSchema = getTableNameWithSchema();
+        queryWrapper.select(queryColumns).from(tableNameWithSchema);
+
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
         propertyColumnMapping.forEach((property, column) -> {
             if (column.equals(logicDeleteColumn)) {

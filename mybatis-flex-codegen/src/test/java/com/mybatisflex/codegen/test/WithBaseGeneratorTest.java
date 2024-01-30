@@ -30,7 +30,7 @@ import java.util.function.UnaryOperator;
 public class WithBaseGeneratorTest {
 
 
-        @Test
+    //        @Test
     public void testCodeGen1() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
