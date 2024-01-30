@@ -87,6 +87,25 @@ public class EntityConfig implements Serializable {
      */
     private int jdkVersion;
 
+
+    /**
+     * 当开启这个配置后，Entity 会生成两个类，比如 Account 表会生成 Account.java 以及 AccountBase.java
+     * 这样的好处是，自动生成的 getter setter 字段等都在 Base 类里，而开发者可以在 Account.java 中添加自己的业务代码
+     * 此时，再次生成代码时，不会覆盖掉 Account.java 中的业务代码
+     */
+    private boolean withBaseClassEnable = false;
+
+    /**
+     * Base 类的后缀
+     */
+    private String withBaseClassSuffix = "Base";
+
+    /**
+     * Base 类所在的包，默认情况下是在 entity 包下，添加一个 base 文件夹。
+     */
+    private String withBasePackage;
+
+
     public String getSourceDir() {
         return sourceDir;
     }
@@ -260,6 +279,31 @@ public class EntityConfig implements Serializable {
     public EntityConfig setJdkVersion(int jdkVersion) {
         this.jdkVersion = jdkVersion;
         return this;
+    }
+
+    public boolean isWithBaseClassEnable() {
+        return withBaseClassEnable;
+    }
+
+    public void setWithBaseClassEnable(boolean withBaseClassEnable) {
+        this.withBaseClassEnable = withBaseClassEnable;
+    }
+
+    public String getWithBaseClassSuffix() {
+        return withBaseClassSuffix;
+    }
+
+    public void setWithBaseClassSuffix(String withBaseClassSuffix) {
+        this.withBaseClassSuffix = withBaseClassSuffix;
+    }
+
+
+    public String getWithBasePackage() {
+        return withBasePackage;
+    }
+
+    public void setWithBasePackage(String withBasePackage) {
+        this.withBasePackage = withBasePackage;
     }
 
     public enum SwaggerVersion {

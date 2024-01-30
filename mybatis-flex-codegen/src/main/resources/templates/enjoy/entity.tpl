@@ -3,8 +3,7 @@
 #set(swaggerVersion = entityConfig.getSwaggerVersion())
 #set(withActiveRecord = entityConfig.isWithActiveRecord())
 #set(jdkVersion = entityConfig.getJdkVersion())
-#set(entityClassName = table.buildEntityClassName())
-package #(packageConfig.entityPackage);
+package #(entityPackageName);
 
 #for(importClass : table.buildImports())
 import #(importClass);
