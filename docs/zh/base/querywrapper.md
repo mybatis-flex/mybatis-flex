@@ -53,17 +53,21 @@ MyBatis-Flex 使用了 APT 技术，这个 `ACCOUNT` 是自动生成的。
 :::
 
 ## select *
-
 ```java
-QueryWrapper query = new QueryWrapper();
-query.select(ACCOUNT.ID, ACCOUNT.USER_NAME)
-    .from(ACCOUNT)
+QueryWrapper query1 = new QueryWrapper();
+query1.select(ACCOUNT.ID, ACCOUNT.USER_NAME)
+    .from(ACCOUNT);
+
+QueryWrapper query2 = new QueryWrapper();
+query2.select().from(ACCOUNT);
 ```
 
 其查询生成的 Sql 如下：
 
 ```sql
-SELECT id, user_name FROM tb_account
+SELECT id, user_name FROM tb_account;
+
+SELECT * FROM tb_account;
 ```
 
 ## select ... as
@@ -112,12 +116,12 @@ WHERE a.id = b.account_id
 示例 ：
 
 ```java
-QueryWrapper query=new QueryWrapper()
+QueryWrapper query = new QueryWrapper()
         .select(
-        ACCOUNT.ID,
-        ACCOUNT.USER_NAME,
-        max(ACCOUNT.BIRTHDAY),
-        avg(ACCOUNT.SEX).as("sex_avg")
+            ACCOUNT.ID,
+            ACCOUNT.USER_NAME,
+            max(ACCOUNT.BIRTHDAY),
+            avg(ACCOUNT.SEX).as("sex_avg")
         ).from(ACCOUNT);
 ```
 
@@ -529,13 +533,18 @@ WHERE id >=  ?
 AND user_name LIKE  ?
 ```
 
-## where 动态条件 1
+## where 动态条件
+::: tip 注意
+QueryWrapper条件构建中，若参数为null时默认会被忽略，不会拼接查询条件
+:::
+
+**方式1：when()**
 
 ```java 1,4
 boolean flag = false;
 QueryWrapper queryWrapper = QueryWrapper.create()
     .select().from(ACCOUNT)
-    .where(flag ? ACCOUNT.ID.ge(100) : noCondition())
+    .where(ACCOUNT.ID.ge(100).when(flag)) //flag为false，忽略该条件
     .and(ACCOUNT.USER_NAME.like("michael"));
 ```
 
@@ -543,60 +552,36 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 ```sql
 SELECT * FROM tb_account
-WHERE user_name LIKE  ?
+WHERE user_name LIKE 'michael'
 ```
-
-## where 动态条件 2
-
+**方式2：使用重载方法**
 ```java 1,4
 boolean flag = false;
 QueryWrapper queryWrapper = QueryWrapper.create()
     .select().from(ACCOUNT)
-    .where(ACCOUNT.ID.ge(100, flag))
-    // 等同于 .where(ACCOUNT.ID.ge(100).when(flag))
-    .and(ACCOUNT.USER_NAME.like("michael"));
+    .and(ACCOUNT.USER_NAME.like("michael", flag)); //flag为false，忽略该条件
 ```
-
-其查询生成的 Sql 如下：
-
-```sql
-SELECT * FROM tb_account
-WHERE user_name LIKE  ?
-```
-
-## where 动态条件 3
-
+对当前条件参数进行判断：
 ```java 1,5
-String name = null;
+String name = "";
 QueryWrapper queryWrapper = QueryWrapper.create()
     .select().from(ACCOUNT)
-    .where(ACCOUNT.ID.ge(100)) // when....
-    .and(ACCOUNT.USER_NAME.like(name, StringUtil::isNotBlank));
+    .where(ACCOUNT.USER_NAME.like(name, StringUtil::isNotBlank)); //name为空字符串，忽略该条件
 ```
-
-其查询生成的 Sql 如下：
-
-```sql
-SELECT * FROM tb_account
-WHERE id >= ?
-```
-
-## where 动态条件 4
-
+框架提供了工具类`If`，包含常用的判断方法（如非空、非空集合、非空字符串等），供开发者简化代码：
 ```java 1,5
-String name = null;
+String name = "";
 QueryWrapper queryWrapper = QueryWrapper.create()
     .select().from(ACCOUNT)
-    .where(ACCOUNT.ID.ge(100))
-    .and(ACCOUNT.USER_NAME.like(name, If::hasText));
+    .where(ACCOUNT.USER_NAME.like(name, If::hasText)); //name是否有文本
 ```
 
-其查询生成的 Sql 如下：
+上述代码生成的 Sql 如下：
 
 ```sql
-SELECT * FROM tb_account
-WHERE id >= ?
+SELECT * FROM tb_account;
 ```
+
 ## where 使用 SQL 函数
 你可以通过使用 QueryMethods 类下的函数实现 where 对指定列运算后作为条件进行查询（QueryMethods 位于 mybatisflex.core.query 下）。
 
