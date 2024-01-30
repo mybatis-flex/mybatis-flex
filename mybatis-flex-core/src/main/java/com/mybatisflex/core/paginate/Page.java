@@ -193,8 +193,8 @@ public class Page<T> implements Serializable {
      * @param pageSize 每页数据数量
      */
     public void setPageSize(long pageSize) {
-        if (pageSize < 0) {
-            throw new IllegalArgumentException("pageSize must greater than or equal 0，current value is: " + pageSize);
+        if (pageSize <= 0) {
+            throw new IllegalArgumentException("pageSize must greater than 0，current value is: " + pageSize);
         }
         this.pageSize = pageSize;
         this.calcTotalPage();
