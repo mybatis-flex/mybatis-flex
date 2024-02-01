@@ -96,7 +96,7 @@ public class RelationManager {
     }
 
     public static void clearMaxDepth() {
-        extraConditionParams.remove();
+        depthThreadLocal.remove();
     }
 
 
