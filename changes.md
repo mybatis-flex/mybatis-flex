@@ -2,6 +2,34 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.7.8 20240201:
+- 新增：在 DialectFactory 中添加全局方言设置的功能，感谢 @farukonfly
+- 新增：SQL 审计的打印功能添加对当前数据源的输出，感谢 @hhggcon
+- 新增：枚举映射注解 @EnumValue 添加在方法上进行支持的功能，感谢 @huangxy
+- 新增：AbstractInsertListener 添加自动探测子类类型的支持，感谢 @luo_zhan
+- 新增：代码生成器为的实体类增加 serialVersionUID 字段生成的支持，感谢 @hanjinfeng39
+- 新增：代码生成器添加对 model、service、Controller 等自定义生成目录配置的支持
+- 新增：代码生成器添加生成 Entity Base 类的支持 #I7JH7K
+- 新增：SqlOperators 增加支持 QueryColumn 参数的重载，感谢 @robor.luo
+- 优化：完善对 mybatis-flex-spring-boot3-starter 的 Maven 版本管理
+- 优化：修正 Spring 下 BeanPostProcessorChecker 的警告问题，感谢 @Suomm
+- 优化：进一步优化关联查询时的重名映射问题，感谢 @Suomm
+- 优化：移除驼峰命名转化对 Row 类的影响
+- 优化：优化 FieldWrapper 的异常信息输出
+- 优化：优化 Page.java 防止传入为 0 的 pageSize 值
+- 修复：修改 exist 在子select中出错的问题，感谢 @font-c
+- 修复：修复 ColumnInfo 在某些情况下可能出现 NPE 的问题 #I8UTJC
+- 修复：SQL审计正确返回变更行数结果不正确的问题，感谢 @RishChen
+- 修复：关联查询时，当实体自身字段数据为 null 时，出现 NPE 的问题，感谢 @tangzc
+- 修复：RelationManager.clearMaxDepth() 不能正常工作的问题，感谢 @tangzc
+- 文档：更新关于使用 springboot3 的相关文档
+- 文档：增加在方法上使用注解 EnumValue 文档，感谢 @huangxy
+- 文档：代码生成器添加 setJdkVersion 的文档说明，感谢 @hanjinfeng39
+- 文档：进一步完善对 QueryWrapper 的相关描述，感谢 @robor.luo
+- 文档：添加 spring-data 整合警告解决方法的相关文档，感谢 @Suomm
+- 文档：更新常见问题，感谢 @Suomm
+
+
 
 ## v1.7.7 20240104:
 - 新增：添加 spring-boot3 新模块，用于 springboot v3 下使用，感谢 @Suomm
