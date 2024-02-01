@@ -18,8 +18,12 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.relation.RelationManager;
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
 import com.mybatisflex.core.util.SqlUtil;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -191,6 +195,21 @@ public interface MapperQueryChain<T> extends ChainQuery<T> {
      * @return {@code Relations Query} 查询
      */
     default RelationsBuilder<T> withRelations() {
+        return new RelationsBuilder<>(this);
+    }
+
+    /**
+     * 使用 Relations Query 的方式进行关联查询。
+     * @param columns 需要关联的字段
+     * @return Relations Query 查询
+     */
+    default RelationsBuilder<T> withRelations(LambdaGetter<T>... columns) {
+        if(columns != null && columns.length > 0) {
+            String[] array = Arrays.stream(columns)
+                .map(LambdaUtil::getFieldName)
+                .toArray(String[]::new);
+            RelationManager.addQueryRelations(array);
+        }
         return new RelationsBuilder<>(this);
     }
 
