@@ -28,10 +28,6 @@ public class RowCPI {
     private RowCPI() {
     }
 
-    public static Object[] obtainInsertValues(Row row) {
-        return row.obtainInsertValues();
-    }
-
 
     public static Set<String> getInsertAttrs(Row row) {
         return row.getInsertAttrs();

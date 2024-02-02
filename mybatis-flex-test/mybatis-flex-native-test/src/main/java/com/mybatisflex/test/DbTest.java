@@ -21,6 +21,7 @@ import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.row.RowUtil;
 import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
 import org.apache.ibatis.session.Configuration;
@@ -105,5 +106,33 @@ public class DbTest {
         }catch (Exception e){
             assert false;
         }
+    }
+
+
+    @Test
+    public void testDbInsertBatchWithFirstRowColumns() {
+        List<Row> rows = new ArrayList<>();
+
+        Row row1 = new Row();
+        row1.put("id", 111);
+        row1.put("user_name", "张三");
+        row1.put("age", 20);
+        rows.add(row1);
+
+        Row row2 = new Row();
+        row2.put("age", 30);
+        row2.put("id", 20);
+        row2.put("user_name", "李四");
+        rows.add(row2);
+
+        Db.insertBatchWithFirstRowColumns("tb_account", rows);
+
+        Row row3= new Row();
+        row3.put("age", 30);
+        row3.put("id", 333);
+        row3.put("user_name", "李四3");
+        Db.insert("tb_account",row3);
+
+        RowUtil.printPretty(Db.selectAll("tb_account"));
     }
 }
