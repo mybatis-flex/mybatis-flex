@@ -435,7 +435,12 @@ public class TableInfoFactory {
                     Class<?> typeHandlerClass = columnAnnotation.typeHandler();
                     Configuration configuration = FlexGlobalConfig.getDefaultConfig().getConfiguration();
                     TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
-                    typeHandler = typeHandlerRegistry.getInstance(columnInfo.getPropertyType(), typeHandlerClass);
+                    Class<?> propertyType = columnInfo.getPropertyType();
+                    JdbcType jdbcType = columnAnnotation.jdbcType();
+                    typeHandler = typeHandlerRegistry.getTypeHandler(propertyType, jdbcType);
+                    if (typeHandler == null || !typeHandlerClass.isAssignableFrom(typeHandler.getClass())) {
+                        typeHandler = typeHandlerRegistry.getInstance(propertyType, typeHandlerClass);
+                    }
                 }
 
                 columnInfo.setTypeHandler(typeHandler);
