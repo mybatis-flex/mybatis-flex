@@ -33,7 +33,11 @@ MyBatis-Flex 使用了 APT 技术，这两个类是自动生成的，需要编�
 
 参考：[MyBatis-Flex APT 配置 - MyBatis-Flex 官方网站](./others/apt.md)
 
-## 与 spring-data 整合输出警告：trationDelegate$BeanPostProcessorChecker : Bean 'x' of type [x] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [projectingArgumentResolverBeanPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+## 与 spring-data 整合输出 trationDelegate$BeanPostProcessorChecker 警告
+
+```text
+Bean 'x' of type [x] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [projectingArgumentResolverBeanPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+```
 
 排除 `SpringDataWebAutoConfiguration` 自动配置类即可：
 
