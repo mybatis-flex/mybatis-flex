@@ -27,7 +27,6 @@ import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.ClassUtil;
-import org.apache.ibatis.javassist.util.proxy.ProxyObject;
 
 import java.util.*;
 
@@ -70,7 +69,7 @@ public class RowSqlProvider {
 
         // 先生成 SQL，再设置参数
         String sql = DialectFactory.getDialect().forInsertRow(schema, tableName, row);
-        ProviderUtil.setSqlArgs(params, row.obtainInsertValues(null));
+        ProviderUtil.setSqlArgs(params, row.obtainInsertValues());
         return sql;
     }
 
@@ -91,8 +90,7 @@ public class RowSqlProvider {
 
         // 让所有 row 的列顺序和值的数量与第条数据保持一致
         // 这个必须 new 一个 LinkedHashSet，因为 keepModifyAttrs 会清除 row 所有的 modifyAttrs
-        Set<String> modifyAttrs = new LinkedHashSet<>(RowCPI.getModifyAttrs(rows.get(0)));
-        rows.forEach(row -> row.keep(modifyAttrs));
+        Set<String> modifyAttrs = new LinkedHashSet<>(RowCPI.getInsertAttrs(rows.get(0)));
 
         //sql: INSERT INTO `tb_table`(`name`, `sex`) VALUES (?, ?),(?, ?),(?, ?)
         String sql = DialectFactory.getDialect().forInsertBatchWithFirstRowColumns(schema, tableName, rows);
@@ -178,7 +176,7 @@ public class RowSqlProvider {
         String tableName = ProviderUtil.getTableName(params);
         Row row = ProviderUtil.getRow(params);
         String sql = DialectFactory.getDialect().forUpdateById(schema, tableName, row);
-        ProviderUtil.setSqlArgs(params, RowCPI.obtainAllModifyValues(row));
+        ProviderUtil.setSqlArgs(params, RowCPI.obtainUpdateValues(row));
         return sql;
     }
 
@@ -228,7 +226,7 @@ public class RowSqlProvider {
 
         Object[] values = FlexConsts.EMPTY_ARRAY;
         for (Row row : rows) {
-            values = ArrayUtil.concat(values, RowCPI.obtainAllModifyValues(row));
+            values = ArrayUtil.concat(values, RowCPI.obtainUpdateValues(row));
         }
         ProviderUtil.setSqlArgs(params, values);
         return sql;

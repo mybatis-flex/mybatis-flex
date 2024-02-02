@@ -49,8 +49,8 @@ public class RowCPI {
         return row.obtainsPrimaryValues();
     }
 
-    public static Object[] obtainAllModifyValues(Row row) {
-        return row.obtainAllModifyValues();
+    public static Object[] obtainUpdateValues(Row row) {
+        return row.obtainUpdateValues();
     }
 
     public static Set<String> getModifyAttrs(Row row) {

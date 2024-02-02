@@ -17,7 +17,6 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
-import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
@@ -42,14 +41,14 @@ import java.util.Map;
  * @author 王帅
  * @since 2023-10-11
  */
-public class DbTest {
+public class DbTest273 {
 
     @BeforeClass
     public static void init() {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
-            .addScript("schema.sql")
-            .addScript("data.sql")
+            .addScript("schema_273.sql")
+            .addScript("data273.sql")
             .build();
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
@@ -70,44 +69,62 @@ public class DbTest {
     @SuppressWarnings("all")
     static String tb_account = "tb_account";
 
-    @Test
-    public void test01() {
-        List<Row> rows = Db.selectAll(tb_account);
 
-        rows.stream()
-            .map(row -> row.get("OPTIONS"))
-            .forEach(Assert::assertNull);
+
+    /**
+     * https://github.com/mybatis-flex/mybatis-flex/issues/273
+     */
+    @Test
+    public void testDbInsertBatchWithFirstRowColumns() {
+        List<Row> rows = new ArrayList<>();
+
+        Row row1 = new Row();
+        row1.put("id", 111);
+        row1.put("user_name", "张三");
+        row1.put("age", 20);
+        rows.add(row1);
+
+        Row row2 = new Row();
+        row2.put("age", 30);
+        row2.put("id", 20);
+        row2.put("user_name", "李四");
+        rows.add(row2);
+
+        Db.insertBatchWithFirstRowColumns("tb_account", rows);
+
+        Row row3= new Row();
+        row3.put("age", 30);
+        row3.put("id", 333);
+        row3.put("user_name", "李四3");
+        Db.insert("tb_account",row3);
+
+        RowUtil.printPretty(Db.selectAll("tb_account"));
     }
 
+    /**
+     * https://github.com/mybatis-flex/mybatis-flex/issues/273
+     */
     @Test
-    public void test02() {
-        Map map = Db.selectFirstAndSecondColumnsAsMap(QueryWrapper.create().from(tb_account));
-        Map map2 = Db.selectFirstAndSecondColumnsAsMap("select * from tb_account");
-        System.out.println(map);
-        System.out.println(map2);
-        assert map.equals(map2);
+    public void testDbInsertBatchWithFirstRowColumns02() {
+        List<Row> rows = new ArrayList<>();
 
-    }
-    @Test
-    public void test03() {
-        try {
-            Account account = UpdateEntity.of(Account.class, 1);
-            account.setAge(1);
-            List<Account> accounts = new ArrayList<>();
-            accounts.add(account);
-            Account account2 = UpdateEntity.of(Account.class, 2);
-            account2.setAge(2);
-            UpdateWrapper updateWrapper = UpdateWrapper.of(account2);
-            updateWrapper.setRaw("age", "age+1");
-            accounts.add(account2);
-            Account account3 = new Account();
-            account3.setId(3L);
-            account3.setAge(4);
-            accounts.add(account3);
-            Db.updateEntitiesBatch(accounts);
-        }catch (Exception e){
-            assert false;
-        }
-    }
+        Row row1 = Row.ofKey(RowKey.SNOW_FLAKE_ID);
+        row1.put("user_name", "张三");
+        row1.put("age", 20);
+        rows.add(row1);
 
+        Row row2 = Row.ofKey(RowKey.SNOW_FLAKE_ID);
+        row2.put("age", 30);
+        row2.put("user_name", "李四");
+        rows.add(row2);
+
+//        Row row3 = Row.ofKey(RowKey.SNOW_FLAKE_ID);
+//        row3.put("age", new RawValue(11));
+//        row3.put("user_name", "李四3");
+//        rows.add(row3);
+
+        Db.insertBatchWithFirstRowColumns("tb_account", rows);
+
+        RowUtil.printPretty(Db.selectAll("tb_account"));
+    }
 }
