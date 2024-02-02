@@ -22,9 +22,14 @@ import com.mybatisflex.core.activerecord.query.QueryModel;
 import com.mybatisflex.core.activerecord.query.RelationsQuery;
 import com.mybatisflex.core.query.MapperQueryChain;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.RelationsBuilder;
+import com.mybatisflex.core.relation.RelationManager;
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
 import com.mybatisflex.core.util.SqlUtil;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -118,6 +123,17 @@ public abstract class Model<T extends Model<T>>
     @Override
     public RelationsQuery<T> withRelations() {
         return new RelationsQuery<>(this);
+    }
+
+    @Override
+    public RelationsBuilder<T> withRelations(LambdaGetter<T>... columns) {
+        if(columns != null && columns.length > 0) {
+            String[] array = Arrays.stream(columns)
+                .map(LambdaUtil::getFieldName)
+                .toArray(String[]::new);
+            RelationManager.addQueryRelations(array);
+        }
+        return new RelationsBuilder<>(this);
     }
 
 }
