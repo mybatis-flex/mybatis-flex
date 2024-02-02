@@ -204,14 +204,14 @@ public class QueryConditionBuilder<Wrapper extends QueryWrapper> implements Cond
      * 大于等于 {@code >=}
      */
     public <T> Wrapper ge(LambdaGetter<T> value) {
-        return eq(LambdaUtil.getQueryColumn(value), true);
+        return ge(LambdaUtil.getQueryColumn(value), true);
     }
 
     /**
      * 大于等于 {@code >=}
      */
     public <T> Wrapper ge(LambdaGetter<T> value, boolean isEffective) {
-        return eq(LambdaUtil.getQueryColumn(value), isEffective);
+        return ge(LambdaUtil.getQueryColumn(value), isEffective);
     }
 
     /**
