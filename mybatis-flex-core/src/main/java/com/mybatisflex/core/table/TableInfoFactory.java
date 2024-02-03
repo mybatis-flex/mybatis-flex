@@ -497,13 +497,6 @@ public class TableInfoFactory {
         return tableInfo;
     }
 
-    private static boolean isRegisterTypeHandler(Configuration configuration, Class<?> fieldType) {
-        if (configuration == null) {
-            return false;
-        }
-        return configuration.getTypeHandlerRegistry().hasTypeHandler(fieldType);
-    }
-
     /**
      * 创建 typeHandler
      * 参考 {@link TypeHandlerRegistry#getInstance(Class, Class)}
