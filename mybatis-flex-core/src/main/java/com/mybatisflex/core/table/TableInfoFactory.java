@@ -423,7 +423,7 @@ public class TableInfoFactory {
 
             //typeHandler 配置
             if (columnAnnotation != null && columnAnnotation.typeHandler() != UnknownTypeHandler.class) {
-                TypeHandler<?> typeHandler;
+                TypeHandler<?> typeHandler = null;
 
                 //集合类型，支持泛型
                 //fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I7S2YE
@@ -438,7 +438,9 @@ public class TableInfoFactory {
                     TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
                     Class<?> propertyType = columnInfo.getPropertyType();
                     JdbcType jdbcType = columnAnnotation.jdbcType();
-                    typeHandler = typeHandlerRegistry.getTypeHandler(propertyType, jdbcType);
+                    if (jdbcType != JdbcType.UNDEFINED) {
+                        typeHandler = typeHandlerRegistry.getTypeHandler(propertyType, jdbcType);
+                    }
                     if (typeHandler == null || !typeHandlerClass.isAssignableFrom(typeHandler.getClass())) {
                         typeHandler = typeHandlerRegistry.getInstance(propertyType, typeHandlerClass);
                     }
