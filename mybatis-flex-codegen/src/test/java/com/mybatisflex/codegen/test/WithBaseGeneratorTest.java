@@ -30,7 +30,7 @@ import java.util.function.UnaryOperator;
 public class WithBaseGeneratorTest {
 
 
-    //        @Test
+//    @Test
     public void testCodeGen1() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -55,14 +55,17 @@ public class WithBaseGeneratorTest {
         //设置表前缀和只生成哪些表
         globalConfig.setTablePrefix("sys_", "tb_");
 //        globalConfig.setGenerateTable("sys_user","tb_account");
-//        globalConfig.setGenerateTable("tb_account");
+        globalConfig.setGenerateTable("tb_account");
 
         //设置模板路径
 //        globalConfig.setEntityTemplatePath("D:\\Documents\\配置文件\\entity.tpl");
 
         //配置生成 entity
         globalConfig.setEntityGenerateEnable(true);
-//            globalConfig.getEntityConfig().setWithBaseClassEnable(true);
+
+        globalConfig.getEntityConfig().setWithBaseClassEnable(true);
+        globalConfig.getEntityConfig().setOverwriteEnable(true);
+
 //        globalConfig.setEntityWithLombok(true);
         globalConfig.setEntitySuperClass(BaseEntity.class);
 

@@ -91,6 +91,7 @@ public class EntityGenerator implements IGenerator {
         params.put("entityClassName", table.buildEntityClassName());
         params.put("packageConfig", packageConfig);
         params.put("javadocConfig", globalConfig.getJavadocConfig());
+        params.put("isBase", false);
 
         params.putAll(globalConfig.getCustomConfig());
 
@@ -148,6 +149,7 @@ public class EntityGenerator implements IGenerator {
         params.put("entityConfig", entityConfig);
         params.put("packageConfig", packageConfig);
         params.put("javadocConfig", globalConfig.getJavadocConfig());
+        params.put("isBase", true);
         params.putAll(globalConfig.getCustomConfig());
 
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, baseEntityJavaFile);

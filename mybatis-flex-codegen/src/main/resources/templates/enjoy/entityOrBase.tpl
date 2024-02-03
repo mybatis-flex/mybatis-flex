@@ -5,12 +5,14 @@
 #set(jdkVersion = entityConfig.getJdkVersion())
 package #(entityPackageName);
 
-#for(importClass : table.buildImports())
+#for(importClass : table.buildImports(isBase))
 import #(importClass);
 #end
 #if(withActiveRecord)
 import com.mybatisflex.core.activerecord.Model;
 #end
+
+#if(!isBase)
 #if(withSwagger && swaggerVersion.getName() == "FOX")
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -59,6 +61,7 @@ import java.io.Serial;
 @Schema(description = "#(table.getComment())")
 #end
 #(table.buildTableAnnotation())
+#end
 public class #(entityClassName)#if(withActiveRecord) extends Model<#(entityClassName)>#else#(table.buildExtends())#(table.buildImplements())#end  {
 
     #if(jdkVersion >= 14)

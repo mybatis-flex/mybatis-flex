@@ -27,7 +27,7 @@ public final class TemplateConst {
     private TemplateConst() {
     }
 
-    public static final String ENTITY = "/templates/enjoy/entity.tpl";
+    public static final String ENTITY = "/templates/enjoy/entityOrBase.tpl";
     public static final String MAPPER = "/templates/enjoy/mapper.tpl";
     public static final String SERVICE = "/templates/enjoy/service.tpl";
     public static final String SERVICE_IMPL = "/templates/enjoy/serviceImpl.tpl";

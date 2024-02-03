@@ -305,11 +305,11 @@ public class TableInfoFactory {
 
             Column columnAnnotation = field.getAnnotation(Column.class);
 
-            //满足以下 4 种情况，不支持该类型
+
+            //满足以下 3 种情况，不支持该类型的属性自动映射为字段
             if ((columnAnnotation == null || columnAnnotation.typeHandler() == UnknownTypeHandler.class) // 未配置 typeHandler
                 && !fieldType.isEnum()   // 类型不是枚举
                 && !defaultSupportColumnTypes.contains(fieldType) //默认的自动类型不包含该类型
-                && !config.getConfiguration().getTypeHandlerRegistry().hasTypeHandler(fieldType) //已注册的typeHandler不包含该类型
             ) {
                 // 忽略 集合 实体类 解析
                 if (columnAnnotation != null && columnAnnotation.ignore()) {
@@ -434,15 +434,17 @@ public class TableInfoFactory {
                 //非集合类型
                 else {
                     Class<?> typeHandlerClass = columnAnnotation.typeHandler();
-                    Configuration configuration = FlexGlobalConfig.getDefaultConfig().getConfiguration();
-                    TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
-                    Class<?> propertyType = columnInfo.getPropertyType();
-                    JdbcType jdbcType = columnAnnotation.jdbcType();
-                    if (jdbcType != JdbcType.UNDEFINED) {
-                        typeHandler = typeHandlerRegistry.getTypeHandler(propertyType, jdbcType);
-                    }
-                    if (typeHandler == null || !typeHandlerClass.isAssignableFrom(typeHandler.getClass())) {
-                        typeHandler = typeHandlerRegistry.getInstance(propertyType, typeHandlerClass);
+                    Configuration configuration = config.getConfiguration();
+                    if (configuration != null) {
+                        TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+                        Class<?> propertyType = columnInfo.getPropertyType();
+                        JdbcType jdbcType = columnAnnotation.jdbcType();
+                        if (jdbcType != JdbcType.UNDEFINED) {
+                            typeHandler = typeHandlerRegistry.getTypeHandler(propertyType, jdbcType);
+                        }
+                        if (typeHandler == null || !typeHandlerClass.isAssignableFrom(typeHandler.getClass())) {
+                            typeHandler = typeHandlerRegistry.getInstance(propertyType, typeHandlerClass);
+                        }
                     }
                 }
 
@@ -493,6 +495,13 @@ public class TableInfoFactory {
 
 
         return tableInfo;
+    }
+
+    private static boolean isRegisterTypeHandler(Configuration configuration, Class<?> fieldType) {
+        if (configuration == null) {
+            return false;
+        }
+        return configuration.getTypeHandlerRegistry().hasTypeHandler(fieldType);
     }
 
     /**
