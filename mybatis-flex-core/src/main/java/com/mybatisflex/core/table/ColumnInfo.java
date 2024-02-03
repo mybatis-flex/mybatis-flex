@@ -66,12 +66,12 @@ public class ColumnInfo {
     /**
      * 自定义 TypeHandler。
      */
-    protected TypeHandler typeHandler;
+    protected TypeHandler<?> typeHandler;
 
     /**
      * 最终使用和构建出来的 typeHandler
      */
-    protected TypeHandler buildTypeHandler;
+    protected TypeHandler<?> buildTypeHandler;
 
     /**
      * 数据脱敏类型。
@@ -124,7 +124,7 @@ public class ColumnInfo {
         this.jdbcType = jdbcType;
     }
 
-    public TypeHandler buildTypeHandler(Configuration configuration) {
+    public TypeHandler<?> buildTypeHandler(Configuration configuration) {
 
         if (buildTypeHandler != null) {
             return buildTypeHandler;
@@ -133,7 +133,8 @@ public class ColumnInfo {
         //脱敏规则配置
         else if (StringUtil.isNotBlank(maskType)) {
             if (typeHandler != null) {
-                buildTypeHandler = new CompositeMaskTypeHandler(maskType, typeHandler);
+                //noinspection unchecked
+                buildTypeHandler = new CompositeMaskTypeHandler(maskType, (TypeHandler<Object>) typeHandler);
             } else {
                 buildTypeHandler = new MaskTypeHandler(maskType);
             }
@@ -157,7 +158,7 @@ public class ColumnInfo {
         return buildTypeHandler;
     }
 
-    public void setTypeHandler(TypeHandler typeHandler) {
+    public void setTypeHandler(TypeHandler<?> typeHandler) {
         this.typeHandler = typeHandler;
     }
 

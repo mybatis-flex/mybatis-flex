@@ -1207,12 +1207,11 @@ public class TableInfo {
         ColumnInfo columnInfo = columnInfoMapping.get(column);
         Object value = getPropertyValue(metaObject, columnInfo.property);
         if (value != null) {
-            TypeHandler typeHandler = columnInfo.buildTypeHandler(null);
+            TypeHandler<?> typeHandler = columnInfo.buildTypeHandler(null);
             if (typeHandler != null) {
                 return new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
             }
         }
-
         return value;
     }
 
