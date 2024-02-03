@@ -154,6 +154,9 @@ public class MapperUtil {
             }
 
             if (!page.hasRecords()) {
+                if (withRelations) {
+                    RelationManager.clearConfigIfNecessary();
+                }
                 return page;
             }
 
@@ -211,6 +214,8 @@ public class MapperUtil {
     public static <E> E queryRelations(BaseMapper<?> mapper, E entity) {
         if (entity != null) {
             queryRelations(mapper, Collections.singletonList(entity));
+        } else {
+            RelationManager.clearConfigIfNecessary();
         }
         return entity;
     }

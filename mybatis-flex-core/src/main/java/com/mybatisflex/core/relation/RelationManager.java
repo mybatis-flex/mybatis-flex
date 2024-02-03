@@ -260,14 +260,17 @@ public class RelationManager {
 
 
     public static <Entity> void queryRelations(BaseMapper<?> mapper, List<Entity> entities) {
-        doQueryRelations(mapper, entities, 0, depthThreadLocal.get(), ignoreRelations.get(), onlyQueryRelations.get());
-        clearConfigIfNecessary();
+        try {
+            doQueryRelations(mapper, entities, 0, depthThreadLocal.get(), ignoreRelations.get(), onlyQueryRelations.get());
+        } finally {
+            clearConfigIfNecessary();
+        }
     }
 
     /**
      * 清除查询配置
      */
-    private static void clearConfigIfNecessary() {
+    public static void clearConfigIfNecessary() {
         Boolean autoClearEnable = autoClearConfig.get();
         if (autoClearEnable != null && autoClearEnable) {
             depthThreadLocal.remove();
