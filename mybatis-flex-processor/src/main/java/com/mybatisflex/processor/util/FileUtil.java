@@ -62,7 +62,7 @@ public class FileUtil {
     }
 
     public static String getProjectRootPath(File file, int depth) {
-        if (depth <= 0) {
+        if (depth <= 0 || file == null) {
             return null;
         }
         if (file.isFile()) {
