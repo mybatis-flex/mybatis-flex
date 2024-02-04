@@ -2,6 +2,21 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.7.9 20240204:
+- 新增：ActiveRecord 模式新增 withRelations(columns) 的查询方法，感谢 @tangzc
+- 新增：在不配置 genPath 时对增量编译的支持，感谢 @CloudPlayer
+- 新增：通过 FlexConfiguration 预注册的自定义 typeHandler 的功能，感谢 @tanglh
+- 优化：重构代码生成器生成 BaseEntity 的代码
+- 修复：QueryConditionBuilder 的 ge 方法修改为 eq 的问题，感谢 @wittplus
+- 修复：Db.insertBatchWithFirstRowColumns 当 row key 的顺序没保持一致时，出错的问题
+- 修复：Db.insertBatchWithFirstRowColumns 不能自动填充主键字段的问题
+- 修复：paginateWithRelationsAs 不及时清空 threadLocal 的 relation 配置的问题 #I90S5G
+- 修复：在某些极端情况下 AbstractRelation 出现 NPE 的问题 #I90XTY
+- 修复：在和 Apache CXF 整合时，出错的问题 #I90XE5
+- 文档：优化 faq 的相关文档，感谢 @Suomm
+
+
+
 ## v1.7.8 20240201:
 - 新增：在 DialectFactory 中添加全局方言设置的功能，感谢 @farukonfly
 - 新增：SQL 审计的打印功能添加对当前数据源的输出，感谢 @hhggcon
