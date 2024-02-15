@@ -433,7 +433,6 @@ public interface BaseMapper<T> {
      * @return 实体类数据
      */
     default T selectOneByQuery(QueryWrapper queryWrapper) {
-        queryWrapper.limit(1);
         return MapperUtil.getSelectOneResult(selectListByQuery(queryWrapper));
     }
 
