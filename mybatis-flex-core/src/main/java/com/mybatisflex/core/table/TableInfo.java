@@ -1372,7 +1372,7 @@ public class TableInfo {
     public void invokeOnInsertListener(Object entity) {
         List<InsertListener> listeners = MapUtil.computeIfAbsent(insertListenerCache, entityClass, aClass -> {
             List<InsertListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
-                .getSupportedInsertListener(entityClass, CollectionUtil.isNotEmpty(onInsertListeners));
+                .getSupportedInsertListener(entityClass);
             List<InsertListener> allListeners = CollectionUtil.merge(onInsertListeners, globalListeners);
             Collections.sort(allListeners);
             return allListeners;
@@ -1386,7 +1386,7 @@ public class TableInfo {
     public void invokeOnUpdateListener(Object entity) {
         List<UpdateListener> listeners = MapUtil.computeIfAbsent(updateListenerCache, entityClass, aClass -> {
             List<UpdateListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
-                .getSupportedUpdateListener(entityClass, CollectionUtil.isNotEmpty(onUpdateListeners));
+                .getSupportedUpdateListener(entityClass);
             List<UpdateListener> allListeners = CollectionUtil.merge(onUpdateListeners, globalListeners);
             Collections.sort(allListeners);
             return allListeners;
@@ -1400,7 +1400,7 @@ public class TableInfo {
     public Object invokeOnSetListener(Object entity, String property, Object value) {
         List<SetListener> listeners = MapUtil.computeIfAbsent(setListenerCache, entityClass, aClass -> {
             List<SetListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
-                .getSupportedSetListener(entityClass, CollectionUtil.isNotEmpty(onSetListeners));
+                .getSupportedSetListener(entityClass);
             List<SetListener> allListeners = CollectionUtil.merge(onSetListeners, globalListeners);
             Collections.sort(allListeners);
             return allListeners;

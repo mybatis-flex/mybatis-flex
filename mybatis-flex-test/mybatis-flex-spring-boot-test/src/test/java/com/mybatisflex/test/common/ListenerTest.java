@@ -47,7 +47,7 @@ class ListenerTest {
 
         List<InsertListener> insertListeners = MapUtil.computeIfAbsent(tempOnInsertListenerMap, AccountMissingListenerTestModel.class, aClass -> {
             List<InsertListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
-                .getSupportedInsertListener(AccountMissingListenerTestModel.class, CollectionUtil.isNotEmpty(tableInfo.getOnInsertListeners()));
+                .getSupportedInsertListener(AccountMissingListenerTestModel.class);
             List<InsertListener> allListeners = CollectionUtil.merge(tableInfo.getOnInsertListeners(), globalListeners);
             Collections.sort(allListeners);
             return allListeners;
