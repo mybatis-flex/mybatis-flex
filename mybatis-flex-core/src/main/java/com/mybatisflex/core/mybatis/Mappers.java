@@ -18,6 +18,7 @@ package com.mybatisflex.core.mybatis;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
+import org.apache.ibatis.reflection.ExceptionUtil;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -108,6 +109,8 @@ public class Mappers {
             try (SqlSession sqlSession = openSession()) {
                 Object mapper = sqlSession.getMapper(mapperClass);
                 return method.invoke(mapper, args);
+            } catch (Throwable throwable) {
+                throw ExceptionUtil.unwrapThrowable(throwable);
             }
         }
 
