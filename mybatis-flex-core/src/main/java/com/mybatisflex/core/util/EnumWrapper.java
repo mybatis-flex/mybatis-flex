@@ -79,6 +79,7 @@ public class EnumWrapper<E extends Enum<E>> {
                     throw new IllegalStateException("Can not find get method \"" + methodName + "()\" in enum: " + enumClass.getName());
                 }
                 this.getterMethod = enumValueMethod;
+                this.hasEnumValueAnnotation = true;
             }
         }
     }
