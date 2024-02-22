@@ -60,8 +60,7 @@ import java.io.Serial;
 #if(withSwagger && swaggerVersion.getName() == "DOC")
 @Schema(description = "#(table.getComment())")
 #end
-#(table.buildTableAnnotation())
-#end
+#(table.buildTableAnnotation()) #end
 public class #(entityClassName)#if(withActiveRecord) extends Model<#(entityClassName)>#else#(table.buildExtends())#(table.buildImplements())#end  {
 
     #if(jdkVersion >= 14)
