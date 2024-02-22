@@ -20,11 +20,13 @@ import com.mybatisflex.spring.FlexTransactionManager;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
 /**
@@ -33,6 +35,7 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
  * @author michael
  */
 @ConditionalOnClass(Db.class)
+@ConditionalOnMissingBean(TransactionManager.class)
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter({MybatisFlexAutoConfiguration.class})
 @AutoConfigureBefore({TransactionAutoConfiguration.class})
