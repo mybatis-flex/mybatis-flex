@@ -82,7 +82,7 @@ public class MapperInvocationHandler implements InvocationHandler {
                 dbType = dbTypeGlobal ;
             }
             if (dbType == null) {
-                if (dataSourceKey != null && dataSource != null) {
+                if (shardingDataSourceKey != null && dataSource != null) {
                     //使用最终分片获取数据源类型
                     dbType = dataSource.getDbType(shardingDataSourceKey);
                 }
