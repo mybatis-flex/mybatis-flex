@@ -3,7 +3,6 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 ## v1.8.0 20240223:
-- 优化：selectOneByQuery(QueryWrapper queryWrapper) 由用户主动添加 limit 1
 - 优化：entityOrBase.tpl 中命令占位符被替换后，entity 里面多了一行空白行，感谢 @caohenghui
 - 修复：在复杂的 VO 嵌套查询时，addResultMap 抛出异常的问题，感谢 @leizhiyou
 - 修复：实体类实现多层级的接口时监听器无法匹配问题，感谢 @ruansheng
