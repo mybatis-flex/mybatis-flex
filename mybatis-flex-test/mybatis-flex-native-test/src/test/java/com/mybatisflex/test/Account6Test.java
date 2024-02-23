@@ -82,11 +82,7 @@ public class Account6Test implements WithAssertions {
             // 没有 ID，插入失败
             Assert.fail();
         } catch (Exception e) {
-            assertThat(e.getCause()).isInstanceOf(InvocationTargetException.class)
-                .asInstanceOf(InstanceOfAssertFactories.type(InvocationTargetException.class))
-                .extracting(i -> i.getTargetException().getMessage())
-                .asString()
-                .contains("NULL not allowed for column \"ID\"");
+            Assert.assertTrue(e.getMessage().contains("NULL not allowed for column \"ID\""));
         }
 
         List<Account6> list = mapper.selectAll();

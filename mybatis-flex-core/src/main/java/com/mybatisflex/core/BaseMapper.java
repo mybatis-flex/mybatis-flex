@@ -433,7 +433,13 @@ public interface BaseMapper<T> {
      * @return 实体类数据
      */
     default T selectOneByQuery(QueryWrapper queryWrapper) {
-        return MapperUtil.getSelectOneResult(selectListByQuery(queryWrapper));
+        Long limitRows = CPI.getLimitRows(queryWrapper);
+        try {
+            queryWrapper.limit(1);
+            return MapperUtil.getSelectOneResult(selectListByQuery(queryWrapper));
+        } finally {
+            CPI.setLimitRows(queryWrapper, limitRows);
+        }
     }
 
     /**
@@ -444,7 +450,13 @@ public interface BaseMapper<T> {
      * @return 实体类数据
      */
     default <R> R selectOneByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
-        return MapperUtil.getSelectOneResult(selectListByQueryAs(queryWrapper, asType));
+        Long limitRows = CPI.getLimitRows(queryWrapper);
+        try {
+            queryWrapper.limit(1);
+            return MapperUtil.getSelectOneResult(selectListByQueryAs(queryWrapper, asType));
+        } finally {
+            CPI.setLimitRows(queryWrapper, limitRows);
+        }
     }
 
     /**
@@ -455,7 +467,7 @@ public interface BaseMapper<T> {
      */
     default T selectOneWithRelationsByMap(Map<String, Object> whereConditions) {
         FlexAssert.notEmpty(whereConditions, "whereConditions");
-        return selectOneWithRelationsByQuery(QueryWrapper.create().where(whereConditions).limit(1L));
+        return selectOneWithRelationsByQuery(QueryWrapper.create().where(whereConditions));
     }
 
     /**
@@ -466,7 +478,7 @@ public interface BaseMapper<T> {
      */
     default T selectOneWithRelationsByCondition(QueryCondition whereConditions) {
         FlexAssert.notNull(whereConditions, "whereConditions");
-        return selectOneWithRelationsByQuery(QueryWrapper.create().where(whereConditions).limit(1L));
+        return selectOneWithRelationsByQuery(QueryWrapper.create().where(whereConditions));
     }
 
     /**
@@ -476,7 +488,13 @@ public interface BaseMapper<T> {
      * @return 实体类数据
      */
     default T selectOneWithRelationsByQuery(QueryWrapper queryWrapper) {
-        return MapperUtil.queryRelations(this, MapperUtil.getSelectOneResult(selectListByQuery(queryWrapper)));
+        Long limitRows = CPI.getLimitRows(queryWrapper);
+        try {
+            queryWrapper.limit(1);
+            return MapperUtil.queryRelations(this, MapperUtil.getSelectOneResult(selectListByQuery(queryWrapper)));
+        } finally {
+            CPI.setLimitRows(queryWrapper, limitRows);
+        }
     }
 
     /**
