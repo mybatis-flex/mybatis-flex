@@ -2,6 +2,16 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.8.0 20240223:
+- 优化：selectOneByQuery(QueryWrapper queryWrapper) 由用户主动添加 limit 1
+- 优化：entityOrBase.tpl 中命令占位符被替换后，entity 里面多了一行空白行，感谢 @caohenghui
+- 修复：在复杂的 VO 嵌套查询时，addResultMap 抛出异常的问题，感谢 @leizhiyou
+- 修复：实体类实现多层级的接口时监听器无法匹配问题，感谢 @ruansheng
+- 修复：使用 Mappers 执行语法时, 异常未被精确抛出问题，感谢 @ruansheng
+- 修复：@EnumValue 在 get 方法上，查询报错的问题，感谢 @Suomm
+
+
+
 ## v1.7.9 20240204:
 - 新增：ActiveRecord 模式新增 withRelations(columns) 的查询方法，感谢 @tangzc
 - 新增：在不配置 genPath 时对增量编译的支持，感谢 @CloudPlayer
