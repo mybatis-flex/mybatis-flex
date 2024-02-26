@@ -15,8 +15,8 @@
  */
 package com.mybatisflex.core.handler;
 
+import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -24,48 +24,42 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
 
 
 /**
  * @author michael
  */
-public class CommaSplitTypeHandler implements TypeHandler<List<String>> {
+public class CommaSplitTypeHandler extends BaseTypeHandler<List<String>> {
 
     @Override
-    public void setParameter(PreparedStatement ps, int i, List<String> parameter, JdbcType jdbcType) throws SQLException {
+    public void setNonNullParameter(PreparedStatement ps, int i, List<String> parameter, JdbcType jdbcType) throws SQLException {
         if (parameter != null) {
-            StringJoiner stringJoiner = new StringJoiner(",");
-            parameter.forEach(stringJoiner::add);
-            ps.setString(i, stringJoiner.toString());
+            ps.setString(i, String.join(",", parameter));
+        } else {
+            ps.setNull(i, jdbcType.TYPE_CODE);
         }
     }
 
     @Override
-    public List<String> getResult(ResultSet rs, String columnName) throws SQLException {
-        String columnValueStr = rs.getString(columnName);
-        if (columnValueStr != null) {
-            return Arrays.asList(columnValueStr.split(","));
-        }
-        return null;
+    public List<String> getNullableResult(ResultSet rs, String columnName) throws SQLException {
+        return splitByComma(rs.getString(columnName));
     }
 
     @Override
-    public List<String> getResult(ResultSet rs, int columnIndex) throws SQLException {
-        String columnValueStr = rs.getString(columnIndex);
-        if (columnValueStr != null) {
-            return Arrays.asList(columnValueStr.split(","));
-        }
-        return null;
+    public List<String> getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+        return splitByComma(rs.getString(columnIndex));
     }
 
     @Override
-    public List<String> getResult(CallableStatement cs, int columnIndex) throws SQLException {
-        String columnValueStr = cs.getString(columnIndex);
-        if (columnValueStr != null) {
-            return Arrays.asList(columnValueStr.split(","));
+    public List<String> getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+        return splitByComma(cs.getString(columnIndex));
+    }
+
+    private List<String> splitByComma(String string) {
+        if (string == null || string.isEmpty()) {
+            return null;
         }
-        return null;
+        return Arrays.asList(string.split(","));
     }
 
 }
