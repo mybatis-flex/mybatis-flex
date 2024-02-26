@@ -82,8 +82,9 @@ public class MapperInvocationHandler implements InvocationHandler {
                 dbType = dbTypeGlobal ;
             }
             if (dbType == null) {
-                if (dataSourceKey != null && dataSource != null) {
-                    dbType = dataSource.getDbType(dataSourceKey);
+                if (shardingDataSourceKey != null && dataSource != null) {
+                    //使用最终分片获取数据源类型
+                    dbType = dataSource.getDbType(shardingDataSourceKey);
                 }
                 if (dbType == null) {
                     dbType = FlexGlobalConfig.getDefaultConfig().getDbType();
