@@ -25,6 +25,7 @@ import java.util.Map;
 
 /**
  * 默认方言抽象类。
+ *
  * @author michael
  */
 public abstract class AbstractJdbcDialect implements IDialect {
@@ -46,14 +47,14 @@ public abstract class AbstractJdbcDialect implements IDialect {
                 column.setRawType(columnMetaData.getColumnTypeName(i));
                 column.setRawLength(columnMetaData.getColumnDisplaySize(i));
 
-                String jdbcType = columnMetaData.getColumnClassName(i);
-                column.setPropertyType(JdbcTypeMapping.getType(jdbcType, column.getRawLength()));
-
                 column.setAutoIncrement(columnMetaData.isAutoIncrement(i));
 
                 column.setNullable(columnMetaData.isNullable(i));
                 //注释
                 column.setComment(columnRemarks.get(column.getName()));
+
+                String jdbcType = columnMetaData.getColumnClassName(i);
+                column.setPropertyType(JdbcTypeMapping.getType(jdbcType, table, column));
 
                 table.addColumn(column);
             }
@@ -102,8 +103,6 @@ public abstract class AbstractJdbcDialect implements IDialect {
      * @return 全量查询 SQL 语句
      */
     protected abstract String forBuildColumnsSql(String schema, String tableName);
-
-
 
 
 }
