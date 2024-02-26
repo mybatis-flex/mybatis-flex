@@ -17,7 +17,6 @@
 同时需要添加数据源的 Maven 依赖和 jdbc 驱动依赖：
 
 ```xml
-
 <dependency>
     <groupId>com.zaxxer</groupId>
     <artifactId>HikariCP</artifactId>
@@ -548,6 +547,8 @@ public class ColumnConfig implements Serializable {
 
 ## 自定义属性类型
 
+**方式 1：通过 JdbcTypeMapping**
+
 MyBatis-Flex 内置了一个名为：`JdbcTypeMapping` 的 java 类，我们可以用其配置映射 Jdbc 驱动的数据类型为自定义的
 数据类型，在开始生成代码之前，可以先调用其进行配置，例如：
 
@@ -556,6 +557,26 @@ JdbcTypeMapping.registerMapping(LocalDateTime.class, Date.class);
 ```
 
 那么，当我们生成代码的时候，发现 JDBC 驱动的数据类型为 `LocalDateTime`，则 Entity 对应的属性类型为 `Date`。
+
+**方式 2：使用 ColumnConfig 定义**
+
+如下方示例代码所示：
+
+```java 4
+ColumnConfig columnConfig = new ColumnConfig();
+
+//定义该属性的类型为 java.util.List<String>
+columnConfig.setPropertyType("java.util.List<String>");
+columnConfig.setTypeHandler(CommaSplitTypeHandler.class);
+columnConfig.setColumnName("your_column_name");
+
+GlobalConfig globalConfig = new GlobalConfig();
+globalConfig.setColumnConfig("your_table_name", columnConfig);
+
+Generator generator = new Generator(dataSource, globalConfig);
+generator.generate();
+```
+
 
 ## 自定义代码模板
 

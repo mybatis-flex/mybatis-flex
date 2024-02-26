@@ -268,6 +268,7 @@ mybatis-flex 内置的扩展 typeHandler 还有：
 - FastjsonTypeHandler
 - GsonTypeHandler
 - JacksonTypeHandler
+- CommaSplitTypeHandler: 数据库存放的是以英文逗号隔开的字符串数据，实体类定义的属性类型为 `List<String>`。
 
 当然，我们也可以写一个自己的类，实现 `TypeHandler` 接口，然后通过 `@Column(typeHandler = YourHandler.class)` 注释给需要的字段。
 
