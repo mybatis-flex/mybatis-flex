@@ -19,12 +19,17 @@ import com.mybatisflex.core.row.Db;
 import com.mybatisflex.spring.FlexTransactionManager;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
 /**
@@ -33,10 +38,17 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
  * @author michael
  */
 @ConditionalOnClass(Db.class)
+@ConditionalOnMissingBean(TransactionManager.class)
 @Configuration(proxyBeanMethods = false)
+@AutoConfigureOrder(FlexTransactionAutoConfiguration.PRECEDENCE)
 @AutoConfigureAfter({MybatisFlexAutoConfiguration.class})
-@AutoConfigureBefore({TransactionAutoConfiguration.class})
+@AutoConfigureBefore({TransactionAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class})
 public class FlexTransactionAutoConfiguration implements TransactionManagementConfigurer {
+
+    /**
+     * 优先级
+     */
+    protected static final int PRECEDENCE = Ordered.LOWEST_PRECEDENCE - 10;
 
     /**
      * 这里使用 final 修饰属性是因为：<br>
