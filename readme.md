@@ -357,5 +357,8 @@ Build the project by IDE, or execute maven build command: `mvn clean package`
 2. [Mybatis-Flex with Spring](./mybatis-flex-test/mybatis-flex-spring-test)
 3. [Mybatis-Flex with Spring boot](./mybatis-flex-test/mybatis-flex-spring-boot-test)
 
+## Wechat Group
+
+![](./docs/assets/images/wechat-group.png)
 
 

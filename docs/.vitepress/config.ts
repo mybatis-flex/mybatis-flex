@@ -56,7 +56,7 @@ export default defineConfig({
                     {text: '和同类框架「性能」对比', link: '/zh/intro/benchmark'},
                     {text: '使用 Mybatis 原生功能', link: '/zh/intro/use-mybatis-native'},
                     {text: '支持的数据库类型', link: '/zh/intro/support-database'},
-                    {text: 'QQ 交流群', link: '/zh/intro/qq-group'},
+                    {text: '微信（或QQ）交流群', link: '/zh/intro/qq-group'},
                 ]
             },
             {
