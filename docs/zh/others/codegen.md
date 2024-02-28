@@ -710,3 +710,34 @@ public class HtmlGenerator implements IGenerator {
 ```java
 GeneratorFactory.registerGenerator("html",new HtmlGenerator());
 ```
+
+## 注意事项！！！
+
+在 MySQL 或者 Oracle 的某些版本中，代码生成器可能无法获取 `表` 或者 `字段` 的注释内容，我们在数据源配置时，注意添加如下的配置信息：
+
+**MySQL**
+
+JdbcUrl 上注意添加 `useInformationSchema=true` 配置，如下代码所示：
+
+```java
+HikariDataSource dataSource = new HikariDataSource();
+
+//注意：url 需添加上 useInformationSchema=true 才能正常获取表的注释
+dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/db?useInformationSchema=true&characterEncoding=utf-8");
+dataSource.setUsername("username");
+dataSource.setPassword("password");
+```
+
+
+
+**Oracle**
+
+JdbcUrl 上注意添加 `remarksReporting=true` 配置，如下代码所示：
+```java
+HikariDataSource dataSource = new HikariDataSource();
+
+//注意：url 需添加上 remarksReporting=true 才能正常获取表的注释
+dataSource.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:orcl?remarksReporting=true");
+dataSource.setUsername("username");
+dataSource.setPassword("password");
+```
