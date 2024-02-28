@@ -286,17 +286,35 @@ public class ClassUtil {
         }
 
         Method[] declaredMethods = clazz.getDeclaredMethods();
-        for (Method method : declaredMethods) {
-            if (predicate == null || predicate.test(method)) {
-                methods.add(method);
-                if (firstOnly) {
-                    break;
+        if (clazz.isInterface()) {
+            for (Method method : declaredMethods) {
+                // 接口类只需要获取 default 方法
+                if (method.isDefault() && (predicate == null || predicate.test(method))) {
+                    methods.add(method);
+                    if (firstOnly) {
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (Method method : declaredMethods) {
+                if (predicate == null || predicate.test(method)) {
+                    methods.add(method);
+                    if (firstOnly) {
+                        break;
+                    }
                 }
             }
         }
 
+
         if (firstOnly && !methods.isEmpty()) {
             return;
+        }
+
+        Class<?>[] interfaces = clazz.getInterfaces();
+        for (Class<?> anInterface : interfaces) {
+            doGetMethods(anInterface, methods, predicate, firstOnly);
         }
 
         doGetMethods(clazz.getSuperclass(), methods, predicate, firstOnly);
