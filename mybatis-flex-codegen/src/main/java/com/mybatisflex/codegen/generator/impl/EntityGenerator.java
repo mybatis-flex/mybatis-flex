@@ -35,9 +35,9 @@ import java.util.Map;
  */
 public class EntityGenerator implements IGenerator {
 
-    private String templatePath;
+    protected String templatePath;
 
-    private String entityWithBaseTemplatePath = "/templates/enjoy/entityWithBase.tpl";
+    protected String entityWithBaseTemplatePath = "/templates/enjoy/entityWithBase.tpl";
 
 
     public EntityGenerator() {
@@ -60,14 +60,12 @@ public class EntityGenerator implements IGenerator {
 
         //生成 base 类
         genBaseClass(table, globalConfig);
-
     }
 
 
-    private void genEntityClass(Table table, GlobalConfig globalConfig) {
+    protected void genEntityClass(Table table, GlobalConfig globalConfig) {
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         EntityConfig entityConfig = globalConfig.getEntityConfig();
-
 
         String sourceDir = StringUtil.isNotBlank(entityConfig.getSourceDir()) ? entityConfig.getSourceDir() : packageConfig.getSourceDir();
 
@@ -117,8 +115,7 @@ public class EntityGenerator implements IGenerator {
         System.out.println("Entity ---> " + entityJavaFile);
     }
 
-    private void genBaseClass(Table table, GlobalConfig globalConfig) {
-        PackageConfig packageConfig = globalConfig.getPackageConfig();
+    protected void genBaseClass(Table table, GlobalConfig globalConfig) {
         EntityConfig entityConfig = globalConfig.getEntityConfig();
 
         //不需要生成 baseClass
@@ -126,6 +123,7 @@ public class EntityGenerator implements IGenerator {
             return;
         }
 
+        PackageConfig packageConfig = globalConfig.getPackageConfig();
         String sourceDir = StringUtil.isNotBlank(entityConfig.getSourceDir()) ? entityConfig.getSourceDir() : packageConfig.getSourceDir();
 
         String baseEntityPackagePath = packageConfig.getEntityPackage().replace(".", "/");
@@ -154,7 +152,7 @@ public class EntityGenerator implements IGenerator {
 
         globalConfig.getTemplateConfig().getTemplate().generate(params, templatePath, baseEntityJavaFile);
 
-        System.out.println("Entity ---> " + baseEntityJavaFile);
+        System.out.println("BaseEntity ---> " + baseEntityJavaFile);
     }
 
 
