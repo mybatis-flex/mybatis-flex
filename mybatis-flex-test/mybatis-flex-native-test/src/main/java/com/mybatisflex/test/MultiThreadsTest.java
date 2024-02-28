@@ -28,6 +28,7 @@ public class MultiThreadsTest {
             .setName("db1")
             .addScript("schema.sql")
             .addScript("data.sql")
+                .setScriptEncoding("UTF-8")
             .build();
 
         HikariDataSource dataSource2 = new HikariDataSource();

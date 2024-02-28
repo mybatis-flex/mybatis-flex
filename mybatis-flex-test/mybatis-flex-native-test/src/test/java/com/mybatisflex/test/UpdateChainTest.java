@@ -42,10 +42,11 @@ import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
 
 public class UpdateChainTest implements WithAssertions {
 
-    private AccountMapper accountMapper;
-    private EmbeddedDatabase dataSource;
-
     private static final String DATA_SOURCE_KEY = "ds2";
+
+    private AccountMapper accountMapper;
+
+    private EmbeddedDatabase dataSource;
 
     @BeforeClass
     public static void enableAudit() {
@@ -56,16 +57,17 @@ public class UpdateChainTest implements WithAssertions {
     @Before
     public void init() {
         this.dataSource = new EmbeddedDatabaseBuilder()
-            .setType(EmbeddedDatabaseType.H2)
-            .addScript("schema.sql")
-            .addScript("data.sql")
-            .build();
+                .setType(EmbeddedDatabaseType.H2)
+                .addScript("schema.sql")
+                .addScript("data.sql")
+                .setScriptEncoding("UTF-8")
+                .build();
 
         MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()
-            .setDataSource(DATA_SOURCE_KEY, this.dataSource)
-            .setLogImpl(StdOutImpl.class)
-            .addMapper(AccountMapper.class)
-            .start();
+                .setDataSource(DATA_SOURCE_KEY, this.dataSource)
+                .setLogImpl(StdOutImpl.class)
+                .addMapper(AccountMapper.class)
+                .start();
 
         DataSourceKey.use(DATA_SOURCE_KEY);
         accountMapper = bootstrap.getMapper(AccountMapper.class);
@@ -81,53 +83,53 @@ public class UpdateChainTest implements WithAssertions {
     @SneakyThrows
     public void testUpdateChain() {
         UpdateChain.of(Account.class)
-            .set(Account::getUserName, "张三")
-            .setRaw(Account::getAge, "age + 1")
-            .where(Account::getId).eq(1)
-            .update();
+                .set(Account::getUserName, "张三")
+                .setRaw(Account::getAge, "age + 1")
+                .where(Account::getId).eq(1)
+                .update();
 
         Account account = accountMapper.selectOneById(1);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String toParse = "2020-01-11";
         assertThat(account).isNotNull()
-            .extracting(
-                Account::getUserName, Account::getAge,
-                Account::getSex, Account::getBirthday,
-                Account::getOptions, Account::getDelete,
-                Account::getArticles, Account::getTitle)
-            .containsExactly(
-                "张*", 19,
-                SexEnum.TYPE1, format.parse(toParse),
-                Collections.singletonMap("key", "value1"), false,
-                Collections.emptyList(), null);
+                .extracting(
+                        Account::getUserName, Account::getAge,
+                        Account::getSex, Account::getBirthday,
+                        Account::getOptions, Account::getDelete,
+                        Account::getArticles, Account::getTitle)
+                .containsExactly(
+                        "张*", 19,
+                        SexEnum.TYPE1, format.parse(toParse),
+                        Collections.singletonMap("key", "value1"), false,
+                        Collections.emptyList(), null);
     }
 
     @Test
     public void testUpdateChain1() {
         UpdateChain.of(Account.class)
-            .set(Account::getAge, ACCOUNT.AGE.add(1))
-            .where(Account::getId).ge(100)
-            .and(Account::getAge).eq(18)
-            .update();
+                .set(Account::getAge, ACCOUNT.AGE.add(1))
+                .where(Account::getId).ge(100)
+                .and(Account::getAge).eq(18)
+                .update();
 
         List<Account> list = QueryChain.of(accountMapper).list();
         assertThat(list).hasSize(2)
-            .extracting(Account::getId, Account::getUserName, Account::getAge)
-            .containsExactly(tuple(1L, "张*", 18), tuple(2L, "王麻**叔", 19));
+                .extracting(Account::getId, Account::getUserName, Account::getAge)
+                .containsExactly(tuple(1L, "张*", 18), tuple(2L, "王麻**叔", 19));
     }
 
     @Test
     public void testUpdateChainToSql() {
         String sql = UpdateChain.of(Account.class)
-            .set(ACCOUNT.AGE, 18)
-            .set(Article::getAccountId, 4)
-            .leftJoin(ARTICLE).as("ar").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
-            .where(ACCOUNT.ID.eq(4))
-            .toSQL();
+                .set(ACCOUNT.AGE, 18)
+                .set(Article::getAccountId, 4)
+                .leftJoin(ARTICLE).as("ar").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+                .where(ACCOUNT.ID.eq(4))
+                .toSQL();
 
         String expectSQL = "UPDATE `tb_account` " +
-                           "LEFT JOIN `tb_article` AS `ar` ON `tb_account`.`id` = `ar`.`account_id` " +
-                           "SET `age` = 18 , `accountId` = 4  WHERE `id` = 4";
+                "LEFT JOIN `tb_article` AS `ar` ON `tb_account`.`id` = `ar`.`account_id` " +
+                "SET `age` = 18 , `accountId` = 4  WHERE `id` = 4";
 
         assertThat(sql).isEqualTo(expectSQL);
     }

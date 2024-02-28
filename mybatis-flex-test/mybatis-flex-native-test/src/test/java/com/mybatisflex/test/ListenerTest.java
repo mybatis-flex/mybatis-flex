@@ -47,7 +47,7 @@ public class ListenerTest implements WithAssertions {
     public void init() {
         dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
-            .addScript("auto_increment_key_schema.sql")
+            .addScript("auto_increment_key_schema.sql").setScriptEncoding("UTF-8")
             .build();
         // 注册全局监听器
         FlexGlobalConfig defaultConfig = FlexGlobalConfig.getDefaultConfig();

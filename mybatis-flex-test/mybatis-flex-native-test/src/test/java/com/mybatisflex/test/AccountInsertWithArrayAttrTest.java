@@ -48,7 +48,7 @@ public class AccountInsertWithArrayAttrTest implements WithAssertions {
         this.dataSource =  new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
             .addScript("schema05.sql")
-            .addScript("data05.sql")
+            .addScript("data05.sql").setScriptEncoding("UTF-8")
             .build();
 
         MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()

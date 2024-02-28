@@ -70,7 +70,7 @@ public class RelationsTest implements WithAssertions {
         dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
             .addScript("relation/onetoone/schema.sql")
-            .addScript("relation/onetoone/data.sql")
+            .addScript("relation/onetoone/data.sql").setScriptEncoding("UTF-8")
             .build();
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()

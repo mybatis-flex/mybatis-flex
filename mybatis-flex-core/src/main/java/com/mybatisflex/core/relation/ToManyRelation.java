@@ -26,9 +26,13 @@ import java.util.*;
 class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
     protected String mapKeyField;
+
     protected FieldWrapper mapKeyFieldWrapper;
+
     protected String orderBy;
+
     protected long limit = 0;
+
     protected String selfValueSplitBy;
 
 
@@ -37,10 +41,18 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                           String dataSource, Class<SelfEntity> selfEntityClass, Field relationField,
                           String extraCondition, String[] selectColumns) {
         super(selfField, targetSchema, targetTable, targetField, valueField,
-            joinTable, joinSelfColumn, joinTargetColumn,
-            dataSource, selfEntityClass, relationField,
-            extraCondition, selectColumns
+                joinTable, joinSelfColumn, joinTargetColumn,
+                dataSource, selfEntityClass, relationField,
+                extraCondition, selectColumns
         );
+    }
+
+    public static Class<? extends Map> getMapWrapType(Class<?> type) {
+        if (ClassUtil.canInstance(type.getModifiers())) {
+            return (Class<? extends Map>) type;
+        }
+
+        return HashMap.class;
     }
 
     /**
@@ -71,7 +83,6 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
         return super.buildQueryWrapper(targetValues);
     }
 
-
     @Override
     public void customizeQueryWrapper(QueryWrapper queryWrapper) {
         if (StringUtil.isNotBlank(orderBy)) {
@@ -86,67 +97,131 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
     @SuppressWarnings("rawtypes")
     @Override
     public void join(List<SelfEntity> selfEntities, List<?> targetObjectList, List<Row> mappingRows) {
-        selfEntities.forEach(selfEntity -> {
+
+        //目标表关联字段->目标表对象
+        Map<String, List<Object>> leftFieldToRightTableMap = new HashMap<>(targetObjectList.size());
+        for (Object targetObject : targetObjectList) {
+            Object targetJoinFieldValue = targetFieldWrapper.get(targetObject);
+            if (targetJoinFieldValue != null) {
+                leftFieldToRightTableMap.computeIfAbsent(targetJoinFieldValue.toString(), k -> new ArrayList<>()).add(targetObject);
+            }
+        }
+
+        //通过中间表
+        if (mappingRows != null) {
+            //当使用中间表时，需要重新映射关联关系
+            Map<String, List<Object>> temp = new HashMap<>(selfEntities.size());
+            for (Row mappingRow : mappingRows) {
+                Object midTableJoinSelfValue = mappingRow.getIgnoreCase(joinSelfColumn);
+                if (midTableJoinSelfValue == null) {
+                    continue;
+                }
+                Object midTableJoinTargetValue = mappingRow.getIgnoreCase(joinTargetColumn);
+                if (midTableJoinTargetValue == null) {
+                    continue;
+                }
+                List<Object> targetObjects = leftFieldToRightTableMap.get(midTableJoinTargetValue.toString());
+                if (targetObjects == null) {
+                    continue;
+                }
+                temp.computeIfAbsent(midTableJoinSelfValue.toString(), k -> new ArrayList<>(targetObjects.size())).addAll(targetObjects);
+            }
+            leftFieldToRightTableMap = temp;
+        }
+        //关联集合的类型
+        Class<?> fieldType = relationFieldWrapper.getFieldType();
+        Class<?> wrapType;
+        if (Map.class.isAssignableFrom(fieldType)) {
+            wrapType = getMapWrapType(fieldType);
+        } else {
+            wrapType = MapperUtil.getCollectionWrapType(fieldType);
+        }
+
+        for (SelfEntity selfEntity : selfEntities) {
+            if (selfEntity == null) {
+                continue;
+            }
             Object selfValue = selfFieldWrapper.get(selfEntity);
-            if (selfValue != null) {
-                selfValue = selfValue.toString();
-                Set<String> targetMappingValues = new HashSet<>();
-                if (mappingRows != null) {
-                    for (Row mappingRow : mappingRows) {
-                        if (selfValue.equals(String.valueOf(mappingRow.getIgnoreCase(joinSelfColumn)))) {
-                            Object joinValue = mappingRow.getIgnoreCase(joinTargetColumn);
-                            if (joinValue != null) {
-                                targetMappingValues.add(joinValue.toString());
-                            }
+            if (selfValue == null) {
+                continue;
+            }
+            selfValue = selfValue.toString();
+            Set<String> targetMappingValues;//只有当splitBy不为空时才会有多个值
+            boolean splitMode = StringUtil.isNotBlank(selfValueSplitBy);
+            if (splitMode) {
+                String[] splitValues = ((String) selfValue).split(selfValueSplitBy);
+                targetMappingValues = new LinkedHashSet<>(Arrays.asList(splitValues));
+            } else {
+                targetMappingValues = new HashSet<>(1);
+                targetMappingValues.add((String) selfValue);
+            }
+
+            if (targetMappingValues.isEmpty()) {
+                return;
+            }
+
+
+            //map
+            if (Map.class.isAssignableFrom(fieldType)) {
+                Map map = (Map) ClassUtil.newInstance(wrapType);
+                Set<Object> validateCountSet = new HashSet<>(targetMappingValues.size());
+                for (String targetMappingValue : targetMappingValues) {
+                    List<Object> targetObjects = leftFieldToRightTableMap.get(targetMappingValue);
+                    //如果非真实外键约束 可能没有对应的对象
+                    if (targetObjects == null) {
+                        continue;
+                    }
+                    for (Object targetObject : targetObjects) {
+                        Object keyValue = mapKeyFieldWrapper.get(targetObject);
+                        Object needKeyValue = ConvertUtil.convert(keyValue, relationFieldWrapper.getKeyType());
+                        if (validateCountSet.contains(needKeyValue) ) {
+                            //当字段类型为Map时，一个key对应的value只能有一个
+                            throw FlexExceptions.wrap("When fieldType is Map, the target entity can only be one,\n" +
+                                    " current entity type is : " + selfEntity + "\n" +
+                                    " relation field name is : " + relationField.getName() + "\n" +
+                                    " target entity is : " + targetObjects);
+                        }
+                        validateCountSet.add(needKeyValue);
+                        map.put(needKeyValue, targetObject);
+                    }
+
+                }
+                if (!map.isEmpty()) {
+                    relationFieldWrapper.set(map, selfEntity);
+                }
+
+            }
+            //集合
+            else {
+                Collection collection = (Collection) ClassUtil.newInstance(wrapType);
+                if (onlyQueryValueField) {
+                    Object first = targetObjectList.iterator().next();
+                    //将getter方法用单独的变量存储 FieldWrapper.of虽然有缓存 但每次调用至少有一个HashMap的get开销
+                    FieldWrapper fieldValueFieldWrapper = FieldWrapper.of(first.getClass(), valueField);
+                    for (String targetMappingValue : targetMappingValues) {
+                        List<Object> targetObjects = leftFieldToRightTableMap.get(targetMappingValue);
+                        if (targetObjects == null) {
+                            continue;
+                        }
+                        for (Object targetObject : targetObjects) {
+                            //仅绑定某个字段
+                            collection.add(fieldValueFieldWrapper.get(targetObject));
                         }
                     }
                 } else {
-                    if (StringUtil.isNotBlank(selfValueSplitBy)) {
-                        String[] splitValues = ((String) selfValue).split(selfValueSplitBy);
-                        targetMappingValues.addAll(Arrays.asList(splitValues));
-                    } else {
-                        targetMappingValues.add((String) selfValue);
-                    }
-                }
-
-                if (targetMappingValues.isEmpty()) {
-                    return;
-                }
-
-                Class<?> fieldType = relationFieldWrapper.getFieldType();
-                //map
-                if (Map.class.isAssignableFrom(fieldType)) {
-                    Class<?> wrapType = getMapWrapType(fieldType);
-                    Map map = (Map) ClassUtil.newInstance(wrapType);
-                    for (Object targetObject : targetObjectList) {
-                        Object targetValue = targetFieldWrapper.get(targetObject);
-                        if (targetValue != null && targetMappingValues.contains(targetValue.toString())) {
-                            Object keyValue = mapKeyFieldWrapper.get(targetObject);
-                            Object needKeyValue = ConvertUtil.convert(keyValue, relationFieldWrapper.getKeyType());
-                            map.put(needKeyValue, targetObject);
+                    for (String targetMappingValue : targetMappingValues) {
+                        List<Object> targetObjects = leftFieldToRightTableMap.get(targetMappingValue);
+                        if (targetObjects == null) {
+                            continue;
                         }
+                        collection.addAll(targetObjects);
                     }
-                    relationFieldWrapper.set(map, selfEntity);
                 }
-                //集合
-                else {
-                    Class<?> wrapType = MapperUtil.getCollectionWrapType(fieldType);
-                    Collection collection = (Collection) ClassUtil.newInstance(wrapType);
-                    for (Object targetObject : targetObjectList) {
-                        Object targetValue = targetFieldWrapper.get(targetObject);
-                        if (targetValue != null && targetMappingValues.contains(targetValue.toString())) {
-                            if (onlyQueryValueField) {
-                                //仅绑定某个字段
-                                collection.add(FieldWrapper.of(targetObject.getClass(), valueField).get(targetObject));
-                            } else {
-                                collection.add(targetObject);
-                            }
-                        }
-                    }
-                    relationFieldWrapper.set(collection, selfEntity);
-                }
+                relationFieldWrapper.set(collection, selfEntity);
+
             }
-        });
+        }
+
     }
 
     public void setMapKeyField(String mapKeyField) {
@@ -158,14 +233,6 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                 throw FlexExceptions.wrap("Please config mapKeyField for map field: " + relationFieldWrapper.getField());
             }
         }
-    }
-
-    public static Class<? extends Map> getMapWrapType(Class<?> type) {
-        if (ClassUtil.canInstance(type.getModifiers())) {
-            return (Class<? extends Map>) type;
-        }
-
-        return HashMap.class;
     }
 
 }

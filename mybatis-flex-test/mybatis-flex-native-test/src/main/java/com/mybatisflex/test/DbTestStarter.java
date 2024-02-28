@@ -29,7 +29,7 @@ public class DbTestStarter {
     public static void main(String[] args) {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
-            .addScript("schema.sql")
+            .addScript("schema.sql").setScriptEncoding("UTF-8")
 //                .addScript("data.sql")
             .build();
 
