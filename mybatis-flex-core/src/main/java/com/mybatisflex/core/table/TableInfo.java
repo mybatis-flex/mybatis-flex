@@ -1246,9 +1246,10 @@ public class TableInfo {
         Set<String> rowKeys = row.keySet();
         columnInfoMapping.forEach((column, columnInfo) -> {
             if (index <= 0) {
+                String replace = column.replace("_", "");
                 for (String rowKey : rowKeys) {
                     // 修复: 开启 mapUnderscoreToCamelCase = true 时， row 无法转换 entity 的问题
-                    if (rowKey.equalsIgnoreCase(column) || rowKey.equalsIgnoreCase(column.replace("_", ""))) {
+                    if (rowKey.equalsIgnoreCase(column) || rowKey.equalsIgnoreCase(replace)) {
                         setInstancePropertyValue(row, instance, metaObject, columnInfo, rowKey);
                     }
                 }
@@ -1256,9 +1257,10 @@ public class TableInfo {
                 for (int i = index; i >= 0; i--) {
                     String newColumn = i <= 0 ? column : column + "$" + i;
                     boolean fillValue = false;
+                    String replace = column.replace("_", "");
                     for (String rowKey : rowKeys) {
                         // 修复: 开启 mapUnderscoreToCamelCase = true 时， row 无法转换 entity 的问题
-                        if (rowKey.equalsIgnoreCase(column) || rowKey.equalsIgnoreCase(column.replace("_", ""))) {
+                        if (rowKey.equalsIgnoreCase(newColumn) || rowKey.equalsIgnoreCase(replace)) {
                             setInstancePropertyValue(row, instance, metaObject, columnInfo, rowKey);
                             fillValue = true;
                             break;
@@ -1270,6 +1272,7 @@ public class TableInfo {
                 }
             }
         });
+        //noinspection unchecked
         return (T) instance;
     }
 
