@@ -80,6 +80,11 @@ public class EnumWrapper<E extends Enum<E>> {
                 }
                 this.getterMethod = enumValueMethod;
                 this.hasEnumValueAnnotation = true;
+                Class<?> returnType = enumValueMethod.getReturnType();
+                if (returnType.isPrimitive()) {
+                    returnType = ConvertUtil.primitiveToBoxed(returnType);
+                }
+                this.propertyType = returnType;
             }
         }
     }

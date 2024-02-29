@@ -128,6 +128,28 @@ public class ConvertUtil {
         }
     }
 
+    public static Class<?> primitiveToBoxed(Class<?> paraClass) {
+        if (paraClass == Integer.TYPE) {
+            return Integer.class;
+        } else if (paraClass == Long.TYPE) {
+            return Long.class;
+        } else if (paraClass == Double.TYPE) {
+            return Double.class;
+        } else if (paraClass == Float.TYPE) {
+            return Float.class;
+        } else if (paraClass == Boolean.TYPE) {
+            return Boolean.class;
+        } else if (paraClass == Short.TYPE) {
+            return Short.class;
+        } else if (paraClass == Byte.TYPE) {
+            return Byte.class;
+        } else if (paraClass == Character.TYPE) {
+            return Character.class;
+        } else {
+            throw new IllegalArgumentException("Can not convert primitive class for type: " + paraClass);
+        }
+    }
+
 
     public static Integer toInt(Object i) {
         if (i instanceof Integer) {
