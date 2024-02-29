@@ -20,14 +20,6 @@
 > MyBatis-Flex 视频系列：https://www.bilibili.com/video/BV1yW4y1Z74j
 
 
-----
-
-
-<iframe width="100%" height="400px"  src="//player.bilibili.com/player.html?aid=275259298&bvid=BV1kF411r7ky&cid=1250754184&page=5&autoplay=no" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
-
-> 【MyBatis-Flex】轻松掌握，从零基础到高级应用的完整教程！持续更新中~ https://www.bilibili.com/video/BV1kF411r7ky
-
-
 
 ## Hello World 文档
 
