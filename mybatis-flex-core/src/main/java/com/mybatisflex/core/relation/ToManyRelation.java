@@ -22,6 +22,7 @@ import com.mybatisflex.core.util.*;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Function;
 
 class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
@@ -41,9 +42,9 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                           String dataSource, Class<SelfEntity> selfEntityClass, Field relationField,
                           String extraCondition, String[] selectColumns) {
         super(selfField, targetSchema, targetTable, targetField, valueField,
-                joinTable, joinSelfColumn, joinTargetColumn,
-                dataSource, selfEntityClass, relationField,
-                extraCondition, selectColumns
+            joinTable, joinSelfColumn, joinTargetColumn,
+            dataSource, selfEntityClass, relationField,
+            extraCondition, selectColumns
         );
     }
 
@@ -103,7 +104,7 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
         for (Object targetObject : targetObjectList) {
             Object targetJoinFieldValue = targetFieldWrapper.get(targetObject);
             if (targetJoinFieldValue != null) {
-                leftFieldToRightTableMap.computeIfAbsent(targetJoinFieldValue.toString(), k -> new ArrayList<>()).add(targetObject);
+                leftFieldToRightTableMap.computeIfAbsent(targetJoinFieldValue.toString(), k -> new ArrayList<>(1)).add(targetObject);
             }
         }
 
@@ -128,14 +129,13 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
             }
             leftFieldToRightTableMap = temp;
         }
+
+
         //关联集合的类型
         Class<?> fieldType = relationFieldWrapper.getFieldType();
-        Class<?> wrapType;
-        if (Map.class.isAssignableFrom(fieldType)) {
-            wrapType = getMapWrapType(fieldType);
-        } else {
-            wrapType = MapperUtil.getCollectionWrapType(fieldType);
-        }
+        boolean isMapType = Map.class.isAssignableFrom(fieldType);
+        Class<?> wrapType = isMapType ? getMapWrapType(fieldType) : MapperUtil.getCollectionWrapType(fieldType);
+        boolean splitMode = StringUtil.isNotBlank(selfValueSplitBy);
 
         for (SelfEntity selfEntity : selfEntities) {
             if (selfEntity == null) {
@@ -146,8 +146,10 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                 continue;
             }
             selfValue = selfValue.toString();
-            Set<String> targetMappingValues;//只有当splitBy不为空时才会有多个值
-            boolean splitMode = StringUtil.isNotBlank(selfValueSplitBy);
+
+            //只有当splitBy不为空时才会有多个值
+            Set<String> targetMappingValues;
+
             if (splitMode) {
                 String[] splitValues = ((String) selfValue).split(selfValueSplitBy);
                 targetMappingValues = new LinkedHashSet<>(Arrays.asList(splitValues));
@@ -160,9 +162,8 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                 return;
             }
 
-
-            //map
-            if (Map.class.isAssignableFrom(fieldType)) {
+            // map
+            if (isMapType) {
                 Map map = (Map) ClassUtil.newInstance(wrapType);
                 Set<Object> validateCountSet = new HashSet<>(targetMappingValues.size());
                 for (String targetMappingValue : targetMappingValues) {
@@ -174,17 +175,18 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                     for (Object targetObject : targetObjects) {
                         Object keyValue = mapKeyFieldWrapper.get(targetObject);
                         Object needKeyValue = ConvertUtil.convert(keyValue, relationFieldWrapper.getKeyType());
-                        if (validateCountSet.contains(needKeyValue) ) {
+                        if (validateCountSet.contains(needKeyValue)) {
                             //当字段类型为Map时，一个key对应的value只能有一个
                             throw FlexExceptions.wrap("When fieldType is Map, the target entity can only be one,\n" +
-                                    " current entity type is : " + selfEntity + "\n" +
-                                    " relation field name is : " + relationField.getName() + "\n" +
-                                    " target entity is : " + targetObjects);
+                                " current entity type is : " + selfEntity + "\n" +
+                                " relation field name is : " + relationField.getName() + "\n" +
+                                " target entity is : " + targetObjects);
                         }
                         validateCountSet.add(needKeyValue);
+
+                        //noinspection unchecked
                         map.put(needKeyValue, targetObject);
                     }
-
                 }
                 if (!map.isEmpty()) {
                     relationFieldWrapper.set(map, selfEntity);
@@ -205,6 +207,7 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                         }
                         for (Object targetObject : targetObjects) {
                             //仅绑定某个字段
+                            //noinspection unchecked
                             collection.add(fieldValueFieldWrapper.get(targetObject));
                         }
                     }
@@ -214,11 +217,12 @@ class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                         if (targetObjects == null) {
                             continue;
                         }
+                        //noinspection unchecked
                         collection.addAll(targetObjects);
                     }
                 }
-                relationFieldWrapper.set(collection, selfEntity);
 
+                relationFieldWrapper.set(collection, selfEntity);
             }
         }
 

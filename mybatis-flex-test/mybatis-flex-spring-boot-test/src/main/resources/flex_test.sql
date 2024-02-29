@@ -305,15 +305,17 @@ CREATE TABLE `tb_user_order`
 INSERT INTO `tb_user_order`
 VALUES (1, 1);
 INSERT INTO `tb_user_order`
-VALUES (2, 3);
-INSERT INTO `tb_user_order`
 VALUES (2, 2);
 INSERT INTO `tb_user_order`
-VALUES (3, 6);
+VALUES (2, 3);
+INSERT INTO `tb_user_order`
+VALUES (3, 4);
 INSERT INTO `tb_user_order`
 VALUES (3, 5);
 INSERT INTO `tb_user_order`
-VALUES (3, 4);
+VALUES (3, 6);
+
+
 
 -- ----------------------------
 -- Table structure for tb_user_role
