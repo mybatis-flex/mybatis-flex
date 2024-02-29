@@ -48,7 +48,7 @@ public class DbTest273 {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
             .addScript("schema_273.sql")
-            .addScript("data273.sql")
+            .addScript("data273.sql").setScriptEncoding("UTF-8")
             .build();
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()

@@ -42,7 +42,7 @@ public class Account6Test implements WithAssertions {
         this.dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
             .addScript("none_key_schema.sql")
-            .addScript("none_key_data.sql")
+            .addScript("none_key_data.sql").setScriptEncoding("UTF-8")
             .build();
 
         MybatisFlexBootstrap bootstrap = new MybatisFlexBootstrap()

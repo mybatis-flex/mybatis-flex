@@ -57,6 +57,7 @@ public class RowTest implements WithAssertions {
             .setType(EmbeddedDatabaseType.H2)
             .addScript("schema_row.sql")
             .addScript("data_row.sql")
+                .setScriptEncoding("UTF-8")
             .build();
 
         new MybatisFlexBootstrap().setDataSource(DATA_SOURCE_KEY, dataSource)

@@ -30,7 +30,7 @@ public class MaskManagerTest {
             .setType(EmbeddedDatabaseType.H2)
             .setName("db1")
             .addScript("schema.sql")
-            .addScript("data.sql")
+            .addScript("data.sql").setScriptEncoding("UTF-8")
             .build();
 
         MybatisFlexBootstrap.getInstance()

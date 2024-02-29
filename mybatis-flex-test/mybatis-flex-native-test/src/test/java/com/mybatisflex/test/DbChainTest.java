@@ -59,7 +59,7 @@ public class DbChainTest implements WithAssertions {
         this.database = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
             .addScript("auto_increment_key_schema.sql")
-            .addScript("auto_increment_key_data.sql")
+            .addScript("auto_increment_key_data.sql").setScriptEncoding("UTF-8")
             .build();
 
         // Environment environment = new Environment(ENVIRONMENT_ID, new JdbcTransactionFactory(), this.database);

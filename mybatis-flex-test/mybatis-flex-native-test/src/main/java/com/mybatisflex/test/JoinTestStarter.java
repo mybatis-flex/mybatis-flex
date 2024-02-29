@@ -32,7 +32,7 @@ public class JoinTestStarter {
         DataSource dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
             .addScript("schema.sql")
-            .addScript("data.sql")
+            .addScript("data.sql").setScriptEncoding("UTF-8")
             .build();
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
