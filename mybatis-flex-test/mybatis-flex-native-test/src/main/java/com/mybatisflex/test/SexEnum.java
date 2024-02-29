@@ -25,7 +25,7 @@ public enum SexEnum {
 
     ;
 
-    @EnumValue
+//    @EnumValue
     private int code;
 
     private String desc;
@@ -35,7 +35,8 @@ public enum SexEnum {
         this.desc = desc;
     }
 
-    public int getCode() {
+    @EnumValue
+    public Integer getCode() {
         return code;
     }
 
