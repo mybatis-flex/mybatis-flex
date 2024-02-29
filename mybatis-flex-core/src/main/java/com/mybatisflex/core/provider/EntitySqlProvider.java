@@ -226,7 +226,7 @@ public class EntitySqlProvider {
     public static String update(Map params, ProviderContext context) {
         Object entity = ProviderUtil.getEntity(params);
 
-        FlexAssert.notNull(entity, "entity can not be null");
+        FlexAssert.notNull(entity, "entity can not be null for execute update");
 
         boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
 
@@ -239,7 +239,7 @@ public class EntitySqlProvider {
         Object[] primaryValues = tableInfo.buildPkSqlArgs(entity);
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
-        FlexAssert.assertAreNotNull(primaryValues, "The value of primary key must not be null, entity[%s]", entity);
+        FlexAssert.assertAreNotNull(primaryValues, "The value of primary key must not be null for execute update an entity, entity[%s]", entity);
 
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(updateValues, primaryValues, tenantIdArgs));
 
