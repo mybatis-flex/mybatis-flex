@@ -48,7 +48,7 @@ Page<Row> rowPage=Db.paginate("tb_account",3,10,query);
 ```java
 // 新增 Row 构建
 DbChain.table("tb_account")
-    .set(RowKey.AUTO)
+    .setId(RowKey.AUTO)
     .set("user_name","王帅")
     .set("age",18)
     .set("birthday",new Date())
