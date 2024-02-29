@@ -17,15 +17,13 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
-import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
-import com.mybatisflex.core.row.RowKey;
 import com.mybatisflex.core.row.RowUtil;
-import com.mybatisflex.core.update.RawValue;
 import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
+import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -53,6 +51,7 @@ public class DbTest {
             .build();
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
+            .setLogImpl(StdOutImpl.class)
             .setDataSource(dataSource)
             .start();
 
@@ -63,8 +62,6 @@ public class DbTest {
          */
         Configuration configuration = bootstrap.getConfiguration();
         configuration.setCallSettersOnNulls(true);
-
-        Db.updateBySql("update tb_account set options = null;");
     }
 
     @SuppressWarnings("all")
@@ -72,6 +69,8 @@ public class DbTest {
 
     @Test
     public void test01() {
+        Db.updateBySql("update tb_account set options = null;");
+
         List<Row> rows = Db.selectAll(tb_account);
 
         rows.stream()
@@ -88,6 +87,7 @@ public class DbTest {
         assert map.equals(map2);
 
     }
+
     @Test
     public void test03() {
         try {
@@ -105,9 +105,21 @@ public class DbTest {
             account3.setAge(4);
             accounts.add(account3);
             Db.updateEntitiesBatch(accounts);
-        }catch (Exception e){
+        } catch (Exception e) {
             assert false;
         }
+    }
+
+    @Test
+    public void testTypeHandler() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select("*")
+            .from("tb_account")
+            .where("age = ?", 3);
+
+        List<Row> rows = Db.selectListByQuery(queryWrapper);
+
+        RowUtil.printPretty(rows);
     }
 
 }
