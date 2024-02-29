@@ -36,7 +36,7 @@ public enum SexEnum {
     }
 
     @EnumValue
-    public Integer getCode() {
+    public int getCode() {
         return code;
     }
 
