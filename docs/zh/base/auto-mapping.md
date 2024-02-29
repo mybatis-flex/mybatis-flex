@@ -188,7 +188,7 @@ List<BookVo> bookVos = QueryChain.of(bookMapper)
     ).from(BOOK)
     .leftJoin(ACCOUNT).on(BOOK.ACCOUNT_ID.eq(ACCOUNT.ID))
     .where(ACCOUNT.ID.ge(100))
-    .listAs(BookVo.java);
+    .listAs(BookVo.class);
 ```
 
 或者，我们也可以直接在 BookVo 中，定义 `Account` 对象，例如：
@@ -218,7 +218,7 @@ List<BookVo> bookVos = QueryChain.of(bookMapper)
     .from(BOOK)
     .leftJoin(ACCOUNT).on(BOOK.ACCOUNT_ID.eq(ACCOUNT.ID))
     .where(ACCOUNT.ID.ge(100))
-    .listAs(BookVo.java);
+    .listAs(BookVo.class);
 ```
 
 ## 高级映射
@@ -243,7 +243,7 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
     .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
-    .listAs(AccountVO.java);
+    .listAs(AccountVO.class);
 ```
 
 亦或者指定查询参数：
@@ -260,7 +260,7 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
     .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
-    .listAs(AccountVO.java);
+    .listAs(AccountVO.class);
 ```
 
 高级映射的场景中，我们还可以通过注解 `@RelationManyToOne` 进行查询，
@@ -305,7 +305,7 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
     .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
-    .listAs(AccountVO.java);
+    .listAs(AccountVO.class);
 ```
 
 其执行的 SQL 如下：
@@ -334,7 +334,7 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
     .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
-    .listAs(AccountVO.java);
+    .listAs(AccountVO.class);
 ```
 
 那么，其执行的 SQL 如下：
@@ -360,7 +360,7 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
     .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
-    .listAs(AccountVO.java);
+    .listAs(AccountVO.class);
 ```
 
 **`@ColumnAlias` 注解：**
@@ -394,7 +394,7 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
     .from(ACCOUNT)
     .leftJoin(BOOK).on(ACCOUNT.ID.eq(BOOK.ACCOUNT_ID))
     .where(ACCOUNT.ID.ge(100))
-    .listAs(AccountVO.java);
+    .listAs(AccountVO.class);
 ```
 其执行的 SQL 为：
 
