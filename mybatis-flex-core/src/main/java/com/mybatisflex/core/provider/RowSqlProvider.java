@@ -242,7 +242,7 @@ public class RowSqlProvider {
     public static String updateEntity(Map params) {
         Object entity = ProviderUtil.getEntity(params);
 
-        FlexAssert.notNull(entity, "entity can not be null");
+        FlexAssert.notNull(entity, "entity can not be null for execute update");
 
         // 该 Mapper 是通用 Mapper  无法通过 ProviderContext 获取，直接使用 TableInfoFactory
 
@@ -256,7 +256,7 @@ public class RowSqlProvider {
         Object[] primaryValues = tableInfo.buildPkSqlArgs(entity);
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
-        FlexAssert.assertAreNotNull(primaryValues, "The value of primary key must not be null, entity[%s]", entity);
+        FlexAssert.assertAreNotNull(primaryValues, "The value of primary key must not be null for execute update an entity, entity[%s]", entity);
 
         ProviderUtil.setSqlArgs(params, ArrayUtil.concat(updateValues, primaryValues, tenantIdArgs));
         return sql;
