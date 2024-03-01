@@ -85,7 +85,7 @@ public class FlexConfiguration extends Configuration {
         if (!mappedStatementId.endsWith(SelectKeyGenerator.SELECT_KEY_SUFFIX)
             && parameterObject instanceof Map
             && ((Map<?, ?>) parameterObject).containsKey(FlexConsts.SQL_ARGS)) {
-            SqlArgsParameterHandler sqlArgsParameterHandler = new SqlArgsParameterHandler(mappedStatement, (Map) parameterObject, boundSql);
+            SqlArgsParameterHandler sqlArgsParameterHandler = new SqlArgsParameterHandler(mappedStatement, parameterObject, boundSql);
             return (ParameterHandler) interceptorChain.pluginAll(sqlArgsParameterHandler);
         } else {
             return super.newParameterHandler(mappedStatement, parameterObject, boundSql);

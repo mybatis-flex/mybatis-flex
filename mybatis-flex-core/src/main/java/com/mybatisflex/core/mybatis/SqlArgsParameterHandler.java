@@ -55,35 +55,33 @@ public class SqlArgsParameterHandler extends DefaultParameterHandler {
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void doSetParameters(PreparedStatement ps) throws SQLException {
         Object[] sqlArgs = (Object[]) ((Map) getParameterObject()).get(FlexConsts.SQL_ARGS);
-        if (sqlArgs != null && sqlArgs.length > 0) {
-            int index = 1;
-            for (Object value : sqlArgs) {
-                // 设置 NULL 值
-                if (value == null) {
-                    ps.setNull(index++, Types.NULL);
-                    continue;
-                }
-
-                // 通过配置的 TypeHandler 去设置值
-                if (value instanceof TypeHandlerObject) {
-                    ((TypeHandlerObject) value).setParameter(ps, index++);
-                    continue;
-                }
-
-                TypeHandler typeHandler = typeHandlerRegistry.getTypeHandler(value.getClass());
-                if (typeHandler != null) {
-                    // 通过对应的 TypeHandler 去设置值
-                    typeHandler.setParameter(ps, index++, value, null);
-                } else {
-                    /*
-                     * 在 MySql，Oracle 等驱动中，通过 PreparedStatement.setObject 后，驱动会自动根据 value 内容进行转换
-                     * 源码可参考： {{@link com.mysql.jdbc.PreparedStatement#setObject(int, Object)}
-                     */
-                    ps.setObject(index++, value);
-                }
-            }
-        } else {
+        if (sqlArgs == null || sqlArgs.length == 0) {
             super.setParameters(ps);
+            return;
+        }
+
+        int index = 1;
+        for (Object value : sqlArgs) {
+            // 设置 NULL 值
+            if (value == null) {
+                ps.setNull(index++, Types.NULL);
+                continue;
+            }
+
+            // 通过配置的 TypeHandler 去设置值
+            if (value instanceof TypeHandlerObject) {
+                ((TypeHandlerObject) value).setParameter(ps, index++);
+                continue;
+            }
+
+            TypeHandler typeHandler = typeHandlerRegistry.getTypeHandler(value.getClass());
+            if (typeHandler == null) {
+                typeHandler = typeHandlerRegistry.getUnknownTypeHandler();
+            }
+
+            // 此处的 jdbcType 可以为 null 的，原因是 value 不为 null，
+            // 只有 value 为 null 时， jdbcType 不允许为 null
+            typeHandler.setParameter(ps, index++, value, null);
         }
     }
 

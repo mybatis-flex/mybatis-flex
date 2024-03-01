@@ -15,7 +15,6 @@
  */
 package com.mybatisflex.core.mybatis;
 
-import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.annotations.AutomapConstructor;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.binding.MapperMethod.ParamMap;
@@ -927,10 +926,15 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
 
     private Object prepareSimpleKeyParameter(ResultSet rs, ResultMapping resultMapping, Class<?> parameterType,
                                              String columnPrefix) throws SQLException {
-        final TypeHandler<?> typeHandler;
-        if (typeHandlerRegistry.hasTypeHandler(parameterType)) {
-            typeHandler = typeHandlerRegistry.getTypeHandler(parameterType);
-        } else {
+//        final TypeHandler<?> typeHandler;
+//        if (typeHandlerRegistry.hasTypeHandler(parameterType)) {
+//            typeHandler = typeHandlerRegistry.getTypeHandler(parameterType);
+//        } else {
+//            typeHandler = typeHandlerRegistry.getUnknownTypeHandler();
+//        }
+
+        TypeHandler<?> typeHandler = typeHandlerRegistry.getTypeHandler(parameterType);
+        if (typeHandler == null) {
             typeHandler = typeHandlerRegistry.getUnknownTypeHandler();
         }
         return typeHandler.getResult(rs, prependPrefix(resultMapping.getColumn(), columnPrefix));
