@@ -282,19 +282,20 @@ globalConfig.getTemplateConfig()
 
 ## Entity 生成配置 `EntityConfig`
 
-| 配置                                             | 描述                               | 默认值                |
-|------------------------------------------------|----------------------------------|--------------------|
-| setClassPrefix(String)                         | Entity 类的前缀                      | ""                 |
-| setClassSuffix(String)                         | Entity 类的后缀                      | ""                 |
-| setSuperClass(Class)                           | Entity 类的父类，可以自定义一些 BaseEntity 类 | null               |
-| setOverwriteEnable(boolean)                    | 是否覆盖之前生成的文件                      | false              |
-| setImplInterfaces(Class[])                     | Entity 默认实现的接口                   | Serializable.class |
-| setWithLombok(boolean)                         | Entity 是否使用 Lombok 注解            | false              |
-| setWithSwagger(boolean)                        | Entity 是否使用 Swagger 注解           | false              |
-| setSwaggerVersion(EntityConfig.SwaggerVersion) | Swagger 注解版本                     | SwaggerVersion.FOX |
-| setWithActiveRecord(boolean)                   | 是否生成 Active Record 模式的 Entity    | false              |
-| setDataSource(String)                          | 统一使用的数据源                         | null               |
-| setJdkVersion(int)                             | 设置项目的jdk版本                       | 0                  |
+| 配置                                           | 描述                                                | 默认值                |
+|----------------------------------------------|---------------------------------------------------|--------------------|
+| setClassPrefix(String)                       | Entity 类的前缀                                       | ""                 |
+| setClassSuffix(String)                       | Entity 类的后缀                                       | ""                 |
+| setSuperClass(Class)                         | Entity 类的父类，可以自定义一些 BaseEntity 类                  | null               |
+| setSuperClassFactory(Function<Table, Class>) | Entity 类的父类工厂，可以用于对特定的 Class 设置父类，而非全部 Entity 的父类 | null               |
+| setOverwriteEnable(boolean)                  | 是否覆盖之前生成的文件                                       | false              |
+| setImplInterfaces(Class[])                   | Entity 默认实现的接口                                    | Serializable.class |
+| setWithLombok(boolean)                       | Entity 是否使用 Lombok 注解                             | false              |
+| setWithSwagger(boolean)                      | Entity 是否使用 Swagger 注解                            | false              |
+| setSwaggerVersion(EntityConfig.SwaggerVersion) | Swagger 注解版本                                      | SwaggerVersion.FOX |
+| setWithActiveRecord(boolean)                 | 是否生成 Active Record 模式的 Entity                     | false              |
+| setDataSource(String)                        | 统一使用的数据源                                          | null               |
+| setJdkVersion(int)                           | 设置项目的jdk版本                                        | 0                  |
 
 ```java
 globalConfig.getEntityConfig()
@@ -302,6 +303,21 @@ globalConfig.getEntityConfig()
         .setClassPrefix("My")
         .setClassSuffix("Entity")
         .setSuperClass(BaseEntity.class);
+```
+
+**注意：** `setSuperClassFactory(Function<Table, Class>)` 的优先级要大于 `setSuperClass(Class)`，当两者同时配置时，`setSuperClass(Class)`
+的配置无效。
+
+
+**setEntitySuperClassFactory** 示例代码：
+
+```java
+globalConfig.setEntitySuperClassFactory(table -> {
+
+    // 在这里，可以通过 table 来指定对应 SuperClass
+    // 返回 null，则表示不需要设置父类
+    return null;
+});
 ```
 
 ## Mapper 生成配置 `MapperConfig`

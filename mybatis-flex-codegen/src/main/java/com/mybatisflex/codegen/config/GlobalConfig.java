@@ -869,8 +869,15 @@ public class GlobalConfig implements Serializable {
     /**
      * @see EntityConfig#setSuperClassFactory(Function)
      */
-    public void setSuperClassFactory(Function<Table, Class<?>> superClassFactory) {
+    public void setEntitySuperClassFactory(Function<Table, Class<?>> superClassFactory) {
         getEntityConfig().setSuperClassFactory(superClassFactory);
+    }
+
+    /**
+     * @see EntityConfig#getSuperClassFactory()
+     */
+    public Function<Table, Class<?>> getEntitySuperClassFactory() {
+        return getEntityConfig().getSuperClassFactory();
     }
 
     /**
