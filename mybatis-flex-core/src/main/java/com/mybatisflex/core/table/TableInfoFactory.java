@@ -564,7 +564,9 @@ public class TableInfoFactory {
 
         Field[] declaredFields = entityClass.getDeclaredFields();
         for (Field declaredField : declaredFields) {
-            if (Modifier.isStatic(declaredField.getModifiers())
+            int modifiers = declaredField.getModifiers();
+            if (Modifier.isStatic(modifiers)
+                || Modifier.isTransient(modifiers)
                 || existName(fields, declaredField)) {
                 continue;
             }
