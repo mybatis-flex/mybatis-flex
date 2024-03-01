@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.codegen.config;
 
+import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.template.ITemplate;
 
 import java.io.Serializable;
@@ -863,6 +864,13 @@ public class GlobalConfig implements Serializable {
      */
     public void setEntitySuperClass(Class<?> entitySuperClass) {
         getEntityConfig().setSuperClass(entitySuperClass);
+    }
+
+    /**
+     * @see EntityConfig#setSuperClassFactory(Function)
+     */
+    public void setSuperClassFactory(Function<Table, Class<?>> superClassFactory) {
+        getEntityConfig().setSuperClassFactory(superClassFactory);
     }
 
     /**

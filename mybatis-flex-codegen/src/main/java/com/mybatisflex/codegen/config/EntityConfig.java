@@ -15,7 +15,10 @@
  */
 package com.mybatisflex.codegen.config;
 
+import com.mybatisflex.codegen.entity.Table;
+
 import java.io.Serializable;
+import java.util.function.Function;
 
 /**
  * 生成 Entity 的配置。
@@ -46,6 +49,9 @@ public class EntityConfig implements Serializable {
      * Entity 类的父类，可以自定义一些 BaseEntity 类。
      */
     private Class<?> superClass;
+
+
+    private Function<Table, Class<?>> superClassFactory;
 
     /**
      * 是否覆盖之前生成的文件。
@@ -91,7 +97,7 @@ public class EntityConfig implements Serializable {
     /**
      * 当开启这个配置后，Entity 会生成两个类，比如 Account 表会生成 Account.java 以及 AccountBase.java
      * 这样的好处是，自动生成的 getter setter 字段等都在 Base 类里，而开发者可以在 Account.java 中添加自己的业务代码
-     * 此时，再次生成代码时，不会覆盖掉 Account.java 中的业务代码
+     * 此时，当有数据库表结构发生变化，需要再次生成代码时，不会覆盖掉 Account.java 中的业务代码（只会覆盖 AccountBase 中的 Getter Setter）
      */
     private boolean withBaseClassEnable = false;
 
@@ -157,6 +163,22 @@ public class EntityConfig implements Serializable {
     public EntityConfig setSuperClass(Class<?> superClass) {
         this.superClass = superClass;
         return this;
+    }
+
+
+    public Class<?> getSuperClass(Table table) {
+        if (superClassFactory != null) {
+            return superClassFactory.apply(table);
+        }
+        return superClass;
+    }
+
+    public Function<Table, Class<?>> getSuperClassFactory() {
+        return superClassFactory;
+    }
+
+    public void setSuperClassFactory(Function<Table, Class<?>> superClassFactory) {
+        this.superClassFactory = superClassFactory;
     }
 
     /**

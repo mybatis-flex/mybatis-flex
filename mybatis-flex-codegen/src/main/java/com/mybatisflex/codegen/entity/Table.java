@@ -184,8 +184,9 @@ public class Table {
                 imports.addAll(column.getImportClasses());
             }
 
-            if (entityConfig.getSuperClass() != null) {
-                imports.add(entityConfig.getSuperClass().getName());
+            Class<?> superClass = entityConfig.getSuperClass(this);
+            if (superClass != null) {
+                imports.add(superClass.getName());
             }
 
             if (entityConfig.getImplInterfaces() != null) {
@@ -272,8 +273,9 @@ public class Table {
      */
     public String buildExtends() {
         EntityConfig entityConfig = globalConfig.getEntityConfig();
-        if (entityConfig.getSuperClass() != null) {
-            return " extends " + entityConfig.getSuperClass().getSimpleName();
+        Class<?> superClass = entityConfig.getSuperClass(this);
+        if (superClass != null) {
+            return " extends " + superClass.getSimpleName();
         } else {
             return "";
         }
