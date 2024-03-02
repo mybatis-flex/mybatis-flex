@@ -2,6 +2,28 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+
+## v1.8.1 20240302:
+- 新增：添加 CommaSplitTypeHandler 用于对逗号分割存储映射到实体类 `List<String>` 的支持
+- 新增：代码生成器 EntityConfig 添加 superClassFactory 配置的支持
+- 优化：重构代码生成器模块的 JdbcTypeMapper，以支持更多的参数读取
+- 优化：FlexTransactionAutoConfiguration 添加更多的 AutoConfigureBefore 设置，感谢 @wittplus #I930JB
+- 优化：优化 EntityGenerator.java 的相关输出日志
+- 优化：优化 TableInfo.newInstanceByRow 可能存在的性能问题 #I94D33
+- 优化：优化 ToManyRelation 存在的性能问题，感谢 @swqxdba
+- 修复：多数据源模式下，当设置了分片规则以后，不能设置正确的 DbType，感谢 @ccwilliam
+- 修复：代码生成器设置类型为 java.util.List 时，import 导入不正确的问题
+- 修复：ClassUtil.getAllMethods 方法处理枚举类型时逻辑有缺陷的问题 #I94749 #I94321
+- 修复：@EnumValue 标记在方法上没有获取 propertyType 的问题，感谢 @Suomm
+- 修复：设置全局的 TypeHandler 不起作用的问题，感谢 @Suomm
+- 修复：被 transient 标记的字段不会被映射到数据库当中的问题，感谢 @Suomm #I953IS
+- 文档：代码生成器添加设置 `java.util.List<String>` 类型的相关文档
+- 文档：代码生成器添加关于无法获取注释的相关注意事项
+- 文档：修正自动映射的相关示例代码，感谢 @zhangyx
+- 文档：修正 db + row 的相关实例代码，感谢 @zhangyx
+
+
+
 ## v1.8.0 20240223:
 - 优化：entityOrBase.tpl 中命令占位符被替换后，entity 里面多了一行空白行，感谢 @caohenghui
 - 修复：在复杂的 VO 嵌套查询时，addResultMap 抛出异常的问题，感谢 @leizhiyou
