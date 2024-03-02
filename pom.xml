@@ -227,12 +227,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.2.0</version>
                 <configuration>
                     <charset>UTF-8</charset>
                     <encoding>UTF-8</encoding>
                     <docencoding>UTF-8</docencoding>
                     <doclint>none</doclint>
+                    <skippedModules>mybatis-flex-spring-boot3-starter</skippedModules>
                 </configuration>
             </plugin>
         </plugins>
