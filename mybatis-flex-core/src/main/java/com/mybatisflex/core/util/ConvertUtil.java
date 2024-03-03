@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.util;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -43,6 +44,9 @@ public class ConvertUtil {
             return null;
         }
         if (value.getClass().isAssignableFrom(targetClass)) {
+            return value;
+        }
+        if (targetClass == Serializable.class && ArrayUtil.contains(value.getClass().getInterfaces(), Serializable.class)) {
             return value;
         }
         if (targetClass == String.class) {
