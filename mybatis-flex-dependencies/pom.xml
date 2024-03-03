@@ -3,15 +3,30 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.mybatis-flex</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.8.1</version>
-    </parent>
 
+    <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-dependencies</artifactId>
+    <version>1.8.1</version>
 
     <packaging>pom</packaging>
+
+    <name>mybatis-flex-dependencies</name>
+    <description>MyBatis-Flex BOM (Bill of Materials).</description>
+
+    <developers>
+        <developer>
+            <name>王帅</name>
+            <email>suomm.macher@foxmail.com</email>
+            <roles>
+                <role>author</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
+    <properties>
+        <mybatis-flex.version>1.8.1</mybatis-flex.version>
+    </properties>
 
     <dependencyManagement>
         <dependencies>

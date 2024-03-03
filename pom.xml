@@ -49,7 +49,6 @@
         <module>mybatis-flex-solon-plugin</module>
         <module>mybatis-flex-test</module>
         <module>mybatis-flex-processor</module>
-        <module>mybatis-flex-dependencies</module>
     </modules>
 
     <properties>
