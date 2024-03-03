@@ -64,7 +64,10 @@ public class SqlArgsParameterHandler extends DefaultParameterHandler {
         for (Object value : sqlArgs) {
             // 设置 NULL 值
             if (value == null) {
-                ps.setNull(index++, Types.NULL);
+                // ps.setNull(index++, Types.NULL);
+                // 此处不应该使用 setNull(index++, Types.NULL)，通过 setObject 传入 null 值，有 jdbc 驱动自行验证类型即可
+                // 使用 setNull 在 db2 等数据库下，Types.NULL 并非其需要类型
+                ps.setObject(index++, null);
                 continue;
             }
 
