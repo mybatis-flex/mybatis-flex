@@ -39,18 +39,19 @@ import org.springframework.context.annotation.Role;
 import javax.sql.DataSource;
 import java.util.Map;
 
-
 /**
  * MyBatis-Flex 多数据源的配置支持。
  *
  * @author michael
+ * @author 王帅
  */
 @ConditionalOnMybatisFlexDatasource()
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MybatisFlexProperties.class)
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
 @AutoConfigureBefore(value = DataSourceAutoConfiguration.class
-    , name = "com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure")
+    , name = {"com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure",
+    "com.alibaba.druid.spring.boot3.autoconfigure.DataSourceAutoConfiguration"})
 public class MultiDataSourceAutoConfiguration {
 
 
@@ -58,7 +59,7 @@ public class MultiDataSourceAutoConfiguration {
 
     private final SeataConfig seataConfig;
 
-    //数据源解密器
+    // 数据源解密器
     protected final DataSourceDecipher dataSourceDecipher;
 
 
