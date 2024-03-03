@@ -159,22 +159,26 @@ public class MapperUtil {
         boolean withRelations,
         Consumer<FieldQueryBuilder<R>>... consumers
     ) {
+        Long limitRows = CPI.getLimitRows(queryWrapper);
+        Long limitOffset = CPI.getLimitOffset(queryWrapper);
         try {
             // 只有 totalRow 小于 0 的时候才会去查询总量
             // 这样方便用户做总数缓存，而非每次都要去查询总量
             // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
+
             if (page.getTotalRow() < 0) {
-                QueryWrapper countQueryWrapper = queryWrapper.clone();
+
+                QueryWrapper countQueryWrapper;
+
+                if (page.needOptimizeCountQuery()) {
+                    countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
+                } else {
+                    countQueryWrapper = MapperUtil.rawCountQueryWrapper(queryWrapper);
+                }
 
                 // optimize: 在 count 之前先去掉 limit 参数，避免 count 查询错误
                 CPI.setLimitRows(countQueryWrapper, null);
                 CPI.setLimitOffset(countQueryWrapper, null);
-
-                if (page.needOptimizeCountQuery()) {
-                    countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(countQueryWrapper);
-                } else {
-                    countQueryWrapper = MapperUtil.rawCountQueryWrapper(countQueryWrapper);
-                }
 
                 page.setTotalRow(mapper.selectCountByQuery(countQueryWrapper));
             }
@@ -208,8 +212,8 @@ public class MapperUtil {
         } finally {
             // 将之前设置的 limit 清除掉
             // 保险起见把重置代码放到 finally 代码块中
-            CPI.setLimitRows(queryWrapper, null);
-            CPI.setLimitOffset(queryWrapper, null);
+            CPI.setLimitRows(queryWrapper, limitRows);
+            CPI.setLimitOffset(queryWrapper, limitOffset);
         }
     }
 
