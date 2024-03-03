@@ -26,9 +26,13 @@ import java.util.HashMap;
  */
 public class SqlOperators extends HashMap<String, SqlOperator> {
 
-    private final static SqlOperators EMPTY = new SqlOperators();
+    private final static SqlOperators EMPTY = new SqlOperators() {
+        public SqlOperator put(String key, SqlOperator value) {
+            throw new IllegalArgumentException("Can not set SqlOperator for \"empty\" SqlOperators");
+        }
+    };
 
-    static SqlOperators empty() {
+    public static SqlOperators empty() {
         return EMPTY;
     }
 
@@ -36,7 +40,7 @@ public class SqlOperators extends HashMap<String, SqlOperator> {
         return new SqlOperators();
     }
 
-    public static <T> SqlOperators of( LambdaGetter<T> getter, SqlOperator operator ) {
+    public static <T> SqlOperators of(LambdaGetter<T> getter, SqlOperator operator) {
         SqlOperators map = new SqlOperators(1);
         map.put(LambdaUtil.getFieldName(getter), operator);
         return map;
@@ -54,6 +58,11 @@ public class SqlOperators extends HashMap<String, SqlOperator> {
     public SqlOperators(int initialCapacity) {
         super(initialCapacity);
     }
+
+    public SqlOperators(SqlOperators sqlOperators) {
+        this.putAll(sqlOperators);
+    }
+
 
     public <T> SqlOperators set(LambdaGetter<T> getter, SqlOperator operator) {
         this.put(LambdaUtil.getFieldName(getter), operator);
