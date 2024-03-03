@@ -25,12 +25,25 @@ import com.mybatisflex.core.field.FieldQuery;
 import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.field.FieldQueryManager;
 import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.DistinctQueryColumn;
+import com.mybatisflex.core.query.Join;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.relation.RelationManager;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static com.mybatisflex.core.query.QueryMethods.count;
@@ -138,18 +151,31 @@ public class MapperUtil {
     }
 
     @SafeVarargs
-    public static <T, R> Page<R> doPaginate(BaseMapper<T> mapper, Page<R> page, QueryWrapper queryWrapper, Class<R> asType, boolean withRelations, Consumer<FieldQueryBuilder<R>>... consumers) {
+    public static <T, R> Page<R> doPaginate(
+        BaseMapper<T> mapper,
+        Page<R> page,
+        QueryWrapper queryWrapper,
+        Class<R> asType,
+        boolean withRelations,
+        Consumer<FieldQueryBuilder<R>>... consumers
+    ) {
         try {
             // 只有 totalRow 小于 0 的时候才会去查询总量
             // 这样方便用户做总数缓存，而非每次都要去查询总量
             // 一般的分页场景中，只有第一页的时候有必要去查询总量，第二页以后是不需要的
             if (page.getTotalRow() < 0) {
-                QueryWrapper countQueryWrapper;
+                QueryWrapper countQueryWrapper = queryWrapper.clone();
+
+                // optimize: 在 count 之前先去掉 limit 参数，避免 count 查询错误
+                CPI.setLimitRows(countQueryWrapper, null);
+                CPI.setLimitOffset(countQueryWrapper, null);
+
                 if (page.needOptimizeCountQuery()) {
-                    countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(queryWrapper);
+                    countQueryWrapper = MapperUtil.optimizeCountQueryWrapper(countQueryWrapper);
                 } else {
-                    countQueryWrapper = MapperUtil.rawCountQueryWrapper(queryWrapper);
+                    countQueryWrapper = MapperUtil.rawCountQueryWrapper(countQueryWrapper);
                 }
+
                 page.setTotalRow(mapper.selectCountByQuery(countQueryWrapper));
             }
 
