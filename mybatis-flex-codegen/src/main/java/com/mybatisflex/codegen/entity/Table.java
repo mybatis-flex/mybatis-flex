@@ -129,6 +129,38 @@ public class Table {
         this.columns = columns;
     }
 
+
+    public boolean containsColumn(String columnName) {
+        if (columns == null || columns.isEmpty()) {
+            return false;
+        }
+        for (Column column : columns) {
+            if (columnName.equals(column.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsColumn(String... columnNames) {
+        for (String columnName : columnNames) {
+            if (!containsColumn(columnName)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean containsAnyColumn(String... columnNames) {
+        for (String columnName : columnNames) {
+            if (containsColumn(columnName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public void addColumn(Column column) {
         //主键
         if (primaryKeys != null && primaryKeys.contains(column.getName())) {
@@ -179,7 +211,7 @@ public class Table {
         EntityConfig entityConfig = globalConfig.getEntityConfig();
 
         //未开启基类生成，或者是基类的情况下，添加 Column 类型的导入
-        if(!entityConfig.isWithBaseClassEnable() || (entityConfig.isWithBaseClassEnable() && isBase)){
+        if (!entityConfig.isWithBaseClassEnable() || (entityConfig.isWithBaseClassEnable() && isBase)) {
             for (Column column : columns) {
                 imports.addAll(column.getImportClasses());
             }
@@ -197,7 +229,7 @@ public class Table {
         }
 
 
-        if(!entityConfig.isWithBaseClassEnable() || (entityConfig.isWithBaseClassEnable() && !isBase)){
+        if (!entityConfig.isWithBaseClassEnable() || (entityConfig.isWithBaseClassEnable() && !isBase)) {
             if (tableConfig != null) {
                 if (tableConfig.getInsertListenerClass() != null) {
                     imports.add(tableConfig.getInsertListenerClass().getName());
