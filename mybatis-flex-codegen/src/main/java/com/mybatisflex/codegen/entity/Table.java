@@ -131,7 +131,7 @@ public class Table {
 
 
     public boolean containsColumn(String columnName) {
-        if (columns == null || columns.isEmpty()) {
+        if (columns == null || columns.isEmpty() || StringUtil.isBlank(columnName)) {
             return false;
         }
         for (Column column : columns) {

@@ -34,9 +34,9 @@ public class StringUtil {
     public static String firstCharToLowerCase(String string) {
         char firstChar = string.charAt(0);
         if (firstChar >= 'A' && firstChar <= 'Z') {
-            char[] arr = string.toCharArray();
-            arr[0] += ('a' - 'A');
-            return new String(arr);
+            char[] chars = string.toCharArray();
+            chars[0] += ('a' - 'A');
+            return new String(chars);
         }
         return string;
     }
@@ -50,9 +50,9 @@ public class StringUtil {
     public static String firstCharToUpperCase(String string) {
         char firstChar = string.charAt(0);
         if (firstChar >= 'a' && firstChar <= 'z') {
-            char[] arr = string.toCharArray();
-            arr[0] -= ('a' - 'A');
-            return new String(arr);
+            char[] chars = string.toCharArray();
+            chars[0] -= ('a' - 'A');
+            return new String(chars);
         }
         return string;
     }
@@ -88,7 +88,7 @@ public class StringUtil {
         if (isBlank(string)) {
             return "";
         }
-        if(Character.isUpperCase(string.charAt(0))){
+        if (Character.isUpperCase(string.charAt(0))) {
             string = string.toLowerCase();
         }
         int strLen = string.length();
@@ -110,15 +110,15 @@ public class StringUtil {
     /**
      * 删除字符串中的字符
      */
-    public static String deleteChar(String string,char deleteChar) {
+    public static String deleteChar(String string, char deleteChar) {
         if (isBlank(string)) {
             return "";
         }
         char[] chars = string.toCharArray();
         StringBuilder sb = new StringBuilder(string.length());
         for (char aChar : chars) {
-            if (aChar != deleteChar){
-               sb.append(aChar);
+            if (aChar != deleteChar) {
+                sb.append(aChar);
             }
         }
         return sb.toString();
@@ -127,13 +127,13 @@ public class StringUtil {
     /**
      * 字符串为 null 或者内部字符全部为 ' ', '\t', '\n', '\r' 这四类字符时返回 true
      */
-    public static boolean isBlank(String str) {
-        if (str == null) {
+    public static boolean isBlank(String string) {
+        if (string == null) {
             return true;
         }
 
-        for (int i = 0, len = str.length(); i < len; i++) {
-            if (str.charAt(i) > ' ') {
+        for (int i = 0, len = string.length(); i < len; i++) {
+            if (string.charAt(i) > ' ') {
                 return false;
             }
         }
@@ -143,11 +143,11 @@ public class StringUtil {
 
     public static boolean isAnyBlank(String... strings) {
         if (strings == null || strings.length == 0) {
-            throw new IllegalArgumentException("args is empty.");
+            throw new IllegalArgumentException("strings is null or empty.");
         }
 
-        for (String str : strings) {
-            if (isBlank(str)) {
+        for (String string : strings) {
+            if (isBlank(string)) {
                 return true;
             }
         }
@@ -168,15 +168,15 @@ public class StringUtil {
     /**
      * 这个字符串是否是全是数字
      *
-     * @param str
-     * @return
+     * @param string
+     * @return 全部数数值时返回 true，否则返回 false
      */
-    public static boolean isNumeric(String str) {
-        if (isBlank(str)) {
+    public static boolean isNumeric(String string) {
+        if (isBlank(string)) {
             return false;
         }
-        for (int i = str.length(); --i >= 0; ) {
-            int chr = str.charAt(i);
+        for (int i = string.length(); --i >= 0; ) {
+            int chr = string.charAt(i);
             if (chr < 48 || chr > 57) {
                 return false;
             }
@@ -185,13 +185,13 @@ public class StringUtil {
     }
 
 
-    public static boolean startsWithAny(String str, String... prefixes) {
-        if (isBlank(str) || prefixes == null || prefixes.length == 0) {
+    public static boolean startsWithAny(String string, String... prefixes) {
+        if (isBlank(string) || prefixes == null) {
             return false;
         }
 
         for (String prefix : prefixes) {
-            if (str.startsWith(prefix)) {
+            if (string.startsWith(prefix)) {
                 return true;
             }
         }
@@ -200,7 +200,7 @@ public class StringUtil {
 
 
     public static boolean endsWithAny(String str, String... suffixes) {
-        if (isBlank(str) || suffixes == null || suffixes.length == 0) {
+        if (isBlank(str) || suffixes == null) {
             return false;
         }
 
@@ -210,11 +210,6 @@ public class StringUtil {
             }
         }
         return false;
-    }
-
-
-    public static String trimOrNull(String string) {
-        return string != null ? string.trim() : null;
     }
 
 
@@ -313,14 +308,14 @@ public class StringUtil {
         return string != null ? string.trim() : null;
     }
 
-    public static String substringAfterLast(String text, String str) {
+    public static String substringAfterLast(String text, String prefix) {
         if (text == null) {
             return null;
         }
-        if (str == null) {
+        if (prefix == null) {
             return text;
         }
-        return text.substring(text.lastIndexOf(str) + 1);
+        return text.substring(text.lastIndexOf(prefix) + 1);
     }
 
 
