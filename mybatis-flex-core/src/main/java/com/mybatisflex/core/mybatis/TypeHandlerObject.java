@@ -24,9 +24,9 @@ import java.sql.SQLException;
 
 public class TypeHandlerObject implements Serializable {
 
-    private TypeHandler typeHandler;
-    private Object value;
-    private JdbcType jdbcType;
+    private final TypeHandler typeHandler;
+    private final Object value;
+    private final JdbcType jdbcType;
 
     public TypeHandlerObject(TypeHandler typeHandler, Object value, JdbcType jdbcType) {
         this.typeHandler = typeHandler;
@@ -36,6 +36,10 @@ public class TypeHandlerObject implements Serializable {
 
     public void setParameter(PreparedStatement ps, int i) throws SQLException {
         typeHandler.setParameter(ps, i, value, jdbcType);
+    }
+
+    public Object getValue() {
+        return value;
     }
 
 }
