@@ -51,12 +51,12 @@ public class FieldWrapper {
             synchronized (clazz) {
                 fieldWrapper = wrapperMap.get(fieldName);
                 if (fieldWrapper == null) {
-                    Field findField = ClassUtil.getFirstField(clazz, field -> field.getName().equals(fieldName));
+                    Field findField = ClassUtil.getFirstField(clazz, field -> field.getName().equalsIgnoreCase(fieldName));
                     if (findField == null) {
                         throw new IllegalStateException("Can not find field \"" + fieldName + "\" in class: " + clazz.getName());
                     }
 
-                    String setterName = "set" + StringUtil.firstCharToUpperCase(fieldName);
+                    String setterName = "set" + StringUtil.firstCharToUpperCase(findField.getName());
                     Method setter = ClassUtil.getFirstMethod(clazz, method ->
                         method.getParameterCount() == 1
                             && Modifier.isPublic(method.getModifiers())
@@ -74,7 +74,7 @@ public class FieldWrapper {
 
                     fieldWrapper.setterMethod = setter;
 
-                    String[] getterNames = new String[]{"get" + StringUtil.firstCharToUpperCase(fieldName), "is" + StringUtil.firstCharToUpperCase(fieldName)};
+                    String[] getterNames = new String[]{"get" + StringUtil.firstCharToUpperCase(findField.getName()), "is" + StringUtil.firstCharToUpperCase(findField.getName())};
                     fieldWrapper.getterMethod = ClassUtil.getFirstMethod(clazz, method -> method.getParameterCount() == 0
                         && Modifier.isPublic(method.getModifiers())
                         && ArrayUtil.contains(getterNames, method.getName()));
