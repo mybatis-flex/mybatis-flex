@@ -3,6 +3,19 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.8.2 20240305:
+- 新增：Maven 编译添加 Javadoc 插件生成 Javadoc 的支持，感谢 @Suomm
+- 优化：优化对 SpringBoot3 下的 Druid 数据源适配，感谢 @Suomm #I94P5P
+- 优化：dependencies 模块取消继承父模块的其他依赖管理版本，感谢 @Suomm #I94RVP
+- 优化：分页在 count 之前先去掉 limit 参数，避免 count 查询错误，感谢 @ocoooo
+- 优化：优化 SqlOperators 使之代码更加严谨
+- 优化：代码生成器 Table.java 添加 containsColumn 方法的支持
+- 优化：TypeHandlerObject 添加 value 的 getter 方法，方便拦截器在某些场景下获取，感谢 @ruansheng
+- 修复：全局 TypeHandler 无法注册的问题，感谢 @Suomm
+- 修复：ConvertUtil.java 无法正确转换 Serializable 参数的问题
+
+
+
 ## v1.8.1 20240302:
 - 新增：添加 CommaSplitTypeHandler 用于对逗号分割存储映射到实体类 `List<String>` 的支持
 - 新增：代码生成器 EntityConfig 添加 superClassFactory 配置的支持
