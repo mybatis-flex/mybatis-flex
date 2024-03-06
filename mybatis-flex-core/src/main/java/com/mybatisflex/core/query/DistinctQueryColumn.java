@@ -15,14 +15,17 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.StringUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class DistinctQueryColumn extends QueryColumn {
+public class DistinctQueryColumn extends QueryColumn implements HasParamsColumn {
 
     private List<QueryColumn> queryColumns;
 
@@ -62,4 +65,21 @@ public class DistinctQueryColumn extends QueryColumn {
         return clone;
     }
 
+    @Override
+    public Object[] getParamValues() {
+        if (CollectionUtil.isEmpty(queryColumns)) {
+            return FlexConsts.EMPTY_ARRAY;
+        }
+
+        List<Object> params = new ArrayList<>();
+
+        for (QueryColumn queryColumn : queryColumns) {
+            if (queryColumn instanceof HasParamsColumn) {
+                Object[] paramValues = ((HasParamsColumn) queryColumn).getParamValues();
+                params.addAll(Arrays.asList(paramValues));
+            }
+        }
+
+        return params.toArray();
+    }
 }
