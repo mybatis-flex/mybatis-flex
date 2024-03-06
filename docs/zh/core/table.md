@@ -114,7 +114,7 @@ public class MyInsertListener implements InsertListener {
 
 ## onSet
 
-onSet 可以用于配置：查询数据 entity （或者 entity 列表、分页等）时，对 entity 的属性设置的监听，可以用于如下的差场景。
+onSet 可以用于配置：查询数据 entity （或者 entity 列表、分页等）时，对 entity 的属性设置的监听，可以用于如下的场景。
 
 - 场景1：字段权限，不同的用户或者角色可以查询不同的字段内容。
 - 场景2：字典回写，entity 中定义许多业务字段，当数据库字段赋值时，主动去设置业务字段。
