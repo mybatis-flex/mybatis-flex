@@ -11,9 +11,33 @@
     <packaging>pom</packaging>
 
     <name>mybatis-flex-dependencies</name>
+    <url>https://mybatis-flex.com</url>
     <description>MyBatis-Flex BOM (Bill of Materials).</description>
 
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/mybatis-flex/mybatis-flex/issues</url>
+    </issueManagement>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/mybatis-flex/mybatis-flex</url>
+        <connection>scm:git:https://github.com/mybatis-flex/mybatis-flex.git</connection>
+        <developerConnection>scm:git:https://github.com/mybatis-flex/mybatis-flex.git</developerConnection>
+    </scm>
     <developers>
+        <developer>
+            <name>Michael Yang</name>
+            <email>fuhai999@gmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
         <developer>
             <name>王帅</name>
             <email>suomm.macher@foxmail.com</email>
@@ -23,7 +47,6 @@
             <timezone>+8</timezone>
         </developer>
     </developers>
-
     <properties>
         <mybatis-flex.version>1.8.2</mybatis-flex.version>
     </properties>
@@ -72,5 +95,114 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <profiles>
+        <profile>
+            <!-- 跳过测试：mvn package -Dmaven.test.skip=true   -->
+            <!-- 检测依赖最新版本：mvn versions:display-dependency-updates  -->
+            <!-- 统一修改版本号：mvn versions:set -DnewVersion=3.0  -->
+            <!-- mvn -N versions:update-child-modules  -->
+            <!-- mvn versions:set -DnewVersion=2.0 -DprocessAllModules=true -DallowSnapshots=true -->
+
+            <!-- mvn clean source:jar install -->
+            <!-- mvn deploy -Dmaven.test.skip=true -e -P release -->
+            <!-- mvn deploy -e -P release -->
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- Source -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Javadoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.4</version>
+                        <configuration>
+                            <windowtitle>Mybatis-Flex</windowtitle>
+                            <doctitle>Mybatis-Flex</doctitle>
+                            <show>private</show>
+                            <detectLinks>false</detectLinks>
+                            <detectOfflineLinks>true</detectOfflineLinks>
+                            <linksource>true</linksource>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                            <detectJavaApiLink>true</detectJavaApiLink>
+                            <source>8</source>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- 以下是GPG -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
+
 
 </project>
