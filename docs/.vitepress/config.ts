@@ -30,8 +30,10 @@ export default defineConfig({
             {text: '帮助文档', link: '/zh/intro/what-is-mybatisflex'},
             {text: '🆘 常见问题', link: '/zh/faq'},
             {text: '周边 / 视频教程', link: '/zh/awesome-things'},
+            {text: '代码生成器', link: '/zh/others/codegen.md'},
             {text: '更新日志', link: '/zh/changes'},
             {text: 'JavaDoc', link: 'https://apidoc.gitee.com/mybatis-flex/mybatis-flex/'},
+
             {
                 text: '获取源码', items: [
                     {text: 'Gitee', link: 'https://gitee.com/mybatis-flex/mybatis-flex'},

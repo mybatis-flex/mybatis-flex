@@ -1,7 +1,7 @@
 # MyBatis-Flex 代码生成器
 
 在 mybatis-flex 的模块 `mybatis-flex-codegen` 中，提供了可以通过数据库表，生成 Entity 类和 Mapper 类的功能。当我们把数据库表设计完成
-后可以使用其快速生成 Entity 和 Mapper 的 java 类。
+后可以使用其快速生成 Entity、 Mapper、 Service、 Controller 等产物。 除此之外，我们还可以通过扩展生成更多种类的物料。
 
 在使用前先添加 `mybatis-flex-codegen` 的 Maven 依赖：
 
@@ -561,9 +561,10 @@ public class ColumnConfig implements Serializable {
 ```
 
 
-## 自定义属性类型
+## 自定 Entity 的义属性类型
 
 **方式 1：通过 JdbcTypeMapping**
+
 
 MyBatis-Flex 内置了一个名为：`JdbcTypeMapping` 的 java 类，我们可以用其配置映射 Jdbc 驱动的数据类型为自定义的
 数据类型，在开始生成代码之前，可以先调用其进行配置，例如：
@@ -574,7 +575,29 @@ JdbcTypeMapping.registerMapping(LocalDateTime.class, Date.class);
 
 那么，当我们生成代码的时候，发现 JDBC 驱动的数据类型为 `LocalDateTime`，则 Entity 对应的属性类型为 `Date`。
 
-**方式 2：使用 ColumnConfig 定义**
+
+**方式 2：通过 JdbcTypeMapper**
+
+示例代码如下：
+
+```java
+JdbcTypeMapping.setTypeMapper(new JdbcTypeMapping.JdbcTypeMapper() {
+    @Override
+    public String getType(String jdbcType, Table table, Column column) {
+        if (table.getName().equals("tb_sys_permission")
+            && column.getName().equals("type")){
+            return PermissionType.class.getName();
+        }
+        return null;
+    }
+});
+```
+在以上的示例中，如果表名为 `tb_sys_permission` 且 列名为 `type`，生成的 Entity 的属性类型为 `PermissionType`；
+
+> 注意，通过 JdbcTypeMapper 设置的优先级要高于 `JdbcTypeMapping.registerMapping` 设置的内容。
+
+
+**方式 3：使用 ColumnConfig 定义**
 
 如下方示例代码所示：
 
