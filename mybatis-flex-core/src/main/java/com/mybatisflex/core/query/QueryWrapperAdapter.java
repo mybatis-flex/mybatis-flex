@@ -269,6 +269,13 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
+    public <Q extends QueryWrapper> Joiner<Q> leftJoin(QueryTable table) {
+        return super.leftJoin(table);
+    }
+
+
+
+    @Override
     public Joiner<R> leftJoin(String table) {
         return super.leftJoin(table);
     }
@@ -309,6 +316,12 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
+    public <Q extends QueryWrapper> Joiner<Q> rightJoin(QueryTable table) {
+        return super.rightJoin(table);
+    }
+
+
+    @Override
     public Joiner<R> rightJoin(String table) {
         return super.rightJoin(table);
     }
@@ -346,6 +359,11 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     @Override
     public Joiner<R> rightJoin(QueryWrapper table, boolean when) {
         return super.rightJoin(table, when);
+    }
+
+    @Override
+    public <Q extends QueryWrapper> Joiner<Q> innerJoin(QueryTable table) {
+        return super.innerJoin(table);
     }
 
     @Override
@@ -389,6 +407,11 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
+    public <Q extends QueryWrapper> Joiner<Q> fullJoin(QueryTable table) {
+        return super.fullJoin(table);
+    }
+
+    @Override
     public Joiner<R> fullJoin(String table) {
         return super.fullJoin(table);
     }
@@ -429,6 +452,11 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
+    public <Q extends QueryWrapper> Joiner<Q> crossJoin(QueryTable table) {
+        return super.crossJoin(table);
+    }
+
+    @Override
     public Joiner<R> crossJoin(String table) {
         return super.crossJoin(table);
     }
@@ -466,6 +494,11 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     @Override
     public Joiner<R> crossJoin(QueryWrapper table, boolean when) {
         return super.crossJoin(table, when);
+    }
+
+    @Override
+    public <Q extends QueryWrapper> Joiner<Q> join(QueryTable table) {
+        return super.join(table);
     }
 
     @Override

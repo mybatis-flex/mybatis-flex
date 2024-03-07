@@ -18,13 +18,19 @@ package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
 import com.mybatisflex.core.logicdelete.impl.*;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.junit.Assert.assertEquals;
+
 /**
  * 逻辑删除测试。
  *
@@ -35,6 +41,7 @@ import static org.junit.Assert.assertEquals;
 public class LogicDeleteTest {
 
     private final String logicColumn = "deleted";
+
     private final IDialect dialect = DialectFactory.getDialect();
 
     @Test
@@ -60,4 +67,47 @@ public class LogicDeleteTest {
         assertEquals(actualLogicNormalCondition, logicNormalCondition);
     }
 
+
+    //逻辑删除时 保证前面的条件被括号包裹
+    //https://gitee.com/mybatis-flex/mybatis-flex/issues/I9163G
+    @Test
+    public void giteeIssueI9163G() {
+        TableInfo userTableInfo = new TableInfo();
+        userTableInfo.setTableName("user");
+        userTableInfo.setLogicDeleteColumn("deleted");
+        QueryTable userTable = new QueryTable("user");
+        QueryColumn userRoleId = new QueryColumn(userTable, "role_id");
+
+        TableInfo roleTableInfo = new TableInfo();
+        roleTableInfo.setTableName("role");
+        roleTableInfo.setLogicDeleteColumn("deleted");
+        QueryTable roleTable = new QueryTable("role");
+        QueryColumn roleId = new QueryColumn(roleTable, "id");
+
+
+        QueryWrapper queryWrapper = new QueryWrapper()
+            .select("1")
+            .from(userTable)
+            .leftJoin(roleTable).on(userRoleId.eq(roleId).or(roleId.ne(0)))
+            .where(userRoleId.eq(1));
+
+        DefaultLogicDeleteProcessor processor = new DefaultLogicDeleteProcessor();
+        processor.buildQueryCondition(queryWrapper, userTableInfo, "user");
+        QueryCondition whereQueryCondition = CPI.getWhereQueryCondition(queryWrapper);
+        String whereSql = whereQueryCondition.toSql(Arrays.asList(userTable,roleTable), dialect);
+        assertEquals("(`user`.`role_id` = ?) AND `user`.`deleted` = ?", whereSql);
+
+        Join join = CPI.getJoins(queryWrapper).get(0);
+        QueryCondition joinQueryCondition = CPI.getJoinQueryCondition(join);
+
+        QueryWrapper joinQueryWrapper = QueryWrapper.create()
+            .where(joinQueryCondition);
+        processor.buildQueryCondition(joinQueryWrapper, roleTableInfo, "role");
+
+        QueryCondition joinCondition = CPI.getWhereQueryCondition(joinQueryWrapper);
+        String joinSql = joinCondition.toSql(Arrays.asList(userTable,roleTable), dialect);
+        assertEquals("(`user`.`role_id` = `role`.`id` OR `role`.`id` != ?) AND `role`.`deleted` = ?", joinSql);
+
+
+    }
 }

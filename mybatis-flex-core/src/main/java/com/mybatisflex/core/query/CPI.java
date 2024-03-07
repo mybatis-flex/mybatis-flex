@@ -145,9 +145,11 @@ public class CPI {
     public static QueryCondition getWhereQueryCondition(QueryWrapper queryWrapper) {
         return queryWrapper.getWhereQueryCondition();
     }
-
     public static void setWhereQueryCondition(QueryWrapper queryWrapper, QueryCondition queryCondition) {
         queryWrapper.setWhereQueryCondition(queryCondition);
+    }
+    public static void addWhereQueryCondition(QueryWrapper queryWrapper, QueryCondition queryCondition) {
+        queryWrapper.addWhereQueryCondition(queryCondition);
     }
 
     public static void addWhereQueryCondition(QueryWrapper queryWrapper, QueryCondition queryCondition, SqlConnector connector) {
