@@ -18,7 +18,13 @@ package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.constant.SqlOperator;
-import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.If;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryColumnBehavior;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.StringUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,6 +40,8 @@ import static com.mybatisflex.core.query.QueryMethods.bracket;
 import static com.mybatisflex.core.query.QueryMethods.raw;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 动态条件测试。
@@ -172,7 +180,7 @@ public class DynamicConditionTest {
 
         QueryWrapper queryWrapper = QueryWrapper.create()
             .from(ACCOUNT)
-            .where(ACCOUNT.USER_NAME.in( ""));
+            .where(ACCOUNT.USER_NAME.in(""));
 
         System.out.println(queryWrapper.toSQL());
         assertEquals("SELECT * FROM `tb_account`", queryWrapper.toSQL());
@@ -219,7 +227,7 @@ public class DynamicConditionTest {
             .or(ACCOUNT.BIRTHDAY.le("2023-10-28 22:13:36"));
         System.out.println(queryWrapper2.toSQL());
 
-        assertEquals(printSql,queryWrapper2.toSQL());
+        assertEquals(printSql, queryWrapper2.toSQL());
     }
 
 
@@ -241,7 +249,7 @@ public class DynamicConditionTest {
 
     @Test
     public void testCastFunction1() {
-        QueryCondition condition = QueryCondition.create(new QueryColumn("id"), SqlOperator.IN, new Object[] {null});
+        QueryCondition condition = QueryCondition.create(new QueryColumn("id"), SqlOperator.IN, new Object[]{null});
         Assert.assertSame(condition, getConditionCaster().apply(condition));
     }
 
@@ -276,7 +284,7 @@ public class DynamicConditionTest {
         QueryColumnBehavior.setConditionCaster(CONVERT_EQUALS_TO_IS_NULL);
         QueryColumnBehavior.setSmartConvertInToEquals(true);
 
-        QueryCondition condition = QueryCondition.create(column, SqlOperator.IN, new Object[] { 1 });
+        QueryCondition condition = QueryCondition.create(column, SqlOperator.IN, new Object[]{1});
         QueryCondition expect = QueryCondition.create(column, SqlOperator.EQUALS, 1);
         QueryCondition actual = getConditionCaster().apply(condition);
 
@@ -289,7 +297,7 @@ public class DynamicConditionTest {
         QueryColumnBehavior.setConditionCaster(CONVERT_EQUALS_TO_IS_NULL);
         QueryColumnBehavior.setSmartConvertInToEquals(true);
 
-        QueryCondition condition = QueryCondition.create(column, SqlOperator.IN, new Object[] { null });
+        QueryCondition condition = QueryCondition.create(column, SqlOperator.IN, new Object[]{null});
         QueryCondition expect = column.isNull();
         QueryCondition actual = getConditionCaster().apply(condition);
 
@@ -308,4 +316,27 @@ public class DynamicConditionTest {
 
         assertConditionEquals(expect, actual);
     }
+
+    @Test
+    public void testHasCondition() {
+        QueryWrapper q1 = QueryWrapper.create();
+        QueryWrapper q2 = QueryWrapper.create()
+            .where(ACCOUNT.ID.eq(1));
+        QueryWrapper q3 = QueryWrapper.create()
+            .where(ACCOUNT.ID.eq(1, false));
+        QueryWrapper q4 = QueryWrapper.create()
+            .where(ACCOUNT.ID.eq(1, false))
+            .and(ACCOUNT.AGE.eq(18, false));
+        QueryWrapper q5 = QueryWrapper.create()
+            .where(ACCOUNT.ID.eq(1, false))
+            .and(ACCOUNT.AGE.eq(18))
+            .or(ACCOUNT.IS_DELETE.eq(0, false));
+
+        assertFalse(q1.hasCondition());
+        assertTrue(q2.hasCondition());
+        assertFalse(q3.hasCondition());
+        assertFalse(q4.hasCondition());
+        assertTrue(q5.hasCondition());
+    }
+
 }

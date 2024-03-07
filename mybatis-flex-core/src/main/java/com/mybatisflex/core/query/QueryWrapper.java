@@ -91,6 +91,26 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return create().where(map, operators);
     }
 
+    /**
+     * <p>判断当前 {@link QueryWrapper} 是否包含 {@code WHERE} 查询条件。
+     *
+     * <p>需要判断的查询条件，只包括主动构建的查询条件，不包括追加的条件，例如：逻辑删除功能自动添加的
+     * {@code is_delete = 0} 不会包含在检查条件内。
+     *
+     * @return {@code true} 包含条件，{@code false} 不包含条件。
+     */
+    public boolean hasCondition() {
+        // 无任何条件
+        if (whereQueryCondition == null) {
+            return false;
+        }
+        // 第一个条件有效
+        if (whereQueryCondition.checkEffective()) {
+            return true;
+        }
+        // 第一个条件无效时，查询之后是否有生效的条件
+        return whereQueryCondition.getNextEffectiveCondition() != null;
+    }
 
     @SuppressWarnings("unchecked")
     public <Q extends QueryWrapper> WithBuilder<Q> with(String name) {
@@ -671,6 +691,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         addGroupByColumns(LambdaUtil.getQueryColumn(column));
         return this;
     }
+
     public <T> QueryWrapper groupBy(LambdaGetter<T>... columns) {
         for (LambdaGetter<T> column : columns) {
             groupBy(LambdaUtil.getQueryColumn(column));
@@ -772,7 +793,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     public QueryWrapper orderBy(String... orderBys) {
         if (orderBys == null || orderBys.length == 0) {
-            //ignore
+            // ignore
             return this;
         }
         for (String queryOrderBy : orderBys) {
@@ -2311,7 +2332,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             }
         }
 
-        //select 子查询的参数：select * from (select ....)
+        // select 子查询的参数：select * from (select ....)
         List<Object> tableValues = null;
         List<QueryTable> queryTables = getQueryTables();
         if (CollectionUtil.isNotEmpty(queryTables)) {
@@ -2326,7 +2347,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             }
         }
 
-        //join 子查询的参数：left join (select ...)
+        // join 子查询的参数：left join (select ...)
         List<Object> joinValues = null;
         List<Join> joins = getJoins();
         if (CollectionUtil.isNotEmpty(joins)) {
@@ -2350,15 +2371,15 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             }
         }
 
-        //where 参数
+        // where 参数
         Object[] whereValues = WrapperUtil.getValues(whereQueryCondition);
 
-        //having 参数
+        // having 参数
         Object[] havingValues = WrapperUtil.getValues(havingQueryCondition);
 
         Object[] paramValues = ArrayUtil.concat(whereValues, havingValues);
 
-        //unions 参数
+        // unions 参数
         if (CollectionUtil.isNotEmpty(unions)) {
             for (UnionWrapper union : unions) {
                 QueryWrapper queryWrapper = union.getQueryWrapper();
@@ -2381,7 +2402,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * 在构建 sql 的时候，需要保证 where 在 having 的前面
      */
     Object[] getJoinValueArray() {
-        //join 子查询的参数：left join (select ...)
+        // join 子查询的参数：left join (select ...)
         List<Object> joinValues = null;
         List<Join> joins = getJoins();
         if (CollectionUtil.isNotEmpty(joins)) {
@@ -2414,15 +2435,15 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * 在构建 sql 的时候，需要保证 where 在 having 的前面
      */
     Object[] getConditionValueArray() {
-        //where 参数
+        // where 参数
         Object[] whereValues = WrapperUtil.getValues(whereQueryCondition);
 
-        //having 参数
+        // having 参数
         Object[] havingValues = WrapperUtil.getValues(havingQueryCondition);
 
         Object[] paramValues = ArrayUtil.concat(whereValues, havingValues);
 
-        //unions 参数
+        // unions 参数
         if (CollectionUtil.isNotEmpty(unions)) {
             for (UnionWrapper union : unions) {
                 QueryWrapper queryWrapper = union.getQueryWrapper();
