@@ -16,9 +16,7 @@
 package com.mybatisflex.core.logicdelete;
 
 import com.mybatisflex.core.dialect.IDialect;
-import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.query.QueryTable;
-import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.table.TableInfo;
 
 import static com.mybatisflex.core.constant.SqlConsts.EQUALS;
@@ -45,6 +43,12 @@ public abstract class AbstractLogicDeleteProcessor implements LogicDeleteProcess
     public void buildQueryCondition(QueryWrapper queryWrapper, TableInfo tableInfo, String joinTableAlias) {
         QueryTable queryTable = new QueryTable(tableInfo.getSchema(), tableInfo.getTableName()).as(joinTableAlias);
         QueryColumn queryColumn = new QueryColumn(queryTable, tableInfo.getLogicDeleteColumn());
+        //逻辑删除时 保证前面的条件被括号包裹 fix:https://gitee.com/mybatis-flex/mybatis-flex/issues/I9163G
+        final QueryCondition whereCondition = CPI.getWhereQueryCondition(queryWrapper);
+        if (whereCondition != null && !(whereCondition instanceof Brackets)) {
+            QueryCondition wrappedCondition  = new Brackets(whereCondition);
+            CPI.setWhereQueryCondition(queryWrapper, wrappedCondition);
+        }
         queryWrapper.and(queryColumn.eq(getLogicNormalValue()));
     }
 

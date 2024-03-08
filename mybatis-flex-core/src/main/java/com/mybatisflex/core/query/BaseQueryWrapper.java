@@ -94,8 +94,12 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
         return (T) this;
     }
 
-
     protected T setWhereQueryCondition(QueryCondition queryCondition) {
+        whereQueryCondition = queryCondition;
+        return (T) this;
+    }
+
+    protected T addWhereQueryCondition(QueryCondition queryCondition) {
         if (queryCondition != null) {
             if (whereQueryCondition != null) {
                 queryCondition.connect(whereQueryCondition, SqlConnector.AND);
