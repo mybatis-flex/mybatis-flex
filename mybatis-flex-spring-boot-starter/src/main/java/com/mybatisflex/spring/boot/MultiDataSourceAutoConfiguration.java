@@ -52,7 +52,7 @@ import java.util.Map;
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
 @AutoConfigureBefore(value = {DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class}
     , name = {"com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure",
-    "com.alibaba.druid.spring.boot3.autoconfigure.DataSourceAutoConfiguration"})
+    "com.alibaba.druid.spring.boot3.autoconfigure.DruidDataSourceAutoConfigure"})
 public class MultiDataSourceAutoConfiguration {
 
 
