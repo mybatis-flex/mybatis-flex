@@ -94,8 +94,8 @@ public class LogicDeleteTest {
         DefaultLogicDeleteProcessor processor = new DefaultLogicDeleteProcessor();
         processor.buildQueryCondition(queryWrapper, userTableInfo, "user");
         QueryCondition whereQueryCondition = CPI.getWhereQueryCondition(queryWrapper);
-        String whereSql = whereQueryCondition.toSql(Arrays.asList(userTable,roleTable), dialect);
-        assertEquals("(`user`.`role_id` = ?) AND `user`.`deleted` = ?", whereSql);
+        String whereSql = whereQueryCondition.toSql(Arrays.asList(userTable, roleTable), dialect);
+        assertEquals("`user`.`role_id` = ? AND `user`.`deleted` = ?", whereSql);
 
         Join join = CPI.getJoins(queryWrapper).get(0);
         QueryCondition joinQueryCondition = CPI.getJoinQueryCondition(join);
@@ -105,9 +105,7 @@ public class LogicDeleteTest {
         processor.buildQueryCondition(joinQueryWrapper, roleTableInfo, "role");
 
         QueryCondition joinCondition = CPI.getWhereQueryCondition(joinQueryWrapper);
-        String joinSql = joinCondition.toSql(Arrays.asList(userTable,roleTable), dialect);
+        String joinSql = joinCondition.toSql(Arrays.asList(userTable, roleTable), dialect);
         assertEquals("(`user`.`role_id` = `role`.`id` OR `role`.`id` != ?) AND `role`.`deleted` = ?", joinSql);
-
-
     }
 }

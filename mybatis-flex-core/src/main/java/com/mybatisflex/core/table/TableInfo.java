@@ -29,17 +29,7 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
-import com.mybatisflex.core.query.CPI;
-import com.mybatisflex.core.query.Join;
-import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.query.QueryCondition;
-import com.mybatisflex.core.query.QueryMethods;
-import com.mybatisflex.core.query.QueryTable;
-import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.query.SelectQueryColumn;
-import com.mybatisflex.core.query.SelectQueryTable;
-import com.mybatisflex.core.query.SqlOperators;
-import com.mybatisflex.core.query.UnionWrapper;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.tenant.TenantManager;
 import com.mybatisflex.core.update.RawValue;
@@ -878,6 +868,14 @@ public class TableInfo {
 
         //逻辑删除
         if (StringUtil.isNotBlank(getLogicDeleteColumnOrSkip())) {
+            // 逻辑删除时 保证前面的条件被括号包裹
+            // fix:https://gitee.com/mybatis-flex/mybatis-flex/issues/I9163G
+            QueryCondition whereCondition = CPI.getWhereQueryCondition(queryWrapper);
+            if (whereCondition != null && !(whereCondition instanceof Brackets)) {
+                QueryCondition wrappedCondition = new Brackets(whereCondition);
+                CPI.setWhereQueryCondition(queryWrapper, wrappedCondition);
+            }
+
             String joinTableAlias = CPI.getContext(queryWrapper, "joinTableAlias");
             LogicDeleteManager.getProcessor().buildQueryCondition(queryWrapper, this, joinTableAlias);
         }

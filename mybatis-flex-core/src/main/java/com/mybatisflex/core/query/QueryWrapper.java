@@ -2321,22 +2321,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    /**
-     * 判断包含的where条件是否为空
-     * @return true: 为空 false: 不为空
-     */
-    public boolean conditionIsEmpty(){
-        return whereQueryCondition == null || !whereQueryCondition.checkEffective();
-    }
-
-
-    /**
-     * 判断包含的where条件是否不为空
-     * @return true: 不为空 false: 为空
-     */
-    public boolean conditionIsNotEmpty(){
-        return !conditionIsEmpty();
-    }
 
     ////////内部方法////////
 
