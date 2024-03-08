@@ -27,10 +27,13 @@ public class TableDef implements Serializable {
     private String schema;
     private final String tableName;
 
+    private String alias;
+
     public TableDef(String schema, String tableName) {
         this.schema = schema;
         this.tableName = tableName;
     }
+
 
     public TableDef(String tableName) {
         this.tableName = tableName;
@@ -42,6 +45,14 @@ public class TableDef implements Serializable {
 
     public String getSchema() {
         return schema;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public QueryTable as(String alias) {
