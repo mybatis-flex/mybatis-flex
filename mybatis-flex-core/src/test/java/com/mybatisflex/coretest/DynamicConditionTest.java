@@ -319,24 +319,39 @@ public class DynamicConditionTest {
 
     @Test
     public void testHasCondition() {
-        QueryWrapper q1 = QueryWrapper.create();
-        QueryWrapper q2 = QueryWrapper.create()
+        QueryWrapper queryWrapper = QueryWrapper.create();
+        assertFalse(queryWrapper.hasCondition());
+
+        queryWrapper = QueryWrapper.create()
             .where(ACCOUNT.ID.eq(1));
-        QueryWrapper q3 = QueryWrapper.create()
+        assertTrue(queryWrapper.hasCondition());
+
+        queryWrapper = QueryWrapper.create()
+            .where(ACCOUNT.ID.eq(1).and(ACCOUNT.AGE.eq(18)));
+        assertTrue(queryWrapper.hasCondition());
+
+        queryWrapper = QueryWrapper.create()
+            .where(ACCOUNT.ID.eq(1, false).and(ACCOUNT.AGE.eq(18)));
+        assertTrue(queryWrapper.hasCondition());
+
+        queryWrapper = QueryWrapper.create()
+            .where(ACCOUNT.ID.eq(1, false).and(ACCOUNT.AGE.eq(18, false)));
+        assertFalse(queryWrapper.hasCondition());
+
+        queryWrapper = QueryWrapper.create()
             .where(ACCOUNT.ID.eq(1, false));
-        QueryWrapper q4 = QueryWrapper.create()
+        assertFalse(queryWrapper.hasCondition());
+
+        queryWrapper = QueryWrapper.create()
             .where(ACCOUNT.ID.eq(1, false))
             .and(ACCOUNT.AGE.eq(18, false));
-        QueryWrapper q5 = QueryWrapper.create()
+        assertFalse(queryWrapper.hasCondition());
+
+        queryWrapper = QueryWrapper.create()
             .where(ACCOUNT.ID.eq(1, false))
             .and(ACCOUNT.AGE.eq(18))
             .or(ACCOUNT.IS_DELETE.eq(0, false));
-
-        assertFalse(q1.hasCondition());
-        assertTrue(q2.hasCondition());
-        assertFalse(q3.hasCondition());
-        assertFalse(q4.hasCondition());
-        assertTrue(q5.hasCondition());
+        assertTrue(queryWrapper.hasCondition());
     }
 
 }

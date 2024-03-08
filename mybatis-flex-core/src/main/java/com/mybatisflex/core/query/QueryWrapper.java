@@ -100,16 +100,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @return {@code true} 包含条件，{@code false} 不包含条件。
      */
     public boolean hasCondition() {
-        // 无任何条件
-        if (whereQueryCondition == null) {
-            return false;
-        }
-        // 第一个条件有效
-        if (whereQueryCondition.checkEffective()) {
-            return true;
-        }
-        // 第一个条件无效时，查询之后是否有生效的条件
-        return whereQueryCondition.getNextEffectiveCondition() != null;
+        QueryCondition c;
+        return (c = whereQueryCondition) != null && (c.checkEffective() || c.getNextEffectiveCondition() != null);
     }
 
     @SuppressWarnings("unchecked")
