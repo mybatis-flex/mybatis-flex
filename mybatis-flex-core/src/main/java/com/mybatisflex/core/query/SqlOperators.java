@@ -26,7 +26,8 @@ import java.util.HashMap;
  */
 public class SqlOperators extends HashMap<String, SqlOperator> {
 
-    private final static SqlOperators EMPTY = new SqlOperators() {
+    private static final SqlOperators EMPTY = new SqlOperators() {
+        @Override
         public SqlOperator put(String key, SqlOperator value) {
             throw new IllegalArgumentException("Can not set SqlOperator for \"empty\" SqlOperators");
         }

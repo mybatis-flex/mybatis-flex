@@ -16,19 +16,40 @@
 
 package com.mybatisflex.coretest;
 
+import com.github.vertical_blank.sqlformatter.SqlFormatter;
 import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
-import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.query.DistinctQueryColumn;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.RawQueryColumn;
+import com.mybatisflex.core.query.SqlOperators;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.table.TableManager;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.mybatisflex.core.query.QueryMethods.*;
+import java.util.Date;
+
+import static com.mybatisflex.core.query.QueryMethods.avg;
+import static com.mybatisflex.core.query.QueryMethods.case_;
+import static com.mybatisflex.core.query.QueryMethods.column;
+import static com.mybatisflex.core.query.QueryMethods.convert;
+import static com.mybatisflex.core.query.QueryMethods.count;
+import static com.mybatisflex.core.query.QueryMethods.distinct;
+import static com.mybatisflex.core.query.QueryMethods.exists;
+import static com.mybatisflex.core.query.QueryMethods.left;
+import static com.mybatisflex.core.query.QueryMethods.max;
+import static com.mybatisflex.core.query.QueryMethods.noCondition;
+import static com.mybatisflex.core.query.QueryMethods.notExists;
+import static com.mybatisflex.core.query.QueryMethods.raw;
+import static com.mybatisflex.core.query.QueryMethods.select;
+import static com.mybatisflex.core.query.QueryMethods.selectCountOne;
+import static com.mybatisflex.core.query.QueryMethods.selectOne;
+import static com.mybatisflex.core.query.QueryMethods.year;
 import static com.mybatisflex.coretest.table.Account01TableDef.ACCOUNT01;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
@@ -809,19 +830,21 @@ public class AccountSqlTester {
         Account account = new Account();
         account.setAge(18);
         account.setUserName("michael");
+        account.setBirthday(new Date());
 
         SqlOperators operators = SqlOperators.of()
-            .set(Account::getUserName, SqlOperator.LIKE)
+            .set(Account::getUserName, SqlOperator.LIKE_LEFT)
+            .set(Account::getBirthday, SqlOperator.IGNORE)
             .set(Account::getAge, SqlOperator.GE);
 
         QueryWrapper qw = QueryWrapper.create(account, operators);
 
         Assert.assertEquals("SELECT `id`, `user_name`, `birthday`, `sex`, `age`, `is_normal`, `is_delete` FROM `tb_account` " +
-                "WHERE `user_name` LIKE '%michael%' A" +
+                "WHERE `user_name` LIKE 'michael%' A" +
                 "ND `sex` = 0 " +
                 "AND `age` >= 18 " +
                 "AND `is_normal` = false"
             , qw.toSQL());
-        System.out.println(qw.toSQL());
+        System.out.println(SqlFormatter.format(qw.toSQL()));
     }
 }

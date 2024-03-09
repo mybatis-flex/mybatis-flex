@@ -29,7 +29,18 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
-import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.query.Brackets;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.Join;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryMethods;
+import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.SelectQueryColumn;
+import com.mybatisflex.core.query.SelectQueryTable;
+import com.mybatisflex.core.query.SqlOperators;
+import com.mybatisflex.core.query.UnionWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.tenant.TenantManager;
 import com.mybatisflex.core.update.RawValue;
@@ -976,8 +987,15 @@ public class TableInfo {
                 QueryColumn queryColumn = buildQueryColumn(column);
                 if (operators != null && operators.containsKey(property)) {
                     SqlOperator operator = operators.get(property);
+                    if (operator == SqlOperator.IGNORE) {
+                        return;
+                    }
                     if (operator == SqlOperator.LIKE || operator == SqlOperator.NOT_LIKE) {
                         value = "%" + value + "%";
+                    } else if (operator == SqlOperator.LIKE_LEFT || operator == SqlOperator.NOT_LIKE_LEFT) {
+                        value = value + "%";
+                    } else if (operator == SqlOperator.LIKE_RIGHT || operator == SqlOperator.NOT_LIKE_RIGHT) {
+                        value = "%" + value;
                     }
                     queryWrapper.and(QueryCondition.create(queryColumn, operator, value));
                 } else {
