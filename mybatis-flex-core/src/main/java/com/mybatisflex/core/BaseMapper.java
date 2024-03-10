@@ -21,12 +21,23 @@ import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.mybatis.MappedStatementTypes;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.provider.EntitySqlProvider;
-import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.FunctionQueryColumn;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.*;
-import org.apache.ibatis.annotations.*;
+import com.mybatisflex.core.util.ClassUtil;
+import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.ConvertUtil;
+import com.mybatisflex.core.util.MapperUtil;
+import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.ExecutorType;
@@ -34,7 +45,11 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.mybatisflex.core.query.QueryMethods.count;
@@ -626,6 +641,22 @@ public interface BaseMapper<T> {
     Cursor<T> selectCursorByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
     /**
+     * 根据查询条件查询游标数据，要求返回的数据为 asType 类型。该方法必须在事务中才能正常使用，非事务下无法获取数据。
+     *
+     * @param queryWrapper 条件
+     * @param asType       接收的数据类型
+     * @return 游标数据
+     */
+    default <R> Cursor<R> selectCursorByQueryAs(QueryWrapper queryWrapper, Class<R> asType) {
+        try {
+            MappedStatementTypes.setCurrentType(asType);
+            return (Cursor<R>) selectCursorByQuery(queryWrapper);
+        } finally {
+            MappedStatementTypes.clear();
+        }
+    }
+
+    /**
      * 根据查询条件查询 Row 数据。
      *
      * @param queryWrapper 条件
@@ -843,7 +874,7 @@ public interface BaseMapper<T> {
             }
             return MapperUtil.getLongNumber(objects);
         } finally {
-            //fixed https://github.com/mybatis-flex/mybatis-flex/issues/49
+            // fixed https://github.com/mybatis-flex/mybatis-flex/issues/49
             CPI.setSelectColumns(queryWrapper, selectColumns);
         }
     }

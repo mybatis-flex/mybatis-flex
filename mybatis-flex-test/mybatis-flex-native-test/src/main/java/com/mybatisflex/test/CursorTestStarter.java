@@ -76,6 +76,14 @@ public class CursorTestStarter {
             return true;
         });
 
+        Db.tx(() -> {
+            Cursor<AccountDTO> accountDTOS = accountMapper.selectCursorByQueryAs(QueryWrapper.create(), AccountDTO.class);
+            for (AccountDTO accountDTO : accountDTOS) {
+                System.out.println(accountDTO);
+            }
+            return true;
+        });
+
 
     }
 
