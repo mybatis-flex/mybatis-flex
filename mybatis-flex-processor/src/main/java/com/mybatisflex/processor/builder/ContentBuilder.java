@@ -136,19 +136,6 @@ public class ContentBuilder {
             : StrUtil.firstCharToLowerCase(tableInfo.getEntitySimpleName());
         content.append("    public ").append(tableDefClassName).append("() {\n")
             .append("        super").append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n")
-            .append("    }\n\n");
-
-        content.append("    public ").append(tableDefClassName).append("(String alias) {\n")
-            .append("        super").append("(\"").append(schema).append("\", \"").append(tableName).append("\",alias);\n")
-            .append("    }\n");
-
-        //alias方法
-        content.append("\n    /**\n")
-            .append("     * 创建带别名的tableDef\n")
-            .append("     */\n");
-        content.append("    public ").append(tableDefClassName).append(" withAlias").append("(String alias) {\n")
-            .append("        ").append(tableDefClassName).append(" cloned = new ").append(tableDefClassName).append("(").append("alias").append(");\n")
-            .append("        return cloned;\n")
             .append("    }\n\n}\n");
         return content.toString();
     }
