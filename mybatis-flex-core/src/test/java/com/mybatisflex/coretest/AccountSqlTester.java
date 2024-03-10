@@ -22,6 +22,7 @@ import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
+import com.mybatisflex.core.dialect.impl.OracleDialect;
 import com.mybatisflex.core.query.DistinctQueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.RawQueryColumn;
@@ -55,6 +56,17 @@ import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
 
 public class AccountSqlTester {
+
+    @Test
+    public void testOracleFrom() {
+        OracleDialect oracleDialect = new OracleDialect();
+        QueryWrapper query = new QueryWrapper()
+            .select()
+            .from(ACCOUNT.as("a"));
+        String sql = oracleDialect.buildSelectSql(query);
+        System.out.println(sql);
+        Assert.assertEquals("SELECT * FROM TB_ACCOUNT A", sql);
+    }
 
 
     @Test
