@@ -24,16 +24,24 @@ import java.io.Serializable;
  */
 public class TableDef implements Serializable {
 
-    private String schema;
+    private final String schema;
+
     private final String tableName;
 
+    private final String alias;
+
     public TableDef(String schema, String tableName) {
+        this(schema, tableName, null);
+    }
+
+    public TableDef(String schema, String tableName, String alias) {
         this.schema = schema;
         this.tableName = tableName;
+        this.alias = alias;
     }
 
     public TableDef(String tableName) {
-        this.tableName = tableName;
+        this(null,tableName, null);
     }
 
     public String getTableName() {
@@ -44,9 +52,15 @@ public class TableDef implements Serializable {
         return schema;
     }
 
+    public String getAlias() {
+        return alias;
+    }
+
+
     public QueryTable as(String alias) {
         return new QueryTable(schema, tableName, alias);
     }
+
 
 
 }
