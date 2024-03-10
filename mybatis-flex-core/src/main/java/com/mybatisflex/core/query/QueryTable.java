@@ -41,6 +41,7 @@ public class QueryTable implements CloneSupport<QueryTable> {
         this.tableDefHashCode = tableDef.hashCode();
         this.schema = tableDef.getSchema();
         this.name = tableDef.getTableName();
+        this.alias = tableDef.getAlias();
     }
 
     public QueryTable(String name) {
