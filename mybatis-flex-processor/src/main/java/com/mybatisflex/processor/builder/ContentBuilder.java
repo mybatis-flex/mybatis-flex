@@ -66,9 +66,9 @@ public class ContentBuilder {
         StringBuilder content = new StringBuilder("package ");
         content.append(tableDefPackage).append(";\n\n");
         content.append("import com.mybatisflex.core.query.QueryColumn;\n");
-        content.append("import com.mybatisflex.core.query.QueryTable;\n\n");
+        content.append("import com.mybatisflex.core.table.TableDef;\n\n");
         content.append("// Auto generate by mybatis-flex, do not modify it.\n");
-        content.append("public class ").append(tableDefClassName).append(" extends QueryTable {\n\n");
+        content.append("public class ").append(tableDefClassName).append(" extends TableDef {\n\n");
 
         //TableDef 类的属性名称
         String tableDefPropertyName = null;

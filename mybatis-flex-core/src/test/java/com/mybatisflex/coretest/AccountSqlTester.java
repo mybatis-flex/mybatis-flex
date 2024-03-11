@@ -54,7 +54,16 @@ public class AccountSqlTester {
             .from(ar)
             .leftJoin(a1).on(a1.ID.eq(ar.ACCOUNT_ID))
             .leftJoin(a2).on(a2.ID.eq(ar.ACCOUNT_ID));
-        System.out.println(SqlFormatter.format(queryWrapper.toSQL()));
+        String sql = SqlFormatter.format(queryWrapper.toSQL());
+        Assert.assertEquals("SELECT\n" +
+            "  ` ar `.` content `,\n" +
+            "  ` a1 `.` id `,\n" +
+            "  ` a2 `.` age `\n" +
+            "FROM\n" +
+            "  ` tb_article ` AS ` ar `\n" +
+            "  LEFT JOIN ` tb_account ` AS ` a1 ` ON ` a1 `.` id ` = ` ar `.` account_id `\n" +
+            "  LEFT JOIN ` tb_account ` AS ` a2 ` ON ` a2 `.` id ` = ` ar `.` account_id `", sql);
+        System.out.println(sql);
     }
 
     @Test

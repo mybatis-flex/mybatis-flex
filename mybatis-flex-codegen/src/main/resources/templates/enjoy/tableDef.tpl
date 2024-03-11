@@ -4,7 +4,7 @@
 package #(packageConfig.tableDefPackage);
 
 import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.table.TableDef;
 
 #if(jdkVersion >= 14)
 import java.io.Serial;
@@ -16,7 +16,7 @@ import java.io.Serial;
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())
  */
-public class #(tableDefClassName) extends QueryTable {
+public class #(tableDefClassName) extends TableDef {
 
     #if(jdkVersion >= 14)
     @Serial
