@@ -18,13 +18,7 @@ package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.constant.SqlOperator;
-import com.mybatisflex.core.query.CPI;
-import com.mybatisflex.core.query.If;
-import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.query.QueryColumnBehavior;
-import com.mybatisflex.core.query.QueryCondition;
-import com.mybatisflex.core.query.QueryTable;
-import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.StringUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,9 +33,7 @@ import static com.mybatisflex.core.query.QueryColumnBehavior.getConditionCaster;
 import static com.mybatisflex.core.query.QueryMethods.bracket;
 import static com.mybatisflex.core.query.QueryMethods.raw;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * 动态条件测试。
@@ -109,7 +101,7 @@ public class DynamicConditionTest {
         boolean anyMatch = CPI.getQueryTables(queryWrapper)
             .stream()
             .map(QueryTable::getName)
-            .anyMatch(tableName -> tableName.equals(ACCOUNT.getTableName()));
+            .anyMatch(tableName -> tableName.equals(ACCOUNT.getName()));
 
         if (anyMatch) {
             CPI.addWhereQueryCondition(queryWrapper, ACCOUNT.AGE.ge(18), SqlConnector.AND);

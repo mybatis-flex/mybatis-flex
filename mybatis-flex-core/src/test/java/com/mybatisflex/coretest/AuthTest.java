@@ -1,3 +1,19 @@
+/*
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.dialect.DbType;
@@ -9,7 +25,6 @@ import com.mybatisflex.core.row.RowKey;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.coretest.auth.AuthDialectImpl;
 import com.mybatisflex.coretest.auth.Project;
-import com.mybatisflex.coretest.auth.table.ProjectTableDef;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,10 +50,10 @@ public class AuthTest {
     public void test() {
         // 1.单个删除
         assert "DELETE FROM `tb_project` WHERE `id` = ?  AND `insert_user_id` = 1"
-            .equals(dialect.forDeleteById(PROJECT.getSchema(), PROJECT.getTableName(), new String[]{PROJECT.ID.getName()}));
+            .equals(dialect.forDeleteById(PROJECT.getSchema(), PROJECT.getName(), new String[]{PROJECT.ID.getName()}));
         // 2.批量删除
         assert "DELETE FROM `tb_project` WHERE `id` = ?  AND `insert_user_id` = 1"
-            .equals(dialect.forDeleteBatchByIds(PROJECT.getSchema(), PROJECT.getTableName(), new String[]{PROJECT.ID.getName()}, new Object[]{1L}));
+            .equals(dialect.forDeleteBatchByIds(PROJECT.getSchema(), PROJECT.getName(), new String[]{PROJECT.ID.getName()}, new Object[]{1L}));
         // 3.查询
         QueryWrapper deleteWrapper =
             QueryWrapper.create(new Project()).where(PROJECT.ID.eq(1));
@@ -46,7 +61,7 @@ public class AuthTest {
             .equals(dialect.forDeleteByQuery(deleteWrapper));
         // 4.更新
         assert "UPDATE `tb_project` SET `name` = ?  WHERE `id` = ?  AND `insert_user_id` = 1"
-            .equals(dialect.forUpdateById(PROJECT.getSchema(), PROJECT.getTableName(),
+            .equals(dialect.forUpdateById(PROJECT.getSchema(), PROJECT.getName(),
             Row.ofKey(RowKey.AUTO).set(PROJECT.NAME, "项目")));
         // 5.更新
         Row row = new Row();
@@ -57,7 +72,7 @@ public class AuthTest {
             .equals(dialect.forUpdateByQuery(updateWrapper, row));
         // 6.ID查询
         assert "SELECT * FROM `tb_project` WHERE `id` = ?  AND `insert_user_id` = 1"
-            .equals(dialect.forSelectOneById(PROJECT.getSchema(), PROJECT.getTableName(), new String[]{PROJECT.ID.getName()}, new Object[]{1L}));
+            .equals(dialect.forSelectOneById(PROJECT.getSchema(), PROJECT.getName(), new String[]{PROJECT.ID.getName()}, new Object[]{1L}));
         QueryWrapper queryWrapper = QueryWrapper.create(new Project()).where(PROJECT.ID.eq(1));
         // 7.query查询
         assert "SELECT `id`, `name`, `insert_user_id`, `is_delete` FROM `tb_project` WHERE `id` = ? AND `insert_user_id` = ?"
