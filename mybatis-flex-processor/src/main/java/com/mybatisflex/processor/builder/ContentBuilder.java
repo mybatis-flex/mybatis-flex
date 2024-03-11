@@ -66,9 +66,9 @@ public class ContentBuilder {
         StringBuilder content = new StringBuilder("package ");
         content.append(tableDefPackage).append(";\n\n");
         content.append("import com.mybatisflex.core.query.QueryColumn;\n");
-        content.append("import com.mybatisflex.core.table.TableDef;\n\n");
+        content.append("import com.mybatisflex.core.query.QueryTable;\n\n");
         content.append("// Auto generate by mybatis-flex, do not modify it.\n");
-        content.append("public class ").append(tableDefClassName).append(" extends TableDef {\n\n");
+        content.append("public class ").append(tableDefClassName).append(" extends QueryTable {\n\n");
 
         //TableDef 类的属性名称
         String tableDefPropertyName = null;
@@ -136,6 +136,14 @@ public class ContentBuilder {
             : StrUtil.firstCharToLowerCase(tableInfo.getEntitySimpleName());
         content.append("    public ").append(tableDefClassName).append("() {\n")
             .append("        super").append("(\"").append(schema).append("\", \"").append(tableName).append("\");\n")
+            .append("    }\n\n");
+
+        content.append("    private ").append(tableDefClassName).append("(String schema, String name, String alisa) {\n")
+            .append("        super(schema, name, alisa);\n")
+            .append("    }\n\n");
+
+        content.append("    public ").append(tableDefClassName).append(" as(String alias) {\n")
+            .append("        return new ").append(tableDefClassName).append("(\"").append(schema).append("\", \"").append(tableName).append("\", alias);\n")
             .append("    }\n\n}\n");
         return content.toString();
     }

@@ -18,29 +18,23 @@ package com.mybatisflex.core.query;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.Objects;
 
 /**
- * 查询列，描述的是一张表的字段
+ * 查询表。
+ *
+ * @author michael
+ * @author 王帅
  */
 public class QueryTable implements CloneSupport<QueryTable> {
 
-    protected int tableDefHashCode = 0;
     protected String schema;
     protected String name;
     protected String alias;
 
-    public QueryTable() {
-    }
-
-    public QueryTable(TableDef tableDef) {
-        // TableDef的标识符号,0:不确定标识
-        this.tableDefHashCode = tableDef.hashCode();
-        this.schema = tableDef.getSchema();
-        this.name = tableDef.getTableName();
+    protected QueryTable() {
     }
 
     public QueryTable(String name) {
@@ -97,12 +91,12 @@ public class QueryTable implements CloneSupport<QueryTable> {
         if (table == null) {
             return false;
         }
-        if (StringUtil.isNotBlank(alias) && StringUtil.isNotBlank(table.alias) && (Objects.equals(alias, table.alias))) {
-            return false;
+        if (this == table) {
+            return true;
         }
-        //比较对象都有tableDef标记,就用标记比对, 否则就用名称比对
-        if (tableDefHashCode != 0 && table.tableDefHashCode != 0) {
-            return tableDefHashCode == table.tableDefHashCode;
+        if (StringUtil.isNotBlank(alias)
+            && StringUtil.isNotBlank(table.alias)) {
+            return Objects.equals(alias, table.alias);
         }
         return Objects.equals(name, table.name);
     }

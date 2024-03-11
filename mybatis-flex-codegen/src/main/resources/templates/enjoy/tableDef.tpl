@@ -4,7 +4,7 @@
 package #(packageConfig.tableDefPackage);
 
 import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.table.TableDef;
+import com.mybatisflex.core.query.QueryTable;
 
 #if(jdkVersion >= 14)
 import java.io.Serial;
@@ -16,7 +16,7 @@ import java.io.Serial;
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())
  */
-public class #(tableDefClassName) extends TableDef {
+public class #(tableDefClassName) extends QueryTable {
 
     #if(jdkVersion >= 14)
     @Serial
@@ -45,6 +45,14 @@ public class #(tableDefClassName) extends TableDef {
 
     public #(tableDefClassName)() {
         super("#(schema)", "#(table.name)");
+    }
+
+    private #(tableDefClassName)(String schema, String name, String alisa) {
+        super(schema, name, alisa);
+    }
+
+    public #(tableDefClassName) as(String alias) {
+        return new #(tableDefClassName)("#(schema)", "#(table.name)", alias);
     }
 
 }
