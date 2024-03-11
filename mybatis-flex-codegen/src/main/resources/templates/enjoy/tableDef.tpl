@@ -52,7 +52,8 @@ public class #(tableDefClassName) extends TableDef {
     }
 
     public #(tableDefClassName) as(String alias) {
-        return new #(tableDefClassName)("#(schema)", "#(table.name)", alias);
+        String key = getNameWithSchema() + "." + alias;
+        return getCache(key, k -> new #(tableDefClassName)("#(schema)", "#(table.name)", alias));
     }
 
 }
