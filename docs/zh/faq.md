@@ -204,9 +204,12 @@ spring:
 
 ## 代码生成器获取不到注释
 
-如果是 MySQL 数据库的话，可能是因为数据库版本太低，解决办法：MySQL 5.* 需要在 jdbcUrl 设置参数 `useInformationSchema=true` 才能获取到注释。
+如果是 MySQL 数据库的话，可能是因为数据库版本太低，解决办法：在 jdbcUrl 设置参数 `useInformationSchema=true` 才能获取到注释。
 
 例如：`jdbc:mysql://127.0.0.1:3306/mybatis-flex?characterEncoding=UTF-8&useInformationSchema=true`
+
+
+如果是 Oracle， 则需要添加参数 `remarksReporting=true` ，例如：`jdbc:oracle:thin:@localhost:1521:orcl?remarksReporting=true`
 
 ## 与 Nacos 集成时出错，无法正常启动 MyBatis-Flex
 
@@ -229,7 +232,7 @@ FlexConfiguration configuration = new FlexConfiguration();
 MybatisFlexBootstrap.getInstance().setConfiguration(configuration);
 ```
 
-2、在使用 Spring-Boot 的场景下：
+2、在使用 SpringBoot 的场景下：
 
 ```java
 @Configuration
@@ -243,7 +246,7 @@ public class MyConfigurationCustomizer implements ConfigurationCustomizer {
 }
 ```
 
-3、只使用 Spring（不使用 Spring-Boot ） 的场景：
+3、只使用 Spring（不使用 SpringBoot ） 的场景：
 
 ```java
 @Bean
