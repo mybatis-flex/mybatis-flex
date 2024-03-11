@@ -64,7 +64,9 @@ public class AccountSqlTester {
             "  LEFT JOIN ` tb_account ` AS ` a1 ` ON ` a1 `.` id ` = ` ar `.` account_id `\n" +
             "  LEFT JOIN ` tb_account ` AS ` a2 ` ON ` a2 `.` id ` = ` ar `.` account_id `", sql);
         System.out.println(sql);
-        System.out.println(a1 == ACCOUNT.as("a1"));
+        Assert.assertSame(a1, a1.as("a1"));
+        Assert.assertNotSame(a1, a1.as("a2"));
+        Assert.assertNotSame(a1, a2);
     }
 
     @Test
