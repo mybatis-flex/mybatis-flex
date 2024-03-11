@@ -18,13 +18,16 @@ package com.mybatisflex.core.table;
 
 import com.mybatisflex.core.query.QueryTable;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+
 /**
  * 表定义，内包含字段。
  *
  * @author 王帅
  * @since 2024-03-11
  */
-@Deprecated
 public abstract class TableDef extends QueryTable {
 
     protected TableDef(String schema, String tableName) {
@@ -36,13 +39,19 @@ public abstract class TableDef extends QueryTable {
     }
 
     /**
-     * 使用 {@link #getName()} 替代。
+     * 兼容方法，与 {@link #getName()} 相同。
      *
      * @return 表名
      */
-    @Deprecated
     public String getTableName() {
         return name;
+    }
+
+    private static final Map<String, TableDef> CACHE = new ConcurrentHashMap<>();
+
+    @SuppressWarnings("unchecked")
+    protected static <V extends TableDef> V getCache(String key, Function<String, V> mappingFunction) {
+        return (V) CACHE.computeIfAbsent(key, mappingFunction);
     }
 
 }
