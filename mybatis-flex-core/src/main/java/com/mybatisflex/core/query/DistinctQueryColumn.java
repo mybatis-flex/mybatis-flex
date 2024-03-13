@@ -33,18 +33,13 @@ public class DistinctQueryColumn extends QueryColumn implements HasParamsColumn 
         this.queryColumns = CollectionUtil.newArrayList(queryColumns);
     }
 
-    @Override
-    public String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
-        if (CollectionUtil.isEmpty(queryTables)) {
-            return SqlConsts.EMPTY;
-        }
-
-        String sql = SqlConsts.DISTINCT + StringUtil.join(SqlConsts.DELIMITER, queryColumns, queryColumn ->
-            queryColumn.toSelectSql(queryTables, dialect));
-
-        return sql + WrapperUtil.buildColumnAlias(alias, dialect);
+    public List<QueryColumn> getQueryColumns() {
+        return queryColumns;
     }
 
+    public void setQueryColumns(List<QueryColumn> queryColumns) {
+        this.queryColumns = queryColumns;
+    }
 
     @Override
     String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
@@ -52,9 +47,26 @@ public class DistinctQueryColumn extends QueryColumn implements HasParamsColumn 
             return SqlConsts.EMPTY;
         }
 
-        return SqlConsts.DISTINCT + StringUtil.join(SqlConsts.DELIMITER, queryColumns, queryColumn ->
-            queryColumn.toSelectSql(queryTables, dialect));
+        return SqlConsts.DISTINCT + StringUtil.join(
+            SqlConsts.DELIMITER,
+            queryColumns,
+            queryColumn -> queryColumn.toSelectSql(queryTables, dialect)
+        );
+    }
 
+    @Override
+    public String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
+        if (CollectionUtil.isEmpty(queryTables)) {
+            return SqlConsts.EMPTY;
+        }
+
+        String sql = SqlConsts.DISTINCT + StringUtil.join(
+            SqlConsts.DELIMITER,
+            queryColumns,
+            queryColumn -> queryColumn.toSelectSql(queryTables, dialect)
+        );
+
+        return sql + WrapperUtil.buildColumnAlias(alias, dialect);
     }
 
     @Override
@@ -62,6 +74,7 @@ public class DistinctQueryColumn extends QueryColumn implements HasParamsColumn 
         DistinctQueryColumn clone = (DistinctQueryColumn) super.clone();
         // deep clone ...
         clone.queryColumns = CollectionUtil.cloneArrayList(this.queryColumns);
+
         return clone;
     }
 
@@ -76,6 +89,7 @@ public class DistinctQueryColumn extends QueryColumn implements HasParamsColumn 
         for (QueryColumn queryColumn : queryColumns) {
             if (queryColumn instanceof HasParamsColumn) {
                 Object[] paramValues = ((HasParamsColumn) queryColumn).getParamValues();
+
                 params.addAll(Arrays.asList(paramValues));
             }
         }
