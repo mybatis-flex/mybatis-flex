@@ -1,12 +1,17 @@
 # MyBatis-Flex 代码生成器
 
-在 mybatis-flex 的模块 `mybatis-flex-codegen` 中，提供了可以通过数据库表，生成 Entity 类和 Mapper 类的功能。当我们把数据库表设计完成
-后可以使用其快速生成 Entity、 Mapper、 Service、 Controller 等产物。 除此之外，我们还可以通过扩展生成更多种类的物料。
+## 简介
 
-在使用前先添加 `mybatis-flex-codegen` 的 Maven 依赖：
+在 mybatis-flex 中，有了一个名称为  `mybatis-flex-codegen` 的模块，提供了可以通过数据库表，生成代码的功能。当我们把数据库表设计完成后，
+就可以使用其快速生成 Entity、 Mapper、 Service、 Controller 等产物。
+
+除此之外，我们还可以通过扩展生成更多的产物，文档参考 [#添加其他产物的生成](#添加其他产物的生成)。
+
+## 快速开始
+
+在使用之前，我们需要先添加 `mybatis-flex-codegen` 的 Maven 依赖：
 
 ```xml
-
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-codegen</artifactId>
@@ -122,7 +127,7 @@ public class Codegen {
 
 关闭 APT 的 Mapper 类文件生成，请参考：[APT 设置章节](../others/apt.md)
 
-## 使用介绍
+## 功能介绍
 
 在 Mybatis-Flex 的代码生成器中，支持如下 8 种类型的的产物生成：
 
@@ -134,6 +139,8 @@ public class Codegen {
 - Controller 控制类
 - MapperXml 文件
 - package-info.java 文件
+
+> 除此之外，我们可以添加扩展生成更多类型的产物，文档参考 [#添加其他产物的生成](#添加其他产物的生成)。
 
 启用或关闭某种类型产物的生成，代码如下：
 
@@ -155,7 +162,7 @@ globalConfig.enableEntity()
 
 ## 全局配置 `GlobalConfig`
 
-> 可以像先前一样直接使用 `setXxx()` 进行配置，也可以使用 `getXxxConfig().setXxx()` 进行分类配置。
+### 详细配置
 
 | 获取配置                   | 描述               |
 |------------------------|------------------|
@@ -233,7 +240,7 @@ globalConfig.getJavadocConfig()
 
 ```java
 globalConfig.getPackageConfig()
-        .setSourceDir("D://files/java")
+        .setSourceDir("D:\\files\\java")
         .setBasePackage("com.your.domain");
 ```
 
@@ -277,7 +284,7 @@ globalConfig.getStrategyConfig()
 ```java
 globalConfig.getTemplateConfig()
         .setTemplate(new FreeMarkerTemplate())
-        .setEntity("D:\your-template-file\my-entity.tpl");
+        .setEntity("D:\\your-template-file\\my-entity.tpl");
 ```
 
 ## Entity 生成配置 `EntityConfig`
