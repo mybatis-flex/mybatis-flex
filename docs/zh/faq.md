@@ -46,6 +46,14 @@ Bean 'x' of type [x] is not eligible for getting processed by all BeanPostProces
 public class SampleApplication {}
 ```
 
+如果还是有警告，直接将日志级别改成 ERROR：
+
+```yaml
+logging:
+  level:
+    org.springframework.context.support.PostProcessorRegistrationDelegate: error
+```
+
 ## 阿里镜像找不到依赖？
 
 ```txt
