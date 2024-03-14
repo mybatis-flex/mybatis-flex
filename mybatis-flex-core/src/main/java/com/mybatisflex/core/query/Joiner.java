@@ -15,13 +15,14 @@
  */
 package com.mybatisflex.core.query;
 
+import java.util.ListIterator;
 import java.util.function.Consumer;
 
 /**
  * @author michael yang (fuhai999@gmail.com)
  * @Date: 2020/1/14
  */
-public class Joiner<M> {
+public class Joiner<M extends QueryWrapper> {
 
     private final M queryWrapper;
     private final Join join;
@@ -33,6 +34,13 @@ public class Joiner<M> {
 
     public Joiner<M> as(String alias) {
         join.queryTable = join.getQueryTable().as(alias);
+        ListIterator<QueryTable> itr = queryWrapper.joinTables.listIterator();
+        while (itr.hasNext()) {
+            if (itr.next().isSameTable(join.queryTable)) {
+                itr.set(join.queryTable);
+                break;
+            }
+        }
         return this;
     }
 

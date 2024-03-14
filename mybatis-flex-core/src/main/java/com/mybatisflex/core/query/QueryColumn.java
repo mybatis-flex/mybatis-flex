@@ -20,7 +20,12 @@ import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.util.*;
+import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
+import com.mybatisflex.core.util.ObjectUtil;
+import com.mybatisflex.core.util.SqlUtil;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.util.Collection;
 import java.util.List;
@@ -72,6 +77,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         SqlUtil.keepColumnSafely(name);
         this.table = queryTable;
         this.name = StringUtil.tryTrim(name);
+        this.returnCopyByAsMethod = true;
     }
 
     public QueryColumn(QueryTable queryTable, String name, String alias) {
@@ -989,7 +995,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
 
     QueryTable getSelectTable(List<QueryTable> queryTables, QueryTable selfTable) {
-        //未查询任何表
+        // 未查询任何表
         if (queryTables == null || queryTables.isEmpty()) {
             return null;
         }
@@ -999,7 +1005,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         }
 
         if (queryTables.size() == 1 && queryTables.get(0).isSameTable(selfTable)) {
-            //ignore table
+            // ignore table
             return null;
         }
 
