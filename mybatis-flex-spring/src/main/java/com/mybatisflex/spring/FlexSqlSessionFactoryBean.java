@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.spring;
 
+import com.github.gavlyukovskiy.boot.jdbc.decorator.DecoratedDataSource;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
@@ -94,6 +95,8 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlSessionFactoryBean.class);
 
+    private static final String P6SPY_DATA_SOURCE_CLASS = "com.github.gavlyukovskiy.boot.jdbc.decorator.DecoratedDataSource";
+
     private static final ResourcePatternResolver RESOURCE_PATTERN_RESOLVER = new PathMatchingResourcePatternResolver();
     private static final MetadataReaderFactory METADATA_READER_FACTORY = new CachingMetadataReaderFactory();
 
@@ -115,7 +118,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
     private SqlSessionFactory sqlSessionFactory;
 
     // EnvironmentAware requires spring 3.1
-//    private String environment = SqlSessionFactoryBean.class.getSimpleName();
+    //    private String environment = SqlSessionFactoryBean.class.getSimpleName();
     private String environment = FlexConsts.NAME;
 
     private boolean failFast;
@@ -304,7 +307,8 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      */
     @Override
     public void setDefaultEnumTypeHandler(
-        @SuppressWarnings("rawtypes") Class<? extends TypeHandler> defaultEnumTypeHandler) {
+        Class<? extends TypeHandler> defaultEnumTypeHandler
+    ) {
         this.defaultEnumTypeHandler = defaultEnumTypeHandler;
     }
 
@@ -353,6 +357,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
         if (configuration != null && !(configuration instanceof FlexConfiguration)) {
             throw new IllegalArgumentException("Only support FlexConfiguration.");
         }
+
         this.configuration = configuration;
     }
 
@@ -483,8 +488,10 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
     public void afterPropertiesSet() throws Exception {
         notNull(dataSource, "Property 'dataSource' is required");
         notNull(sqlSessionFactoryBuilder, "Property 'sqlSessionFactoryBuilder' is required");
-        state((configuration == null && configLocation == null) || !(configuration != null && configLocation != null),
-            "Property 'configuration' and 'configLocation' can not specified with together");
+        state(
+            (configuration == null && configLocation == null) || !(configuration != null && configLocation != null),
+            "Property 'configuration' and 'configLocation' can not specified with together"
+        );
 
         this.sqlSessionFactory = buildSqlSessionFactory();
     }
@@ -501,12 +508,12 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      */
     @Override
     protected SqlSessionFactory buildSqlSessionFactory() throws Exception {
-
         final Configuration targetConfiguration;
 
         XMLConfigBuilder xmlConfigBuilder = null;
         if (this.configuration != null) {
             targetConfiguration = this.configuration;
+
             if (targetConfiguration.getVariables() == null) {
                 targetConfiguration.setVariables(this.configurationProperties);
             } else if (this.configurationProperties != null) {
@@ -514,12 +521,15 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
             }
         } else if (this.configLocation != null) {
             xmlConfigBuilder = new XMLConfigBuilder(FlexConfiguration.class, this.configLocation.getInputStream(), null, this.configurationProperties);
+
             targetConfiguration = xmlConfigBuilder.getConfiguration();
         } else {
             LOGGER.debug(
                 () -> "Property 'configuration' or 'configLocation' not specified, using default Flex Configuration");
-//            targetConfiguration = new Configuration();
+
+            //            targetConfiguration = new Configuration();
             targetConfiguration = new FlexConfiguration();
+
             Optional.ofNullable(this.configurationProperties).ifPresent(targetConfiguration::setVariables);
         }
 
@@ -536,6 +546,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
         if (!isEmpty(this.typeAliases)) {
             Stream.of(this.typeAliases).forEach(typeAlias -> {
                 targetConfiguration.getTypeAliasRegistry().registerAlias(typeAlias);
+
                 LOGGER.debug(() -> "Registered type alias: '" + typeAlias + "'");
             });
         }
@@ -543,6 +554,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
         if (!isEmpty(this.plugins)) {
             Stream.of(this.plugins).forEach(plugin -> {
                 targetConfiguration.addInterceptor(plugin);
+
                 LOGGER.debug(() -> "Registered plugin: '" + plugin + "'");
             });
         }
@@ -556,6 +568,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
         if (!isEmpty(this.typeHandlers)) {
             Stream.of(this.typeHandlers).forEach(typeHandler -> {
                 targetConfiguration.getTypeHandlerRegistry().register(typeHandler);
+
                 LOGGER.debug(() -> "Registered type handler: '" + typeHandler + "'");
             });
         }
@@ -565,9 +578,11 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
         if (!isEmpty(this.scriptingLanguageDrivers)) {
             Stream.of(this.scriptingLanguageDrivers).forEach(languageDriver -> {
                 targetConfiguration.getLanguageRegistry().register(languageDriver);
+
                 LOGGER.debug(() -> "Registered scripting language driver: '" + languageDriver + "'");
             });
         }
+
         Optional.ofNullable(this.defaultScriptingLanguageDriver)
             .ifPresent(targetConfiguration::setDefaultScriptingLanguage);
 
@@ -584,6 +599,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
         if (xmlConfigBuilder != null) {
             try {
                 xmlConfigBuilder.parse();
+
                 LOGGER.debug(() -> "Parsed configuration file: '" + this.configLocation + "'");
             } catch (Exception ex) {
                 throw new IOException("Failed to parse config resource: " + this.configLocation, ex);
@@ -595,13 +611,39 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
         // 事务由 flex 管理了，无需使用 SpringManagedTransactionFactory，否则会造成在同一个事务下，无法切换数据源的问题
         // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I70QWU
         // 兼容SpringManagedTransactionFactory否则在使用JdbcTemplate,多数据源使用JdbcTemplate报错
-        //fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I7HJ4J
-        targetConfiguration.setEnvironment(new Environment(this.environment,
-//                this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,
-//            this.transactionFactory == null ? new JdbcTransactionFactory() : this.transactionFactory,
-            this.transactionFactory == null ? new FlexTransactionFactory() : this.transactionFactory,
-            dataSource instanceof FlexDataSource ? dataSource : new FlexDataSource(FlexConsts.NAME, dataSource)));
+        // fixed https://gitee.com/mybatis-flex/mybatis-flex/issues/I7HJ4J
 
+        FlexDataSource flexDataSource;
+
+        if (dataSource instanceof FlexDataSource) {
+            flexDataSource = (FlexDataSource) dataSource;
+        } else {
+            flexDataSource = new FlexDataSource(FlexConsts.NAME, dataSource);
+
+            // 解决 p6spy 下多数据源获取 DbType 失败的问题
+            // 首先判断一下是否引入了 p6spy 的包，避免非 p6spy 环境报异常
+            if (ClassUtils.isPresent(P6SPY_DATA_SOURCE_CLASS, this.getClass().getClassLoader())) {
+                if (dataSource instanceof DecoratedDataSource) {
+                    DecoratedDataSource decoratedDataSource = (DecoratedDataSource) dataSource;
+
+                    // 取出被 p6spy 包装的真实数据源
+                    if (decoratedDataSource.getRealDataSource() instanceof FlexDataSource) {
+                        FlexDataSource realDataSource = (FlexDataSource) decoratedDataSource.getRealDataSource();
+
+                        // 将原始 dbTypeHashMap 附加回来
+                        flexDataSource.getDbTypeHashMap().putAll(realDataSource.getDbTypeHashMap());
+                    }
+                }
+            }
+        }
+
+        targetConfiguration.setEnvironment(
+            new Environment(
+                this.environment,
+                this.transactionFactory == null ? new FlexTransactionFactory() : this.transactionFactory,
+                flexDataSource
+            )
+        );
 
         // 需先构建 sqlSessionFactory，再去初始化 mapperLocations
         // 因为 xmlMapperBuilder.parse() 用到 FlexGlobalConfig， FlexGlobalConfig 的初始化是在 sqlSessionFactory 的构建方法里进行的
@@ -617,21 +659,26 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
                         continue;
                     }
                     try {
-                        XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(mapperLocation.getInputStream(),
-                            targetConfiguration, mapperLocation.toString(), targetConfiguration.getSqlFragments());
+                        XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(
+                            mapperLocation.getInputStream(),
+                            targetConfiguration,
+                            mapperLocation.toString(),
+                            targetConfiguration.getSqlFragments()
+                        );
+
                         xmlMapperBuilder.parse();
                     } catch (Exception e) {
                         throw new IOException("Failed to parse mapping resource: '" + mapperLocation + "'", e);
                     } finally {
                         ErrorContext.instance().reset();
                     }
+
                     LOGGER.debug(() -> "Parsed mapper file: '" + mapperLocation + "'");
                 }
             }
         } else {
             LOGGER.debug(() -> "Property 'mapperLocations' was not specified.");
         }
-
 
         return sqlSessionFactory;
     }
@@ -677,15 +724,20 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
 
     private Set<Class<?>> scanClasses(String packagePatterns, Class<?> assignableType) throws IOException {
         Set<Class<?>> classes = new HashSet<>();
-        String[] packagePatternArray = tokenizeToStringArray(packagePatterns,
-            ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
+        String[] packagePatternArray = tokenizeToStringArray(packagePatterns, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
+
         for (String packagePattern : packagePatternArray) {
-            Resource[] resources = RESOURCE_PATTERN_RESOLVER.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX
-                + ClassUtils.convertClassNameToResourcePath(packagePattern) + "/**/*.class");
+            Resource[] resources = RESOURCE_PATTERN_RESOLVER.getResources(
+                ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX
+                + ClassUtils.convertClassNameToResourcePath(packagePattern)
+                + "/**/*.class"
+            );
+
             for (Resource resource : resources) {
                 try {
                     ClassMetadata classMetadata = METADATA_READER_FACTORY.getMetadataReader(resource).getClassMetadata();
                     Class<?> clazz = Resources.classForName(classMetadata.getClassName());
+
                     if (assignableType == null || assignableType.isAssignableFrom(clazz)) {
                         classes.add(clazz);
                     }
@@ -694,6 +746,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
                 }
             }
         }
+
         return classes;
     }
 
