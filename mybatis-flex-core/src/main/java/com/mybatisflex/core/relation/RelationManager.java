@@ -26,7 +26,7 @@ import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.util.*;
-import org.apache.ibatis.util.MapUtil;
+import com.mybatisflex.core.util.MapUtil;
 
 import java.lang.reflect.Field;
 import java.util.*;

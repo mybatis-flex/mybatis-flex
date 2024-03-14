@@ -20,12 +20,12 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.mybatisflex.core.exception.MybatisFlexException;
-import org.apache.ibatis.util.MapUtil;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
 import com.mybatisflex.core.dialect.impl.DB2105Dialect;
 import com.mybatisflex.core.dialect.impl.DmDialect;
 import com.mybatisflex.core.dialect.impl.OracleDialect;
+import com.mybatisflex.core.util.MapUtil;
 import com.mybatisflex.core.util.ObjectUtil;
 
 /**

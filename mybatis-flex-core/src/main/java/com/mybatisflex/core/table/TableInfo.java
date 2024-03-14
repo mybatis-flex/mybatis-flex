@@ -39,7 +39,7 @@ import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
-import org.apache.ibatis.util.MapUtil;
+import com.mybatisflex.core.util.MapUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;

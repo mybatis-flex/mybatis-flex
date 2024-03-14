@@ -16,7 +16,6 @@
 package com.mybatisflex.core.util;
 
 import org.apache.ibatis.reflection.Reflector;
-import org.apache.ibatis.util.MapUtil;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

@@ -9,7 +9,7 @@ import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.test.listener.missingListenerFix.*;
 import com.mybatisflex.test.model.AccountMissingListenerTestModel;
-import org.apache.ibatis.util.MapUtil;
+import com.mybatisflex.core.util.MapUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

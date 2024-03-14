@@ -20,7 +20,6 @@ import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import org.apache.ibatis.reflection.property.PropertyNamer;
-import org.apache.ibatis.util.MapUtil;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;

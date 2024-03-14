@@ -22,7 +22,7 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.util.MapUtil;
+import com.mybatisflex.core.util.MapUtil;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

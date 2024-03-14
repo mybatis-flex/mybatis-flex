@@ -42,7 +42,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.Transaction;
-import org.apache.ibatis.util.MapUtil;
+import com.mybatisflex.core.util.MapUtil;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;

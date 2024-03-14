@@ -26,7 +26,7 @@ import com.mybatisflex.core.transaction.Propagation;
 import com.mybatisflex.core.transaction.TransactionalManager;
 import com.mybatisflex.core.util.CollectionUtil;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.util.MapUtil;
+import com.mybatisflex.core.util.MapUtil;
 
 import java.util.Arrays;
 import java.util.Collection;

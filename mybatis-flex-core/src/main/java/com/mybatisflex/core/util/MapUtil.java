@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.util;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -61,6 +62,11 @@ public class MapUtil {
             }
         }
         return map.computeIfAbsent(key, mappingFunction);
+    }
+
+
+    public static <K, V> Map.Entry<K, V> entry(K key, V value) {
+        return new AbstractMap.SimpleImmutableEntry<>(key, value);
     }
 
 

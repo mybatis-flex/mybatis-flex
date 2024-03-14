@@ -20,7 +20,7 @@ import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.ConvertUtil;
 import com.mybatisflex.core.util.StringUtil;
-import org.apache.ibatis.util.MapUtil;
+import com.mybatisflex.core.util.MapUtil;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

@@ -17,6 +17,7 @@
 package com.mybatisflex.core.table;
 
 import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.util.MapUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,7 +52,7 @@ public abstract class TableDef extends QueryTable {
 
     @SuppressWarnings("unchecked")
     protected static <V extends TableDef> V getCache(String key, Function<String, V> mappingFunction) {
-        return (V) CACHE.computeIfAbsent(key, mappingFunction);
+        return MapUtil.computeIfAbsent((Map<String, V>) CACHE, key, mappingFunction);
     }
 
 }

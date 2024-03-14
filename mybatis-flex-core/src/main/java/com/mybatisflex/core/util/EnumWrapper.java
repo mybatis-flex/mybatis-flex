@@ -17,7 +17,6 @@ package com.mybatisflex.core.util;
 
 import com.mybatisflex.annotation.EnumValue;
 import com.mybatisflex.core.exception.FlexExceptions;
-import org.apache.ibatis.util.MapUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

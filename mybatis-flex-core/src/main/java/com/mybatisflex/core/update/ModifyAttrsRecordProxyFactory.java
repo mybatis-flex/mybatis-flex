@@ -19,7 +19,7 @@ import com.mybatisflex.core.util.ClassUtil;
 import org.apache.ibatis.javassist.util.proxy.ProxyFactory;
 import org.apache.ibatis.javassist.util.proxy.ProxyObject;
 import org.apache.ibatis.logging.LogFactory;
-import org.apache.ibatis.util.MapUtil;
+import com.mybatisflex.core.util.MapUtil;
 
 import java.util.Arrays;
 import java.util.Map;
