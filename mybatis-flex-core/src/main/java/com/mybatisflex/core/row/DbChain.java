@@ -23,6 +23,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.QueryWrapperAdapter;
 import com.mybatisflex.core.table.*;
 import com.mybatisflex.core.update.PropertySetter;
+import com.mybatisflex.core.util.FieldWrapper;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.SqlUtil;
 
@@ -164,9 +165,8 @@ public class DbChain extends QueryWrapperAdapter<DbChain> implements PropertySet
         // 添加非主键列设置的值
         for (ColumnInfo columnInfo : tableInfo.getColumnInfoList()) {
             try {
-                Field declaredField = entityClass.getDeclaredField(columnInfo.getProperty());
-                declaredField.setAccessible(true);
-                Object value = declaredField.get(entity);
+                FieldWrapper fieldWrapper = FieldWrapper.of(entityClass, columnInfo.getProperty());
+                Object value = fieldWrapper.get(entity);
                 if (value != null) {
                     row.put(columnInfo.getColumn(), value);
                 }
@@ -178,9 +178,8 @@ public class DbChain extends QueryWrapperAdapter<DbChain> implements PropertySet
         // 添加主键列设置的值
         for (IdInfo idInfo : tableInfo.getPrimaryKeyList()) {
             try {
-                Field declaredField = entityClass.getDeclaredField(idInfo.getProperty());
-                declaredField.setAccessible(true);
-                Object value = declaredField.get(entity);
+                FieldWrapper fieldWrapper = FieldWrapper.of(entityClass, idInfo.getProperty());
+                Object value = fieldWrapper.get(entity);
                 if (value != null) {
                     RowKey rowKey = RowKey.of(idInfo.getColumn()
                         , idInfo.getKeyType()
