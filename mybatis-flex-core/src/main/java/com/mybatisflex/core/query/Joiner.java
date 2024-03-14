@@ -32,6 +32,18 @@ public class Joiner<M extends QueryWrapper> {
         this.join = join;
     }
 
+    /**
+     * <p>推荐写法：
+     * <pre>
+     * {@code leftJoin(ACCOUNT.as("a")).on(...);}
+     * </pre>
+     * <p>或者：
+     * <pre>{@code
+     * AccountTableDef a = ACCOUNT.as("a");
+     * leftJoin(a).on(...);
+     * }</pre>
+     */
+    @Deprecated
     public Joiner<M> as(String alias) {
         join.queryTable = join.getQueryTable().as(alias);
         ListIterator<QueryTable> itr = queryWrapper.joinTables.listIterator();
