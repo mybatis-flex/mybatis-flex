@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 @ConditionalOnClass(Db.class)
 @ConditionalOnMissingBean(TransactionManager.class)
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
+@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
 @AutoConfigureAfter({MybatisFlexAutoConfiguration.class})
 @AutoConfigureBefore(value = {TransactionAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class})
 public class FlexTransactionAutoConfiguration implements TransactionManagementConfigurer {

@@ -41,7 +41,7 @@ import java.util.Iterator;
 @Conditional(ConditionalOnMybatisFlexDatasource.OnMybatisFlexDataSourceCondition.class)
 public @interface ConditionalOnMybatisFlexDatasource {
 
-    @Order(Ordered.HIGHEST_PRECEDENCE + 40)
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     class OnMybatisFlexDataSourceCondition extends SpringBootCondition {
 
         @Override
