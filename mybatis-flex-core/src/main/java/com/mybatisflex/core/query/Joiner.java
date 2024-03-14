@@ -32,7 +32,7 @@ public class Joiner<M> {
     }
 
     public Joiner<M> as(String alias) {
-        join.getQueryTable().as(alias);
+        join.queryTable = join.getQueryTable().as(alias);
         return this;
     }
 

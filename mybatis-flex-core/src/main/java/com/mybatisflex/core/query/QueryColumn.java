@@ -20,7 +20,6 @@ import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.util.*;
 
 import java.util.Collection;
@@ -75,18 +74,13 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         this.name = StringUtil.tryTrim(name);
     }
 
-    public QueryColumn(TableDef tableDef, String name) {
-        this(tableDef, name, null);
-    }
-
-    public QueryColumn(TableDef tableDef, String name, String alias) {
+    public QueryColumn(QueryTable queryTable, String name, String alias) {
         SqlUtil.keepColumnSafely(name);
         this.returnCopyByAsMethod = true;
-        this.table = new QueryTable(tableDef);
-        this.name = name;
-        this.alias = alias;
+        this.table = queryTable;
+        this.name = StringUtil.tryTrim(name);
+        this.alias = StringUtil.tryTrim(alias);
     }
-
 
     public QueryTable getTable() {
         return table;

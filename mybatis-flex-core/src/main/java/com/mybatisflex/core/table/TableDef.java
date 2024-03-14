@@ -13,40 +13,45 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.mybatisflex.core.table;
 
 import com.mybatisflex.core.query.QueryTable;
 
-import java.io.Serializable;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 /**
- * @author michael
+ * 表定义，内包含字段。
+ *
+ * @author 王帅
+ * @since 2024-03-11
  */
-public class TableDef implements Serializable {
+public abstract class TableDef extends QueryTable {
 
-    private String schema;
-    private final String tableName;
-
-    public TableDef(String schema, String tableName) {
-        this.schema = schema;
-        this.tableName = tableName;
+    protected TableDef(String schema, String tableName) {
+        super(schema, tableName);
     }
 
-    public TableDef(String tableName) {
-        this.tableName = tableName;
+    protected TableDef(String schema, String tableName, String alias) {
+        super(schema, tableName, alias);
     }
 
+    /**
+     * 兼容方法，与 {@link #getName()} 相同。
+     *
+     * @return 表名
+     */
     public String getTableName() {
-        return tableName;
+        return name;
     }
 
-    public String getSchema() {
-        return schema;
-    }
+    private static final Map<String, TableDef> CACHE = new ConcurrentHashMap<>();
 
-    public QueryTable as(String alias) {
-        return new QueryTable(schema, tableName, alias);
+    @SuppressWarnings("unchecked")
+    protected static <V extends TableDef> V getCache(String key, Function<String, V> mappingFunction) {
+        return (V) CACHE.computeIfAbsent(key, mappingFunction);
     }
-
 
 }

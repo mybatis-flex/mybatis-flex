@@ -19,9 +19,13 @@ package com.mybatisflex.core.row;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.QueryWrapperAdapter;
-import com.mybatisflex.core.table.*;
+import com.mybatisflex.core.table.ColumnInfo;
+import com.mybatisflex.core.table.IdInfo;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.update.PropertySetter;
 import com.mybatisflex.core.util.FieldWrapper;
 import com.mybatisflex.core.util.LambdaGetter;
@@ -75,8 +79,8 @@ public class DbChain extends QueryWrapperAdapter<DbChain> implements PropertySet
         return table(tableInfo.getSchema(), tableInfo.getTableName());
     }
 
-    public static DbChain table(TableDef tableDef) {
-        return table(tableDef.getSchema(), tableDef.getTableName());
+    public static DbChain table(QueryTable queryTable) {
+        return table(queryTable.getSchema(), queryTable.getName());
     }
 
     private Row getRow() {

@@ -20,23 +20,11 @@ import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.DialectFactory;
-import com.mybatisflex.core.table.TableDef;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.ArrayUtil;
-import com.mybatisflex.core.util.ClassUtil;
-import com.mybatisflex.core.util.CollectionUtil;
-import com.mybatisflex.core.util.LambdaGetter;
-import com.mybatisflex.core.util.LambdaUtil;
-import com.mybatisflex.core.util.SqlUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.util.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -200,13 +188,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper from(TableDef... tableDefs) {
-        for (TableDef tableDef : tableDefs) {
-            from(new QueryTable(tableDef));
-        }
-        return this;
-    }
-
     public QueryWrapper from(Class<?>... entityClasses) {
         for (Class<?> entityClass : entityClasses) {
             TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
@@ -253,7 +234,8 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         if (CollectionUtil.isEmpty(queryTables)) {
             throw new IllegalArgumentException("query table must not be empty.");
         }
-        queryTables.get(queryTables.size() - 1).alias = alias;
+        int index = queryTables.size() - 1;
+        queryTables.set(index, queryTables.get(index).as(alias));
         return this;
     }
 
@@ -431,14 +413,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return joining(SqlConsts.LEFT_JOIN, entityClass, when);
     }
 
-    public <Q extends QueryWrapper> Joiner<Q> leftJoin(TableDef table) {
-        return joining(SqlConsts.LEFT_JOIN, new QueryTable(table), true);
-    }
-
-    public <Q extends QueryWrapper> Joiner<Q> leftJoin(TableDef table, boolean when) {
-        return joining(SqlConsts.LEFT_JOIN, new QueryTable(table), when);
-    }
-
     public <Q extends QueryWrapper> Joiner<Q> leftJoin(QueryWrapper table) {
         return joining(SqlConsts.LEFT_JOIN, table, true);
     }
@@ -465,14 +439,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     public <Q extends QueryWrapper> Joiner<Q> rightJoin(Class<?> entityClass, boolean when) {
         return joining(SqlConsts.RIGHT_JOIN, entityClass, when);
-    }
-
-    public <Q extends QueryWrapper> Joiner<Q> rightJoin(TableDef table) {
-        return joining(SqlConsts.RIGHT_JOIN, new QueryTable(table), true);
-    }
-
-    public <Q extends QueryWrapper> Joiner<Q> rightJoin(TableDef table, boolean when) {
-        return joining(SqlConsts.RIGHT_JOIN, new QueryTable(table), when);
     }
 
     public <Q extends QueryWrapper> Joiner<Q> rightJoin(QueryWrapper table) {
@@ -503,14 +469,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return joining(SqlConsts.INNER_JOIN, entityClass, when);
     }
 
-    public <Q extends QueryWrapper> Joiner<Q> innerJoin(TableDef table) {
-        return innerJoin(table, true);
-    }
-
-    public <Q extends QueryWrapper> Joiner<Q> innerJoin(TableDef table, boolean when) {
-        return joining(SqlConsts.INNER_JOIN, new QueryTable(table), when);
-    }
-
     public <Q extends QueryWrapper> Joiner<Q> innerJoin(QueryWrapper table) {
         return joining(SqlConsts.INNER_JOIN, table, true);
     }
@@ -537,14 +495,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     public <Q extends QueryWrapper> Joiner<Q> fullJoin(Class<?> entityClass, boolean when) {
         return joining(SqlConsts.FULL_JOIN, entityClass, when);
-    }
-
-    public <Q extends QueryWrapper> Joiner<Q> fullJoin(TableDef table) {
-        return joining(SqlConsts.FULL_JOIN, new QueryTable(table), true);
-    }
-
-    public <Q extends QueryWrapper> Joiner<Q> fullJoin(TableDef table, boolean when) {
-        return joining(SqlConsts.FULL_JOIN, new QueryTable(table), when);
     }
 
     public <Q extends QueryWrapper> Joiner<Q> fullJoin(QueryWrapper table) {
@@ -575,14 +525,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return joining(SqlConsts.CROSS_JOIN, entityClass, when);
     }
 
-    public <Q extends QueryWrapper> Joiner<Q> crossJoin(TableDef table) {
-        return joining(SqlConsts.CROSS_JOIN, new QueryTable(table), true);
-    }
-
-    public <Q extends QueryWrapper> Joiner<Q> crossJoin(TableDef table, boolean when) {
-        return joining(SqlConsts.CROSS_JOIN, new QueryTable(table), when);
-    }
-
     public <Q extends QueryWrapper> Joiner<Q> crossJoin(QueryWrapper table) {
         return joining(SqlConsts.CROSS_JOIN, table, true);
     }
@@ -609,14 +551,6 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     public <Q extends QueryWrapper> Joiner<Q> join(Class<?> entityClass, boolean when) {
         return joining(SqlConsts.JOIN, entityClass, when);
-    }
-
-    public <Q extends QueryWrapper> Joiner<Q> join(TableDef table) {
-        return joining(SqlConsts.JOIN, new QueryTable(table), true);
-    }
-
-    public <Q extends QueryWrapper> Joiner<Q> join(TableDef table, boolean when) {
-        return joining(SqlConsts.JOIN, new QueryTable(table), when);
     }
 
     public <Q extends QueryWrapper> Joiner<Q> join(QueryWrapper table) {

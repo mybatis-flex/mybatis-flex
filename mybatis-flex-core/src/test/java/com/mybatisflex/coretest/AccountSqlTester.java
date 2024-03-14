@@ -30,32 +30,44 @@ import com.mybatisflex.core.query.SqlOperators;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.table.TableManager;
+import com.mybatisflex.coretest.table.AccountTableDef;
+import com.mybatisflex.coretest.table.ArticleTableDef;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Date;
 
-import static com.mybatisflex.core.query.QueryMethods.avg;
-import static com.mybatisflex.core.query.QueryMethods.case_;
-import static com.mybatisflex.core.query.QueryMethods.column;
-import static com.mybatisflex.core.query.QueryMethods.convert;
-import static com.mybatisflex.core.query.QueryMethods.count;
-import static com.mybatisflex.core.query.QueryMethods.distinct;
-import static com.mybatisflex.core.query.QueryMethods.exists;
-import static com.mybatisflex.core.query.QueryMethods.left;
-import static com.mybatisflex.core.query.QueryMethods.max;
-import static com.mybatisflex.core.query.QueryMethods.noCondition;
-import static com.mybatisflex.core.query.QueryMethods.notExists;
-import static com.mybatisflex.core.query.QueryMethods.raw;
-import static com.mybatisflex.core.query.QueryMethods.select;
-import static com.mybatisflex.core.query.QueryMethods.selectCountOne;
-import static com.mybatisflex.core.query.QueryMethods.selectOne;
-import static com.mybatisflex.core.query.QueryMethods.year;
+import static com.mybatisflex.core.query.QueryMethods.*;
 import static com.mybatisflex.coretest.table.Account01TableDef.ACCOUNT01;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
 
 public class AccountSqlTester {
+
+    @Test
+    public void testAlisa() {
+        AccountTableDef a1 = ACCOUNT.as("a1");
+        AccountTableDef a2 = ACCOUNT.as("a2");
+        ArticleTableDef ar = ARTICLE.as("ar");
+        QueryWrapper queryWrapper = new QueryWrapper()
+            .select(ar.CONTENT, a1.ID, a2.AGE)
+            .from(ar)
+            .leftJoin(a1).on(a1.ID.eq(ar.ACCOUNT_ID))
+            .leftJoin(a2).on(a2.ID.eq(ar.ACCOUNT_ID));
+        String sql = SqlFormatter.format(queryWrapper.toSQL());
+        Assert.assertEquals("SELECT\n" +
+            "  ` ar `.` content `,\n" +
+            "  ` a1 `.` id `,\n" +
+            "  ` a2 `.` age `\n" +
+            "FROM\n" +
+            "  ` tb_article ` AS ` ar `\n" +
+            "  LEFT JOIN ` tb_account ` AS ` a1 ` ON ` a1 `.` id ` = ` ar `.` account_id `\n" +
+            "  LEFT JOIN ` tb_account ` AS ` a2 ` ON ` a2 `.` id ` = ` ar `.` account_id `", sql);
+        System.out.println(sql);
+        Assert.assertSame(a1, a1.as("a1"));
+        Assert.assertNotSame(a1, a1.as("a2"));
+        Assert.assertNotSame(a1, a2);
+    }
 
     @Test
     public void testOracleFrom() {
@@ -852,11 +864,12 @@ public class AccountSqlTester {
         QueryWrapper qw = QueryWrapper.create(account, operators);
 
         Assert.assertEquals("SELECT `id`, `user_name`, `birthday`, `sex`, `age`, `is_normal`, `is_delete` FROM `tb_account` " +
-                "WHERE `user_name` LIKE 'michael%' A" +
-                "ND `sex` = 0 " +
+                "WHERE `user_name` LIKE 'michael%' " +
+                "AND `sex` = 0 " +
                 "AND `age` >= 18 " +
                 "AND `is_normal` = false"
             , qw.toSQL());
         System.out.println(SqlFormatter.format(qw.toSQL()));
     }
+
 }
