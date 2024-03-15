@@ -46,6 +46,10 @@ public class CPI {
         return queryWrapper.getConditionValueArray();
     }
 
+    public static Object[] getConditionParams(QueryCondition queryCondition) {
+        return WrapperUtil.getValues(queryCondition);
+    }
+
     public static List<QueryWrapper> getChildSelect(QueryWrapper queryWrapper) {
         return queryWrapper.getChildSelect();
     }
