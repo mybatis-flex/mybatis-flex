@@ -17,10 +17,15 @@
 package com.mybatisflex.test.service;
 
 import com.mybatisflex.core.query.QueryWrapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
+import static com.mybatisflex.core.query.QueryMethods.case_;
+import static com.mybatisflex.core.query.QueryMethods.length;
+import static com.mybatisflex.test.model.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.model.table.ArticleTableDef.ARTICLE;
 
 /**
@@ -35,12 +40,14 @@ class ArticleServiceTest {
 
     @Test
     void testChain() {
-        articleService.queryChain()
-            .select(ARTICLE.DEFAULT_COLUMNS)
-            .from(ARTICLE)
-            .where(ARTICLE.ID.ge(100))
-            .objList()
-            .forEach(System.out::println);
+        Assertions.assertDoesNotThrow(() ->
+            articleService.queryChain()
+                .select(ARTICLE.DEFAULT_COLUMNS)
+                .from(ARTICLE)
+                .where(ARTICLE.ID.ge(100))
+                .objList()
+                .forEach(System.out::println)
+        );
     }
 
     @Test
@@ -51,7 +58,25 @@ class ArticleServiceTest {
             .where(ARTICLE.ACCOUNT_ID.eq(1))
             .orderBy(ARTICLE.ACCOUNT_ID.desc());
         boolean exists = articleService.exists(queryWrapper);
-        System.out.println(exists);
+        Assertions.assertTrue(exists);
+    }
+
+    @Test
+    @Transactional
+    void testSubUpdate() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(ACCOUNT.AGE)
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.eq(1));
+
+        boolean updated = articleService.updateChain()
+            .set(ARTICLE.CONTENT, "hhhh")
+            .set(ARTICLE.ACCOUNT_ID, queryWrapper)
+            .set(ARTICLE.IS_DELETE, ARTICLE.IS_DELETE.eq(0))
+            .set(ARTICLE.TITLE, case_(length(ARTICLE.TITLE)).when(1).then("title1").else_("大标题").end())
+            .update();
+
+        Assertions.assertTrue(updated);
     }
 
 }
