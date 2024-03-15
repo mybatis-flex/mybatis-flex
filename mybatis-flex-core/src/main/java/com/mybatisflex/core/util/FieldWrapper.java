@@ -39,6 +39,7 @@ public class FieldWrapper {
         Map<String, FieldWrapper> wrapperMap = cache.get(clazz);
         if (wrapperMap == null) {
             synchronized (clazz) {
+                wrapperMap = cache.get(clazz);
                 if (wrapperMap == null) {
                     wrapperMap = new ConcurrentHashMap<>();
                     cache.put(clazz, wrapperMap);
