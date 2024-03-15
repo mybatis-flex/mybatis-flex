@@ -17,6 +17,7 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.dialect.OperateType;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ObjectUtil;
 
@@ -99,10 +100,10 @@ public class Join implements CloneSupport<Join> {
         this.effective = fn.get();
     }
 
-    public String toSql(List<QueryTable> queryTables, IDialect dialect) {
+    public String toSql(List<QueryTable> queryTables, IDialect dialect, OperateType operateType) {
         //left join, right join,  inner join ...
         StringBuilder sql = new StringBuilder(type);
-        sql.append(queryTable.toSql(dialect));
+        sql.append(queryTable.toSql(dialect,operateType));
 
         //left join xxx as xxx2 on xxx2.id = xxx3.other
         List<QueryTable> newQueryTables = new ArrayList<>(queryTables);

@@ -15,8 +15,10 @@
  */
 package com.mybatisflex.core.table;
 
+import com.mybatisflex.core.dialect.OperateType;
+
 public interface DynamicTableProcessor {
 
-    String process(String tableName);
+    String process(String tableName, OperateType operateType);
 
 }

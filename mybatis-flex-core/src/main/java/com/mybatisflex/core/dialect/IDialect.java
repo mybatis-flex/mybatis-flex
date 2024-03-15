@@ -31,8 +31,8 @@ public interface IDialect {
 
     String wrapColumnAlias(String keyword);
 
-    default String getRealTable(String table) {
-        return TableManager.getRealTable(table);
+    default String getRealTable(String table, OperateType operateType) {
+        return TableManager.getRealTable(table,operateType);
     }
 
     default String getRealSchema(String schema, String table) {

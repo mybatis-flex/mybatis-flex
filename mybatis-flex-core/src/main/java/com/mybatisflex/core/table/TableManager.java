@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.table;
 
+import com.mybatisflex.core.dialect.OperateType;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.HashMap;
@@ -78,7 +79,7 @@ public class TableManager {
     }
 
 
-    public static String getRealTable(String tableName) {
+    public static String getRealTable(String tableName, OperateType operateType) {
 
         Map<String, String> mapping = tableNameMappingTL.get();
         if (mapping != null) {
@@ -92,7 +93,7 @@ public class TableManager {
             return tableName;
         }
 
-        String dynamicTableName = dynamicTableProcessor.process(tableName);
+        String dynamicTableName = dynamicTableProcessor.process(tableName,operateType);
         return StringUtil.isNotBlank(dynamicTableName) ? dynamicTableName : tableName;
     }
 
