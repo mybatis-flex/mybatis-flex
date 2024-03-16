@@ -17,6 +17,7 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.dialect.OperateType;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.Objects;
@@ -36,7 +37,7 @@ public class RawQueryTable extends QueryTable {
     }
 
     @Override
-    public String toSql(IDialect dialect) {
+    public String toSql(IDialect dialect, OperateType operateType) {
         return this.content + WrapperUtil.buildAlias(alias, dialect);
     }
 

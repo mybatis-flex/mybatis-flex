@@ -17,6 +17,7 @@ package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.dialect.OperateType;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.StringUtil;
 
@@ -105,13 +106,13 @@ public class QueryTable implements CloneSupport<QueryTable> {
         return FlexConsts.EMPTY_ARRAY;
     }
 
-    public String toSql(IDialect dialect) {
+    public String toSql(IDialect dialect, OperateType operateType) {
         String sql;
         if (StringUtil.isNotBlank(schema)) {
-            String table = dialect.getRealTable(name);
+            String table = dialect.getRealTable(name,operateType);
             sql = dialect.wrap(dialect.getRealSchema(schema, table)) + "." + dialect.wrap(table) + WrapperUtil.buildAlias(alias, dialect);
         } else {
-            sql = dialect.wrap(dialect.getRealTable(name)) + WrapperUtil.buildAlias(alias, dialect);
+            sql = dialect.wrap(dialect.getRealTable(name,operateType)) + WrapperUtil.buildAlias(alias, dialect);
         }
         return sql;
     }

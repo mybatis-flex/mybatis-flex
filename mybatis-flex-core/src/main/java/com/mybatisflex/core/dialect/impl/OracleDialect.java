@@ -18,6 +18,7 @@ package com.mybatisflex.core.dialect.impl;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
+import com.mybatisflex.core.dialect.OperateType;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowCPI;
 import com.mybatisflex.core.table.TableInfo;
@@ -121,7 +122,7 @@ public class OracleDialect extends CommonsDialectImpl {
 
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
         for (int i = 0; i < entities.size(); i++) {
-            sql.append(INTO).append(tableInfo.getWrapSchemaAndTableName(this));
+            sql.append(INTO).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.INSERT));
             sql.append(BLANK).append(BRACKET_LEFT).append(StringUtil.join(DELIMITER, warpedInsertColumns)).append(BRACKET_RIGHT);
             sql.append(VALUES);
 
@@ -168,7 +169,7 @@ public class OracleDialect extends CommonsDialectImpl {
         StringBuilder sql = new StringBuilder();
         sql.append(INSERT_ALL);
 
-        String table = getRealTable(tableName);
+        String table = getRealTable(tableName,OperateType.INSERT);
         String tableNameWrap = StringUtil.isNotBlank(schema)
             ? wrap(getRealSchema(schema,table)) + REFERENCE + wrap(table)
             : wrap(table);

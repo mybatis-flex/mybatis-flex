@@ -25,6 +25,7 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.dialect.OperateType;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
@@ -179,12 +180,12 @@ public class TableInfo {
         return StringUtil.buildSchemaWithTable(schema, tableName);
     }
 
-    public String getWrapSchemaAndTableName(IDialect dialect) {
+    public String getWrapSchemaAndTableName(IDialect dialect, OperateType operateType) {
         if (StringUtil.isNotBlank(schema)) {
-            String table = dialect.getRealTable(tableName);
+            String table = dialect.getRealTable(tableName,operateType);
             return dialect.wrap(dialect.getRealSchema(schema, table)) + "." + dialect.wrap(table);
         } else {
-            return dialect.wrap(dialect.getRealTable(tableName));
+            return dialect.wrap(dialect.getRealTable(tableName,operateType));
         }
     }
 

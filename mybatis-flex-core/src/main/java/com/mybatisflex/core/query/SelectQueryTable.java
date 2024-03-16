@@ -16,6 +16,7 @@
 package com.mybatisflex.core.query;
 
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.dialect.OperateType;
 import com.mybatisflex.core.util.StringUtil;
 
 /**
@@ -46,7 +47,7 @@ public class SelectQueryTable extends QueryTable {
     }
 
     @Override
-    public String toSql(IDialect dialect) {
+    public String toSql(IDialect dialect, OperateType operateType) {
         String sql = dialect.buildSelectSql(queryWrapper);
         if (StringUtil.isNotBlank(alias)) {
             return WrapperUtil.withAlias(sql, alias, dialect);

@@ -18,5 +18,8 @@ public enum OperateType {
      * 删除
      */
     DELETE,
-    ;
+    /**
+     * 增加
+     */
+    INSERT;
 }
