@@ -1,7 +1,7 @@
 mybatis-flex:
   seata-config:
     enable: true #启动seata
-    seata-mode: XA #xa或者ta
+    seata-mode: XA #XA或者AT
   datasource:
     accountdb:
       url: jdbc:mysql://127.0.0.1:3306/db_account
