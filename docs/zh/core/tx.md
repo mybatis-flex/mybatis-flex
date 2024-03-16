@@ -107,7 +107,7 @@ public void doSomething(){
         DataSourceKey.use("ds2");
         Db.updateBySql("update ...");
     }finally{
-        DataSourceKey.clear()
+        DataSourceKey.clear();
     }
 
     //抛出异常
@@ -138,7 +138,7 @@ Seata 将为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打�
 mybatis-flex:
   seata-config:
     enable: true
-    seata-mode: XA # 支持 xa 或者 ta
+    seata-mode: XA # 支持 XA 或者 AT
 ```
 - XA：指的是: 分布式事务协议（X/Open Distributed Transaction Processing），它是一种由 X/Open 组织制定的分布式事务标准，
 XA 使用两阶段提交（2PC，Two-Phase Commit）来保证所有资源同时提交或回滚任何特定的事务。
