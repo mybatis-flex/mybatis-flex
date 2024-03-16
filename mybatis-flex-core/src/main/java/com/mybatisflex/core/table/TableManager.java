@@ -93,12 +93,12 @@ public class TableManager {
             return tableName;
         }
 
-        String dynamicTableName = dynamicTableProcessor.process(tableName,operateType);
+        String dynamicTableName = dynamicTableProcessor.process(tableName, operateType);
         return StringUtil.isNotBlank(dynamicTableName) ? dynamicTableName : tableName;
     }
 
 
-    public static String getRealSchema(String schema, String table) {
+    public static String getRealSchema(String schema, String table, OperateType operateType) {
         Map<String, String> mapping = schemaMappingTL.get();
         if (mapping != null) {
             String dynamicSchema = mapping.get(schema);
@@ -111,7 +111,7 @@ public class TableManager {
             return schema;
         }
 
-        String dynamicSchema = dynamicSchemaProcessor.process(schema, table);
+        String dynamicSchema = dynamicSchemaProcessor.process(schema, table, operateType);
         return StringUtil.isNotBlank(dynamicSchema) ? dynamicSchema : schema;
     }
 

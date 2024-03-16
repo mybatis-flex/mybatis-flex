@@ -140,11 +140,11 @@ public class CommonsDialectImpl implements IDialect {
             index++;
         }
 
-        String table = getRealTable(tableName,OperateType.INSERT);
+        String table = getRealTable(tableName, OperateType.INSERT);
         StringBuilder sql = new StringBuilder();
         sql.append(INSERT_INTO);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table, OperateType.INSERT))).append(REFERENCE);
         }
         sql.append(wrap(table));
         sql.append(BRACKET_LEFT).append(fields).append(BRACKET_RIGHT);
@@ -176,11 +176,11 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        String table = getRealTable(tableName,OperateType.INSERT);
+        String table = getRealTable(tableName, OperateType.INSERT);
         StringBuilder sql = new StringBuilder();
         sql.append(INSERT_INTO);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table, OperateType.INSERT))).append(REFERENCE);
         }
         sql.append(wrap(table));
         sql.append(BLANK).append(BRACKET_LEFT)
@@ -193,11 +193,11 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forDeleteById(String schema, String tableName, String[] primaryKeys) {
-        String table = getRealTable(tableName,OperateType.DELETE);
+        String table = getRealTable(tableName, OperateType.DELETE);
         StringBuilder sql = new StringBuilder();
         sql.append(DELETE_FROM);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table, OperateType.DELETE))).append(REFERENCE);
         }
         sql.append(wrap(table));
         sql.append(WHERE);
@@ -214,11 +214,11 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forDeleteBatchByIds(String schema, String tableName, String[] primaryKeys, Object[] ids) {
-        String table = getRealTable(tableName,OperateType.DELETE);
+        String table = getRealTable(tableName, OperateType.DELETE);
         StringBuilder sql = new StringBuilder();
         sql.append(DELETE_FROM);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table, OperateType.DELETE))).append(REFERENCE);
         }
 
         sql.append(wrap(table));
@@ -261,7 +261,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forUpdateById(String schema, String tableName, Row row) {
-        String table = getRealTable(tableName,OperateType.UPDATE);
+        String table = getRealTable(tableName, OperateType.UPDATE);
         StringBuilder sql = new StringBuilder();
         Set<String> modifyAttrs = RowCPI.getModifyAttrs(row);
         Map<String, RawValue> rawValueMap = RowCPI.getRawValueMap(row);
@@ -269,7 +269,7 @@ public class CommonsDialectImpl implements IDialect {
 
         sql.append(UPDATE);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table, OperateType.UPDATE))).append(REFERENCE);
         }
 
         sql.append(wrap(table)).append(SET);
@@ -317,7 +317,7 @@ public class CommonsDialectImpl implements IDialect {
 
         //fix: support schema
         QueryTable queryTable = queryTables.get(0);
-        sqlBuilder.append(UPDATE).append(queryTable.toSql(this,OperateType.UPDATE)).append(SET);
+        sqlBuilder.append(UPDATE).append(queryTable.toSql(this, OperateType.UPDATE)).append(SET);
         int index = 0;
         for (String modifyAttr : modifyAttrs) {
             if (index > 0) {
@@ -335,7 +335,7 @@ public class CommonsDialectImpl implements IDialect {
             index++;
         }
 
-        buildJoinSql(sqlBuilder, queryWrapper, queryTables,OperateType.UPDATE);
+        buildJoinSql(sqlBuilder, queryWrapper, queryTables, OperateType.UPDATE);
         buildWhereSql(sqlBuilder, queryWrapper, queryTables, false);
         buildGroupBySql(sqlBuilder, queryWrapper, queryTables);
         buildHavingSql(sqlBuilder, queryWrapper, queryTables);
@@ -367,10 +367,10 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectOneById(String schema, String tableName, String[] primaryKeys, Object[] primaryValues) {
-        String table = getRealTable(tableName,OperateType.SELECT);
+        String table = getRealTable(tableName, OperateType.SELECT);
         StringBuilder sql = new StringBuilder(SELECT_ALL_FROM);
         if (StringUtil.isNotBlank(schema)) {
-            sql.append(wrap(getRealSchema(schema, table))).append(REFERENCE);
+            sql.append(wrap(getRealSchema(schema, table, OperateType.SELECT))).append(REFERENCE);
         }
         sql.append(wrap(table)).append(WHERE);
         for (int i = 0; i < primaryKeys.length; i++) {
@@ -438,9 +438,9 @@ public class CommonsDialectImpl implements IDialect {
         buildSelectColumnSql(sqlBuilder, allTables, selectColumns, CPI.getHint(queryWrapper));
 
 
-        sqlBuilder.append(FROM).append(StringUtil.join(DELIMITER, queryTables, queryTable -> queryTable.toSql(this,OperateType.SELECT)));
+        sqlBuilder.append(FROM).append(StringUtil.join(DELIMITER, queryTables, queryTable -> queryTable.toSql(this, OperateType.SELECT)));
 
-        buildJoinSql(sqlBuilder, queryWrapper, allTables,OperateType.SELECT);
+        buildJoinSql(sqlBuilder, queryWrapper, allTables, OperateType.SELECT);
         buildWhereSql(sqlBuilder, queryWrapper, allTables, true);
         buildGroupBySql(sqlBuilder, queryWrapper, allTables);
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
@@ -474,7 +474,7 @@ public class CommonsDialectImpl implements IDialect {
     public String buildNoSelectSql(QueryWrapper queryWrapper) {
         StringBuilder sqlBuilder = new StringBuilder();
 
-        buildJoinSql(sqlBuilder, queryWrapper, Collections.EMPTY_LIST,OperateType.SELECT);
+        buildJoinSql(sqlBuilder, queryWrapper, Collections.EMPTY_LIST, OperateType.SELECT);
         buildWhereSql(sqlBuilder, queryWrapper, Collections.EMPTY_LIST, true);
         buildGroupBySql(sqlBuilder, queryWrapper, Collections.EMPTY_LIST);
         buildHavingSql(sqlBuilder, queryWrapper, Collections.EMPTY_LIST);
@@ -546,17 +546,17 @@ public class CommonsDialectImpl implements IDialect {
                 throw new IllegalArgumentException("Delete with join sql must has 1 table only. but current has " + queryTables.size());
             }
             QueryTable queryTable = queryTables.get(0);
-            String table = getRealTable(queryTable.getName(),OperateType.DELETE);
+            String table = getRealTable(queryTable.getName(), OperateType.DELETE);
             if (StringUtil.isNotBlank(queryTable.getSchema())) {
-                sqlBuilder.append(wrap(getRealSchema(queryTable.getSchema(), table))).append(REFERENCE);
+                sqlBuilder.append(wrap(getRealSchema(queryTable.getSchema(), table, OperateType.DELETE))).append(REFERENCE);
             }
-            sqlBuilder.append(BLANK).append(wrap(getRealTable(table,OperateType.DELETE)));
+            sqlBuilder.append(BLANK).append(wrap(getRealTable(table, OperateType.DELETE)));
         }
 
 
-        sqlBuilder.append(FROM).append(StringUtil.join(DELIMITER, queryTables, queryTable -> queryTable.toSql(this,OperateType.DELETE)));
+        sqlBuilder.append(FROM).append(StringUtil.join(DELIMITER, queryTables, queryTable -> queryTable.toSql(this, OperateType.DELETE)));
 
-        buildJoinSql(sqlBuilder, queryWrapper, allTables,OperateType.DELETE);
+        buildJoinSql(sqlBuilder, queryWrapper, allTables, OperateType.DELETE);
         buildWhereSql(sqlBuilder, queryWrapper, allTables, false);
         buildGroupBySql(sqlBuilder, queryWrapper, allTables);
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
@@ -591,7 +591,7 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String forInsertEntity(TableInfo tableInfo, Object entity, boolean ignoreNulls) {
         StringBuilder sql = new StringBuilder();
-        sql.append(INSERT_INTO).append(tableInfo.getWrapSchemaAndTableName(this,OperateType.INSERT));
+        sql.append(INSERT_INTO).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.INSERT));
 
         String[] insertColumns = tableInfo.obtainInsertColumns(entity, ignoreNulls);
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
@@ -623,7 +623,7 @@ public class CommonsDialectImpl implements IDialect {
     public String forInsertEntityWithPk(TableInfo tableInfo, Object entity, boolean ignoreNulls) {
 
         StringBuilder sql = new StringBuilder();
-        sql.append(INSERT_INTO).append(tableInfo.getWrapSchemaAndTableName(this,OperateType.INSERT));
+        sql.append(INSERT_INTO).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.INSERT));
 
         String[] insertColumns = tableInfo.obtainInsertColumnsWithPk(entity, ignoreNulls);
         Map<String, String> onInsertColumns = tableInfo.getOnInsertColumns();
@@ -650,7 +650,7 @@ public class CommonsDialectImpl implements IDialect {
     @Override
     public String forInsertEntityBatch(TableInfo tableInfo, List<?> entities) {
         StringBuilder sql = new StringBuilder();
-        sql.append(INSERT_INTO).append(tableInfo.getWrapSchemaAndTableName(this,OperateType.INSERT));
+        sql.append(INSERT_INTO).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.INSERT));
         String[] insertColumns = tableInfo.obtainInsertColumns(null, false);
         String[] warpedInsertColumns = new String[insertColumns.length];
         for (int i = 0; i < insertColumns.length; i++) {
@@ -696,7 +696,7 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder sql = new StringBuilder();
         String[] primaryKeys = tableInfo.getPrimaryColumns();
 
-        sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this,OperateType.UPDATE));
+        sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.UPDATE));
         sql.append(SET).append(buildLogicDeletedSet(logicDeleteColumn, tableInfo));
         sql.append(WHERE);
         for (int i = 0; i < primaryKeys.length; i++) {
@@ -734,7 +734,7 @@ public class CommonsDialectImpl implements IDialect {
 
         StringBuilder sql = new StringBuilder();
         sql.append(UPDATE);
-        sql.append(tableInfo.getWrapSchemaAndTableName(this,OperateType.UPDATE));
+        sql.append(tableInfo.getWrapSchemaAndTableName(this, OperateType.UPDATE));
         sql.append(SET).append(buildLogicDeletedSet(logicDeleteColumn, tableInfo));
         sql.append(WHERE);
         sql.append(BRACKET_LEFT);
@@ -793,11 +793,11 @@ public class CommonsDialectImpl implements IDialect {
 
         //ignore selectColumns
         StringBuilder sqlBuilder = new StringBuilder(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
-        sqlBuilder.append(tableInfo.getWrapSchemaAndTableName(this,OperateType.DELETE));
+        sqlBuilder.append(tableInfo.getWrapSchemaAndTableName(this, OperateType.DELETE));
         sqlBuilder.append(SET).append(buildLogicDeletedSet(logicDeleteColumn, tableInfo));
 
 
-        buildJoinSql(sqlBuilder, queryWrapper, allTables,OperateType.DELETE);
+        buildJoinSql(sqlBuilder, queryWrapper, allTables, OperateType.DELETE);
         buildWhereSql(sqlBuilder, queryWrapper, allTables, false);
         buildGroupBySql(sqlBuilder, queryWrapper, allTables);
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
@@ -818,7 +818,7 @@ public class CommonsDialectImpl implements IDialect {
         Map<String, RawValue> rawValueMap = tableInfo.obtainUpdateRawValueMap(entity);
         String[] primaryKeys = tableInfo.getPrimaryColumns();
 
-        sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this,OperateType.UPDATE)).append(SET);
+        sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.UPDATE)).append(SET);
 
         StringJoiner stringJoiner = new StringJoiner(DELIMITER);
 
@@ -884,10 +884,10 @@ public class CommonsDialectImpl implements IDialect {
         Map<String, RawValue> rawValueMap = tableInfo.obtainUpdateRawValueMap(entity);
 
         sqlBuilder.append(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
-        sqlBuilder.append(tableInfo.getWrapSchemaAndTableName(this,OperateType.UPDATE));
+        sqlBuilder.append(tableInfo.getWrapSchemaAndTableName(this, OperateType.UPDATE));
 
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
-        buildJoinSql(sqlBuilder, queryWrapper, queryTables,OperateType.UPDATE);
+        buildJoinSql(sqlBuilder, queryWrapper, queryTables, OperateType.UPDATE);
 
 
         sqlBuilder.append(SET);
@@ -946,7 +946,7 @@ public class CommonsDialectImpl implements IDialect {
     public String forSelectOneEntityById(TableInfo tableInfo) {
         StringBuilder sql = new StringBuilder();
         buildSelectColumnSql(sql, null, null, null);
-        sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this,OperateType.SELECT));
+        sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.SELECT));
         sql.append(WHERE);
         String[] pKeys = tableInfo.getPrimaryColumns();
         for (int i = 0; i < pKeys.length; i++) {
@@ -974,7 +974,7 @@ public class CommonsDialectImpl implements IDialect {
     public String forSelectEntityListByIds(TableInfo tableInfo, Object[] primaryValues) {
         StringBuilder sql = new StringBuilder();
         buildSelectColumnSql(sql, null, tableInfo.getDefaultQueryColumn(), null);
-        sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this,OperateType.SELECT));
+        sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.SELECT));
         sql.append(WHERE);
         String[] primaryKeys = tableInfo.getPrimaryColumns();
 
@@ -1034,7 +1034,7 @@ public class CommonsDialectImpl implements IDialect {
                 if (!join.checkEffective()) {
                     continue;
                 }
-                sqlBuilder.append(join.toSql(queryTables, this,operateType));
+                sqlBuilder.append(join.toSql(queryTables, this, operateType));
                 joinSuccess = true;
             }
         }

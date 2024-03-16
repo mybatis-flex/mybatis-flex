@@ -182,10 +182,10 @@ public class TableInfo {
 
     public String getWrapSchemaAndTableName(IDialect dialect, OperateType operateType) {
         if (StringUtil.isNotBlank(schema)) {
-            String table = dialect.getRealTable(tableName,operateType);
-            return dialect.wrap(dialect.getRealSchema(schema, table)) + "." + dialect.wrap(table);
+            String table = dialect.getRealTable(tableName, operateType);
+            return dialect.wrap(dialect.getRealSchema(schema, table, operateType)) + "." + dialect.wrap(table);
         } else {
-            return dialect.wrap(dialect.getRealTable(tableName,operateType));
+            return dialect.wrap(dialect.getRealTable(tableName, operateType));
         }
     }
 

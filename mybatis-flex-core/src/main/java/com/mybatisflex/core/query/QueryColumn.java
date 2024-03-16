@@ -979,10 +979,10 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
                 return dialect.wrap(selectTable.alias) + SqlConsts.REFERENCE + dialect.wrap(name);
             } else if (StringUtil.isNotBlank(selectTable.getSchema()) && StringUtil.isNotBlank(selectTable.getName())) {
                 String realTable = dialect.getRealTable(selectTable.getName(), OperateType.SELECT);
-                return dialect.wrap(dialect.getRealSchema(selectTable.schema, realTable)) + SqlConsts.REFERENCE + dialect.wrap(realTable)
+                return dialect.wrap(dialect.getRealSchema(selectTable.schema, realTable, OperateType.SELECT)) + SqlConsts.REFERENCE + dialect.wrap(realTable)
                     + SqlConsts.REFERENCE + dialect.wrap(name);
             } else if (StringUtil.isNotBlank(selectTable.getName())) {
-                return dialect.wrap(dialect.getRealTable(selectTable.getName(),OperateType.SELECT)) + SqlConsts.REFERENCE + dialect.wrap(name);
+                return dialect.wrap(dialect.getRealTable(selectTable.getName(), OperateType.SELECT)) + SqlConsts.REFERENCE + dialect.wrap(name);
             } else {
                 return dialect.wrap(name);
             }

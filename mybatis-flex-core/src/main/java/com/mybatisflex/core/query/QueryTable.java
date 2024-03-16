@@ -109,10 +109,10 @@ public class QueryTable implements CloneSupport<QueryTable> {
     public String toSql(IDialect dialect, OperateType operateType) {
         String sql;
         if (StringUtil.isNotBlank(schema)) {
-            String table = dialect.getRealTable(name,operateType);
-            sql = dialect.wrap(dialect.getRealSchema(schema, table)) + "." + dialect.wrap(table) + WrapperUtil.buildAlias(alias, dialect);
+            String table = dialect.getRealTable(name, operateType);
+            sql = dialect.wrap(dialect.getRealSchema(schema, table, operateType)) + "." + dialect.wrap(table) + WrapperUtil.buildAlias(alias, dialect);
         } else {
-            sql = dialect.wrap(dialect.getRealTable(name,operateType)) + WrapperUtil.buildAlias(alias, dialect);
+            sql = dialect.wrap(dialect.getRealTable(name, operateType)) + WrapperUtil.buildAlias(alias, dialect);
         }
         return sql;
     }

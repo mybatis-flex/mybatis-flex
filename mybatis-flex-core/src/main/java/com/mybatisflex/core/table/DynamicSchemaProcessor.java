@@ -15,8 +15,10 @@
  */
 package com.mybatisflex.core.table;
 
+import com.mybatisflex.core.dialect.OperateType;
+
 public interface DynamicSchemaProcessor {
 
-    String process(String schema, String table);
+    String process(String schema, String table, OperateType operateType);
 
 }

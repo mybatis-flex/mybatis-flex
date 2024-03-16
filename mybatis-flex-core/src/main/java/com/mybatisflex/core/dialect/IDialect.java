@@ -32,11 +32,11 @@ public interface IDialect {
     String wrapColumnAlias(String keyword);
 
     default String getRealTable(String table, OperateType operateType) {
-        return TableManager.getRealTable(table,operateType);
+        return TableManager.getRealTable(table, operateType);
     }
 
-    default String getRealSchema(String schema, String table) {
-        return TableManager.getRealSchema(schema, table);
+    default String getRealSchema(String schema, String table, OperateType operateType) {
+        return TableManager.getRealSchema(schema, table, operateType);
     }
 
     String forHint(String hintString);
@@ -95,7 +95,7 @@ public interface IDialect {
      * 权限处理
      *
      * @param queryWrapper queryWrapper
-     * @param operateType 操作类型
+     * @param operateType  操作类型
      */
     default void prepareAuth(QueryWrapper queryWrapper, OperateType operateType) {
     }
@@ -103,9 +103,9 @@ public interface IDialect {
     /**
      * 权限处理
      *
-     * @param schema    schema
-     * @param tableName 表名
-     * @param sql       sql
+     * @param schema      schema
+     * @param tableName   表名
+     * @param sql         sql
      * @param operateType 操作类型
      */
     default void prepareAuth(String schema, String tableName, StringBuilder sql, OperateType operateType) {
@@ -113,8 +113,9 @@ public interface IDialect {
 
     /**
      * 权限处理
-     * @param tableInfo tableInfo
-     * @param sql sql
+     *
+     * @param tableInfo   tableInfo
+     * @param sql         sql
      * @param operateType 操作类型
      */
     default void prepareAuth(TableInfo tableInfo, StringBuilder sql, OperateType operateType) {
