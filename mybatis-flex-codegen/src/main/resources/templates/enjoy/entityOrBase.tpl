@@ -30,6 +30,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+#if(entityConfig.getSuperClass())
+import lombok.EqualsAndHashCode;
+#end
 #end
 #end
 #if(jdkVersion >= 14)
@@ -52,6 +55,9 @@ import java.io.Serial;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+#if(entityConfig.getSuperClass())
+@EqualsAndHashCode(callSuper = true)
+#end
 #end
 #end
 #if(withSwagger && swaggerVersion.getName() == "FOX")
