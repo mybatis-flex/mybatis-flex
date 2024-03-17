@@ -123,10 +123,7 @@ public class AccountSqlTester {
             .where(ACCOUNT01.ID.ge(100))
             .and(ACCOUNT.SEX.eq(1));
 
-        TableManager.setDynamicTableProcessor((tableName,operateType) ->{
-            System.out.println(operateType);
-            return  tableName + "_01";
-        });
+        TableManager.setDynamicTableProcessor(tableName -> tableName + "_01");
 
         Assert.assertEquals("SELECT * FROM `flex`.`tb_a01_01` " +
                 "LEFT JOIN `tb_account_01` ON `flex`.`tb_a01_01`.`id` = `tb_account_01`.`id` " +
@@ -147,7 +144,7 @@ public class AccountSqlTester {
             .where(ACCOUNT01.ID.ge(100))
             .and(ACCOUNT.SEX.eq(1));
 
-        TableManager.setDynamicTableProcessor((original,operateType) -> original + "_01");
+        TableManager.setDynamicTableProcessor(original -> original + "_01");
 
         Assert.assertEquals("SELECT * FROM `flex`.`tb_a01_01` AS `a1` " +
                 "LEFT JOIN `tb_account_01` ON `a1`.`id` = `tb_account_01`.`id` " +
