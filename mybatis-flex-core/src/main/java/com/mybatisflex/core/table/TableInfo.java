@@ -798,7 +798,7 @@ public class TableInfo {
             return null;
         }
 
-        return TenantManager.getTenantIds();
+        return TenantManager.getTenantIds(tableName);
     }
 
 
@@ -1342,7 +1342,7 @@ public class TableInfo {
         }
 
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
-        Object[] tenantIds = TenantManager.getTenantIds();
+        Object[] tenantIds = TenantManager.getTenantIds(tableName);
         if (tenantIds == null || tenantIds.length == 0) {
             return;
         }

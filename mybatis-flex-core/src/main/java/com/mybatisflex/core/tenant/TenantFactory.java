@@ -17,6 +17,14 @@ package com.mybatisflex.core.tenant;
 
 public interface TenantFactory {
 
+    /**
+     * @deprecated 使用 {@link #getTenantIds(String)} 代替。
+     */
+    @Deprecated
     Object[] getTenantIds();
+
+    default Object[] getTenantIds(String tableName) {
+        return getTenantIds();
+    }
 
 }
