@@ -25,11 +25,21 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
-import com.mybatisflex.core.util.*;
+import com.mybatisflex.core.util.ClassUtil;
+import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
 import com.mybatisflex.core.util.MapUtil;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.mybatisflex.core.query.QueryMethods.column;
@@ -139,8 +149,9 @@ public class RelationManager {
             setIgnoreRelations(relations);
         }
         for (LambdaGetter<T> lambdaGetter : ignoreRelations) {
+            Class<?> implClass = LambdaUtil.getImplClass(lambdaGetter);
             String fieldName = LambdaUtil.getFieldName(lambdaGetter);
-            relations.add(fieldName);
+            relations.add(implClass.getSimpleName() + "." + fieldName);
         }
     }
 
@@ -176,8 +187,9 @@ public class RelationManager {
             setQueryRelations(relations);
         }
         for (LambdaGetter<T> lambdaGetter : queryRelations) {
+            Class<?> implClass = LambdaUtil.getImplClass(lambdaGetter);
             String fieldName = LambdaUtil.getFieldName(lambdaGetter);
-            relations.add(fieldName);
+            relations.add(implClass.getSimpleName() + "." + fieldName);
         }
     }
 
