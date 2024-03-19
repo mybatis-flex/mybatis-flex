@@ -96,7 +96,7 @@ public class AuditMessage implements Serializable {
     private long elapsedTime;
 
     /**
-     * 数据库名称
+     * 数据库名称。
      */
     private String dsName;
 
