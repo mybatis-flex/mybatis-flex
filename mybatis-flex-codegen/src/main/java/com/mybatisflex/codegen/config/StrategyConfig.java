@@ -236,18 +236,27 @@ public class StrategyConfig implements Serializable {
         return this;
     }
 
-    public boolean isSupportGenerate(String table) {
-        if (unGenerateTables != null && unGenerateTables.contains(table)) {
-            return false;
-        }
 
+    public boolean isSupportGenerate(String table) {
+        if (table == null || table.isEmpty() ){
+            return true;
+        }
+        if (unGenerateTables != null) {
+            for (String unGenerateTable : unGenerateTables) {
+                // 使用正则表达式匹配表名
+                String regex = unGenerateTable.replace("*",".*");
+                if (table.matches(regex)) {
+                    return false;
+                }
+            }
+        }
         //不配置指定比表名的情况下，支持所有表
         if (generateTables == null || generateTables.isEmpty()) {
             return true;
         }
-
         for (String generateTable : generateTables) {
-            if (generateTable.equals(table)) {
+            String regex = generateTable.replace("*",".*");
+            if (table.matches(regex)) {
                 return true;
             }
         }
