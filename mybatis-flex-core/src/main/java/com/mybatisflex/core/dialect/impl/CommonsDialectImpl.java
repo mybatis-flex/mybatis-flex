@@ -121,7 +121,7 @@ public class CommonsDialectImpl implements IDialect {
         StringBuilder fields = new StringBuilder();
         StringBuilder paramsOrPlaceholder = new StringBuilder();
 
-        //插入数据时，可能包含主键
+        // 插入数据时，可能包含主键
         Set<String> modifyAttrs = RowCPI.getInsertAttrs(row);
         int index = 0;
         for (String attr : modifyAttrs) {
@@ -224,7 +224,7 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(wrap(table));
         sql.append(WHERE);
 
-        //多主键的场景
+        // 多主键的场景
         if (primaryKeys.length > 1) {
             for (int i = 0; i < ids.length / primaryKeys.length; i++) {
                 if (i > 0) {
@@ -315,7 +315,7 @@ public class CommonsDialectImpl implements IDialect {
             throw FlexExceptions.wrap(LocalizedFormats.UPDATE_ONLY_SUPPORT_1_TABLE);
         }
 
-        //fix: support schema
+        // fix: support schema
         QueryTable queryTable = queryTables.get(0);
         sqlBuilder.append(UPDATE).append(queryTable.toSql(this, OperateType.UPDATE)).append(SET);
         int index = 0;
@@ -340,7 +340,7 @@ public class CommonsDialectImpl implements IDialect {
         buildGroupBySql(sqlBuilder, queryWrapper, queryTables);
         buildHavingSql(sqlBuilder, queryWrapper, queryTables);
 
-        //ignore orderBy and limit
+        // ignore orderBy and limit
         buildOrderBySql(sqlBuilder, queryWrapper, queryTables);
 
         Long limitRows = CPI.getLimitRows(queryWrapper);
@@ -531,14 +531,14 @@ public class CommonsDialectImpl implements IDialect {
         List<QueryTable> joinTables = CPI.getJoinTables(queryWrapper);
         List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
 
-        //ignore selectColumns
+        // ignore selectColumns
         StringBuilder sqlBuilder = new StringBuilder(DELETE);
         String hint = CPI.getHint(queryWrapper);
         if (StringUtil.isNotBlank(hint)) {
             sqlBuilder.append(BLANK).append(hint).deleteCharAt(sqlBuilder.length() - 1);
         }
 
-        //delete with join
+        // delete with join
         if (joinTables != null && !joinTables.isEmpty()) {
             if (queryTables == null || queryTables.isEmpty()) {
                 throw new IllegalArgumentException("Delete with join sql must designate the from table.");
@@ -561,7 +561,7 @@ public class CommonsDialectImpl implements IDialect {
         buildGroupBySql(sqlBuilder, queryWrapper, allTables);
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
 
-        //ignore orderBy and limit
+        // ignore orderBy and limit
         buildOrderBySql(sqlBuilder, queryWrapper, allTables);
 
         Long limitRows = CPI.getLimitRows(queryWrapper);
@@ -604,13 +604,18 @@ public class CommonsDialectImpl implements IDialect {
         for (String insertColumn : insertColumns) {
             sqlFields.add(wrap(insertColumn));
             if (rawValueMap.containsKey(insertColumn)) {
-                sqlValues.add(rawValueMap.get(insertColumn).toSql(this));
+                sqlValues.add(rawValueMap.remove(insertColumn).toSql(this));
             } else if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
                 sqlValues.add(onInsertColumns.get(insertColumn));
             } else {
                 sqlValues.add(PLACEHOLDER);
             }
         }
+
+        rawValueMap.forEach((k, v) -> {
+            sqlFields.add(wrap(k));
+            sqlValues.add(v.toSql(this));
+        });
 
         return sql.append(BRACKET_LEFT).append(sqlFields).append(BRACKET_RIGHT)
             .append(VALUES)
@@ -666,7 +671,7 @@ public class CommonsDialectImpl implements IDialect {
             StringJoiner stringJoiner = new StringJoiner(DELIMITER, BRACKET_LEFT, BRACKET_RIGHT);
             for (String insertColumn : insertColumns) {
                 if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
-                    //直接读取 onInsert 配置的值，而不用 "?" 代替
+                    // 直接读取 onInsert 配置的值，而不用 "?" 代替
                     stringJoiner.add(onInsertColumns.get(insertColumn));
                 } else {
                     stringJoiner.add(PLACEHOLDER);
@@ -686,13 +691,13 @@ public class CommonsDialectImpl implements IDialect {
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
-        //正常删除
+        // 正常删除
         if (StringUtil.isBlank(logicDeleteColumn)) {
             String deleteByIdSql = forDeleteById(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryColumns());
             return tableInfo.buildTenantCondition(deleteByIdSql, tenantIdArgs, this);
         }
 
-        //逻辑删除
+        // 逻辑删除
         StringBuilder sql = new StringBuilder();
         String[] primaryKeys = tableInfo.getPrimaryColumns();
 
@@ -708,7 +713,7 @@ public class CommonsDialectImpl implements IDialect {
 
         sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn, tableInfo));
 
-        //租户ID
+        // 租户ID
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
         prepareAuth(tableInfo, sql, OperateType.DELETE);
         return sql.toString();
@@ -720,11 +725,11 @@ public class CommonsDialectImpl implements IDialect {
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
-        //正常删除
+        // 正常删除
         if (StringUtil.isBlank(logicDeleteColumn)) {
             String deleteSQL = forDeleteBatchByIds(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryColumns(), primaryValues);
 
-            //多租户
+            // 多租户
             if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
                 deleteSQL = deleteSQL.replace(WHERE, WHERE + BRACKET_LEFT) + BRACKET_RIGHT;
                 deleteSQL = tableInfo.buildTenantCondition(deleteSQL, tenantIdArgs, this);
@@ -741,7 +746,7 @@ public class CommonsDialectImpl implements IDialect {
 
         String[] primaryKeys = tableInfo.getPrimaryColumns();
 
-        //多主键的场景
+        // 多主键的场景
         if (primaryKeys.length > 1) {
             for (int i = 0; i < primaryValues.length / primaryKeys.length; i++) {
                 if (i > 0) {
@@ -779,19 +784,19 @@ public class CommonsDialectImpl implements IDialect {
 
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
 
-        //正常删除
+        // 正常删除
         if (StringUtil.isBlank(logicDeleteColumn)) {
             return forDeleteByQuery(queryWrapper);
         }
 
 
         prepareAuth(queryWrapper, OperateType.DELETE);
-        //逻辑删除
+        // 逻辑删除
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
         List<QueryTable> joinTables = CPI.getJoinTables(queryWrapper);
         List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
 
-        //ignore selectColumns
+        // ignore selectColumns
         StringBuilder sqlBuilder = new StringBuilder(UPDATE).append(forHint(CPI.getHint(queryWrapper)));
         sqlBuilder.append(tableInfo.getWrapSchemaAndTableName(this, OperateType.DELETE));
         sqlBuilder.append(SET).append(buildLogicDeletedSet(logicDeleteColumn, tableInfo));
@@ -802,9 +807,9 @@ public class CommonsDialectImpl implements IDialect {
         buildGroupBySql(sqlBuilder, queryWrapper, allTables);
         buildHavingSql(sqlBuilder, queryWrapper, allTables);
 
-        //ignore orderBy and limit
-        //buildOrderBySql(sqlBuilder, queryWrapper)
-        //buildLimitSql(sqlBuilder, queryWrapper)
+        // ignore orderBy and limit
+        // buildOrderBySql(sqlBuilder, queryWrapper)
+        // buildLimitSql(sqlBuilder, queryWrapper)
 
         return sqlBuilder.toString();
     }
@@ -835,7 +840,7 @@ public class CommonsDialectImpl implements IDialect {
             onUpdateColumns.forEach((column, value) -> stringJoiner.add(wrap(column) + EQUALS + value));
         }
 
-        //乐观锁字段
+        // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
         if (StringUtil.isNotBlank(versionColumn)) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
@@ -851,18 +856,18 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(primaryKeys[i])).append(EQUALS_PLACEHOLDER);
         }
 
-        //逻辑删除条件，已删除的数据不能被修改
+        // 逻辑删除条件，已删除的数据不能被修改
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
             sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn, tableInfo));
         }
 
 
-        //租户ID字段
+        // 租户ID字段
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
 
-        //乐观锁条件
+        // 乐观锁条件
         if (StringUtil.isNotBlank(versionColumn)) {
             Object versionValue = tableInfo.buildColumnSqlArg(entity, versionColumn);
             if (versionValue == null) {
@@ -908,7 +913,7 @@ public class CommonsDialectImpl implements IDialect {
             onUpdateColumns.forEach((column, value) -> stringJoiner.add(wrap(column) + EQUALS + value));
         }
 
-        //乐观锁字段
+        // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
         if (StringUtil.isNotBlank(versionColumn)) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
@@ -921,7 +926,7 @@ public class CommonsDialectImpl implements IDialect {
         buildGroupBySql(sqlBuilder, queryWrapper, queryTables);
         buildHavingSql(sqlBuilder, queryWrapper, queryTables);
 
-        //ignore orderBy and limit
+        // ignore orderBy and limit
         buildOrderBySql(sqlBuilder, queryWrapper, queryTables);
 
         Long limitRows = CPI.getLimitRows(queryWrapper);
@@ -956,13 +961,13 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(wrap(pKeys[i])).append(EQUALS_PLACEHOLDER);
         }
 
-        //逻辑删除的情况下，需要添加逻辑删除的条件
+        // 逻辑删除的情况下，需要添加逻辑删除的条件
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         if (StringUtil.isNotBlank(logicDeleteColumn)) {
             sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn, tableInfo));
         }
 
-        //多租户
+        // 多租户
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
         prepareAuth(tableInfo, sql, OperateType.SELECT);
@@ -984,7 +989,7 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(BRACKET_LEFT);
         }
 
-        //多主键的场景
+        // 多主键的场景
         if (primaryKeys.length > 1) {
             for (int i = 0; i < primaryValues.length / primaryKeys.length; i++) {
                 if (i > 0) {
@@ -1019,7 +1024,7 @@ public class CommonsDialectImpl implements IDialect {
             sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn, tableInfo));
         }
 
-        //多租户
+        // 多租户
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
         prepareAuth(tableInfo, sql, OperateType.SELECT);
         return sql.toString();
