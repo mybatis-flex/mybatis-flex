@@ -17,8 +17,11 @@
 package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
+import com.mybatisflex.core.query.QueryMethods;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
+import com.mybatisflex.core.update.UpdateWrapper;
+import com.mybatisflex.core.util.UpdateEntity;
 import com.mybatisflex.test.model.Account;
 import com.mybatisflex.test.model.AccountVO;
 import com.mybatisflex.test.model.AccountVO2;
@@ -26,6 +29,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.UncategorizedSQLException;
 
 import java.util.Date;
 
@@ -47,6 +51,21 @@ class AccountMapperTest {
 
     @Autowired
     private AccountMapper accountMapper;
+
+    @Test
+    void testInsertRaw() {
+        Account account = UpdateEntity.of(Account.class);
+        account.setUserName("I'm a joker.");
+        account.setBirthday(new Date());
+        UpdateWrapper<Account> wrapper = (UpdateWrapper<Account>) account;
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(ACCOUNT.AGE)
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.eq(1));
+        wrapper.set(ACCOUNT.AGE, queryWrapper);
+        wrapper.set(ACCOUNT.BIRTHDAY, QueryMethods.now());
+        Assertions.assertThrows(UncategorizedSQLException.class, () -> accountMapper.insert(account));
+    }
 
     @Test
     void testCount() {
