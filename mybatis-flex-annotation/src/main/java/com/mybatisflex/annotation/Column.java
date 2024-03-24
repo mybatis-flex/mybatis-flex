@@ -86,4 +86,9 @@ public @interface Column {
      */
     Class<? extends TypeHandler> typeHandler() default UnknownTypeHandler.class;
 
+    /**
+     * 数据字段注释，在 AI 时代，注释的内容往往可用于 AI 辅助对话
+     */
+    String comment() default "";
+
 }

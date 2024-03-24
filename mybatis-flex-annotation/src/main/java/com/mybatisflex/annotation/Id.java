@@ -50,4 +50,9 @@ public @interface Id {
      */
     boolean before() default true;
 
+
+    /**
+     * 数据库字段注释，在 AI 时代，注释的内容往往可用于 AI 辅助对话
+     */
+    String comment() default "";
 }

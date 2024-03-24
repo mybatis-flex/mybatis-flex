@@ -49,6 +49,7 @@ public class IdInfo extends ColumnInfo {
         this.keyType = id.keyType();
         this.value = id.value();
         this.before = id.before();
+        this.comment = id.comment();
 
         initDefaultKeyType();
     }

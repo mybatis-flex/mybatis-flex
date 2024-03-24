@@ -99,6 +99,8 @@ public class TableInfo {
     private String schema; // schema
     private boolean camelToUnderline = true;
     private String dataSource;
+
+    private String comment;
     private String tableName; // 表名
     private Class<?> entityClass; // 实体类
     // 逻辑删除数据库列名
@@ -214,6 +216,14 @@ public class TableInfo {
 
     public void setDataSource(String dataSource) {
         this.dataSource = dataSource;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getLogicDeleteColumnOrSkip() {

@@ -226,6 +226,7 @@ public class TableInfoFactory {
             tableInfo.setSchema(table.schema());
             tableInfo.setTableName(table.value());
             tableInfo.setCamelToUnderline(table.camelToUnderline());
+            tableInfo.setComment(tableInfo.getComment());
 
             if (table.onInsert().length > 0) {
                 List<InsertListener> insertListeners = Arrays.stream(table.onInsert())
@@ -423,6 +424,10 @@ public class TableInfoFactory {
             columnInfo.setProperty(field.getName());
             columnInfo.setPropertyType(fieldType);
             columnInfo.setIgnore(columnAnnotation != null && columnAnnotation.ignore());
+
+            if (columnAnnotation != null) {
+                columnInfo.setComment(columnAnnotation.comment());
+            }
 
 
             // 默认查询列 没有忽略且不是大字段
