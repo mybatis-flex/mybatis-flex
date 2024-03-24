@@ -91,4 +91,8 @@ public @interface Column {
      */
     String comment() default "";
 
+    /**
+     * 插入或者更新时对null值的处理策略，默认忽略
+     */
+    NullStrategy nullStrategy() default NullStrategy.DEFAULT;
 }

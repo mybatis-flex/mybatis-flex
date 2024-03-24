@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.table;
 
+import com.mybatisflex.annotation.NullStrategy;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.mask.CompositeMaskTypeHandler;
 import com.mybatisflex.core.mask.MaskTypeHandler;
@@ -88,6 +89,7 @@ public class ColumnInfo {
      */
     protected boolean ignore;
 
+    protected NullStrategy nullStrategy = NullStrategy.DEFAULT;
 
     public String getColumn() {
         return column;
@@ -190,5 +192,13 @@ public class ColumnInfo {
 
     public void setIgnore(boolean ignore) {
         this.ignore = ignore;
+    }
+
+    public NullStrategy getNullStrategy() {
+        return nullStrategy;
+    }
+
+    public void setNullStrategy(NullStrategy nullStrategy) {
+        this.nullStrategy = nullStrategy;
     }
 }

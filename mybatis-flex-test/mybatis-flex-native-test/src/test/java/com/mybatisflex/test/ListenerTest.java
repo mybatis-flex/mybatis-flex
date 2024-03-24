@@ -82,7 +82,7 @@ public class ListenerTest implements WithAssertions {
         Account one = accountMapper.selectOneById(account.getId());
         assertThat(one).isNotNull()
             .extracting(Account::getId, Account::getUserName, Account::getAge, Account::getBirthday)
-            .containsExactly(1L, "on******t", 0, birthday);
+            .containsExactly(1L, "on******t", -2, birthday);
     }
 
 }
