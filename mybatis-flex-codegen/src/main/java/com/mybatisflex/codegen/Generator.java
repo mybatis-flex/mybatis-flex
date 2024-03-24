@@ -109,6 +109,7 @@ public class Generator {
                 Table table = new Table();
                 table.setGlobalConfig(globalConfig);
                 table.setTableConfig(strategyConfig.getTableConfig(tableName));
+                table.setEntityConfig(globalConfig.getEntityConfig());
 
                 table.setSchema(schemaName);
                 table.setName(tableName);

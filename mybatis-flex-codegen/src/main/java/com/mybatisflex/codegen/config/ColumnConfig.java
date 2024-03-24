@@ -112,6 +112,7 @@ public class ColumnConfig implements Serializable {
      */
     private Boolean keyBefore;
 
+
     public static ColumnConfig create() {
         return new ColumnConfig();
     }

@@ -19,6 +19,7 @@ import com.mybatisflex.annotation.ColumnMask;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.codegen.config.ColumnConfig;
+import com.mybatisflex.codegen.config.EntityConfig;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.LinkedHashSet;
@@ -64,10 +65,10 @@ public class Column {
      */
     private boolean isAutoIncrement;
 
-    /**
-     * 是否需要生成 @Column 注解。
-     */
-    private boolean needGenColumnAnnotation = false;
+//    /**
+//     * 是否需要生成 @Column 注解。
+//     */
+//    private boolean needGenColumnAnnotation = false;
 
     /**
      * 数据库的字段类型，比如 varchar/tinyint 等
@@ -84,6 +85,8 @@ public class Column {
      */
     private ColumnConfig columnConfig;
 
+    private EntityConfig entityConfig;
+
     public String getName() {
         return name;
     }
@@ -91,7 +94,6 @@ public class Column {
     public void setName(String name) {
         this.name = name;
         this.property = buildPropertyName();
-        this.needGenColumnAnnotation = !name.equalsIgnoreCase(StringUtil.camelToUnderline(property));
     }
 
     public String getProperty() {
@@ -177,6 +179,14 @@ public class Column {
         this.columnConfig = columnConfig;
     }
 
+    public EntityConfig getEntityConfig() {
+        return entityConfig;
+    }
+
+    public void setEntityConfig(EntityConfig entityConfig) {
+        this.entityConfig = entityConfig;
+    }
+
     public String getterMethod() {
         return "get" + StringUtil.firstCharToUpperCase(property);
     }
@@ -225,6 +235,14 @@ public class Column {
             if (columnConfig.getKeyBefore() != null) {
                 addComma(annotations, needComma);
                 annotations.append("before = ").append(columnConfig.getKeyBefore());
+                needComma = true;
+            }
+
+
+            if (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.isNotBlank(comment)) {
+                addComma(annotations, needComma);
+                String comment = this.comment.replace("\n", "").replace("\"", "\\\"").trim();
+                annotations.append("comment = \"" + comment + "\"");
             }
 
             if (annotations.length() == 4) {
@@ -233,6 +251,9 @@ public class Column {
                 annotations.append(")");
             }
         }
+
+        boolean needGenColumnAnnotation = !name.equalsIgnoreCase(StringUtil.camelToUnderline(property))
+            || (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.isNotBlank(this.comment) && annotations.length() == 0);
 
         //@Column 注解
         if (columnConfig.getOnInsertValue() != null
@@ -247,7 +268,7 @@ public class Column {
         ) {
             annotations.append("@Column(");
             boolean needComma = false;
-            if (needGenColumnAnnotation) {
+            if (!name.equalsIgnoreCase(StringUtil.camelToUnderline(property))) {
                 annotations.append("value = \"").append(name).append("\"");
                 needComma = true;
             }
@@ -290,6 +311,12 @@ public class Column {
             if (Boolean.TRUE.equals(columnConfig.getTenantId())) {
                 addComma(annotations, needComma);
                 annotations.append("tenantId = true");
+                needComma = true;
+            }
+            if (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.isNotBlank(comment)) {
+                addComma(annotations, needComma);
+                String comment = this.comment.replace("\n", "").replace("\"", "\\\"").trim();
+                annotations.append("comment = \"" + comment + "\"");
             }
             annotations.append(")");
         }
@@ -335,6 +362,9 @@ public class Column {
             if (columnConfig.getTypeHandler() != null) {
                 addImportClass(importClasses, columnConfig.getTypeHandler().getName());
             }
+
+            boolean needGenColumnAnnotation = !name.equalsIgnoreCase(StringUtil.camelToUnderline(property))
+                || (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.isNotBlank(this.comment));
 
             if (columnConfig.getOnInsertValue() != null
                 || columnConfig.getOnUpdateValue() != null

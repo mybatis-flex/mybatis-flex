@@ -72,6 +72,7 @@ public class TableConfig implements Serializable {
      */
     private Map<String, ColumnConfig> columnConfigMap;
 
+
     public static TableConfig create() {
         return new TableConfig();
     }

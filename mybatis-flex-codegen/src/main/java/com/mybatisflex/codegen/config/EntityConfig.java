@@ -111,6 +111,11 @@ public class EntityConfig implements Serializable {
      */
     private String withBasePackage;
 
+    /**
+     * 是否支持把 comment 添加到 @column 注解里
+     */
+    private boolean columnCommentEnable;
+
 
     public String getSourceDir() {
         return sourceDir;
@@ -326,6 +331,14 @@ public class EntityConfig implements Serializable {
 
     public void setWithBasePackage(String withBasePackage) {
         this.withBasePackage = withBasePackage;
+    }
+
+    public boolean isColumnCommentEnable() {
+        return columnCommentEnable;
+    }
+
+    public void setColumnCommentEnable(boolean columnCommentEnable) {
+        this.columnCommentEnable = columnCommentEnable;
     }
 
     public enum SwaggerVersion {

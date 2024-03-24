@@ -57,6 +57,8 @@ public class Table {
      */
     private TableConfig tableConfig;
 
+    private EntityConfig entityConfig;
+
     /**
      * 全局配置。
      */
@@ -175,6 +177,7 @@ public class Table {
         }
 
         column.setColumnConfig(globalConfig.getStrategyConfig().getColumnConfig(name, column.getName()));
+        column.setEntityConfig(globalConfig.getEntityConfig());
 
         columns.add(column);
     }
@@ -193,6 +196,14 @@ public class Table {
 
     public void setTableConfig(TableConfig tableConfig) {
         this.tableConfig = tableConfig;
+    }
+
+    public EntityConfig getEntityConfig() {
+        return entityConfig;
+    }
+
+    public void setEntityConfig(EntityConfig entityConfig) {
+        this.entityConfig = entityConfig;
     }
 
     // ===== 构建实体类文件 =====
@@ -277,6 +288,7 @@ public class Table {
             tableAnnotation.append(", dataSource = \"").append(dataSource).append("\"");
         }
 
+
         if (tableConfig != null) {
             if (StringUtil.isNotBlank(tableConfig.getSchema())) {
                 tableAnnotation.append(", schema = \"").append(tableConfig.getSchema()).append("\"");
@@ -297,6 +309,14 @@ public class Table {
                 tableAnnotation.append(", mapperGenerateEnable = false");
             }
         }
+
+
+        if (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.isNotBlank(comment)) {
+            String comment = this.comment.replace("\n", "").replace("\"", "\\\"").trim();
+            tableAnnotation.append(", comment = \"" + comment + "\"");
+        }
+
+
         return tableAnnotation.append(")\n").toString();
     }
 

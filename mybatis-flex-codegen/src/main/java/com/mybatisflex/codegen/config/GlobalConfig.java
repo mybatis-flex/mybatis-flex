@@ -68,6 +68,7 @@ public class GlobalConfig implements Serializable {
     private boolean mapperXmlGenerateEnable;
     private boolean packageInfoGenerateEnable;
 
+
     public GlobalConfig() {
         this.javadocConfig = new JavadocConfig();
         this.packageConfig = new PackageConfig();
@@ -216,6 +217,7 @@ public class GlobalConfig implements Serializable {
     public void disablePackageInfo() {
         packageInfoGenerateEnable = false;
     }
+
 
     // === 自定义配置 ===
 

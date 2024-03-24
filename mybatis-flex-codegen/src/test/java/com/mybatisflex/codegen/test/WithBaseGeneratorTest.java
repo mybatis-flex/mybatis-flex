@@ -17,13 +17,8 @@
 package com.mybatisflex.codegen.test;
 
 import com.mybatisflex.codegen.Generator;
-import com.mybatisflex.codegen.config.ColumnConfig;
 import com.mybatisflex.codegen.config.GlobalConfig;
-import com.mybatisflex.codegen.config.TableConfig;
-import com.mybatisflex.codegen.config.TableDefConfig;
-import com.mybatisflex.codegen.constant.TemplateConst;
 import com.zaxxer.hikari.HikariDataSource;
-import org.junit.Test;
 
 import java.util.function.UnaryOperator;
 
@@ -34,7 +29,7 @@ public class WithBaseGeneratorTest {
     public void testCodeGen1() {
         //配置数据源
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/flex_test?characterEncoding=utf-8");
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/flex_test?characterEncoding=utf-8&useInformationSchema=true");
         dataSource.setUsername("root");
         dataSource.setPassword("123456");
 
@@ -65,6 +60,7 @@ public class WithBaseGeneratorTest {
 
         globalConfig.getEntityConfig().setWithBaseClassEnable(true);
         globalConfig.getEntityConfig().setOverwriteEnable(true);
+//        globalConfig.getEntityConfig().setColumnCommentEnable(true);
 
 //        globalConfig.setEntityWithLombok(true);
         globalConfig.setEntitySuperClass(BaseEntity.class);
