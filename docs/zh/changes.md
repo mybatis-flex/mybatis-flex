@@ -3,6 +3,35 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.8.3 20240324:
+- 新增：QueryWrapper 添加 hasCondition 方法，感谢 @Suomm
+- 新增：添加 SqlOperator 忽略属性，用于在某些场景下忽略 entity 字段，感谢 @Suomm
+- 新增：添加 selectCursorByQueryAs 重载方法，感谢 @Suomm
+- 新增：添加 MapUtil 替代 MyBatis 官方的 MapUtil
+- 新增：DynamicTableProcessor 的 process 方法添加 OperateType 参数，感谢 @wtj
+- 新增：CPI 添加获取条件中参数的方法，感谢 @Suomm
+- 新增：添加 RawValue 获取参数的方法，感谢 @Suomm
+- 新增：多租户功能可以根据表名返回多租户条件，感谢 @Suomm
+- 新增：支持使用 UpdateWrapper 自定义插入值，感谢 @Suomm
+- 新增：代码生成器策略配置 StrategyConfig 添加支持通配符功能，感谢 @gongdonghui
+- 新增：`@Table` 和 `@Column` 注解添加 comment 配置的支持
+- 新增：代码生成器添加自动把 comment 添加到注解的相关功能支持
+- 修复：修复 MultiDataSourceAutoConfiguration 下的 druid 路径错误的问题，感谢 @Suomm
+- 修复：解决 p6spy 下多数据源获取 DbType 失败的问题，感谢 @ocoooo
+- 修复：生成代码时, 某些情况下不会添加 `@EqualsAndHashCode(callSuper = true)` 的问题
+- 修复：Relation 查询使用 Lambda 表达式无法指定类名问题，感谢 @Suomm
+- 修复：使用默认数据源获取 dsName 为 null 的错误，感谢 @Suomm
+- 优化：逻辑删除时，保证逻辑删除前面的条件被括号包裹，感谢 @swqxdba
+- 优化：重构 使用 QueryTable 类替代 TableDef 类，感谢 @Suomm
+- 优化：重命名 JdbcTypeMapping 的 mapper 为 typeMapper
+- 优化：优化 Spring 下事务管理的自动配置，防止在某些场景下被其他管理器接管的问题
+- 优化：优化 dependencies 模块的 pom.xml 方别独立发布
+- 文档：优化 `@Table` 注解文档的错别字问题，感谢 @zhaoshuli1984
+- 文档：优化事务相关文档的错别字问题，感谢 @lifejwang11
+- 文档：添加关于 JdbcTypeMapping 的 typeMapper 使用文档
+
+
+
 ## v1.8.2 20240305:
 - 新增：Maven 编译添加 Javadoc 插件生成 Javadoc 的支持，感谢 @Suomm
 - 优化：优化对 SpringBoot3 下的 Druid 数据源适配，感谢 @Suomm #I94P5P
