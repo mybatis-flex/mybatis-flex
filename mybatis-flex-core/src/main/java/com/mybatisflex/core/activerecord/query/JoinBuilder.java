@@ -16,7 +16,6 @@
 
 package com.mybatisflex.core.activerecord.query;
 
-import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.Join;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.RawQueryCondition;
@@ -35,11 +34,6 @@ public class JoinBuilder<R extends QueryModel<R>> {
     public JoinBuilder(R queryModel, Join join) {
         this.queryModel = queryModel;
         this.join = join;
-    }
-
-    public JoinBuilder<R> as(String alias) {
-        CPI.getJoinQueryTable(join).as(alias);
-        return this;
     }
 
     public R on(String on) {
