@@ -261,11 +261,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public <Q extends QueryWrapper> Joiner<Q> leftJoin(QueryTable table) {
+    public Joiner<R> leftJoin(QueryTable table) {
         return super.leftJoin(table);
     }
-
-
 
     @Override
     public Joiner<R> leftJoin(String table) {
@@ -298,10 +296,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public <Q extends QueryWrapper> Joiner<Q> rightJoin(QueryTable table) {
+    public Joiner<R> rightJoin(QueryTable table) {
         return super.rightJoin(table);
     }
-
 
     @Override
     public Joiner<R> rightJoin(String table) {
@@ -334,7 +331,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public <Q extends QueryWrapper> Joiner<Q> innerJoin(QueryTable table) {
+    public Joiner<R> innerJoin(QueryTable table) {
         return super.innerJoin(table);
     }
 
@@ -369,7 +366,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public <Q extends QueryWrapper> Joiner<Q> fullJoin(QueryTable table) {
+    public Joiner<R> fullJoin(QueryTable table) {
         return super.fullJoin(table);
     }
 
@@ -404,7 +401,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public <Q extends QueryWrapper> Joiner<Q> crossJoin(QueryTable table) {
+    public Joiner<R> crossJoin(QueryTable table) {
         return super.crossJoin(table);
     }
 
@@ -439,7 +436,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public <Q extends QueryWrapper> Joiner<Q> join(QueryTable table) {
+    public Joiner<R> join(QueryTable table) {
         return super.join(table);
     }
 
