@@ -145,5 +145,20 @@ public class LambdaSqlTest {
             "WHERE\n" +
             "  ` ac `.` age ` >= 18", SqlFormatter.format(queryWrapper.toSQL()));
     }
+    @Test
+    public void test06() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select()
+            .from(Account.class).join(Article.class).on(Article::getAccountId, Account::getId)
+            .where(Account::getAge).ge(18);
 
+        printSQL(queryWrapper);
+        assertEquals("SELECT\n" +
+            "  *\n" +
+            "FROM\n" +
+            "  ` tb_account `\n" +
+            "  JOIN ` tb_article ` ON ` tb_article `.` account_id ` = ` tb_account `.` id `\n" +
+            "WHERE\n" +
+            "  ` tb_account `.` age ` >= 18", SqlFormatter.format(queryWrapper.toSQL()));
+    }
 }
