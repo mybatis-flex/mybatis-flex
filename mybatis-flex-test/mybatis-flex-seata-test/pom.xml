@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>mybatis-flex-test</artifactId>
 		<groupId>com.mybatis-flex</groupId>
-		<version>1.8.3</version>
+		<version>1.8.4</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 

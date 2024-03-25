@@ -3,6 +3,12 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.8.4 20240325:
+- 修复：修改 QueryWrapperAdapter 的 Join 方法返回的泛型错误的问题，感谢 @Suomm
+- 优化：优化 ActiveRecord Join 自己，感谢 @Suomm
+
+
+
 ## v1.8.3 20240324:
 - 新增：QueryWrapper 添加 hasCondition 方法，感谢 @Suomm
 - 新增：添加 SqlOperator 忽略属性，用于在某些场景下忽略 entity 字段，感谢 @Suomm
