@@ -88,10 +88,25 @@ public class EnumWrapper<E extends Enum<E>> {
         }
     }
 
-
+    /**
+     * 获取枚举值
+     * 顺序：
+     * 1、@EnumValue标识的get方法
+     * 2、@EnumValue标识的属性
+     * 3、没有使用@EnumValue，取枚举name
+     *
+     * @param object
+     * @return
+     */
     public Object getEnumValue(E object) {
         try {
-            return getterMethod != null ? getterMethod.invoke(object) : property.get(object);
+            if (getterMethod != null) {
+                return getterMethod.invoke(object);
+            } else if(property != null){
+                return property.get(object);
+            } else {
+                return object.name();
+            }
         } catch (Exception e) {
             throw FlexExceptions.wrap(e);
         }

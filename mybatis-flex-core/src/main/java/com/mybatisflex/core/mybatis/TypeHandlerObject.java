@@ -42,4 +42,12 @@ public class TypeHandlerObject implements Serializable {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "TypeHandlerObject{"
+            + "value=" + value
+            + ", typeHandler=" + typeHandler.getClass().getSimpleName()
+            + '}';
+    }
+
 }
