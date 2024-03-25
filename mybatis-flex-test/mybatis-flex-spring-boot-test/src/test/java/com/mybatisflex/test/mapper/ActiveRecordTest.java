@@ -20,6 +20,9 @@ import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.model.Good;
 import com.mybatisflex.test.model.User;
+import com.mybatisflex.test.model.table.RoleTableDef;
+import com.mybatisflex.test.model.table.UserRoleTableDef;
+import com.mybatisflex.test.model.table.UserTableDef;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -127,8 +130,8 @@ class ActiveRecordTest {
         User user1 = User.create()
             .as("u")
             .select(USER.DEFAULT_COLUMNS, ROLE.DEFAULT_COLUMNS)
-            .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
-            .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+            .leftJoin(USER_ROLE.as("ur")).on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+            .leftJoin(ROLE.as("r")).on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
             .where(USER.USER_ID.eq(2))
             .list()
             .get(0);
@@ -174,16 +177,29 @@ class ActiveRecordTest {
 
     @Test
     void testToSql() {
-        String sql = User.create()
+        String sql1 = User.create()
             .as("u")
             .select(USER.ALL_COLUMNS, ROLE.ALL_COLUMNS)
-            .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
-            .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+            .leftJoin(USER_ROLE.as("ur")).on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+            .leftJoin(ROLE.as("r")).on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
             .where(USER.USER_ID.eq(2))
             .toQueryWrapper()
             .toSQL();
 
-        System.out.println(sql);
+        UserTableDef u = USER.as("u");
+        RoleTableDef r = ROLE.as("r");
+        UserRoleTableDef ur = USER_ROLE.as("ur");
+
+        String sql2 = User.create()
+            .as(u.getAlias())
+            .select(u.ALL_COLUMNS, r.ALL_COLUMNS)
+            .leftJoin(ur).on(ur.USER_ID.eq(u.USER_ID))
+            .leftJoin(r).on(ur.ROLE_ID.eq(r.ROLE_ID))
+            .where(u.USER_ID.eq(2))
+            .toQueryWrapper()
+            .toSQL();
+
+        Assertions.assertEquals(sql1, sql2);
     }
 
 }
