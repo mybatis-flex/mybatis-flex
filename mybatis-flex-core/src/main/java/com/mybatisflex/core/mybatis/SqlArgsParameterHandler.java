@@ -80,12 +80,6 @@ public class SqlArgsParameterHandler extends DefaultParameterHandler {
             TypeHandler typeHandler = typeHandlerRegistry.getTypeHandler(value.getClass());
             if (typeHandler == null) {
                 typeHandler = typeHandlerRegistry.getUnknownTypeHandler();
-
-                // 枚举值特殊处理：若未注册枚举TypeHandler，则判断@EnumValue，若没有@EnumValue注解，则获取枚举的name
-                if(value instanceof Enum){
-                    EnumWrapper enumWrapper = EnumWrapper.of(value.getClass());
-                    value = enumWrapper.getEnumValue((Enum) value);
-                }
             }
 
             // 此处的 jdbcType 可以为 null 的，原因是 value 不为 null，
