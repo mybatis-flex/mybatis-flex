@@ -25,7 +25,6 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.Map;
 
 /**
@@ -54,8 +53,11 @@ public class SqlArgsParameterHandler extends DefaultParameterHandler {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void doSetParameters(PreparedStatement ps) throws SQLException {
-        Object[] sqlArgs = (Object[]) ((Map) getParameterObject()).get(FlexConsts.SQL_ARGS);
-        if (sqlArgs == null || sqlArgs.length == 0) {
+        Object[] sqlArgs;
+        Map parameters = (Map) getParameterObject();
+        if (parameters.containsKey(FlexConsts.RAW_ARGS)
+            || (sqlArgs = (Object[]) parameters.get(FlexConsts.SQL_ARGS)) == null
+            || sqlArgs.length == 0) {
             super.setParameters(ps);
             return;
         }
