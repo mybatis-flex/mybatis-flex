@@ -40,6 +40,15 @@ class ProviderUtil {
         return (String) params.get(FlexConsts.SQL);
     }
 
+    public static void flatten(Map params) {
+        Object[] o = (Object[]) params.get(FlexConsts.SQL_ARGS);
+        Object map;
+        if (o != null && o.length == 1 && (map = o[0]) instanceof Map) {
+            params.putAll((Map) map);
+            params.put(FlexConsts.RAW_ARGS, Boolean.TRUE);
+        }
+    }
+
     public static void setSqlArgs(Map params, Object[] args) {
         params.put(FlexConsts.SQL_ARGS, args);
     }
@@ -82,7 +91,7 @@ class ProviderUtil {
 
     public static QueryWrapper getQueryWrapper(Map params) {
         Object queryWrapper = params.get(FlexConsts.QUERY);
-        FlexAssert.notNull(queryWrapper,"queryWrapper");
+        FlexAssert.notNull(queryWrapper, "queryWrapper");
         return (QueryWrapper) queryWrapper;
     }
 
