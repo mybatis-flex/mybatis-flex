@@ -36,6 +36,14 @@ QueryWrapper query=QueryWrapper.create()
 Page<Row> rowPage=Db.paginate("tb_account",3,10,query);
 ```
 
+使用 MyBatis `#{}` `${}` 的方式传参 <Badge type="tip" text="v1.8.5" />
+
+```java
+Map<String, Integer> map = Collections.singletonMap("age", 18);
+List<Row> rowList = Db.selectListBySql("select * from tb_account where age > #{age}", map);
+RowUtil.printPretty(rowList);
+```
+
 > Db 工具类还提供了更多 增、删、改、查和分页查询等方法。
 >
 >
