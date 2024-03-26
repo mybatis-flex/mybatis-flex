@@ -23,6 +23,7 @@ import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.row.RowUtil;
 import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
@@ -33,6 +34,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -120,6 +122,22 @@ public class DbTest {
         List<Row> rows = Db.selectListByQuery(queryWrapper);
 
         RowUtil.printPretty(rows);
+    }
+
+    @Test
+    public void testMapArgs() {
+        Map<String, Integer> map = Collections.singletonMap("age", 18);
+        List<Row> rowList1 = Db.selectListBySql("select * from tb_account where age > #{age}", map);
+        List<Row> rowList2 = Db.selectListBySql("select * from tb_account where age > ${age}", map);
+        List<Row> rowList3 = Db.selectListBySql("select * from tb_account where age > ?", 18);
+        List<Row> rowList4 = Db.selectListBySql("select * from tb_account where age > 18");
+        List<Row> rowList5 = Db.selectListBySql("select * from tb_account where age > 18", (Object[]) null);
+        Assert.assertEquals(rowList1.toString(), rowList2.toString());
+        Assert.assertEquals(rowList1.toString(), rowList3.toString());
+        Assert.assertEquals(rowList1.toString(), rowList4.toString());
+        Assert.assertEquals(rowList1.toString(), rowList5.toString());
+        Assert.assertThrows(PersistenceException.class,
+            () -> Db.selectListBySql("select * from tb_account where age > #{age} and id > ?", map, 1));
     }
 
 }
