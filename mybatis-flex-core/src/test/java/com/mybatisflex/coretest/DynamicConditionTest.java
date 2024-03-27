@@ -18,7 +18,13 @@ package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.constant.SqlOperator;
-import com.mybatisflex.core.query.*;
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.If;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryColumnBehavior;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.StringUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,7 +39,11 @@ import static com.mybatisflex.core.query.QueryColumnBehavior.getConditionCaster;
 import static com.mybatisflex.core.query.QueryMethods.bracket;
 import static com.mybatisflex.core.query.QueryMethods.raw;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 /**
  * 动态条件测试。
@@ -225,11 +235,13 @@ public class DynamicConditionTest {
 
     @Test
     public void test12() {
-        QueryWrapper qw = QueryWrapper.create()
+        QueryWrapper queryWrapper = QueryWrapper.create()
             .select().from(ACCOUNT)
             .where(ACCOUNT.IS_DELETE.eq(0))
             .or(raw("1 = 1").or(ACCOUNT.ID.eq(123)));
-        System.out.println(qw.toSQL());
+        String sql = queryWrapper.toSQL();
+        System.out.println(sql);
+        assertEquals("SELECT * FROM `tb_account` WHERE `is_delete` = 0 OR ( 1 = 1  OR `id` = 123)", sql);
     }
 
 
@@ -344,6 +356,34 @@ public class DynamicConditionTest {
             .and(ACCOUNT.AGE.eq(18))
             .or(ACCOUNT.IS_DELETE.eq(0, false));
         assertTrue(queryWrapper.hasCondition());
+    }
+
+    @Test
+    public void testNull() {
+        QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_NONE);
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.eq(null))
+            .and(ACCOUNT.USER_NAME.eq("QAQ", false))
+            .and(ACCOUNT.AGE.ne(null))
+            .and(QueryCondition.createEmpty());
+        String sql1 = queryWrapper.toSQL();
+        System.out.println(sql1);
+
+        assertThrows(Exception.class, () -> QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.AGE.in((Object[]) null)));
+
+        QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_NULL);
+        queryWrapper = QueryWrapper.create()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.eq(null))
+            .and(ACCOUNT.USER_NAME.eq("QAQ", false))
+            .and(ACCOUNT.AGE.ne(null));
+        String sql2 = queryWrapper.toSQL();
+        System.out.println(sql2);
+
+        assertNotEquals(sql1, sql2);
     }
 
 }
