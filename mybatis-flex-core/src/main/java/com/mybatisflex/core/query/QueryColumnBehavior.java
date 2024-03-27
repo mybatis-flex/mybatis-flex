@@ -39,8 +39,9 @@ public class QueryColumnBehavior {
      * 内置的可选的忽略规则
      */
     public static final Predicate<Object> IGNORE_NULL = Objects::isNull;
+    public static final Predicate<Object> IGNORE_NONE = o -> Boolean.FALSE;
     public static final Predicate<Object> IGNORE_EMPTY = o -> o == null || "".equals(o);
-    public static final Predicate<Object> IGNORE_BLANK = o -> o == null || "".equals(o.toString().trim());
+    public static final Predicate<Object> IGNORE_BLANK = o -> o == null || o.toString().trim().isEmpty();
 
     /**
      * 在满足输入的数组或可迭代对象中的容量为 1 （即只有一个元素）时，自动将条件中的 in 转换为 =
@@ -126,4 +127,5 @@ public class QueryColumnBehavior {
     public static QueryCondition castCondition(QueryCondition condition) {
         return getConditionCaster().apply(condition);
     }
+
 }
