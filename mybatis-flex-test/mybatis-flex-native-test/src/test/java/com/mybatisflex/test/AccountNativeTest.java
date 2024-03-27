@@ -22,6 +22,8 @@ import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.query.If;
+import com.mybatisflex.core.query.QueryColumnBehavior;
+import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.DbChain;
 import com.mybatisflex.core.update.UpdateChain;
@@ -87,6 +89,21 @@ public class AccountNativeTest implements WithAssertions {
     public void destroy() {
         this.dataSource.shutdown();
         DataSourceKey.clear();
+    }
+
+    @Test
+    public void testSelect() {
+        QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_NONE);
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(ACCOUNT.ALL_COLUMNS)
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.eq(null))
+            .and(ACCOUNT.AGE.ge(18, false))
+            .and(QueryCondition.createEmpty())
+            .and(ACCOUNT.USER_NAME.ne(null));
+        List<Account> accounts = accountMapper.selectListByQuery(queryWrapper);
+        assertThat(accounts).hasSize(0);
+        QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_NULL);
     }
 
     @Test
