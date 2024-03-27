@@ -46,7 +46,7 @@ public class ConvertUtil {
         if (value.getClass().isAssignableFrom(targetClass)) {
             return value;
         }
-        if (targetClass == Serializable.class && ArrayUtil.contains(value.getClass().getInterfaces(), Serializable.class)) {
+        if (targetClass == Serializable.class && value instanceof Serializable) {
             return value;
         }
         if (targetClass == String.class) {
