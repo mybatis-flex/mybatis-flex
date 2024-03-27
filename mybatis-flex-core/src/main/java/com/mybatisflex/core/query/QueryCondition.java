@@ -66,29 +66,21 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
 
 
     public static QueryCondition create(String schema, String table, String column, String logic, Object value) {
-        QueryCondition condition = new QueryCondition();
-        condition.setColumn(new QueryColumn(schema, table, column));
-        condition.setLogic(logic);
-        condition.setValue(value);
-        return condition;
+        return create(new QueryColumn(schema, table, column), logic, value);
     }
 
     public static QueryCondition create(QueryColumn queryColumn, Object value) {
         return create(queryColumn, SqlConsts.EQUALS, value);
     }
 
+    public static QueryCondition create(QueryColumn queryColumn, SqlOperator logic, Object value) {
+        return create(queryColumn, logic.getValue(), value);
+    }
+
     public static QueryCondition create(QueryColumn queryColumn, String logic, Object value) {
         QueryCondition condition = new QueryCondition();
         condition.setColumn(queryColumn);
         condition.setLogic(logic);
-        condition.setValue(value);
-        return condition;
-    }
-
-    public static QueryCondition create(QueryColumn queryColumn, SqlOperator logic, Object value) {
-        QueryCondition condition = new QueryCondition();
-        condition.setColumn(queryColumn);
-        condition.setLogic(logic.getValue());
         condition.setValue(value);
         return condition;
     }

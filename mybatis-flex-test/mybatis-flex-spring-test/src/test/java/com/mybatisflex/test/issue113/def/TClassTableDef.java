@@ -28,6 +28,8 @@ public class TClassTableDef extends QueryTable {
 
     public final QueryColumn CLASS_NAME = new QueryColumn(this, "class_name");
 
+    public final QueryColumn SEX = new QueryColumn(this, "sex");
+
     public TClassTableDef() {
         super("", "tb_class");
     }

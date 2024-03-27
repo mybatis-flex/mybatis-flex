@@ -17,6 +17,7 @@ package com.mybatisflex.core.mybatis;
 
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.exception.FlexExceptions;
+import com.mybatisflex.core.util.EnumWrapper;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;

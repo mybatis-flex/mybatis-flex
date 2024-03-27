@@ -109,7 +109,7 @@ class WrapperUtil {
         addParam(params, value);
         getValues(condition.next, params);
     }
-
+    @SuppressWarnings("all")
     private static void addParam(List<Object> paras, Object value) {
         if (value == null) {
             paras.add(null);
@@ -120,13 +120,12 @@ class WrapperUtil {
         } else if (value instanceof QueryWrapper) {
             Object[] valueArray = ((QueryWrapper) value).getAllValueArray();
             paras.addAll(Arrays.asList(valueArray));
-        } else if (value.getClass().isEnum()) {
+        } else if (value instanceof Enum) {
+            // 枚举类型，处理枚举实际值
             EnumWrapper enumWrapper = EnumWrapper.of(value.getClass());
-            if (enumWrapper.hasEnumValueAnnotation()) {
-                paras.add(enumWrapper.getEnumValue((Enum) value));
-            } else {
-                paras.add(((Enum<?>) value).name());
-            }
+            // 如果是使用注解标识枚举实际值，则直接获取实际值，但如果是依靠全局枚举TypeHandler处理，则此处只能先存入枚举实例，在SQL执行时才能处理实际值
+            value = enumWrapper.hasEnumValueAnnotation() ? enumWrapper.getEnumValue((Enum) value) : value;
+            paras.add(value);
         } else {
             paras.add(value);
         }

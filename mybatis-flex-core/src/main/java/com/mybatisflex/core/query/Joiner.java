@@ -15,6 +15,9 @@
  */
 package com.mybatisflex.core.query;
 
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
+
 import java.util.ListIterator;
 import java.util.function.Consumer;
 
@@ -72,6 +75,13 @@ public class Joiner<M extends QueryWrapper> {
         join.on(newWrapper.whereQueryCondition);
         return queryWrapper;
     }
+
+    public <T, K> M on(LambdaGetter<T> column1, LambdaGetter<K> column2) {
+        QueryCondition queryCondition = LambdaUtil.getQueryColumn(column1).eq(LambdaUtil.getQueryColumn(column2));
+        join.on(queryCondition);
+        return queryWrapper;
+    }
+
 
 }
 

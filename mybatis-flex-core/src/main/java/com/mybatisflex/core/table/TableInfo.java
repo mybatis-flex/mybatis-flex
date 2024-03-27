@@ -700,11 +700,7 @@ public class TableInfo {
                     // fixed: https://gitee.com/mybatis-flex/mybatis-flex/issues/I7TFBK
                     if (value.getClass().isEnum()) {
                         EnumWrapper enumWrapper = EnumWrapper.of(value.getClass());
-                        if (enumWrapper.hasEnumValueAnnotation()) {
-                            value = enumWrapper.getEnumValue((Enum) value);
-                        } else {
-                            value = ((Enum<?>) value).name();
-                        }
+                        value = enumWrapper.getEnumValue((Enum) value);
                     }
                 }
 

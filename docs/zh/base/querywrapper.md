@@ -1004,6 +1004,7 @@ SELECT * FROM  WHERE `id` >=  100  AND `user_name` LIKE  '%michael%'
 QueryWrapper query = QueryWrapper.create()
     .from(Article.class)
     .leftJoin(Account.class).as("a").on(
+        //无其他特殊条件可简化成：.on(Account::getId, Article::getAccountId)
         wrapper -> wrapper.where(Account::getId).eq(Article::getAccountId)
     )
     .where(Account::getId).ge(100, If::notEmpty)
@@ -1012,7 +1013,7 @@ QueryWrapper query = QueryWrapper.create()
                 .or(Account::getAge).gt(200)
                 .and(Article::getAccountId).eq(200)
                 .or(wrapper1 -> {
-                    wrapper1.where(Account::getId).like("a", If::notEmpty);
+                    wrapper1.where(Account::getId).like("a");
                 })
         ;
     });
