@@ -95,10 +95,13 @@ class WrapperUtil {
             return;
         }
 
+        if (!condition.checkEffective()) {
+            getValues(condition.next, params);
+            return;
+        }
+
         Object value = condition.getValue();
-        if (value == null
-            || value instanceof QueryColumn
-            || value instanceof RawQueryCondition) {
+        if (value instanceof QueryColumn || value instanceof RawQueryCondition) {
             getValues(condition.next, params);
             return;
         }
