@@ -95,12 +95,18 @@ class WrapperUtil {
             return;
         }
 
-        if (!condition.checkEffective()) {
+        Object value = condition.getValue();
+
+        if (value == null) {
+            // column = user_name; logic = eq; value = null
+            // sql: user_name = null
+            if (condition.checkEffective() && condition.getLogic() != null) {
+                params.add(null);
+            }
             getValues(condition.next, params);
             return;
         }
 
-        Object value = condition.getValue();
         if (value instanceof QueryColumn || value instanceof RawQueryCondition) {
             getValues(condition.next, params);
             return;
@@ -109,6 +115,7 @@ class WrapperUtil {
         addParam(params, value);
         getValues(condition.next, params);
     }
+
     @SuppressWarnings("all")
     private static void addParam(List<Object> paras, Object value) {
         if (value == null) {
