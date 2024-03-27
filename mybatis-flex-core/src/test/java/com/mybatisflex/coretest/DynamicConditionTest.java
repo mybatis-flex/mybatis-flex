@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -238,10 +239,11 @@ public class DynamicConditionTest {
         QueryWrapper queryWrapper = QueryWrapper.create()
             .select().from(ACCOUNT)
             .where(ACCOUNT.IS_DELETE.eq(0))
-            .or(raw("1 = 1").or(ACCOUNT.ID.eq(123)));
+            .or(raw("1 = 1").or(ACCOUNT.ID.eq(123)))
+            .and(ACCOUNT.AGE.ge(1));
         String sql = queryWrapper.toSQL();
         System.out.println(sql);
-        assertEquals("SELECT * FROM `tb_account` WHERE `is_delete` = 0 OR ( 1 = 1  OR `id` = 123)", sql);
+        assertEquals("SELECT * FROM `tb_account` WHERE `is_delete` = 0 OR ( 1 = 1  OR `id` = 123) AND `age` >= 1", sql);
     }
 
 
@@ -365,7 +367,7 @@ public class DynamicConditionTest {
             .from(ACCOUNT)
             .where(ACCOUNT.ID.eq(null))
             .and(ACCOUNT.USER_NAME.eq("QAQ", false))
-            .and(ACCOUNT.AGE.ne(null))
+            .and(ACCOUNT.AGE.ge(null).or(ACCOUNT.BIRTHDAY.ne(new Date())))
             .and(QueryCondition.createEmpty());
         String sql1 = queryWrapper.toSQL();
         System.out.println(sql1);
