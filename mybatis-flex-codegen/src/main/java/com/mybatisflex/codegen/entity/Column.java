@@ -20,6 +20,8 @@ import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.codegen.config.ColumnConfig;
 import com.mybatisflex.codegen.config.EntityConfig;
+import com.mybatisflex.core.mask.MaskManager;
+import com.mybatisflex.core.mask.Masks;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.LinkedHashSet;
@@ -364,9 +366,21 @@ public class Column {
             annotations.append(columnAnnotation);
         }
 
-        //@ColumnMask 注解
-        if (columnConfig.getMaskType() != null) {
-            annotations.append("@ColumnMask(\"").append(columnConfig.getMaskType()).append("\")");
+        // @ColumnMask 注解
+        String maskType = columnConfig.getMaskType();
+        if (maskType != null) {
+            if (annotations.length() != 0) {
+                annotations.append("\n\t");
+            }
+            annotations.append("@ColumnMask(");
+            if (MaskManager.getProcessorMap().containsKey(maskType)) {
+                // @ColumnMask(Masks.MOBILE)
+                annotations.append("Masks.").append(maskType.toUpperCase());
+            } else {
+                // @ColumnMask("custom")
+                annotations.append("\"").append(maskType).append("\"");
+            }
+            annotations.append(")");
         }
 
         return annotations.toString();
@@ -390,6 +404,9 @@ public class Column {
             }
             if (columnConfig.getMaskType() != null) {
                 addImportClass(importClasses, ColumnMask.class.getName());
+                if (MaskManager.getProcessorMap().containsKey(columnConfig.getMaskType())) {
+                    addImportClass(importClasses, Masks.class.getName());
+                }
             }
 
             if (columnConfig.getJdbcType() != null) {

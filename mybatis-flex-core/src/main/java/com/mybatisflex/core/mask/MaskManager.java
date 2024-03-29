@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.mask;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -58,6 +59,9 @@ public class MaskManager {
         processorMap.put(type, processor);
     }
 
+    public static Map<String, MaskProcessor> getProcessorMap() {
+        return Collections.unmodifiableMap(processorMap);
+    }
 
     /**
      * 跳过脱敏处理
