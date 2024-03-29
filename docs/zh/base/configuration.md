@@ -34,7 +34,7 @@ MyBatis-Flex 多数据源配置，参考 [多数据源配置](../core/multi-data
 - 默认值：`null`
 
 MyBatis 配置文件位置，如果有单独的 MyBatis 配置，需要将其路径配置到 `configLocation` 中。MyBatis Configuration
-的具体内容请参考 [MyBatis 官方文档](https://www.mybatis.org/mybatis-3/zh/configuration.html)。
+的具体内容请参考 [MyBatis 官方文档](https://www.mybatis.org/mybatis-3/zh_CN/configuration.html)。
 
 ### mapper-locations
 
@@ -101,7 +101,7 @@ TypeHandler 扫描路径，如果配置了该属性，SqlSessionFactoryBean 会�
 ## configuration
 
 本部分（Configuration）的配置都为 MyBatis
-原生支持的配置，有关配置请参考 [MyBatis Configuration](https://mybatis.org/mybatis-3/zh/configuration.html#%E8%AE%BE%E7%BD%AE%EF%BC%88settings%EF%BC%89)。
+原生支持的配置，有关配置请参考 [MyBatis Configuration](https://mybatis.org/mybatis-3/zh_CN/configuration.html#%E8%AE%BE%E7%BD%AE%EF%BC%88settings%EF%BC%89)。
 
 ## global-config
 
