@@ -161,7 +161,7 @@ public class StringUtil {
 
 
     public static boolean areNotBlank(String... strings) {
-        return !isAnyBlank();
+        return !isAnyBlank(strings);
     }
 
 
