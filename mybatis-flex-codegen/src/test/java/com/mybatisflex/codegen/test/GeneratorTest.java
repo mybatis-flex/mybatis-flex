@@ -283,7 +283,7 @@ public class GeneratorTest {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
         dataSource.setUsername("root");
-        dataSource.setPassword("123456");
+        dataSource.setPassword("12345678");
 
         GlobalConfig globalConfig = new GlobalConfig();
 
@@ -335,6 +335,7 @@ public class GeneratorTest {
 
         // 配置生成 entity
         globalConfig.enableEntity()
+            .setAlwaysGenColumnAnnotation(true)
             .setOverwriteEnable(true)
             .setWithLombok(true);
 
