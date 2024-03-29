@@ -116,6 +116,10 @@ public class EntityConfig implements Serializable {
      */
     private boolean columnCommentEnable;
 
+    /**
+     * 是否总是生成 @Column 注解。
+     */
+    private boolean alwaysGenColumnAnnotation;
 
     public String getSourceDir() {
         return sourceDir;
@@ -339,6 +343,15 @@ public class EntityConfig implements Serializable {
 
     public void setColumnCommentEnable(boolean columnCommentEnable) {
         this.columnCommentEnable = columnCommentEnable;
+    }
+
+    public boolean isAlwaysGenColumnAnnotation() {
+        return alwaysGenColumnAnnotation;
+    }
+
+    public EntityConfig setAlwaysGenColumnAnnotation(boolean alwaysGenColumnAnnotation) {
+        this.alwaysGenColumnAnnotation = alwaysGenColumnAnnotation;
+        return this;
     }
 
     public enum SwaggerVersion {
