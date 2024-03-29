@@ -30,6 +30,7 @@ import java.util.function.Function;
 public class EntityConfig implements Serializable {
 
     private static final long serialVersionUID = -6790274333595436008L;
+
     /**
      * 代码生成目录，当未配置时，使用 PackageConfig 的配置
      */
@@ -93,7 +94,6 @@ public class EntityConfig implements Serializable {
      */
     private int jdkVersion;
 
-
     /**
      * 当开启这个配置后，Entity 会生成两个类，比如 Account 表会生成 Account.java 以及 AccountBase.java
      * 这样的好处是，自动生成的 getter setter 字段等都在 Base 类里，而开发者可以在 Account.java 中添加自己的业务代码
@@ -125,8 +125,9 @@ public class EntityConfig implements Serializable {
         return sourceDir;
     }
 
-    public void setSourceDir(String sourceDir) {
+    public EntityConfig setSourceDir(String sourceDir) {
         this.sourceDir = sourceDir;
+        return this;
     }
 
     /**
@@ -186,8 +187,9 @@ public class EntityConfig implements Serializable {
         return superClassFactory;
     }
 
-    public void setSuperClassFactory(Function<Table, Class<?>> superClassFactory) {
+    public EntityConfig setSuperClassFactory(Function<Table, Class<?>> superClassFactory) {
         this.superClassFactory = superClassFactory;
+        return this;
     }
 
     /**
@@ -316,33 +318,36 @@ public class EntityConfig implements Serializable {
         return withBaseClassEnable;
     }
 
-    public void setWithBaseClassEnable(boolean withBaseClassEnable) {
+    public EntityConfig setWithBaseClassEnable(boolean withBaseClassEnable) {
         this.withBaseClassEnable = withBaseClassEnable;
+        return this;
     }
 
     public String getWithBaseClassSuffix() {
         return withBaseClassSuffix;
     }
 
-    public void setWithBaseClassSuffix(String withBaseClassSuffix) {
+    public EntityConfig setWithBaseClassSuffix(String withBaseClassSuffix) {
         this.withBaseClassSuffix = withBaseClassSuffix;
+        return this;
     }
-
 
     public String getWithBasePackage() {
         return withBasePackage;
     }
 
-    public void setWithBasePackage(String withBasePackage) {
+    public EntityConfig setWithBasePackage(String withBasePackage) {
         this.withBasePackage = withBasePackage;
+        return this;
     }
 
     public boolean isColumnCommentEnable() {
         return columnCommentEnable;
     }
 
-    public void setColumnCommentEnable(boolean columnCommentEnable) {
+    public EntityConfig setColumnCommentEnable(boolean columnCommentEnable) {
         this.columnCommentEnable = columnCommentEnable;
+        return this;
     }
 
     public boolean isAlwaysGenColumnAnnotation() {
@@ -358,6 +363,7 @@ public class EntityConfig implements Serializable {
 
         FOX("FOX"),
         DOC("DOC");
+
         private final String name;
 
         SwaggerVersion(String name) {
