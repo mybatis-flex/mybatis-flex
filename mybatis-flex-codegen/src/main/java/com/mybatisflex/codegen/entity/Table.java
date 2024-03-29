@@ -15,11 +15,25 @@
  */
 package com.mybatisflex.codegen.entity;
 
-import com.mybatisflex.codegen.config.*;
+import com.mybatisflex.codegen.config.ControllerConfig;
+import com.mybatisflex.codegen.config.EntityConfig;
+import com.mybatisflex.codegen.config.GlobalConfig;
+import com.mybatisflex.codegen.config.MapperConfig;
+import com.mybatisflex.codegen.config.MapperXmlConfig;
+import com.mybatisflex.codegen.config.ServiceConfig;
+import com.mybatisflex.codegen.config.ServiceImplConfig;
+import com.mybatisflex.codegen.config.TableConfig;
+import com.mybatisflex.codegen.config.TableDefConfig;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -312,10 +326,19 @@ public class Table {
 
 
         if (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.isNotBlank(comment)) {
-            String comment = this.comment.replace("\n", "").replace("\"", "\\\"").trim();
-            tableAnnotation.append(", comment = \"" + comment + "\"");
+            tableAnnotation.append(", comment = \"")
+                .append(this.comment.replace("\n", "").replace("\"", "\\\"").trim())
+                .append("\"");
         }
 
+        // @Table(value = "sys_user") -> @Table("sys_user")
+        int index = tableAnnotation.indexOf(",");
+        if (index == -1) {
+            int start = tableAnnotation.indexOf("value");
+            if (start != -1) {
+                tableAnnotation.delete(start, start + 8);
+            }
+        }
 
         return tableAnnotation.append(")\n").toString();
     }
