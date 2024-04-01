@@ -100,7 +100,7 @@ public class AccountNativeTest implements WithAssertions {
             .where(ACCOUNT.ID.eq(null))
             .and(ACCOUNT.AGE.ge(18, false))
             .and(QueryCondition.createEmpty())
-            .and(ACCOUNT.USER_NAME.ne(null));
+            .and(ACCOUNT.USER_NAME.isNotNull());
         List<Account> accounts = accountMapper.selectListByQuery(queryWrapper);
         assertThat(accounts).hasSize(0);
         QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_NULL);
