@@ -76,21 +76,21 @@ const {Layout} = DefaultTheme
     <Layout>
 
         <!--docs: https://vitepress.dev/guide/extending-default-theme#layout-slots-->
-        <template #doc-before>
-            <div style="margin-bottom: 30px">
-                <a href="https://mp.weixin.qq.com/s/sAe_bO4eW7dJsNgwoG0x9g" target="_blank">
-                    <img src="/assets/images/ad/admin-banner.jpg">
-                </a>
-            </div>
-        </template>
+<!--        <template #doc-before>-->
+<!--            <div style="margin-bottom: 30px">-->
+<!--                <a href="https://mp.weixin.qq.com/s/sAe_bO4eW7dJsNgwoG0x9g" target="_blank">-->
+<!--                    <img src="/assets/images/ad/admin-banner.jpg">-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </template>-->
 
-        <template #home-features-after>
-            <div style="display: flex; justify-content: center;margin-top: 60px">
-                <a href="https://mp.weixin.qq.com/s/sAe_bO4eW7dJsNgwoG0x9g" target="_blank" style="max-width: 90%">
-                    <img src="/assets/images/ad/admin-banner.jpg" style="width: 650px;">
-                </a>
-            </div>
-        </template>
+<!--        <template #home-features-after>-->
+<!--            <div style="display: flex; justify-content: center;margin-top: 60px">-->
+<!--                <a href="https://mp.weixin.qq.com/s/sAe_bO4eW7dJsNgwoG0x9g" target="_blank" style="max-width: 90%">-->
+<!--                    <img src="/assets/images/ad/admin-banner.jpg" style="width: 650px;">-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </template>-->
 
         <template #doc-footer-before>
             <div class="info custom-block" style="margin-bottom: 14px">
