@@ -3,6 +3,20 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.8.5 20240401:
+- 新增：Join ON 增加 lambda 重载方法，简化使用，感谢 @robor.luo
+- 新增：Db + Row 添加支持 MyBatis 原生 SQL 及参数的方法，感谢 @Suomm
+- 新增：新增不忽略 null 值时拼接 null 参数的相关功能，感谢 @Suomm
+- 新增：代码生成添加 “总是生成 @Column 注解” 选项，感谢 @Suomm
+- 优化：EnumWrapper 的 getEnumValue 方法如果没有注解，则使用枚举 name 返回，感谢 @robor.luo
+- 优化：代码生成器 EntityConfig 链式调用错误的优化，感谢 @Suomm
+- 修复：代码生成器无法生成内置数据脱敏处理器键（Masks）的问题，感谢 @Suomm
+- 修复：修复 ConvertUtil 等一些工具类的方法错误
+- 文档：添加 Db + Row 添加支持 MyBatis 原生 SQL 的相关文档，感谢 @Suomm
+- 文档：配置相关文档链接到 mybatis3 中文文档路径错误
+
+
+
 ## v1.8.4 20240325:
 - 修复：修改 QueryWrapperAdapter 的 Join 方法返回的泛型错误的问题，感谢 @Suomm
 - 优化：优化 ActiveRecord Join 自己，感谢 @Suomm
