@@ -100,7 +100,11 @@ class WrapperUtil {
         if (value == null) {
             // column = user_name; logic = eq; value = null
             // sql: user_name = null
-            if (condition.checkEffective() && condition.getLogic() != null) {
+            String logic;
+            if (condition.checkEffective()
+                && (logic = condition.getLogic()) != null
+                && !logic.equals(SqlConsts.IS_NULL)
+                && !logic.equals(SqlConsts.IS_NOT_NULL)) {
                 params.add(null);
             }
             getValues(condition.next, params);
