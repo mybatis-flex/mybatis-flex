@@ -2,8 +2,12 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.8.6 20240402
+- 修复：在 QueryWrapper 中使用 is_null 时出现 sql 异常的问题，感谢 @Suomm
 
-## v1.8.5 20240401:
+
+
+## v1.8.6 20240401:
 - 新增：Join ON 增加 lambda 重载方法，简化使用，感谢 @robor.luo
 - 新增：Db + Row 添加支持 MyBatis 原生 SQL 及参数的方法，感谢 @Suomm
 - 新增：新增不忽略 null 值时拼接 null 参数的相关功能，感谢 @Suomm
