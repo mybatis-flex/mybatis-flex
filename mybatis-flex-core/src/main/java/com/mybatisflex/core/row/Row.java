@@ -21,14 +21,29 @@ import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.update.RawValue;
 import com.mybatisflex.core.update.UpdateWrapper;
-import com.mybatisflex.core.util.*;
+import com.mybatisflex.core.util.ArrayUtil;
+import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.ConvertUtil;
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
+import com.mybatisflex.core.util.SqlUtil;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
@@ -509,7 +524,12 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper<
         List<Object> values = new ArrayList<>();
         for (String key : keySet()) {
             Object value = get(key);
-            if (!isPk(key) && !(value instanceof RawValue)) {
+            if (isPk(key)) {
+                continue;
+            }
+            if (value instanceof RawValue) {
+                values.addAll(Arrays.asList(((RawValue) value).getParams()));
+            } else {
                 values.add(value);
             }
         }
@@ -569,7 +589,12 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper<
 
         for (String key : keySet()) {
             Object value = get(key);
-            if (!isPk(key) && !(value instanceof RawValue)) {
+            if (isPk(key)) {
+                continue;
+            }
+            if (value instanceof RawValue) {
+                values.addAll(Arrays.asList(((RawValue) value).getParams()));
+            } else {
                 values.add(value);
             }
         }
