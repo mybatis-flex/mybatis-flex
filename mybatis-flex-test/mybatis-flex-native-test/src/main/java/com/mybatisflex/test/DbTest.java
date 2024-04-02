@@ -42,6 +42,7 @@ import java.util.Map;
  * @author 王帅
  * @since 2023-10-11
  */
+@SuppressWarnings("all")
 public class DbTest {
 
     @BeforeClass
@@ -138,6 +139,26 @@ public class DbTest {
         Assert.assertEquals(rowList1.toString(), rowList5.toString());
         Assert.assertThrows(PersistenceException.class,
             () -> Db.selectListBySql("select * from tb_account where age > #{age} and id > ?", map, 1));
+    }
+
+    @Test
+    public void testRowUpdate() {
+        Row row = new Row();
+        row.setRaw("age", QueryWrapper.create()
+            .select("age")
+            .from("tb_account")
+            .where("id = ?", 1));
+        Assert.assertEquals(1, Db.updateByQuery("tb_account", row, QueryWrapper.create().where("id = ?", 1)));
+    }
+
+    @Test
+    public void testRowInsert() {
+        Row row = new Row();
+        row.setRaw("age", QueryWrapper.create()
+            .select("age")
+            .from("tb_account")
+            .where("id = ?", 1));
+        Assert.assertEquals(1, Db.insert("tb_account", row));
     }
 
 }
