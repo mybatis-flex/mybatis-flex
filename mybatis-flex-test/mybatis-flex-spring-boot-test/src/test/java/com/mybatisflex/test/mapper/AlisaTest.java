@@ -16,10 +16,13 @@
 
 package com.mybatisflex.test.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.alisa.SysUser;
+import com.mybatisflex.test.alisa.UserVO;
 import org.apache.ibatis.mapping.ResultMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -63,7 +66,7 @@ class AlisaTest {
             .select(SYS_USER.DEFAULT_COLUMNS)
             .select(SYS_ROLE.DEFAULT_COLUMNS)
             .from(SYS_USER.as("u"))
-            .leftJoin(SYS_ROLE).as("r").on(SYS_USER.ID.eq(1));
+            .leftJoin(SYS_ROLE.as("r")).on(SYS_USER.ID.eq(1));
 
         printList(queryWrapper);
     }
@@ -75,8 +78,8 @@ class AlisaTest {
             .select(SYS_ROLE.DEFAULT_COLUMNS)
             .select(SYS_DEPT.DEFAULT_COLUMNS)
             .from(SYS_USER.as("u"))
-            .leftJoin(SYS_ROLE).as("r").on(SYS_USER.ID.eq(1))
-            .leftJoin(SYS_DEPT).as("d").on(SYS_USER.ID.eq(1));
+            .leftJoin(SYS_ROLE.as("r")).on(SYS_USER.ID.eq(1))
+            .leftJoin(SYS_DEPT.as("d")).on(SYS_USER.ID.eq(1));
 
         printList(queryWrapper);
     }
@@ -89,8 +92,8 @@ class AlisaTest {
             .select(SYS_DEPT.DEFAULT_COLUMNS)
             .select(SYS_USER.DEFAULT_COLUMNS)
             .from(SYS_USER.as("u"))
-            .leftJoin(SYS_ROLE).as("r").on(SYS_USER.ID.eq(1))
-            .leftJoin(SYS_DEPT).as("d").on(SYS_USER.ID.eq(1));
+            .leftJoin(SYS_ROLE.as("r")).on(SYS_USER.ID.eq(1))
+            .leftJoin(SYS_DEPT.as("d")).on(SYS_USER.ID.eq(1));
 
         printList(queryWrapper);
     }
@@ -126,7 +129,7 @@ class AlisaTest {
             .select(SYS_USER.ID, SYS_USER.USER_NAME, SYS_USER.AGE, SYS_USER.BIRTHDAY)
             .select(SYS_ROLE.CREATE_BY.as("sys_role$create_by"))
             .from(SYS_USER.as("u"))
-            .leftJoin(SYS_ROLE).as("r").on(SYS_USER.ID.eq(1));
+            .leftJoin(SYS_ROLE.as("r")).on(SYS_USER.ID.eq(1));
 
         Object[] objects = FlexGlobalConfig.getDefaultConfig()
             .getConfiguration()
@@ -143,6 +146,24 @@ class AlisaTest {
         System.out.println(resultMaps.length);
 
         printList(queryWrapper);
+    }
+
+    @Test
+    void test07() throws JsonProcessingException {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(SYS_USER.DEFAULT_COLUMNS)
+            .select(SYS_ROLE.DEFAULT_COLUMNS)
+            .select(SYS_DEPT.DEFAULT_COLUMNS)
+            .from(SYS_USER.as("u"))
+            .leftJoin(SYS_ROLE.as("r")).on(SYS_USER.ID.eq(1))
+            .leftJoin(SYS_DEPT.as("d")).on(SYS_USER.ID.eq(1));
+
+        ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
+
+        String userList1 = objectWriter.writeValueAsString(userMapper.selectListByQuery(queryWrapper));
+        String userList2 = objectWriter.writeValueAsString(userMapper.selectListByQueryAs(queryWrapper, UserVO.class));
+
+        Assertions.assertEquals(userList1, userList2);
     }
 
 }
