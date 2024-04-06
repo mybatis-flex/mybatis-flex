@@ -17,6 +17,7 @@
 package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
+import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryMethods;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
@@ -51,6 +52,18 @@ class AccountMapperTest {
 
     @Autowired
     private AccountMapper accountMapper;
+
+    @Autowired
+    private MyAccountMapper myAccountMapper;
+
+    @Test
+    void testAppendCondition() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .where(ACCOUNT.ID.ge(0));
+        Page<Object> page = Page.of(1, 10);
+        myAccountMapper.xmlPaginate("selectByName", page, queryWrapper);
+        Assertions.assertTrue(page.getRecords().size() > 0);
+    }
 
     @Test
     void testInsertRaw() {
