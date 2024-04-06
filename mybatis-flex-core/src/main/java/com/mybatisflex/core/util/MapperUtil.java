@@ -33,6 +33,8 @@ import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.relation.RelationManager;
+import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.table.TableInfoFactory;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
@@ -300,7 +302,7 @@ public class MapperUtil {
     }
 
 
-    public static Map<String, Object> preparedParams(Page<?> page, QueryWrapper queryWrapper, Map<String, Object> params) {
+    public static Map<String, Object> preparedParams(BaseMapper<?> baseMapper, Page<?> page, QueryWrapper queryWrapper, Map<String, Object> params) {
         Map<String, Object> newParams = new HashMap<>();
 
         if (params != null) {
@@ -315,6 +317,8 @@ public class MapperUtil {
         newParams.put("dbType", dbType != null ? dbType : FlexGlobalConfig.getDefaultConfig().getDbType());
 
         if (queryWrapper != null) {
+            TableInfo tableInfo = TableInfoFactory.ofMapperClass(baseMapper.getClass());
+            tableInfo.appendConditions(null, queryWrapper);
             preparedQueryWrapper(newParams, queryWrapper);
         }
 
