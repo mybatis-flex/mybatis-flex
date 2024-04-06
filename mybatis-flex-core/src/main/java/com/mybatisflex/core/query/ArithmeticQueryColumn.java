@@ -25,7 +25,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.mybatisflex.core.constant.SqlConsts.*;
+import static com.mybatisflex.core.constant.SqlConsts.DIVISION_SIGN;
+import static com.mybatisflex.core.constant.SqlConsts.MINUS_SIGN;
+import static com.mybatisflex.core.constant.SqlConsts.MULTIPLICATION_SIGN;
+import static com.mybatisflex.core.constant.SqlConsts.PLUS_SIGN;
 
 public class ArithmeticQueryColumn extends QueryColumn implements HasParamsColumn {
 
@@ -119,7 +122,7 @@ public class ArithmeticQueryColumn extends QueryColumn implements HasParamsColum
     public Object[] getParamValues() {
         return arithmeticInfos.stream()
             .map(arithmeticInfo -> arithmeticInfo.value)
-            .filter(value -> value instanceof HasParamsColumn)
+            .filter(HasParamsColumn.class::isInstance)
             .map(value -> ((HasParamsColumn) value).getParamValues())
             .flatMap(Arrays::stream)
             .toArray();
@@ -128,8 +131,8 @@ public class ArithmeticQueryColumn extends QueryColumn implements HasParamsColum
 
     static class ArithmeticInfo implements CloneSupport<ArithmeticInfo> {
 
-        private String symbol;
-        private Object value;
+        private final String symbol;
+        private final Object value;
 
         public ArithmeticInfo(Object value) {
             this(null, value);
