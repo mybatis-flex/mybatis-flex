@@ -17,6 +17,8 @@ package com.mybatisflex.coretest.query;
 
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
+import com.mybatisflex.core.query.ArithmeticQueryColumn;
+import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,7 +46,7 @@ public class ArithmeticQueryColumnTest {
         String sql = query.toSQL();
         System.out.println(sql);
 
-        Assert.assertEquals(sql, "SELECT (`id` + 100) AS `x100` FROM `tb_account`");
+        Assert.assertEquals("SELECT (`id` + 100) AS `x100` FROM `tb_account`", sql);
     }
 
     @Test
@@ -56,7 +58,7 @@ public class ArithmeticQueryColumnTest {
         String sql = query.toSQL();
         System.out.println(sql);
 
-        Assert.assertEquals(sql, "SELECT (`id` + 100 + 200 + 300) AS `x100` FROM `tb_account`");
+        Assert.assertEquals("SELECT (`id` + 100 + 200 + 300) AS `x100` FROM `tb_account`", sql);
     }
 
     @Test
@@ -68,7 +70,7 @@ public class ArithmeticQueryColumnTest {
         String sql = toSql(query);
         System.out.println(sql);
 
-        Assert.assertEquals(sql, "SELECT (`id` + `age`) AS `x100` FROM `tb_account`");
+        Assert.assertEquals("SELECT (`id` + `age`) AS `x100` FROM `tb_account`", sql);
     }
 
     @Test
@@ -80,7 +82,7 @@ public class ArithmeticQueryColumnTest {
         String sql = query.toSQL();
         System.out.println(sql);
 
-        Assert.assertEquals(sql, "SELECT (`id` + (`age` + 100)) AS `x100` FROM `tb_account`");
+        Assert.assertEquals("SELECT (`id` + (`age` + 100)) AS `x100` FROM `tb_account`", sql);
     }
 
     @Test
@@ -92,7 +94,7 @@ public class ArithmeticQueryColumnTest {
         String sql = toSql(query);
         System.out.println(sql);
 
-        Assert.assertEquals(sql, "SELECT (`id` + (`id` + 100) * 100) AS `x100` FROM `tb_account`");
+        Assert.assertEquals("SELECT (`id` + (`id` + 100) * 100) AS `x100` FROM `tb_account`", sql);
     }
 
     @Test
@@ -104,7 +106,7 @@ public class ArithmeticQueryColumnTest {
         String sql = toSql(query);
         System.out.println(sql);
 
-        Assert.assertEquals(sql, "SELECT SUM(`id` * `age`) AS `total_x` FROM `tb_account`");
+        Assert.assertEquals("SELECT SUM(`id` * `age`) AS `total_x` FROM `tb_account`", sql);
     }
 
     @Test
@@ -116,7 +118,7 @@ public class ArithmeticQueryColumnTest {
         String sql = toSql(query);
         System.out.println(sql);
 
-        Assert.assertEquals(sql, "SELECT (`id` - 100) AS `x100` FROM `tb_account`");
+        Assert.assertEquals("SELECT (`id` - 100) AS `x100` FROM `tb_account`", sql);
     }
 
 
@@ -129,7 +131,7 @@ public class ArithmeticQueryColumnTest {
         String sql = toSql(query);
         System.out.println(sql);
 
-        Assert.assertEquals(sql, "SELECT (`id` * 100) AS `x100` FROM `tb_account`");
+        Assert.assertEquals("SELECT (`id` * 100) AS `x100` FROM `tb_account`", sql);
     }
 
 
@@ -142,7 +144,7 @@ public class ArithmeticQueryColumnTest {
         String sql = toSql(query);
         System.out.println(sql);
 
-        Assert.assertEquals(sql, "SELECT (`id` / 100) AS `x100` FROM `tb_account`");
+        Assert.assertEquals("SELECT (`id` / 100) AS `x100` FROM `tb_account`", sql);
     }
 
     @Test
@@ -171,6 +173,20 @@ public class ArithmeticQueryColumnTest {
         System.out.println(sql);
 
         Assert.assertEquals("SELECT -(-1), -ABS(`age`) AS `opp`, -(`id` + `age`) FROM `tb_account`", sql);
+    }
+
+    @Test
+    public void testComplex() {
+        QueryColumn newColumn = new ArithmeticQueryColumn(ACCOUNT.ID.add(ACCOUNT.AGE));
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(newColumn.multiply(5))
+            .from(ACCOUNT);
+
+        String sql = queryWrapper.toSQL();
+
+        System.out.println(sql);
+
+        Assert.assertEquals("SELECT (`id` + `age`) * 5 FROM `tb_account`", sql);
     }
 
 }
