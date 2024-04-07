@@ -29,14 +29,14 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ViewObject {
+public @interface TableRef {
 
     /**
      * 对应的 <b>实体类</b> 引用。
      *
      * @return 实体类引用
      */
-    Class<?> ref();
+    Class<?> value();
 
     /**
      * 是否复制引用类 {@code @Table} 注解上的内容，默认为：{@code true}。

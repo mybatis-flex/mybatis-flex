@@ -17,7 +17,7 @@
 package com.mybatisflex.test.alisa;
 
 import com.mybatisflex.annotation.ColumnAlias;
-import com.mybatisflex.annotation.ViewObject;
+import com.mybatisflex.annotation.TableRef;
 
 import java.util.Date;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.List;
  * @author 王帅
  * @since 2023-11-16
  */
-@ViewObject(ref = SysUser.class)
+@TableRef(SysUser.class)
 public class UserVO extends BaseEntity {
 
     private Integer id;

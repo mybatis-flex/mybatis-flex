@@ -16,7 +16,7 @@
 
 package com.mybatisflex.test.alisa;
 
-import com.mybatisflex.annotation.ViewObject;
+import com.mybatisflex.annotation.TableRef;
 
 /**
  * 部门。
@@ -24,7 +24,7 @@ import com.mybatisflex.annotation.ViewObject;
  * @author 王帅
  * @since 2023-11-16
  */
-@ViewObject(ref = SysDept.class)
+@TableRef(SysDept.class)
 public class DeptVO extends BaseEntity {
 
     private Integer id;
