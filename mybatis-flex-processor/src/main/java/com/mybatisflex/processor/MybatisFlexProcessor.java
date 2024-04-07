@@ -162,7 +162,11 @@ public class MybatisFlexProcessor extends AbstractProcessor {
 
                 // 处理 entity 后缀
                 for (String entityIgnoreSuffix : tableDefIgnoreEntitySuffixes) {
-                    if (entityClassName.endsWith(entityIgnoreSuffix.trim())) {
+                    entityIgnoreSuffix = entityIgnoreSuffix.trim();
+                    if (entityIgnoreSuffix.isEmpty()) {
+                        continue;
+                    }
+                    if (entityClassName.endsWith(entityIgnoreSuffix)) {
                         entityClassName = entityClassName.substring(0, entityClassName.length() - entityIgnoreSuffix.length());
                         break;
                     }
