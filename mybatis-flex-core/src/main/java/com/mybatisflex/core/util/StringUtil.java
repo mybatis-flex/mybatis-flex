@@ -16,13 +16,33 @@
 package com.mybatisflex.core.util;
 
 
+import com.mybatisflex.core.exception.FlexExceptions;
+
 import java.util.Collection;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public class StringUtil {
 
     private StringUtil() {
+    }
+
+    /**
+     * @see org.apache.ibatis.reflection.property.PropertyNamer#methodToProperty(String)
+     */
+    public static String methodToProperty(String name) {
+        if (name.startsWith("is")) {
+            name = name.substring(2);
+        } else if (name.startsWith("get") || name.startsWith("set")) {
+            name = name.substring(3);
+        } else {
+            throw FlexExceptions.wrap("Error parsing property name '%s'.  Didn't start with 'is', 'get' or 'set'.", name);
+        }
+        if (!name.isEmpty()) {
+            name = name.substring(0, 1).toLowerCase(Locale.ENGLISH).concat(name.substring(1));
+        }
+        return name;
     }
 
 
