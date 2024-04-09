@@ -159,6 +159,11 @@ public interface BaseMapper<T> {
      * @return 受影响的行数
      */
     default int insertBatch(List<T> entities, int size) {
+
+        // 让 insertBatch(List<T> entities, int size) 和 insertBatch(List<T> entities) 保持一样的验证行为
+        // https://gitee.com/mybatis-flex/mybatis-flex/issues/I9EGWA
+        FlexAssert.notEmpty(entities, "entities");
+
         if (size <= 0) {
             size = DEFAULT_BATCH_SIZE;
         }
