@@ -19,7 +19,6 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import org.apache.ibatis.reflection.property.PropertyNamer;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
@@ -38,7 +37,7 @@ public class LambdaUtil {
     public static <T> String getFieldName(LambdaGetter<T> getter) {
         SerializedLambda lambda = getSerializedLambda(getter);
         String methodName = lambda.getImplMethodName();
-        return PropertyNamer.methodToProperty(methodName);
+        return StringUtil.methodToProperty(methodName);
     }
 
 
@@ -64,7 +63,7 @@ public class LambdaUtil {
         String methodName = lambda.getImplMethodName();
         Class<?> entityClass = getImplClass(lambda, classLoader);
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
-        return tableInfo.getQueryColumnByProperty(PropertyNamer.methodToProperty(methodName));
+        return tableInfo.getQueryColumnByProperty(StringUtil.methodToProperty(methodName));
     }
 
 
