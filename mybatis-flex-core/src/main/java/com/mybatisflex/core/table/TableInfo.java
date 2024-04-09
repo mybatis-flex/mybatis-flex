@@ -990,9 +990,11 @@ public class TableInfo {
                     .filter(e -> e.getName().equals(column))
                     .findFirst()
                     .orElse(QueryMethods.column(getTableNameWithSchema(), column));
-                if (operators != null && operators.containsKey(property)) {
+                if (operators != null) {
                     SqlOperator operator = operators.get(property);
-                    if (operator == SqlOperator.IGNORE) {
+                    if (operator == null) {
+                        operator = SqlOperator.EQUALS;
+                    } else if (operator == SqlOperator.IGNORE) {
                         return;
                     }
                     if (operator == SqlOperator.LIKE || operator == SqlOperator.NOT_LIKE) {

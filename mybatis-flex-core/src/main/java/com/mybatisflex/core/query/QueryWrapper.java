@@ -376,8 +376,18 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
                 SqlOperator operator = operators.get(entry.getKey());
                 if (operator == null) {
                     operator = SqlOperator.EQUALS;
+                } else if (operator == SqlOperator.IGNORE) {
+                    continue;
                 }
-                QueryCondition cond = QueryCondition.create(new QueryColumn(entry.getKey()), operator.getValue(), entry.getValue());
+                Object value = entry.getValue();
+                if (operator == SqlOperator.LIKE || operator == SqlOperator.NOT_LIKE) {
+                    value = "%" + value + "%";
+                } else if (operator == SqlOperator.LIKE_LEFT || operator == SqlOperator.NOT_LIKE_LEFT) {
+                    value = value + "%";
+                } else if (operator == SqlOperator.LIKE_RIGHT || operator == SqlOperator.NOT_LIKE_RIGHT) {
+                    value = "%" + value;
+                }
+                QueryCondition cond = QueryCondition.create(new QueryColumn(entry.getKey()), operator, value);
                 if (condition == null) {
                     condition = cond;
                 } else {
