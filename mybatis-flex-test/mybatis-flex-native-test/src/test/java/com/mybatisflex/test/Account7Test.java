@@ -5,6 +5,7 @@ import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.keygen.KeyGeneratorFactory;
+import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.assertj.core.api.WithAssertions;
 import org.junit.After;
@@ -95,5 +96,16 @@ public class Account7Test implements WithAssertions {
             .asInstanceOf(LONG)
             // 组件通过时间戳 / 1000 获取
             .isGreaterThanOrEqualTo(10000L);
+    }
+
+
+    /**
+     * https://gitee.com/mybatis-flex/mybatis-flex/issues/I9DRC4
+     */
+    @Test
+    public void testGiteeIssuI9DRC4(){
+        Account7 account7 = this.mapper.selectOneByQuery(QueryWrapper.create().select().where(Account7::getId).eq("1"));
+        Assert.assertNotNull(account7);
+        System.out.println(account7);
     }
 }
