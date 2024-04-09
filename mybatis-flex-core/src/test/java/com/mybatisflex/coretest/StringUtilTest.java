@@ -16,6 +16,7 @@
 
 package com.mybatisflex.coretest;
 
+import com.mybatisflex.core.exception.MybatisFlexException;
 import com.mybatisflex.core.util.StringUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,6 +33,16 @@ public class StringUtilTest {
         String underline = StringUtil.camelToUnderline(underlineToCamel);
         System.out.println(underline);
         Assert.assertEquals("aa_bb", underline);
+    }
+
+    @Test
+    public void testMethod2Property() {
+        Assert.assertEquals("u", StringUtil.methodToProperty("isU"));
+        Assert.assertEquals("u", StringUtil.methodToProperty("getU"));
+        Assert.assertEquals("name", StringUtil.methodToProperty("getName"));
+        Assert.assertEquals("uName", StringUtil.methodToProperty("getUName"));
+        Assert.assertEquals("uName", StringUtil.methodToProperty("isUName"));
+        Assert.assertThrows(MybatisFlexException.class, () -> StringUtil.methodToProperty("name"));
     }
 
 }
