@@ -6,7 +6,7 @@
 
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-dependencies</artifactId>
-    <version>1.8.6</version>
+    <version>1.8.7</version>
 
     <packaging>pom</packaging>
 
@@ -48,7 +48,7 @@
         </developer>
     </developers>
     <properties>
-        <mybatis-flex.version>1.8.6</mybatis-flex.version>
+        <mybatis-flex.version>1.8.7</mybatis-flex.version>
     </properties>
 
     <dependencyManagement>

@@ -2,6 +2,20 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+
+## v1.8.7 20240410
+- 新增：feat: 添加 `@TableRef` 注解标记 VO 类和 Entity 绑定，方便关联查询直接转换为 VO，感谢 @Suomm
+- 新增：Db + Row 支持 QueryWrapper 的原生 SQL 构建，感谢 @Suomm
+- 优化：XML 分页 #{qwSql} 参数补充逻辑删除等参数，感谢 @Suomm
+- 优化：`insertBatch(entities, size)` 和 `insertBatch(entities)` 对空 list 的处理不一致问题 #I9EGWA
+- 修复: 修正使用 MyBatis 原生工具方法 PropertyNamer#methodToProperty 可能造成无法正确获取属性的问题，感谢 @Suomm
+- 修复：修复当 APT 配置多个 ignoreSuffix 时，可能导致生成的类名不正确的问题 #I9ED9N
+- 修复：QueryWrapper 通过 Map 构造查询条件，并传入 SqlOperators 时，Like 不能正确拼接 % 的问题 #I9F8HO
+- 修复：代码生成器的 EnjoyTemplate 在并发下可能出现异常的问题
+- 测试：添加 Db + Row 原生 SQL 子查询插入与更新测试，感谢 @Suomm
+
+
+
 ## v1.8.6 20240402
 - 修复：在 QueryWrapper 中使用 is_null 时出现 sql 异常的问题，感谢 @Suomm
 
