@@ -249,7 +249,7 @@ public class TableInfoFactory {
             tableInfo.setSchema(table.schema());
             tableInfo.setTableName(table.value());
             tableInfo.setCamelToUnderline(table.camelToUnderline());
-            tableInfo.setComment(tableInfo.getComment());
+            tableInfo.setComment(table.comment());
 
             if (table.onInsert().length > 0) {
                 List<InsertListener> insertListeners = Arrays.stream(table.onInsert())
