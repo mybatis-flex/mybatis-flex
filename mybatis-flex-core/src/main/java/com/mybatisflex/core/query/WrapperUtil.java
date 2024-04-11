@@ -95,6 +95,11 @@ class WrapperUtil {
             return;
         }
 
+        QueryColumn column = condition.getColumn();
+        if (column instanceof HasParamsColumn) {
+            addParam(params, ((HasParamsColumn) column).getParamValues());
+        }
+
         Object value = condition.getValue();
 
         if (value == null) {
