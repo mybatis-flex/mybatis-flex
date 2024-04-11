@@ -16,6 +16,7 @@
 
 package com.mybatisflex.coretest;
 
+import com.github.vertical_blank.sqlformatter.SqlFormatter;
 import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.query.CPI;
@@ -38,6 +39,8 @@ import java.util.Objects;
 import static com.mybatisflex.core.query.QueryColumnBehavior.CONVERT_EQUALS_TO_IS_NULL;
 import static com.mybatisflex.core.query.QueryColumnBehavior.getConditionCaster;
 import static com.mybatisflex.core.query.QueryMethods.bracket;
+import static com.mybatisflex.core.query.QueryMethods.case_;
+import static com.mybatisflex.core.query.QueryMethods.max;
 import static com.mybatisflex.core.query.QueryMethods.raw;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 import static org.junit.Assert.assertEquals;
@@ -386,6 +389,34 @@ public class DynamicConditionTest {
         System.out.println(sql2);
 
         assertNotEquals(sql1, sql2);
+    }
+
+    @Test
+    public void testHaving() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(max(ACCOUNT.ID))
+            .from(ACCOUNT)
+            .groupBy(ACCOUNT.BIRTHDAY)
+            .having(case_()
+                .when(ACCOUNT.AGE.ge(18)).then(1)
+                .else_(2).end().eq(3));
+
+        String sql = SqlFormatter.format(queryWrapper.toSQL());
+        System.out.println(sql);
+
+        assertEquals("SELECT\n" +
+            "  MAX(` id `)\n" +
+            "FROM\n" +
+            "  ` tb_account `\n" +
+            "GROUP BY\n" +
+            "  ` birthday `\n" +
+            "HAVING\n" +
+            "  (\n" +
+            "    CASE\n" +
+            "      WHEN ` age ` >= 18 THEN 1\n" +
+            "      ELSE 2\n" +
+            "    END\n" +
+            "  ) = 3", sql);
     }
 
 }
