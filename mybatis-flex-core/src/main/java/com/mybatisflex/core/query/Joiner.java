@@ -46,7 +46,6 @@ public class Joiner<M extends QueryWrapper> {
      * leftJoin(a).on(...);
      * }</pre>
      */
-    @Deprecated
     public Joiner<M> as(String alias) {
         join.queryTable = join.getQueryTable().as(alias);
         ListIterator<QueryTable> itr = queryWrapper.joinTables.listIterator();
