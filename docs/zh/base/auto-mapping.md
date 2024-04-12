@@ -272,6 +272,7 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
 在很多类型嵌套的场景下，可能会出现字段名定义重复的情况，例如：
 
 ```java
+@TableRef(Account.class)
 public class AccountVO {
 
     private Long id;
@@ -311,18 +312,21 @@ List<AccountVO> bookVos = QueryChain.of(accountMapper)
 其执行的 SQL 如下：
 
 ```sql
-select tb_account.id, tb_account.name, tb_account.age,
-    tb_book.id as tb_book$id, -- Flex 发现有重名时，会自动添加上 as 别名
-    tb_book.name as tb_book$name  -- Flex 发现有重名时，会自动添加上 as 别名
+select tb_account.id   as tb_account$id,
+       tb_account.name as tb_account$name,
+       tb_account.age,
+       tb_book.id      as tb_book$id,  -- Flex 发现有重名时，会自动添加上 as 别名
+       tb_book.name    as tb_book$name -- Flex 发现有重名时，会自动添加上 as 别名
 from tb_account
-left join tb_book on tb_account.id = tb_book.account_id
+         left join tb_book on tb_account.id = tb_book.account_id
 where tb_account.id >= 100
 ```
 
 此时，查询的数据可以正常映射到 `AccountVO` 类。
 
-> 注意，在 QueryWrapper 的 `select(...)` 中，MyBatis-Flex 在 **多表查询** 的情况下，且有相同的字段名时，MyBatis-Flex
-> 内部会主动帮助用户添加上 as 别名，默认为：`表名$字段名`。
+::: tip 注意事项
+- 在查询 VO 类当中有重名字段时，需要给 VO 类标记 `@TableRef` 注解，指定其对应的实体类，以正确添加别名。
+- 在 QueryWrapper 的 `select(...)` 中，MyBatis-Flex 在 **多表查询** 的情况下，且有相同的字段名时，MyBatis-Flex 内部会主动帮助用户添加上 as 别名，默认为：`表名$字段名`。
 
 **错误的情况：**
 
