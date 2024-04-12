@@ -140,7 +140,8 @@ public class TableInfoFactory {
     public static TableInfo ofEntityClass(Class<?> entityClass) {
         return MapUtil.computeIfAbsent(entityTableMap, entityClass, aClass -> {
             TableInfo tableInfo = createTableInfo(entityClass);
-            tableInfoMap.put(tableInfo.getTableNameWithSchema(), tableInfo);
+            // Entity 和 VO 有相同的表名，以第一次放入的 Entity 解析的 TableInfo 为主
+            tableInfoMap.putIfAbsent(tableInfo.getTableNameWithSchema(), tableInfo);
             return tableInfo;
         });
     }
