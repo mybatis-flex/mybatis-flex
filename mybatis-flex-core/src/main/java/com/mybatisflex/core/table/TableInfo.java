@@ -163,6 +163,10 @@ public class TableInfo {
         this.schema = schema;
     }
 
+    public Map<String, String> getPropertyColumnMapping() {
+        return this.propertyColumnMapping;
+    }
+
     public String getTableName() {
         return tableName;
     }
