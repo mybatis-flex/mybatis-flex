@@ -60,11 +60,11 @@ class UserMapperTest {
             .from(USER.as("u"))
             .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
             .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
-            .where(USER.USER_ID.eq(1));
+            .where(USER.USER_ID.eq(3));
         System.out.println(queryWrapper.toSQL());
-//        UserVO userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO.class);
-//        UserVO1 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO1.class);
-//        UserVO2 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO2.class);
+       // UserVO userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO.class);
+       // UserVO1 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO1.class);
+       // UserVO2 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO2.class);
         UserVO3 userVO = userMapper.selectOneByQueryAs(queryWrapper, UserVO3.class);
         System.err.println(userVO);
     }

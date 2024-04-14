@@ -17,6 +17,8 @@
 package com.mybatisflex.test.alisa;
 
 import com.mybatisflex.annotation.ColumnAlias;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 
 import java.util.Date;
@@ -31,6 +33,7 @@ import java.util.List;
 @Table("sys_user")
 public class SysUser extends BaseEntity {
 
+    @Id(keyType = KeyType.Auto)
     private Integer id;
     private String userName;
     @ColumnAlias("user_age")

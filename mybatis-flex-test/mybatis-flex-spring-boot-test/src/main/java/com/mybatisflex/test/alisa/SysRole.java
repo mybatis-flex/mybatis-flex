@@ -16,6 +16,8 @@
 
 package com.mybatisflex.test.alisa;
 
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 
 /**
@@ -27,6 +29,7 @@ import com.mybatisflex.annotation.Table;
 @Table("sys_role")
 public class SysRole extends BaseEntity {
 
+    @Id(keyType = KeyType.Auto)
     private Integer id;
     private String roleKey;
     private String roleName;

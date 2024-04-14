@@ -80,6 +80,15 @@ public class UpdateChainTest implements WithAssertions {
     }
 
     @Test
+    public void testUpdateAll() {
+        assertThatThrownBy(() -> {
+            UpdateChain.of(accountMapper)
+                .set(Account::getAge, 11)
+                .update();
+        });
+    }
+
+    @Test
     @SneakyThrows
     public void testUpdateChain() {
         UpdateChain.of(Account.class)

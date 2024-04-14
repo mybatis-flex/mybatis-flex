@@ -18,6 +18,8 @@ package com.mybatisflex.test.model;
 
 import com.mybatisflex.annotation.Id;
 
+import java.util.List;
+
 /**
  * @author 王帅
  * @since 2023-06-07
@@ -28,7 +30,7 @@ public class UserVO3 {
     @Id
     private String userId;
     private String userName;
-    private RoleVO3 roleVO3;
+    private List<RoleVO3> roleVO3;
 
     public String getUserId() {
         return userId;
@@ -46,11 +48,11 @@ public class UserVO3 {
         this.userName = userName;
     }
 
-    public RoleVO3 getRoleVO3() {
+    public List<RoleVO3> getRoleVO3() {
         return roleVO3;
     }
 
-    public void setRoleVO3(RoleVO3 roleVO3) {
+    public void setRoleVO3(List<RoleVO3> roleVO3) {
         this.roleVO3 = roleVO3;
     }
 
