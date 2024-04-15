@@ -99,6 +99,8 @@ https://www.bilibili.com/video/BV1kF411r7ky
 | youcan-solon | 基于 solon 框架做的一个类似 Ruoyi 的项目，使用flex自带的 mybatis-flex-solon-plugin 插件做集成，集成方式非常简单，属于即拿即用                                                           | https://gitee.com/gollyhu/youcan-solon  |
 | Ruoyi-Flex   | Ruoyi-Flex是基于RuoYi-Vue v3.8.6进行的扩展，集成MyBatis-Flex、JDK17、lombok、Sa-Token、PowerJob、Hutool、OSS、ureport-keep、Flowable、vue3、TypeScript等优秀开源软件。 | https://gitee.com/dataprince/ruoyi-flex |
 | 小鸣助手   |「小鸣助手」是一个生活服务类小程序，主要为用户的日常生活提供一些便捷工具，例如天气查询、时间规划、生活记录等。目前该小程序已稳定运行近4年，为近10万用户提供了生活帮助。主要技术栈：Spring Boot + Spring Security + JWT + MyBatis-Flex + MySQL + Redis + Docker | https://github.com/inlym/life-helper-server |
+| RuoyiVueFlex  |RuoyiVueFlex是基于RuoyiVuePlus的一个快速开发框架。将RuoyiVuePlus中使用的MybatisPlus替换为MybatisFlex,并根据两个ORM框架使用的不同修改了部分逻辑。 集成 Sa-Token、Mybatis-Flex、PowerJob、Jackson、SpringDoc、Hutool、OSS 定期同步等 | https://gitee.com/yhan219/ruoyi-vue-flex |
+| RuoyiCloudFlex  |RuoyiCloudFlex是基于RuoYiCloudPlus的微服务管理系统，将RuoyiCloudPlus中使用的MybatisPlus替换为MybatisFlex,并根据两个ORM框架使用的不同修改了部分逻辑。 整合 SpringCloudAlibaba、Dubbo3.0、Sa-Token、Mybatis-Flex、MQ、Flowable、ES、Docker 全方位升级 定期同步 | https://gitee.com/yhan219/ruoyi-cloud-flex |
 
 ## 开发插件
 
