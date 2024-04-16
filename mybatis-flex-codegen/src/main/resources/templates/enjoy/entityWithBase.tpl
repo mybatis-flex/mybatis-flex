@@ -42,7 +42,7 @@ import java.io.Serial;
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())
  */
- #end
+#end
 #if(withLombok)
 #if(withActiveRecord)
 @Accessors(chain = true)
