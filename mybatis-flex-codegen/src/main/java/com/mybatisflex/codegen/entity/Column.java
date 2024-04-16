@@ -276,7 +276,7 @@ public class Column {
             }
 
             if (entityConfig != null && entityConfig.isAlwaysGenColumnAnnotation()) {
-                annotations.append("\n\t");
+                annotations.append("\n    ");
             }
         }
 
@@ -370,7 +370,7 @@ public class Column {
         String maskType = columnConfig.getMaskType();
         if (maskType != null) {
             if (annotations.length() != 0) {
-                annotations.append("\n\t");
+                annotations.append("\n    ");
             }
             annotations.append("@ColumnMask(");
             if (MaskManager.getProcessorMap().containsKey(maskType)) {
