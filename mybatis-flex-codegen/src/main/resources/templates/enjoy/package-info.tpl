@@ -4,4 +4,4 @@
  * @author #(javadocConfig.getAuthor())
  * @since #(javadocConfig.getSince())
  */
- package #(packageName);
+package #(packageName);
