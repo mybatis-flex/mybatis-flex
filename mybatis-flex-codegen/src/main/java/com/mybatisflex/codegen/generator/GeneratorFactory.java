@@ -19,7 +19,7 @@ import com.mybatisflex.codegen.constant.GenTypeConst;
 import com.mybatisflex.codegen.generator.impl.*;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -29,7 +29,7 @@ import java.util.Map;
  */
 public class GeneratorFactory {
 
-    private static final Map<String, IGenerator> generators = new HashMap<>();
+    private static final Map<String, IGenerator> generators = new LinkedHashMap<>();
 
     static {
         registerGenerator(GenTypeConst.ENTITY, new EntityGenerator());
