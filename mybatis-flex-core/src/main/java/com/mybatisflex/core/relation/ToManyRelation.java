@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 
-class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
+public class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
     protected String mapKeyField;
 
