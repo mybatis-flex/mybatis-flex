@@ -19,7 +19,7 @@ import com.mybatisflex.annotation.RelationManyToMany;
 
 import java.lang.reflect.Field;
 
-class ManyToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
+public class ManyToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
 
     public ManyToMany(RelationManyToMany annotation, Class<SelfEntity> entityClass, Field relationField) {
         super(getDefaultPrimaryProperty(annotation.selfField(), entityClass, "@RelationManyToMany.selfField can not be empty in field: \"" + entityClass.getName() + "." + relationField.getName() + "\"")

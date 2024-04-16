@@ -239,7 +239,7 @@ public class RelationManager {
     }
 
 
-    private static List<AbstractRelation> getRelations(Class<?> clazz) {
+    public static List<AbstractRelation> getRelations(Class<?> clazz) {
         return MapUtil.computeIfAbsent(classRelations, clazz, RelationManager::doGetRelations);
     }
 

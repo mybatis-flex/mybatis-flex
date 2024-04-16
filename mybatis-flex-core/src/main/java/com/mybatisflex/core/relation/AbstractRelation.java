@@ -32,7 +32,7 @@ import java.util.*;
 
 import static com.mybatisflex.core.query.QueryMethods.column;
 
-abstract class AbstractRelation<SelfEntity> {
+public abstract class AbstractRelation<SelfEntity> {
 
     protected String name;
     protected String simpleName;

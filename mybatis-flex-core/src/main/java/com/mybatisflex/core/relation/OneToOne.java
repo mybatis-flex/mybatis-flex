@@ -19,7 +19,7 @@ import com.mybatisflex.annotation.RelationOneToOne;
 
 import java.lang.reflect.Field;
 
-class OneToOne<SelfEntity> extends ToOneRelation<SelfEntity> {
+public class OneToOne<SelfEntity> extends ToOneRelation<SelfEntity> {
 
     public OneToOne(RelationOneToOne annotation, Class<SelfEntity> entityClass, Field relationField) {
         super(getDefaultPrimaryProperty(annotation.selfField(), entityClass

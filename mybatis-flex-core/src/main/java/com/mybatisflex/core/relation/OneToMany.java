@@ -19,7 +19,7 @@ import com.mybatisflex.annotation.RelationOneToMany;
 
 import java.lang.reflect.Field;
 
-class OneToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
+public class OneToMany<SelfEntity> extends ToManyRelation<SelfEntity> {
 
 
     public OneToMany(RelationOneToMany annotation, Class<SelfEntity> entityClass, Field relationField) {

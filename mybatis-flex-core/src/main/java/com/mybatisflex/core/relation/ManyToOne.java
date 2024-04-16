@@ -19,7 +19,7 @@ import com.mybatisflex.annotation.RelationManyToOne;
 
 import java.lang.reflect.Field;
 
-class ManyToOne<SelfEntity> extends ToOneRelation<SelfEntity> {
+public class ManyToOne<SelfEntity> extends ToOneRelation<SelfEntity> {
 
     public ManyToOne(RelationManyToOne annotation, Class<SelfEntity> entityClass, Field relationField) {
         super(annotation.selfField()

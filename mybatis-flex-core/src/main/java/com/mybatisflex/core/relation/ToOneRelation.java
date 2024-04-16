@@ -21,7 +21,7 @@ import com.mybatisflex.core.util.FieldWrapper;
 import java.lang.reflect.Field;
 import java.util.List;
 
-class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
+public class ToOneRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
 
     public ToOneRelation(String selfField, String targetSchema, String targetTable, String targetField, String valueField,
