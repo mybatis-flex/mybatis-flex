@@ -144,6 +144,20 @@ public class StringUtil {
         return sb.toString();
     }
 
+    public static String deleteChar(String string, char deleteChar1, char deleteChar2) {
+        if (isBlank(string)) {
+            return "";
+        }
+        char[] chars = string.toCharArray();
+        StringBuilder sb = new StringBuilder(string.length());
+        for (char aChar : chars) {
+            if (aChar != deleteChar1 && aChar != deleteChar2) {
+                sb.append(aChar);
+            }
+        }
+        return sb.toString();
+    }
+
     /**
      * 字符串为 null 或者内部字符全部为 ' ', '\t', '\n', '\r' 这四类字符时返回 true
      */
