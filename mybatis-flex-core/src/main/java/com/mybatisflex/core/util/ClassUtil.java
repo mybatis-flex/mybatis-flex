@@ -18,7 +18,11 @@ package com.mybatisflex.core.util;
 
 import org.apache.ibatis.javassist.util.proxy.ProxyObject;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -171,7 +175,7 @@ public class ClassUtil {
             }
             throw new IllegalArgumentException("the class \"" + clazz.getName() + "\" has no constructor.");
         } catch (Exception e) {
-            throw new RuntimeException("Can not newInstance class: " + clazz.getName());
+            throw new RuntimeException("Can not newInstance class: " + clazz.getName(), e);
         }
     }
 
