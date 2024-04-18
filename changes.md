@@ -3,8 +3,25 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.8.8 20240418
+- 新增：新增支持全局注册多个监听器的功能，感谢 @Suomm
+- 修复：TableInfo 的 comment 构建错误的问题
+- 修复：由 case 构建查询条件参数丢失问题，感谢 @Suomm
+- 修复：TableRef 解析 VO 之后覆盖 tableInfoMap 缓存中原有 Entity 的问题，感谢 @Suomm
+- 修复：重名字段查找不全问题，感谢 @Suomm #I9FW4O
+- 优化：消除 Joiner 的 idea IDEA 警告，感谢 @Suomm
+- 优化：TableInfo 提供实体类与数据库字段字段映射内容，感谢 @gswy
+- 优化：调整关联查询相关功能模块访问级别，感谢 @ruansheng
+- 优化：代码生成器移除模板中多余的前导空格，感谢 @cida
+- 优化：代码生成器将 buildAnnotations 方法中，与模板统一格式，感谢 @cida
+- 优化：代码生成器将 GeneratorFactory.generators 的类型替换为 LinkedHashMap，感谢 @cida
+- 优化：在 Entity 无法初始化时给出异常原因，感谢 @Suomm #I9HL0K
+- 文档：添加 VO 类重名映射说明，感谢 @Suomm
+
+
+
 ## v1.8.7 20240410
-- 新增：feat: 添加 `@TableRef` 注解标记 VO 类和 Entity 绑定，方便关联查询直接转换为 VO，感谢 @Suomm
+- 新增：添加 `@TableRef` 注解标记 VO 类和 Entity 绑定，方便关联查询直接转换为 VO，感谢 @Suomm
 - 新增：Db + Row 支持 QueryWrapper 的原生 SQL 构建，感谢 @Suomm
 - 优化：XML 分页 #{qwSql} 参数补充逻辑删除等参数，感谢 @Suomm
 - 优化：`insertBatch(entities, size)` 和 `insertBatch(entities)` 对空 list 的处理不一致问题 #I9EGWA
