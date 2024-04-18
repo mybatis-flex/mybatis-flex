@@ -57,7 +57,7 @@ public class AccountServiceImpl extends CacheableServiceImpl<AccountMapper, Acco
 @Service
 @CacheConfig(cacheNames = "account")
 public class AccountServiceImpl extends CacheableServiceImpl<AccountMapper, Account> implements AccountService {
-    
+
     // 根据主键缓存数据
     @Override
     @Cacheable(key = "#id")
@@ -72,7 +72,7 @@ public class AccountServiceImpl extends CacheableServiceImpl<AccountMapper, Acco
     public List<Account> list(QueryWrapper query) {
         return super.list(query);
     }
-    
+
 }
 ```
 
@@ -84,7 +84,7 @@ MyBatis-Flex 在 IService 接口中做了方法调用链优化，所以您只需
 @Service
 @CacheConfig(cacheNames = "account")
 public class AccountServiceImpl extends CacheableServiceImpl<MyAccountMapper, Account> {
-    
+
     @Override
     @CacheEvict(allEntries = true)
     public boolean remove(QueryWrapper query) {
@@ -170,7 +170,7 @@ public class AccountServiceImpl extends CacheableServiceImpl<MyAccountMapper, Ac
     public <R> Page<R> pageAs(Page<R> page, QueryWrapper query, Class<R> asType) {
         return super.pageAs(page, query, asType);
     }
-    
+
 }
 ```
 

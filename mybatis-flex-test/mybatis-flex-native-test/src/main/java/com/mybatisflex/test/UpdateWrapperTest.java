@@ -30,6 +30,7 @@ import java.util.List;
 
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 
+
 public class UpdateWrapperTest {
 
     public static void main(String[] args) {
@@ -71,10 +72,10 @@ public class UpdateWrapperTest {
 
         System.out.println("//////////account3");
 
-        Account account3 = UpdateEntity.of(Account.class, 1);
-        UpdateWrapper<Account> wrapper3 = (UpdateWrapper) account3;
+        Account account83 = UpdateEntity.of(Account.class, 1);
+        UpdateWrapper<Account> wrapper3 = (UpdateWrapper) account83;
         wrapper3.setRaw(Account::getAge, "age + 1");
-        accountMapper.update(account3);
+        accountMapper.update(account83);
 
         List<Account> accounts3 = accountMapper.selectAll();
         System.out.println(accounts3);
@@ -82,10 +83,10 @@ public class UpdateWrapperTest {
 
         System.out.println("//////////account4");
 
-        Account account4 = UpdateEntity.of(Account.class, 1);
-        UpdateWrapper wrapper4 = (UpdateWrapper) account4;
+        Account account84 = UpdateEntity.of(Account.class, 1);
+        UpdateWrapper wrapper4 = (UpdateWrapper) account84;
         wrapper4.setRaw(ACCOUNT.AGE, ACCOUNT.AGE.add(1));
-        accountMapper.update(account4);
+        accountMapper.update(account84);
 
         List<Account> accounts4 = accountMapper.selectAll();
         System.out.println(accounts4);

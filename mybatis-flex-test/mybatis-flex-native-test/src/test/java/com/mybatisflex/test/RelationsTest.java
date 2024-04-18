@@ -23,13 +23,13 @@ import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.relation.RelationManager;
-import com.mybatisflex.test.relation.mapper.AccountMapper;
 import com.mybatisflex.test.relation.mapper.BookMapper;
 import com.mybatisflex.test.relation.mapper.MenuMapper;
-import com.mybatisflex.test.relation.onetoone.Account;
+import com.mybatisflex.test.relation.mapper.RelationAccountMapper;
 import com.mybatisflex.test.relation.onetoone.AccountDTO;
 import com.mybatisflex.test.relation.onetoone.Book;
 import com.mybatisflex.test.relation.onetoone.Menu;
+import com.mybatisflex.test.relation.onetoone.RelationAccount;
 import lombok.SneakyThrows;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import org.apache.commons.io.FileUtils;
@@ -51,7 +51,7 @@ import static com.mybatisflex.test.relation.onetoone.table.MenuTableDef.MENU;
 
 public class RelationsTest implements WithAssertions {
 
-    private AccountMapper accountMapper;
+    private RelationAccountMapper relationAccountMapper;
     private BookMapper bookMapper;
     private MenuMapper menuMapper;
     private EmbeddedDatabase dataSource;
@@ -75,14 +75,14 @@ public class RelationsTest implements WithAssertions {
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
             .setDataSource(DATA_SOURCE_KEY, dataSource)
-            .addMapper(AccountMapper.class)
+            .addMapper(RelationAccountMapper.class)
             .addMapper(BookMapper.class)
             .addMapper(MenuMapper.class)
             .start();
 
         DataSourceKey.use(DATA_SOURCE_KEY);
 
-        accountMapper = bootstrap.getMapper(AccountMapper.class);
+        relationAccountMapper = bootstrap.getMapper(RelationAccountMapper.class);
         bookMapper = bootstrap.getMapper(BookMapper.class);
         menuMapper = bootstrap.getMapper(MenuMapper.class);
     }
@@ -96,7 +96,7 @@ public class RelationsTest implements WithAssertions {
     @Test
     @SneakyThrows
     public void testOneToOne() {
-        List<com.mybatisflex.test.relation.onetoone.Account> accounts = accountMapper.selectAllWithRelations();
+        List<RelationAccount> accounts = relationAccountMapper.selectAllWithRelations();
         assertThat(accounts).hasSize(5);
         assertRelationResult(accounts, "relation/result/account-relation-result.json");
     }
@@ -114,18 +114,18 @@ public class RelationsTest implements WithAssertions {
 
     @Test
     public void testManyToMany1() {
-        List<com.mybatisflex.test.relation.onetoone.Account> accounts = accountMapper.selectAll();
+        List<RelationAccount> accounts = relationAccountMapper.selectAll();
         assertThat(accounts).hasSize(5)
-            .extracting(Account::getId)
+            .extracting(RelationAccount::getId)
             .containsExactly(1L, 2L, 3L, 4L, 5L);
 
-        RelationManager.queryRelations(accountMapper, accounts);
+        RelationManager.queryRelations(relationAccountMapper, accounts);
         assertRelationResult(accounts, "relation/result/account-relation-result.json");
     }
 
-//    @Test
+    //    @Test
     public void testAsDto() {
-        List<com.mybatisflex.test.relation.onetoone.AccountDTO> accounts = accountMapper.selectListWithRelationsByQueryAs(QueryWrapper.create(), AccountDTO.class);
+        List<com.mybatisflex.test.relation.onetoone.AccountDTO> accounts = relationAccountMapper.selectListWithRelationsByQueryAs(QueryWrapper.create(), AccountDTO.class);
         assertRelationResult(accounts, "relation/result/accountDto-relation-result.json");
     }
 
@@ -150,7 +150,7 @@ public class RelationsTest implements WithAssertions {
 
     @Test
     public void testPaginate() {
-        Page<Account> accountPage = accountMapper.paginateWithRelations(1, 2, QueryWrapper.create());
+        Page<RelationAccount> accountPage = relationAccountMapper.paginateWithRelations(1, 2, QueryWrapper.create());
         assertRelationResult(accountPage.getRecords(), "relation/result/account-page-relation-result.json");
     }
 

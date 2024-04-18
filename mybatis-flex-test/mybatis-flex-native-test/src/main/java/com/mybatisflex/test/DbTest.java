@@ -98,15 +98,15 @@ public class DbTest {
             account.setAge(1);
             List<Account> accounts = new ArrayList<>();
             accounts.add(account);
-            Account account2 = UpdateEntity.of(Account.class, 2);
-            account2.setAge(2);
-            UpdateWrapper updateWrapper = UpdateWrapper.of(account2);
+            Account account82 = UpdateEntity.of(Account.class, 2);
+            account82.setAge(2);
+            UpdateWrapper updateWrapper = UpdateWrapper.of(account82);
             updateWrapper.setRaw("age", "age+1");
-            accounts.add(account2);
-            Account account3 = new Account();
-            account3.setId(3L);
-            account3.setAge(4);
-            accounts.add(account3);
+            accounts.add(account82);
+            Account account83 = new Account();
+            account83.setId(3L);
+            account83.setAge(4);
+            accounts.add(account83);
             Db.updateEntitiesBatch(accounts);
         } catch (Exception e) {
             assert false;

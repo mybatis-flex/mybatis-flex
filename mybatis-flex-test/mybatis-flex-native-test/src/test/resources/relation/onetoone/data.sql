@@ -1,4 +1,4 @@
-INSERT INTO tb_account
+INSERT INTO tb_relation_account
 VALUES (1, '孙悟空', 18),
        (2, '猪八戒', 19),
        (3, '沙和尚', 19),

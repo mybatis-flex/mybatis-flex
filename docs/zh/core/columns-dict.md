@@ -39,10 +39,10 @@ public class Account {
     private Long id;
 
     private int sex;
-    
+
     @Column(ignore = true) //非数据库字段，需配置忽略该属性
     private String sexString;
-    
+
     //getter setter
 }
 ```

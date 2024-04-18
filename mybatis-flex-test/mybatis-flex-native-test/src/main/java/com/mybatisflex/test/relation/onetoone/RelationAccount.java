@@ -24,8 +24,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-@Table(value = "tb_account")
-public class Account implements Serializable {
+@Table(value = "tb_relation_account")
+public class RelationAccount implements Serializable {
 
     @Id
     private Long id;

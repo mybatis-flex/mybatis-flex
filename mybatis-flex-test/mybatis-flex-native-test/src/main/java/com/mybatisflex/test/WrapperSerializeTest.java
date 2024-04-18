@@ -24,6 +24,7 @@ import org.nustaq.serialization.FSTConfiguration;
 
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 
+
 public class WrapperSerializeTest {
 
     public static void main(String[] args) throws Exception {

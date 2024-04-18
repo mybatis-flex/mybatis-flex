@@ -99,7 +99,7 @@ System.out.println(accounts);
 ```java
 try {
     MaskManager.skipMask();
-    
+
     //此处查询到的数据不会进行脱敏处理
     accountMapper.selectListByQuery(...);
 } finally {

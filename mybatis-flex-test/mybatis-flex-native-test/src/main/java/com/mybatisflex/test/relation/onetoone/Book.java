@@ -33,7 +33,7 @@ public class Book implements Serializable {
     private String content;
 
     @RelationManyToOne(selfField = "accountId", targetField = "id")
-    private Account account;
+    private RelationAccount account;
 
     public Long getId() {
         return id;
@@ -67,11 +67,11 @@ public class Book implements Serializable {
         this.content = content;
     }
 
-    public Account getAccount() {
+    public RelationAccount getAccount() {
         return account;
     }
 
-    public void setAccount(Account account) {
+    public void setAccount(RelationAccount account) {
         this.account = account;
     }
 

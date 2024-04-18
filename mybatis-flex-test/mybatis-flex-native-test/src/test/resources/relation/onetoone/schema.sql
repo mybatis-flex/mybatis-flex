@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `tb_account`
+CREATE TABLE IF NOT EXISTS `tb_relation_account`
 (
     `id`        INTEGER,
     `user_name` VARCHAR(100),

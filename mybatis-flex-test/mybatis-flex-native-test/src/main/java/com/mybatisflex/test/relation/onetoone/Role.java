@@ -36,7 +36,7 @@ public class Role implements Serializable {
         selfField = "id", joinSelfColumn = "role_id",
         targetField = "id", joinTargetColumn = "account_id"
     )
-    private List<Account> accounts;
+    private List<RelationAccount> accounts;
 
     public Long getId() {
         return id;
@@ -54,11 +54,11 @@ public class Role implements Serializable {
         this.name = name;
     }
 
-    public List<Account> getAccounts() {
+    public List<RelationAccount> getAccounts() {
         return accounts;
     }
 
-    public void setAccounts(List<Account> accounts) {
+    public void setAccounts(List<RelationAccount> accounts) {
         this.accounts = accounts;
     }
 

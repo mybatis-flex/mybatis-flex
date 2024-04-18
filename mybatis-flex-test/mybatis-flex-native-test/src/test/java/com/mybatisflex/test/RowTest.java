@@ -37,7 +37,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import java.util.List;
 
-import static com.mybatisflex.test.relation.onetoone.table.AccountTableDef.ACCOUNT;
+import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
+
 
 public class RowTest implements WithAssertions {
 
