@@ -18,15 +18,10 @@ package com.mybatisflex.core.util;
 
 import org.apache.ibatis.javassist.util.proxy.ProxyObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -166,16 +161,11 @@ public class ClassUtil {
             }
             // 没有任何构造函数的情况下，去查找 static 工厂方法，满足 lombok 注解的需求
             else {
-                // #issues-259 通过ModifyAttrsRecordProxyFactory.get方法调用时，会给实体类创建一个代理类，
-                // clazz就是这个代理类，下面判断clazz == m.getReturnType()时就为false，所以在这里加了个判断如果是代理类，就获取其父类
-                Optional<Type> isProxy = Arrays.stream(clazz.getGenericInterfaces())
-                    .filter(ProxyObject.class::isInstance)
-                    .findAny();
-                final Class<T> entityClass = isProxy.isPresent() ? (Class<T>) clazz.getGenericSuperclass() : clazz;
                 Method factoryMethod = ClassUtil.getFirstMethod(clazz, m -> m.getParameterCount() == 0
-                    && entityClass == m.getReturnType()
+                    && m.getReturnType().isAssignableFrom(clazz)
                     && Modifier.isPublic(m.getModifiers())
                     && Modifier.isStatic(m.getModifiers()));
+
                 if (factoryMethod != null) {
                     return (T) factoryMethod.invoke(null);
                 }
@@ -198,10 +188,8 @@ public class ClassUtil {
             }
             throw new IllegalArgumentException("Can not find constructor by paras: \"" + Arrays.toString(paras) + "\" in class[" + clazz.getName() + "]");
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.toString(), e);
         }
-
-        return null;
     }
 
 
