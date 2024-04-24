@@ -19,13 +19,9 @@ import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.OperateType;
 import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.util.MapUtil;
 import com.mybatisflex.core.util.StringUtil;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 /**
  * 查询表。
@@ -34,12 +30,6 @@ import java.util.function.Function;
  * @author 王帅
  */
 public class QueryTable implements CloneSupport<QueryTable> {
-    private static final Map<String, QueryTable> CACHE = new ConcurrentHashMap<>();
-
-    @SuppressWarnings("unchecked")
-    protected static <V extends QueryTable> V getCache(String key, Function<String, V> mappingFunction) {
-        return MapUtil.computeIfAbsent((Map<String, V>) CACHE, key, mappingFunction);
-    }
 
 
     protected String schema;
@@ -95,10 +85,8 @@ public class QueryTable implements CloneSupport<QueryTable> {
     }
 
     public QueryTable as(String alias) {
-//        this.alias = alias;
-//        return this;
-        String key = getNameWithSchema() + "." + alias;
-        return getCache(key, k -> new QueryTable(this.schema, this.name, alias));
+        this.alias = alias;
+        return this;
     }
 
     boolean isSameTable(QueryTable table) {

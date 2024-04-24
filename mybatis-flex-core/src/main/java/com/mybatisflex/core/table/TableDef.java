@@ -17,6 +17,11 @@
 package com.mybatisflex.core.table;
 
 import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.util.MapUtil;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 /**
  * 表定义，内包含字段。
@@ -24,7 +29,14 @@ import com.mybatisflex.core.query.QueryTable;
  * @author 王帅
  * @since 2024-03-11
  */
-public abstract class TableDef extends QueryTable {
+public class TableDef extends QueryTable {
+
+    private static final Map<String, TableDef> CACHE = new ConcurrentHashMap<>();
+
+    @SuppressWarnings("unchecked")
+    protected static <V extends TableDef> V getCache(String key, Function<String, V> mappingFunction) {
+        return MapUtil.computeIfAbsent((Map<String, V>) CACHE, key, mappingFunction);
+    }
 
     protected TableDef(String schema, String tableName) {
         super(schema, tableName);
@@ -41,6 +53,11 @@ public abstract class TableDef extends QueryTable {
      */
     public String getTableName() {
         return name;
+    }
+
+    public TableDef as(String alias) {
+        String key = getNameWithSchema() + "." + alias;
+        return getCache(key, k -> new TableDef(this.schema, this.name, alias));
     }
 
 }
