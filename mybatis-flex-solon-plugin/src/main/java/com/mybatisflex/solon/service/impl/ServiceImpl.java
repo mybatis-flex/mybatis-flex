@@ -31,8 +31,8 @@ public class ServiceImpl<M extends BaseMapper<T>, T> implements IService<T> {
     protected M mapper;
 
     @Override
-    public BaseMapper<T> getMapper() {
-        return mapper;
+    public M getMapper() {
+        return this.mapper;
     }
 
 }
