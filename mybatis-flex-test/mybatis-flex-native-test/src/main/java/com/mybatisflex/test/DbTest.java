@@ -17,6 +17,8 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.MybatisFlexBootstrap;
+import com.mybatisflex.core.audit.AuditManager;
+import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
@@ -24,7 +26,6 @@ import com.mybatisflex.core.row.RowUtil;
 import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
 import org.apache.ibatis.exceptions.PersistenceException;
-import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -54,9 +55,12 @@ public class DbTest {
             .build();
 
         MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
-            .setLogImpl(StdOutImpl.class)
+            // .setLogImpl(StdOutImpl.class)
             .setDataSource(dataSource)
             .start();
+
+        AuditManager.setAuditEnable(true);
+        AuditManager.setMessageCollector(new ConsoleMessageCollector());
 
         /*
          * 指定当结果集中值为 null 的时候是否调用映射对象的 setter（map 对象时为 put）方法，
