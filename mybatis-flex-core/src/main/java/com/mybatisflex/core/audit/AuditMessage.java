@@ -185,7 +185,12 @@ public class AuditMessage implements Serializable {
         for (Object object : objects) {
             if (object != null && ClassUtil.isArray(object.getClass())) {
                 for (int i = 0; i < Array.getLength(object); i++) {
-                    doAddParam(statement, Array.get(object, i));
+                    Object value = Array.get(object, i);
+                    if (value instanceof Map) {
+                        ((Map<?, ?>) value).values().forEach(e -> doAddParam(statement, e));
+                    } else {
+                        doAddParam(statement, value);
+                    }
                 }
             } else {
                 doAddParam(statement, object);
@@ -204,7 +209,7 @@ public class AuditMessage implements Serializable {
                 queryParams.add(object);
             }
         } catch (SQLException e) {
-            //ignore
+            // ignore
         }
     }
 
