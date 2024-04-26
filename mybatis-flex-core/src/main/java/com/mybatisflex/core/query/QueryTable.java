@@ -31,6 +31,7 @@ import java.util.Objects;
  */
 public class QueryTable implements CloneSupport<QueryTable> {
 
+
     protected String schema;
     protected String name;
     protected String alias;

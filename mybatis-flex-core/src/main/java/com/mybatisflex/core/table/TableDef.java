@@ -29,7 +29,14 @@ import java.util.function.Function;
  * @author 王帅
  * @since 2024-03-11
  */
-public abstract class TableDef extends QueryTable {
+public class TableDef extends QueryTable {
+
+    private static final Map<String, TableDef> CACHE = new ConcurrentHashMap<>();
+
+    @SuppressWarnings("unchecked")
+    protected static <V extends TableDef> V getCache(String key, Function<String, V> mappingFunction) {
+        return MapUtil.computeIfAbsent((Map<String, V>) CACHE, key, mappingFunction);
+    }
 
     protected TableDef(String schema, String tableName) {
         super(schema, tableName);
@@ -48,11 +55,9 @@ public abstract class TableDef extends QueryTable {
         return name;
     }
 
-    private static final Map<String, TableDef> CACHE = new ConcurrentHashMap<>();
-
-    @SuppressWarnings("unchecked")
-    protected static <V extends TableDef> V getCache(String key, Function<String, V> mappingFunction) {
-        return MapUtil.computeIfAbsent((Map<String, V>) CACHE, key, mappingFunction);
+    public TableDef as(String alias) {
+        String key = getNameWithSchema() + "." + alias;
+        return getCache(key, k -> new TableDef(this.schema, this.name, alias));
     }
 
 }

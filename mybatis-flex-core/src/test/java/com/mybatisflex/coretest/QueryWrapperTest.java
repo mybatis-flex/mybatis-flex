@@ -23,9 +23,8 @@ import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.mybatisflex.core.query.QueryMethods.*;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
-import static org.junit.Assert.assertEquals;
+import static com.mybatisflex.core.query.QueryMethods.*;
 
 /**
  * Lambda 构建 SQL 测试。

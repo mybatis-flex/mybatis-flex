@@ -64,4 +64,8 @@ public class SelectQueryTable extends QueryTable {
         return clone;
     }
 
+    @Override
+    public String toString() {
+        return queryWrapper.toSQL();
+    }
 }
