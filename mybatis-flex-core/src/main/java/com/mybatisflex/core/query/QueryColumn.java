@@ -579,6 +579,24 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
     }
 
     @Override
+    public QueryCondition between(Object[] values) {
+        if (QueryColumnBehavior.shouldIgnoreValue(values) || values.length < 2) {
+            return QueryCondition.createEmpty();
+        }
+
+       return between(values[0], values[1]);
+    }
+
+    @Override
+    public QueryCondition between(Object[] values, boolean isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(values) || values.length < 2) {
+            return QueryCondition.createEmpty();
+        }
+
+        return between(values[0], values[1], isEffective);
+    }
+
+    @Override
     public QueryCondition between(Object start, Object end) {
         if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
             return QueryCondition.createEmpty();
@@ -608,6 +626,24 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
             return QueryCondition.createEmpty();
         }
         return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.BETWEEN, new Object[]{start, end}).when(isEffective.test(start, end)));
+    }
+
+    @Override
+    public QueryCondition notBetween(Object[] values) {
+        if (QueryColumnBehavior.shouldIgnoreValue(values) || values.length < 2) {
+            return QueryCondition.createEmpty();
+        }
+
+        return notBetween(values[0], values[1]);
+    }
+
+    @Override
+    public QueryCondition notBetween(Object[] values, boolean isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(values) || values.length < 2) {
+            return QueryCondition.createEmpty();
+        }
+
+        return notBetween(values[0], values[1], isEffective);
     }
 
     @Override
