@@ -26,6 +26,7 @@ import com.mybatisflex.core.util.ObjectUtil;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
@@ -73,8 +74,16 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         return create(queryColumn, SqlConsts.EQUALS, value);
     }
 
+    public static QueryCondition create(QueryColumn queryColumn, SqlOperator logic, Collection<?> values) {
+        return create(queryColumn, logic, values == null ? null : values.toArray());
+    }
+
     public static QueryCondition create(QueryColumn queryColumn, SqlOperator logic, Object value) {
         return create(queryColumn, logic.getValue(), value);
+    }
+
+    public static QueryCondition create(QueryColumn queryColumn, String logic, Collection<?> values) {
+        return create(queryColumn, logic, values == null ? null : values.toArray());
     }
 
     public static QueryCondition create(QueryColumn queryColumn, String logic, Object value) {
