@@ -913,6 +913,9 @@ public class TableInfo {
         List<Join> joins = CPI.getJoins(queryWrapper);
         if (CollectionUtil.isNotEmpty(joins)) {
             for (Join join : joins) {
+                if (!join.checkEffective()) {
+                    continue;
+                }
                 QueryTable joinQueryTable = CPI.getJoinQueryTable(join);
 
                 // join select
