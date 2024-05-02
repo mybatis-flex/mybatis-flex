@@ -53,7 +53,7 @@ import java.util.List;
 #if(withSwagger && swaggerVersion.getName() == "DOC")
 @Tag(name = "#(tableComment)接口")
 #end
-@RequestMapping("/#(firstCharToLowerCase(entityClassName))")
+@RequestMapping("#(table.buildControllerRequestMappingPrefix())/#(firstCharToLowerCase(entityClassName))")
 public class #(table.buildControllerClassName()) #if(controllerConfig.superClass)extends #(controllerConfig.buildSuperClassName()) #end {
 
     @Autowired
