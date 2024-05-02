@@ -32,6 +32,10 @@ public class ControllerConfig implements Serializable {
      */
     private String sourceDir;
     /**
+     *  RequestMapping注解，访问路径的前缀。
+     */
+    private String requestMappingPrefix;
+    /**
      * Controller 类的前缀。
      */
     private String classPrefix = "";
@@ -70,6 +74,21 @@ public class ControllerConfig implements Serializable {
 
     public void setSourceDir(String sourceDir) {
         this.sourceDir = sourceDir;
+    }
+
+    /**
+     * 获取访问路径的前缀
+     */
+    public String getRequestMappingPrefix() {
+        return requestMappingPrefix;
+    }
+
+    /**
+     * 设置访问路径的前缀
+     */
+    public ControllerConfig setRequestMappingPrefix(String requestMappingPrefix) {
+        this.requestMappingPrefix = requestMappingPrefix;
+        return this;
     }
 
     /**

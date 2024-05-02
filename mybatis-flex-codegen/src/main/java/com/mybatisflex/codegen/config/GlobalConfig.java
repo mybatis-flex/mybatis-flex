@@ -1232,6 +1232,20 @@ public class GlobalConfig implements Serializable {
     }
 
     /**
+     * @see ControllerConfig#getRequestMappingPrefix()
+     */
+    public String getControllerRequestMappingPrefix() {
+        return getControllerConfig().getRequestMappingPrefix();
+    }
+
+    /**
+     * @see ControllerConfig#setRequestMappingPrefix(String)
+     */
+    public void setControllerRequestMappingPrefix(String controllerRequestMappingPrefix) {
+        getControllerConfig().setRequestMappingPrefix(controllerRequestMappingPrefix);
+    }
+
+    /**
      * @see ControllerConfig#getClassPrefix()
      */
     public String getControllerClassPrefix() {
