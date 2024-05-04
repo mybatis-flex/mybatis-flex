@@ -382,6 +382,7 @@ globalConfig.getServiceImplConfig()
 | 配置                          | 描述                  | 默认值          |
 |-----------------------------|---------------------|--------------|
 | setClassPrefix(String)      | Controller 类的前缀     | ""           |
+| setControllerRequestMappingPrefix(String)| @RequestMapping注解的前缀 | null |
 | setClassSuffix(String)      | Controller 类的后缀     | "Controller" |
 | setSuperClass(Class)        | Controller 类的父类     | null         |
 | setOverwriteEnable(boolean) | 是否覆盖之前生成的文件         | false        |
