@@ -459,8 +459,9 @@ public class Table {
     /**
      * 构建访问路径的前缀
      */
-    public String buildControllerRequestMappingPrefix(){
-        return globalConfig.getControllerConfig().getRequestMappingPrefix();
+    public String buildControllerRequestMappingPrefix() {
+        String mappingPrefix = globalConfig.getControllerConfig().getRequestMappingPrefix();
+        return mappingPrefix == null ? "" : mappingPrefix.trim();
     }
 
     /**
