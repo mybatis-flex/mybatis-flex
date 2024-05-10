@@ -2,6 +2,17 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.8.9 20240510
+- 新增：QueryColumn 的 between 增加数组参数，感谢 @CrazyAirhead
+- 新增：代码生成器生成的Controller配置@RequestMapping前缀路径，感谢 @yfxuwork
+- 优化：调整 ServiceImpl#getMapper 返回 Mapper 类型特化，感谢 @Clownsw
+- 修复：ClassUtil.newInstance 无法生成实例问题修复，感谢 @SnobbyVirus1973
+- 修复：QueryWrapper.as() 可能在某些自定义生成 TableDef 下出错的问题
+- 修复：修复 Map 传参审计打印 SQL 不正确的问题，感谢 @Suomm
+- 修复：QueryCondition.create value传入List，执行select报错的问题 #I9JRAT
+- 修复：未生效的 JOIN 跳过拼接逻辑删除的问题，感谢 @Suomm
+
+
 
 ## v1.8.8 20240418
 - 新增：新增支持全局注册多个监听器的功能，感谢 @Suomm

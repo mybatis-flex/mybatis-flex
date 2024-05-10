@@ -5,7 +5,7 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.8.8</version>
+        <version>1.8.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -101,7 +101,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-annotation</artifactId>
-            <version>1.8.8</version>
+            <version>1.8.9</version>
             <scope>compile</scope>
         </dependency>
 
