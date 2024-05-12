@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import com.mybatisflex.core.table.TableInfoFactory;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,17 +36,18 @@ public class LambdaUtil {
 
     public static <T> String getFieldName(LambdaGetter<T> getter) {
         SerializedLambda lambda = getSerializedLambda(getter);
-        String methodName = lambda.getImplMethodName();
-
-        if (methodName.contains("$lambda$") && lambda.getCapturedArgCount() == 1) {
-            Object arg = lambda.getCapturedArg(0);
-            if (arg.getClass().getSuperclass().getName().equals("kotlin.jvm.internal.MutablePropertyReference1Impl")) {
-                try {
-                    return (String) arg.getClass().getMethod("getName").invoke(arg);
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
-                }
+        // 兼容 Kotlin KProperty 的 Lambda 解析
+        if (lambda.getCapturedArgCount() == 1) {
+            Object capturedArg = lambda.getCapturedArg(0);
+            try {
+                return (String) capturedArg.getClass()
+                    .getMethod("getName")
+                    .invoke(capturedArg);
+            } catch (Exception e) {
+                // 忽略这个异常，使用其他方式获取方法名
             }
         }
+        String methodName = lambda.getImplMethodName();
         return StringUtil.methodToProperty(methodName);
     }
 
