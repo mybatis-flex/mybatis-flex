@@ -22,6 +22,7 @@ import com.mybatisflex.core.table.TableInfoFactory;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +38,16 @@ public class LambdaUtil {
     public static <T> String getFieldName(LambdaGetter<T> getter) {
         SerializedLambda lambda = getSerializedLambda(getter);
         String methodName = lambda.getImplMethodName();
+
+        if (methodName.contains("$lambda$") && lambda.getCapturedArgCount() == 1) {
+            Object arg = lambda.getCapturedArg(0);
+            if (arg.getClass().getSuperclass().getName().equals("kotlin.jvm.internal.MutablePropertyReference1Impl")) {
+                try {
+                    return (String) arg.getClass().getMethod("getName").invoke(arg);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+                }
+            }
+        }
         return StringUtil.methodToProperty(methodName);
     }
 
@@ -60,10 +71,10 @@ public class LambdaUtil {
     public static <T> QueryColumn getQueryColumn(LambdaGetter<T> getter) {
         ClassLoader classLoader = getter.getClass().getClassLoader();
         SerializedLambda lambda = getSerializedLambda(getter);
-        String methodName = lambda.getImplMethodName();
         Class<?> entityClass = getImplClass(lambda, classLoader);
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
-        return tableInfo.getQueryColumnByProperty(StringUtil.methodToProperty(methodName));
+        String propertyName = getFieldName(getter);
+        return tableInfo.getQueryColumnByProperty(propertyName);
     }
 
 
