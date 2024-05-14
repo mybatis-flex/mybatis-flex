@@ -32,8 +32,7 @@
   >- `all<实体类>()` 查泛型对应的表的所有数据
   >- `filter<实体类>(vararg KProperty<*>, ()->QueryCondition)` 按条件查泛型对应的表的数据
   >- `query<实体类>(QueryScope.()->Unit)` 较复杂查泛型对应的表的数据 (如: 分组,排序等)
-  >- `paginateWith(pageNumber: Number, pageSize: Number, totalRow: Number? = null, queryConditionGet: () -> QueryCondition): Page<实体类>`
-     与 `paginate(pageNumber: Number, pageSize: Number, totalRow: Number? = null, init: QueryScope.() -> Unit): Page<实体类>` 使用分页的条件查询与较复杂查询
+
 - 简明地构建查询：通过中缀表达式➕扩展方法能更加简单明了的构建条件:
 
     * **【对比原生】**
@@ -51,7 +50,10 @@
             // 无需注册Mapper与APT/KSP即可查询操作
             val accountList: List<Account> = query {
                 select(Account::id, Account::userName)
-                where(Account::age.isNotNull) and { Account::age ge 17 } orderBy -Account::id
+                whereWith {
+                    Account::age.isNotNull and (Account::age ge 17)
+                }
+                orderBy(-Account::id)
             }
           ```
       执行的SQL:
@@ -102,3 +104,10 @@
 点击链接进入详情：
 - https://github.com/KAMO030/MyBatis-Flex-Kotlin#快速开始
 - https://gitee.com/mybatis-flex/mybatis-flex-kotlin#快速开始
+
+## 更多使用
+
+- 功能 1：[Bootstrap简化配置](https://gitee.com/mybatis-flex/mybatis-flex-kotlin/blob/main/docs/bootstrapExt.md)
+- 功能 2：[简单查询与扩展](https://gitee.com/mybatis-flex/mybatis-flex-kotlin/blob/main/docs/extensions.md)
+- 功能 3：[向量查询](https://gitee.com/mybatis-flex/mybatis-flex-kotlin/blob/main/docs/vec.md) (实验性)
+- 功能 4：[KSP](https://gitee.com/mybatis-flex/mybatis-flex-kotlin/blob/main/docs/ksp.md)
