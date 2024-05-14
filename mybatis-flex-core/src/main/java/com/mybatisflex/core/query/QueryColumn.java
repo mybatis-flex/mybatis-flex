@@ -584,7 +584,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
             return QueryCondition.createEmpty();
         }
 
-       return between(values[0], values[1]);
+       return between(values[0], values[values.length - 1]);
     }
 
     @Override
@@ -593,7 +593,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
             return QueryCondition.createEmpty();
         }
 
-        return between(values[0], values[1], isEffective);
+        return between(values[0], values[values.length - 1], isEffective);
     }
 
     @Override
@@ -634,7 +634,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
             return QueryCondition.createEmpty();
         }
 
-        return notBetween(values[0], values[1]);
+        return notBetween(values[0], values[values.length - 1]);
     }
 
     @Override
@@ -643,7 +643,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
             return QueryCondition.createEmpty();
         }
 
-        return notBetween(values[0], values[1], isEffective);
+        return notBetween(values[0], values[values.length - 1], isEffective);
     }
 
     @Override
