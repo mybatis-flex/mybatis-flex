@@ -7,8 +7,9 @@
 
 除此之外，我们还可以通过扩展生成更多的产物，文档参考 [#添加其他产物的生成](#添加其他产物的生成)。
 
-> 另外：MyBatis-Flex 也提供了一个 **AI 代码生成器**，可以通过您的需求描述，自动帮你生成
-> SpringBoot + MyBatisFlex 的项目代码以及SQL脚本，导入到开发工具即可使用。
+### AI 代码生成功能
+> 另外：MyBatis-Flex 也提供了一个在线的 AI 代码生成器，可以通过您的产品（或项目）需求描述，自动帮你生成完整的
+> SpringBoot + MyBatisFlex 项目代码以及 SQL 脚本，下载导入到开发工具即可使用。
 >
 > 内测地址：https://ai.mybatis-flex.com
 
