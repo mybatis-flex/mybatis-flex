@@ -70,7 +70,7 @@ public class JdbcTypeMapping {
         registerMapping("java.time.LocalDate", "java.util.Date");
     }
 
-    static String getType(String jdbcType, Table table, Column column) {
+    public static String getType(String jdbcType, Table table, Column column) {
         if (typeMapper != null) {
             String type = typeMapper.getType(jdbcType, table, column);
             if (StringUtil.isNotBlank(type)) {
