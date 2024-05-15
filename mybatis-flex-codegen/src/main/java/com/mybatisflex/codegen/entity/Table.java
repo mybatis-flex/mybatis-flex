@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -105,13 +105,12 @@ public class Table {
         this.comment = comment;
     }
 
-    public String getPrimaryKey() {
+    public Column getPrimaryKey() {
         // 这里默认表中一定会有字段，就不做空判断了
         return columns.stream()
             .filter(Column::isPrimaryKey)
             .findFirst()
-            .map(Column::getProperty)
-            .orElse(null);
+            .orElseThrow(() -> new NullPointerException("PrimaryKey can't be null"));
     }
 
     public Set<String> getPrimaryKeys() {

@@ -1,5 +1,5 @@
 #set(isCacheExample = serviceImplConfig.cacheExample)
-#set(primaryKey = table.getPrimaryKey())
+#set(primaryKey = table.getPrimaryKey().getProperty())
 #set(entityClassName = table.buildEntityClassName())
 package #(packageConfig.serviceImplPackage);
 

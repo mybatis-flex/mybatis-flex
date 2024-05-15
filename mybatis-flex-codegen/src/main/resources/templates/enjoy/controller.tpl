@@ -1,4 +1,5 @@
 #set(tableComment = table.getComment())
+#set(primaryKeyType = table.getPrimaryKey().getPropertySimpleType())
 #set(entityClassName = table.buildEntityClassName())
 #set(entityVarName = firstCharToLowerCase(entityClassName))
 #set(serviceVarName = firstCharToLowerCase(table.buildServiceClassName()))
@@ -33,7 +34,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 #end
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -89,7 +89,7 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
     #if(withSwagger && swaggerVersion.getName() == "DOC")
     @Operation(description="根据主键#(tableComment)")
     #end
-    public boolean remove(@PathVariable #if(withSwagger && swaggerVersion.getName() == "FOX")@ApiParam("#(tableComment)主键") #end #if(withSwagger && swaggerVersion.getName() == "DOC")@Parameter(description="#(tableComment)主键")#end Serializable id) {
+    public boolean remove(@PathVariable #if(withSwagger && swaggerVersion.getName() == "FOX")@ApiParam("#(tableComment)主键") #end #if(withSwagger && swaggerVersion.getName() == "DOC")@Parameter(description="#(tableComment)主键")#end #(primaryKeyType) id) {
         return #(serviceVarName).removeById(id);
     }
 
@@ -139,7 +139,7 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
     #if(withSwagger && swaggerVersion.getName() == "DOC")
     @Operation(description="根据主键获取#(tableComment)")
     #end
-    public #(entityClassName) getInfo(@PathVariable #if(withSwagger && swaggerVersion.getName() == "FOX")@ApiParam("#(tableComment)主键") #if(withSwagger && swaggerVersion.getName() == "DOC")@Parameter(description="#(tableComment)主键")#end#end Serializable id) {
+    public #(entityClassName) getInfo(@PathVariable #if(withSwagger && swaggerVersion.getName() == "FOX")@ApiParam("#(tableComment)主键") #if(withSwagger && swaggerVersion.getName() == "DOC")@Parameter(description="#(tableComment)主键")#end#end #(primaryKeyType) id) {
         return #(serviceVarName).getById(id);
     }
 
