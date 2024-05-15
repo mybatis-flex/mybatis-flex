@@ -365,6 +365,16 @@ public class TableInfo {
 
     public String getColumnByProperty(String property) {
         String column = propertyColumnMapping.get(property);
+        // 用于兼容字段MM不规范的情况
+        // fix https://gitee.com/mybatis-flex/mybatis-flex/issues/I9PDYO
+        if (column == null) {
+            for (Map.Entry<String, String> entry : propertyColumnMapping.entrySet()) {
+                if (property.equalsIgnoreCase(entry.getKey())) {
+                    column = entry.getValue();
+                    break;
+                }
+            }
+        }
         return StringUtil.isNotBlank(column) ? column : property;
     }
 
