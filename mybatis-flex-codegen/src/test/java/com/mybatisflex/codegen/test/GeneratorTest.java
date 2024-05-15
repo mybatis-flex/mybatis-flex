@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.mybatisflex.codegen.config.TableConfig;
 import com.mybatisflex.codegen.config.TableDefConfig;
 import com.mybatisflex.codegen.constant.TemplateConst;
 import com.mybatisflex.core.mask.Masks;
+import com.mybatisflex.spring.service.impl.CacheableServiceImpl;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Test;
 
@@ -87,13 +88,13 @@ public class GeneratorTest {
         generator.generate();
     }
 
-    //    @Test
+    // @Test
     public void testCodeGen2() {
         // 配置数据源
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
         dataSource.setUsername("root");
-        dataSource.setPassword("123456");
+        dataSource.setPassword("12345678");
 
         GlobalConfig globalConfig = new GlobalConfig();
 
@@ -133,7 +134,7 @@ public class GeneratorTest {
         globalConfig.enableService();
         // 配置生成 serviceImpl
         globalConfig.enableServiceImpl()
-//            .setSuperClass(CacheableServiceImpl.class)
+            .setSuperClass(CacheableServiceImpl.class)
             .setCacheExample(true);
         // 配置生成 controller
         globalConfig.enableController();
