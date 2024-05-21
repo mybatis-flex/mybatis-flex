@@ -295,13 +295,29 @@ public class QueryCondition implements CloneSupport<QueryCondition> {
         if (column == null || !checkEffective()) {
             return nextContainsTable(tables);
         }
+        if (column instanceof FunctionQueryColumn) {
+            /*
+             * 连表分页查询的where中使用QueryMethods导致count查询优化错误
+             * fix https://github.com/mybatis-flex/mybatis-flex/issues/307
+             */
+            List<QueryColumn> columns = ((FunctionQueryColumn)column).getColumns();
+            for (QueryColumn queryColumn : columns) {
+                if (containsTable(queryColumn, tables)) {
+                    return true;
+                }
+            }
+        }
+        return containsTable(column, tables) || nextContainsTable(tables);
+    }
+
+    boolean containsTable(QueryColumn column, String... tables) {
         for (String table : tables) {
             String tableName = StringUtil.getTableNameWithAlias(table)[0];
             if (column.table != null && tableName.equals(column.table.name)) {
                 return true;
             }
         }
-        return nextContainsTable(tables);
+        return false;
     }
 
     boolean nextContainsTable(String... tables) {
