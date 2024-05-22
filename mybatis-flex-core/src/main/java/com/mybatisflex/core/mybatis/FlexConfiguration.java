@@ -22,12 +22,15 @@ import com.mybatisflex.core.keygen.MultiEntityKeyGenerator;
 import com.mybatisflex.core.keygen.MultiRowKeyGenerator;
 import com.mybatisflex.core.keygen.MybatisKeyGeneratorUtil;
 import com.mybatisflex.core.keygen.RowKeyGenerator;
+import com.mybatisflex.core.mybatis.binding.FlexMapperRegistry;
 import com.mybatisflex.core.mybatis.executor.FlexBatchExecutor;
 import com.mybatisflex.core.mybatis.executor.FlexReuseExecutor;
 import com.mybatisflex.core.mybatis.executor.FlexSimpleExecutor;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
+import com.mybatisflex.core.util.MapUtil;
 import com.mybatisflex.core.util.StringUtil;
+import org.apache.ibatis.binding.MapperRegistry;
 import org.apache.ibatis.executor.CachingExecutor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
@@ -42,10 +45,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.Transaction;
-import com.mybatisflex.core.util.MapUtil;
 
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
@@ -59,6 +60,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FlexConfiguration extends Configuration {
 
     private static final Map<String, MappedStatement> dynamicMappedStatementCache = new ConcurrentHashMap<>();
+    private final MapperRegistry mapperRegistry = new FlexMapperRegistry(this);
 
     public FlexConfiguration() {
         setObjectWrapperFactory(new FlexWrapperFactory());
@@ -345,17 +347,35 @@ public class FlexConfiguration extends Configuration {
 
         //不支持泛型类添加
         if (!isGenericInterface) {
-            super.addMapper(type);
+            mapperRegistry.addMapper(type);
         }
     }
 
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
-        T mapper = super.getMapper(type, sqlSession);
-        return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}
-            , new MapperInvocationHandler(mapper, environment.getDataSource()));
+//    @SuppressWarnings("unchecked")
+//    @Override
+//    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
+//        T mapper = super.getMapper(type, sqlSession);
+//        return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}
+//            , new MapperInvocationHandler(mapper, environment.getDataSource()));
+//    }
+
+
+    public void addMappers(String packageName, Class<?> superType) {
+        mapperRegistry.addMappers(packageName, superType);
     }
+
+    public void addMappers(String packageName) {
+        mapperRegistry.addMappers(packageName);
+    }
+
+    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
+        return mapperRegistry.getMapper(type, sqlSession);
+    }
+
+    public boolean hasMapper(Class<?> type) {
+        return mapperRegistry.hasMapper(type);
+    }
+
 
 }

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.core.mybatis;
+package com.mybatisflex.core.mybatis.binding;
 
 import com.mybatisflex.annotation.UseDataSource;
 import com.mybatisflex.core.FlexGlobalConfig;
@@ -21,38 +21,38 @@ import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DialectFactory;
+import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
+import com.mybatisflex.core.util.MapUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.reflection.ExceptionUtil;
+import org.apache.ibatis.session.SqlSession;
 
-import javax.sql.DataSource;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @author michael
- * @author norkts
- */
-public class MapperInvocationHandler implements InvocationHandler {
+public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
+    private static final String NULL_KEY = "@NK";
+    private static final Map<Method, String> methodDsKeyCache = new ConcurrentHashMap<>();
 
-    private final Object mapper;
     private final FlexDataSource dataSource;
 
-    public MapperInvocationHandler(Object mapper, DataSource dataSource) {
-        this.mapper = mapper;
-        if (dataSource instanceof FlexDataSource) {
-            this.dataSource = (FlexDataSource) dataSource;
-        } else {
-            this.dataSource = null;
-        }
+    public FlexMapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache,
+                           FlexConfiguration configuration) {
+        super(sqlSession, mapperInterface, methodCache);
+        this.dataSource = (FlexDataSource) configuration.getEnvironment().getDataSource();
     }
 
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (Object.class.equals(method.getDeclaringClass())) {
+            return method.invoke(this, args);
+        }
+
         boolean needClearDsKey = false;
         boolean needClearDbType = false;
         try {
@@ -100,7 +100,8 @@ public class MapperInvocationHandler implements InvocationHandler {
                 DialectFactory.setHintDbType(dbType);
                 needClearDbType = true;
             }
-            return method.invoke(mapper, args);
+//            return method.invoke(mapper, args);
+            return cachedInvoker(method).invoke(proxy, method, args, sqlSession);
         } catch (Throwable e) {
             throw ExceptionUtil.unwrapThrowable(e);
         } finally {
@@ -115,30 +116,33 @@ public class MapperInvocationHandler implements InvocationHandler {
 
 
     private static String getConfigDataSourceKey(Method method, Object proxy) {
-        UseDataSource useDataSource = method.getAnnotation(UseDataSource.class);
-        if (useDataSource != null && StringUtil.isNotBlank(useDataSource.value())) {
-            return useDataSource.value();
-        }
-
-        Class<?>[] interfaces = proxy.getClass().getInterfaces();
-        for (Class<?> anInterface : interfaces) {
-            UseDataSource annotation = anInterface.getAnnotation(UseDataSource.class);
-            if (annotation != null) {
-                return annotation.value();
+        String result = MapUtil.computeIfAbsent(methodDsKeyCache, method, method1 -> {
+            UseDataSource useDataSource = method1.getAnnotation(UseDataSource.class);
+            if (useDataSource != null && StringUtil.isNotBlank(useDataSource.value())) {
+                return useDataSource.value();
             }
-        }
 
-        if (interfaces[0] != RowMapper.class) {
-            TableInfo tableInfo = TableInfoFactory.ofMapperClass(interfaces[0]);
-            if (tableInfo != null) {
-                String dataSourceKey = tableInfo.getDataSource();
-                if (StringUtil.isNotBlank(dataSourceKey)) {
-                    return dataSourceKey;
+            Class<?>[] interfaces = proxy.getClass().getInterfaces();
+            for (Class<?> anInterface : interfaces) {
+                UseDataSource annotation = anInterface.getAnnotation(UseDataSource.class);
+                if (annotation != null) {
+                    return annotation.value();
                 }
             }
-        }
-        return null;
-    }
 
+            if (interfaces[0] != RowMapper.class) {
+                TableInfo tableInfo = TableInfoFactory.ofMapperClass(interfaces[0]);
+                if (tableInfo != null) {
+                    String dataSourceKey = tableInfo.getDataSource();
+                    if (StringUtil.isNotBlank(dataSourceKey)) {
+                        return dataSourceKey;
+                    }
+                }
+            }
+            return NULL_KEY;
+        });
+
+        return NULL_KEY.equals(result) ? null : result;
+    }
 
 }
