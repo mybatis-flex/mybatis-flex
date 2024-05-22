@@ -91,11 +91,11 @@ public class StringUtil {
         StringBuilder sb = new StringBuilder(strLen);
         for (int i = 0; i < strLen; i++) {
             char c = string.charAt(i);
-//            if (Character.isUpperCase(c) && i > 0) {
-//                sb.append('_');
-//            }
-            if (Character.isUpperCase(c) && i > 0 && !Character.isUpperCase(string.charAt(i - 1)) && string.charAt(i - 1) != '_') {
-                sb.append('_');
+            if (Character.isUpperCase(c) && i > 0) {
+                char prev = string.charAt(i - 1);
+                if (!Character.isUpperCase(prev) && prev != '_') {
+                    sb.append('_');
+                }
             }
             sb.append(Character.toLowerCase(c));
         }
