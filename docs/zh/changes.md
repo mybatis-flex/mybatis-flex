@@ -2,6 +2,18 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.9.0 20240530
+- 优化：重构 Mapper 的获取，使之减少一层代理从而获得更高性能
+- 优化：优化 LambdaUtil 的性能
+- 优化：优化代码生成器 Controller 代码生成的主键类型，感谢 @Suomm
+- 优化：优化代码生成器的 JdbcTypeMapping
+- 优化：优化 QueryColumn 的 between 对于数组支持的灵活性，感谢 @kamo-sama
+- 优化：当 Entity 中的字段命名不规范时可能无法通过 Lambda 获取属性的问题 #I9P66C
+- 优化：优化 StringUtil.camelToUnderline 用于处理某些字段命名不规范的问题
+- 修复：在 Kotlin 中，LambdaUtil 无法通过 lambda 表达式正确获取到对象的属性值 #I9ONI4 ，感谢 @cnscoo
+
+
+
 ## v1.8.9 20240510
 - 新增：QueryColumn 的 between 增加数组参数，感谢 @CrazyAirhead
 - 新增：代码生成器生成的Controller配置@RequestMapping前缀路径，感谢 @yfxuwork
