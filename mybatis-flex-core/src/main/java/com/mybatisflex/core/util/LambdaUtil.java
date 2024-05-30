@@ -31,30 +31,35 @@ public class LambdaUtil {
     private LambdaUtil() {
     }
 
-    private static final Map<Class<?>, SerializedLambda> lambdaMap = new ConcurrentHashMap<>();
-    private static final Map<String, Class<?>> classMap = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, String> fieldNameMap = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, Class<?>> implClassMap = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, QueryColumn> queryColumnMap = new ConcurrentHashMap<>();
 
     public static <T> String getFieldName(LambdaGetter<T> getter) {
-        SerializedLambda lambda = getSerializedLambda(getter);
-        // 兼容 Kotlin KProperty 的 Lambda 解析
-        if (lambda.getCapturedArgCount() == 1) {
-            Object capturedArg = lambda.getCapturedArg(0);
-            try {
-                return (String) capturedArg.getClass()
-                    .getMethod("getName")
-                    .invoke(capturedArg);
-            } catch (Exception e) {
-                // 忽略这个异常，使用其他方式获取方法名
+        return MapUtil.computeIfAbsent(fieldNameMap, getter.getClass(), aClass -> {
+            SerializedLambda lambda = getSerializedLambda(getter);
+            // 兼容 Kotlin KProperty 的 Lambda 解析
+            if (lambda.getCapturedArgCount() == 1) {
+                Object capturedArg = lambda.getCapturedArg(0);
+                try {
+                    return (String) capturedArg.getClass()
+                        .getMethod("getName")
+                        .invoke(capturedArg);
+                } catch (Exception e) {
+                    // 忽略这个异常，使用其他方式获取方法名
+                }
             }
-        }
-        String methodName = lambda.getImplMethodName();
-        return StringUtil.methodToProperty(methodName);
+            String methodName = lambda.getImplMethodName();
+            return StringUtil.methodToProperty(methodName);
+        });
     }
 
 
     public static <T> Class<?> getImplClass(LambdaGetter<T> getter) {
-        SerializedLambda lambda = getSerializedLambda(getter);
-        return getImplClass(lambda, getter.getClass().getClassLoader());
+        return MapUtil.computeIfAbsent(implClassMap, getter.getClass(), aClass -> {
+            SerializedLambda lambda = getSerializedLambda(getter);
+            return getImplClass(lambda, getter.getClass().getClassLoader());
+        });
     }
 
 
@@ -69,37 +74,35 @@ public class LambdaUtil {
 
 
     public static <T> QueryColumn getQueryColumn(LambdaGetter<T> getter) {
-        ClassLoader classLoader = getter.getClass().getClassLoader();
-        SerializedLambda lambda = getSerializedLambda(getter);
-        Class<?> entityClass = getImplClass(lambda, classLoader);
-        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
-        String propertyName = getFieldName(getter);
-        return tableInfo.getQueryColumnByProperty(propertyName);
+        return MapUtil.computeIfAbsent(queryColumnMap, getter.getClass(), aClass -> {
+            ClassLoader classLoader = getter.getClass().getClassLoader();
+            SerializedLambda lambda = getSerializedLambda(getter);
+            Class<?> entityClass = getImplClass(lambda, classLoader);
+            TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
+            String propertyName = getFieldName(getter);
+            return tableInfo.getQueryColumnByProperty(propertyName);
+        });
     }
 
 
     private static SerializedLambda getSerializedLambda(Serializable getter) {
-        return MapUtil.computeIfAbsent(lambdaMap, getter.getClass(), aClass -> {
-            try {
-                Method method = getter.getClass().getDeclaredMethod("writeReplace");
-                method.setAccessible(Boolean.TRUE);
-                return (SerializedLambda) method.invoke(getter);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        try {
+            Method method = getter.getClass().getDeclaredMethod("writeReplace");
+            method.setAccessible(Boolean.TRUE);
+            return (SerializedLambda) method.invoke(getter);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
     private static Class<?> getImplClass(SerializedLambda lambda, ClassLoader classLoader) {
         String implClass = getImplClassName(lambda);
-        return MapUtil.computeIfAbsent(classMap, implClass, s -> {
-            try {
-                return Class.forName(s.replace("/", "."), true, classLoader);
-            } catch (ClassNotFoundException e) {
-                throw FlexExceptions.wrap(e);
-            }
-        });
+        try {
+            return Class.forName(implClass.replace("/", "."), true, classLoader);
+        } catch (ClassNotFoundException e) {
+            throw FlexExceptions.wrap(e);
+        }
     }
 
     private static String getImplClassName(SerializedLambda lambda) {
