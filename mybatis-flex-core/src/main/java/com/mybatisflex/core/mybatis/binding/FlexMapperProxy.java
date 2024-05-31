@@ -97,8 +97,8 @@ public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
                     dbType = FlexGlobalConfig.getDefaultConfig().getDbType();
                 }
 
-                DialectFactory.setHintDbType(dbType);
                 needClearDbType = true;
+                DialectFactory.setHintDbType(dbType);
             }
 //            return method.invoke(mapper, args);
             return cachedInvoker(method).invoke(proxy, method, args, sqlSession);
@@ -116,26 +116,26 @@ public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
 
 
     private static String getConfigDataSourceKey(Method method, Object proxy) {
-        String result = MapUtil.computeIfAbsent(methodDsKeyCache, method, method1 -> {
-            UseDataSource useDataSource = method1.getAnnotation(UseDataSource.class);
-            if (useDataSource != null && StringUtil.isNotBlank(useDataSource.value())) {
-                return useDataSource.value();
+        String result = MapUtil.computeIfAbsent(methodDsKeyCache, method, m -> {
+            UseDataSource methodAnno = method.getAnnotation(UseDataSource.class);
+            if (methodAnno != null && StringUtil.isNotBlank(methodAnno.value())) {
+                return methodAnno.value();
             }
 
             Class<?>[] interfaces = proxy.getClass().getInterfaces();
             for (Class<?> anInterface : interfaces) {
-                UseDataSource annotation = anInterface.getAnnotation(UseDataSource.class);
-                if (annotation != null) {
-                    return annotation.value();
+                UseDataSource classAnno = anInterface.getAnnotation(UseDataSource.class);
+                if (classAnno != null && StringUtil.isNotBlank(classAnno.value())) {
+                    return classAnno.value();
                 }
             }
 
             if (interfaces[0] != RowMapper.class) {
                 TableInfo tableInfo = TableInfoFactory.ofMapperClass(interfaces[0]);
                 if (tableInfo != null) {
-                    String dataSourceKey = tableInfo.getDataSource();
-                    if (StringUtil.isNotBlank(dataSourceKey)) {
-                        return dataSourceKey;
+                    String tableDsKey = tableInfo.getDataSource();
+                    if (StringUtil.isNotBlank(tableDsKey)) {
+                        return tableDsKey;
                     }
                 }
             }
