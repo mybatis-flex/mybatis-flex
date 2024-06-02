@@ -60,10 +60,6 @@ public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
         //最终使用的数据源
         String finalDsKey = userDsKey;
 
-        //由用户指定的数据类型
-        DbType userDbType = DialectFactory.getHintDbType();
-        DbType finalDbType = userDbType;
-
         try {
             if (StringUtil.isBlank(finalDsKey)) {
                 finalDsKey = getMethodDsKey(method, proxy);
@@ -73,34 +69,29 @@ public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
             finalDsKey = DataSourceKey.getShardingDsKey(finalDsKey, proxy, method, args);
 
             if (StringUtil.isNotBlank(finalDsKey) && !finalDsKey.equals(userDsKey)) {
-                DataSourceKey.use(finalDsKey);
                 needClearDsKey = true;
+                DataSourceKey.use(finalDsKey);
             }
 
-
-            if (finalDbType == null) {
+            DbType hintDbType = DialectFactory.getHintDbType();
+            if (hintDbType == null) {
                 if (finalDsKey != null && dataSource != null) {
-                    //使用最终分片获取数据源类型
-                    finalDbType = dataSource.getDbType(finalDsKey);
+                    hintDbType = dataSource.getDbType(finalDsKey);
                 }
 
-                if (finalDbType == null) {
-                    finalDbType = FlexGlobalConfig.getDefaultConfig().getDbType();
+                if (hintDbType == null) {
+                    hintDbType = FlexGlobalConfig.getDefaultConfig().getDbType();
                 }
 
                 needClearDbType = true;
-                DialectFactory.setHintDbType(finalDbType);
+                DialectFactory.setHintDbType(hintDbType);
             }
             return cachedInvoker(method).invoke(proxy, method, args, sqlSession);
         } catch (Throwable e) {
             throw ExceptionUtil.unwrapThrowable(e);
         } finally {
             if (needClearDbType) {
-                if (userDbType != null) {
-                    DialectFactory.setHintDbType(userDbType);
-                } else {
-                    DialectFactory.clearHintDbType();
-                }
+                DialectFactory.clearHintDbType();
             }
             if (needClearDsKey) {
                 if (userDsKey != null) {
