@@ -35,17 +35,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
-    private static final String NULL_KEY = "@NK";
+    private static final String NULL_KEY = "@NK@";
     private static final Map<Method, String> methodDsKeyCache = new ConcurrentHashMap<>();
-
-    private final FlexConfiguration configuration;
     private final FlexDataSource dataSource;
 
     public FlexMapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache,
                            FlexConfiguration configuration) {
         super(sqlSession, mapperInterface, methodCache);
-
-        this.configuration = configuration;
         this.dataSource = (FlexDataSource) configuration.getEnvironment().getDataSource();
     }
 
