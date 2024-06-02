@@ -352,27 +352,27 @@ public class FlexConfiguration extends Configuration {
     }
 
 
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
-//        T mapper = super.getMapper(type, sqlSession);
-//        return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}
-//            , new MapperInvocationHandler(mapper, environment.getDataSource()));
-//    }
+    @Override
+    public MapperRegistry getMapperRegistry() {
+        return mapperRegistry;
+    }
 
-
+    @Override
     public void addMappers(String packageName, Class<?> superType) {
         mapperRegistry.addMappers(packageName, superType);
     }
 
+    @Override
     public void addMappers(String packageName) {
         mapperRegistry.addMappers(packageName);
     }
 
+    @Override
     public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
         return mapperRegistry.getMapper(type, sqlSession);
     }
 
+    @Override
     public boolean hasMapper(Class<?> type) {
         return mapperRegistry.hasMapper(type);
     }
