@@ -2,6 +2,12 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.9.1 20240602
+- 修复：修复 v1.9.0 由于重构 Mapper 导致 solon 无法注册 mapper 的问题
+- 优化：优化 FlexMapperProxy 数据源的处理逻辑
+
+
+
 ## v1.9.0 20240530
 - 优化：重构 Mapper 的获取，使之减少一层代理从而获得更高性能
 - 优化：优化 LambdaUtil 的性能

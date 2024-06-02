@@ -10,7 +10,7 @@
 
 ```kotlin
 plugins {
-    kotlin("kapt") version "1.9.0"
+    kotlin("kapt") version "1.9.1"
 }
 ```
 
@@ -18,7 +18,7 @@ plugins {
 
 ```groovy
 plugins {
-    id 'org.jetbrains.kotlin.kapt' version '1.9.0'
+    id 'org.jetbrains.kotlin.kapt' version '1.9.1'
 }
 ```
 
