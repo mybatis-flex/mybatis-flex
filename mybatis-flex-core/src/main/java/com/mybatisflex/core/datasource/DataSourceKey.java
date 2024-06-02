@@ -45,20 +45,30 @@ public class DataSourceKey {
     }
 
     public static <T> T use(String dataSourceKey, Supplier<T> supplier) {
+        String prevKey = manualKeyThreadLocal.get();
         try {
-            use(dataSourceKey);
+            manualKeyThreadLocal.set(dataSourceKey);
             return supplier.get();
         } finally {
-            clear();
+            if (prevKey != null) {
+                manualKeyThreadLocal.set(prevKey);
+            } else {
+                clear();
+            }
         }
     }
 
     public static void use(String dataSourceKey, Runnable runnable) {
+        String prevKey = manualKeyThreadLocal.get();
         try {
-            use(dataSourceKey);
+            manualKeyThreadLocal.set(dataSourceKey);
             runnable.run();
         } finally {
-            clear();
+            if (prevKey != null) {
+                manualKeyThreadLocal.set(prevKey);
+            } else {
+                clear();
+            }
         }
     }
 

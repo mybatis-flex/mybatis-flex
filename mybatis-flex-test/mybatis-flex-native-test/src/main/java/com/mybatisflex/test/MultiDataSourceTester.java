@@ -29,7 +29,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class MultiDataSourceTester {
 
@@ -60,9 +59,9 @@ public class MultiDataSourceTester {
         AuditManager.setMessageCollector(collector);
 
         Db.tx(() -> {
-            Db.selectAll(null, "tb_account");
+            Db.selectAll("tb_account");
             DataSourceKey.use("ds2");
-            Db.selectAll(null, "tb_account");
+            Db.selectAll("tb_account");
             return true;
         });
 
