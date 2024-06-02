@@ -96,7 +96,7 @@ public class DataSourceManager {
     }
 
 
-    static String getByShardingStrategy(String dataSource, Object mapper, Method method, Object[] args) {
+    static String getShardingDsKey(String dataSource, Object mapper, Method method, Object[] args) {
         return dataSourceShardingStrategy != null ? dataSourceShardingStrategy.doSharding(dataSource, mapper, method, args) : null;
     }
 }

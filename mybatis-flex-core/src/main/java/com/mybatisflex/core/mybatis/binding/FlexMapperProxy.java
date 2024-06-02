@@ -38,11 +38,14 @@ public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
     private static final String NULL_KEY = "@NK";
     private static final Map<Method, String> methodDsKeyCache = new ConcurrentHashMap<>();
 
+    private final FlexConfiguration configuration;
     private final FlexDataSource dataSource;
 
     public FlexMapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache,
                            FlexConfiguration configuration) {
         super(sqlSession, mapperInterface, methodCache);
+
+        this.configuration = configuration;
         this.dataSource = (FlexDataSource) configuration.getEnvironment().getDataSource();
     }
 
@@ -55,67 +58,67 @@ public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
 
         boolean needClearDsKey = false;
         boolean needClearDbType = false;
+
+        //由用户指定的数据
+        String userDsKey = DataSourceKey.get();
+        //最终使用的数据源
+        String finalDsKey = userDsKey;
+
+        //由用户指定的数据类型
+        DbType userDbType = DialectFactory.getHintDbType();
+        DbType finalDbType = userDbType;
+
         try {
-            //获取用户动态指定，由用户指定数据源，则应该有用户清除
-            String dataSourceKey = DataSourceKey.get();
-            if (StringUtil.isBlank(dataSourceKey)) {
-                //通过 @UseDataSource 或者 @Table(dataSource) 去获取
-                String configDataSourceKey = getConfigDataSourceKey(method, proxy);
-                if (StringUtil.isNotBlank(configDataSourceKey)) {
-                    dataSourceKey = configDataSourceKey;
-                    DataSourceKey.use(dataSourceKey);
-                    needClearDsKey = true;
-                }
+            if (StringUtil.isBlank(finalDsKey)) {
+                finalDsKey = getMethodDsKey(method, proxy);
             }
 
-            //最终通过数据源 自定义分片 策略去获取
-            String shardingDataSourceKey = DataSourceKey.getByShardingStrategy(dataSourceKey, proxy, method, args);
-            if (shardingDataSourceKey != null && !shardingDataSourceKey.equals(dataSourceKey)) {
-                DataSourceKey.use(shardingDataSourceKey);
+            //通过自定义分配策略去获取最终的数据源
+            finalDsKey = DataSourceKey.getShardingDsKey(finalDsKey, proxy, method, args);
+
+            if (StringUtil.isNotBlank(finalDsKey) && !finalDsKey.equals(userDsKey)) {
+                DataSourceKey.use(finalDsKey);
                 needClearDsKey = true;
             }
 
-            //优先获取用户自己配置的 dbType
-            DbType dbType = DialectFactory.getHintDbType();
 
-            if (dbType == null) {
-                if (shardingDataSourceKey != null && dataSource != null) {
+            if (finalDbType == null) {
+                if (finalDsKey != null && dataSource != null) {
                     //使用最终分片获取数据源类型
-                    dbType = dataSource.getDbType(shardingDataSourceKey);
+                    finalDbType = dataSource.getDbType(finalDsKey);
                 }
 
-                if (dbType == null && dataSourceKey != null && dataSource != null) {
-                    dbType = dataSource.getDbType(dataSourceKey);
-                }
-
-                //设置了dbTypeGlobal，那么就使用全局的dbTypeGlobal
-                if (dbType == null) {
-                    dbType = DialectFactory.getGlobalDbType();
-                }
-
-                if (dbType == null) {
-                    dbType = FlexGlobalConfig.getDefaultConfig().getDbType();
+                if (finalDbType == null) {
+                    finalDbType = FlexGlobalConfig.getDefaultConfig().getDbType();
                 }
 
                 needClearDbType = true;
-                DialectFactory.setHintDbType(dbType);
+                DialectFactory.setHintDbType(finalDbType);
             }
-//            return method.invoke(mapper, args);
             return cachedInvoker(method).invoke(proxy, method, args, sqlSession);
         } catch (Throwable e) {
             throw ExceptionUtil.unwrapThrowable(e);
         } finally {
             if (needClearDbType) {
-                DialectFactory.clearHintDbType();
+                if (userDbType != null) {
+                    DialectFactory.setHintDbType(userDbType);
+                } else {
+                    DialectFactory.clearHintDbType();
+                }
             }
             if (needClearDsKey) {
-                DataSourceKey.clear();
+                if (userDsKey != null) {
+                    //恢复用户设置的数据源，并由用户主动去清除
+                    DataSourceKey.use(userDsKey);
+                } else {
+                    DataSourceKey.clear();
+                }
             }
         }
     }
 
 
-    private static String getConfigDataSourceKey(Method method, Object proxy) {
+    private static String getMethodDsKey(Method method, Object proxy) {
         String result = MapUtil.computeIfAbsent(methodDsKeyCache, method, m -> {
             UseDataSource methodAnno = method.getAnnotation(UseDataSource.class);
             if (methodAnno != null && StringUtil.isNotBlank(methodAnno.value())) {

@@ -163,9 +163,7 @@ public class AuditManager {
 
     @FunctionalInterface
     public interface AuditRunnable<T> {
-
         T execute() throws SQLException;
-
     }
 
 }

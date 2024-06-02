@@ -98,8 +98,8 @@ public class DataSourceKey {
         DataSourceKey.manualKeyThreadLocal = manualKeyThreadLocal;
     }
 
-    public static String getByShardingStrategy(String dataSource, Object mapper, Method method, Object[] args) {
-        String shardingDsKey = DataSourceManager.getByShardingStrategy(dataSource, mapper, method, args);
+    public static String getShardingDsKey(String dataSource, Object mapper, Method method, Object[] args) {
+        String shardingDsKey = DataSourceManager.getShardingDsKey(dataSource, mapper, method, args);
         return shardingDsKey != null ? shardingDsKey : dataSource;
     }
 }
