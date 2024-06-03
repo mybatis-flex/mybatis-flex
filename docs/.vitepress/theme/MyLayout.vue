@@ -70,33 +70,63 @@ const {Layout} = DefaultTheme
     color: #666;
 }
 
+.banner-home {
+    display: flex;
+    align-items: center;
+    margin: 60px auto;
+    width: 50%;
+    justify-content: center;
+}
+
+.banner-home img {
+    max-width: 100%;
+    border-radius: 3px;
+}
+
+@media screen and (max-width: 800px) {
+    .banner-home {
+        width: 90%;
+        margin: 30px auto;
+    }
+}
+
+
 </style>
 
 <template>
     <Layout>
 
         <!--docs: https://vitepress.dev/guide/extending-default-theme#layout-slots-->
-<!--        <template #doc-before>-->
-<!--            <div style="margin-bottom: 30px">-->
-<!--                <a href="https://mp.weixin.qq.com/s/sAe_bO4eW7dJsNgwoG0x9g" target="_blank">-->
-<!--                    <img src="/assets/images/ad/admin-banner.jpg">-->
-<!--                </a>-->
-<!--            </div>-->
-<!--        </template>-->
+        <template #doc-before>
+            <div style="margin-bottom: 30px">
+                <a href="https://aiadmin.cc" target="_blank">
+                    <img src="/assets/images/ad/admin-banner.jpg">
+                </a>
+            </div>
+        </template>
 
-<!--        <template #home-features-after>-->
-<!--            <div style="display: flex; justify-content: center;margin-top: 60px">-->
-<!--                <a href="https://mp.weixin.qq.com/s/sAe_bO4eW7dJsNgwoG0x9g" target="_blank" style="max-width: 90%">-->
-<!--                    <img src="/assets/images/ad/admin-banner.jpg" style="width: 650px;">-->
-<!--                </a>-->
-<!--            </div>-->
-<!--        </template>-->
+        <template #home-features-after>
+            <div class="banner-home">
+                <a href="https://aiadmin.cc" target="_blank">
+                    <img src="/assets/images/ad/admin-banner.jpg">
+                </a>
+            </div>
+        </template>
+
+
+        <!--        <template #home-features-after>-->
+        <!--            <div style="display: flex; justify-content: center;margin-top: 60px">-->
+        <!--                <a href="https://mp.weixin.qq.com/s/sAe_bO4eW7dJsNgwoG0x9g" target="_blank" style="max-width: 90%">-->
+        <!--                    <img src="/assets/images/ad/admin-banner.jpg" style="width: 650px;">-->
+        <!--                </a>-->
+        <!--            </div>-->
+        <!--        </template>-->
 
         <template #doc-footer-before>
             <div class="info custom-block" style="margin-bottom: 14px">
                 <!--        <p class="custom-block-title">对这篇文章还有疑问？</p>-->
                 <p>对这篇文章还有疑问？ 点击 <a href="https://gitee.com/mybatis-flex/mybatis-flex/issues/new"
-                                    target="_blank">[这里]</a> 发起提问。
+                                               target="_blank">[这里]</a> 发起提问。
                 </p>
             </div>
         </template>
