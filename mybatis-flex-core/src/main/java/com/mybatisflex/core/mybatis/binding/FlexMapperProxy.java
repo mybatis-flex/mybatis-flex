@@ -25,18 +25,14 @@ import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.MapUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.reflection.ExceptionUtil;
 import org.apache.ibatis.session.SqlSession;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
-    private static final String NULL_KEY = "@NK@";
-    private static final Map<Method, String> methodDsKeyCache = new ConcurrentHashMap<>();
     private final FlexDataSource dataSource;
 
     public FlexMapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache,
@@ -106,33 +102,29 @@ public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
 
 
     private static String getMethodDsKey(Method method, Object proxy) {
-        String result = MapUtil.computeIfAbsent(methodDsKeyCache, method, m -> {
-            UseDataSource methodAnno = method.getAnnotation(UseDataSource.class);
-            if (methodAnno != null && StringUtil.isNotBlank(methodAnno.value())) {
-                return methodAnno.value();
-            }
+        UseDataSource methodAnno = method.getAnnotation(UseDataSource.class);
+        if (methodAnno != null && StringUtil.isNotBlank(methodAnno.value())) {
+            return methodAnno.value();
+        }
 
-            Class<?>[] interfaces = proxy.getClass().getInterfaces();
-            for (Class<?> anInterface : interfaces) {
-                UseDataSource classAnno = anInterface.getAnnotation(UseDataSource.class);
-                if (classAnno != null && StringUtil.isNotBlank(classAnno.value())) {
-                    return classAnno.value();
+        Class<?>[] interfaces = proxy.getClass().getInterfaces();
+        for (Class<?> anInterface : interfaces) {
+            UseDataSource classAnno = anInterface.getAnnotation(UseDataSource.class);
+            if (classAnno != null && StringUtil.isNotBlank(classAnno.value())) {
+                return classAnno.value();
+            }
+        }
+
+        if (interfaces[0] != RowMapper.class) {
+            TableInfo tableInfo = TableInfoFactory.ofMapperClass(interfaces[0]);
+            if (tableInfo != null) {
+                String tableDsKey = tableInfo.getDataSource();
+                if (StringUtil.isNotBlank(tableDsKey)) {
+                    return tableDsKey;
                 }
             }
-
-            if (interfaces[0] != RowMapper.class) {
-                TableInfo tableInfo = TableInfoFactory.ofMapperClass(interfaces[0]);
-                if (tableInfo != null) {
-                    String tableDsKey = tableInfo.getDataSource();
-                    if (StringUtil.isNotBlank(tableDsKey)) {
-                        return tableDsKey;
-                    }
-                }
-            }
-            return NULL_KEY;
-        });
-
-        return NULL_KEY.equals(result) ? null : result;
+        }
+        return null;
     }
 
 }
