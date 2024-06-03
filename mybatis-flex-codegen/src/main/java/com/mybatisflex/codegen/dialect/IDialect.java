@@ -20,6 +20,7 @@ import com.mybatisflex.codegen.dialect.impl.DefaultJdbcDialect;
 import com.mybatisflex.codegen.dialect.impl.MySqlJdbcDialect;
 import com.mybatisflex.codegen.dialect.impl.OracleJdbcDialect;
 import com.mybatisflex.codegen.dialect.impl.SqliteDialect;
+import com.mybatisflex.codegen.dialect.impl.PostgreSQLJdbcDialect;
 import com.mybatisflex.codegen.entity.Table;
 
 import java.sql.Connection;
@@ -53,6 +54,11 @@ public interface IDialect {
      * Sqlite 方言。
      */
     IDialect SQLITE = new SqliteDialect();
+
+    /**
+     * PostgreSQL 方言。
+     */
+    IDialect POSTGRESQL = new PostgreSQLJdbcDialect();
 
     /**
      * 构建表和列的信息。
