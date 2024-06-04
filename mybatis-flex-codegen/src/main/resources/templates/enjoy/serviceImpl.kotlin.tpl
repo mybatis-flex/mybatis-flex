@@ -13,4 +13,4 @@ import org.springframework.stereotype.Service;
  * @since #(javadocConfig.getSince())
  */
 @Service
-public class #(table.buildServiceImplClassName()) : #(serviceImplConfig.buildSuperClassName())<#(table.buildMapperClassName()), #(table.buildEntityClassName())>(), #(table.buildServiceClassName()) {}
+class #(table.buildServiceImplClassName()) : #(serviceImplConfig.buildSuperClassName())<#(table.buildMapperClassName()), #(table.buildEntityClassName())>()#if(table.getGlobalConfig().isServiceGenerateEnable()), #(table.buildServiceClassName())#end {}

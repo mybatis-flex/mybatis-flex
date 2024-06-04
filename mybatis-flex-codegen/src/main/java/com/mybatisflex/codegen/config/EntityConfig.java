@@ -121,6 +121,11 @@ public class EntityConfig implements Serializable {
      */
     private boolean alwaysGenColumnAnnotation;
 
+    /**
+     * 继承的父类是否添加泛型
+     */
+    private boolean superClassGenericity = false;
+
     public String getSourceDir() {
         return sourceDir;
     }
@@ -356,6 +361,14 @@ public class EntityConfig implements Serializable {
 
     public EntityConfig setAlwaysGenColumnAnnotation(boolean alwaysGenColumnAnnotation) {
         this.alwaysGenColumnAnnotation = alwaysGenColumnAnnotation;
+        return this;
+    }
+
+    public boolean isSuperClassGenericity() {
+        return superClassGenericity;
+    }
+    public EntityConfig setSuperClassGenericity(boolean superClassGenericity) {
+        this.superClassGenericity = superClassGenericity;
         return this;
     }
 
