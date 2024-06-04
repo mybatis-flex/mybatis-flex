@@ -279,7 +279,7 @@ public class GeneratorTest {
         generator.generate();
     }
 
-//    @Test
+    // @Test
     public void testCodeGen5() {
         // 配置数据源
         HikariDataSource dataSource = new HikariDataSource();
@@ -351,6 +351,39 @@ public class GeneratorTest {
 
         // 开始生成代码
         generator.generate();
+    }
+
+    @Test
+    public void testKotlinCodegen() {
+        // 配置数据源
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8");
+        dataSource.setUsername("root");
+        dataSource.setPassword("12345678");
+
+        GlobalConfig globalConfig = new GlobalConfig(GlobalConfig.FileType.KOTLIN);
+
+        // 设置生成文件目录和根包
+        globalConfig.getPackageConfig()
+            .setSourceDir(System.getProperty("user.dir") + "/src/test/java")
+            .setMapperXmlPath(System.getProperty("user.dir") + "/src/test/resources/mapper")
+            .setBasePackage("com.test");
+
+        // 设置表前缀和只生成哪些表
+        globalConfig.getStrategyConfig()
+            .setTablePrefix("sys_")
+            .setGenerateTable("sys_user");
+
+        globalConfig.enableEntity();
+        globalConfig.enableService();
+        globalConfig.enableServiceImpl();
+        globalConfig.enableMapper();
+        globalConfig.enableMapperXml();
+        globalConfig.enableController();
+        globalConfig.enableTableDef();
+        globalConfig.enablePackageInfo();
+
+        new Generator(dataSource, globalConfig).generate();
     }
 
 }
