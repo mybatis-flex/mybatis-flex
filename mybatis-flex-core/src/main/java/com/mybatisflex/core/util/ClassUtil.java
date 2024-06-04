@@ -285,23 +285,11 @@ public class ClassUtil {
         }
 
         Method[] declaredMethods = clazz.getDeclaredMethods();
-        if (clazz.isInterface()) {
-            for (Method method : declaredMethods) {
-                // 接口类只需要获取 default 方法
-                if (method.isDefault() && (predicate == null || predicate.test(method))) {
-                    methods.add(method);
-                    if (firstOnly) {
-                        break;
-                    }
-                }
-            }
-        } else {
-            for (Method method : declaredMethods) {
-                if (predicate == null || predicate.test(method)) {
-                    methods.add(method);
-                    if (firstOnly) {
-                        break;
-                    }
+        for (Method method : declaredMethods) {
+            if (predicate == null || predicate.test(method)) {
+                methods.add(method);
+                if (firstOnly) {
+                    break;
                 }
             }
         }
