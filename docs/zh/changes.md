@@ -2,6 +2,14 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+
+## v1.9.2 20240604
+- 新增：代码生成器新增 PostgreSQL 方言的实现，感谢 @StringKe
+- 修复：当 FunctionQueryColumn 中存在 table，会导致分页查询时 SQL 优化错误的问题，感谢 @98Kming
+- 修复：修复 v1.9.0 由于重构 Mapper 导致 dsKey 获取可能出现错误的问题
+
+
+
 ## v1.9.1 20240602
 - 修复：修复 v1.9.0 由于重构 Mapper 导致 solon 无法注册 mapper 的问题
 - 优化：优化 FlexMapperProxy 数据源的处理逻辑

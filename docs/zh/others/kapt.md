@@ -10,7 +10,7 @@
 
 ```kotlin
 plugins {
-    kotlin("kapt") version "1.9.1"
+    kotlin("kapt") version "1.9.2"
 }
 ```
 
