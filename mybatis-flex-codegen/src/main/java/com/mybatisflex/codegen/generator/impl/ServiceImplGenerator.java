@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class ServiceImplGenerator implements IGenerator {
 
         String serviceImplPackagePath = packageConfig.getServiceImplPackage().replace(".", "/");
         File serviceImplJavaFile = new File(sourceDir, serviceImplPackagePath + "/" +
-            table.buildServiceImplClassName() + ".java");
+            table.buildServiceImplClassName() + globalConfig.getFileType());
 
 
         if (serviceImplJavaFile.exists() && !serviceImplConfig.isOverwriteEnable()) {

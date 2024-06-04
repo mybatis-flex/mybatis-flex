@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class MapperGenerator implements IGenerator {
 
         String mapperPackagePath = packageConfig.getMapperPackage().replace(".", "/");
         File mapperJavaFile = new File(sourceDir, mapperPackagePath + "/" +
-            table.buildMapperClassName() + ".java");
+            table.buildMapperClassName() + globalConfig.getFileType());
 
 
         if (mapperJavaFile.exists() && !mapperConfig.isOverwriteEnable()) {
