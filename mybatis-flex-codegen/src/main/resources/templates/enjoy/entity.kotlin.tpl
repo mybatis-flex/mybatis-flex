@@ -1,7 +1,7 @@
 #set(withSwagger = entityConfig.isWithSwagger())
 #set(withActiveRecord = entityConfig.isWithActiveRecord())
 
-package #(entityPackageName);
+package #(entityPackageName)
 
 #for(importClass : table.buildImports(isBase))
 import #(importClass)
@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiModelProperty
 #if(withSwagger && swaggerVersion.getName() == "DOC")
 import io.swagger.v3.oas.annotations.media.Schema
 #end
+#if(!isBase)
 /**
  * #(table.getComment()) 实体类。
  *
@@ -25,7 +26,8 @@ import io.swagger.v3.oas.annotations.media.Schema
  * @since #(javadocConfig.getSince())
  */
 #(table.buildTableAnnotation())
-class #(entityClassName) #if(withActiveRecord) : Model<#(entityClassName)>()#else#(table.buildKtExtends())#end  {
+#end
+#if(isBase)open #end class #(entityClassName) #if(withActiveRecord) : Model<#(entityClassName)>()#else#(table.buildKtExtends(isBase))#end  {
 #for(column : table.columns)
     #set(comment = javadocConfig.formatColumnComment(column.comment))
     #if(isNotBlank(comment))
@@ -43,7 +45,7 @@ class #(entityClassName) #if(withActiveRecord) : Model<#(entityClassName)>()#els
     #if(withSwagger && swaggerVersion.getName() == "DOC")
     @Schema(description = "#(column.comment)")
     #end
-    var #(column.property): #(column.propertySimpleType)? = #if(isNotBlank(column.propertyDefaultValue)) = #(column.propertyDefaultValue)#else null#end
+    #if(isBase)open #end var #(column.property): #(column.propertySimpleType)? = #if(isNotBlank(column.propertyDefaultValue)) = #(column.propertyDefaultValue)#else null#end
 
 #end
 }

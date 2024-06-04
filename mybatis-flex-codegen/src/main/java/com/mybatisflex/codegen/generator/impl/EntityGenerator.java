@@ -38,6 +38,7 @@ public class EntityGenerator implements IGenerator {
     protected String templatePath;
 
     protected String entityWithBaseTemplatePath = "/templates/enjoy/entityWithBase.tpl";
+    protected String ktEntityWithBaseTemplatePath = "/templates/enjoy/entityWithBase.kotlin.tpl";
 
 
     public EntityGenerator() {
@@ -98,10 +99,11 @@ public class EntityGenerator implements IGenerator {
         // 开启生成 baseClass
         if (entityConfig.isWithBaseClassEnable()) {
             if (globalConfig.getFileType() == GlobalConfig.FileType.KOTLIN) {
-                throw new UnsupportedOperationException("暂不支持 Kotlin 生成 WithBaseClass 模式。");
+//                throw new UnsupportedOperationException("暂不支持 Kotlin 生成 WithBaseClass 模式。");
+                templatePath = this.ktEntityWithBaseTemplatePath;
+            }else{
+                templatePath = this.entityWithBaseTemplatePath;
             }
-
-            templatePath = this.entityWithBaseTemplatePath;
 
             String baseClassName = table.buildEntityClassName() + entityConfig.getWithBaseClassSuffix();
             params.put("baseClassName", baseClassName);
@@ -136,7 +138,7 @@ public class EntityGenerator implements IGenerator {
 
         String baseEntityClassName = table.buildEntityClassName() + entityConfig.getWithBaseClassSuffix();
 
-        File baseEntityJavaFile = new File(sourceDir, baseEntityPackagePath + "/" + baseEntityClassName + ".java");
+        File baseEntityJavaFile = new File(sourceDir, baseEntityPackagePath + "/" + baseEntityClassName + globalConfig.getFileType());
 
 
         // 排除忽略列
