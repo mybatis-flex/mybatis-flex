@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.codegen.config;
 
+import com.mybatisflex.codegen.constant.TemplateConst;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.template.ITemplate;
 
@@ -35,10 +36,16 @@ import java.util.function.UnaryOperator;
  */
 @SuppressWarnings("unused")
 public class GlobalConfig implements Serializable {
+
     private static final long serialVersionUID = 5033600623041298000L;
+
+    private final FileType fileType;
 
     // === 必须配置 ===
 
+    public GlobalConfig() {
+        this(FileType.JAVA);
+    }
     private final JavadocConfig javadocConfig;
     private final PackageConfig packageConfig;
     private final StrategyConfig strategyConfig;
@@ -69,11 +76,46 @@ public class GlobalConfig implements Serializable {
     private boolean packageInfoGenerateEnable;
 
 
-    public GlobalConfig() {
+    public GlobalConfig(FileType fileType) {
+        this.fileType = fileType;
         this.javadocConfig = new JavadocConfig();
         this.packageConfig = new PackageConfig();
         this.strategyConfig = new StrategyConfig();
         this.templateConfig = new TemplateConfig();
+        this.setTemplatePath();
+    }
+
+    public FileType getFileType() {
+        return fileType;
+    }
+
+    private void setTemplatePath() {
+        if (fileType == FileType.KOTLIN) {
+            setEntityTemplatePath(TemplateConst.ENTITY_KOTLIN);
+            setMapperTemplatePath(TemplateConst.MAPPER_KOTLIN);
+            setServiceTemplatePath(TemplateConst.SERVICE_KOTLIN);
+            setServiceImplTemplatePath(TemplateConst.SERVICE_IMPL_KOTLIN);
+            setControllerTemplatePath(TemplateConst.CONTROLLER_KOTLIN);
+            setTableDefTemplatePath(TemplateConst.TABLE_DEF_KOTLIN);
+        }
+    }
+
+    public enum FileType {
+
+        JAVA(".java"),
+        KOTLIN(".kt");
+
+        private final String suffix;
+
+        FileType(String suffix) {
+            this.suffix = suffix;
+        }
+
+        @Override
+        public String toString() {
+            return suffix;
+        }
+
     }
 
     // === 分类配置 ===
