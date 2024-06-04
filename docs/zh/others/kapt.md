@@ -1,6 +1,7 @@
 # 在 Kotlin 中使用注解处理器
 
 > 在 Kotlin 中想要使 `@Table` 等注解生效十分简单。只需要使用 KAPT 即可。
+> 如果您正在使用 SpringBoot + Kotlin 的开发方式，请将 kapt 的版本保持与 kotlin("jvm") / kotlin("plugin.spring") 一致
 
 ## 在 Gradle 中使用
 
@@ -10,7 +11,12 @@
 
 ```kotlin
 plugins {
-    kotlin("kapt") version "1.9.2"
+    // 如果正在使用 SpringBoot，请保持 kapt 插件版本与 Spring 插件、kotlin JVM 插件一致
+    // 如你的插件版本是（如果项目是使用 Spring Initializr 生成的话，是会自带下面两个插件）： 
+    // kotlin("jvm") version "1.9.20" <- 注意版本
+    // kotlin("plugin.spring") version "1.9.20" <- 注意版本
+    // 那么你的 kapt 版本也需要与其一致，否则将会改变项目使用的 Kotlin 版本，可能会引发兼容性问题
+    kotlin("kapt") version "1.9.20"
 }
 ```
 
@@ -18,7 +24,7 @@ plugins {
 
 ```groovy
 plugins {
-    id 'org.jetbrains.kotlin.kapt' version '1.9.1'
+    id 'org.jetbrains.kotlin.kapt' version '1.9.20'
 }
 ```
 
