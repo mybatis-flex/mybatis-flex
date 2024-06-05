@@ -99,7 +99,6 @@ public class EntityGenerator implements IGenerator {
         // 开启生成 baseClass
         if (entityConfig.isWithBaseClassEnable()) {
             if (globalConfig.getFileType() == GlobalConfig.FileType.KOTLIN) {
-//                throw new UnsupportedOperationException("暂不支持 Kotlin 生成 WithBaseClass 模式。");
                 templatePath = this.ktEntityWithBaseTemplatePath;
             }else{
                 templatePath = this.entityWithBaseTemplatePath;

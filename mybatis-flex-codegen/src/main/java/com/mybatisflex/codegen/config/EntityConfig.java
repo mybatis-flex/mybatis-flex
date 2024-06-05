@@ -18,6 +18,7 @@ package com.mybatisflex.codegen.config;
 import com.mybatisflex.codegen.entity.Table;
 
 import java.io.Serializable;
+import java.lang.reflect.TypeVariable;
 import java.util.function.Function;
 
 /**
@@ -177,7 +178,22 @@ public class EntityConfig implements Serializable {
      */
     public EntityConfig setSuperClass(Class<?> superClass) {
         this.superClass = superClass;
+        superClassGenericity = hasGenericity(superClass);
         return this;
+    }
+
+    private boolean hasGenericity(Class<?> clazz){
+        if (clazz == null){
+            return false;
+        }
+        TypeVariable<? extends Class<?>>[] typeParameters = clazz.getTypeParameters();
+        if (typeParameters.length > 1) {
+            throw new UnsupportedOperationException("暂不支持父类泛型数量 >1 的代码生成");
+        }else if (typeParameters.length > 0 ){
+            return true;
+        }else {
+            return false;
+        }
     }
 
 
@@ -364,12 +380,11 @@ public class EntityConfig implements Serializable {
         return this;
     }
 
-    public boolean isSuperClassGenericity() {
+    public boolean isSuperClassGenericity(Table table) {
+        if (this.superClassFactory != null){
+            return hasGenericity(superClassFactory.apply(table));
+        }
         return superClassGenericity;
-    }
-    public EntityConfig setSuperClassGenericity(boolean superClassGenericity) {
-        this.superClassGenericity = superClassGenericity;
-        return this;
     }
 
     public enum SwaggerVersion {

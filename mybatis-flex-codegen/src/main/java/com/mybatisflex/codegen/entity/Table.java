@@ -368,7 +368,7 @@ public class Table {
         EntityConfig entityConfig = globalConfig.getEntityConfig();
         Class<?> superClass = entityConfig.getSuperClass(this);
         if (superClass != null) {
-            return " extends " + superClass.getSimpleName()+(entityConfig.isSuperClassGenericity()?("<"+buildEntityClassName()+(isBase?entityConfig.getWithBaseClassSuffix():"")+">"):"");
+            return " extends " + superClass.getSimpleName()+(entityConfig.isSuperClassGenericity(this)?("<"+buildEntityClassName()+(isBase?entityConfig.getWithBaseClassSuffix():"")+">"):"");
         } else {
             return "";
         }
@@ -395,7 +395,7 @@ public class Table {
         List<String> s = new ArrayList<>();
         if (superClass != null) {
             String name = superClass.getSimpleName();
-            if (entityConfig.isSuperClassGenericity()){
+            if (entityConfig.isSuperClassGenericity(this)){
                 name+="<"+buildEntityClassName()+(isBase?entityConfig.getWithBaseClassSuffix():"")+">";
             }
             name+="()";

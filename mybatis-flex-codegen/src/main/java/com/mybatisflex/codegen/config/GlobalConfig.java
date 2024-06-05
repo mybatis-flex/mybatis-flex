@@ -914,10 +914,6 @@ public class GlobalConfig implements Serializable {
         getEntityConfig().setSuperClass(entitySuperClass);
     }
 
-    public void setEntitySuperClassGenericity(boolean flag){
-        getEntityConfig().setSuperClassGenericity(flag);
-    }
-
     /**
      * @see EntityConfig#setSuperClassFactory(Function)
      */
