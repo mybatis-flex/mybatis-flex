@@ -101,6 +101,7 @@ https://www.bilibili.com/video/BV1kF411r7ky
 | 小鸣助手   |「小鸣助手」是一个生活服务类小程序，主要为用户的日常生活提供一些便捷工具，例如天气查询、时间规划、生活记录等。目前该小程序已稳定运行近4年，为近10万用户提供了生活帮助。主要技术栈：Spring Boot + Spring Security + JWT + MyBatis-Flex + MySQL + Redis + Docker | https://github.com/inlym/life-helper-server |
 | RuoyiVueFlex  |RuoyiVueFlex是基于RuoyiVuePlus的一个快速开发框架。将RuoyiVuePlus中使用的MybatisPlus替换为MybatisFlex,并根据两个ORM框架使用的不同修改了部分逻辑。 集成 Sa-Token、Mybatis-Flex、PowerJob、Jackson、SpringDoc、Hutool、OSS 定期同步等 | https://gitee.com/yhan219/ruoyi-vue-flex |
 | RuoyiCloudFlex  |RuoyiCloudFlex是基于RuoYiCloudPlus的微服务管理系统，将RuoyiCloudPlus中使用的MybatisPlus替换为MybatisFlex,并根据两个ORM框架使用的不同修改了部分逻辑。 整合 SpringCloudAlibaba、Dubbo3.0、Sa-Token、Mybatis-Flex、MQ、Flowable、ES、Docker 全方位升级 定期同步 | https://gitee.com/yhan219/ruoyi-cloud-flex |
+| Sz-Admin  |[Sz-Admin](https://szadmin.cn)：一个开源RBAC中后台框架，专为现代应用设计。它结合了最新的技术栈，包括后端的Spring Boot 3、JDK 21、Mybatis Flex、Sa-Token、Knife4j和Flyway，以及前端的Vue 3、Vite5、TypeScript和Element Plus，致力于为您提供一个直观、流畅且功能强大的开发体验。 | https://gitee.com/feiyuchuixue/sz-boot-parent |
 
 ## 开发插件
 
