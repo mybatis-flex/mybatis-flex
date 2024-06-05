@@ -15,4 +15,4 @@ import #(packageConfig.entityPackage).#(table.buildEntityClassName());
 #if(mapperConfig.isMapperAnnotation())
 @Mapper
 #end
-public interface #(table.buildMapperClassName()) : #(mapperConfig.buildSuperClassName())<#(table.buildEntityClassName())> {}
+interface #(table.buildMapperClassName()) : #(mapperConfig.buildSuperClassName())<#(table.buildEntityClassName())> {}

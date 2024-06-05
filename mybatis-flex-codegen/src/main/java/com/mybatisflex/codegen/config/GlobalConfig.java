@@ -16,6 +16,7 @@
 package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.codegen.constant.TemplateConst;
+import com.mybatisflex.codegen.dialect.JdbcTypeMapping;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.template.ITemplate;
 
@@ -83,6 +84,9 @@ public class GlobalConfig implements Serializable {
         this.strategyConfig = new StrategyConfig();
         this.templateConfig = new TemplateConfig();
         this.setTemplatePath();
+        if(fileType == FileType.KOTLIN) {
+            JdbcTypeMapping.registerMapping("java.lang.Integer", "Int");
+        }
     }
 
     public FileType getFileType() {

@@ -26,6 +26,8 @@ import com.mybatisflex.codegen.config.TableConfig;
 import com.mybatisflex.codegen.config.TableDefConfig;
 import com.mybatisflex.core.util.StringUtil;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -174,9 +176,26 @@ public class Table {
         }
         return false;
     }
-
+    List<String> superColumns = null;
 
     public void addColumn(Column column) {
+        if (superColumns == null){
+            superColumns = new ArrayList<>();
+            Class<?> superClass = entityConfig.getSuperClass(this);
+            //获取所有 private字段
+            if (superClass != null) {
+                Field[] fields = superClass.getDeclaredFields();
+                for (Field field : fields) {
+                    int modifiers = field.getModifiers();
+                    if(Modifier.isPrivate(modifiers)){
+                        superColumns.add(field.getName());
+                    }
+                }
+            }
+        }
+        if (superColumns.contains(column.getProperty())){
+            return;
+        }
         //主键
         if (primaryKeys != null && primaryKeys.contains(column.getName())) {
             column.setPrimaryKey(true);
@@ -345,11 +364,11 @@ public class Table {
     /**
      * 构建 extends 继承。
      */
-    public String buildExtends() {
+    public String buildExtends(boolean isBase) {
         EntityConfig entityConfig = globalConfig.getEntityConfig();
         Class<?> superClass = entityConfig.getSuperClass(this);
         if (superClass != null) {
-            return " extends " + superClass.getSimpleName();
+            return " extends " + superClass.getSimpleName()+(entityConfig.isSuperClassGenericity(this)?("<"+buildEntityClassName()+(isBase?entityConfig.getWithBaseClassSuffix():"")+">"):"");
         } else {
             return "";
         }
@@ -366,6 +385,32 @@ public class Table {
         } else {
             return "";
         }
+    }
+    /**
+     * 构建 kt 继承
+     */
+    public String buildKtExtends(boolean isBase){
+        EntityConfig entityConfig = globalConfig.getEntityConfig();
+        Class<?> superClass = entityConfig.getSuperClass(this);
+        List<String> s = new ArrayList<>();
+        if (superClass != null) {
+            String name = superClass.getSimpleName();
+            if (entityConfig.isSuperClassGenericity(this)){
+                name+="<"+buildEntityClassName()+(isBase?entityConfig.getWithBaseClassSuffix():"")+">";
+            }
+            name+="()";
+            s.add(name);
+        }
+        Class<?>[] entityInterfaces = globalConfig.getEntityConfig().getImplInterfaces();
+        if (entityInterfaces != null && entityInterfaces.length > 0) {
+            for (Class<?> inter : entityInterfaces) {
+                s.add(inter.getSimpleName());
+            }
+        }
+        if (s.isEmpty()){
+            return "";
+        }
+        return " :"+String.join(",", s);
     }
 
     // ===== 构建相关类名 =====
