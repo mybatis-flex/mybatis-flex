@@ -289,8 +289,8 @@ public class ClassUtil {
 
     private static void doGetMethods(Class<?> clazz, List<Method> methods, Predicate<Method> predicate, boolean firstOnly) {
         applyAllClass(clazz, currentClass -> {
-            Method[] declaredMethods = clazz.getDeclaredMethods();
-            if (clazz.isInterface()) {
+            Method[] declaredMethods = currentClass.getDeclaredMethods();
+            if (currentClass.isInterface()) {
                 for (Method method : declaredMethods) {
                     // 接口类只需要获取 default 方法
                     if (method.isDefault() && (predicate == null || predicate.test(method))) {
@@ -314,7 +314,7 @@ public class ClassUtil {
             if (firstOnly && !methods.isEmpty()) {
                 return false;
             }
-            Class<?>[] interfaces = clazz.getInterfaces();
+            Class<?>[] interfaces = currentClass.getInterfaces();
             for (Class<?> anInterface : interfaces) {
                 doGetMethods(anInterface, methods, predicate, firstOnly);
                 // 只获取第一个并且集合不为空就结束遍历
