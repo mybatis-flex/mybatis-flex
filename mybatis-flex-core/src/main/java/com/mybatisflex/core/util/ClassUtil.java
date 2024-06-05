@@ -288,43 +288,42 @@ public class ClassUtil {
 
 
     private static void doGetMethods(Class<?> clazz, List<Method> methods, Predicate<Method> predicate, boolean firstOnly) {
-        if (clazz == null || clazz == Object.class) {
-            return;
-        }
-
-        Method[] declaredMethods = clazz.getDeclaredMethods();
-        if (clazz.isInterface()) {
-            for (Method method : declaredMethods) {
-                // 接口类只需要获取 default 方法
-                if (method.isDefault() && (predicate == null || predicate.test(method))) {
-                    methods.add(method);
-                    if (firstOnly) {
-                        break;
+        applyAllClass(clazz, currentClass -> {
+            Method[] declaredMethods = clazz.getDeclaredMethods();
+            if (clazz.isInterface()) {
+                for (Method method : declaredMethods) {
+                    // 接口类只需要获取 default 方法
+                    if (method.isDefault() && (predicate == null || predicate.test(method))) {
+                        methods.add(method);
+                        if (firstOnly) {
+                            break;
+                        }
+                    }
+                }
+            } else {
+                for (Method method : declaredMethods) {
+                    if (predicate == null || predicate.test(method)) {
+                        methods.add(method);
+                        if (firstOnly) {
+                            break;
+                        }
                     }
                 }
             }
-        } else {
-            for (Method method : declaredMethods) {
-                if (predicate == null || predicate.test(method)) {
-                    methods.add(method);
-                    if (firstOnly) {
-                        break;
-                    }
+            // 只获取第一个并且集合不为空就结束遍历
+            if (firstOnly && !methods.isEmpty()) {
+                return false;
+            }
+            Class<?>[] interfaces = clazz.getInterfaces();
+            for (Class<?> anInterface : interfaces) {
+                doGetMethods(anInterface, methods, predicate, firstOnly);
+                // 只获取第一个并且集合不为空就结束遍历
+                if (firstOnly && !methods.isEmpty()){
+                    return false;
                 }
             }
-        }
-
-
-        if (firstOnly && !methods.isEmpty()) {
-            return;
-        }
-
-        Class<?>[] interfaces = clazz.getInterfaces();
-        for (Class<?> anInterface : interfaces) {
-            doGetMethods(anInterface, methods, predicate, firstOnly);
-        }
-
-        doGetMethods(clazz.getSuperclass(), methods, predicate, firstOnly);
+            return true;
+        });
     }
 
     private static <T> Class<T> getJdkProxySuperClass(Class<T> clazz) {
