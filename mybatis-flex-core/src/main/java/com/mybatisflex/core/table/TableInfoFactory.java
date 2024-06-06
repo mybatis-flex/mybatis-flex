@@ -591,22 +591,18 @@ public class TableInfoFactory {
 
 
     private static void doGetFields(Class<?> entityClass, List<Field> fields) {
-        if (entityClass == null || entityClass == Object.class) {
-            return;
-        }
-
-        Field[] declaredFields = entityClass.getDeclaredFields();
-        for (Field declaredField : declaredFields) {
-            int modifiers = declaredField.getModifiers();
-            if (Modifier.isStatic(modifiers)
-                || Modifier.isTransient(modifiers)
-                || existName(fields, declaredField)) {
-                continue;
+        ClassUtil.applyAllClass(entityClass, currentClass -> {
+            Field[] declaredFields = currentClass.getDeclaredFields();
+            for (Field declaredField : declaredFields) {
+                int modifiers = declaredField.getModifiers();
+                if (!Modifier.isStatic(modifiers)
+                    && !Modifier.isTransient(modifiers)
+                    && !existName(fields, declaredField)) {
+                    fields.add(declaredField);
+                }
             }
-            fields.add(declaredField);
-        }
-
-        doGetFields(entityClass.getSuperclass(), fields);
+            return true;
+        });
     }
 
 

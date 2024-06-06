@@ -234,26 +234,34 @@ public class ClassUtil {
         return fields.isEmpty() ? null : fields.get(0);
     }
 
-    private static void doGetFields(Class<?> clazz, List<Field> fields, Predicate<Field> predicate, boolean firstOnly) {
-        if (clazz == null || clazz == Object.class) {
-            return;
+    /**
+     * 应用类及其除Object外的所有父类
+     *
+     * @param clazz  需要应用的类
+     * @param checkToContinue 应用当前类并检测是否继续应用, 返回false则停止应用, 返回true继续向上取父类
+     * @author KAMOsama
+     */
+    public static void applyAllClass(Class<?> clazz,  Predicate<Class<?>> checkToContinue) {
+        Class<?> currentClass = clazz;
+        while (currentClass != null && currentClass != Object.class && checkToContinue.test(currentClass)) {
+            currentClass = currentClass.getSuperclass();
         }
+    }
 
-        Field[] declaredFields = clazz.getDeclaredFields();
-        for (Field declaredField : declaredFields) {
-            if (predicate == null || predicate.test(declaredField)) {
-                fields.add(declaredField);
-                if (firstOnly) {
-                    break;
+    private static void doGetFields(Class<?> clazz, List<Field> fields, Predicate<Field> predicate, boolean firstOnly) {
+        applyAllClass(clazz, currentClass -> {
+            Field[] declaredFields = currentClass.getDeclaredFields();
+            for (Field declaredField : declaredFields) {
+                if (predicate == null || predicate.test(declaredField)) {
+                    fields.add(declaredField);
+                    if (firstOnly) {
+                        break;
+                    }
                 }
             }
-        }
-
-        if (firstOnly && !fields.isEmpty()) {
-            return;
-        }
-
-        doGetFields(clazz.getSuperclass(), fields, predicate, firstOnly);
+            // 不止要获取第一个或集合为空就继续获取遍历父类
+            return !firstOnly || fields.isEmpty();
+        });
     }
 
     public static List<Method> getAllMethods(Class<?> clazz) {
@@ -280,45 +288,43 @@ public class ClassUtil {
 
 
     private static void doGetMethods(Class<?> clazz, List<Method> methods, Predicate<Method> predicate, boolean firstOnly) {
-        if (clazz == null || clazz == Object.class) {
-            return;
-        }
-
-        Method[] declaredMethods = clazz.getDeclaredMethods();
-        if (clazz.isInterface()) {
-            for (Method method : declaredMethods) {
-                // 接口类只需要获取 default 方法
-                if (method.isDefault() && (predicate == null || predicate.test(method))) {
-                    methods.add(method);
-                    if (firstOnly) {
-                        break;
+        applyAllClass(clazz, currentClass -> {
+            Method[] declaredMethods = currentClass.getDeclaredMethods();
+            if (currentClass.isInterface()) {
+                for (Method method : declaredMethods) {
+                    // 接口类只需要获取 default 方法
+                    if (method.isDefault() && (predicate == null || predicate.test(method))) {
+                        methods.add(method);
+                        if (firstOnly) {
+                            break;
+                        }
+                    }
+                }
+            } else {
+                for (Method method : declaredMethods) {
+                    if (predicate == null || predicate.test(method)) {
+                        methods.add(method);
+                        if (firstOnly) {
+                            break;
+                        }
                     }
                 }
             }
-        } else {
-            for (Method method : declaredMethods) {
-                if (predicate == null || predicate.test(method)) {
-                    methods.add(method);
-                    if (firstOnly) {
-                        break;
-                    }
+            // 只获取第一个并且集合不为空就结束遍历
+            if (firstOnly && !methods.isEmpty()) {
+                return false;
+            }
+            Class<?>[] interfaces = currentClass.getInterfaces();
+            for (Class<?> anInterface : interfaces) {
+                doGetMethods(anInterface, methods, predicate, firstOnly);
+                // 只获取第一个并且集合不为空就结束遍历
+                if (firstOnly && !methods.isEmpty()){
+                    return false;
                 }
             }
-        }
-
-
-        if (firstOnly && !methods.isEmpty()) {
-            return;
-        }
-
-        Class<?>[] interfaces = clazz.getInterfaces();
-        for (Class<?> anInterface : interfaces) {
-            doGetMethods(anInterface, methods, predicate, firstOnly);
-        }
-
-        doGetMethods(clazz.getSuperclass(), methods, predicate, firstOnly);
+            return true;
+        });
     }
-
 
     private static <T> Class<T> getJdkProxySuperClass(Class<T> clazz) {
         final Class<?> proxyClass = Proxy.getProxyClass(clazz.getClassLoader(), clazz.getInterfaces());
