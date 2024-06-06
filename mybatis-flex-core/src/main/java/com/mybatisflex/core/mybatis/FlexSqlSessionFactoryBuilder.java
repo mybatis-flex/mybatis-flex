@@ -128,14 +128,17 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
         String environmentId = configuration.getEnvironment().getId();
 
         FlexGlobalConfig globalConfig = FlexGlobalConfig.getConfig(environmentId);
-        if (globalConfig == null){
+        boolean configUnInitialize = globalConfig == null;
+        if (configUnInitialize) {
             globalConfig = new FlexGlobalConfig();
         }
 
         globalConfig.setSqlSessionFactory(sessionFactory);
         globalConfig.setConfiguration(configuration);
 
-        FlexGlobalConfig.setConfig(environmentId, globalConfig,true);
+        boolean isDefault = FlexGlobalConfig.getDefaultConfig() == globalConfig;
+        // #I9V9MB 多个SqlSessionFactory初始化时，被最后一个覆盖默认配置
+        FlexGlobalConfig.setConfig(environmentId, globalConfig, configUnInitialize || isDefault);
     }
 
 
