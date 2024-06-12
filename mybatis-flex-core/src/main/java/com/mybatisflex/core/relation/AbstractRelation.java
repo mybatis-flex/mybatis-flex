@@ -95,8 +95,11 @@ public abstract class AbstractRelation<SelfEntity> {
         this.targetEntityClass = (StringUtil.isNotBlank(valueField) && targetTableInfo != null) ? targetTableInfo.getEntityClass() : relationFieldWrapper.getMappingType();
 
         this.targetField = ClassUtil.getFirstField(targetEntityClass, field -> field.getName().equals(targetField));
-        this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
+        if (this.targetField == null) {
+            throw new IllegalStateException("Can not find field by name \"" + targetField + "\" from class: " + targetEntityClass.getName());
+        }
 
+        this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
         this.valueField = valueField;
         this.onlyQueryValueField = StringUtil.isNotBlank(valueField);
 
