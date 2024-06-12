@@ -363,7 +363,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper or(Map<String, Object> whereConditions, SqlOperators operators, SqlConnector innerConnector) {
-        return connectMap(whereConditions, operators, SqlConnector.OR, SqlConnector.AND);
+        return connectMap(whereConditions, operators, SqlConnector.OR, innerConnector);
     }
 
     protected QueryWrapper connectMap(Map<String, Object> mapConditions, SqlOperators operators, SqlConnector outerConnector, SqlConnector innerConnector) {
