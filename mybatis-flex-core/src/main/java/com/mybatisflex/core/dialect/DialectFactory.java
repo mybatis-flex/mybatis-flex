@@ -53,7 +53,8 @@ public class DialectFactory {
      * @return IDialect
      */
     public static IDialect getDialect() {
-        DbType dbType = ObjectUtil.requireNonNullElse(dbTypeThreadLocal.get(), FlexGlobalConfig.getDefaultConfig().getDbType());
+        DbType dbType = ObjectUtil.requireNonNullElse(dbTypeThreadLocal.get(),
+            FlexGlobalConfig.getDefaultConfig().getDbType());
         return MapUtil.computeIfAbsent(dialectMap, dbType, DialectFactory::createDialect);
     }
 
@@ -143,9 +144,9 @@ public class DialectFactory {
             case DB2_1005:
                 return new DB2105Dialect(KeywordWrap.NONE, DB2105Dialect.DB2105LimitOffsetProcessor.DB2105);
             case SQLSERVER:
-                return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER);
+                return new CommonsDialectImpl(KeywordWrap.NONE_CASE_SENSITIVE, LimitOffsetProcessor.SQLSERVER);
             case SQLSERVER_2005:
-                return new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER_2005);
+                return new CommonsDialectImpl(KeywordWrap.NONE_CASE_SENSITIVE, LimitOffsetProcessor.SQLSERVER_2005);
             case INFORMIX:
                 return new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.INFORMIX);
             case SINODB:

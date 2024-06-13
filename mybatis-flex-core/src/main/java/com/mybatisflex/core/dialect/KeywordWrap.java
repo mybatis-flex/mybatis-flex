@@ -37,6 +37,16 @@ public class KeywordWrap {
     };
 
     /**
+     * 无反义区分大小写处理, 适用于 db2, informix, clickhouse 等
+     */
+    public static final KeywordWrap NONE_CASE_SENSITIVE = new KeywordWrap(true, "", "") {
+        @Override
+        public String wrap(String keyword) {
+            return keyword;
+        }
+    };
+
+    /**
      * 反引号反义处理, 适用于 mysql, h2 等
      */
     public static final KeywordWrap BACK_QUOTE = new KeywordWrap("`", "`");
@@ -50,7 +60,6 @@ public class KeywordWrap {
      * 方括号反义处理, 适用于 sqlserver
      */
     public static final KeywordWrap SQUARE_BRACKETS = new KeywordWrap("[", "]");
-
     /**
      * 大小写敏感
      */
@@ -60,17 +69,14 @@ public class KeywordWrap {
      * 自动把关键字转换为大写
      */
     private boolean keywordsToUpperCase = false;
-
     /**
      * 数据库关键字
      */
     private final Set<String> keywords;
-
     /**
      * 前缀
      */
     private final String prefix;
-
     /**
      * 后缀
      */
@@ -79,6 +85,10 @@ public class KeywordWrap {
 
     public KeywordWrap(String prefix, String suffix) {
         this(false, Collections.emptySet(), prefix, suffix);
+    }
+
+    public KeywordWrap(boolean caseSensitive, String prefix, String suffix) {
+        this(caseSensitive, Collections.emptySet(), prefix, suffix);
     }
 
     public KeywordWrap(Set<String> keywords, String prefix, String suffix) {
@@ -92,7 +102,8 @@ public class KeywordWrap {
         this.suffix = suffix;
     }
 
-    public KeywordWrap(boolean caseSensitive, boolean keywordsToUpperCase, Set<String> keywords, String prefix, String suffix) {
+    public KeywordWrap(boolean caseSensitive, boolean keywordsToUpperCase, Set<String> keywords, String prefix,
+        String suffix) {
         this.caseSensitive = caseSensitive;
         this.keywordsToUpperCase = keywordsToUpperCase;
         this.keywords = keywords;
