@@ -2660,4 +2660,12 @@ public class QueryMethods {
         return new FunctionQueryColumn(GROUP_CONCAT, columnX);
     }
 
+    /**
+     * date 函数
+     * @return
+     */
+    public static FunctionQueryColumn date(QueryColumn column) {
+        return new FunctionQueryColumn("DATE", column);
+    }
+
 }
