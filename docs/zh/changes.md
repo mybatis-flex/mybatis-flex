@@ -2,6 +2,19 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.9.3 20240618
+新增：代码生成器添加生成 Java、Kotlin 两种代码的支持，感谢 @Suomm
+新增：QueryMethods 添加 mysql date 函数，感谢 @bigtian99
+优化：代码生成器自动检测父类是否包含泛型，感谢 @rainybx
+优化：ClassUtil 优化抽取遍历父类的逻辑减少递归，感谢 @KAMO030
+优化：优化 AbstractRelation，当配置错误时给出更加明确的错误信息
+优化：APT 支持在 Resources 目录进行配置，感谢 @ruansheng8
+修复：java 代码生成器 base 类缺少 import，感谢 @rainybx
+修复：SQL Server 添加 KeywordWrap 无反义区分大小写处理
+修复：修复多个 SqlSessionFactory 共存时，FlexGlobalConfig 被最后一个覆盖的问题，感谢 @witt-bit
+文档：优化多数据源的示例代码，感谢 @jesee030
+
+
 
 ## v1.9.2 20240604
 - 新增：代码生成器新增 PostgreSQL 方言的实现，感谢 @StringKe
