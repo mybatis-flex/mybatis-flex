@@ -138,10 +138,13 @@ const {Layout} = DefaultTheme
                 </div>
 
                 <div class="content">
-
+<!--                    <div class="banner">-->
+<!--                        <a href="https://dromara.gitee.io/fast-request/" target="_blank"><img-->
+<!--                            src="/assets/images/ad/fast-request-20230828.svg" style="width: 120px;height: 50px"></a>-->
+<!--                    </div>-->
                     <div class="banner">
-                        <a href="https://dromara.gitee.io/fast-request/" target="_blank"><img
-                            src="/assets/images/ad/fast-request-20230828.svg" style="width: 120px;height: 50px"></a>
+                        <a href="https://www.5iot.com/source?key=flex" target="_blank"><img
+                            src="/assets/images/ad/iotlink_20240802.png"></a>
                     </div>
                     <div class="banner">
                         <a href="http://www.jpress.cn" target="_blank" style="height:50px;
@@ -149,27 +152,23 @@ const {Layout} = DefaultTheme
                             信创 CMS
                         </a>
                     </div>
-                    <div class="banner">
-                        <a href="http://www.haorentech.com" target="_blank"><img
-                            src="/assets/images/ad/haorentech_20230901.png" style="width: 105px;height: 50px"></a>
-                    </div>
+<!--                    <div class="banner">-->
+<!--                        <a href="http://www.haorentech.com" target="_blank"><img-->
+<!--                            src="/assets/images/ad/haorentech_20230901.png" style="width: 105px;height: 50px"></a>-->
+<!--                    </div>-->
                     <div class="banner">
                         <a href="http://www.codeformat.cn" target="_blank"><img src="/assets/images/ad/code-format.png"></a>
-                    </div>
-                    <div class="banner">
-                        <a href="https://www.5iot.com/source?key=flex" target="_blank"><img
-                            src="/assets/images/ad/iotlink_20240802.png"></a>
                     </div>
                     <div class="banner">
                         <a href="https://eiam.topiam.cn" target="_blank"><img
                             src="/assets/images/ad/topiam_20230909.png" style="width: 105px;height: 50px"></a>
                     </div>
-<!--                    <div class="banner">-->
-<!--                        虚位以待-->
-<!--                    </div>-->
-<!--                    <div class="banner">-->
-<!--                        虚位以待-->
-<!--                    </div>-->
+                    <div class="banner">
+                        虚位以待
+                    </div>
+                    <div class="banner">
+                        虚位以待
+                    </div>
                 </div>
                 <div class="banner-bottom">
                     <a href="https://www.orangeforms.com" target="_blank"><img
