@@ -164,12 +164,16 @@ const {Layout} = DefaultTheme
                         <a href="https://eiam.topiam.cn" target="_blank"><img
                             src="/assets/images/ad/topiam_20230909.png" style="width: 105px;height: 50px"></a>
                     </div>
-                    <div class="banner">
-                        虚位以待
-                    </div>
-                    <div class="banner">
-                        虚位以待
-                    </div>
+<!--                    <div class="banner">-->
+<!--                        虚位以待-->
+<!--                    </div>-->
+<!--                    <div class="banner">-->
+<!--                        虚位以待-->
+<!--                    </div>-->
+                </div>
+                <div class="banner-bottom">
+                    <a href="https://www.orangeforms.com" target="_blank"><img
+                        src="/assets/images/ad/cd_20250620.jpg" data-expired="20250620"></a>
                 </div>
                 <div class="banner-bottom">
                     <a href="https://www.diboot.com/?from=mf" target="_blank"><img
