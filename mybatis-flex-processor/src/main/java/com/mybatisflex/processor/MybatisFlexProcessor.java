@@ -192,7 +192,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     // 标记 entity 类，如果没有配置 Tables 生成位置，以 entity 位置为准
                     entityClassReference = entityClass;
                     // 构建 Tables 常量属性及其导包
-                    ContentBuilder.buildTablesField(importBuilder, fieldBuilder, tableInfo, tableDefClassSuffix, tableDefPropertiesNameStyle, tableDefInstanceSuffix);
+                    ContentBuilder.buildTablesField(importBuilder, fieldBuilder, tableInfo, tableDefClassSuffix, tableDefPropertiesNameStyle, tableDefInstanceSuffix, realTableDefPackage);
                 }
 
                 // 是否生成 Mapper 文件
