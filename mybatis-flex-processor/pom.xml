@@ -11,6 +11,7 @@
 
     <artifactId>mybatis-flex-processor</artifactId>
     <packaging>jar</packaging>
+    <version>1.9.3-fix3</version>
 
 
     <properties>

@@ -125,6 +125,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
             String mapperBaseClass = configuration.get(ConfigurationKey.MAPPER_BASE_CLASS);
 
             // tableDef 配置
+            String tableDefPackage = configuration.get(ConfigurationKey.TABLE_DEF_PACKAGE);
             String tableDefClassSuffix = configuration.get(ConfigurationKey.TABLE_DEF_CLASS_SUFFIX);
             String tableDefInstanceSuffix = configuration.get(ConfigurationKey.TABLE_DEF_INSTANCE_SUFFIX);
             String tableDefPropertiesNameStyle = configuration.get(ConfigurationKey.TABLE_DEF_PROPERTIES_NAME_STYLE);
@@ -180,23 +181,23 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                 tableInfo.setEntityComment(elementUtils.getDocComment(entityClassElement));
 
                 // 生成 TableDef 文件
-                String tableDefPackage = StrUtil.buildTableDefPackage(entityClass);
+                String realTableDefPackage = StrUtil.isBlank(tableDefPackage) ? StrUtil.buildTableDefPackage(entityClass) : StrUtil.processPackageExpression(entityClass, tableDefPackage);
                 String tableDefClassName = entityClassName.concat(tableDefClassSuffix);
-                String tableDefContent = ContentBuilder.buildTableDef(tableInfo, allInTablesEnable, tableDefPackage, tableDefClassName
+                String tableDefContent = ContentBuilder.buildTableDef(tableInfo, allInTablesEnable, realTableDefPackage, tableDefClassName
                     , tableDefPropertiesNameStyle, tableDefInstanceSuffix, columnInfos, defaultColumns);
                 // 将文件所依赖的 Element 传入 Filer 中，表示此 TableDef 依赖这个类，以保证增量编译时不丢失内容。
-                processGenClass(genPath, tableDefPackage, tableDefClassName, tableDefContent, entityClassElement);
+                processGenClass(genPath, realTableDefPackage, tableDefClassName, tableDefContent, entityClassElement);
 
                 if (allInTablesEnable) {
                     // 标记 entity 类，如果没有配置 Tables 生成位置，以 entity 位置为准
                     entityClassReference = entityClass;
                     // 构建 Tables 常量属性及其导包
-                    ContentBuilder.buildTablesField(importBuilder, fieldBuilder, tableInfo, tableDefClassSuffix, tableDefPropertiesNameStyle, tableDefInstanceSuffix);
+                    ContentBuilder.buildTablesField(importBuilder, fieldBuilder, tableInfo, tableDefClassSuffix, tableDefPropertiesNameStyle, tableDefInstanceSuffix, realTableDefPackage);
                 }
 
                 // 是否生成 Mapper 文件
                 if ("true".equalsIgnoreCase(mapperGenerateEnable) && table.mapperGenerateEnable()) {
-                    String realMapperPackage = StrUtil.isBlank(mapperPackage) ? StrUtil.buildMapperPackage(entityClass) : mapperPackage;
+                    String realMapperPackage = StrUtil.isBlank(mapperPackage) ? StrUtil.buildMapperPackage(entityClass) : StrUtil.processPackageExpression(entityClass, mapperPackage);
                     String mapperClassName = entityClassName.concat("Mapper");
                     boolean mapperAnnotationEnable = "true".equalsIgnoreCase(mapperAnnotation);
                     String mapperClassContent = ContentBuilder.buildMapper(tableInfo, realMapperPackage, mapperClassName, mapperBaseClass, mapperAnnotationEnable);
@@ -207,7 +208,7 @@ public class MybatisFlexProcessor extends AbstractProcessor {
             // 确定了要生成 Tables 类，且拥有至少一个被 Table 注解的类时再生成 Tables 类。
             if (allInTablesEnable && entityClassReference != null) {
                 // 生成 Tables 文件
-                String realTablesPackage = StrUtil.isBlank(allInTablesPackage) ? StrUtil.buildTableDefPackage(entityClassReference) : allInTablesPackage;
+                String realTablesPackage = StrUtil.isBlank(allInTablesPackage) ? StrUtil.buildTableDefPackage(entityClassReference) : StrUtil.processPackageExpression(entityClassReference, allInTablesPackage);
                 String realTablesClassName = StrUtil.isBlank(allInTablesClassName) ? "Tables" : allInTablesClassName;
                 String tablesContent = ContentBuilder.buildTables(importBuilder, fieldBuilder, realTablesPackage, allInTablesClassName);
                 processGenClass(genPath, realTablesPackage, realTablesClassName, tablesContent, elementsAnnotatedWith.toArray(new Element[0]));
