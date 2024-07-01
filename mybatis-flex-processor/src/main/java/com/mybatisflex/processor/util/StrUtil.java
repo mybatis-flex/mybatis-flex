@@ -128,25 +128,26 @@ public class StrUtil {
      * </p>
      */
     public static String processPackageExpression(String entityClass, String packageStr) {
+        String entityPackage = entityClass.substring(0, entityClass.lastIndexOf("."));
         Matcher matcher = PACKAGE_REGEX.matcher(packageStr);
         if (!matcher.find()) {
-            return entityClass;
+            return entityPackage;
         }
         String expression = matcher.group("expression");
         expression = expression.substring(2, expression.length() - 1);
         String subPackage = matcher.group("subPackage");
-        List<String> entityPackage = Arrays.asList(entityClass.split("\\."));
+        List<String> entityPackageSplit = Arrays.asList(entityPackage.split("\\."));
         while (expression.contains(".parent")) {
-            if (entityPackage.size() == 0) {
+            if (entityPackageSplit.size() == 0) {
                 throw new RuntimeException("Expression [.parent] has exceeded the maximum limit.");
             }
             int index = expression.lastIndexOf(".parent");
             if (index != -1) {
                 expression = expression.substring(0, index);
-                entityPackage = entityPackage.subList(0, entityPackage.size() - 1);
+                entityPackageSplit = entityPackageSplit.subList(0, entityPackageSplit.size() - 1);
             }
         }
-        expression = expression.replace("entityPackage", String.join(".", entityPackage));
+        expression = expression.replace("entityPackage", String.join(".", entityPackageSplit));
         return expression + subPackage;
     }
 

@@ -5,7 +5,7 @@ MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 
 ![](../../assets/images/build_idea.png)
 
->  从1.1.9版本开始，APT默认不生成 Mapper 类文件。如需开启，参考下方配置选项。
+> 从1.1.9版本开始，APT默认不生成 Mapper 类文件。如需开启，参考下方配置选项。
 
 ## 配置文件和选项
 
@@ -18,7 +18,7 @@ MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 | processor.enable                        | 全局启用apt开关            | true/false                                               | true                                 |
 | processor.stopBubbling                  | 是否停止向上级合并配           | true/false                                               | false                                |
 | processor.genPath                       | APT 代码生成路径           | 合法的绝对或相对路径                                               | target/generated-sources/annotations |
-| processor.charset                       | APT 代码生成文件字符集        |   合法的字符集                                                  | UTF-8 |
+| processor.charset                       | APT 代码生成文件字符集        | 合法的字符集                                                   | UTF-8                                |
 | processor.allInTables.enable            | 是否所有的类都生成在 Tables 类里 | true/false                                               | false                                |
 | processor.allInTables.package           | Tables 包名            | 合法的包名                                                    | ${entityPackage}.table               |
 | processor.allInTables.className         | Tables 类名            | 合法的类名                                                    | Tables                               |
@@ -26,12 +26,43 @@ MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 | processor.mapper.annotation             | 开启 @Mapper 注解        | true/false                                               | false                                |
 | processor.mapper.baseClass              | 自定义 Mapper 的父类       | 全路径类名                                                    | com.mybatisflex.core.BaseMapper      |
 | processor.mapper.package                | 自定义 Mapper 生成的包名     | 合法的包名                                                    | ${entityPackage}.mapper              |
+| processor.tableDef.package              | 生成辅助类的包名             | 合法的包名                                                    | ${entityPackage}.table               |
 | processor.tableDef.propertiesNameStyle  | 生成辅助类的字段风格           | upperCase, lowerCase<br />upperCamelCase, lowerCamelCase | upperCase                            |
 | processor.tableDef.instanceSuffix       | 生成的表对应的变量后缀          | string                                                   | 空字符串                                 |
 | processor.tableDef.classSuffix          | 生成的 TableDef 类的后缀    | string                                                   | TableDef                             |
 | processor.tableDef.ignoreEntitySuffixes | 过滤 Entity 后缀         | string                                                   | -                                    |
 
+对于示例中的包名表达式，说明如下：
 
+1. 仅支持以下配置项使用表达式
+    ```text
+    processor.allInTables.package
+    processor.mapper.package
+    processor.tableDef.package
+    ```
+2. `${entityPackage}`: 表示 Entity 类所在的包名
+3. `${entityPackage.parent}`: 表示 Entity 类所在的上一级包名
+4. `parent` 参数的数量没有限制，但如果超出了可能的层级，则会导致异常
+
+**示例配置:**
+
+假设 Example 类的全限定类名为 `com.mybatisflex.entity.Example`
+
+配置内容如下:
+
+```properties
+processor.allInTables.package=${entityPackage}.table
+processor.mapper.package=${entityPackage.parent}.mapper
+processor.tableDef.package=${entityPackage.parent.parent}.table
+```
+
+生成类的全限定类名如下:
+
+```text
+com.mybatisflex.entity.table.Tables
+com.mybatisflex.mapper.ExampleMapper
+com.table.ExampleTableDef
+```
 
 ## APT 代码生成路径
 
@@ -42,11 +73,10 @@ MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 如果我们不想让生成的代码放在这些目录，这可以添加如下配置：
 
 ```properties
-processor.genPath = your-path
+processor.genPath=your-path
 ```
 
 genPath 可以是绝对路径，也可以是相对路径，如果填写的是相对路径，那么则是相对 Maven 根模块的目录。
-
 
 ## APT 生成的 Tables 类名和包名
 
@@ -87,8 +117,9 @@ public class AccountTableDef extends TableDef {
 
 ```properties
 #upperCase, lowerCase, upperCamelCase, lowerCamelCase
-processor.tableDef.propertiesNameStyle = upperCase
+processor.tableDef.propertiesNameStyle=upperCase
 ```
+
 风格支持 4 种配置，默认（未配置时）为 upperCase，支持的配置分别为：
 
 - upperCase：大写 + 下划线，例如：USER_NAME
@@ -96,27 +127,24 @@ processor.tableDef.propertiesNameStyle = upperCase
 - upperCamelCase：首字母大写的驼峰命名，例如：UserName
 - lowerCamelCase：首字母小写的驼峰命名，例如：userName
 
-
-
 ## APT 过滤 Entity 后缀
+
 在某些情况下，Entity 类可能会有某些通用的后缀，比如 `AccountModel` 或者 `AccountDto` 等，我们希望生成的代码，
 不包含 `Model` `Dto` 等后缀，可以添加如下的配置：
 
 ```properties
-processor.tableDef.ignoreEntitySuffixes = Model, Dto
+processor.tableDef.ignoreEntitySuffixes=Model, Dto
 ```
-
 
 ## APT 开启 Mapper 生成
 
 从 v1.1.9 开始， APT 的 Mapper 功能是关闭的，若需要开启 Mapper 的自动生成功能，需要添加以下配置。
 
 ```properties
-processor.mapper.generateEnable = true
+processor.mapper.generateEnable=true
 ```
 
 以上的配置，会开启整个项目的 APT 生成，若我们想关闭某一个 Entity 的 APT 生成，那么可以通过配置注解 `@Table(mapperGenerateEnable = false)` 进行关闭。
-
 
 ## APT 生成的 Mapper 包名
 
@@ -126,7 +154,7 @@ processor.mapper.generateEnable = true
 添加如下配置，自定义 Mapper 生成的包名。
 
 ```properties
-processor.mapper.package = com.your-package
+processor.mapper.package=com.your-package
 ```
 
 ## 自定义 Mapper 的父类
@@ -135,7 +163,7 @@ processor.mapper.package = com.your-package
 `BaseMapper`，然后通过 APT 配置生成。
 
 ```properties
-processor.mapper.baseClass = com.domain.mapper.MyBaseMapper
+processor.mapper.baseClass=com.domain.mapper.MyBaseMapper
 ```
 
 ## 实体类不在一个包中
