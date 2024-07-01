@@ -80,8 +80,10 @@ public class CustomKeyGenerator implements KeyGenerator {
                 MetaObject metaParam = configuration.newMetaObject(parameter);
                 Object generateId = keyGenerator.generate(entity, idInfo.getColumn());
                 MetaObject metaObjectForProperty = metaParam.metaObjectForProperty(FlexConsts.ENTITY);
-                Invoker setInvoker = tableInfo.getReflector().getSetInvoker(idInfo.getProperty());
-                Object id = ConvertUtil.convert(generateId, setInvoker.getType());
+                // Invoker setInvoker = tableInfo.getReflector().getSetInvoker(idInfo.getProperty());
+                // Object id = ConvertUtil.convert(generateId, setInvoker.getType());
+                Class<?> setterType = tableInfo.getReflector().getSetterType(idInfo.getProperty());
+                Object id = ConvertUtil.convert(generateId, setterType);
                 this.setValue(metaObjectForProperty, this.idInfo.getProperty(), id);
             }
         } catch (Exception e) {

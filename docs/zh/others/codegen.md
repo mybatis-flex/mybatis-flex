@@ -79,7 +79,7 @@ public class Codegen {
         globalConfig.setEntityGenerateEnable(true);
         globalConfig.setEntityWithLombok(true);
         //设置项目的JDK版本，项目的JDK为14及以上时建议设置该项，小于14则可以不设置
-        globalConfig.setJdkVersion(17);
+        globalConfig.setEntityJdkVersion(17);
 
         //设置生成 mapper
         globalConfig.setMapperGenerateEnable(true);
