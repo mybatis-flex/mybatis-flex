@@ -751,7 +751,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper orderBy(String... orderBys) {
-        if (orderBys == null || orderBys.length == 0) {
+        if (orderBys == null || orderBys[0] == null) {
             // ignore
             return this;
         }
@@ -762,6 +762,19 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         }
         return this;
     }
+
+    public QueryWrapper orderByUnSafely(String... rawOrderBy) {
+        if (rawOrderBy == null || rawOrderBy[0] == null) {
+            return this;
+        }
+        for (String queryOrderBy : rawOrderBy) {
+            if (StringUtil.isNotBlank(queryOrderBy)) {
+                addOrderBy(new RawQueryOrderBy(queryOrderBy, false));
+            }
+        }
+        return this;
+    }
+
 
     public QueryWrapper limit(Number rows) {
         if (rows != null) {

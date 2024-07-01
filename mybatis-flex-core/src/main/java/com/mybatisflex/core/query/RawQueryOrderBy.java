@@ -35,8 +35,8 @@ public class RawQueryOrderBy extends QueryOrderBy {
         this(content, true);
     }
 
-    public RawQueryOrderBy(String content, boolean checkAvailable) {
-        if (checkAvailable) {
+    public RawQueryOrderBy(String content, boolean checkSafe) {
+        if (checkSafe) {
             SqlUtil.keepOrderBySqlSafely(content);
         }
         this.content = content;
