@@ -415,6 +415,9 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
                 foundValues = applyAutomaticMappings(rsw, resultMap, metaObject, columnPrefix) || foundValues;
             }
             foundValues = applyPropertyMappings(rsw, resultMap, metaObject, lazyLoader, columnPrefix) || foundValues;
+
+            rowValue = ((FlexWrapperFactory.FlexBeanWrapper)metaObject.getObjectWrapper()).allSetAfter();
+
             foundValues = lazyLoader.size() > 0 || foundValues;
             rowValue = foundValues || configuration.isReturnInstanceForEmptyRow() ? rowValue : null;
         }

@@ -15,11 +15,7 @@
  */
 package com.mybatisflex.core;
 
-import com.mybatisflex.annotation.InsertListener;
-import com.mybatisflex.annotation.KeyType;
-import com.mybatisflex.annotation.Listener;
-import com.mybatisflex.annotation.SetListener;
-import com.mybatisflex.annotation.UpdateListener;
+import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.exception.FlexAssert;
@@ -68,6 +64,7 @@ public class FlexGlobalConfig {
      * entity 的监听器
      */
     private Map<Class<?>, List<SetListener>> entitySetListeners = new ConcurrentHashMap<>();
+    private Map<Class<?>, List<AllSetAfterListener>> entityAllSetAfterListeners = new ConcurrentHashMap<>();
     private Map<Class<?>, List<UpdateListener>> entityUpdateListeners = new ConcurrentHashMap<>();
     private Map<Class<?>, List<InsertListener>> entityInsertListeners = new ConcurrentHashMap<>();
 
@@ -156,6 +153,14 @@ public class FlexGlobalConfig {
         this.entitySetListeners = entitySetListeners;
     }
 
+    public Map<Class<?>, List<AllSetAfterListener>> getEntityAllSetAfterListeners() {
+        return entityAllSetAfterListeners;
+    }
+
+    public void setEntityAllSetAfterListeners(Map<Class<?>, List<AllSetAfterListener>> entityAllSetAfterListeners) {
+        this.entityAllSetAfterListeners = entityAllSetAfterListeners;
+    }
+
     public Map<Class<?>, List<UpdateListener>> getEntityUpdateListeners() {
         return entityUpdateListeners;
     }
@@ -175,6 +180,12 @@ public class FlexGlobalConfig {
     public void registerSetListener(SetListener listener, Class<?>... classes) {
         for (Class<?> aClass : classes) {
             entitySetListeners.computeIfAbsent(aClass, k -> new ArrayList<>()).add(listener);
+        }
+    }
+
+    public void registerAllSetAfterListener(AllSetAfterListener listener, Class<?>... classes) {
+        for (Class<?> aClass : classes) {
+            entityAllSetAfterListeners.computeIfAbsent(aClass, k -> new ArrayList<>()).add(listener);
         }
     }
 
@@ -203,6 +214,17 @@ public class FlexGlobalConfig {
      */
     public List<SetListener> getSupportedSetListener(Class<?> entityClass) {
         return this.findSupportedListeners(entityClass, this.entitySetListeners);
+    }
+
+    /**
+     * 获取支持该 {@code entityClass} 的allSetAfter监听器
+     * <p>当registerClass是entityClass的本身或其超类时，则视为支持</p>
+     *
+     * @param entityClass 实体class
+     * @return AllSetAfterListener
+     */
+    public List<AllSetAfterListener> getSupportedAllSetAfterListener(Class<?> entityClass) {
+        return this.findSupportedListeners(entityClass, this.entityAllSetAfterListeners);
     }
 
     public List<UpdateListener> getUpdateListener(Class<?> entityClass) {

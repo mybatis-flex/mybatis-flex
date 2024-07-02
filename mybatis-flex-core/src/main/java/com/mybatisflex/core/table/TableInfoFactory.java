@@ -15,16 +15,7 @@
  */
 package com.mybatisflex.core.table;
 
-import com.mybatisflex.annotation.Column;
-import com.mybatisflex.annotation.ColumnAlias;
-import com.mybatisflex.annotation.ColumnMask;
-import com.mybatisflex.annotation.Id;
-import com.mybatisflex.annotation.InsertListener;
-import com.mybatisflex.annotation.NoneListener;
-import com.mybatisflex.annotation.SetListener;
-import com.mybatisflex.annotation.Table;
-import com.mybatisflex.annotation.TableRef;
-import com.mybatisflex.annotation.UpdateListener;
+import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
@@ -275,6 +266,15 @@ public class TableInfoFactory {
                     .collect(Collectors.toList());
                 tableInfo.setOnSetListeners(setListeners);
             }
+
+            if (table.onAllSetAfter().length > 0) {
+                List<AllSetAfterListener> setListeners = Arrays.stream(table.onAllSetAfter())
+                    .filter(listener -> listener != NoneListener.class)
+                    .map(ClassUtil::newInstance)
+                    .collect(Collectors.toList());
+                tableInfo.setOnAllSetAfterListeners(setListeners);
+            }
+
 
             if (StringUtil.isNotBlank(table.dataSource())) {
                 tableInfo.setDataSource(table.dataSource());
