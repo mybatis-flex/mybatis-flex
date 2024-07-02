@@ -5,6 +5,9 @@
 > 它继承了 Mybatis-Flex 轻量的特性，同时拥有 Kotlin 特有的扩展方法、中缀表达式与DSL等语法支持，
 > 使其拥有了更高的灵活性。让我们可以更加轻松的在 Kotlin 中使用 MyBatis-Flex 所带来的开发效率和开发体验。
 
+* [Gitee](https://gitee.com/mybatis-flex/mybatis-flex-kotlin)
+* [Github](https://github.com/KAMO030/MyBatis-Flex-Kotlin)
+
 ### [查看最新版本](https://central.sonatype.com/search?q=mybatis-flex-kotlin)
 
 ## 特征
