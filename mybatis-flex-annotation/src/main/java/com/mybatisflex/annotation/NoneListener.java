@@ -18,7 +18,7 @@ package com.mybatisflex.annotation;
 /**
  * 空监听器。
  */
-public final class NoneListener implements InsertListener, UpdateListener, SetListener {
+public final class NoneListener implements InsertListener, UpdateListener, SetListener,AllSetAfterListener {
 
     @Override
     public void onInsert(Object entity) {
@@ -33,6 +33,11 @@ public final class NoneListener implements InsertListener, UpdateListener, SetLi
     @Override
     public Object onSet(Object entity, String property, Object value) {
         return value;
+    }
+
+    @Override
+    public Object onAllSetAfter(Object entity) {
+        return entity;
     }
 
 }
