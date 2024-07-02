@@ -15,11 +15,7 @@
  */
 package com.mybatisflex.core.table;
 
-import com.mybatisflex.annotation.Column;
-import com.mybatisflex.annotation.InsertListener;
-import com.mybatisflex.annotation.KeyType;
-import com.mybatisflex.annotation.SetListener;
-import com.mybatisflex.annotation.UpdateListener;
+import com.mybatisflex.annotation.*;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.constant.SqlConsts;
@@ -134,6 +130,7 @@ public class TableInfo {
     private List<InsertListener> onInsertListeners;
     private List<UpdateListener> onUpdateListeners;
     private List<SetListener> onSetListeners;
+    private List<AllSetAfterListener> onAllSetAfterListeners;
 
     /**
      * 对应 MapperXML 配置文件中 {@code <resultMap>} 标签下的 {@code <association>} 标签。
@@ -357,6 +354,14 @@ public class TableInfo {
 
     public void setOnSetListeners(List<SetListener> onSetListeners) {
         this.onSetListeners = onSetListeners;
+    }
+
+    public List<AllSetAfterListener> getOnAllSetAfterListeners() {
+        return onAllSetAfterListeners;
+    }
+
+    public void setOnAllSetAfterListeners(List<AllSetAfterListener> onAllSetAfterListeners) {
+        this.onAllSetAfterListeners = onAllSetAfterListeners;
     }
 
     public List<ColumnInfo> getColumnInfoList() {
@@ -1457,6 +1462,22 @@ public class TableInfo {
             value = setListener.onSet(entity, property, value);
         }
         return value;
+    }
+
+    private static final Map<Class<?>, List<AllSetAfterListener>> allSetAfterListenerCache = new ConcurrentHashMap<>();
+
+    public Object invokeOnAllSetAfterListener(Object entity) {
+        List<AllSetAfterListener> listeners = MapUtil.computeIfAbsent(allSetAfterListenerCache, entityClass, aClass -> {
+            List<AllSetAfterListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
+                .getSupportedAllSetAfterListener(entityClass);
+            List<AllSetAfterListener> allListeners = CollectionUtil.merge(onAllSetAfterListeners, globalListeners);
+            Collections.sort(allListeners);
+            return allListeners;
+        });
+        for (AllSetAfterListener setListener : listeners) {
+            entity = setListener.onAllSetAfter(entity);
+        }
+        return entity;
     }
 
     public QueryColumn getQueryColumnByProperty(String property) {
