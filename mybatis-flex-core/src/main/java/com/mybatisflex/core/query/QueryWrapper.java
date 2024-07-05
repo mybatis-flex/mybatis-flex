@@ -2352,10 +2352,12 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         Object[] paramValues = ArrayUtil.concat(whereValues, havingValues);
 
         // orderBy 参数
-        for (QueryOrderBy orderBy : orderBys) {
-            QueryColumn orderByColumn = orderBy.queryColumn;
-            if (orderByColumn != null && orderByColumn instanceof HasParamsColumn) {
-                paramValues = ArrayUtil.concat(paramValues, ((HasParamsColumn) orderByColumn).getParamValues());
+        if (CollectionUtil.isNotEmpty(orderBys)) {
+            for (QueryOrderBy orderBy : orderBys) {
+                QueryColumn orderByColumn = orderBy.queryColumn;
+                if (orderByColumn != null && orderByColumn instanceof HasParamsColumn) {
+                    paramValues = ArrayUtil.concat(paramValues, ((HasParamsColumn) orderByColumn).getParamValues());
+                }
             }
         }
 
