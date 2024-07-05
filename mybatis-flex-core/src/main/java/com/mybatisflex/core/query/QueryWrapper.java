@@ -2351,6 +2351,16 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
         Object[] paramValues = ArrayUtil.concat(whereValues, havingValues);
 
+        // orderBy 参数
+        if (CollectionUtil.isNotEmpty(orderBys)) {
+            for (QueryOrderBy orderBy : orderBys) {
+                QueryColumn orderByColumn = orderBy.queryColumn;
+                if (orderByColumn != null && orderByColumn instanceof HasParamsColumn) {
+                    paramValues = ArrayUtil.concat(paramValues, ((HasParamsColumn) orderByColumn).getParamValues());
+                }
+            }
+        }
+
         // unions 参数
         if (CollectionUtil.isNotEmpty(unions)) {
             for (UnionWrapper union : unions) {
