@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class QueryOrderBy implements CloneSupport<QueryOrderBy> {
 
-    private QueryColumn queryColumn;
+    QueryColumn queryColumn;
 
     /**
      * asc, desc
