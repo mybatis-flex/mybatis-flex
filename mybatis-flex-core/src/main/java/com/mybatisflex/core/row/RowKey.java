@@ -19,10 +19,12 @@ import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.keygen.KeyGenerators;
 import com.mybatisflex.core.util.SqlUtil;
 
+import java.io.Serializable;
+
 /**
  * row 的主键策略
  */
-public class RowKey {
+public class RowKey implements Serializable {
 
     /**
      * 自增 ID
@@ -99,8 +101,6 @@ public class RowKey {
      */
     protected boolean before = true;
 
-    private RowKey() {
-    }
 
     public String getKeyColumn() {
         return keyColumn;
