@@ -20,6 +20,7 @@ import com.mybatisflex.core.util.StringUtil;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 用于对数据库的关键字包装
@@ -97,16 +98,15 @@ public class KeywordWrap {
 
     public KeywordWrap(boolean caseSensitive, Set<String> keywords, String prefix, String suffix) {
         this.caseSensitive = caseSensitive;
-        this.keywords = keywords;
+        this.keywords = keywords.stream().map(String::toUpperCase).collect(Collectors.toSet());
         this.prefix = prefix;
         this.suffix = suffix;
     }
 
-    public KeywordWrap(boolean caseSensitive, boolean keywordsToUpperCase, Set<String> keywords, String prefix,
-        String suffix) {
+    public KeywordWrap(boolean caseSensitive, boolean keywordsToUpperCase, Set<String> keywords, String prefix, String suffix) {
         this.caseSensitive = caseSensitive;
         this.keywordsToUpperCase = keywordsToUpperCase;
-        this.keywords = keywords;
+        this.keywords = keywords.stream().map(String::toUpperCase).collect(Collectors.toSet());
         this.prefix = prefix;
         this.suffix = suffix;
     }
@@ -120,8 +120,12 @@ public class KeywordWrap {
             return prefix + keyword + suffix;
         }
 
-        keyword = keywordsToUpperCase ? keyword.toUpperCase() : keyword;
-        return keywords.contains(keyword) ? (prefix + keyword + suffix) : keyword;
+        if (keywordsToUpperCase) {
+            keyword = keyword.toUpperCase();
+            return keywords.contains(keyword) ? (prefix + keyword + suffix) : keyword;
+        } else {
+            return keywords.contains(keyword.toUpperCase()) ? (prefix + keyword + suffix) : keyword;
+        }
     }
 
     public boolean isCaseSensitive() {
