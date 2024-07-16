@@ -165,7 +165,7 @@ account.setUserName(null);
 
 // 通过 UpdateWrapper 操作 account 数据
 UpdateWrapper wrapper = UpdateWrapper.of(account);
-wrapper.setRaw("age", "age + 1")
+wrapper.setRaw("age", "age + 1");
 
 accountMapper.update(account);
 ```
