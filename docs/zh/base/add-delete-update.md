@@ -189,7 +189,7 @@ account.setUserName("Michael");
 
 // 通过 UpdateWrapper 操作 account 数据
 UpdateWrapper wrapper = UpdateWrapper.of(account);
-wrapper.set(ACCOUNT.AGE, ACCOUNT.AGE.add(1))
+wrapper.set(ACCOUNT.AGE, ACCOUNT.AGE.add(1));
 
 accountMapper.update(account);
 ```
@@ -211,7 +211,7 @@ account.setUserName("Michael");
 
 // 通过 UpdateWrapper 操作 account 数据
 UpdateWrapper wrapper = UpdateWrapper.of(account);
-wrapper.set(ACCOUNT.AGE, select().from(...))
+wrapper.set(ACCOUNT.AGE, select().from(...));
 
 accountMapper.update(account);
 ```
