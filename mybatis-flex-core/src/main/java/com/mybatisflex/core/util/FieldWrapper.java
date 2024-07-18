@@ -94,9 +94,15 @@ public class FieldWrapper {
 
         if (Collection.class.isAssignableFrom(fieldType)) {
             Type genericType = field.getGenericType();
-            if (genericType instanceof ParameterizedType) {
-                Type actualTypeArgument = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-                fieldWrapper.mappingType = (Class<?>) actualTypeArgument;
+            try{
+                //使用Kotlin时，若Collection泛型类型为协变类型时（如 List<out E>），并且传入的具体泛型类型为open，genericType的具体类型为WildcardType（? extends ExampleClass），该类型不可转为Class（无具体类型），使用instanceOf会抛出转换异常。
+                //该错误目前只在以上情况中发现
+                if (genericType instanceof ParameterizedType) {
+                    Type actualTypeArgument = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+                    fieldWrapper.mappingType = (Class<?>) actualTypeArgument;
+                }
+            }catch (ClassCastException e){
+                throw new UnsupportedOperationException(String.format("不支持使用[%s]作为集合类型。请使用MutableList",fieldType.getName()));
             }
         } else if (Map.class.isAssignableFrom(fieldType)) {
             Type genericType = field.getGenericType();
