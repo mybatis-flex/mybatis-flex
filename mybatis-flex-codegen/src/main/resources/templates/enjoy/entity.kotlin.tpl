@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.media.Schema
  */
 #(table.buildTableAnnotation())
 #end
-#if(isBase)open #end class #(entityClassName) #if(withActiveRecord) : Model<#(entityClassName)>()#else#(table.buildKtExtends(isBase))#end  {
+open class #(entityClassName) #if(withActiveRecord) : Model<#(entityClassName)>()#else#(table.buildKtExtends(isBase))#end  {
 #for(column : table.columns)
     #set(comment = javadocConfig.formatColumnComment(column.comment))
     #if(isNotBlank(comment))
@@ -45,7 +45,7 @@ import io.swagger.v3.oas.annotations.media.Schema
     #if(withSwagger && swaggerVersion.getName() == "DOC")
     @Schema(description = "#(column.comment)")
     #end
-    #if(isBase)open #end var #(column.property): #(column.propertySimpleType)? = #if(isNotBlank(column.propertyDefaultValue)) = #(column.propertyDefaultValue)#else null#end
+    open var #(column.property): #(column.propertySimpleType)? = #if(isNotBlank(column.propertyDefaultValue)) = #(column.propertyDefaultValue)#else null#end
 
 #end
 }
