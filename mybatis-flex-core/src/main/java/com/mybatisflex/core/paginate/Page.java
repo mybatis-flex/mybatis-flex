@@ -52,6 +52,11 @@ public class Page<T> implements Serializable {
     private long pageSize = FlexGlobalConfig.getDefaultConfig().getDefaultPageSize();
 
     /**
+     * 每页数据数量最大限制。
+     */
+    private long maxPageSize = FlexGlobalConfig.getDefaultConfig().getDefaultMaxPageSize();
+
+    /**
      * 总页数。
      */
     private long totalPage = INIT_VALUE;
@@ -196,7 +201,7 @@ public class Page<T> implements Serializable {
         if (pageSize <= 0) {
             throw new IllegalArgumentException("pageSize must greater than 0，current value is: " + pageSize);
         }
-        this.pageSize = pageSize;
+        this.pageSize = Math.min(pageSize, maxPageSize);
         this.calcTotalPage();
     }
 
