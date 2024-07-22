@@ -17,7 +17,6 @@ package com.mybatisflex.core.query;
 
 
 import com.mybatisflex.core.dialect.IDialect;
-import com.mybatisflex.core.util.SqlUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +35,6 @@ public class RawQueryColumn extends QueryColumn implements HasParamsColumn {
     public RawQueryColumn(Object content, Object... params) {
         this.content = String.valueOf(content);
         this.params = params;
-
-        SqlUtil.keepColumnSafely(this.content);
     }
 
     @Override
