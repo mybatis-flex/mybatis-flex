@@ -2,6 +2,25 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.9.4 20240722
+- 新增：支持在 APT 中通过表达式选择 package 层级，感谢 @fangzhengjin
+- 新增：添加 QueryWrapper.orderByUnSafely 支持自定义 SQL 进行 orderBy
+- 新增：为 clickhouse 添加独立方言，进一步适配 clickhouse 更新和删除，感谢 @老唐
+- 新增：添加分页时每页显示的数据数量最大限制，感谢 @Leo
+- 优化：kotlin 代码生成器 entity 类定义及属性设置为 open，感谢 @lemonbx
+- 优化：FieldWrapper 获取 Collection 泛型类型时增加友好错误提。，感谢 @lemonbx
+- 修复：修复实体类的父类含有泛型时，转换报错 https://github.com/mybatis-flex/mybatis-flex/issues/354 感谢 @zuihou111
+- 修复：解决 orderBy 时传入的变量参数时失效问题，感谢 @kamo-sama
+- 修复：在某些情况下会出现 NotSerializableException 错误的问题 https://gitee.com/mybatis-flex/mybatis-flex/issues/IAAXMH
+- 修复：达梦数据库某些场景下 SQL 关键字识别不正确的问题
+- 文档：修正文档快速开始示例代码使用错误的方法名的问题，感谢 @Frank_HL
+- 文档：添加APT设置增加表达式用法说明，感谢 @fangzhengjin
+- 文档：更新use-in-kotlin.md对于插件配置、演示示例等提醒描述，感谢 @kamo-sama
+- 文档：修正多租户下的一些文档错误问题，感谢 @lovealiang
+- 文档：修正增删改下的一些文档错误问题，感谢 @dragon_haoge
+
+
+
 ## v1.9.3 20240618
 - 新增：代码生成器添加生成 Java、Kotlin 两种代码的支持，感谢 @Suomm
 - 新增：QueryMethods 添加 mysql date 函数，感谢 @bigtian99
