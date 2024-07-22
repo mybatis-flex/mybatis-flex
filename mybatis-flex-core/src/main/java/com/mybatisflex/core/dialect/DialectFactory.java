@@ -38,7 +38,6 @@ public class DialectFactory {
      * 此 map 中，用于覆盖系统的方言实现
      */
     private static final Map<DbType, IDialect> dialectMap = new EnumMap<>(DbType.class);
-
     /**
      * 通过设置当前线程的数据库类型，以达到在代码执行时随时切换方言的功能
      */
@@ -142,9 +141,9 @@ public class DialectFactory {
             case DB2_1005:
                 return new DB2105Dialect(KeywordWrap.NONE, DB2105Dialect.DB2105LimitOffsetProcessor.DB2105);
             case SQLSERVER:
-                return new CommonsDialectImpl(KeywordWrap.NONE_CASE_SENSITIVE, LimitOffsetProcessor.SQLSERVER);
+                return new SqlserverDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER);
             case SQLSERVER_2005:
-                return new CommonsDialectImpl(KeywordWrap.NONE_CASE_SENSITIVE, LimitOffsetProcessor.SQLSERVER_2005);
+                return new Sqlserver2005DialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER_2005);
             case INFORMIX:
                 return new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.INFORMIX);
             case SINODB:

@@ -18,6 +18,7 @@ package com.mybatisflex.core.dialect;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.util.StringUtil;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -88,6 +89,7 @@ public class KeywordWrap {
         this(false, Collections.emptySet(), prefix, suffix);
     }
 
+
     public KeywordWrap(boolean caseSensitive, String prefix, String suffix) {
         this(caseSensitive, Collections.emptySet(), prefix, suffix);
     }
@@ -103,7 +105,8 @@ public class KeywordWrap {
         this.suffix = suffix;
     }
 
-    public KeywordWrap(boolean caseSensitive, boolean keywordsToUpperCase, Set<String> keywords, String prefix, String suffix) {
+    public KeywordWrap(boolean caseSensitive, boolean keywordsToUpperCase, Set<String> keywords, String prefix,
+        String suffix) {
         this.caseSensitive = caseSensitive;
         this.keywordsToUpperCase = keywordsToUpperCase;
         this.keywords = keywords.stream().map(String::toUpperCase).collect(Collectors.toSet());
@@ -125,6 +128,37 @@ public class KeywordWrap {
             return keywords.contains(keyword) ? (prefix + keyword + suffix) : keyword;
         } else {
             return keywords.contains(keyword.toUpperCase()) ? (prefix + keyword + suffix) : keyword;
+        }
+    }
+
+    //数据scheme table 包装 根据 . 分割后分别包装
+    public String wrapKeyword(String keyword) {
+        StringBuilder resultBuilder = new StringBuilder();
+        String[] split = keyword.split("\\.");
+        if (split != null && split.length > 0) {
+            Arrays.asList(split)
+                .forEach(f -> resultBuilder.append(prefix).append(f).append(suffix).append("."));
+            return resultBuilder.toString().substring(0, resultBuilder.length() - 1);
+        } else {
+            return prefix + keyword + suffix;
+        }
+    }
+
+    //sqlserver 转义 scheme table colums 包装 根据 . 分割后分别包装
+    public String wrap4Sqlserver(String keyword) {
+        if (StringUtil.isBlank(keyword) || SqlConsts.ASTERISK.equals(keyword.trim())) {
+            return keyword;
+        }
+
+        if (caseSensitive || keywords.isEmpty()) {
+            return wrapKeyword(keyword);
+        }
+
+        if (keywordsToUpperCase) {
+            keyword = keyword.toUpperCase();
+            return keywords.contains(keyword) ? wrapKeyword(keyword) : keyword;
+        } else {
+            return keywords.contains(keyword.toUpperCase()) ? wrapKeyword(keyword) : keyword;
         }
     }
 
