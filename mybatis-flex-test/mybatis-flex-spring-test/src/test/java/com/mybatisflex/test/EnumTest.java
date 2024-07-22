@@ -17,12 +17,9 @@
 package com.mybatisflex.test;
 
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.core.row.Db;
-import com.mybatisflex.core.row.Row;
 import com.mybatisflex.test.mapper.AccountMapper;
 import com.mybatisflex.test.model.Account;
 import com.mybatisflex.test.model.Sex;
-import com.mybatisflex.test.model.TbClass;
 import org.assertj.core.api.WithAssertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +29,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-import static com.mybatisflex.test.tabledef.Tables.ACCOUNT;
+import static com.mybatisflex.test.model.table.AccountTableDef.ACCOUNT;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = AppConfig.class)
