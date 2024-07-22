@@ -83,6 +83,11 @@ public class FlexGlobalConfig {
      */
     private int defaultPageSize = 10;
 
+    /**
+     * 分页查询时，默认每页显示的数据数量最大限制。
+     */
+    private int defaultMaxPageSize = Long.MAX_VALUE;
+
 
     /**
      * 默认的 Relation 注解查询深度
@@ -277,6 +282,14 @@ public class FlexGlobalConfig {
     public void setDefaultPageSize(int defaultPageSize) {
         this.defaultPageSize = defaultPageSize;
     }
+
+    public int getDefaultMaxPageSize() {
+        return defaultMaxPageSize;
+    }
+
+    public void setDefaultMaxPageSize(int defaultMaxPageSize) {
+        this.defaultMaxPageSize = defaultMaxPageSize;
+    }    
 
     public int getDefaultRelationQueryDepth() {
         return defaultRelationQueryDepth;
