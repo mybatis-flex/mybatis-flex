@@ -55,7 +55,10 @@ public class StrUtil {
         for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
             if (Character.isUpperCase(c) && i > 0) {
-                sb.append('_');
+                char prev = str.charAt(i - 1);
+                if (!Character.isUpperCase(prev) && prev != '_') {
+                    sb.append('_');
+                }
             }
             sb.append(Character.toLowerCase(c));
         }
