@@ -60,10 +60,20 @@ public class IdGenTest {
         int size = 100_0000;
         String[] ids = new String[size];
         IKeyGenerator keyGenerator = KeyGeneratorFactory.getKeyGenerator(KeyGenerators.ulid);
+        long startTime = System.currentTimeMillis();
         for (int i = 0; i < size; i++) {
             ids[i] = (String) keyGenerator.generate(null, null);
         }
+        long endTime = System.currentTimeMillis();
         long distinctCount = Arrays.stream(ids).distinct().count();
         Assert.assertEquals(size, distinctCount);
+
+        // 输出性能信息
+        System.out.println("Time taken to generate " + size + " IDs: " + (endTime - startTime) + " ms");
+        System.out.println("Average time per ID: " + ((endTime - startTime) / (double) size) + " ms");
+
+        // 检查单调递增性（仅检查前后两个ID）
+        Assert.assertTrue("IDs should be monotonically increasing",
+            ids[size - 1].compareTo(ids[0]) > 0);
     }
 }
