@@ -38,4 +38,9 @@ public class KeyGenerators {
      */
     public static final String snowFlakeId = "snowFlakeId";
 
+    /**
+     * ulid 主键生成器
+     * {@link com.mybatisflex.core.keygen.impl.ULIDKeyGenerator}
+     */
+    public static final String ulid = "ulid";
 }

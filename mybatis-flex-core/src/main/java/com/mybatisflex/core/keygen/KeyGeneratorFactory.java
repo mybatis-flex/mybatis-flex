@@ -19,6 +19,7 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.keygen.impl.FlexIDKeyGenerator;
 import com.mybatisflex.core.keygen.impl.SnowFlakeIDKeyGenerator;
+import com.mybatisflex.core.keygen.impl.ULIDKeyGenerator;
 import com.mybatisflex.core.keygen.impl.UUIDKeyGenerator;
 import com.mybatisflex.core.util.StringUtil;
 
@@ -39,6 +40,8 @@ public class KeyGeneratorFactory {
         register(KeyGenerators.uuid, new UUIDKeyGenerator());
         register(KeyGenerators.flexId, new FlexIDKeyGenerator());
         register(KeyGenerators.snowFlakeId, new SnowFlakeIDKeyGenerator());
+        register(KeyGenerators.ulid, new ULIDKeyGenerator());
+
     }
 
 
@@ -49,7 +52,7 @@ public class KeyGeneratorFactory {
      * @return 主键生成器
      */
     public static IKeyGenerator getKeyGenerator(String name) {
-        if (StringUtil.isBlank(name)){
+        if (StringUtil.isBlank(name)) {
             throw FlexExceptions.wrap(LocalizedFormats.KEY_GENERATOR_BLANK);
         }
         return KEY_GENERATOR_MAP.get(name.trim());

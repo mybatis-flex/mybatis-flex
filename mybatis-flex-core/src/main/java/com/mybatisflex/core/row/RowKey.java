@@ -46,6 +46,11 @@ public class RowKey implements Serializable {
      */
     public static final RowKey SNOW_FLAKE_ID = RowKey.of("id", KeyType.Generator, KeyGenerators.snowFlakeId, true);
 
+    /**
+     * ulid
+     */
+    public static final RowKey ULID = RowKey.of("id", KeyType.Generator, KeyGenerators.ulid, true);
+
 
     public static RowKey of(String keyColumn) {
         SqlUtil.keepColumnSafely(keyColumn);
