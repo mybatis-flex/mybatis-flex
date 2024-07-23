@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 王帅
  * @author barql
  * @author michael
- * 
+ *
  * @since 2023-06-25
  */
 public class DataSourceInterceptor implements MethodInterceptor {
