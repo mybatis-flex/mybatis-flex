@@ -22,6 +22,7 @@ import com.mybatisflex.core.keygen.KeyGenerators;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.stream.LongStream;
 
 /**
@@ -54,4 +55,15 @@ public class IdGenTest {
         Assert.assertEquals(size, LongStream.of(ids).distinct().count());
     }
 
+    @Test
+    public void ULID() {
+        int size = 100_0000;
+        String[] ids = new String[size];
+        IKeyGenerator keyGenerator = KeyGeneratorFactory.getKeyGenerator(KeyGenerators.ulid);
+        for (int i = 0; i < size; i++) {
+            ids[i] = (String) keyGenerator.generate(null, null);
+        }
+        long distinctCount = Arrays.stream(ids).distinct().count();
+        Assert.assertEquals(size, distinctCount);
+    }
 }
