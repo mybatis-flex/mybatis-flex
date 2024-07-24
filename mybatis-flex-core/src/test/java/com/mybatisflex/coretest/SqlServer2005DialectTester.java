@@ -70,6 +70,24 @@ public class SqlServer2005DialectTester {
     }
 
     @Test
+    public void testSelectSqlSqlserver2005With() {
+        QueryWrapper query = new QueryWrapper().select(ACCOUNT.ID.as("user_id"), ACCOUNT.AGE)
+            .from("TEST.dbo.tb_account")
+            .where(ACCOUNT.ID.in("100", "200"))
+            .and(ACCOUNT.SEX.eq(1))
+            .orderBy(ACCOUNT.ID.desc())
+            .limit(0, 10);
+
+        IDialect dialect = new Sqlserver2005DialectImpl(KeywordWrap.SQUARE_BRACKETS,
+            LimitOffsetProcessor.SQLSERVER_2005);
+        String sql = dialect.forSelectByQuery(query);
+        System.out.println(sql);
+        Assert.assertEquals(
+            "WITH temp_datas AS(SELECT ROW_NUMBER() OVER ( ORDER BY [tb_account].[id] DESC) as __rn, [tb_account].[id] AS [user_id], [tb_account].[age] FROM [TEST].[dbo].[tb_account] WHERE [tb_account].[id] IN (?, ?) AND [tb_account].[sex] = ?) SELECT user_id, age  FROM temp_datas WHERE __rn BETWEEN 1 AND 10 ORDER BY __rn",
+            sql);
+    }
+
+    @Test
     public void testSelectSqlSqlserver() {
         QueryWrapper query = new QueryWrapper().select()
             .from("TEST.dbo.tb_account")
