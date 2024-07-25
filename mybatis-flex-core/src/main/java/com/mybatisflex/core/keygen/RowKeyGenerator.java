@@ -52,11 +52,7 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
     @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
         Row row = (Row) ((Map<?, ?>) parameter).get(FlexConsts.ROW);
-        if (this.keyGenerators == null) {
-            this.keyGenerators = buildRowKeyGenerators(RowCPI.obtainsPrimaryKeys(row));
-        } else {
-            this.keyGenerators = new KeyGenerator[0];
-        }
+        keyGenerators = buildRowKeyGenerators(RowCPI.obtainsPrimaryKeys(row));
         for (KeyGenerator keyGenerator : keyGenerators) {
             keyGenerator.processBefore(executor, ms, stmt, parameter);
         }
@@ -114,7 +110,6 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
                 .statementType(StatementType.PREPARED)
                 .keyGenerator(NoKeyGenerator.INSTANCE)
                 .keyProperty(FlexConsts.ROW + "." + keyColumn)
-//                    .keyColumn(FlexConsts.ROW + "." + rowKey.getKeyColumn())
                 .keyColumn(keyColumn)
                 .databaseId(ms.getDatabaseId())
                 .lang(ms.getLang())
