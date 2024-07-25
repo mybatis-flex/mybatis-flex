@@ -32,9 +32,7 @@ import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.mapping.StatementType;
 
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 为 row 的主键生成器
@@ -45,7 +43,7 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
 
     private final MappedStatement ms;
     private KeyGenerator[] keyGenerators;
-    private List<String> autoKeyGeneratorNames;
+    private Set<String> autoKeyGeneratorNames;
 
     public RowKeyGenerator(MappedStatement methodMappedStatement) {
         this.ms = methodMappedStatement;
@@ -53,8 +51,12 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
 
     @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
-        Row row = (Row) ((Map) parameter).get(FlexConsts.ROW);
-        keyGenerators = buildRowKeyGenerators(RowCPI.obtainsPrimaryKeys(row));
+        Row row = (Row) ((Map<?, ?>) parameter).get(FlexConsts.ROW);
+        if (this.keyGenerators == null) {
+            this.keyGenerators = buildRowKeyGenerators(RowCPI.obtainsPrimaryKeys(row));
+        } else {
+            this.keyGenerators = new KeyGenerator[0];
+        }
         for (KeyGenerator keyGenerator : keyGenerators) {
             keyGenerator.processBefore(executor, ms, stmt, parameter);
         }
@@ -88,12 +90,13 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
             return NoKeyGenerator.INSTANCE;
         }
 
+        String keyColumn = rowKey.getKeyColumn();
         if (rowKey.getKeyType() == KeyType.Auto) {
             if (autoKeyGeneratorNames == null) {
-                autoKeyGeneratorNames = new ArrayList<>();
+                autoKeyGeneratorNames = new HashSet<>();
             }
-            autoKeyGeneratorNames.add(rowKey.getKeyColumn());
-            return new RowJdbc3KeyGenerator(rowKey.getKeyColumn());
+            autoKeyGeneratorNames.add(keyColumn);
+            return new RowJdbc3KeyGenerator(keyColumn);
         }
 
         if (rowKey.getKeyType() == KeyType.Generator) {
@@ -110,9 +113,9 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
                 .timeout(null)
                 .statementType(StatementType.PREPARED)
                 .keyGenerator(NoKeyGenerator.INSTANCE)
-                .keyProperty(FlexConsts.ROW + "." + rowKey.getKeyColumn())
+                .keyProperty(FlexConsts.ROW + "." + keyColumn)
 //                    .keyColumn(FlexConsts.ROW + "." + rowKey.getKeyColumn())
-                .keyColumn(rowKey.getKeyColumn())
+                .keyColumn(keyColumn)
                 .databaseId(ms.getDatabaseId())
                 .lang(ms.getLang())
                 .resultOrdered(false)
@@ -152,7 +155,7 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
      */
     @Override
     public String[] getKeyColumnNames() {
-        return autoKeyGeneratorNames.toArray(new String[0]);
+        return autoKeyGeneratorNames == null ? new String[0] : autoKeyGeneratorNames.toArray(new String[0]);
     }
 
 }
