@@ -99,7 +99,7 @@ const {Layout} = DefaultTheme
         <!--docs: https://vitepress.dev/guide/extending-default-theme#layout-slots-->
         <template #doc-before>
             <div style="margin-bottom: 30px">
-                <a href="https://aiadmin.cc" target="_blank">
+                <a href="https://mp.weixin.qq.com/s/_0cjlA6KSxeeUqhXpqIPVA" target="_blank">
                     <img src="/assets/images/ad/admin-banner.jpg">
                 </a>
             </div>
@@ -107,7 +107,7 @@ const {Layout} = DefaultTheme
 
         <template #home-features-after>
             <div class="banner-home">
-                <a href="https://aiadmin.cc" target="_blank">
+                <a href="https://mp.weixin.qq.com/s/_0cjlA6KSxeeUqhXpqIPVA" target="_blank">
                     <img src="/assets/images/ad/admin-banner.jpg">
                 </a>
             </div>
