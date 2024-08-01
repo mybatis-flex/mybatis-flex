@@ -2,6 +2,17 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+
+## v1.9.5 20240801
+- 新增：ID 主键生成策略新增 ULID 算法，感谢 @dh-free
+- 优化：SqlServer 方言转义 scheme、table、colums 根据 . 分割后分别包装，感谢 @macy0122
+- 优化：SQL SERVER Limit 的细节优化 ，感谢 @macy0122
+- 修复：驼峰转下划线规则不一致问题 @zuojl
+- 修复：当使用 RowKey.AUTO 生成自增主键时，会导致 RowKeyGenerator 错误的问题 https://gitee.com/mybatis-flex/mybatis-flex/issues/IAFGDE
+- 修复：SnowFlakeIDKeyGenerator 在某些极端情况下出现 UnknownHostException 的问题
+
+
+
 ## v1.9.4 20240722
 - 新增：支持在 APT 中通过表达式选择 package 层级，感谢 @fangzhengjin
 - 新增：添加 QueryWrapper.orderByUnSafely 支持自定义 SQL 进行 orderBy
