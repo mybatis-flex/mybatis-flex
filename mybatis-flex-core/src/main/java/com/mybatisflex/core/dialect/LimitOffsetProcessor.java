@@ -15,12 +15,14 @@
  */
 package com.mybatisflex.core.dialect;
 
-import com.mybatisflex.core.query.*;
-import com.mybatisflex.core.util.CollectionUtil;
-
-import java.util.List;
-
 import static com.mybatisflex.core.constant.SqlConsts.*;
+
+import com.mybatisflex.core.query.CPI;
+import com.mybatisflex.core.query.QueryOrderBy;
+import com.mybatisflex.core.query.QueryTable;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.CollectionUtil;
+import java.util.List;
 
 /**
  * limit 和 offset 参数的处理器
@@ -112,21 +114,6 @@ public interface LimitOffsetProcessor {
             String originalSQL = sql.toString();
             String orderByString;
             List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
-            //with 查询根据查询列返回，去除__rn列
-            List<QueryColumn> columnList = CPI.getSelectColumns(queryWrapper);
-            String selectColumns = ASTERISK;
-            StringBuilder selectColumnsBuilder = new StringBuilder();
-            if (columnList != null && !columnList.isEmpty()) {
-                columnList.forEach(column -> {
-                    String alias = column.getAlias();
-                    if (alias != null) {
-                        selectColumnsBuilder.append(alias).append(DELIMITER);
-                    } else {
-                        selectColumnsBuilder.append(column.getName()).append(DELIMITER);
-                    }
-                });
-                selectColumns = selectColumnsBuilder.deleteCharAt(selectColumnsBuilder.length() - 2).toString();
-            }
             if (orderBys == null || orderBys.isEmpty()) {
                 orderByString = "ORDER BY CURRENT_TIMESTAMP";
             } else {
@@ -143,16 +130,12 @@ public interface LimitOffsetProcessor {
                 orderByString = orderBySql.toString();
             }
 
-            StringBuilder newSql = new StringBuilder("WITH temp_datas AS(");
-            newSql.append("SELECT ROW_NUMBER() OVER (")
-                .append(orderByString)
-                .append(") as __rn,")
-                .append(originalSQL.substring(6));
-            newSql.append(")");
-            newSql.append(" SELECT ").append(selectColumns).append(" FROM temp_datas WHERE __rn BETWEEN ")
-                .append(limitOffset + 1)
-                .append(" AND ")
-                .append(limitOffset + limitRows);
+            StringBuilder newSql = new StringBuilder();
+            //fix SqlServer 多表关联查询，主表去重，执行SQL异常 https://gitee.com/mybatis-flex/mybatis-flex/issues/IABEJG
+            newSql.append("WITH temp_datas AS(SELECT __Tab.*, ROW_NUMBER() OVER ( ").append(orderByString)
+                .append(") as __rn ").append(" FROM ( ").append(originalSQL).append(" ) as __Tab ) ");
+            newSql.append(" SELECT * FROM temp_datas WHERE __rn BETWEEN ")
+                .append(limitOffset + 1).append(" AND ").append(limitOffset + limitRows);
             newSql.append(" ORDER BY __rn");
             return newSql;
         }
