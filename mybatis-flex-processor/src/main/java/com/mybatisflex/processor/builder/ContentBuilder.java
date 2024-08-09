@@ -168,7 +168,8 @@ public class ContentBuilder {
      * 构建 Tables 文件常量属性。
      */
     public static void buildTablesField(StringBuilder importBuilder, StringBuilder fieldBuilder, TableInfo tableInfo,
-                                        String tableDefClassSuffix, String tableDefPropertiesNameStyle, String tableDefInstanceSuffix, String tableDefPackage) {
+                                        String tableDefClassSuffix, String tableDefPropertiesNameStyle, String tableDefInstanceSuffix) {
+        String tableDefPackage = StrUtil.buildTableDefPackage(tableInfo.getEntityName());
         String tableDefClassName = tableInfo.getEntitySimpleName().concat(tableDefClassSuffix);
         importBuilder.append("import ").append(tableDefPackage).append('.').append(tableDefClassName).append(";\n");
         String entityComment = tableInfo.getEntityComment();
