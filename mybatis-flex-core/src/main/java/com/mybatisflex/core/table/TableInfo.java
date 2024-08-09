@@ -967,21 +967,18 @@ public class TableInfo {
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
         if (queryTables != null && !queryTables.isEmpty()) {
             for (QueryTable queryTable : queryTables) {
-                if (queryTable instanceof SelectQueryTable) {
-                    QueryWrapper childQuery = ((SelectQueryTable) queryTable).getQueryWrapper();
-                    doAppendConditions(entity, childQuery);
-                } else {
                     String nameWithSchema = queryTable.getNameWithSchema();
+                TableInfo tableInfo = null;
                     if (StringUtil.isNotBlank(nameWithSchema)) {
-                        TableInfo tableInfo = TableInfoFactory.ofTableName(nameWithSchema);
-                        if (tableInfo != null) {
+                    tableInfo = TableInfoFactory.ofTableName(nameWithSchema);
+                }
+                if (tableInfo == null) {
+                    tableInfo = new TableInfo();
+                }
                             tableInfo.appendConditions(entity, queryWrapper);
                         }
                     }
                 }
-            }
-        }
-    }
 
 
     public QueryWrapper buildQueryWrapper(Object entity, SqlOperators operators) {

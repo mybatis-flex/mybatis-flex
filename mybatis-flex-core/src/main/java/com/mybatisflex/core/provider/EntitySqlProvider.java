@@ -408,13 +408,15 @@ public class EntitySqlProvider {
             tableInfos = new ArrayList<>();
             for (QueryTable queryTable : queryTables) {
                 String tableNameWithSchema = queryTable.getNameWithSchema();
+                TableInfo tableInfo = null;
                 if (StringUtil.isNotBlank(tableNameWithSchema)) {
-                    TableInfo tableInfo = TableInfoFactory.ofTableName(tableNameWithSchema);
-                    if (tableInfo != null) {
+                    tableInfo = TableInfoFactory.ofTableName(tableNameWithSchema);
+                }
+                if (tableInfo == null) {
+                    tableInfo = new TableInfo();
+                }
                         tableInfos.add(tableInfo);
                     }
-                }
-            }
         } else {
             tableInfos = Collections.singletonList(ProviderUtil.getTableInfo(context));
         }
