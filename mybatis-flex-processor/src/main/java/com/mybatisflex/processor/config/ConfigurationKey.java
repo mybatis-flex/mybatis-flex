@@ -78,11 +78,6 @@ public enum ConfigurationKey {
 
 
     /**
-     * 自定义 Class 生成的包名。
-     */
-    TABLE_DEF_PACKAGE("processor.tableDef.package", null),
-
-    /**
      * 生成的 Class 的后缀。
      */
     TABLE_DEF_CLASS_SUFFIX("processor.tableDef.classSuffix", "TableDef"),

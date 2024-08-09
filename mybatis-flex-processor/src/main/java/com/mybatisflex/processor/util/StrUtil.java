@@ -16,11 +16,6 @@
 
 package com.mybatisflex.processor.util;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * 字符串工具类。
  *
@@ -32,8 +27,6 @@ public class StrUtil {
 
     private StrUtil() {
     }
-
-    private static final Pattern PACKAGE_REGEX = Pattern.compile("(?<expression>\\$\\{entityPackage[.parent]*\\})(?<subPackage>.*)");
 
     /**
      * com.mybatisflex.test.entity.Account -> Account
@@ -120,40 +113,6 @@ public class StrUtil {
             }
         }
     }
-
-    /**
-     * 解析包名表达式
-     * <p>将{@code `${entityPackage}`}替换为实际实体包名, 表达式中如果存在一个{@code `.parent`}则缩减包名末尾的一位。</p>
-     * <p>示例：{@code `entityClass = com.test1.test2`}<br>
-     * 1. 对于{@code `packageStr = ${entityPackage}`}处理结果为 {@code `com.test1.test2`}<br>
-     * 2. 对于{@code `packageStr = ${entityPackage.parent}`}处理结果为 {@code `com.test1`}<br>
-     * 3. 对于{@code `packageStr = ${entityPackage.parent}.customize`}处理结果为 {@code `com.test1.customize`}
-     * </p>
-     */
-    public static String processPackageExpression(String entityClass, String packageStr) {
-        String entityPackage = entityClass.substring(0, entityClass.lastIndexOf("."));
-        Matcher matcher = PACKAGE_REGEX.matcher(packageStr);
-        if (!matcher.find()) {
-            return entityPackage;
-        }
-        String expression = matcher.group("expression");
-        expression = expression.substring(2, expression.length() - 1);
-        String subPackage = matcher.group("subPackage");
-        List<String> entityPackageSplit = Arrays.asList(entityPackage.split("\\."));
-        while (expression.contains(".parent")) {
-            if (entityPackageSplit.size() == 0) {
-                throw new RuntimeException("Expression [.parent] has exceeded the maximum limit.");
-            }
-            int index = expression.lastIndexOf(".parent");
-            if (index != -1) {
-                expression = expression.substring(0, index);
-                entityPackageSplit = entityPackageSplit.subList(0, entityPackageSplit.size() - 1);
-            }
-        }
-        expression = expression.replace("entityPackage", String.join(".", entityPackageSplit));
-        return expression + subPackage;
-    }
-
 
     public static boolean isGetterMethod(String methodName, String property) {
         if (methodName.startsWith("get") && methodName.length() > 3) {

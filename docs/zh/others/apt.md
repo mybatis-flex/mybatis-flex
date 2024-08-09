@@ -26,35 +26,16 @@ MyBatis-Flex 使用了 APT（Annotation Processing Tool）技术，在项目编�
 | processor.mapper.annotation             | 开启 @Mapper 注解        | true/false                                               | false                                |
 | processor.mapper.baseClass              | 自定义 Mapper 的父类       | 全路径类名                                                    | com.mybatisflex.core.BaseMapper      |
 | processor.mapper.package                | 自定义 Mapper 生成的包名     | 合法的包名                                                    | ${entityPackage}.mapper              |
-| processor.tableDef.package              | 生成辅助类的包名             | 合法的包名                                                    | ${entityPackage}.table               |
 | processor.tableDef.propertiesNameStyle  | 生成辅助类的字段风格           | upperCase, lowerCase<br />upperCamelCase, lowerCamelCase | upperCase                            |
 | processor.tableDef.instanceSuffix       | 生成的表对应的变量后缀          | string                                                   | 空字符串                                 |
 | processor.tableDef.classSuffix          | 生成的 TableDef 类的后缀    | string                                                   | TableDef                             |
 | processor.tableDef.ignoreEntitySuffixes | 过滤 Entity 后缀         | string                                                   | -                                    |
 
-对于示例中的包名表达式，说明如下：
-
-1. 仅支持以下配置项使用表达式
-    ```text
-    processor.allInTables.package
-    processor.mapper.package
-    processor.tableDef.package
-    ```
-2. `${entityPackage}`: 表示 Entity 类所在的包名
-3. `${entityPackage.parent}`: 表示 Entity 类所在的上一级包名
-4. `parent` 参数的数量没有限制，但如果超出了可能的层级，则会导致异常
 
 **示例配置:**
 
 假设 Example 类的全限定类名为 `com.mybatisflex.entity.Example`
 
-配置内容如下:
-
-```properties
-processor.allInTables.package=${entityPackage}.table
-processor.mapper.package=${entityPackage.parent}.mapper
-processor.tableDef.package=${entityPackage.parent.parent}.table
-```
 
 生成类的全限定类名如下:
 
