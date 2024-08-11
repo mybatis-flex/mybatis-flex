@@ -159,3 +159,75 @@ MyBatis-Flex-Kotlin 基于 Mybatis-Flex 的 Kotlin 扩展模块，方便 Kotlin 
 **开源地址：**
 
 https://gitee.com/mybatis-flex/mybatis-flex-kotlin
+
+## Mybatis-Flex-Reactor
+
+MybatisFlex Reactor 为 MybatisFlex 的“响应式”拓展模块，以 Flux 封装了 Cursor 操作。方便了流式查询开发以及大数据体量项目响应数据。
+
+### 特点
+
+1. 无需在现有 MybatisFlex 项目增加兼容性改动，仅需将原有的 `ServiceImpl` 改为 `ReactorServiceImpl` 即可，或者直接再新建一个 `XxxReactorService` 继承于 `ReactorServiceImpl` 即可。
+2. 不强绑定 Spring，也不必须在 Spring WebFlux 框架下开发。完全可以单用 MybatisFlex Reactor 以解决一些传统项目中的性能与内存占用问题。
+3. 与 MybatisFlex 中的 `IService` 逻辑基本保持一致，几乎 0 学习成本即可上手。
+4. 异步非堵塞，对于写入日志等重要级别较低的数据库操作，我们完全可以让步于主线程逻辑，等所有逻辑处理完以后再执行次要逻辑，加快了系统的响应速度。
+
+### 一个解决内存占用过高问题的示例
+
+很多人从 POI 换成 EasyExcel 的原因除了简单易用以外，还有个就是内存占用低。在 POI 会内存爆满写入失败的情况，EasyExcel 却可以写入成功，但是内存占用依然不低。如果后续项目中数据量持续增加，简单的换成 EasyExcel 也不再管用，因为你依然会将所有数据直接读到内存当中。当然，你也可以使用多次分页查询等方式解决这个问题，但是我们是否可以更优雅些呢？
+
+```kotlin
+class UserService : ReactorServiceImpl<UserMapper, User>() {
+    // 在 WebFlux 中，可以将此方法直接作为 Controller 的返回值，供 WebFlux 进行调度，返回数据给前端
+    fun writeAllToExcel(): Mono<String> {
+        // 目标文件
+        val tempFile = File.createTempFile("user", ".xlsx")
+        // 创建 EasyExcel 的 writer 与目标 sheet
+        val writer = EasyExcel.write(tempFile, UserExportVo::class.java)
+        	// 自动列宽
+            .registerWriteHandler(LongestMatchColumnWidthStyleStrategy())
+            .build()
+        val sheet = EasyExcel.writerSheet(1).build()
+        // 调用响应式的 listAs 方法
+        return listAs(QueryWrapper.create(), UserExportVo::class.java)
+            // 这里可以预处理数据
+            .doOnNext { it.name = "${it.id} ${it.name}" }
+            // 选择缓存大小，即多少条数据一起写入 Excel
+            .buffer(100)
+            // 写入到 Excel
+            .doOnNext { writer.write(it, sheet) }
+            // 做结尾操作，使用 then 只接收信号而不接收数据
+            .then()
+            // 结束后关闭 writer
+            .doOnTerminate { writer.finish() }
+            // 返回文件路径
+            .thRerturn(tempFile.absolutePath)
+            // 即使出错也会关闭 writer，防止可能的资源泄漏
+            .doOnError {
+                writer.finish()
+                it.printStackTrace()
+            }
+    }
+}
+```
+
+看完上面代码，你会发现你再也不需要关注内部实现细节与逻辑，仅需像“配置代码”一样，填写几个参数就实现了我们的需求。与原来 `IService` 一样的查询调用方法简单易懂。
+
+在非 Webflux 项目中如何调用返回值为 `Mono` 或 `Flux` 的方法呢？MybatisFlex Reactor 提供了两个方法解决这个问题：
+
+```kotlin
+// 异步调用
+ReactorUtils.runAsync(Mono<T>)  // 返回 任务生命周期对象 Disposable
+// 同步 / 堵塞 调用
+ReactorUtils.runBlock(Mono<T>)  // 返回 T
+
+// 对于返回值为 Flux 的方法，我们可以将其转换为 Mono 即可
+// 直接将所有结果集中到一个 List 中
+Flux<T>.collectList()  // 返回 Mono<List<T>>
+// 以自定义 Collector 汇总数据
+Flux<T>.collect(Collectors.joining(", "))  // 返回 String，每个数据直接用“，”链接
+```
+
+### 开源地址
+[Gitee（仅同步项目）](https://gitee.com/goxiaogle/mybatis-flex-reactor)
+
+[Github](https://github.com/Goxiaogle/mybatis-flex-reactor)
