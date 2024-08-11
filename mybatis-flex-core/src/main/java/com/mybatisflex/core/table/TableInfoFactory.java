@@ -173,7 +173,9 @@ public class TableInfoFactory {
                 ParameterizedType parameterizedType = (ParameterizedType) type;
                 Type rawType = parameterizedType.getRawType();
                 Type[] typeArguments = parameterizedType.getActualTypeArguments();
-                adjustTypeArguments(mapperClass, actualTypeArguments, typeArguments);
+                if (actualTypeArguments != null && actualTypeArguments.length > 0) {
+                    adjustTypeArguments(mapperClass, actualTypeArguments, typeArguments);
+                }
                 if (rawType == BaseMapper.class) {
                     // 找到了
                     if (typeArguments[0] instanceof Class) {
