@@ -653,7 +653,7 @@ public class CommonsDialectImpl implements IDialect {
 
 
     @Override
-    public String forInsertEntityBatch(TableInfo tableInfo, List<?> entities) {
+    public String forInsertEntityBatch(TableInfo tableInfo, Collection<?> entities) {
         StringBuilder sql = new StringBuilder();
         sql.append(INSERT_INTO).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.INSERT));
         String[] insertColumns = tableInfo.obtainInsertColumns(null, false);
