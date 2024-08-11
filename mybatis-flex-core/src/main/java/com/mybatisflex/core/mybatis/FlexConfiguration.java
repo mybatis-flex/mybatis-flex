@@ -348,6 +348,7 @@ public class FlexConfiguration extends Configuration {
         //不支持泛型类添加
         if (!isGenericInterface) {
             mapperRegistry.addMapper(type);
+            TableInfoFactory.init(type.getPackage().getName());
         }
     }
 
@@ -360,11 +361,13 @@ public class FlexConfiguration extends Configuration {
     @Override
     public void addMappers(String packageName, Class<?> superType) {
         mapperRegistry.addMappers(packageName, superType);
+        TableInfoFactory.init(packageName);
     }
 
     @Override
     public void addMappers(String packageName) {
         mapperRegistry.addMappers(packageName);
+        TableInfoFactory.init(packageName);
     }
 
     @Override

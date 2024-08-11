@@ -110,18 +110,23 @@ public class TableInfoFactory {
     private static final Map<Class<?>, TableInfo> mapperTableInfoMap = new ConcurrentHashMap<>();
     private static final Map<Class<?>, TableInfo> entityTableMap = new ConcurrentHashMap<>();
     private static final Map<String, TableInfo> tableInfoMap = new ConcurrentHashMap<>();
-    private static final Set<String> initedPackageNames = new HashSet<>();
+    private static final Set<String> initializedPackageNames = new HashSet<>();
 
 
+    /**
+     * 用于解决 https://github.com/mybatis-flex/mybatis-flex/pull/376 的问题
+     *
+     * @param mapperPackageName mapper 的包名
+     */
     public synchronized static void init(String mapperPackageName) {
-        if (!initedPackageNames.contains(mapperPackageName)) {
+        if (!initializedPackageNames.contains(mapperPackageName)) {
             ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
             resolverUtil.find(new ResolverUtil.IsA(BaseMapper.class), mapperPackageName);
             Set<Class<? extends Class<?>>> mapperSet = resolverUtil.getClasses();
             for (Class<? extends Class<?>> mapperClass : mapperSet) {
                 ofMapperClass(mapperClass);
             }
-            initedPackageNames.add(mapperPackageName);
+            initializedPackageNames.add(mapperPackageName);
         }
     }
 
