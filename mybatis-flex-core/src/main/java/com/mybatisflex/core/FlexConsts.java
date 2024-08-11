@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ public class FlexConsts {
     }
 
     public static final String NAME = "MyBatis-Flex";
-    public static final String VERSION = "1.9.2";
+    public static final String VERSION = "1.9.5";
 
 
     public static final String SQL = "$$sql";

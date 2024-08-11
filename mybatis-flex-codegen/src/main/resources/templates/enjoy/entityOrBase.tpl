@@ -12,6 +12,10 @@ import #(importClass);
 import com.mybatisflex.core.activerecord.Model;
 #end
 
+#if(jdkVersion >= 14)
+import java.io.Serial;
+#end
+
 #if(!isBase)
 #if(withSwagger && swaggerVersion.getName() == "FOX")
 import io.swagger.annotations.ApiModel;
@@ -34,9 +38,6 @@ import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
 #end
 #end
-#end
-#if(jdkVersion >= 14)
-import java.io.Serial;
 #end
 
 /**
@@ -67,7 +68,7 @@ import java.io.Serial;
 @Schema(description = "#(table.getComment())")
 #end
 #(table.buildTableAnnotation()) #end
-public class #(entityClassName)#if(withActiveRecord) extends Model<#(entityClassName)>#else#(table.buildExtends())#(table.buildImplements())#end  {
+public class #(entityClassName)#if(withActiveRecord) extends Model<#(entityClassName)>#else#(table.buildExtends(isBase))#(table.buildImplements())#end  {
 
     #if(jdkVersion >= 14)
     @Serial

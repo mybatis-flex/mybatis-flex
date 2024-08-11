@@ -1,19 +1,33 @@
+/*
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  <p>
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  <p>
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  <p>
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.mybatisflex.core.dialect.impl;
 
-import static com.mybatisflex.core.constant.FuncName.SUBSTRING;
-import static com.mybatisflex.core.constant.SqlConsts.DELIMITER;
-import static com.mybatisflex.core.constant.SqlConsts.NULLS_FIRST;
-import static com.mybatisflex.core.constant.SqlConsts.NULLS_LAST;
-import static com.mybatisflex.core.constant.SqlConsts.ORDER_BY;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryOrderBy;
 import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.mybatisflex.core.constant.FuncName.SUBSTRING;
+import static com.mybatisflex.core.constant.SqlConsts.*;
 
 public class DB2105Dialect extends CommonsDialectImpl {
       //TODO: 根据DatabaseMetaData获取数据库厂商名和版本号

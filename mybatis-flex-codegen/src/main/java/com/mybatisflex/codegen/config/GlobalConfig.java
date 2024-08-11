@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.mybatisflex.codegen.config;
 
 import com.mybatisflex.codegen.constant.TemplateConst;
+import com.mybatisflex.codegen.dialect.JdbcTypeMapping;
 import com.mybatisflex.codegen.entity.Table;
 import com.mybatisflex.codegen.template.ITemplate;
 
@@ -83,6 +84,9 @@ public class GlobalConfig implements Serializable {
         this.strategyConfig = new StrategyConfig();
         this.templateConfig = new TemplateConfig();
         this.setTemplatePath();
+        if(fileType == FileType.KOTLIN) {
+            JdbcTypeMapping.registerMapping("java.lang.Integer", "Int");
+        }
     }
 
     public FileType getFileType() {

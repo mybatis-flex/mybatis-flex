@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,17 +15,16 @@
  */
 package com.mybatisflex.core.query;
 
+import static com.mybatisflex.core.constant.FuncName.*;
+
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static com.mybatisflex.core.constant.FuncName.*;
 
 /**
  * SQL 函数。
@@ -1218,6 +1217,13 @@ public class QueryMethods {
      */
     public static QueryColumn now() {
         return new FunctionQueryColumn(NOW);
+    }
+
+    /**
+     * SQL SWERVER 返回当前日期和时间。
+     */
+    public static QueryColumn getDate() {
+        return new FunctionQueryColumn(GET_DATE);
     }
 
     /**
@@ -2658,6 +2664,14 @@ public class QueryMethods {
      */
     public static QueryColumn groupConcat(QueryColumn columnX) {
         return new FunctionQueryColumn(GROUP_CONCAT, columnX);
+    }
+
+    /**
+     * date 函数
+     * @return
+     */
+    public static FunctionQueryColumn date(QueryColumn column) {
+        return new FunctionQueryColumn("DATE", column);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.mybatisflex.core.keygen.KeyGenerators;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.stream.LongStream;
 
 /**
@@ -54,4 +55,25 @@ public class IdGenTest {
         Assert.assertEquals(size, LongStream.of(ids).distinct().count());
     }
 
+    @Test
+    public void ULID() {
+        int size = 100_0000;
+        String[] ids = new String[size];
+        IKeyGenerator keyGenerator = KeyGeneratorFactory.getKeyGenerator(KeyGenerators.ulid);
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < size; i++) {
+            ids[i] = (String) keyGenerator.generate(null, null);
+        }
+        long endTime = System.currentTimeMillis();
+        long distinctCount = Arrays.stream(ids).distinct().count();
+        Assert.assertEquals(size, distinctCount);
+
+        // 输出性能信息
+        System.out.println("Time taken to generate " + size + " IDs: " + (endTime - startTime) + " ms");
+        System.out.println("Average time per ID: " + ((endTime - startTime) / (double) size) + " ms");
+
+        // 检查单调递增性（仅检查前后两个ID）
+        Assert.assertTrue("IDs should be monotonically increasing",
+            ids[size - 1].compareTo(ids[0]) > 0);
+    }
 }

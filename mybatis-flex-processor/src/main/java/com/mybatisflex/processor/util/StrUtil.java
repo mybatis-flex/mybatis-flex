@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -48,7 +48,10 @@ public class StrUtil {
         for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
             if (Character.isUpperCase(c) && i > 0) {
-                sb.append('_');
+                char prev = str.charAt(i - 1);
+                if (!Character.isUpperCase(prev) && prev != '_') {
+                    sb.append('_');
+                }
             }
             sb.append(Character.toLowerCase(c));
         }
@@ -110,7 +113,6 @@ public class StrUtil {
             }
         }
     }
-
 
     public static boolean isGetterMethod(String methodName, String property) {
         if (methodName.startsWith("get") && methodName.length() > 3) {

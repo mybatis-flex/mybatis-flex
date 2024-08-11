@@ -3,6 +3,49 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.9.5 20240801
+- 新增：ID 主键生成策略新增 ULID 算法，感谢 @dh-free
+- 优化：SqlServer 方言转义 scheme、table、colums 根据 . 分割后分别包装，感谢 @macy0122
+- 优化：SQL SERVER Limit 的细节优化 ，感谢 @macy0122
+- 修复：驼峰转下划线规则不一致问题 @zuojl
+- 修复：当使用 RowKey.AUTO 生成自增主键时，会导致 RowKeyGenerator 错误的问题 https://gitee.com/mybatis-flex/mybatis-flex/issues/IAFGDE
+- 修复：SnowFlakeIDKeyGenerator 在某些极端情况下出现 UnknownHostException 的问题
+
+
+
+## v1.9.4 20240722
+- 新增：支持在 APT 中通过表达式选择 package 层级，感谢 @fangzhengjin
+- 新增：添加 QueryWrapper.orderByUnSafely 支持自定义 SQL 进行 orderBy
+- 新增：为 clickhouse 添加独立方言，进一步适配 clickhouse 更新和删除，感谢 @老唐
+- 新增：添加分页时每页显示的数据数量最大限制，感谢 @Leo
+- 优化：kotlin 代码生成器 entity 类定义及属性设置为 open，感谢 @lemonbx
+- 优化：FieldWrapper 获取 Collection 泛型类型时增加友好错误提。，感谢 @lemonbx
+- 修复：修复实体类的父类含有泛型时，转换报错 https://github.com/mybatis-flex/mybatis-flex/issues/354 感谢 @zuihou111
+- 修复：解决 orderBy 时传入的变量参数时失效问题，感谢 @kamo-sama
+- 修复：在某些情况下会出现 NotSerializableException 错误的问题 https://gitee.com/mybatis-flex/mybatis-flex/issues/IAAXMH
+- 修复：达梦数据库某些场景下 SQL 关键字识别不正确的问题
+- 文档：修正文档快速开始示例代码使用错误的方法名的问题，感谢 @Frank_HL
+- 文档：添加APT设置增加表达式用法说明，感谢 @fangzhengjin
+- 文档：更新use-in-kotlin.md对于插件配置、演示示例等提醒描述，感谢 @kamo-sama
+- 文档：修正多租户下的一些文档错误问题，感谢 @lovealiang
+- 文档：修正增删改下的一些文档错误问题，感谢 @dragon_haoge
+
+
+
+## v1.9.3 20240618
+- 新增：代码生成器添加生成 Java、Kotlin 两种代码的支持，感谢 @Suomm
+- 新增：QueryMethods 添加 mysql date 函数，感谢 @bigtian99
+- 优化：代码生成器自动检测父类是否包含泛型，感谢 @rainybx
+- 优化：ClassUtil 优化抽取遍历父类的逻辑减少递归，感谢 @KAMO030
+- 优化：优化 AbstractRelation，当配置错误时给出更加明确的错误信息
+- 优化：APT 支持在 Resources 目录进行配置，感谢 @ruansheng8
+- 修复：java 代码生成器 base 类缺少 import，感谢 @rainybx
+- 修复：SQL Server 添加 KeywordWrap 无反义区分大小写处理
+- 修复：修复多个 SqlSessionFactory 共存时，FlexGlobalConfig 被最后一个覆盖的问题，感谢 @witt-bit
+- 文档：优化多数据源的示例代码，感谢 @jesee030
+
+
+
 ## v1.9.2 20240604
 - 新增：代码生成器新增 PostgreSQL 方言的实现，感谢 @StringKe
 - 修复：当 FunctionQueryColumn 中存在 table，会导致分页查询时 SQL 优化错误的问题，感谢 @98Kming

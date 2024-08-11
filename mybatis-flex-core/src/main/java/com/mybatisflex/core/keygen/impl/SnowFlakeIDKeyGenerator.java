@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.mybatisflex.core.keygen.impl;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.keygen.IKeyGenerator;
 import com.mybatisflex.core.util.StringUtil;
+import org.apache.ibatis.logging.LogFactory;
 
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
@@ -163,15 +164,13 @@ public class SnowFlakeIDKeyGenerator implements IKeyGenerator {
      * 根据网卡 MAC 地址计算余数作为数据中心 ID。
      */
     protected long getDataCenterId(long maxDataCenterId) {
-        long id = 0L;
+        long id = 1L;
         try {
             if (address == null) {
                 address = InetAddress.getLocalHost();
             }
             NetworkInterface network = NetworkInterface.getByInetAddress(address);
-            if (null == network) {
-                id = 1L;
-            } else {
+            if (null != network) {
                 byte[] mac = network.getHardwareAddress();
                 if (null != mac) {
                     id = ((0x000000FF & (long) mac[mac.length - 2]) | (0x0000FF00 & (((long) mac[mac.length - 1]) << 8))) >> 6;
@@ -179,7 +178,7 @@ public class SnowFlakeIDKeyGenerator implements IKeyGenerator {
                 }
             }
         } catch (Exception e) {
-            throw FlexExceptions.wrap(e, "dataCenterId: %s", e.getMessage());
+            LogFactory.getLog(SnowFlakeIDKeyGenerator.class).error(e.toString(), e);
         }
         return id;
     }

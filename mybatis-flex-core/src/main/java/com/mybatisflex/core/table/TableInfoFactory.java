@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -591,22 +591,18 @@ public class TableInfoFactory {
 
 
     private static void doGetFields(Class<?> entityClass, List<Field> fields) {
-        if (entityClass == null || entityClass == Object.class) {
-            return;
-        }
-
-        Field[] declaredFields = entityClass.getDeclaredFields();
-        for (Field declaredField : declaredFields) {
-            int modifiers = declaredField.getModifiers();
-            if (Modifier.isStatic(modifiers)
-                || Modifier.isTransient(modifiers)
-                || existName(fields, declaredField)) {
-                continue;
+        ClassUtil.applyAllClass(entityClass, currentClass -> {
+            Field[] declaredFields = currentClass.getDeclaredFields();
+            for (Field declaredField : declaredFields) {
+                int modifiers = declaredField.getModifiers();
+                if (!Modifier.isStatic(modifiers)
+                    && !Modifier.isTransient(modifiers)
+                    && !existName(fields, declaredField)) {
+                    fields.add(declaredField);
+                }
             }
-            fields.add(declaredField);
-        }
-
-        doGetFields(entityClass.getSuperclass(), fields);
+            return true;
+        });
     }
 
 

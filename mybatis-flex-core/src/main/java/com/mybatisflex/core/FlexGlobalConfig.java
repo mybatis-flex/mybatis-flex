@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -82,6 +82,11 @@ public class FlexGlobalConfig {
      * 分页查询时，默认每页显示的数据数量。
      */
     private int defaultPageSize = 10;
+
+    /**
+     * 分页查询时，默认每页显示的数据数量最大限制。
+     */
+    private int defaultMaxPageSize = Integer.MAX_VALUE;
 
 
     /**
@@ -276,6 +281,14 @@ public class FlexGlobalConfig {
 
     public void setDefaultPageSize(int defaultPageSize) {
         this.defaultPageSize = defaultPageSize;
+    }
+
+    public int getDefaultMaxPageSize() {
+        return defaultMaxPageSize;
+    }
+
+    public void setDefaultMaxPageSize(int defaultMaxPageSize) {
+        this.defaultMaxPageSize = defaultMaxPageSize;
     }
 
     public int getDefaultRelationQueryDepth() {

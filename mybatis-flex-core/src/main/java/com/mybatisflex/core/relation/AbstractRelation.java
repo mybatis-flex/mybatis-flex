@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ public abstract class AbstractRelation<SelfEntity> {
 
         this.dataSource = dataSource;
 
-        this.selfField = ClassUtil.getFirstField(entityClass, field -> field.getName().equals(selfField));
+        this.selfField = ClassUtil.getFirstField(entityClass, field -> field.getName().equalsIgnoreCase(selfField));
         this.selfFieldWrapper = FieldWrapper.of(entityClass, selfField);
 
         //以使用者注解配置为主
@@ -94,7 +94,11 @@ public abstract class AbstractRelation<SelfEntity> {
         //当指定了 valueField 的时候，一般是 String Integer 等基本数据类型
         this.targetEntityClass = (StringUtil.isNotBlank(valueField) && targetTableInfo != null) ? targetTableInfo.getEntityClass() : relationFieldWrapper.getMappingType();
 
-        this.targetField = ClassUtil.getFirstField(targetEntityClass, field -> field.getName().equals(targetField));
+        this.targetField = ClassUtil.getFirstField(targetEntityClass, field -> field.getName().equalsIgnoreCase(targetField));
+        if (this.targetField == null) {
+            throw new IllegalStateException("Can not find field by name \"" + targetField + "\" from class: " + targetEntityClass.getName());
+        }
+
         this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
 
         this.valueField = valueField;

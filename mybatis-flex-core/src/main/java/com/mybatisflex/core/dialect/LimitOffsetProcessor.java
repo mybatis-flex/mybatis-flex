@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,10 +15,7 @@
  */
 package com.mybatisflex.core.dialect;
 
-import com.mybatisflex.core.query.CPI;
-import com.mybatisflex.core.query.QueryOrderBy;
-import com.mybatisflex.core.query.QueryTable;
-import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.util.CollectionUtil;
 
 import java.util.List;
@@ -54,7 +51,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
     /**
      * Postgresql 的处理器
      * 适合  {@link DbType#POSTGRE_SQL,DbType#SQLITE,DbType#H2,DbType#HSQL,DbType#KINGBASE_ES,DbType#PHOENIX}
@@ -69,7 +65,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
     /**
      * derby 的处理器
      * 适合  {@link DbType#DERBY,DbType#ORACLE_12C,DbType#SQLSERVER ,DbType#POSTGRE_SQL}
@@ -83,7 +78,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
     /**
      * derby 的处理器
      * 适合  {@link DbType#DERBY,DbType#ORACLE_12C,DbType#SQLSERVER ,DbType#POSTGRE_SQL}
@@ -102,8 +96,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
-
     /**
      * SqlServer 2005 limit 处理器
      */
@@ -120,6 +112,21 @@ public interface LimitOffsetProcessor {
             String originalSQL = sql.toString();
             String orderByString;
             List<QueryOrderBy> orderBys = CPI.getOrderBys(queryWrapper);
+            //with 查询根据查询列返回，去除__rn列
+            List<QueryColumn> columnList = CPI.getSelectColumns(queryWrapper);
+            String selectColumns = ASTERISK;
+            StringBuilder selectColumnsBuilder = new StringBuilder();
+            if (columnList != null && !columnList.isEmpty()) {
+                columnList.forEach(column -> {
+                    String alias = column.getAlias();
+                    if (alias != null) {
+                        selectColumnsBuilder.append(alias).append(DELIMITER);
+                    } else {
+                        selectColumnsBuilder.append(column.getName()).append(DELIMITER);
+                    }
+                });
+                selectColumns = selectColumnsBuilder.deleteCharAt(selectColumnsBuilder.length() - 2).toString();
+            }
             if (orderBys == null || orderBys.isEmpty()) {
                 orderByString = "ORDER BY CURRENT_TIMESTAMP";
             } else {
@@ -137,16 +144,20 @@ public interface LimitOffsetProcessor {
             }
 
             StringBuilder newSql = new StringBuilder("WITH temp_datas AS(");
-            newSql.append("SELECT ROW_NUMBER() OVER (").append(orderByString).append(") as __rn,").append(originalSQL.substring(6));
+            newSql.append("SELECT ROW_NUMBER() OVER (")
+                .append(orderByString)
+                .append(") as __rn,")
+                .append(originalSQL.substring(6));
             newSql.append(")");
-            newSql.append(" SELECT * FROM temp_datas WHERE __rn BETWEEN ").append(limitOffset + 1).append(" AND ").append(limitOffset + limitRows);
+            newSql.append(" SELECT ").append(selectColumns).append(" FROM temp_datas WHERE __rn BETWEEN ")
+                .append(limitOffset + 1)
+                .append(" AND ")
+                .append(limitOffset + limitRows);
             newSql.append(" ORDER BY __rn");
             return newSql;
         }
         return sql;
     };
-
-
     /**
      * Informix 的处理器
      * 适合  {@link DbType#INFORMIX}
@@ -161,8 +172,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
-
     /**
      *
      * SINODB 的处理器
@@ -177,7 +186,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
     /**
      * Firebird 的处理器
      * 适合  {@link DbType#FIREBIRD}
@@ -191,7 +199,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
     /**
      * Oracle11g及以下数据库的处理器
      * 适合  {@link DbType#ORACLE,DbType#DM,DbType#GAUSS}
@@ -203,12 +210,14 @@ public interface LimitOffsetProcessor {
             }
             StringBuilder newSql = new StringBuilder("SELECT * FROM (SELECT TEMP_DATAS.*, ROWNUM RN FROM (");
             newSql.append(sql);
-            newSql.append(") TEMP_DATAS WHERE ROWNUM <= ").append(limitOffset + limitRows).append(") WHERE RN > ").append(limitOffset);
+            newSql.append(") TEMP_DATAS WHERE ROWNUM <= ")
+                .append(limitOffset + limitRows)
+                .append(") WHERE RN > ")
+                .append(limitOffset);
             return newSql;
         }
         return sql;
     };
-
     /**
      * Sybase 处理器
      * 适合  {@link DbType#SYBASE}

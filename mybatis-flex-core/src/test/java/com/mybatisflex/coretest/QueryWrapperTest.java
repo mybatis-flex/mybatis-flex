@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.core.query.QueryMethods.*;
@@ -65,5 +67,17 @@ public class QueryWrapperTest {
         printSQL(query);
     }
 
+
+    @Test
+    public void testOrderByValue(){
+        QueryWrapper wrapper = QueryWrapper.create()
+            .select("*")
+            .from(Account.class)
+            .orderBy(case_()
+                .when(new QueryColumn("id").in(1, 2, 3))
+                .then(1).end().asc()
+            );
+        Assert.assertEquals(CPI.getValueArray(wrapper).length, 3);
+    }
 
 }

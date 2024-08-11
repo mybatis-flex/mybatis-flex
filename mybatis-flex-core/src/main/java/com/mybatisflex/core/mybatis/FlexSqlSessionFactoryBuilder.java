@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -128,14 +128,17 @@ public class FlexSqlSessionFactoryBuilder extends SqlSessionFactoryBuilder {
         String environmentId = configuration.getEnvironment().getId();
 
         FlexGlobalConfig globalConfig = FlexGlobalConfig.getConfig(environmentId);
-        if (globalConfig == null){
+        boolean configUnInitialize = globalConfig == null;
+        if (configUnInitialize) {
             globalConfig = new FlexGlobalConfig();
         }
 
         globalConfig.setSqlSessionFactory(sessionFactory);
         globalConfig.setConfiguration(configuration);
 
-        FlexGlobalConfig.setConfig(environmentId, globalConfig,true);
+        boolean isDefault = FlexGlobalConfig.getDefaultConfig() == globalConfig;
+        // #I9V9MB 多个SqlSessionFactory初始化时，被最后一个覆盖默认配置
+        FlexGlobalConfig.setConfig(environmentId, globalConfig, configUnInitialize || isDefault);
     }
 
 

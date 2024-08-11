@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -38,4 +38,9 @@ public class KeyGenerators {
      */
     public static final String snowFlakeId = "snowFlakeId";
 
+    /**
+     * ulid 主键生成器
+     * {@link com.mybatisflex.core.keygen.impl.ULIDKeyGenerator}
+     */
+    public static final String ulid = "ulid";
 }

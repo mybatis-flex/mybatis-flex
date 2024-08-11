@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -80,8 +80,10 @@ public class CustomKeyGenerator implements KeyGenerator {
                 MetaObject metaParam = configuration.newMetaObject(parameter);
                 Object generateId = keyGenerator.generate(entity, idInfo.getColumn());
                 MetaObject metaObjectForProperty = metaParam.metaObjectForProperty(FlexConsts.ENTITY);
-                Invoker setInvoker = tableInfo.getReflector().getSetInvoker(idInfo.getProperty());
-                Object id = ConvertUtil.convert(generateId, setInvoker.getType());
+                // Invoker setInvoker = tableInfo.getReflector().getSetInvoker(idInfo.getProperty());
+                // Object id = ConvertUtil.convert(generateId, setInvoker.getType());
+                Class<?> setterType = tableInfo.getReflector().getSetterType(idInfo.getProperty());
+                Object id = ConvertUtil.convert(generateId, setterType);
                 this.setValue(metaObjectForProperty, this.idInfo.getProperty(), id);
             }
         } catch (Exception e) {

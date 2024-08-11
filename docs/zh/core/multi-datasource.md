@@ -238,7 +238,7 @@ mybatis-flex:
       password: 123456
     other:
       type: com.your.datasource.type2
-      url: jdbc:mysql://127.0.0.1:3306/db2
+      url: jdbc:mysql://127.0.0.1:3306/db3
       username: root
       password: 123456
 ```
