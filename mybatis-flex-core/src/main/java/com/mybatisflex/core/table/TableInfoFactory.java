@@ -201,8 +201,14 @@ public class TableInfoFactory {
         if (superclass == null || superclass == Object.class) {
             return null;
         }
-        Type[] typeArguments = superclass.getTypeParameters();
-        adjustTypeArguments(mapperClass, actualTypeArguments, typeArguments);
+        Type[] typeArguments = null;
+        Type genericSuperclass = mapperClass.getGenericSuperclass();
+        if(genericSuperclass instanceof ParameterizedType){
+            typeArguments = ((ParameterizedType) genericSuperclass).getActualTypeArguments();
+            if (actualTypeArguments != null && actualTypeArguments.length > 0) {
+                adjustTypeArguments(mapperClass, actualTypeArguments, typeArguments);
+            }
+        }
         return getEntityClass(superclass, typeArguments);
     }
 
