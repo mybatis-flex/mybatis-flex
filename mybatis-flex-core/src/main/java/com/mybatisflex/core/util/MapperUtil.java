@@ -87,9 +87,10 @@ public class MapperUtil {
         // 获取查询列和分组列，用于判断是否进行优化
         List<QueryColumn> selectColumns = CPI.getSelectColumns(clone);
         List<QueryColumn> groupByColumns = CPI.getGroupByColumns(clone);
-        // 如果有 distinct 语句或者 group by 语句则不优化
+        QueryCondition havingCondition = CPI.getHavingQueryCondition(clone);
+        // 如果有 distinct、group by、having 等语句则不优化
         // 这种一旦优化了就会造成 count 语句查询出来的值不对
-        if (hasDistinct(selectColumns) || hasGroupBy(groupByColumns)) {
+        if (hasDistinct(selectColumns) || hasGroupBy(groupByColumns) || havingCondition != null) {
             return rawCountQueryWrapper(clone);
         }
         // 判断能不能清除 join 语句
