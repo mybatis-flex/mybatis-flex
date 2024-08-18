@@ -2,6 +2,17 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.9.6 20240818
+- 新增：Mapper 新增 insertBatchSelective 方法
+- 新增：新增 SQL SERVER 返回当前日期和时间，感谢 @macy0122
+- 优化：Mapper 的批量操作方法，由 List 修改为 Collection
+- 修复：Sql Server 多表关联查询，主表去重，执行SQL异常，感谢 @macy0122
+- 修复：processor 回退到 v1.9.3
+- 修复：TableInfoFactory 在某些极端的使用场景可能出现 NPE 的问题
+- 修复：修复分页包含 having 语句时，语法依然被优化问题，感谢 @cearnach
+- 测试：优化一些测试的 DbType 冲突的问题
+
+
 
 ## v1.9.5 20240801
 - 新增：ID 主键生成策略新增 ULID 算法，感谢 @dh-free
