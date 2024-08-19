@@ -262,11 +262,14 @@ public interface IService<T> {
      * <p>根据数据主键批量更新数据
      *
      * @param entities 实体类对象集合
+     * @param ignoreNulls 是否忽略空字段
+     *                   {@code true} 表示忽略实体类中为 {@code null} 的字段，不更新这些字段。
+     *                   {@code false} 表示不忽略空字段，允许将对应字段更新为 {@code null}。
      * @return boolean {@code true} 更新成功，{@code false} 更新失败。
-     * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
+     * @apiNote 若 {@code ignoreNulls} 为 {@code true}，实体类中为 {@code null} 的属性不会更新到数据库。
      */
-    default boolean updateBatch(Collection<T> entities) {
-        return updateBatch(entities, DEFAULT_BATCH_SIZE);
+    default boolean updateBatch(Collection<T> entities, Boolean ignoreNulls) {
+        return updateBatch(entities, DEFAULT_BATCH_SIZE, ignoreNulls);
     }
 
     /**
@@ -274,12 +277,15 @@ public interface IService<T> {
      *
      * @param entities  实体类对象集合
      * @param batchSize 每批次更新数量
+     * @param ignoreNulls 是否忽略空字段
+     *                   {@code true} 表示忽略实体类中为 {@code null} 的字段，不更新这些字段。
+     *                   {@code false} 表示不忽略空字段，允许将对应字段更新为 {@code null}。
      * @return {@code true} 更新成功，{@code false} 更新失败。
-     * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
+     * @apiNote 若 {@code ignoreNulls} 为 {@code true}，实体类中为 {@code null} 的属性不会更新到数据库。
      */
-    default boolean updateBatch(Collection<T> entities, int batchSize) {
+    default boolean updateBatch(Collection<T> entities, int batchSize, boolean ignoreNulls) {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
-        return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::update));
+        return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, (mapper, entity) -> mapper.update(entity, ignoreNulls)));
     }
 
     // ===== 查询（查）操作 =====
