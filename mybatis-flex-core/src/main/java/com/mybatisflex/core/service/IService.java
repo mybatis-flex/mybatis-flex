@@ -269,18 +269,19 @@ public interface IService<T> {
         return updateBatch(entities, DEFAULT_BATCH_SIZE);
     }
 
+
     /**
      * <p>根据数据主键批量更新数据
      *
-     * @param entities 实体类对象集合
+     * @param entities    实体类对象集合
      * @param ignoreNulls 是否忽略空字段
-     *                   {@code true} 表示忽略实体类中为 {@code null} 的字段，不更新这些字段。
-     *                   {@code false} 表示不忽略空字段，允许将对应字段更新为 {@code null}。
+     *                    {@code true} 表示忽略实体类中为 {@code null} 的字段，不更新这些字段。
+     *                    {@code false} 表示不忽略空字段，允许将对应字段更新为 {@code null}。
      * @return boolean {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若 {@code ignoreNulls} 为 {@code true}，实体类中为 {@code null} 的属性不会更新到数据库。
      */
-    default boolean updateBatchWithIgnoreNulls(Collection<T> entities, boolean ignoreNulls) {
-        return updateBatchWithIgnoreNulls(entities, DEFAULT_BATCH_SIZE, ignoreNulls);
+    default boolean updateBatch(Collection<T> entities, boolean ignoreNulls) {
+        return updateBatch(entities, DEFAULT_BATCH_SIZE, ignoreNulls);
     }
 
     /**
@@ -296,18 +297,19 @@ public interface IService<T> {
         return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::update));
     }
 
+
     /**
      * <p>根据数据主键批量更新数据
      *
-     * @param entities  实体类对象集合
-     * @param batchSize 每批次更新数量
+     * @param entities    实体类对象集合
+     * @param batchSize   每批次更新数量
      * @param ignoreNulls 是否忽略空字段
-     *                   {@code true} 表示忽略实体类中为 {@code null} 的字段，不更新这些字段。
-     *                   {@code false} 表示不忽略空字段，允许将对应字段更新为 {@code null}。
+     *                    {@code true} 表示忽略实体类中为 {@code null} 的字段，不更新这些字段。
+     *                    {@code false} 表示不忽略空字段，允许将对应字段更新为 {@code null}。
      * @return {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若 {@code ignoreNulls} 为 {@code true}，实体类中为 {@code null} 的属性不会更新到数据库。
      */
-    default boolean updateBatchWithIgnoreNulls(Collection<T> entities, int batchSize, boolean ignoreNulls) {
+    default boolean updateBatch(Collection<T> entities, int batchSize, boolean ignoreNulls) {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
         return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, (mapper, entity) -> mapper.update(entity, ignoreNulls)));
     }
@@ -327,7 +329,7 @@ public interface IService<T> {
     /**
      * <p>根据实体主键查询数据。
      *
-     * @param entity    实体对象，必须包含有主键
+     * @param entity 实体对象，必须包含有主键
      * @return 查询结果数据
      */
     default T getOneByEntityId(T entity) {
@@ -337,13 +339,14 @@ public interface IService<T> {
     /**
      * <p>根据实体主键查询数据。
      *
-     * @param entity    实体对象，必须包含有主键
+     * @param entity 实体对象，必须包含有主键
      * @return 查询结果数据
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
     default Optional<T> getByEntityIdOpt(T entity) {
         return Optional.ofNullable(getOneByEntityId(entity));
     }
+
     /**
      * <p>根据数据主键查询一条数据。
      *
