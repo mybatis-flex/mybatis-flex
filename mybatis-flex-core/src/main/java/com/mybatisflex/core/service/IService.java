@@ -279,8 +279,8 @@ public interface IService<T> {
      * @return boolean {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若 {@code ignoreNulls} 为 {@code true}，实体类中为 {@code null} 的属性不会更新到数据库。
      */
-    default boolean updateBatch(Collection<T> entities, Boolean ignoreNulls) {
-        return updateBatch(entities, DEFAULT_BATCH_SIZE, ignoreNulls);
+    default boolean updateBatchWithIgnoreNulls(Collection<T> entities, boolean ignoreNulls) {
+        return updateBatchWithIgnoreNulls(entities, DEFAULT_BATCH_SIZE, ignoreNulls);
     }
 
     /**
@@ -307,7 +307,7 @@ public interface IService<T> {
      * @return {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若 {@code ignoreNulls} 为 {@code true}，实体类中为 {@code null} 的属性不会更新到数据库。
      */
-    default boolean updateBatch(Collection<T> entities, int batchSize, boolean ignoreNulls) {
+    default boolean updateBatchWithIgnoreNulls(Collection<T> entities, int batchSize, boolean ignoreNulls) {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
         return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, (mapper, entity) -> mapper.update(entity, ignoreNulls)));
     }
