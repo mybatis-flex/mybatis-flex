@@ -25,13 +25,7 @@ import com.mybatisflex.core.field.FieldQuery;
 import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.field.FieldQueryManager;
 import com.mybatisflex.core.paginate.Page;
-import com.mybatisflex.core.query.CPI;
-import com.mybatisflex.core.query.DistinctQueryColumn;
-import com.mybatisflex.core.query.Join;
-import com.mybatisflex.core.query.QueryColumn;
-import com.mybatisflex.core.query.QueryCondition;
-import com.mybatisflex.core.query.QueryTable;
-import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.relation.RelationManager;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
@@ -75,13 +69,36 @@ public class MapperUtil {
             .select(count().as("total"))
             .from(queryWrapper).as("t");
     }
-
+    public static QueryWrapper rawCountQueryWrapper(QueryWrapper queryWrapper,List<QueryColumn> customCountColumns) {
+        return customCountColumns!=null?QueryWrapper.create()
+            .select(customCountColumns)
+            .from(queryWrapper).as("t"):rawCountQueryWrapper(queryWrapper);
+    }
     /**
      * 优化 COUNT 查询语句。
      */
     public static QueryWrapper optimizeCountQueryWrapper(QueryWrapper queryWrapper) {
+        return optimizeCountQueryWrapper(queryWrapper, Collections.singletonList(count().as("total")));
+    }
+    /**
+     * 优化 COUNT 查询语句。
+     */
+    public static QueryWrapper optimizeCountQueryWrapper(QueryWrapper queryWrapper, List<QueryColumn> customCountColumns) {
         // 对克隆对象进行操作，不影响原来的 QueryWrapper 对象
         QueryWrapper clone = queryWrapper.clone();
+
+        List<UnionWrapper> unions = CPI.getUnions(clone);
+        if(!CollectionUtil.isEmpty(unions)){
+            List<UnionWrapper> newUnions = new ArrayList<>(unions.size());
+            for (UnionWrapper union : unions) {
+                QueryWrapper unionQuery = optimizeCountQueryWrapper(union.getQueryWrapper().clone(),null);
+                UnionWrapper clone1 = union.clone();
+                clone1.setQueryWrapper(unionQuery);
+                newUnions.add(clone1);
+            }
+            CPI.setUnions(clone, newUnions);
+        }
+
         // 将最后面的 order by 移除掉
         CPI.setOrderBys(clone, null);
         // 获取查询列和分组列，用于判断是否进行优化
@@ -91,14 +108,20 @@ public class MapperUtil {
         // 如果有 distinct、group by、having 等语句则不优化
         // 这种一旦优化了就会造成 count 语句查询出来的值不对
         if (hasDistinct(selectColumns) || hasGroupBy(groupByColumns) || havingCondition != null) {
-            return rawCountQueryWrapper(clone);
+            return clone;
         }
         // 判断能不能清除 join 语句
         if (canClearJoins(clone)) {
             CPI.setJoins(clone, null);
         }
         // 将 select 里面的列换成 COUNT(*) AS `total`
-        CPI.setSelectColumns(clone, Collections.singletonList(count().as("total")));
+        if(customCountColumns!=null){
+            if(hasUnion(clone)){
+                return rawCountQueryWrapper(clone,customCountColumns);
+            }else {
+                CPI.setSelectColumns(clone, customCountColumns);
+            }
+        }
         return clone;
     }
 
@@ -116,6 +139,10 @@ public class MapperUtil {
 
     private static boolean hasGroupBy(List<QueryColumn> groupByColumns) {
         return CollectionUtil.isNotEmpty(groupByColumns);
+    }
+
+    private static boolean hasUnion(QueryWrapper countQueryWrapper) {
+        return CollectionUtil.isNotEmpty(CPI.getUnions(countQueryWrapper));
     }
 
     private static boolean canClearJoins(QueryWrapper queryWrapper) {
