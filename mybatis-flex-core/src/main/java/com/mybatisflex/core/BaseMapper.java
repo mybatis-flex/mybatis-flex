@@ -210,7 +210,7 @@ public interface BaseMapper<T> {
             size = DEFAULT_BATCH_SIZE;
         }
 
-        Class aClass = this.getClass();
+        Class aClass = ClassUtil.getUsefulClass(this.getClass());
         int[] batchResults = Db.executeBatch(entities, size, aClass, (BiConsumer<BaseMapper, T>) BaseMapper::insertSelective);
         int result = 0;
         for (int anInt : batchResults) {
