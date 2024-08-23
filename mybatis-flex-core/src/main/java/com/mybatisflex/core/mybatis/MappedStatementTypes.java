@@ -15,23 +15,32 @@
  */
 package com.mybatisflex.core.mybatis;
 
+import java.util.Stack;
+
 public class MappedStatementTypes {
 
     private MappedStatementTypes() {
     }
 
-    private static final ThreadLocal<Class<?>> currentTypeTL = new ThreadLocal<>();
+    private static final ThreadLocal<Stack<Class<?>>> currentTypeTL = ThreadLocal.withInitial(Stack::new);
 
     public static void setCurrentType(Class<?> type) {
-        currentTypeTL.set(type);
+        currentTypeTL.get().push(type);
     }
 
     public static Class<?> getCurrentType() {
-        return currentTypeTL.get();
+        Stack<Class<?>> stack = currentTypeTL.get();
+        return stack.isEmpty() ? null : stack.lastElement();
     }
 
     public static void clear() {
-        currentTypeTL.remove();
+        Stack<Class<?>> stack = currentTypeTL.get();
+        if (!stack.isEmpty()) {
+            stack.pop();
+        }
+        if (stack.isEmpty()) {
+            currentTypeTL.remove();
+        }
     }
 
 }
