@@ -144,7 +144,7 @@ public class FlexConfiguration extends Configuration {
         //动态 resultsMap，方法名称为：selectListByQuery
         Class<?> asType = MappedStatementTypes.getCurrentType();
         //忽略掉查询 Rows 的方法
-        if (asType != null && !id.endsWith("selectRowsByQuery")) {
+        if (asType != null) {
             return MapUtil.computeIfAbsent(dynamicMappedStatementCache, id + ":" + asType.getName(),
                 clazz -> replaceResultMap(ms, TableInfoFactory.ofEntityClass(asType))
             );

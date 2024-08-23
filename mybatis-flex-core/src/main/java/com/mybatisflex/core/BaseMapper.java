@@ -592,12 +592,14 @@ public interface BaseMapper<T> {
      * @return 实体类数据
      */
     default <R> R selectOneWithRelationsByIdAs(Serializable id, Class<R> asType) {
+        R result;
         try {
             MappedStatementTypes.setCurrentType(asType);
-            return (R) selectOneWithRelationsById(id);
+            result = (R) selectOneById(id);
         } finally {
             MappedStatementTypes.clear();
         }
+        return MapperUtil.queryRelations(this, result);
     }
 
     /**
