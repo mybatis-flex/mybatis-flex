@@ -356,7 +356,7 @@ public class RelationManager {
                             queryWrapper.where(column(relation.getJoinSelfColumn()).eq(selfFieldValues.iterator().next()));
                         }
 
-                        mappingRows = mapper.selectListByQueryAs(queryWrapper, Row.class);
+                        mappingRows = mapper.selectRowsByQuery(queryWrapper);
                         if (CollectionUtil.isEmpty(mappingRows)) {
                             return;
                         }
