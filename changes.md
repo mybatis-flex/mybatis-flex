@@ -3,7 +3,7 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
-## v1.9.7 20240818
+## v1.9.7 20240828
 - 新增：增加 updateBatch 方法是否忽略 null 字段的可配置性，感谢 @wqdTryBest
 - 新增：支持在 APT 中通过表达式选择 package 层级
 - 修复：修复使用 insertBatchSelective 方法抛异常的问题
