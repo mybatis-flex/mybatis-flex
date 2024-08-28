@@ -2,6 +2,16 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+
+## v1.9.7 20240818
+- 新增：增加 updateBatch 方法是否忽略 null 字段的可配置性，感谢 @wqdTryBest
+- 新增：支持在 APT 中通过表达式选择 package 层级
+- 修复：修复使用 insertBatchSelective 方法抛异常的问题
+- 修复：修复 union sql 的分页查询问题
+- 修复：RelationManyToMany 注解同时通过 selectOneWithRelationsByIdAs 查询报错的问题
+
+
+
 ## v1.9.6 20240818
 - 新增：Mapper 新增 insertBatchSelective 方法
 - 新增：新增 SQL SERVER 返回当前日期和时间，感谢 @macy0122
