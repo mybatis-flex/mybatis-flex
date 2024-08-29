@@ -230,6 +230,11 @@ public enum DbType {
     DORIS("doris", "doris 数据库"),
 
     /**
+     * Trino
+     */
+    TRINO("trino", "trino 数据库"),
+
+    /**
      * UNKNOWN DB
      */
     OTHER("other", "其他数据库");

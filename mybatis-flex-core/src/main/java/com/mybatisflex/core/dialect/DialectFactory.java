@@ -150,6 +150,8 @@ public class DialectFactory {
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.SINODB);
             case SYBASE:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.SYBASE);
+            case TRINO:
+                return new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.SQLSERVER);
             default:
                 return new CommonsDialectImpl();
         }
