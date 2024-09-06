@@ -54,6 +54,9 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
 //    @Column(isLogicDelete = true)
     private Boolean isDelete;
 
+    @Column(version = true)
+    private Integer version;
+
     private List<Article> articles;
 
     @Column(ignore = true)
@@ -125,6 +128,14 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
         isDelete = delete;
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     public List<Article> getArticles() {
         return articles;
     }
@@ -152,6 +163,7 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
             ", birthday=" + birthday +
             ", options=" + options +
             ", isDelete=" + isDelete +
+            ", version=" + version +
             ", articles=" + articles +
             ", title='" + title + '\'' +
             '}';

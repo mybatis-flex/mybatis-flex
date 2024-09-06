@@ -842,7 +842,7 @@ public class CommonsDialectImpl implements IDialect {
 
         // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
-        if (StringUtil.isNotBlank(versionColumn)) {
+        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 
@@ -868,7 +868,7 @@ public class CommonsDialectImpl implements IDialect {
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
 
         // 乐观锁条件
-        if (StringUtil.isNotBlank(versionColumn)) {
+        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
             Object versionValue = tableInfo.buildColumnSqlArg(entity, versionColumn);
             if (versionValue == null) {
                 throw FlexExceptions.wrap(LocalizedFormats.ENTITY_VERSION_NULL, entity);
@@ -915,7 +915,7 @@ public class CommonsDialectImpl implements IDialect {
 
         // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
-        if (StringUtil.isNotBlank(versionColumn)) {
+        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 
