@@ -30,6 +30,7 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.mybatis.TypeHandlerObject;
+import com.mybatisflex.core.optimisticlock.OptimisticLockManager;
 import com.mybatisflex.core.query.Brackets;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.Join;
@@ -239,6 +240,10 @@ public class TableInfo {
 
     public void setLogicDeleteColumn(String logicDeleteColumn) {
         this.logicDeleteColumn = logicDeleteColumn;
+    }
+
+    public String getOptimisticLockColumnOrSkip() {
+        return OptimisticLockManager.getOptimisticLockColumn(versionColumn);
     }
 
     public String getVersionColumn() {
@@ -884,7 +889,7 @@ public class TableInfo {
         }
 
         // 添加乐观锁条件，只有在 update 的时候进行处理
-        if (StringUtil.isNotBlank(versionColumn) && entity != null) {
+        if (StringUtil.isNotBlank(getOptimisticLockColumnOrSkip()) && entity != null) {
             Object versionValue = buildColumnSqlArg(entity, versionColumn);
             if (versionValue == null) {
                 throw FlexExceptions.wrap(LocalizedFormats.ENTITY_VERSION_NULL, entity);
