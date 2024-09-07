@@ -418,7 +418,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
 
         // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
-        if (StringUtil.isNotBlank(versionColumn)) {
+        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 
@@ -491,7 +491,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
 
         // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
-        if (StringUtil.isNotBlank(versionColumn)) {
+        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 
