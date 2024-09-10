@@ -66,7 +66,7 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
 
     @Override
     protected DataSource getDataSource() {
-        return new FlexDataSource(dsWrap.name(), dsWrap.raw());
+        return new FlexDataSourcePlus(dsWrap.name(), dsWrap.raw());
     }
 
     @Override
