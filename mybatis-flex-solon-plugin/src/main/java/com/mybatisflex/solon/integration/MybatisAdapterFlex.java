@@ -17,7 +17,6 @@
 package com.mybatisflex.solon.integration;
 
 import com.mybatisflex.core.FlexGlobalConfig;
-import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
 import com.mybatisflex.core.row.RowMapperInvoker;
@@ -39,12 +38,9 @@ import javax.sql.DataSource;
  * @since 2.2
  */
 public class MybatisAdapterFlex extends MybatisAdapterDefault {
-
-    FlexSqlSessionFactoryBuilder factoryBuilderPlus;
-
-    FlexGlobalConfig globalConfig;
-
-    RowMapperInvoker rowMapperInvoker;
+    private FlexSqlSessionFactoryBuilder factoryBuilderPlus;
+    private FlexGlobalConfig globalConfig;
+    private RowMapperInvoker rowMapperInvoker;
 
     protected MybatisAdapterFlex(BeanWrap dsWrap) {
         super(dsWrap);
@@ -66,7 +62,7 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
 
     @Override
     protected DataSource getDataSource() {
-        return new FlexDataSource(dsWrap.name(), dsWrap.raw());
+        return new FlexRoutingDataSource(dsWrap.name(), dsWrap.raw());
     }
 
     @Override
@@ -94,7 +90,7 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
         FlexGlobalConfig.setConfig(environment.getId(), globalConfig, false);
 
         //增加事件扩展机制
-        EventBus.push(globalConfig);
+        EventBus.publish(globalConfig);
 
 
         if (dsWrap.typed()) {
