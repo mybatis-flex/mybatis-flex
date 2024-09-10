@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -119,11 +119,11 @@ public class EntitySqlProvider {
      * @param params  方法参数
      * @param context 上下文对象
      * @return SQL 语句
-     * @see com.mybatisflex.core.BaseMapper#insertBatch(List)
+     * @see com.mybatisflex.core.BaseMapper#insertBatch(Collection)
      * @see com.mybatisflex.core.FlexConsts#METHOD_INSERT_BATCH
      */
     public static String insertBatch(Map params, ProviderContext context) {
-        List<Object> entities = ProviderUtil.getEntities(params);
+        Collection<Object> entities = ProviderUtil.getEntities(params);
 
         FlexAssert.notEmpty(entities, "entities");
 
@@ -263,7 +263,7 @@ public class EntitySqlProvider {
         boolean ignoreNulls = ProviderUtil.isIgnoreNulls(params);
 
         QueryWrapper queryWrapper = ProviderUtil.getQueryWrapper(params);
-        appendTableConditions(context,queryWrapper,false);
+        appendTableConditions(context, queryWrapper, false);
 
         TableInfo tableInfo = ProviderUtil.getTableInfo(context);
 
@@ -280,13 +280,12 @@ public class EntitySqlProvider {
         Object[] values = tableInfo.buildUpdateSqlArgs(entity, ignoreNulls, true);
         Object[] queryParams = CPI.getConditionValueArray(queryWrapper);
 
-        Object[] paramValues = ArrayUtil.concat(joinValueArray,ArrayUtil.concat(values,queryParams));
+        Object[] paramValues = ArrayUtil.concat(joinValueArray, ArrayUtil.concat(values, queryParams));
 
         ProviderUtil.setSqlArgs(params, paramValues);
 
         return sql;
     }
-
 
 
     /**

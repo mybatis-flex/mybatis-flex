@@ -53,6 +53,11 @@ Db.tx(() -> {
 - 1、数据查询并写入到缓存
 - 2、Excel 导出等
 
+你还可以使用 Mybatis-Flex-Reactor （flex 响应式拓展包），内部将游标操作封装成了 Flux 对象，可以有更好的游标操作体验。
+详情可见：
+[Gitee](https://gitee.com/goxiaogle/mybatis-flex-reactor)
+[Github](https://github.com/Goxiaogle/mybatis-flex-reactor)
+
 ## 查询 Map 集合
 
 ```java

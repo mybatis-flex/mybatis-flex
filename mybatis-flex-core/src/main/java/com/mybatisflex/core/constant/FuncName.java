@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -72,6 +72,7 @@ public class FuncName {
     public static final String FROM_UNIXTIME = "FROM_UNIXTIME";
     public static final String GET_FORMAT = "GET_FORMAT";
     public static final String GET_LOCT = "GET_LOCT";
+    public static final String GET_DATE = "GETDATE";
     public static final String HEX = "HEX";
     public static final String HOUR = "HOUR";
     public static final String INET_ATON = "INET_ATON";

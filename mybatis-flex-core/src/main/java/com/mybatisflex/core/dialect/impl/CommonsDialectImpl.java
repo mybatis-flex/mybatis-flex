@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -653,7 +653,7 @@ public class CommonsDialectImpl implements IDialect {
 
 
     @Override
-    public String forInsertEntityBatch(TableInfo tableInfo, List<?> entities) {
+    public String forInsertEntityBatch(TableInfo tableInfo, Collection<?> entities) {
         StringBuilder sql = new StringBuilder();
         sql.append(INSERT_INTO).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.INSERT));
         String[] insertColumns = tableInfo.obtainInsertColumns(null, false);
@@ -842,7 +842,7 @@ public class CommonsDialectImpl implements IDialect {
 
         // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
-        if (StringUtil.isNotBlank(versionColumn)) {
+        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 
@@ -868,7 +868,7 @@ public class CommonsDialectImpl implements IDialect {
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
 
         // 乐观锁条件
-        if (StringUtil.isNotBlank(versionColumn)) {
+        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
             Object versionValue = tableInfo.buildColumnSqlArg(entity, versionColumn);
             if (versionValue == null) {
                 throw FlexExceptions.wrap(LocalizedFormats.ENTITY_VERSION_NULL, entity);
@@ -915,7 +915,7 @@ public class CommonsDialectImpl implements IDialect {
 
         // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
-        if (StringUtil.isNotBlank(versionColumn)) {
+        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 

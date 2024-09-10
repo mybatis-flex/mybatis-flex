@@ -61,7 +61,7 @@ public interface TenantFactory {
 - **场景3**：忽略租户条件，由代码自定义条件查询，此项要求 `getTenantIds` 返回 null 或者 空数组。
 
 **注意！注意！注意！**
-> 在整个应用中，应该只有一个 `TenantFactory` 实例，然后再通过其 `getTenantIds()` 方法里去获取当前的租户 ID，在 Spring 常见中，我们可以通过在
+> 在整个应用中，应该只有一个 `TenantFactory` 实例，然后再通过其 `getTenantIds()` 方法里去获取当前的租户 ID，在 Spring 场景中，我们可以通过在
 > RequestContextHolder 中去获取当前的租户 ID。在其他框架中，我们可以通过自定义 ThreadLocal 去获取 TenantId。
 
 ## 示例代码

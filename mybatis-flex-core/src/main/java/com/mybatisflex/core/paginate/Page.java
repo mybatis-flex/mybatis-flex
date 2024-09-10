@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -50,6 +50,11 @@ public class Page<T> implements Serializable {
      * 每页数据数量。
      */
     private long pageSize = FlexGlobalConfig.getDefaultConfig().getDefaultPageSize();
+
+    /**
+     * 每页数据数量最大限制。
+     */
+    private long maxPageSize = FlexGlobalConfig.getDefaultConfig().getDefaultMaxPageSize();
 
     /**
      * 总页数。
@@ -196,7 +201,7 @@ public class Page<T> implements Serializable {
         if (pageSize <= 0) {
             throw new IllegalArgumentException("pageSize must greater than 0，current value is: " + pageSize);
         }
-        this.pageSize = pageSize;
+        this.pageSize = Math.min(pageSize, maxPageSize);
         this.calcTotalPage();
     }
 

@@ -159,8 +159,8 @@ Account.create()
 ```java
 User.create()
     .select(USER.ALL_COLUMNS,ROLE.ALL_COLUMNS)
-    .leftJoin(USER_ROLE).as("ur").on(USER_ROLE.USER_ID.eq(USER.USER_ID))
-    .leftJoin(ROLE).as("r").on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
+    .leftJoin(USER_ROLE.as("ur")).on(USER_ROLE.USER_ID.eq(USER.USER_ID))
+    .leftJoin(ROLE.as("r")).on(USER_ROLE.ROLE_ID.eq(ROLE.ROLE_ID))
     .where(USER.USER_ID.eq(1))
     .one();
 ```

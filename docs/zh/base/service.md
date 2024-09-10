@@ -20,15 +20,15 @@ public interface IAccountService extends IService<Account> {
 
 ```java
 @Component
-public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> 
+public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
         implements IAccountService {
-    
+
     @Override
     public List<Account> customMethod() {
        // 返回 id >= 100 的数据
        return list(ACCOUNT.ID.ge(100));
     }
-    
+
 }
 ```
 
@@ -64,7 +64,9 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account>
 - **update(entity, query)**：根据 `QueryWrapper` 构建的条件更新数据，实体类可以没有主键（如果有也会被忽略），实体类的 null 属性，会自动被忽略。
 - **update(entity, condition)**：根据 `QueryCondition` 构建的条件更新数据，实体类可以没有主键（如果有也会被忽略），实体类的 null 属性，会自动被忽略。
 - **updateBatch(entities)**：批量保存多条数据，要求主键值不能为空，否则会抛出异常；同时，数据为 null 的字段不会更新到数据库。
-- **updateBatch(entities, size)**：批量保存多条数据，按指定数量切分，要求主键值不能为空，否则会抛出异常；同时，数据为 null 的字段不会更新到数据库。。
+- **updateBatchWithIgnoreNulls(entities, ignoreNulls)**：批量保存多条数据，要求主键值不能为空，否则会抛出异常；可以选择数据为 null 的字段是否更新到数据库。
+- **updateBatch(entities, size)**：批量保存多条数据，按指定数量切分，要求主键值不能为空，否则会抛出异常；同时，数据为 null 的字段不会更新到数据库。
+- **updateBatchWithIgnoreNulls(entities, size, ignoreNulls)**：批量保存多条数据，按指定数量切分，要求主键值不能为空，否则会抛出异常；可以选择数据为 null 的字段是否更新到数据库。
 
 
 ## 查询数据

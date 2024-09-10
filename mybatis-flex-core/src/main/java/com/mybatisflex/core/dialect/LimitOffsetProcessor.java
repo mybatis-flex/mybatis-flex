@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@
  */
 package com.mybatisflex.core.dialect;
 
+import static com.mybatisflex.core.constant.SqlConsts.*;
+
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryOrderBy;
 import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.CollectionUtil;
-
 import java.util.List;
-
-import static com.mybatisflex.core.constant.SqlConsts.*;
 
 /**
  * limit 和 offset 参数的处理器
@@ -54,7 +53,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
     /**
      * Postgresql 的处理器
      * 适合  {@link DbType#POSTGRE_SQL,DbType#SQLITE,DbType#H2,DbType#HSQL,DbType#KINGBASE_ES,DbType#PHOENIX}
@@ -69,7 +67,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
     /**
      * derby 的处理器
      * 适合  {@link DbType#DERBY,DbType#ORACLE_12C,DbType#SQLSERVER ,DbType#POSTGRE_SQL}
@@ -83,7 +80,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
     /**
      * derby 的处理器
      * 适合  {@link DbType#DERBY,DbType#ORACLE_12C,DbType#SQLSERVER ,DbType#POSTGRE_SQL}
@@ -102,8 +98,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
-
     /**
      * SqlServer 2005 limit 处理器
      */
@@ -136,17 +130,17 @@ public interface LimitOffsetProcessor {
                 orderByString = orderBySql.toString();
             }
 
-            StringBuilder newSql = new StringBuilder("WITH temp_datas AS(");
-            newSql.append("SELECT ROW_NUMBER() OVER (").append(orderByString).append(") as __rn,").append(originalSQL.substring(6));
-            newSql.append(")");
-            newSql.append(" SELECT * FROM temp_datas WHERE __rn BETWEEN ").append(limitOffset + 1).append(" AND ").append(limitOffset + limitRows);
+            StringBuilder newSql = new StringBuilder();
+            //fix SqlServer 多表关联查询，主表去重，执行SQL异常 https://gitee.com/mybatis-flex/mybatis-flex/issues/IABEJG
+            newSql.append("WITH temp_datas AS(SELECT __Tab.*, ROW_NUMBER() OVER ( ").append(orderByString)
+                .append(") as __rn ").append(" FROM ( ").append(originalSQL).append(" ) as __Tab ) ");
+            newSql.append(" SELECT * FROM temp_datas WHERE __rn BETWEEN ")
+                .append(limitOffset + 1).append(" AND ").append(limitOffset + limitRows);
             newSql.append(" ORDER BY __rn");
             return newSql;
         }
         return sql;
     };
-
-
     /**
      * Informix 的处理器
      * 适合  {@link DbType#INFORMIX}
@@ -161,8 +155,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
-
     /**
      *
      * SINODB 的处理器
@@ -177,7 +169,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
     /**
      * Firebird 的处理器
      * 适合  {@link DbType#FIREBIRD}
@@ -191,7 +182,6 @@ public interface LimitOffsetProcessor {
         }
         return sql;
     };
-
     /**
      * Oracle11g及以下数据库的处理器
      * 适合  {@link DbType#ORACLE,DbType#DM,DbType#GAUSS}
@@ -203,12 +193,14 @@ public interface LimitOffsetProcessor {
             }
             StringBuilder newSql = new StringBuilder("SELECT * FROM (SELECT TEMP_DATAS.*, ROWNUM RN FROM (");
             newSql.append(sql);
-            newSql.append(") TEMP_DATAS WHERE ROWNUM <= ").append(limitOffset + limitRows).append(") WHERE RN > ").append(limitOffset);
+            newSql.append(") TEMP_DATAS WHERE ROWNUM <= ")
+                .append(limitOffset + limitRows)
+                .append(") WHERE RN > ")
+                .append(limitOffset);
             return newSql;
         }
         return sql;
     };
-
     /**
      * Sybase 处理器
      * 适合  {@link DbType#SYBASE}

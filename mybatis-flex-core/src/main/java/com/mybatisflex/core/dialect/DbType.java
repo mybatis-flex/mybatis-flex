@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -228,6 +228,11 @@ public enum DbType {
      * Doris 兼容 Mysql，使用 MySql 驱动和协议
      */
     DORIS("doris", "doris 数据库"),
+
+    /**
+     * Trino
+     */
+    TRINO("trino", "trino 数据库"),
 
     /**
      * UNKNOWN DB

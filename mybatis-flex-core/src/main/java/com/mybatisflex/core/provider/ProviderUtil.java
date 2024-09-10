@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -119,8 +119,8 @@ class ProviderUtil {
         return params.get(FlexConsts.VALUE);
     }
 
-    public static List<Object> getEntities(Map params) {
-        return (List<Object>) params.get(FlexConsts.ENTITIES);
+    public static Collection<Object> getEntities(Map params) {
+        return (Collection<Object>) params.get(FlexConsts.ENTITIES);
     }
 
     public static boolean isIgnoreNulls(Map params) {

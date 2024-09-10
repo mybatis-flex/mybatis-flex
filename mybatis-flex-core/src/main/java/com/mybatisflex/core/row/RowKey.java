@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,10 +19,12 @@ import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.keygen.KeyGenerators;
 import com.mybatisflex.core.util.SqlUtil;
 
+import java.io.Serializable;
+
 /**
  * row 的主键策略
  */
-public class RowKey {
+public class RowKey implements Serializable {
 
     /**
      * 自增 ID
@@ -43,6 +45,11 @@ public class RowKey {
      * snowFlakeId
      */
     public static final RowKey SNOW_FLAKE_ID = RowKey.of("id", KeyType.Generator, KeyGenerators.snowFlakeId, true);
+
+    /**
+     * ulid
+     */
+    public static final RowKey ULID = RowKey.of("id", KeyType.Generator, KeyGenerators.ulid, true);
 
 
     public static RowKey of(String keyColumn) {
@@ -99,8 +106,6 @@ public class RowKey {
      */
     protected boolean before = true;
 
-    private RowKey() {
-    }
 
     public String getKeyColumn() {
         return keyColumn;

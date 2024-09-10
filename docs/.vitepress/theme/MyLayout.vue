@@ -1,5 +1,5 @@
 <!--
-  -  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+  -  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
   -  <p>
   -  Licensed under the Apache License, Version 2.0 (the "License");
   -  you may not use this file except in compliance with the License.
@@ -99,7 +99,7 @@ const {Layout} = DefaultTheme
         <!--docs: https://vitepress.dev/guide/extending-default-theme#layout-slots-->
         <template #doc-before>
             <div style="margin-bottom: 30px">
-                <a href="https://aiadmin.cc" target="_blank">
+                <a href="https://mp.weixin.qq.com/s/_0cjlA6KSxeeUqhXpqIPVA" target="_blank">
                     <img src="/assets/images/ad/admin-banner.jpg">
                 </a>
             </div>
@@ -107,7 +107,7 @@ const {Layout} = DefaultTheme
 
         <template #home-features-after>
             <div class="banner-home">
-                <a href="https://aiadmin.cc" target="_blank">
+                <a href="https://mp.weixin.qq.com/s/_0cjlA6KSxeeUqhXpqIPVA" target="_blank">
                     <img src="/assets/images/ad/admin-banner.jpg">
                 </a>
             </div>
@@ -138,10 +138,13 @@ const {Layout} = DefaultTheme
                 </div>
 
                 <div class="content">
-
+<!--                    <div class="banner">-->
+<!--                        <a href="https://dromara.gitee.io/fast-request/" target="_blank"><img-->
+<!--                            src="/assets/images/ad/fast-request-20230828.svg" style="width: 120px;height: 50px"></a>-->
+<!--                    </div>-->
                     <div class="banner">
-                        <a href="https://dromara.gitee.io/fast-request/" target="_blank"><img
-                            src="/assets/images/ad/fast-request-20230828.svg" style="width: 120px;height: 50px"></a>
+                        <a href="https://www.5iot.com/source?key=flex" target="_blank"><img
+                            src="/assets/images/ad/iotlink_20240802.png"></a>
                     </div>
                     <div class="banner">
                         <a href="http://www.jpress.cn" target="_blank" style="height:50px;
@@ -149,16 +152,12 @@ const {Layout} = DefaultTheme
                             信创 CMS
                         </a>
                     </div>
-                    <div class="banner">
-                        <a href="http://www.haorentech.com" target="_blank"><img
-                            src="/assets/images/ad/haorentech_20230901.png" style="width: 105px;height: 50px"></a>
-                    </div>
+<!--                    <div class="banner">-->
+<!--                        <a href="http://www.haorentech.com" target="_blank"><img-->
+<!--                            src="/assets/images/ad/haorentech_20230901.png" style="width: 105px;height: 50px"></a>-->
+<!--                    </div>-->
                     <div class="banner">
                         <a href="http://www.codeformat.cn" target="_blank"><img src="/assets/images/ad/code-format.png"></a>
-                    </div>
-                    <div class="banner">
-                        <a href="https://www.5iot.com/source?key=flex" target="_blank"><img
-                            src="/assets/images/ad/iotlink_20240802.png"></a>
                     </div>
                     <div class="banner">
                         <a href="https://eiam.topiam.cn" target="_blank"><img
@@ -170,6 +169,10 @@ const {Layout} = DefaultTheme
                     <div class="banner">
                         虚位以待
                     </div>
+                </div>
+                <div class="banner-bottom">
+                    <a href="https://www.orangeforms.com" target="_blank"><img
+                        src="/assets/images/ad/cd_20250620.jpg" data-expired="20250620"></a>
                 </div>
                 <div class="banner-bottom">
                     <a href="https://www.diboot.com/?from=mf" target="_blank"><img

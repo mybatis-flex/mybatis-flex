@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableManager;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -75,7 +76,7 @@ public interface IDialect {
 
     String forInsertEntityWithPk(TableInfo tableInfo, Object entity, boolean ignoreNulls);
 
-    String forInsertEntityBatch(TableInfo tableInfo, List<?> entities);
+    String forInsertEntityBatch(TableInfo tableInfo, Collection<?> entities);
 
     String forDeleteEntityById(TableInfo tableInfo);
 

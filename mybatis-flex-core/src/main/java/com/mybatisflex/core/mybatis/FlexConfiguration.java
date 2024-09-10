@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -143,6 +143,7 @@ public class FlexConfiguration extends Configuration {
         MappedStatement ms = super.getMappedStatement(id);
         //动态 resultsMap，方法名称为：selectListByQuery
         Class<?> asType = MappedStatementTypes.getCurrentType();
+        //忽略掉查询 Rows 的方法
         if (asType != null) {
             return MapUtil.computeIfAbsent(dynamicMappedStatementCache, id + ":" + asType.getName(),
                 clazz -> replaceResultMap(ms, TableInfoFactory.ofEntityClass(asType))
@@ -348,6 +349,7 @@ public class FlexConfiguration extends Configuration {
         //不支持泛型类添加
         if (!isGenericInterface) {
             mapperRegistry.addMapper(type);
+            TableInfoFactory.init(type.getPackage().getName());
         }
     }
 
@@ -360,11 +362,13 @@ public class FlexConfiguration extends Configuration {
     @Override
     public void addMappers(String packageName, Class<?> superType) {
         mapperRegistry.addMappers(packageName, superType);
+        TableInfoFactory.init(packageName);
     }
 
     @Override
     public void addMappers(String packageName) {
         mapperRegistry.addMappers(packageName);
+        TableInfoFactory.init(packageName);
     }
 
     @Override

@@ -2,12 +2,13 @@
 
 **MyBatis-Flex-Kotlin 基于 Mybatis-Flex 的 Kotlin 扩展模块，方便 Kotlin 开发者使用 MyBatis-Flex 进行开发。**
 
-
->它继承了 Mybatis-Flex 轻量的特性，同时拥有 Kotlin 特有的扩展方法、中缀表达式与DSL等语法支持，
->使其拥有了更高的灵活性。让我们可以更加轻松的在 Kotlin 中使用 Mybaits-Flex 所带来的开发效率和开发体验。
+> 它继承了 Mybatis-Flex 轻量的特性，同时拥有 Kotlin 特有的扩展方法、中缀表达式与DSL等语法支持，
+> 使其拥有了更高的灵活性。让我们可以更加轻松的在 Kotlin 中使用 MyBatis-Flex 所带来的开发效率和开发体验。
 
 * [Gitee](https://gitee.com/mybatis-flex/mybatis-flex-kotlin)
 * [Github](https://github.com/KAMO030/MyBatis-Flex-Kotlin)
+
+### [查看最新版本](https://central.sonatype.com/search?q=mybatis-flex-kotlin)
 
 ## 特征
 
@@ -18,22 +19,25 @@
 ## 亮点
 
 - 快速构建启动：通过DSL➕重载运算符，快速配置 MybatisFlexBootstrap 实例并启动：
-    ```kotlin
-    runFlex {
-        // 配置数据源 相当于 setDataSource(dataSource)
-        +dataSource
-        // 配置Mapper 相当于 addMapper(AccountMapper::class.java)
-        +AccountMapper::class
-        // 配置日志输出 相当于 setLogImpl(StdOutImpl::class.java)
-        logImpl = StdOutImpl::class
-      }
-    ```
+  > ⚠️ SpringBoot环境中无需通过此方式配置,请参考[mybatis-flex-spring-boot](https://mybatis-flex.com/zh/base/configuration.html)进行配置
+  ```kotlin
+      runFlex {
+          // 配置数据源 相当于 setDataSource(dataSource)
+          +dataSource
+          // 配置Mapper 相当于 addMapper(AccountMapper::class.java)
+          +AccountMapper::class
+          // 配置日志输出 相当于 setLogImpl(StdOutImpl::class.java)
+          logImpl = StdOutImpl::class
+        }
+  ```
 - 快速查询数据：通过DSL➕泛型快速编写查询语句并查询:  (快速查询提供三个函数：all, filter 和 query )
   >- `all<实体类>()` 查泛型对应的表的所有数据
   >- `filter<实体类>(vararg KProperty<*>, ()->QueryCondition)` 按条件查泛型对应的表的数据
   >- `query<实体类>(QueryScope.()->Unit)` 较复杂查泛型对应的表的数据 (如: 分组,排序等)
   >- `paginateWith(pageNumber: Number, pageSize: Number, totalRow: Number? = null, queryConditionGet: () -> QueryCondition): Page<实体类>`
-     与 `paginate(pageNumber: Number, pageSize: Number, totalRow: Number? = null, init: QueryScope.() -> Unit): Page<实体类>` 使用分页的条件查询与较复杂查询
+     与 `paginate(pageNumber: Number, pageSize: Number, totalRow: Number? = null, init: QueryScope.() -> Unit): Page<实体类>`
+     使用分页的条件查询与较复杂查询
+
 - 简明地构建查询：通过中缀表达式➕扩展方法能更加简单明了的构建条件:
 
     * **【对比原生】**
@@ -97,8 +101,9 @@
   >
   > 而如果写成String：`Account::age between ("17" to "19")`则会报错提醒
 
+
 ## 总结
-引入 Mybatis-Flex-Kotlin 扩展模块在 Kotlin 中使用 Mybaits-Flex 能够基于 Kotlin 强大的语法特性可以让我们更加轻松方便地操作数据库，极大提高了开发效率和开发体验。
+引入 Mybatis-Flex-Kotlin 扩展模块在 Kotlin 中使用 Mybatis-Flex 能够基于 Kotlin 强大的语法特性可以让我们更加轻松方便地操作数据库，极大提高了开发效率和开发体验。
 
 ## 快速开始
 
@@ -109,6 +114,7 @@
 ## 更多使用
 
 - 功能 1：[Bootstrap简化配置](https://gitee.com/mybatis-flex/mybatis-flex-kotlin/blob/main/docs/bootstrapExt.md)
-- 功能 2：[简单查询与扩展](https://gitee.com/mybatis-flex/mybatis-flex-kotlin/blob/main/docs/extensions.md)
+- 功能 2：[简单查询与扩展](https://gitee.com/mybatis-flex/mybatis-flex-kotlin/blob/main/docs/extensions.md)、[演示示例](https://gitee.com/mybatis-flex/mybatis-flex-kotlin/blob/main/mybatis-flex-kotlin-extensions/src/test/kotlin/example/KotlinExample.kt)
 - 功能 3：[向量查询](https://gitee.com/mybatis-flex/mybatis-flex-kotlin/blob/main/docs/vec.md) (实验性)
 - 功能 4：[KSP](https://gitee.com/mybatis-flex/mybatis-flex-kotlin/blob/main/docs/ksp.md)
+- 功能 5：[KotlinGradle 插件](https://gitee.com/mybatis-flex/mybatis-flex-kotlin/blob/main/docs/kotlinGradlePlugin.md)

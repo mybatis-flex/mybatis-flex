@@ -451,6 +451,40 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 
 > 更多关于 MyBatis-Flex APT 的配置，请点击 [这里](./docs/zh/others/apt.md)。
 
+## 乐观锁
+
+### 乐观锁配置
+
+```java
+@Table(value = "tb_account", dataSource = "ds2", onSet = AccountOnSetListener.class)
+public class Account extends BaseEntity implements Serializable, AgeAware {
+
+    ......
+    
+    @Column(version = true)
+    private Integer version;
+    
+}
+```
+
+### 跳过乐观锁的使用
+
+```java
+        AccountMapper accountMapper = bootstrap.getMapper(AccountMapper.class);
+        accountMapper.selectAll().forEach(System.out::println);
+
+        System.out.println(">>>>>>>>>>>>>>>update id=1 user_name from 张三 to 张三1");
+
+        Account account = new Account();
+        account.setId(1L);
+        account.setUserName("张三1");
+        // 跳过乐观锁
+        OptimisticLockManager.execWithoutOptimisticLock(() -> accountMapper.update(account));
+        accountMapper.selectAll().forEach(System.out::println);
+```
+
+
+
 ## Db + Row 工具类
 
 Db + Row 工具类，提供了在 Entity 实体类之外的数据库操作能力。使用 Db + Row 时，无需对数据库表进行映射， Row 是一个 HashMap 的子类，相当于一个通用的 Entity。以下为 Db + Row 的一些示例：

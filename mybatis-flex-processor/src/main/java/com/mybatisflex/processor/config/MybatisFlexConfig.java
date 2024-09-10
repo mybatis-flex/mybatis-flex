@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -50,8 +50,6 @@ public class MybatisFlexConfig {
     protected final Properties properties = new Properties();
 
     public MybatisFlexConfig(Filer filer) {
-        // 先从 resources 目录读取 mybatis-flex.config 配置文件
-        loadConfigFromResource();
         try {
             //target/classes/
             FileObject resource = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "mybatis-flex");
@@ -99,20 +97,6 @@ public class MybatisFlexConfig {
         }
     }
 
-    private void loadConfigFromResource() {
-        Properties resourceProp = new Properties();
-        try (InputStream resourceStream = MybatisFlexConfig.class.getClassLoader().getResourceAsStream(APT_FILE_NAME)) {
-            if (resourceStream == null) {
-                return;
-            }
-            resourceProp.load(resourceStream);
-            if (resourceProp != null && !resourceProp.isEmpty()) {
-                properties.putAll(resourceProp);
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
 
     public String get(ConfigurationKey key) {
         return properties.getProperty(key.getConfigKey(), key.getDefaultValue());

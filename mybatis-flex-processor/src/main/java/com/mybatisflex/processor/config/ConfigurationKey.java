@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -76,6 +76,11 @@ public enum ConfigurationKey {
      */
     MAPPER_PACKAGE("processor.mapper.package", null),
 
+
+    /**
+     * 自定义 Class 生成的包名。
+     */
+    TABLE_DEF_PACKAGE("processor.tableDef.package", null),
 
     /**
      * 生成的 Class 的后缀。

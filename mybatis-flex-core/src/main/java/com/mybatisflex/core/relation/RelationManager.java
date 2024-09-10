@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -356,7 +356,7 @@ public class RelationManager {
                             queryWrapper.where(column(relation.getJoinSelfColumn()).eq(selfFieldValues.iterator().next()));
                         }
 
-                        mappingRows = mapper.selectListByQueryAs(queryWrapper, Row.class);
+                        mappingRows = mapper.selectRowsByQuery(queryWrapper);
                         if (CollectionUtil.isEmpty(mappingRows)) {
                             return;
                         }

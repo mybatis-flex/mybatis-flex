@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -110,18 +110,23 @@ public class TableInfoFactory {
     private static final Map<Class<?>, TableInfo> mapperTableInfoMap = new ConcurrentHashMap<>();
     private static final Map<Class<?>, TableInfo> entityTableMap = new ConcurrentHashMap<>();
     private static final Map<String, TableInfo> tableInfoMap = new ConcurrentHashMap<>();
-    private static final Set<String> initedPackageNames = new HashSet<>();
+    private static final Set<String> initializedPackageNames = new HashSet<>();
 
 
+    /**
+     * 用于解决 https://github.com/mybatis-flex/mybatis-flex/pull/376 的问题
+     *
+     * @param mapperPackageName mapper 的包名
+     */
     public synchronized static void init(String mapperPackageName) {
-        if (!initedPackageNames.contains(mapperPackageName)) {
+        if (!initializedPackageNames.contains(mapperPackageName)) {
             ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
             resolverUtil.find(new ResolverUtil.IsA(BaseMapper.class), mapperPackageName);
             Set<Class<? extends Class<?>>> mapperSet = resolverUtil.getClasses();
             for (Class<? extends Class<?>> mapperClass : mapperSet) {
                 ofMapperClass(mapperClass);
             }
-            initedPackageNames.add(mapperPackageName);
+            initializedPackageNames.add(mapperPackageName);
         }
     }
 
@@ -168,7 +173,9 @@ public class TableInfoFactory {
                 ParameterizedType parameterizedType = (ParameterizedType) type;
                 Type rawType = parameterizedType.getRawType();
                 Type[] typeArguments = parameterizedType.getActualTypeArguments();
-                adjustTypeArguments(mapperClass, actualTypeArguments, typeArguments);
+                if (actualTypeArguments != null && actualTypeArguments.length > 0) {
+                    adjustTypeArguments(mapperClass, actualTypeArguments, typeArguments);
+                }
                 if (rawType == BaseMapper.class) {
                     // 找到了
                     if (typeArguments[0] instanceof Class) {
@@ -194,8 +201,14 @@ public class TableInfoFactory {
         if (superclass == null || superclass == Object.class) {
             return null;
         }
-        Type[] typeArguments = superclass.getTypeParameters();
-        adjustTypeArguments(mapperClass, actualTypeArguments, typeArguments);
+        Type[] typeArguments = null;
+        Type genericSuperclass = mapperClass.getGenericSuperclass();
+        if(genericSuperclass instanceof ParameterizedType){
+            typeArguments = ((ParameterizedType) genericSuperclass).getActualTypeArguments();
+            if (actualTypeArguments != null && actualTypeArguments.length > 0) {
+                adjustTypeArguments(mapperClass, actualTypeArguments, typeArguments);
+            }
+        }
         return getEntityClass(superclass, typeArguments);
     }
 

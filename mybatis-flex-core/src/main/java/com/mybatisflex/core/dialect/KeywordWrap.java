@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,8 +18,10 @@ package com.mybatisflex.core.dialect;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.util.StringUtil;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 用于对数据库的关键字包装
@@ -87,6 +89,7 @@ public class KeywordWrap {
         this(false, Collections.emptySet(), prefix, suffix);
     }
 
+
     public KeywordWrap(boolean caseSensitive, String prefix, String suffix) {
         this(caseSensitive, Collections.emptySet(), prefix, suffix);
     }
@@ -97,7 +100,7 @@ public class KeywordWrap {
 
     public KeywordWrap(boolean caseSensitive, Set<String> keywords, String prefix, String suffix) {
         this.caseSensitive = caseSensitive;
-        this.keywords = keywords;
+        this.keywords = keywords.stream().map(String::toUpperCase).collect(Collectors.toSet());
         this.prefix = prefix;
         this.suffix = suffix;
     }
@@ -106,7 +109,7 @@ public class KeywordWrap {
         String suffix) {
         this.caseSensitive = caseSensitive;
         this.keywordsToUpperCase = keywordsToUpperCase;
-        this.keywords = keywords;
+        this.keywords = keywords.stream().map(String::toUpperCase).collect(Collectors.toSet());
         this.prefix = prefix;
         this.suffix = suffix;
     }
@@ -120,8 +123,43 @@ public class KeywordWrap {
             return prefix + keyword + suffix;
         }
 
-        keyword = keywordsToUpperCase ? keyword.toUpperCase() : keyword;
-        return keywords.contains(keyword) ? (prefix + keyword + suffix) : keyword;
+        if (keywordsToUpperCase) {
+            keyword = keyword.toUpperCase();
+            return keywords.contains(keyword) ? (prefix + keyword + suffix) : keyword;
+        } else {
+            return keywords.contains(keyword.toUpperCase()) ? (prefix + keyword + suffix) : keyword;
+        }
+    }
+
+    //数据scheme table 包装 根据 . 分割后分别包装
+    public String wrapKeyword(String keyword) {
+        StringBuilder resultBuilder = new StringBuilder();
+        String[] split = keyword.split("\\.");
+        if (split != null && split.length > 0) {
+            Arrays.asList(split)
+                .forEach(f -> resultBuilder.append(prefix).append(f).append(suffix).append("."));
+            return resultBuilder.toString().substring(0, resultBuilder.length() - 1);
+        } else {
+            return prefix + keyword + suffix;
+        }
+    }
+
+    //sqlserver 转义 scheme table colums 包装 根据 . 分割后分别包装
+    public String wrap4Sqlserver(String keyword) {
+        if (StringUtil.isBlank(keyword) || SqlConsts.ASTERISK.equals(keyword.trim())) {
+            return keyword;
+        }
+
+        if (caseSensitive || keywords.isEmpty()) {
+            return wrapKeyword(keyword);
+        }
+
+        if (keywordsToUpperCase) {
+            keyword = keyword.toUpperCase();
+            return keywords.contains(keyword) ? wrapKeyword(keyword) : keyword;
+        } else {
+            return keywords.contains(keyword.toUpperCase()) ? wrapKeyword(keyword) : keyword;
+        }
     }
 
     public boolean isCaseSensitive() {
