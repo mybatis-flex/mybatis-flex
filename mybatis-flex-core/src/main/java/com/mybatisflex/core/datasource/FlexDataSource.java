@@ -202,7 +202,7 @@ public class FlexDataSource extends AbstractDataSource {
     }
 
 
-    private DataSource getDataSource() {
+    protected DataSource getDataSource() {
         DataSource dataSource = defaultDataSource;
         if (dataSourceMap.size() > 1) {
             String dataSourceKey = DataSourceKey.get();

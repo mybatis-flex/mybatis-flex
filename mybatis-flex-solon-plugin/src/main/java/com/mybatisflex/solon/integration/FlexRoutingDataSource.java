@@ -11,12 +11,12 @@ import javax.sql.DataSource;
  * @author noear
  * @since 2.8
  */
-public class FlexDataSourcePlus extends FlexDataSource implements RoutingDataSource {
-    public FlexDataSourcePlus(String dataSourceKey, DataSource dataSource) {
+public class FlexRoutingDataSource extends FlexDataSource implements RoutingDataSource {
+    public FlexRoutingDataSource(String dataSourceKey, DataSource dataSource) {
         super(dataSourceKey, dataSource);
     }
 
-    public FlexDataSourcePlus(String dataSourceKey, DataSource dataSource, boolean needDecryptDataSource) {
+    public FlexRoutingDataSource(String dataSourceKey, DataSource dataSource, boolean needDecryptDataSource) {
         super(dataSourceKey, dataSource, needDecryptDataSource);
     }
 
