@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.mybatis;
 
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.util.MapUtil;
 import org.apache.ibatis.annotations.AutomapConstructor;
 import org.apache.ibatis.annotations.Param;
@@ -42,6 +43,7 @@ import org.apache.ibatis.session.*;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.apache.ibatis.type.UnknownTypeHandler;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
@@ -589,6 +591,18 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
                 if (value != null || configuration.isCallSettersOnNulls() && !mapping.primitive) {
                     // gcode issue #377, call setter on nulls (value is not 'found')
                     metaObject.setValue(mapping.property, value);
+                }
+            }
+        }
+        else {
+            if (FlexGlobalConfig.getUnMappedColumnHandler() != null){
+                // 增加未匹配列自定义处理
+                final List<String> unmappedColumnNames = rsw.getUnmappedColumnNames(resultMap, columnPrefix);
+                for (String unmappedColumnName : unmappedColumnNames) {
+                    // 不明确类型，直接取object
+                    final Object value = typeHandlerRegistry.getMappingTypeHandler(UnknownTypeHandler.class).getResult(rsw.getResultSet(), unmappedColumnName);
+                    // 自定义处理未匹配列
+                    FlexGlobalConfig.getUnMappedColumnHandler().handleUnMappedColumn(metaObject, unmappedColumnName, value);
                 }
             }
         }

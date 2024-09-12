@@ -23,6 +23,7 @@ import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.exception.FlexAssert;
+import com.mybatisflex.core.mybatis.UnMappedColumnHandler;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -108,6 +109,11 @@ public class FlexGlobalConfig {
      * 默认的乐观锁字段，允许设置 {@code null} 忽略匹配。
      */
     private String versionColumn;
+
+    /**
+     * 未匹配列处理器
+     */
+    private static UnMappedColumnHandler unMappedColumnHandler;
 
     public boolean isPrintBanner() {
         return printBanner;
@@ -321,6 +327,14 @@ public class FlexGlobalConfig {
 
     public void setVersionColumn(String versionColumn) {
         this.versionColumn = versionColumn;
+    }
+
+    public static UnMappedColumnHandler getUnMappedColumnHandler() {
+        return unMappedColumnHandler;
+    }
+
+    public void setUnMappedColumnHandler(UnMappedColumnHandler unMappedColumnHandler) {
+        this.unMappedColumnHandler = unMappedColumnHandler;
     }
 
     public FlexDataSource getDataSource() {
