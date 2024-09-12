@@ -13,18 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.core.mybatis;
+package com.mybatisflex.test.model;
 
-import org.apache.ibatis.reflection.MetaObject;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Map;
 
 /**
- * UnMappedColumnHandler
- * 自定义未匹配列处理
- * @author ArthurWang
+ * UnMappedBaseEntity
+ *
+ * @author wy
  * @version 1.0
- * @date 2024/9/12 9:16
+ * @date 2024/9/12 11:36
  **/
-public interface UnMappedColumnHandler {
+@Getter
+@Setter
+public class UnmappedBaseEntity {
 
-    void handleUnMappedColumn(MetaObject metaObject, String unmappedColumnName, Object value);
+    protected Map<String, Object> unmappedMap;
 }
