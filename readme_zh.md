@@ -56,7 +56,11 @@
 微信群：
 ![](./docs/assets/images/wechat-group.png)
 
-或 QQ群： 532992631
+QQ 群
+
+- 群1：~~532992631~~（已满）
+- 群2：850176767（空位不多）
+- 群3：131665923（空位不多）
 
 
 
@@ -460,10 +464,10 @@ QueryWrapper queryWrapper = QueryWrapper.create()
 public class Account extends BaseEntity implements Serializable, AgeAware {
 
     ......
-    
+
     @Column(version = true)
     private Integer version;
-    
+
 }
 ```
 
