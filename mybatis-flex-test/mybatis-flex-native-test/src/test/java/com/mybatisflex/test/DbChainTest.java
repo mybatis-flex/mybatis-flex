@@ -16,6 +16,7 @@
 
 package com.mybatisflex.test;
 
+import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.row.DbChain;
@@ -62,6 +63,10 @@ public class DbChainTest implements WithAssertions {
             .addScript("auto_increment_key_data.sql").setScriptEncoding("UTF-8")
             .build();
 
+        MybatisFlexBootstrap.getInstance()
+            .setDataSource(database)
+            .start();
+
         // Environment environment = new Environment(ENVIRONMENT_ID, new JdbcTransactionFactory(), this.database);
         // FlexConfiguration configuration = new FlexConfiguration(environment);
         // configuration.addMapper(RowMapper.class);
@@ -94,6 +99,17 @@ public class DbChainTest implements WithAssertions {
 
         assertThat(row).extracting(PROPERTIES)
             .containsExactly(3, "王帅", 18, new Timestamp(birthday.getTime()));
+    }
+
+    @Test
+    public void testAs() {
+        // https://gitee.com/mybatis-flex/mybatis-flex/issues/IAECHY
+        List<Row> rowList = DbChain.table("tb_account")
+            .as("t")
+            .where("user_name = ?", "张三")
+            .list();
+
+        assertThat(rowList).size().isEqualTo(1);
     }
 
     @Test
