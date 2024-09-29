@@ -101,21 +101,25 @@ public enum SqlOperator {
     /**
      * in
      */
+    @Deprecated
     IN(SqlConsts.IN),
 
     /**
      * not in
      */
+    @Deprecated
     NOT_IN(SqlConsts.NOT_IN),
 
     /**
      * between
      */
+    @Deprecated
     BETWEEN(SqlConsts.BETWEEN),
 
     /**
      * not between
      */
+    @Deprecated
     NOT_BETWEEN(SqlConsts.NOT_BETWEEN);
 
     private final String value;
