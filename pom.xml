@@ -32,6 +32,14 @@
             </roles>
             <timezone>+8</timezone>
         </developer>
+        <developer>
+            <name>王帅</name>
+            <email>suomm.macher@foxmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
     </developers>
     <scm>
         <url>https://github.com/mybatis-flex/mybatis-flex</url>
