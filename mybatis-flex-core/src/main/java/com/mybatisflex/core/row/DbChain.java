@@ -31,7 +31,7 @@ import com.mybatisflex.core.util.FieldWrapper;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.SqlUtil;
 
-import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,17 +45,19 @@ import java.util.stream.Collectors;
  */
 public class DbChain extends QueryWrapperAdapter<DbChain> implements PropertySetter<DbChain> {
 
-    private String schema;
+    private final String schema;
     private final String tableName;
     private Row rowData;
 
     private DbChain(String tableName) {
-        this.tableName = tableName;
+        this(null, tableName);
     }
 
     private DbChain(String schema, String tableName) {
         this.schema = schema;
         this.tableName = tableName;
+        this.queryTables = new ArrayList<>();
+        this.queryTables.add(new QueryTable(schema, tableName));
     }
 
     public static DbChain create() {
