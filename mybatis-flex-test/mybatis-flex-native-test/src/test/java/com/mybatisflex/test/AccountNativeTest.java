@@ -42,11 +42,16 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
 import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 public class AccountNativeTest implements WithAssertions {
@@ -89,6 +94,59 @@ public class AccountNativeTest implements WithAssertions {
     public void destroy() {
         this.dataSource.shutdown();
         DataSourceKey.clear();
+    }
+
+    @Test
+    public void testWhereIn() {
+        QueryWrapper queryWrapper;
+        // IN null 数组会先执行 QueryColumnBehavior.setIgnoreFunction 判断是否忽略这个条件
+        // 默认会忽略掉 null 值的条件，所以结果 IN 语句不会被拼接到 SQL 中，会查出所有数据！
+        assertFalse(accountMapper.selectAll().isEmpty());
+        queryWrapper = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.in((Object[]) null));
+        assertFalse(accountMapper.selectListByQuery(queryWrapper).isEmpty());
+        // IN 空数组直接拼接到 SQL 语句：WHERE id IN ()
+        // 这样应该不会查出所有数据，具体要看各家数据库如何处理的了
+        queryWrapper = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.in());
+        assertTrue(accountMapper.selectListByQuery(queryWrapper).isEmpty());
+        // 对于空数组/集合的处理，统一放到 QueryColumnBehavior.setIgnoreFunction 中
+        // 默认是数据库处理 WHERE id IN () 的情况，也可以放到代码当中，比如抛出异常
+        QueryColumnBehavior.setIgnoreFunction(value -> {
+            if (value == null) {
+                return true;
+            }
+            if (value.getClass().isArray() && Array.getLength(value) == 0) {
+                throw new IllegalArgumentException("EMPTY ARRAY!");
+            }
+            if (value instanceof Collection && ((Collection<?>) value).isEmpty()) {
+                throw new IllegalArgumentException("EMPTY COLLECTION!");
+            }
+            return false;
+        });
+        try {
+            QueryWrapper.create()
+                .select()
+                .from(ACCOUNT)
+                .where(ACCOUNT.ID.in());
+        } catch (IllegalArgumentException e) {
+            // ...
+        } finally {
+            QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_NULL);
+        }
+
+        // 条件忽略测试
+        queryWrapper = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+            .where(ACCOUNT.ID.in(1, 2, 3))
+            .and(ACCOUNT.ID.in(new Object[]{4, 5, 6}, false))
+            .and(ACCOUNT.ID.in(Arrays.asList(7, 8, 9), () -> Boolean.FALSE));
+        assertFalse(accountMapper.selectListByQuery(queryWrapper).isEmpty());
     }
 
     @Test

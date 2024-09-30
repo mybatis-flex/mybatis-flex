@@ -54,7 +54,8 @@ public class Account extends BaseEntity implements Serializable, AgeAware {
 //    @Column(isLogicDelete = true)
     private Boolean isDelete;
 
-    @Column(version = true)
+    // @Column(version = true)
+    @Column(ignore = true)
     private Integer version;
 
     private List<Article> articles;
