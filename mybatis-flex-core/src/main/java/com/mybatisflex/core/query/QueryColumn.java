@@ -435,7 +435,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (queryWrapper == null) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.IN, queryWrapper));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.IN, queryWrapper));
     }
 
     @Override
@@ -443,7 +443,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (queryWrapper == null) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.IN, queryWrapper).when(isEffective));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.IN, queryWrapper).when(isEffective));
     }
 
     @Override
@@ -451,7 +451,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (queryWrapper == null) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.IN, queryWrapper).when(isEffective));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.IN, queryWrapper).when(isEffective));
     }
 
     @Override
@@ -559,7 +559,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (queryWrapper == null) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.NOT_IN, queryWrapper));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.NOT_IN, queryWrapper));
     }
 
     @Override
@@ -567,7 +567,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (queryWrapper == null) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.NOT_IN, queryWrapper).when(isEffective));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.NOT_IN, queryWrapper).when(isEffective));
     }
 
     @Override
@@ -575,7 +575,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (queryWrapper == null) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.NOT_IN, queryWrapper).when(isEffective));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.NOT_IN, queryWrapper).when(isEffective));
     }
 
     @Override
@@ -601,7 +601,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.BETWEEN, new Object[]{start, end}));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.BETWEEN, new Object[]{start, end}));
     }
 
     @Override
@@ -609,7 +609,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.BETWEEN, new Object[]{start, end}).when(isEffective));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.BETWEEN, new Object[]{start, end}).when(isEffective));
     }
 
     @Override
@@ -617,7 +617,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.BETWEEN, new Object[]{start, end}).when(isEffective));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.BETWEEN, new Object[]{start, end}).when(isEffective));
     }
 
     @Override
@@ -625,7 +625,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.BETWEEN, new Object[]{start, end}).when(isEffective.test(start, end)));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.BETWEEN, new Object[]{start, end}).when(isEffective.test(start, end)));
     }
 
     @Override
@@ -651,7 +651,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.NOT_BETWEEN, new Object[]{start, end}));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.NOT_BETWEEN, new Object[]{start, end}));
     }
 
     @Override
@@ -659,7 +659,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.NOT_BETWEEN, new Object[]{start, end}).when(isEffective));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.NOT_BETWEEN, new Object[]{start, end}).when(isEffective));
     }
 
     @Override
@@ -667,7 +667,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.NOT_BETWEEN, new Object[]{start, end}).when(isEffective));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.NOT_BETWEEN, new Object[]{start, end}).when(isEffective));
     }
 
     @Override
@@ -675,7 +675,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
             return QueryCondition.createEmpty();
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.NOT_BETWEEN, new Object[]{start, end}).when(isEffective.test(start, end)));
+        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.NOT_BETWEEN, new Object[]{start, end}).when(isEffective.test(start, end)));
     }
 
     @Override
