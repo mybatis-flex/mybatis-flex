@@ -332,24 +332,12 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition in(Object... value) {
-        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
-            return QueryCondition.createEmpty();
-        }
-        // IN 里面只有一个值的情况
-        if (value.length == 1) {
-            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
-                return QueryCondition.createEmpty();
-            }
-            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
-                return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.EQUALS, value[0]));
-            }
-        }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.IN, value));
+        return in(value, true);
     }
 
     @Override
     public QueryCondition in(Object[] value, boolean isEffective) {
-        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         // IN 里面只有一个值的情况
@@ -366,68 +354,45 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition in(Object[] value, BooleanSupplier isEffective) {
-        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
+        return in(value, isEffective.getAsBoolean());
+    }
+
+    @Override
+    public <T> QueryCondition in(T[] value, Predicate<T[]> isEffective) {
+        return in(value, isEffective.test(value));
+    }
+
+    @Override
+    public QueryCondition in(Collection<?> value) {
+        return in(value, true);
+    }
+
+    @Override
+    public QueryCondition in(Collection<?> value, boolean isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         // IN 里面只有一个值的情况
-        if (value.length == 1) {
-            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
+        if (value.size() == 1) {
+            Object next = value.iterator().next();
+            if (QueryColumnBehavior.shouldIgnoreValue(next)) {
                 return QueryCondition.createEmpty();
             }
             if (QueryColumnBehavior.isSmartConvertInToEquals()) {
-                return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.EQUALS, value[0]).when(isEffective));
+                return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.EQUALS, next).when(isEffective));
             }
         }
         return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.IN, value).when(isEffective));
     }
 
     @Override
-    public <T> QueryCondition in(T[] value, Predicate<T[]> isEffective) {
-        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
-            return QueryCondition.createEmpty();
-        }
-        // IN 里面只有一个值的情况
-        if (value.length == 1) {
-            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
-                return QueryCondition.createEmpty();
-            }
-            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
-                return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.EQUALS, value[0]).when(isEffective.test(value)));
-            }
-        }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.IN, value).when(isEffective.test(value)));
-    }
-
-    @Override
-    public QueryCondition in(Collection<?> value) {
-        if (value == null || value.isEmpty()) {
-            return QueryCondition.createEmpty();
-        }
-        return in(value.toArray());
-    }
-
-    @Override
-    public QueryCondition in(Collection<?> value, boolean isEffective) {
-        if (value == null || value.isEmpty()) {
-            return QueryCondition.createEmpty();
-        }
-        return in(value.toArray()).when(isEffective);
-    }
-
-    @Override
     public QueryCondition in(Collection<?> value, BooleanSupplier isEffective) {
-        if (value == null || value.isEmpty()) {
-            return QueryCondition.createEmpty();
-        }
-        return in(value.toArray()).when(isEffective);
+        return in(value, isEffective.getAsBoolean());
     }
 
     @Override
     public <T extends Collection<?>> QueryCondition in(T value, Predicate<T> isEffective) {
-        if (value == null || value.isEmpty()) {
-            return QueryCondition.createEmpty();
-        }
-        return in(value.toArray()).when(isEffective.test(value));
+        return in(value, isEffective.test(value));
     }
 
     @Override
@@ -456,24 +421,12 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notIn(Object... value) {
-        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
-            return QueryCondition.createEmpty();
-        }
-        // NOT IN 里面只有一个值的情况
-        if (value.length == 1) {
-            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
-                return QueryCondition.createEmpty();
-            }
-            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
-                return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.NOT_EQUALS, value[0]));
-            }
-        }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.NOT_IN, value));
+        return notIn(value, true);
     }
 
     @Override
     public QueryCondition notIn(Object[] value, boolean isEffective) {
-        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         // NOT IN 里面只有一个值的情况
@@ -490,68 +443,45 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notIn(Object[] value, BooleanSupplier isEffective) {
-        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
+        return notIn(value, isEffective.getAsBoolean());
+    }
+
+    @Override
+    public <T> QueryCondition notIn(T[] value, Predicate<T[]> isEffective) {
+        return notIn(value, isEffective.test(value));
+    }
+
+    @Override
+    public QueryCondition notIn(Collection<?> value) {
+        return notIn(value, true);
+    }
+
+    @Override
+    public QueryCondition notIn(Collection<?> value, boolean isEffective) {
+        if (QueryColumnBehavior.shouldIgnoreValue(value)) {
             return QueryCondition.createEmpty();
         }
         // NOT IN 里面只有一个值的情况
-        if (value.length == 1) {
-            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
+        if (value.size() == 1) {
+            Object next = value.iterator().next();
+            if (QueryColumnBehavior.shouldIgnoreValue(next)) {
                 return QueryCondition.createEmpty();
             }
             if (QueryColumnBehavior.isSmartConvertInToEquals()) {
-                return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.NOT_EQUALS, value[0]).when(isEffective));
+                return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.NOT_EQUALS, next).when(isEffective));
             }
         }
         return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.NOT_IN, value).when(isEffective));
     }
 
     @Override
-    public <T> QueryCondition notIn(T[] value, Predicate<T[]> isEffective) {
-        if (QueryColumnBehavior.shouldIgnoreValue(value) || value.length == 0) {
-            return QueryCondition.createEmpty();
-        }
-        // NOT IN 里面只有一个值的情况
-        if (value.length == 1) {
-            if (QueryColumnBehavior.shouldIgnoreValue(value[0])) {
-                return QueryCondition.createEmpty();
-            }
-            if (QueryColumnBehavior.isSmartConvertInToEquals()) {
-                return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlOperator.NOT_EQUALS, value[0]).when(isEffective.test(value)));
-            }
-        }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.NOT_IN, value).when(isEffective.test(value)));
-    }
-
-    @Override
-    public QueryCondition notIn(Collection<?> value) {
-        if (value == null || value.isEmpty()) {
-            return QueryCondition.createEmpty();
-        }
-        return notIn(value.toArray());
-    }
-
-    @Override
-    public QueryCondition notIn(Collection<?> value, boolean isEffective) {
-        if (value == null || value.isEmpty()) {
-            return QueryCondition.createEmpty();
-        }
-        return notIn(value.toArray()).when(isEffective);
-    }
-
-    @Override
     public QueryCondition notIn(Collection<?> value, BooleanSupplier isEffective) {
-        if (value == null || value.isEmpty()) {
-            return QueryCondition.createEmpty();
-        }
-        return notIn(value.toArray()).when(isEffective);
+        return notIn(value, isEffective.getAsBoolean());
     }
 
     @Override
     public <T extends Collection<?>> QueryCondition notIn(T value, Predicate<T> isEffective) {
-        if (value == null || value.isEmpty()) {
-            return QueryCondition.createEmpty();
-        }
-        return notIn(value.toArray()).when(isEffective.test(value));
+        return notIn(value, isEffective.test(value));
     }
 
     @Override
