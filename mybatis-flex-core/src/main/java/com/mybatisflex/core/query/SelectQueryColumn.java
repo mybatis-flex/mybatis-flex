@@ -21,6 +21,12 @@ import com.mybatisflex.core.util.StringUtil;
 
 import java.util.List;
 
+/**
+ * 子查询列。
+ *
+ * @author michael
+ * @author 王帅
+ */
 public class SelectQueryColumn extends QueryColumn implements HasParamsColumn {
 
     private QueryWrapper queryWrapper;
@@ -29,9 +35,13 @@ public class SelectQueryColumn extends QueryColumn implements HasParamsColumn {
         this.queryWrapper = queryWrapper;
     }
 
-
-    QueryWrapper getQueryWrapper() {
+    public QueryWrapper getQueryWrapper() {
         return queryWrapper;
+    }
+
+    @Override
+    String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
+        return dialect.forSelectByQuery(queryWrapper);
     }
 
     @Override
@@ -49,11 +59,6 @@ public class SelectQueryColumn extends QueryColumn implements HasParamsColumn {
         // deep clone ...
         clone.queryWrapper = ObjectUtil.clone(this.queryWrapper);
         return clone;
-    }
-
-    @Override
-    String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
-        return dialect.forSelectByQuery(queryWrapper);
     }
 
     @Override
