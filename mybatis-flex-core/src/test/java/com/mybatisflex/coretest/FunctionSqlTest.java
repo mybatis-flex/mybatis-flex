@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,9 +22,21 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.RawQueryColumn;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static com.mybatisflex.core.query.QueryMethods.*;
+import static com.mybatisflex.core.query.QueryMethods.abs;
+import static com.mybatisflex.core.query.QueryMethods.case_;
+import static com.mybatisflex.core.query.QueryMethods.column;
+import static com.mybatisflex.core.query.QueryMethods.concatWs;
+import static com.mybatisflex.core.query.QueryMethods.findInSet;
+import static com.mybatisflex.core.query.QueryMethods.not;
+import static com.mybatisflex.core.query.QueryMethods.number;
+import static com.mybatisflex.core.query.QueryMethods.rand;
+import static com.mybatisflex.core.query.QueryMethods.raw;
+import static com.mybatisflex.core.query.QueryMethods.replace;
+import static com.mybatisflex.core.query.QueryMethods.string;
+import static com.mybatisflex.core.query.QueryMethods.upper;
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
+import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author 王帅
@@ -103,6 +115,26 @@ public class FunctionSqlTest {
         System.out.println(sql);
         assertEquals("SELECT (select role_name from tb_role where id = 1), `user_name` FROM `tb_account`", sql);
     }
+
+    @Test
+    public void test07() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(ARTICLE.ID)
+            .from(ARTICLE)
+            .where(ARTICLE.ID.ge(1));
+
+        String sql = QueryWrapper.create()
+            .select(case_()
+                .when(column(queryWrapper).ge(0)).then(1)
+                .else_(0)
+                .end())
+            .from(ACCOUNT)
+            .toSQL();
+
+        System.out.println(sql);
+        assertEquals("SELECT CASE WHEN SELECT `id` FROM `tb_article` WHERE `id` >= 1 >= 0 THEN 1 ELSE 0 END FROM `tb_account`", sql);
+    }
+
     @Test
     public void testReplaceString() {
         String sql = QueryWrapper.create()
