@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -44,7 +44,6 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
     protected String alias;
 
     private boolean returnCopyByAsMethod = false;
-
 
     public QueryColumn() {
     }
@@ -514,7 +513,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
             return QueryCondition.createEmpty();
         }
 
-       return between(values[0], values[values.length - 1]);
+        return between(values[0], values[values.length - 1]);
     }
 
     @Override
@@ -935,8 +934,14 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         return new ArithmeticQueryColumn(this).divide(number);
     }
 
-
-    String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
+    /**
+     * 生成列用于构建查询条件的 SQL 语句。
+     *
+     * @param queryTables 查询表
+     * @param dialect     方言
+     * @return SQL 语句
+     */
+    protected String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
         QueryTable selectTable = getSelectTable(queryTables, table);
         if (selectTable == null) {
             return dialect.wrap(name);
@@ -955,11 +960,16 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         }
     }
 
-
-    String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
+    /**
+     * 生成列用于构建查询列的 SQL 语句。
+     *
+     * @param queryTables 查询表
+     * @param dialect     方言
+     * @return SQL 语句
+     */
+    protected String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         return toConditionSql(queryTables, dialect) + WrapperUtil.buildColumnAlias(alias, dialect);
     }
-
 
     QueryTable getSelectTable(List<QueryTable> queryTables, QueryTable selfTable) {
         // 未查询任何表

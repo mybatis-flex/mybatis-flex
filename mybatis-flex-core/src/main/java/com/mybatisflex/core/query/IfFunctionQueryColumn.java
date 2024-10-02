@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class IfFunctionQueryColumn extends QueryColumn implements HasParamsColum
     }
 
     @Override
-    String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
+    protected String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
         return "IF(" + condition.toSql(queryTables, dialect) + ", " +
             trueValue.toConditionSql(queryTables, dialect) + ", " +
             falseValue.toConditionSql(queryTables, dialect) + ")";

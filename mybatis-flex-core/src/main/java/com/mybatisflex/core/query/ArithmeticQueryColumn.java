@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ public class ArithmeticQueryColumn extends QueryColumn implements HasParamsColum
 
 
     @Override
-    String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
+    protected String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         StringBuilder sql = new StringBuilder();
         for (int i = 0; i < arithmeticInfos.size(); i++) {
             sql.append(arithmeticInfos.get(i).toSql(queryTables, dialect, i));
@@ -110,7 +110,7 @@ public class ArithmeticQueryColumn extends QueryColumn implements HasParamsColum
 
 
     @Override
-    String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
+    protected String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
         StringBuilder sql = new StringBuilder();
         for (int i = 0; i < arithmeticInfos.size(); i++) {
             sql.append(arithmeticInfos.get(i).toSql(queryTables, dialect, i));
