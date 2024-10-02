@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -141,8 +142,15 @@ public class DbTest {
         Assert.assertEquals(rowList1.toString(), rowList3.toString());
         Assert.assertEquals(rowList1.toString(), rowList4.toString());
         Assert.assertEquals(rowList1.toString(), rowList5.toString());
+        // 既有 XML (#{}) 参数又有 QueryWrapper (?) 参数是不被允许的
         Assert.assertThrows(PersistenceException.class,
             () -> Db.selectListBySql("select * from tb_account where age > #{age} and id > ?", map, 1));
+        // 解决 XML 参数顺序问题
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", 1);
+        params.put("age", 18);
+        params.put("userName", "张三");
+        Db.selectListBySql("select * from tb_account where user_name = #{userName} and age > #{age} and id = #{id}", params);
     }
 
     @Test
