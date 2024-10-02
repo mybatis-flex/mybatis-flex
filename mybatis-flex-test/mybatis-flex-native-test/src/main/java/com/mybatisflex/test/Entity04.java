@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 
 package com.mybatisflex.test;
 
-import com.mybatisflex.annotation.*;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.ColumnMask;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.handler.Fastjson2TypeHandler;
 import com.mybatisflex.core.mask.Masks;
 
@@ -42,7 +46,7 @@ public class Entity04 extends BaseAccount implements Serializable {
     @NotBlank
     private Date birthday;
 
-    @Column(typeHandler = Fastjson2TypeHandler.class, isLarge = true)
+    @Column(typeHandler = Fastjson2TypeHandler.class)
     private Map<String, Object> options;
 
     @Column(isLogicDelete = true)
