@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,13 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * 类型处理器包装。
+ *
+ * @author michael
+ * @author 王帅
+ */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class TypeHandlerObject implements Serializable {
 
     private final TypeHandler typeHandler;
@@ -38,6 +45,11 @@ public class TypeHandlerObject implements Serializable {
         typeHandler.setParameter(ps, i, value, jdbcType);
     }
 
+    /**
+     * 获取未处理的原始值。
+     *
+     * @return 原始值
+     */
     public Object getValue() {
         return value;
     }
