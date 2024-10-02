@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -1025,13 +1025,29 @@ public class TableInfo {
                     } else if (operator == SqlOperator.LIKE_RIGHT || operator == SqlOperator.NOT_LIKE_RIGHT) {
                         value = "%" + value;
                     }
-                    queryWrapper.and(QueryCondition.create(queryColumn, operator, value));
+                    queryWrapper.and(QueryCondition.create(queryColumn, operator, buildSqlArg(column, value)));
                 } else {
-                    queryWrapper.and(queryColumn.eq(value));
+                    queryWrapper.and(queryColumn.eq(buildSqlArg(column, value)));
                 }
             }
         });
         return queryWrapper;
+    }
+
+    private Object buildSqlArg(String column, Object value) {
+        ColumnInfo columnInfo = columnInfoMapping.get(column);
+        // 给定的列名在实体类中没有对应的字段
+        if (columnInfo == null) {
+            return value;
+        }
+        // 如果给定的列名在实体类中有对应的字段
+        // 则使用实体类中属性标记的 @Column(typeHandler = ...) 类型处理器处理参数
+        // 调用 TypeHandler#setParameter 为 PreparedStatement 设置值
+        TypeHandler<?> typeHandler = columnInfo.buildTypeHandler(null);
+        if (typeHandler != null) {
+            return new TypeHandlerObject(typeHandler, value, columnInfo.getJdbcType());
+        }
+        return value;
     }
 
     public String getKeyProperties() {
