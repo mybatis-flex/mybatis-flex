@@ -26,4 +26,19 @@
         select count(*) from `tb_account` ${qwSql}
     </select>
 
+    <resultMap id="AccountViewObject" type="com.mybatisflex.test.model.AccountView">
+        <id property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="birthday" column="birthday"/>
+        <association property="accountList" column="id" select="selectAssociation"/>
+    </resultMap>
+
+    <select id="selectViewObject" resultMap="AccountViewObject">
+        select id, user_name, birthday from tb_account where id = 1
+    </select>
+
+    <select id="selectAssociation" resultType="com.mybatisflex.test.model.Account">
+        select * from tb_account where id = #{id}
+    </select>
+
 </mapper>

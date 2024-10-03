@@ -17,6 +17,8 @@
 package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.test.model.Account;
+import com.mybatisflex.test.model.AccountDto;
+import com.mybatisflex.test.model.AccountView;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -25,7 +27,9 @@ import java.util.Map;
 public interface MyAccountMapper extends AccountMapper {
 
 
-//    AccountDto selectByName(@Param("name") String name);
+    AccountDto selectByName(@Param("name") String name);
+
+    AccountView selectViewObject();
 
     @Select("select * from tb_account where id = #{id} and id =#{id}")
     Account selectById(@Param("id") Object id);

@@ -17,6 +17,8 @@
 package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.test.model.Account;
+import com.mybatisflex.test.model.AccountView;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +38,12 @@ class MyAccountMapperTest {
 
     @Autowired
     private MyAccountMapper mapper;
+
+    @Test
+    void complexSelect() {
+        AccountView accountView = Assertions.assertDoesNotThrow(() -> mapper.selectViewObject());
+        System.out.println(accountView);
+    }
 
     @Test
     void insertBatch() {
