@@ -14,25 +14,24 @@
  *  limitations under the License.
  */
 
-package com.mybatisflex.test.alisa;
+package com.mybatisflex.test.alias;
 
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 
 /**
- * 角色。
+ * 部门。
  *
  * @author 王帅
  * @since 2023-11-16
  */
-@Table("sys_role")
-public class SysRole extends BaseEntity {
+@Table("sys_dept")
+public class SysDept extends BaseEntity {
 
     @Id(keyType = KeyType.Auto)
     private Integer id;
-    private String roleKey;
-    private String roleName;
+    private String deptName;
 
     public Integer getId() {
         return id;
@@ -42,29 +41,19 @@ public class SysRole extends BaseEntity {
         this.id = id;
     }
 
-    public String getRoleKey() {
-        return roleKey;
+    public String getDeptName() {
+        return deptName;
     }
 
-    public void setRoleKey(String roleKey) {
-        this.roleKey = roleKey;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
     }
 
     @Override
     public String toString() {
-        return "SysRole{" +
+        return "SysDept{" +
             "id=" + id +
-            ", roleKey='" + roleKey + '\'' +
-            ", roleName='" + roleName + '\'' +
+            ", deptName='" + deptName + '\'' +
             '}' + super.toString();
     }
-
 }

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.mybatisflex.test.alisa;
+package com.mybatisflex.test.alias;
 
 import java.io.Serializable;
 import java.util.Date;

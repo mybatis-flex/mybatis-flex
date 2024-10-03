@@ -21,8 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.mybatisflex.test.alisa.SysUser;
-import com.mybatisflex.test.alisa.UserVO;
+import com.mybatisflex.test.alias.SysUser;
+import com.mybatisflex.test.alias.UserVO;
 import org.apache.ibatis.mapping.ResultMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,9 +34,9 @@ import java.util.List;
 
 import static com.mybatisflex.core.query.QueryMethods.column;
 import static com.mybatisflex.core.query.QueryMethods.select;
-import static com.mybatisflex.test.alisa.table.SysDeptTableDef.SYS_DEPT;
-import static com.mybatisflex.test.alisa.table.SysRoleTableDef.SYS_ROLE;
-import static com.mybatisflex.test.alisa.table.SysUserTableDef.SYS_USER;
+import static com.mybatisflex.test.alias.table.SysDeptTableDef.SYS_DEPT;
+import static com.mybatisflex.test.alias.table.SysRoleTableDef.SYS_ROLE;
+import static com.mybatisflex.test.alias.table.SysUserTableDef.SYS_USER;
 
 /**
  * 别名测试。
@@ -45,7 +45,7 @@ import static com.mybatisflex.test.alisa.table.SysUserTableDef.SYS_USER;
  * @since 2023-11-16
  */
 @SpringBootTest
-class AlisaTest {
+class AliasTest {
 
     @Autowired
     SysUserMapper userMapper;

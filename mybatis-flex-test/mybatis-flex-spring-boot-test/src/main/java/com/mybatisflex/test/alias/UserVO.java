@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.mybatisflex.test.alisa;
+package com.mybatisflex.test.alias;
 
 import com.mybatisflex.annotation.ColumnAlias;
 import com.mybatisflex.annotation.TableRef;
