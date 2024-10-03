@@ -593,9 +593,8 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
                     metaObject.setValue(mapping.property, value);
                 }
             }
-        }
-        else {
-            if (FlexGlobalConfig.getUnMappedColumnHandler() != null){
+        } else {
+            if (FlexGlobalConfig.getUnMappedColumnHandler() != null) {
                 // 增加未匹配列自定义处理
                 final List<String> unmappedColumnNames = rsw.getUnmappedColumnNames(resultMap, columnPrefix);
                 for (String unmappedColumnName : unmappedColumnNames) {
@@ -967,15 +966,10 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
 
     private Object prepareSimpleKeyParameter(ResultSet rs, ResultMapping resultMapping, Class<?> parameterType,
                                              String columnPrefix) throws SQLException {
-//        final TypeHandler<?> typeHandler;
-//        if (typeHandlerRegistry.hasTypeHandler(parameterType)) {
-//            typeHandler = typeHandlerRegistry.getTypeHandler(parameterType);
-//        } else {
-//            typeHandler = typeHandlerRegistry.getUnknownTypeHandler();
-//        }
-
-        TypeHandler<?> typeHandler = typeHandlerRegistry.getTypeHandler(parameterType);
-        if (typeHandler == null) {
+        final TypeHandler<?> typeHandler;
+        if (typeHandlerRegistry.hasTypeHandler(parameterType)) {
+            typeHandler = typeHandlerRegistry.getTypeHandler(parameterType);
+        } else {
             typeHandler = typeHandlerRegistry.getUnknownTypeHandler();
         }
         return typeHandler.getResult(rs, prependPrefix(resultMapping.getColumn(), columnPrefix));
