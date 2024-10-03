@@ -1012,7 +1012,7 @@ public class TableInfo {
                     .findFirst()
                     .orElse(QueryMethods.column(getTableNameWithSchema(), column));
                 if (operators != null) {
-                    SqlOperator operator = operators.get(property);
+                    SqlOperator operator = operators.get(column);
                     if (operator == null) {
                         operator = SqlOperator.EQUALS;
                     } else if (operator == SqlOperator.IGNORE) {

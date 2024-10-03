@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,9 +22,20 @@ import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.*;
+import com.mybatisflex.core.util.ArrayUtil;
+import com.mybatisflex.core.util.ClassUtil;
+import com.mybatisflex.core.util.CollectionUtil;
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
+import com.mybatisflex.core.util.SqlUtil;
+import com.mybatisflex.core.util.StringUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -371,6 +382,11 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             operators = SqlOperators.empty();
         }
         if (mapConditions != null) {
+            QueryTable table = null;
+            // 默认就是第一个表，可能为 null
+            if (CollectionUtil.isNotEmpty(queryTables)) {
+                table = queryTables.get(0);
+            }
             QueryCondition condition = null;
             for (Map.Entry<String, Object> entry : mapConditions.entrySet()) {
                 SqlOperator operator = operators.get(entry.getKey());
@@ -387,7 +403,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
                 } else if (operator == SqlOperator.LIKE_RIGHT || operator == SqlOperator.NOT_LIKE_RIGHT) {
                     value = "%" + value;
                 }
-                QueryCondition cond = QueryCondition.create(new QueryColumn(entry.getKey()), operator, value);
+                QueryCondition cond = QueryCondition.create(new QueryColumn(table, entry.getKey()), operator, value);
                 if (condition == null) {
                     condition = cond;
                 } else {
