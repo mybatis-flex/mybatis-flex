@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
 import com.mybatisflex.core.dialect.impl.OracleDialect;
+import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.DistinctQueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.RawQueryColumn;
@@ -35,7 +36,10 @@ import com.mybatisflex.coretest.table.ArticleTableDef;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.mybatisflex.core.query.QueryMethods.avg;
 import static com.mybatisflex.core.query.QueryMethods.case_;
@@ -885,6 +889,49 @@ public class AccountSqlTester {
                 "AND `is_normal` = false"
             , qw.toSQL());
         System.out.println(SqlFormatter.format(qw.toSQL()));
+    }
+
+    @Test
+    public void testToQueryWrapper() {
+        Account account = new Account();
+        account.setId(1L);
+        account.setSex(3);
+        account.setAge(18);
+        account.setUserName("michael");
+
+        Map<String, Object> whereConditions = new HashMap<>();
+        whereConditions.put("id", account.getId());
+        whereConditions.put("sex", account.getSex());
+        whereConditions.put("age", account.getAge());
+        whereConditions.put("user_name", account.getUserName());
+
+        /*
+         * @Column("is_deleted")
+         * private Boolean deleted;
+         *
+         * 主要是 ACCOUNT.DELETED.getName() 返回的只是字段名
+         * 这种情况仅拿到字段名不能通过名称转换获取到属性名
+         * 所以还是以数据库实际的字段名称为主
+         */
+        @SuppressWarnings("java:S125")
+        SqlOperators sqlOperators = SqlOperators.of()
+            .set("id", SqlOperator.GE)
+            .set(Account::getAge, SqlOperator.LE)
+            .set(Account::getSex, SqlOperator.EQUALS)
+            .set(ACCOUNT.USER_NAME, SqlOperator.LIKE);
+
+        QueryWrapper queryWrapper1 = QueryWrapper.create(account, sqlOperators);
+        QueryWrapper queryWrapper2 = QueryWrapper.create()
+            .select()
+            .from(ACCOUNT)
+            .where(whereConditions, sqlOperators);
+
+        CPI.setSelectColumns(queryWrapper1, new ArrayList<>());
+
+        System.out.println(SqlFormatter.format(queryWrapper1.toSQL()));
+        System.out.println(SqlFormatter.format(queryWrapper2.toSQL()));
+
+        Assert.assertTrue(true);
     }
 
 }
