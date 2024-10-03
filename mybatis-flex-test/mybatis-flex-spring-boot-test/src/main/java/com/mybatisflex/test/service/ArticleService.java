@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,5 +24,7 @@ import com.mybatisflex.test.model.Article;
  * @since 2023-07-22
  */
 public interface ArticleService extends IService<Article> {
+
+    void changeDataSource();
 
 }

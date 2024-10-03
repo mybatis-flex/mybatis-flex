@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,10 +16,14 @@
 
 package com.mybatisflex.test.service.impl;
 
+import com.mybatisflex.annotation.UseDataSource;
+import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.mybatisflex.test.mapper.ArticleMapper;
 import com.mybatisflex.test.model.Article;
 import com.mybatisflex.test.service.ArticleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,4 +33,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements ArticleService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArticleServiceImpl.class);
+
+    @Override
+    @UseDataSource("annotation ds")
+    public void changeDataSource() {
+        LOGGER.info("start1: {}", DataSourceKey.get());
+        DataSourceKey.use("ds outer", () -> {
+            LOGGER.info("start2: {}", DataSourceKey.get());
+            DataSourceKey.use("ds inner", () -> {
+                LOGGER.info("start3: {}", DataSourceKey.get());
+                LOGGER.info("end3: {}", DataSourceKey.get());
+            });
+            LOGGER.info("end2: {}", DataSourceKey.get());
+        });
+        LOGGER.info("end1: {}", DataSourceKey.get());
+    }
 }
