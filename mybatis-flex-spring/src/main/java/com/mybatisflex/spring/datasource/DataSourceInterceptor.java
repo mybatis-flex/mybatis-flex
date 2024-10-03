@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 
 package com.mybatisflex.spring.datasource;
-
 
 import com.mybatisflex.annotation.UseDataSource;
 import com.mybatisflex.core.datasource.DataSourceKey;
@@ -34,7 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 王帅
  * @author barql
  * @author michael
- *
  * @since 2023-06-25
  */
 public class DataSourceInterceptor implements MethodInterceptor {
@@ -46,33 +44,19 @@ public class DataSourceInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        String dsKey = DataSourceKey.getByManual();
-        if (StringUtil.isNotBlank(dsKey)) {
-            return invocation.proceed();
-        }
-
-        dsKey = findDataSourceKey(invocation.getMethod(), invocation.getThis().getClass());
+        String dsKey = getDataSourceKey(invocation.getMethod(), invocation.getThis().getClass());
         if (StringUtil.isBlank(dsKey)) {
             return invocation.proceed();
         }
-
-        //方法嵌套时，挂起的 key
-        String suspendKey = DataSourceKey.getByAnnotation();
-
         try {
-            DataSourceKey.useWithAnnotation(dsKey);
+            DataSourceKey.use(dsKey);
             return invocation.proceed();
         } finally {
-            //恢复挂起的 key
-            if (suspendKey != null) {
-                DataSourceKey.useWithAnnotation(suspendKey);
-            } else {
-                DataSourceKey.clear();
-            }
+            DataSourceKey.clear();
         }
     }
 
-    private String findDataSourceKey(Method method, Class<?> targetClass) {
+    private String getDataSourceKey(Method method, Class<?> targetClass) {
         Object cacheKey = new MethodClassKey(method, targetClass);
         String dsKey = this.dsCache.get(cacheKey);
         if (dsKey == null) {
@@ -82,21 +66,17 @@ public class DataSourceInterceptor implements MethodInterceptor {
         return dsKey;
     }
 
-
     private String determineDataSourceKey(Method method, Class<?> targetClass) {
-
         // 方法上定义有 UseDataSource 注解
         UseDataSource annotation = method.getAnnotation(UseDataSource.class);
         if (annotation != null) {
             return annotation.value();
         }
-
         // 类上定义有 UseDataSource 注解
         annotation = targetClass.getAnnotation(UseDataSource.class);
         if (annotation != null) {
             return annotation.value();
         }
-
         // 接口上定义有 UseDataSource 注解
         Class<?>[] interfaces = targetClass.getInterfaces();
         for (Class<?> anInterface : interfaces) {
@@ -105,7 +85,7 @@ public class DataSourceInterceptor implements MethodInterceptor {
                 return annotation.value();
             }
         }
-
+        // 哪里都没有 UseDataSource 注解
         return "";
     }
 

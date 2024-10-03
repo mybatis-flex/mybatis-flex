@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,7 +15,11 @@
  */
 package com.mybatisflex.core.datasource;
 
+import com.mybatisflex.core.exception.FlexAssert;
+
 import java.lang.reflect.Method;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.function.Supplier;
 
 /**
@@ -23,83 +27,83 @@ import java.util.function.Supplier;
  */
 public class DataSourceKey {
 
-    /**
-     * 通过注解设置的 key
-     */
-    private static ThreadLocal<String> annotationKeyThreadLocal = new ThreadLocal<>();
-
-    /**
-     * 通过手动编码指定的 key
-     */
-    private static ThreadLocal<String> manualKeyThreadLocal = new ThreadLocal<>();
+    private static ThreadLocal<Deque<String>> lookup = ThreadLocal.withInitial(ArrayDeque::new);
 
     private DataSourceKey() {
     }
 
     public static void use(String dataSourceKey) {
-        manualKeyThreadLocal.set(dataSourceKey.trim());
-    }
-
-    public static void useWithAnnotation(String dataSourceKey) {
-        annotationKeyThreadLocal.set(dataSourceKey.trim());
-    }
-
-    public static <T> T use(String dataSourceKey, Supplier<T> supplier) {
-        String prevKey = manualKeyThreadLocal.get();
-        try {
-            manualKeyThreadLocal.set(dataSourceKey);
-            return supplier.get();
-        } finally {
-            if (prevKey != null) {
-                manualKeyThreadLocal.set(prevKey);
-            } else {
-                clear();
-            }
-        }
-    }
-
-    public static void use(String dataSourceKey, Runnable runnable) {
-        String prevKey = manualKeyThreadLocal.get();
-        try {
-            manualKeyThreadLocal.set(dataSourceKey);
-            runnable.run();
-        } finally {
-            if (prevKey != null) {
-                manualKeyThreadLocal.set(prevKey);
-            } else {
-                clear();
-            }
-        }
-    }
-
-    public static void clear() {
-        annotationKeyThreadLocal.remove();
-        manualKeyThreadLocal.remove();
-    }
-
-    public static String getByAnnotation() {
-        return annotationKeyThreadLocal.get();
-    }
-
-    public static String getByManual() {
-        return manualKeyThreadLocal.get();
+        lookup.get().push(dataSourceKey);
     }
 
     public static String get() {
-        String key = manualKeyThreadLocal.get();
-        return key != null ? key : annotationKeyThreadLocal.get();
+        return lookup.get().peek();
     }
 
-    public static void setAnnotationKeyThreadLocal(ThreadLocal<String> annotationKeyThreadLocal) {
-        DataSourceKey.annotationKeyThreadLocal = annotationKeyThreadLocal;
+    public static void clear() {
+        Deque<String> deque = lookup.get();
+        deque.pop();
+        if (deque.isEmpty()) {
+            lookup.remove();
+        }
     }
 
-    public static void setManualKeyThreadLocal(ThreadLocal<String> manualKeyThreadLocal) {
-        DataSourceKey.manualKeyThreadLocal = manualKeyThreadLocal;
+    public static void forceClear() {
+        lookup.remove();
+    }
+
+    public static void use(String dataSourceKey, Runnable runnable) {
+        try {
+            use(dataSourceKey);
+            runnable.run();
+        } finally {
+            clear();
+        }
+    }
+
+    public static <T> T use(String dataSourceKey, Supplier<T> supplier) {
+        try {
+            use(dataSourceKey);
+            return supplier.get();
+        } finally {
+            clear();
+        }
+    }
+
+    public static void setThreadLocal(ThreadLocal<Deque<String>> threadLocal) {
+        FlexAssert.notNull(threadLocal, "threadLocal");
+        if (threadLocal.get() == null) {
+            threadLocal.set(lookup.get());
+        }
+        lookup = threadLocal;
     }
 
     public static String getShardingDsKey(String dataSource, Object mapper, Method method, Object[] args) {
         String shardingDsKey = DataSourceManager.getShardingDsKey(dataSource, mapper, method, args);
         return shardingDsKey != null ? shardingDsKey : dataSource;
     }
+
+    // === For Removal ===
+
+    @Deprecated
+    public static String getByManual() {
+        throw new UnsupportedOperationException("使用 DataSource.get() 代替。");
+    }
+    @Deprecated
+    public static String getByAnnotation() {
+        throw new UnsupportedOperationException("使用 DataSource.get() 代替。");
+    }
+    @Deprecated
+    public static void useWithAnnotation(String dataSourceKey) {
+        throw new UnsupportedOperationException("使用 DataSource.use(String) 代替。");
+    }
+    @Deprecated
+    public static void setAnnotationKeyThreadLocal(ThreadLocal<String> annotationKeyThreadLocal) {
+        throw new UnsupportedOperationException("使用 DataSource.setThreadLocal(ThreadLocal<Deque<String>>) 代替。");
+    }
+    @Deprecated
+    public static void setManualKeyThreadLocal(ThreadLocal<String> manualKeyThreadLocal) {
+        throw new UnsupportedOperationException("使用 DataSource.setThreadLocal(ThreadLocal<Deque<String>>) 代替。");
+    }
+
 }
