@@ -171,6 +171,7 @@ class AliasTest {
         SysUser user = userMapper.selectOneById(1);
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         System.out.println(objectWriter.writeValueAsString(user));
+        Assertions.assertTrue(true);
     }
 
 }

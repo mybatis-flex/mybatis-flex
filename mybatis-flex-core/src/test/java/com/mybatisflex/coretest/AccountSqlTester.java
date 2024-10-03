@@ -89,6 +89,27 @@ public class AccountSqlTester {
     }
 
     @Test
+    public void testTableAlias() {
+        AccountTableDef a1 = ACCOUNT.as("a1");
+
+        // https://gitee.com/mybatis-flex/mybatis-flex/issues/I9R151
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(ACCOUNT.ID, a1.USER_NAME)
+            .from(ACCOUNT)
+            .leftJoin(a1).on(ACCOUNT.ID.eq(a1.ID));
+
+        String sql = SqlFormatter.format(queryWrapper.toSQL());
+        System.out.println(sql);
+
+        Assert.assertEquals("SELECT\n" +
+            "  ` tb_account `.` id `,\n" +
+            "  ` a1 `.` user_name `\n" +
+            "FROM\n" +
+            "  ` tb_account `\n" +
+            "  LEFT JOIN ` tb_account ` AS ` a1 ` ON ` tb_account `.` id ` = ` a1 `.` id `", sql);
+    }
+
+    @Test
     public void testOracleFrom() {
         OracleDialect oracleDialect = new OracleDialect();
         QueryWrapper query = new QueryWrapper()
