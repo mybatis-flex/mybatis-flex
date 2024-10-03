@@ -28,7 +28,6 @@ import org.apache.ibatis.executor.ExecutorException;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.invoker.Invoker;
 import org.apache.ibatis.session.Configuration;
 
 import java.sql.Statement;
@@ -69,19 +68,16 @@ public class CustomKeyGenerator implements KeyGenerator {
 
     @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
-        Object entity = ((Map) parameter).get(FlexConsts.ENTITY);
+        Object entity = ((Map<?, ?>) parameter).get(FlexConsts.ENTITY);
         try {
             Object existId = tableInfo.getValue(entity, idInfo.getProperty());
-
             // 若用户主动设置了主键，则使用用户自己设置的主键，不再生成主键
             // 只有主键为 null 或者 空字符串时，对主键进行设置
             if (existId == null || (existId instanceof String && StringUtil.isBlank((String) existId))) {
-                Configuration configuration = ms.getConfiguration();
-                MetaObject metaParam = configuration.newMetaObject(parameter);
+                Configuration msConfiguration = ms.getConfiguration();
+                MetaObject metaParam = msConfiguration.newMetaObject(parameter);
                 Object generateId = keyGenerator.generate(entity, idInfo.getColumn());
                 MetaObject metaObjectForProperty = metaParam.metaObjectForProperty(FlexConsts.ENTITY);
-                // Invoker setInvoker = tableInfo.getReflector().getSetInvoker(idInfo.getProperty());
-                // Object id = ConvertUtil.convert(generateId, setInvoker.getType());
                 Class<?> setterType = tableInfo.getReflector().getSetterType(idInfo.getProperty());
                 Object id = ConvertUtil.convert(generateId, setterType);
                 this.setValue(metaObjectForProperty, this.idInfo.getProperty(), id);
@@ -94,7 +90,7 @@ public class CustomKeyGenerator implements KeyGenerator {
 
     @Override
     public void processAfter(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
-        //do nothing
+        // do nothing
     }
 
     private void setValue(MetaObject metaParam, String property, Object value) {
