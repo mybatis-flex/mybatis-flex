@@ -34,7 +34,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-#if(entityConfig.getSuperClass())
+#if(entityConfig.getSuperClass(table))
 import lombok.EqualsAndHashCode;
 #end
 #end
@@ -56,7 +56,7 @@ import lombok.EqualsAndHashCode;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-#if(entityConfig.getSuperClass())
+#if(entityConfig.getSuperClass(table))
 @EqualsAndHashCode(callSuper = true)
 #end
 #end
