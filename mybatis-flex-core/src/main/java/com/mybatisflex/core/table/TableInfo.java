@@ -1398,6 +1398,15 @@ public class TableInfo {
         }
 
         MetaObject metaObject = EntityMetaObject.forObject(entityObject, reflectorFactory);
+
+        // 如果租户字段有值，则不覆盖。
+        // https://gitee.com/mybatis-flex/mybatis-flex/issues/I7OWYD
+        // https://gitee.com/mybatis-flex/mybatis-flex/issues/I920DK
+        String property = columnInfoMapping.get(tenantIdColumn).property;
+        if (metaObject.getValue(property) != null) {
+            return;
+        }
+
         Object[] tenantIds = TenantManager.getTenantIds(tableName);
         if (tenantIds == null || tenantIds.length == 0) {
             return;
@@ -1406,7 +1415,6 @@ public class TableInfo {
         // 默认使用第一个作为插入的租户ID
         Object tenantId = tenantIds[0];
         if (tenantId != null) {
-            String property = columnInfoMapping.get(tenantIdColumn).property;
             Class<?> setterType = metaObject.getSetterType(property);
             metaObject.setValue(property, ConvertUtil.convert(tenantId, setterType));
         }
