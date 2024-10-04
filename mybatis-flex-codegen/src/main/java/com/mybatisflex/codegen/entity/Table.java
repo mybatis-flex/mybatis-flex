@@ -420,13 +420,26 @@ public class Table {
      */
     public String getEntityJavaFileName() {
         String entityJavaFileName = name;
+        // 处理表名前缀
         String tablePrefix = globalConfig.getStrategyConfig().getTablePrefix();
         if (tablePrefix != null) {
             String[] tablePrefixes = tablePrefix.split(",");
             for (String prefix : tablePrefixes) {
                 String trimPrefix = prefix.trim();
-                if (trimPrefix.length() > 0 && name.startsWith(trimPrefix)) {
-                    entityJavaFileName = name.substring(trimPrefix.length());
+                if (!trimPrefix.isEmpty() && name.startsWith(trimPrefix)) {
+                    entityJavaFileName = entityJavaFileName.substring(trimPrefix.length());
+                    break;
+                }
+            }
+        }
+        // 处理表名后缀
+        String tableSuffix = globalConfig.getStrategyConfig().getTableSuffix();
+        if (tableSuffix != null) {
+            String[] tableSuffixes = tableSuffix.split(",");
+            for (String suffix : tableSuffixes) {
+                String trimSuffix = suffix.trim();
+                if (!trimSuffix.isEmpty() && name.endsWith(trimSuffix)) {
+                    entityJavaFileName = entityJavaFileName.substring(0, entityJavaFileName.length() - trimSuffix.length());
                     break;
                 }
             }

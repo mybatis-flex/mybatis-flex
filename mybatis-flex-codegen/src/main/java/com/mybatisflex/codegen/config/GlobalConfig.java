@@ -47,6 +47,7 @@ public class GlobalConfig implements Serializable {
     public GlobalConfig() {
         this(FileType.JAVA);
     }
+
     private final JavadocConfig javadocConfig;
     private final PackageConfig packageConfig;
     private final StrategyConfig strategyConfig;
@@ -84,7 +85,7 @@ public class GlobalConfig implements Serializable {
         this.strategyConfig = new StrategyConfig();
         this.templateConfig = new TemplateConfig();
         this.setTemplatePath();
-        if(fileType == FileType.KOTLIN) {
+        if (fileType == FileType.KOTLIN) {
             JdbcTypeMapping.registerMapping("java.lang.Integer", "Int");
         }
     }
@@ -562,6 +563,13 @@ public class GlobalConfig implements Serializable {
      */
     public String getTablePrefix() {
         return getStrategyConfig().getTablePrefix();
+    }
+
+    /**
+     * @see StrategyConfig#getTableSuffix()
+     */
+    public String getTableSuffix() {
+        return getStrategyConfig().getTableSuffix();
     }
 
     /**

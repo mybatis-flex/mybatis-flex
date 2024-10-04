@@ -34,10 +34,16 @@ import java.util.Set;
 public class StrategyConfig implements Serializable {
 
     private static final long serialVersionUID = 504853587703061034L;
+
     /**
      * 数据库表前缀，多个前缀用英文逗号（,） 隔开。
      */
     private String tablePrefix;
+
+    /**
+     * 数据库表后缀，多个后缀用英文逗号（,） 隔开。
+     */
+    private String tableSuffix;
 
     /**
      * 逻辑删除的默认字段名称。
@@ -276,6 +282,21 @@ public class StrategyConfig implements Serializable {
      */
     public StrategyConfig setTablePrefix(String... tablePrefix) {
         this.tablePrefix = StringUtil.join(",", tablePrefix);
+        return this;
+    }
+
+    /**
+     * 获取表后缀。
+     */
+    public String getTableSuffix() {
+        return tableSuffix;
+    }
+
+    /**
+     * 设置表后缀。
+     */
+    public StrategyConfig setTableSuffix(String... tableSuffix) {
+        this.tableSuffix = StringUtil.join(",", tableSuffix);
         return this;
     }
 
