@@ -24,6 +24,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
+import java.util.Date;
 
 public class TenantManagerTester {
 
@@ -34,19 +35,25 @@ public class TenantManagerTester {
             .addScript("data03.sql")
             .build();
 
-        MybatisFlexBootstrap.getInstance()
+        MybatisFlexBootstrap bootstrap = MybatisFlexBootstrap.getInstance()
             .setDataSource(dataSource)
             .addMapper(TenantAccountMapper.class)
             .setLogImpl(StdOutImpl.class)
             .start();
 
         // 配置 tenantFactory
-        TenantManager.setTenantFactory(() -> new Object[]{1});
+        TenantManager.setTenantFactory(() -> new Object[]{1, 2});
 
-        MybatisFlexBootstrap.getInstance()
-            .getMapper(TenantAccountMapper.class)
-            .selectAll()
-            .forEach(System.out::println);
+        TenantAccountMapper accountMapper = bootstrap.getMapper(TenantAccountMapper.class);
+
+        TenantAccount account = new TenantAccount();
+        account.setUserName("tutu");
+        account.setAge(20);
+        account.setBirthday(new Date());
+        account.setTenantId(10L);
+
+        accountMapper.insert(account);
+        accountMapper.selectAll().forEach(System.out::println);
     }
 
 }
