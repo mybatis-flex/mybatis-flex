@@ -241,6 +241,35 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return from(new SelectQueryTable(queryWrapper));
     }
 
+    /**
+     * <p>为 FROM 语句后的第一个表起别名，而不是为整个 SELECT 语句起别名。
+     *
+     * <p>例如：以下示例，
+     *
+     * <p><pre>{@code
+     * QueryWrapper.create().from(ACCOUNT).as("a");
+     * }</pre>
+     *
+     * <p>等价于，
+     *
+     * <p><pre>{@code
+     * QueryWrapper.create().from(ACCOUNT.as("a"));
+     * }</pre>
+     *
+     * <p>最终生成的 SQL 为，
+     * <p><pre>{@code
+     * SELECT a.* FROM tb_account a
+     * }</pre>
+     *
+     * <p>而不是，
+     *
+     * <p><pre>{@code
+     * (SELECT * FROM tb_account) AS "a"
+     * }</pre>
+     *
+     * @param alias 别名
+     * @return 当前查询包装器
+     */
     public QueryWrapper as(String alias) {
         if (CollectionUtil.isEmpty(queryTables)) {
             throw new IllegalArgumentException("query table must not be empty.");
