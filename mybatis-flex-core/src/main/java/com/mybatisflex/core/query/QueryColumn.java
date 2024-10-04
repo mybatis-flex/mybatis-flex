@@ -21,7 +21,6 @@ import com.mybatisflex.core.constant.SqlOperator;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.OperateType;
 import com.mybatisflex.core.exception.FlexExceptions;
-import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 import com.mybatisflex.core.util.ObjectUtil;
@@ -30,6 +29,8 @@ import com.mybatisflex.core.util.StringUtil;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
@@ -972,34 +973,47 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
     }
 
     QueryTable getSelectTable(List<QueryTable> queryTables, QueryTable selfTable) {
-        // 未查询任何表
-        if (queryTables == null || queryTables.isEmpty()) {
+        // 未查询任何表，或查询表仅有一个
+        // 可以省略表的引用，直接使用列名
+        // SELECT 1
+        // SELECT id FROM tb_user
+        if (queryTables == null || queryTables.isEmpty() || queryTables.size() == 1) {
             return null;
         }
 
-        if (selfTable != null && StringUtil.isNotBlank(selfTable.alias)) {
-            return selfTable;
-        }
-
-        if (queryTables.size() == 1 && queryTables.get(0).isSameTable(selfTable)) {
-            // ignore table
-            return null;
-        }
-
-        if (CollectionUtil.isEmpty(queryTables)) {
-            return selfTable;
-        }
-
-        if (selfTable == null && queryTables.size() == 1) {
+        // 列未指定表名，仅以字符串的形式输入列名
+        // 以查询表中的第一个表为主
+        // SELECT tb_user.id FROM tb_user
+        if (selfTable == null) {
             return queryTables.get(0);
         }
 
-        for (QueryTable table : queryTables) {
-            if (table.isSameTable(selfTable)) {
-                return table;
+        // 当前表有别名，以别名为主
+        // SELECT u.id FROM tb_user u
+        if (StringUtil.isNotBlank(selfTable.alias)) {
+            return selfTable;
+        }
+
+        QueryTable consideredTable = selfTable;
+
+        // 当前表存在且没有别名
+        ListIterator<QueryTable> it = queryTables.listIterator(queryTables.size());
+
+        while (it.hasPrevious()) {
+            QueryTable queryTable = it.previous();
+            if (Objects.equals(queryTable.name, selfTable.name)) {
+                if (StringUtil.isBlank(queryTable.alias)) {
+                    // 因为当前表没有别名，所以表名相同有没有别名，一定是这个表
+                    return queryTable;
+                } else {
+                    // 只是表名相同，但是查询表有别名，当前表没有别名
+                    // 考虑这个表，但是继续寻找，是否有未设置别名的表
+                    consideredTable = queryTable;
+                }
             }
         }
-        return selfTable;
+
+        return consideredTable;
     }
 
 
