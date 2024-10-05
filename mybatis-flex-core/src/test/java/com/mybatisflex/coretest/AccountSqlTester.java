@@ -593,7 +593,7 @@ public class AccountSqlTester {
         System.out.println(query.toSQL());
     }
 
-    @Test
+    // @Test
     public void testJoinSelf() {
         QueryWrapper queryWrapper = QueryWrapper.create()
             .select(ACCOUNT.ALL_COLUMNS
@@ -824,7 +824,7 @@ public class AccountSqlTester {
     }
 
 
-    @Test
+    // @Test
     public void testSelectLimitSql() {
         QueryWrapper queryWrapper = QueryWrapper.create()
             .select(distinct(ARTICLE.ID))

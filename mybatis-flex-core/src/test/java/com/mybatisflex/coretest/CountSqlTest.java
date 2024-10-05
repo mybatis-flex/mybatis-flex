@@ -18,6 +18,7 @@ package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.MapperUtil;
+import com.mybatisflex.coretest.table.ArticleTableDef;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -32,12 +33,15 @@ public class CountSqlTest {
 
     @Test
     public void test01() {
+        ArticleTableDef a1 = ARTICLE.as("a1");
+        ArticleTableDef a2 = ARTICLE.as("a2");
+
         QueryWrapper queryWrapper = QueryWrapper.create()
             .select()
             .from(ACCOUNT)
-            .leftJoin(ARTICLE).as("a1").on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
-            .leftJoin(ARTICLE).as("a2").on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
-            .where(ARTICLE.ACCOUNT_ID.in(1, 2, 3));
+            .leftJoin(a1).on(a1.ACCOUNT_ID.eq(ACCOUNT.ID))
+            .leftJoin(a2).on(a2.ACCOUNT_ID.eq(ACCOUNT.ID))
+            .where(a1.ACCOUNT_ID.in(1, 2, 3));
 
         System.out.println(queryWrapper.toSQL());
 
@@ -54,11 +58,14 @@ public class CountSqlTest {
 
     @Test
     public void test02() {
+        ArticleTableDef a1 = ARTICLE.as("a1");
+        ArticleTableDef a2 = ARTICLE.as("a2");
+
         QueryWrapper queryWrapper = QueryWrapper.create()
             .select()
             .from(ACCOUNT)
-            .leftJoin(ARTICLE).as("a1").on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
-            .leftJoin(ARTICLE).as("a2").on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+            .leftJoin(a1).on(a1.ACCOUNT_ID.eq(ACCOUNT.ID))
+            .leftJoin(a2).on(a2.ACCOUNT_ID.eq(ACCOUNT.ID))
             .where("a1.account_id IN (1, 2, 3)");
 
         System.out.println(queryWrapper.toSQL());

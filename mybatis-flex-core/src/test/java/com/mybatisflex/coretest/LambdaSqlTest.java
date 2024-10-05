@@ -20,9 +20,9 @@ import com.github.vertical_blank.sqlformatter.SqlFormatter;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static com.mybatisflex.core.query.QueryMethods.allColumns;
 import static com.mybatisflex.core.query.QueryMethods.defaultColumns;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Lambda 构建 SQL 测试。
