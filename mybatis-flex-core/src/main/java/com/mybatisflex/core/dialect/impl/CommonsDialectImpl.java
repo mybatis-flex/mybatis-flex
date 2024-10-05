@@ -892,7 +892,9 @@ public class CommonsDialectImpl implements IDialect {
         sqlBuilder.append(tableInfo.getWrapSchemaAndTableName(this, OperateType.UPDATE));
 
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
-        buildJoinSql(sqlBuilder, queryWrapper, queryTables, OperateType.UPDATE);
+        List<QueryTable> joinTables = CPI.getJoinTables(queryWrapper);
+        List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
+        buildJoinSql(sqlBuilder, queryWrapper, allTables, OperateType.UPDATE);
 
 
         sqlBuilder.append(SET);
