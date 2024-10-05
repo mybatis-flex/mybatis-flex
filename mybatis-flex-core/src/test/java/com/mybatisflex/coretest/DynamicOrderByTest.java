@@ -17,11 +17,11 @@
 package com.mybatisflex.coretest;
 
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.coretest.table.ArticleTableDef;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
-import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
 
 /**
  * @author 王帅
@@ -31,10 +31,11 @@ public class DynamicOrderByTest {
 
     @Test
     public void test01() {
+        ArticleTableDef ARTICLE = ArticleTableDef.ARTICLE.as("ar");
         QueryWrapper queryWrapper = QueryWrapper.create()
             .select(ACCOUNT.ID, ACCOUNT.USER_NAME.as("name"), ACCOUNT.AGE)
             .from(ACCOUNT.as("ac"))
-            .leftJoin(ARTICLE).as("ar").on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+            .leftJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
             .orderBy(ACCOUNT.USER_NAME, true)
             .orderBy(Account::getAge, false)
             .orderBy("name", true)

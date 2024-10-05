@@ -22,6 +22,7 @@ import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.query.QueryChain;
 import com.mybatisflex.core.update.UpdateChain;
+import com.mybatisflex.test.table.ArticleTableDef;
 import lombok.SneakyThrows;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.assertj.core.api.WithAssertions;
@@ -38,7 +39,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.mybatisflex.test.table.AccountTableDef.ACCOUNT;
-import static com.mybatisflex.test.table.ArticleTableDef.ARTICLE;
 
 public class UpdateChainTest implements WithAssertions {
 
@@ -129,15 +129,16 @@ public class UpdateChainTest implements WithAssertions {
 
     @Test
     public void testUpdateChainToSql() {
+        ArticleTableDef ARTICLE1 = ArticleTableDef.ARTICLE.as("ar");
         String sql = UpdateChain.of(Account.class)
                 .set(ACCOUNT.AGE, 18)
                 .set(Article::getAccountId, 4)
-                .leftJoin(ARTICLE).as("ar").on(ACCOUNT.ID.eq(ARTICLE.ACCOUNT_ID))
+                .leftJoin(ARTICLE1).on(ACCOUNT.ID.eq(ARTICLE1.ACCOUNT_ID))
                 .where(ACCOUNT.ID.eq(4))
                 .toSQL();
 
         String expectSQL = "UPDATE `tb_account` " +
-                "LEFT JOIN `tb_article` AS `ar` ON `tb_account`.`id` = `ar`.`account_id` " +
+                "LEFT JOIN `tb_article` AS `ar` ON `id` = `ar`.`account_id` " +
                 "SET `age` = 18 , `accountId` = 4  WHERE `id` = 4";
 
         assertThat(sql).isEqualTo(expectSQL);
