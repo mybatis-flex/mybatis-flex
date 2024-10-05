@@ -98,14 +98,15 @@ public class EnumWrapper<E extends Enum<E>> {
      * @param object
      * @return
      */
-    public Object getEnumValue(E object) {
+    public Object getEnumValue(Object object) {
         try {
             if (getterMethod != null) {
                 return getterMethod.invoke(object);
             } else if(property != null){
                 return property.get(object);
             } else {
-                return object.name();
+                //noinspection unchecked
+                return ((E)object).name();
             }
         } catch (Exception e) {
             throw FlexExceptions.wrap(e);

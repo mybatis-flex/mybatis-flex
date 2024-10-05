@@ -51,7 +51,7 @@ public class EnumTypeHandler<E extends Enum<E> & BaseEnum> extends BaseTypeHandl
      * @param value 枚举值
      * @return 枚举对象
      */
-    private E getEnumByValue(int value) {
+    public E getEnumByValue(int value) {
         return Stream.of(enumClass.getEnumConstants()).filter(e -> e.getValue() == value).findAny().orElse(null);
     }
 }

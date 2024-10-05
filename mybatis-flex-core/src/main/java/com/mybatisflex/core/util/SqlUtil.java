@@ -15,7 +15,13 @@
  */
 package com.mybatisflex.core.util;
 
+import com.mybatisflex.core.audit.AuditMessage;
+import com.mybatisflex.core.mybatis.TypeHandlerObject;
+
 import java.lang.reflect.Array;
+import java.lang.reflect.Proxy;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -163,6 +169,26 @@ public class SqlUtil {
             }
             return joiner.toString();
         }
+        // TypeHandlerObject
+        else if (value instanceof TypeHandlerObject) {
+            TypeHandlerObject handlerObject = (TypeHandlerObject) value;
+            String[] paramArray = new String[1];
+            PreparedStatement preparedStatement = createPreparedStatement(paramArray);
+            try {
+                handlerObject.setParameter(preparedStatement, 0);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return paramArray[0];
+        }
+
+        // enum
+        else if (value.getClass().isEnum()) {
+            EnumWrapper<?> ew = EnumWrapper.of(value.getClass());
+            Object enumValue = ew.getEnumValue(value);
+            return enumValue.toString();
+        }
+
         // other
         else {
             StringBuilder sb = new StringBuilder();
@@ -192,4 +218,15 @@ public class SqlUtil {
         return sb.toString();
     }
 
+
+    private static PreparedStatement createPreparedStatement(String[] params) {
+        return (PreparedStatement) Proxy.newProxyInstance(
+            AuditMessage.class.getClassLoader(),
+            new Class[]{PreparedStatement.class}, (proxy, method, args) -> {
+                if (args != null && (args.length == 2 || args.length == 3)) {
+                    params[0] = args[1].toString();
+                }
+                return null;
+            });
+    }
 }
