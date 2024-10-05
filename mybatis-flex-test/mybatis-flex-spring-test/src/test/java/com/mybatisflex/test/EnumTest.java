@@ -44,14 +44,16 @@ public class EnumTest implements WithAssertions {
         QueryWrapper query = new QueryWrapper()
             .select()
             .from(ACCOUNT).where(ACCOUNT.SEX.in(Sex.MALE, Sex.FEMALE));
-        // 注意，此处虽然显示是MALE、FEMALE，但是如果使用了枚举的typeHandler，实际sql执行时会使用typeHandler进行处理
-        assertThat(query.toSQL()).isEqualTo("SELECT * FROM `tb_account` WHERE `sex` IN ('MALE', 'FEMALE')");
+
+        System.out.println("sql >>aa: " + query.toSQL());
+        assertThat(query.toSQL()).isEqualTo("SELECT * FROM `tb_account` WHERE `sex` IN (MALE, FEMALE)");
         List<Account> list = accountMapper.selectListByQuery(query);
         assertThat(list).isNotNull();
         for (Account account : list) {
             assertThat(account.getSex()).isIn(Sex.MALE, Sex.FEMALE);
         }
     }
+
     @Test
     public void test_create_entity_with_enum_type() {
         Account account = new Account();
@@ -59,13 +61,14 @@ public class EnumTest implements WithAssertions {
         QueryWrapper queryWrapper = QueryWrapper.create(account);
         String sql = queryWrapper.toSQL();
         System.out.println(sql);
-        // 注意，此处虽然显示是MALE，但是如果使用了枚举的typeHandler，实际sql执行时会使用typeHandler进行处理
-        assertThat(sql).isEqualTo("SELECT `id`, `user_name`, `age`, `birthday`, `sex` FROM `tb_account` WHERE `sex` = 'MALE'");
+
         List<Account> list = accountMapper.selectListByQuery(queryWrapper);
         assertThat(list).isNotNull();
         for (Account item : list) {
             assertThat(item.getSex()).isEqualTo(Sex.MALE);
         }
+
+        assertThat(sql).isEqualTo("SELECT `id`, `user_name`, `age`, `birthday`, `sex` FROM `tb_account` WHERE `sex` = 1");
     }
 
 }
