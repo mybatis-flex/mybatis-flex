@@ -67,6 +67,12 @@ public @interface Table {
      */
     Class<? extends SetListener>[] onSet() default {};
 
+
+    /**
+     * 监听 entity 的查询数据的所有属性 set 之后行为，用户主动 set 不会触发。
+     */
+    Class<? extends AllSetAfterListener>[] onAllSetAfter() default {};
+
     /**
      * 在某些场景下，我们需要手动编写 Mapper，可以通过这个注解来关闭 APT 的 Mapper 生成。
      */

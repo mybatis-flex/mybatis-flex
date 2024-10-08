@@ -62,13 +62,18 @@ public class FlexWrapperFactory implements ObjectWrapperFactory {
 
     static class FlexBeanWrapper extends BeanWrapper {
 
-        private final Object entity;
+        private  Object entity;
         private final TableInfo tableInfo;
 
         public FlexBeanWrapper(MetaObject metaObject, Object object) {
             super(metaObject, object);
             this.entity = object;
             this.tableInfo = TableInfoFactory.ofEntityClass(object.getClass());
+        }
+
+        public Object allSetAfter() {
+            this.entity= tableInfo.invokeOnAllSetAfterListener(entity);
+            return this.entity;
         }
 
         @Override

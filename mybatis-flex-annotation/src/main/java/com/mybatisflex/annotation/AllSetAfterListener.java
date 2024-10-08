@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2025, Mybatis-Flex (fuhai999@gmail.com).
+ *  Copyright (c) 2022-2023, Mybatis-Flex (fuhai999@gmail.com).
  *  <p>
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,28 +16,17 @@
 package com.mybatisflex.annotation;
 
 /**
- * 空监听器。
+ * 查询实体类数据时，对实体类的属性设置的监听。
  */
-public final class NoneListener implements InsertListener, UpdateListener, SetListener,AllSetAfterListener {
+public interface AllSetAfterListener extends Listener {
 
-    @Override
-    public void onInsert(Object entity) {
-        // do nothing here.
-    }
 
-    @Override
-    public void onUpdate(Object entity) {
-        // do nothing here.
-    }
-
-    @Override
-    public Object onSet(Object entity, String property, Object value) {
-        return value;
-    }
-
-    @Override
-    public Object onAllSetAfter(Object entity) {
-        return entity;
-    }
+    /**
+     * 实体类属性设置。
+     *
+     * @param entity   实体类
+     * @return 处理后的实体类
+     */
+     Object onAllSetAfter(Object entity);
 
 }
