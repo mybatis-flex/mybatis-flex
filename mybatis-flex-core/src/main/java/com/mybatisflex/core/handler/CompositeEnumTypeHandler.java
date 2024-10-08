@@ -39,8 +39,8 @@ public class CompositeEnumTypeHandler<E extends Enum<E>> implements TypeHandler<
         boolean isNotFound = false;
         List<Field> enumDbValueFields = ClassUtil.getAllFields(enumClass, f -> f.getAnnotation(EnumValue.class) != null);
         if (enumDbValueFields.isEmpty()) {
-            List<Method> enumDbValueMethods = ClassUtil.getAllMethods(enumClass, m -> m.getAnnotation(EnumValue.class) != null);
-            if (enumDbValueMethods.isEmpty()) {
+            Method enumDbValueMethod = ClassUtil.getFirstMethodByAnnotation(enumClass, EnumValue.class);
+            if (enumDbValueMethod == null) {
                 isNotFound = true;
             }
         }

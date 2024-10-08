@@ -30,8 +30,8 @@ public class EnumWrapper<E extends Enum<E>> {
 
     private boolean hasEnumValueAnnotation = false;
 
-    private Class<?> enumClass;
-    private E[] enums;
+    private final Class<?> enumClass;
+    private final E[] enums;
     private Field property;
     private Class<?> propertyType;
     private Method getterMethod;
@@ -71,7 +71,7 @@ public class EnumWrapper<E extends Enum<E>> {
         }
 
         if (!hasEnumValueAnnotation) {
-            Method enumValueMethod = ClassUtil.getFirstMethod(enumClass, method -> method.getAnnotation(EnumValue.class) != null);
+            Method enumValueMethod = ClassUtil.getFirstMethodByAnnotation(enumClass, EnumValue.class);
             if (enumValueMethod != null) {
                 String methodName = enumValueMethod.getName();
                 if (!(methodName.startsWith("get") && methodName.length() > 3)) {
@@ -102,11 +102,11 @@ public class EnumWrapper<E extends Enum<E>> {
         try {
             if (getterMethod != null) {
                 return getterMethod.invoke(object);
-            } else if(property != null){
+            } else if (property != null) {
                 return property.get(object);
             } else {
                 //noinspection unchecked
-                return ((E)object).name();
+                return ((E) object).name();
             }
         } catch (Exception e) {
             throw FlexExceptions.wrap(e);
