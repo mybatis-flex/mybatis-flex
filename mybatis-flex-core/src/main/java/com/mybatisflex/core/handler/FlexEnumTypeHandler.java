@@ -26,7 +26,7 @@ import java.sql.SQLException;
 
 public class FlexEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
 
-    private EnumWrapper<E> enumWrapper;
+    private final EnumWrapper<E> enumWrapper;
 
     public FlexEnumTypeHandler(Class<E> enumClass) {
         enumWrapper = EnumWrapper.of(enumClass);

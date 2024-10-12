@@ -18,10 +18,9 @@ package com.mybatisflex.core.util;
 
 import org.apache.ibatis.javassist.util.proxy.ProxyObject;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -241,7 +240,7 @@ public class ClassUtil {
      * @param checkToContinue 应用当前类并检测是否继续应用, 返回false则停止应用, 返回true继续向上取父类
      * @author KAMOsama
      */
-    public static void applyAllClass(Class<?> clazz,  Predicate<Class<?>> checkToContinue) {
+    public static void applyAllClass(Class<?> clazz, Predicate<Class<?>> checkToContinue) {
         Class<?> currentClass = clazz;
         while (currentClass != null && currentClass != Object.class && checkToContinue.test(currentClass)) {
             currentClass = currentClass.getSuperclass();
@@ -286,6 +285,34 @@ public class ClassUtil {
         return methods.isEmpty() ? null : methods.get(0);
     }
 
+    public static Method getFirstMethodByAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        Set<Class<?>> visited = new HashSet<>();
+        return findMethod(clazz, annotationClass, visited);
+    }
+
+    private static Method findMethod(Class<?> clazz, Class<? extends Annotation> annotationClass, Set<Class<?>> visited) {
+        if (clazz == null || clazz == Object.class || visited.contains(clazz)) {
+            return null;
+        }
+        visited.add(clazz);
+
+        Method[] methods = clazz.getDeclaredMethods();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(annotationClass)) {
+                return method;
+            }
+        }
+
+        for (Class<?> inter : clazz.getInterfaces()) {
+            Method method = findMethod(inter, annotationClass, visited);
+            if (method != null) {
+                return method;
+            }
+        }
+
+        return findMethod(clazz.getSuperclass(), annotationClass, visited);
+    }
+
 
     private static void doGetMethods(Class<?> clazz, List<Method> methods, Predicate<Method> predicate, boolean firstOnly) {
         applyAllClass(clazz, currentClass -> {
@@ -318,7 +345,7 @@ public class ClassUtil {
             for (Class<?> anInterface : interfaces) {
                 doGetMethods(anInterface, methods, predicate, firstOnly);
                 // 只获取第一个并且集合不为空就结束遍历
-                if (firstOnly && !methods.isEmpty()){
+                if (firstOnly && !methods.isEmpty()) {
                     return false;
                 }
             }

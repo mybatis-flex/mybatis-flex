@@ -18,7 +18,7 @@ package com.mybatisflex.test;
 
 import com.mybatisflex.annotation.EnumValue;
 
-public enum SexEnum {
+public enum SexEnum implements IBaseEnum{
     TYPE1(0, "女"),
     TYPE2(1, "男"),
     TYPE3(2, "未知"),
@@ -35,7 +35,7 @@ public enum SexEnum {
         this.desc = desc;
     }
 
-    @EnumValue
+//    @EnumValue
     public int getCode() {
         return code;
     }
