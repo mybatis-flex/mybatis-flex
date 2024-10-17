@@ -55,11 +55,11 @@ public class ModifyAttrsRecordProxyFactory {
 
         T proxyObject = null;
         try {
-            //noinspection unchecked
+            // noinspection unchecked
             proxyObject = (T) ClassUtil.newInstance(proxyClass);
             ((ProxyObject) proxyObject).setHandler(new ModifyAttrsRecordHandler());
         } catch (Exception e) {
-            LogFactory.getLog(ModifyAttrsRecordProxyFactory.class).error(e.toString(), e);
+            LogFactory.getLog(ModifyAttrsRecordProxyFactory.class).error("请为实体类添加公开的无参构造器！", e);
         }
 
         return proxyObject;
