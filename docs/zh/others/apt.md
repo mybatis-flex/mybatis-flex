@@ -248,7 +248,7 @@ pom.xml 添加 `annotationProcessorPaths` 配置，
 ```
 dependencies {
     ...
-    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.9.7'
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.9.8'
 }
 ```
 

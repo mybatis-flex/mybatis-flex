@@ -2,6 +2,35 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.9.8 20241020
+- 新增：新增 trino 方言，感谢 @chenjh3
+- 新增：新增 OptimisticLockManager，用于处理跳过乐观锁的场景，感谢 @tiankafei
+- 新增：添加 solon 事务支持，感谢 @noear_admin
+- 新增: 增加未匹配列的自定义处理拓展接口，感谢 @something4ArthurW
+- 新增：添加查询列和查询条件相互转换的适配器，感谢 @Suomm
+- 新增：无法顺序读取数据源配置时，可以手动指定默认数据源，感谢 @Suomm
+- 新增：使用实体类构建 QueryWrapper 时，可以使用实体类中属性标记的 TypeHandler 对值进行处理，感谢 @Suomm
+- 新增：代码生成器添加表后缀处理，感谢 @Suomm
+- 优化：mybatis-spring 升级同步升级 mybatis 依赖版本为 3.5.16
+- 优化：废弃使用多个值的 SQL 连接符，感谢 @Suomm
+- 优化：优化 SelectQueryColumn 类，感谢 @Suomm
+- 优化：使 QueryColumn 子类可以自定义 SQL 生成，感谢 @Suomm
+- 优化：优化 CustomKeyGenerator 类，感谢 @Suomm
+- 优化：修正一些拼写错误，感谢 @Suomm
+- 优化：如果更新数据时租户字段有值，则不覆盖，感谢 @Suomm
+- 优化：FlexDefaultResultSetHandler 细节优化
+- 优化：为 ModifyAttrsRecordProxyFactory 添加更加明确的异常信息，感谢 @Suomm
+- 修复：使用 DbChain 的 as 出现 query table must not be empty 异常，感谢 @Suomm
+- 修复：空数组/集合会查出所有数据的问题，感谢 @Suomm
+- 修复：case when 中使用 SelectQueryColumn 字段会变成空的问题，感谢 @Suomm
+- 修复：解决 XML 审计无法打印参数以及审计参数顺序问题，感谢 @Suomm
+- 修复：使用 mapper.xml 的嵌套查询出现 NPE 的问题，感谢 @Suomm
+- 修复：兼容 Lambda 的方式构建 SQL 为表起别名没有应用的问题，感谢 @Suomm
+- 修复：代码生成器实体类有父类不添加 `@EqualsAndHashCode(callSuper = true)` 的问题，感谢 @Suomm
+- 修复：UPDATE JOIN 表没有别名的错误，感谢 @Suomm
+- 修复：修复 `@EnumValue` 应用在接口方法上失效的问题，感谢 @aliothmoon
+
+
 
 ## v1.9.7 20240828
 - 新增：增加 updateBatch 方法是否忽略 null 字段的可配置性，感谢 @wqdTryBest
