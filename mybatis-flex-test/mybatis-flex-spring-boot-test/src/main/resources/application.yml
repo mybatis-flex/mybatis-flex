@@ -41,8 +41,8 @@ mybatis-flex:
     ds1:
       url: jdbc:mysql://127.0.0.1:3306/flex_test
       username: root
-      password: 12345678
+      password: 123456
     ds2:
       url: jdbc:mysql://127.0.0.1:3306/flex_test
       username: root
-      password: 12345678
+      password: 123456
