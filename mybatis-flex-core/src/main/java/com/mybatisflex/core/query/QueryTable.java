@@ -93,19 +93,20 @@ public class QueryTable implements CloneSupport<QueryTable> {
         if (table == null) {
             return false;
         }
+
         if (this == table) {
             return true;
         }
 
-//        return Objects.equals(name, table.name)
-//            && Objects.equals(alias, table.alias);
+//        if (StringUtil.isNotBlank(alias)
+//            && StringUtil.isNotBlank(table.alias)) {
+//            return Objects.equals(alias, table.alias);
+//        }
+//
+//        return Objects.equals(name, table.name);
 
-        if (StringUtil.isNotBlank(alias)
-            && StringUtil.isNotBlank(table.alias)) {
-            return Objects.equals(alias, table.alias);
-        }
-
-        return Objects.equals(name, table.name);
+        return Objects.equals(name, table.name)
+            && Objects.equals(alias, table.alias);
     }
 
     Object[] getValueArray() {
