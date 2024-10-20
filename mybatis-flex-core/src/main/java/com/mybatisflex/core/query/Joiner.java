@@ -18,7 +18,7 @@ package com.mybatisflex.core.query;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 
-import java.util.ListIterator;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -48,13 +48,8 @@ public class Joiner<M extends QueryWrapper> {
      */
     public Joiner<M> as(String alias) {
         join.queryTable = join.getQueryTable().as(alias);
-        ListIterator<QueryTable> itr = queryWrapper.joinTables.listIterator();
-        while (itr.hasNext()) {
-            if (itr.next().isSameTable(join.queryTable)) {
-                itr.set(join.queryTable);
-                break;
-            }
-        }
+        List<QueryTable> joinTables = queryWrapper.joinTables;
+        joinTables.set(joinTables.size() - 1, join.queryTable);
         return this;
     }
 
