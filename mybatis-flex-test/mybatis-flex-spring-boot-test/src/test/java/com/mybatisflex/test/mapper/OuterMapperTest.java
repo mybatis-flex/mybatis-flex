@@ -18,6 +18,8 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.test.entity.Outer;
+import com.mybatisflex.test.entity.table.InnerTableDef;
+import com.mybatisflex.test.entity.table.OuterTableDef;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,16 +51,18 @@ class OuterMapperTest {
 
     @Test
     void testSelect() {
+        OuterTableDef outer = OUTER.as("o");
+        InnerTableDef inner = INNER.as("i");
         QueryWrapper queryWrapper = QueryWrapper.create()
-            .select(OUTER.ID,
-                OUTER.NAME,
-                INNER.ID,
-                INNER.TYPE)
-            .from(OUTER.as("o"))
-            .leftJoin(INNER).as("i").on(INNER.ID.eq(2))
+            .select(outer.ID,
+                outer.NAME,
+                inner.ID,
+                inner.TYPE)
+            .from(outer)
+            .leftJoin(inner).on(inner.ID.eq(2))
             .limit(1);
-        Outer outer = outerMapper.selectOneByQuery(queryWrapper);
-        System.out.println(outer);
+        Outer outer1 = outerMapper.selectOneByQuery(queryWrapper);
+        System.out.println(outer1);
     }
 
 }
