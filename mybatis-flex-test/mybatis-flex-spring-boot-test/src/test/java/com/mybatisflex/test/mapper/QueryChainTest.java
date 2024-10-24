@@ -27,6 +27,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.mybatisflex.test.model.table.RoleTableDef.ROLE;
 import static com.mybatisflex.test.model.table.UserRoleTableDef.USER_ROLE;
 import static com.mybatisflex.test.model.table.UserTableDef.USER;
@@ -72,6 +75,7 @@ class QueryChainTest {
     @Test
     void testRelations() {
         User user1 = QueryChain.of(userMapper)
+            .select(User::getUserId, User::getUserName, User::getRoleList, User::getPassword)
             .where(USER.USER_ID.eq(2))
             .withRelations()
             .one();

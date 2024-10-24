@@ -68,7 +68,8 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
     }
 
     @Override
-    public <T> R select(LambdaGetter<T>... lambdaGetters) {
+    @SafeVarargs
+    public final <T> R select(LambdaGetter<T>... lambdaGetters) {
         super.select(lambdaGetters);
         return (R) this;
     }
