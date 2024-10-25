@@ -176,7 +176,8 @@ public class FlexDataSource extends AbstractDataSource {
     public Connection proxy(Connection connection, String xid) {
         return (Connection) Proxy.newProxyInstance(FlexDataSource.class.getClassLoader()
             , new Class[]{Connection.class}
-            , new ConnectionHandler(connection, xid));
+            , new ConnectionHandler(connection, xid)
+        );
     }
 
     /**

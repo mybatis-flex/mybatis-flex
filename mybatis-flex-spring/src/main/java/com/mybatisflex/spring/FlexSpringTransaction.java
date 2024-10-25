@@ -19,6 +19,7 @@ import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.transaction.TransactionContext;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.transaction.Transaction;
+import org.springframework.transaction.TransactionDefinition;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -82,6 +83,10 @@ public class FlexSpringTransaction implements Transaction {
 
     @Override
     public Integer getTimeout() throws SQLException {
+        TransactionDefinition definition = TransactionDefinitionManager.getTransactionDefinition();
+        if (definition != null) {
+            return TransactionDefinitionManager.getTimeToLiveInSeconds();
+        }
         return null;
     }
 }
