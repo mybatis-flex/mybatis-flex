@@ -66,7 +66,7 @@ QueryWrapper qw = QueryWrapper.create()
     .where(Account::getAge).eq(18)
     .and(Account::getId).ge(0);
 
-Page<Account> accountPage = ccountMapper
+Page<Account> accountPage = accountMapper
     .xmlPaginate("selectByName", Page.of(1, 10), qw);
 ```
 
@@ -123,7 +123,7 @@ QueryWrapper qw = QueryWrapper.create()
 Map<String,Object> otherParams = new HashMap<>();
 otherParams.put("otherName", "michael");
 
-Page<Account> accountPage = ccountMapper
+Page<Account> accountPage = accountMapper
     .xmlPaginate("selectByName", Page.of(1, 10), qw, otherParams);
 ```
 
