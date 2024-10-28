@@ -948,13 +948,13 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (selectTable == null) {
             return dialect.wrap(name);
         } else {
-            if (StringUtil.isNotBlank(selectTable.alias)) {
+            if (StringUtil.hasText(selectTable.alias)) {
                 return dialect.wrap(selectTable.alias) + SqlConsts.REFERENCE + dialect.wrap(name);
-            } else if (StringUtil.isNotBlank(selectTable.getSchema()) && StringUtil.isNotBlank(selectTable.getName())) {
+            } else if (StringUtil.hasText(selectTable.getSchema()) && StringUtil.hasText(selectTable.getName())) {
                 String realTable = dialect.getRealTable(selectTable.getName(), OperateType.SELECT);
                 return dialect.wrap(dialect.getRealSchema(selectTable.schema, realTable, OperateType.SELECT)) + SqlConsts.REFERENCE + dialect.wrap(realTable)
                     + SqlConsts.REFERENCE + dialect.wrap(name);
-            } else if (StringUtil.isNotBlank(selectTable.getName())) {
+            } else if (StringUtil.hasText(selectTable.getName())) {
                 return dialect.wrap(dialect.getRealTable(selectTable.getName(), OperateType.SELECT)) + SqlConsts.REFERENCE + dialect.wrap(name);
             } else {
                 return dialect.wrap(name);
@@ -991,7 +991,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
         // 当前表有别名，以别名为主
         // SELECT u.id FROM tb_user u
-        if (StringUtil.isNotBlank(selfTable.alias)) {
+        if (StringUtil.hasText(selfTable.alias)) {
             return selfTable;
         }
 
@@ -1003,7 +1003,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         while (it.hasPrevious()) {
             QueryTable queryTable = it.previous();
             if (Objects.equals(queryTable.name, selfTable.name)) {
-                if (StringUtil.isBlank(queryTable.alias)) {
+                if (StringUtil.noText(queryTable.alias)) {
                     // 因为当前表没有别名，所以表名相同有没有别名，一定是这个表
                     return queryTable;
                 } else {

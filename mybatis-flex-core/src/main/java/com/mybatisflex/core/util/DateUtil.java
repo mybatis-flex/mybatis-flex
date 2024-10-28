@@ -93,7 +93,7 @@ public class DateUtil {
 
 
     public static Date parseDate(String dateString) {
-        if (StringUtil.isBlank(dateString)) {
+        if (StringUtil.noText(dateString)) {
             return null;
         }
         dateString = dateString.trim();
@@ -134,7 +134,7 @@ public class DateUtil {
 
 
     public static LocalDateTime parseLocalDateTime(String dateString) {
-        if (StringUtil.isBlank(dateString)) {
+        if (StringUtil.noText(dateString)) {
             return null;
         }
         dateString = dateString.trim();

@@ -152,7 +152,7 @@ public class SnowFlakeIDKeyGenerator implements IKeyGenerator {
         StringBuilder mpId = new StringBuilder();
         mpId.append(dataCenterId);
         String name = ManagementFactory.getRuntimeMXBean().getName();
-        if (StringUtil.isNotBlank(name)) {
+        if (StringUtil.hasText(name)) {
             // GET jvmPid
             mpId.append(name.split("@")[0]);
         }

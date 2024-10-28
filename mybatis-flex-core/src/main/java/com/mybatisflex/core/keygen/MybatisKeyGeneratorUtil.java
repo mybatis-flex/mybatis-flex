@@ -81,7 +81,7 @@ public class MybatisKeyGeneratorUtil {
 
         //通过序列生成的注解
         String sequence = getKeyValue(idInfo, globalKeyConfig);
-        if (StringUtil.isBlank(sequence)) {
+        if (StringUtil.noText(sequence)) {
             throw FlexExceptions.wrap("Please config sequence by @Id(value=\"...\") for field: %s in class: %s"
                 , idInfo.getProperty()
                 , tableInfo.getEntityClass().getName());
@@ -146,7 +146,7 @@ public class MybatisKeyGeneratorUtil {
 
     public static String getKeyValue(IdInfo idInfo, FlexGlobalConfig.KeyConfig globalKeyConfig) {
         String value = idInfo.getValue();
-        if (StringUtil.isBlank(value) && globalKeyConfig != null) {
+        if (StringUtil.noText(value) && globalKeyConfig != null) {
             value = globalKeyConfig.getValue();
         }
         return value;

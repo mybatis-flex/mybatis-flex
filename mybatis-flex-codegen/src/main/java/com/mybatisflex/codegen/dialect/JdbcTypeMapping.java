@@ -73,12 +73,12 @@ public class JdbcTypeMapping {
     public static String getType(String jdbcType, Table table, Column column) {
         if (typeMapper != null) {
             String type = typeMapper.getType(jdbcType, table, column);
-            if (StringUtil.isNotBlank(type)) {
+            if (StringUtil.hasText(type)) {
                 return type;
             }
         }
         String registered = mapping.get(jdbcType);
-        return StringUtil.isNotBlank(registered) ? registered : jdbcType;
+        return StringUtil.hasText(registered) ? registered : jdbcType;
     }
 
     public interface JdbcTypeMapper {

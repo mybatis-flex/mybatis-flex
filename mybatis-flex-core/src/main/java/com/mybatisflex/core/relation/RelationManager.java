@@ -328,12 +328,12 @@ public class RelationManager {
 
                 //注解配置的数据源
                 String configDsKey = relation.getDataSource();
-                if (StringUtil.isBlank(configDsKey) && currentDsKey != null) {
+                if (StringUtil.noText(configDsKey) && currentDsKey != null) {
                     configDsKey = currentDsKey;
                 }
 
                 try {
-                    if (StringUtil.isNotBlank(configDsKey)) {
+                    if (StringUtil.hasText(configDsKey)) {
                         DataSourceKey.use(configDsKey);
                     }
 
@@ -391,7 +391,7 @@ public class RelationManager {
                         relation.join(entities, targetObjectList, mappingRows);
                     }
                 } finally {
-                    if (StringUtil.isNotBlank(configDsKey)) {
+                    if (StringUtil.hasText(configDsKey)) {
                         DataSourceKey.clear();
                     }
                 }

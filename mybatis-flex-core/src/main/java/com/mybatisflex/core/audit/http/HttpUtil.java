@@ -116,7 +116,7 @@ public class HttpUtil {
     }
 
     public static void setCharSet(String charSet) {
-        if (StringUtil.isBlank(charSet)) {
+        if (StringUtil.noText(charSet)) {
             throw new IllegalArgumentException("charSet can not be blank.");
         }
         HttpUtil.CHARSET = charSet;
@@ -232,7 +232,7 @@ public class HttpUtil {
 
             String key = entry.getKey();
             String value = entry.getValue();
-            if (StringUtil.isNotBlank(value)) {
+            if (StringUtil.hasText(value)) {
                 try {
                     value = URLEncoder.encode(value, CHARSET);
                 } catch (UnsupportedEncodingException e) {

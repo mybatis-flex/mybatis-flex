@@ -40,7 +40,7 @@ public class ConvertUtil {
             return getPrimitiveDefaultValue(targetClass);
         }
         if (value == null || (targetClass != String.class && value.getClass() == String.class
-            && StringUtil.isBlank((String) value))) {
+            && StringUtil.noText((String) value))) {
             return null;
         }
         if (value.getClass().isAssignableFrom(targetClass)) {

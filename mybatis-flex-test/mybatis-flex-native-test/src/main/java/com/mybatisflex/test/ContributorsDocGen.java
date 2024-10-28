@@ -80,7 +80,7 @@ public class ContributorsDocGen {
 
             markdown.append("|");
 
-            if (StringUtil.isNotBlank(src)) {
+            if (StringUtil.hasText(src)) {
                 markdown.append("![](" + src + ")");
             }
 

@@ -44,7 +44,7 @@ public class FlexSpringTransaction implements Transaction {
     public Connection getConnection() throws SQLException {
         if (isConnectionTransactional == null) {
             connection = dataSource.getConnection();
-            isConnectionTransactional = StringUtil.isNotBlank(TransactionContext.getXID());
+            isConnectionTransactional = StringUtil.hasText(TransactionContext.getXID());
             autoCommit = connection.getAutoCommit();
             return connection;
         }

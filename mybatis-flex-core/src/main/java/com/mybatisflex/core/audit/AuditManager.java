@@ -103,7 +103,7 @@ public class AuditManager {
             return supplier.execute();
         }
         String key = DataSourceKey.get();
-        if (StringUtil.isBlank(key)) {
+        if (StringUtil.noText(key)) {
             key = FlexGlobalConfig.getDefaultConfig()
                 .getDataSource()
                 .getDefaultDataSourceKey();

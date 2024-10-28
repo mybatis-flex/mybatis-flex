@@ -55,7 +55,7 @@ public class ServiceGenerator implements IGenerator {
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         ServiceConfig serviceConfig = globalConfig.getServiceConfig();
 
-        String sourceDir = StringUtil.isNotBlank(serviceConfig.getSourceDir()) ? serviceConfig.getSourceDir() : packageConfig.getSourceDir();
+        String sourceDir = StringUtil.hasText(serviceConfig.getSourceDir()) ? serviceConfig.getSourceDir() : packageConfig.getSourceDir();
 
         String servicePackagePath = packageConfig.getServicePackage().replace(".", "/");
         File serviceJavaFile = new File(sourceDir, servicePackagePath + "/" +

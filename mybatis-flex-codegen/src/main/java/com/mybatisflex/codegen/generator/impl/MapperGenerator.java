@@ -55,7 +55,7 @@ public class MapperGenerator implements IGenerator {
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         MapperConfig mapperConfig = globalConfig.getMapperConfig();
 
-        String sourceDir = StringUtil.isNotBlank(mapperConfig.getSourceDir()) ? mapperConfig.getSourceDir() : packageConfig.getSourceDir();
+        String sourceDir = StringUtil.hasText(mapperConfig.getSourceDir()) ? mapperConfig.getSourceDir() : packageConfig.getSourceDir();
 
         String mapperPackagePath = packageConfig.getMapperPackage().replace(".", "/");
         File mapperJavaFile = new File(sourceDir, mapperPackagePath + "/" +

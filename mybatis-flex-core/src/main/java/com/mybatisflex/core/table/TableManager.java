@@ -84,7 +84,7 @@ public class TableManager {
         Map<String, String> mapping = tableNameMappingTL.get();
         if (mapping != null) {
             String dynamicTableName = mapping.get(tableName);
-            if (StringUtil.isNotBlank(dynamicTableName)) {
+            if (StringUtil.hasText(dynamicTableName)) {
                 return dynamicTableName;
             }
         }
@@ -94,7 +94,7 @@ public class TableManager {
         }
 
         String dynamicTableName = dynamicTableProcessor.process(tableName, operateType);
-        return StringUtil.isNotBlank(dynamicTableName) ? dynamicTableName : tableName;
+        return StringUtil.hasText(dynamicTableName) ? dynamicTableName : tableName;
     }
 
 
@@ -102,7 +102,7 @@ public class TableManager {
         Map<String, String> mapping = schemaMappingTL.get();
         if (mapping != null) {
             String dynamicSchema = mapping.get(schema);
-            if (StringUtil.isNotBlank(dynamicSchema)) {
+            if (StringUtil.hasText(dynamicSchema)) {
                 return dynamicSchema;
             }
         }
@@ -112,7 +112,7 @@ public class TableManager {
         }
 
         String dynamicSchema = dynamicSchemaProcessor.process(schema, table, operateType);
-        return StringUtil.isNotBlank(dynamicSchema) ? dynamicSchema : schema;
+        return StringUtil.hasText(dynamicSchema) ? dynamicSchema : schema;
     }
 
 

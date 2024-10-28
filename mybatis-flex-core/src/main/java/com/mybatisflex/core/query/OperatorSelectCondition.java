@@ -49,7 +49,7 @@ public class OperatorSelectCondition extends QueryCondition {
         //检测是否生效
         if (checkEffective()) {
             String childSql = dialect.buildSelectSql(queryWrapper);
-            if (StringUtil.isNotBlank(childSql)) {
+            if (StringUtil.hasText(childSql)) {
                 QueryCondition prevEffectiveCondition = getPrevEffectiveCondition();
                 if (prevEffectiveCondition != null && this.connector != null) {
                     sql.append(this.connector);

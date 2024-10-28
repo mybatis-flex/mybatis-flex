@@ -209,7 +209,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     public QueryWrapper from(String... tables) {
         for (String table : tables) {
-            if (StringUtil.isBlank(table)) {
+            if (StringUtil.noText(table)) {
                 throw new IllegalArgumentException("table must not be null or blank.");
             }
             from(new QueryTable(table));
@@ -801,7 +801,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             return this;
         }
         for (String queryOrderBy : orderBys) {
-            if (StringUtil.isNotBlank(queryOrderBy)) {
+            if (StringUtil.hasText(queryOrderBy)) {
                 addOrderBy(new RawQueryOrderBy(queryOrderBy));
             }
         }
@@ -813,7 +813,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             return this;
         }
         for (String queryOrderBy : rawOrderBy) {
-            if (StringUtil.isNotBlank(queryOrderBy)) {
+            if (StringUtil.hasText(queryOrderBy)) {
                 addOrderBy(new RawQueryOrderBy(queryOrderBy, false));
             }
         }

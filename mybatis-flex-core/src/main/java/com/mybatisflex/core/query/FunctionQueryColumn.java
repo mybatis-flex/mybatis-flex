@@ -92,7 +92,7 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
     @Override
     public String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String sql = getSql(queryTables, dialect);
-        if (StringUtil.isBlank(alias)) {
+        if (StringUtil.noText(alias)) {
             return fnName + WrapperUtil.withBracket(sql);
         }
         return fnName + WrapperUtil.withAlias(sql, alias, dialect);
@@ -125,7 +125,7 @@ public class FunctionQueryColumn extends QueryColumn implements HasParamsColumn 
             .map(c -> c.toSelectSql(queryTables, dialect))
             .collect(Collectors.joining(SqlConsts.DELIMITER));
 
-        if (StringUtil.isBlank(sql)) {
+        if (StringUtil.noText(sql)) {
             return SqlConsts.EMPTY;
         }
 

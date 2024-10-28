@@ -144,7 +144,7 @@ public class ColumnInfo {
         }
 
         //脱敏规则配置
-        else if (StringUtil.isNotBlank(maskType)) {
+        else if (StringUtil.hasText(maskType)) {
             if (typeHandler != null) {
                 //noinspection unchecked
                 buildTypeHandler = new CompositeMaskTypeHandler(maskType, (TypeHandler<Object>) typeHandler);

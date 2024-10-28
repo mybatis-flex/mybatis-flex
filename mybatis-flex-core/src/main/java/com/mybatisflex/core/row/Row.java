@@ -116,7 +116,7 @@ public class Row extends LinkedHashMap<String, Object> implements UpdateWrapper<
             return this;
         }
 
-        if (StringUtil.isBlank(property)) {
+        if (StringUtil.noText(property)) {
             throw new IllegalArgumentException("key column not be null or empty.");
         }
 

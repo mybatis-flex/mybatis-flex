@@ -65,7 +65,7 @@ public class IdInfo extends ColumnInfo {
                     this.keyType = defaultKeyConfig.getKeyType();
                     this.before = defaultKeyConfig.isBefore();
                 }
-                if (StringUtil.isBlank(this.value) && StringUtil.isNotBlank(defaultKeyConfig.getValue())) {
+                if (StringUtil.noText(this.value) && StringUtil.hasText(defaultKeyConfig.getValue())) {
                     this.value = defaultKeyConfig.getValue();
                 }
             }

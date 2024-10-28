@@ -22,7 +22,6 @@ import com.mybatisflex.core.util.*;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.function.Function;
 
 public class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
@@ -64,7 +63,7 @@ public class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
      */
     @Override
     public QueryWrapper buildQueryWrapper(Set<Object> targetValues) {
-        if (StringUtil.isNotBlank(selfValueSplitBy) && CollectionUtil.isNotEmpty(targetValues)) {
+        if (StringUtil.hasText(selfValueSplitBy) && CollectionUtil.isNotEmpty(targetValues)) {
             Set<Object> newTargetValues = new HashSet<>();
             for (Object targetValue : targetValues) {
                 if (targetValue == null) {
@@ -86,7 +85,7 @@ public class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
     @Override
     public void customizeQueryWrapper(QueryWrapper queryWrapper) {
-        if (StringUtil.isNotBlank(orderBy)) {
+        if (StringUtil.hasText(orderBy)) {
             queryWrapper.orderBy(orderBy);
         }
 
@@ -135,7 +134,7 @@ public class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
         Class<?> fieldType = relationFieldWrapper.getFieldType();
         boolean isMapType = Map.class.isAssignableFrom(fieldType);
         Class<?> wrapType = isMapType ? getMapWrapType(fieldType) : MapperUtil.getCollectionWrapType(fieldType);
-        boolean splitMode = StringUtil.isNotBlank(selfValueSplitBy);
+        boolean splitMode = StringUtil.hasText(selfValueSplitBy);
 
         for (SelfEntity selfEntity : selfEntities) {
             if (selfEntity == null) {
@@ -230,7 +229,7 @@ public class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
 
     public void setMapKeyField(String mapKeyField) {
         this.mapKeyField = mapKeyField;
-        if (StringUtil.isNotBlank(mapKeyField)) {
+        if (StringUtil.hasText(mapKeyField)) {
             this.mapKeyFieldWrapper = FieldWrapper.of(targetEntityClass, mapKeyField);
         } else {
             if (Map.class.isAssignableFrom(relationFieldWrapper.getFieldType())) {

@@ -34,19 +34,19 @@ public abstract class BaseJsonTypeHandler<T> extends BaseTypeHandler<T> {
     @Override
     public T getNullableResult(ResultSet rs, String columnName) throws SQLException {
         final String json = rs.getString(columnName);
-        return StringUtil.isBlank(json) ? null : parseJson(json);
+        return StringUtil.noText(json) ? null : parseJson(json);
     }
 
     @Override
     public T getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         final String json = rs.getString(columnIndex);
-        return StringUtil.isBlank(json) ? null : parseJson(json);
+        return StringUtil.noText(json) ? null : parseJson(json);
     }
 
     @Override
     public T getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         final String json = cs.getString(columnIndex);
-        return StringUtil.isBlank(json) ? null : parseJson(json);
+        return StringUtil.noText(json) ? null : parseJson(json);
     }
 
     protected abstract T parseJson(String json);

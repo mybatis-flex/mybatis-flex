@@ -97,7 +97,7 @@ public class Table {
     }
 
     public String getComment() {
-        if (StringUtil.isNotBlank(comment)) {
+        if (StringUtil.hasText(comment)) {
             return globalConfig.getJavadocConfig().formatTableComment(comment);
         }
         return null;
@@ -148,7 +148,7 @@ public class Table {
 
 
     public boolean containsColumn(String columnName) {
-        if (columns == null || columns.isEmpty() || StringUtil.isBlank(columnName)) {
+        if (columns == null || columns.isEmpty() || StringUtil.noText(columnName)) {
             return false;
         }
         for (Column column : columns) {
@@ -302,7 +302,7 @@ public class Table {
         if (tableConfig == null) {
             // 未配置 tableConfig 以策略中的 schema 为主
             globalSchema = schema;
-        } else if (StringUtil.isBlank(tableConfig.getSchema())) {
+        } else if (StringUtil.noText(tableConfig.getSchema())) {
             // 配置 tableConfig 但未指定 schema 还是以策略中的 schema 为主
             globalSchema = schema;
         } else {
@@ -310,19 +310,19 @@ public class Table {
             globalSchema = null;
         }
 
-        if (StringUtil.isNotBlank(globalSchema)) {
+        if (StringUtil.hasText(globalSchema)) {
             tableAnnotation.append(", schema = \"").append(globalSchema).append("\"");
         }
 
         // 添加 dataSource 配置，因为代码生成器是一个数据源生成的，所以这些实体类应该都是一个数据源。
         String dataSource = globalConfig.getEntityDataSource();
-        if (StringUtil.isNotBlank(dataSource)) {
+        if (StringUtil.hasText(dataSource)) {
             tableAnnotation.append(", dataSource = \"").append(dataSource).append("\"");
         }
 
 
         if (tableConfig != null) {
-            if (StringUtil.isNotBlank(tableConfig.getSchema())) {
+            if (StringUtil.hasText(tableConfig.getSchema())) {
                 tableAnnotation.append(", schema = \"").append(tableConfig.getSchema()).append("\"");
             }
             if (tableConfig.getCamelToUnderline() != null) {
@@ -343,7 +343,7 @@ public class Table {
         }
 
 
-        if (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.isNotBlank(comment)) {
+        if (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.hasText(comment)) {
             tableAnnotation.append(", comment = \"")
                 .append(this.comment.replace("\n", "").replace("\"", "\\\"").trim())
                 .append("\"");

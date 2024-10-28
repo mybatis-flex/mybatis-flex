@@ -193,7 +193,7 @@ public class Column {
     }
 
     public String buildComment() {
-        if (StringUtil.isBlank(comment)) {
+        if (StringUtil.noText(comment)) {
             return "";
         } else {
             return "/**\n" +
@@ -260,7 +260,7 @@ public class Column {
             }
 
 
-            if (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.isNotBlank(comment)) {
+            if (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.hasText(comment)) {
                 addComma(annotations, needComma);
                 annotations.append("comment = \"")
                     .append(this.comment.replace("\n", "")
@@ -282,7 +282,7 @@ public class Column {
 
         boolean needGenColumnAnnotation = (entityConfig != null && entityConfig.isAlwaysGenColumnAnnotation())
             || !name.equalsIgnoreCase(StringUtil.camelToUnderline(property))
-            || (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.isNotBlank(this.comment) && annotations.length() == 0);
+            || (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.hasText(this.comment) && annotations.length() == 0);
 
         StringBuilder columnAnnotation = new StringBuilder("@Column(");
 
@@ -344,7 +344,7 @@ public class Column {
                 columnAnnotation.append("tenantId = true");
                 needComma = true;
             }
-            if (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.isNotBlank(comment)) {
+            if (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.hasText(comment)) {
                 addComma(columnAnnotation, needComma);
                 columnAnnotation.append("comment = \"")
                     .append(this.comment.replace("\n", "")
@@ -419,7 +419,7 @@ public class Column {
 
             boolean needGenColumnAnnotation = (entityConfig != null && entityConfig.isAlwaysGenColumnAnnotation())
                 || !name.equalsIgnoreCase(StringUtil.camelToUnderline(property))
-                || (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.isNotBlank(this.comment));
+                || (entityConfig != null && entityConfig.isColumnCommentEnable() && StringUtil.hasText(this.comment));
 
             if (columnConfig.getOnInsertValue() != null
                 || columnConfig.getOnUpdateValue() != null
