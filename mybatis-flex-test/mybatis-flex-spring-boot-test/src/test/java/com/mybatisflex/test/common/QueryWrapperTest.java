@@ -16,16 +16,23 @@
 
 package com.mybatisflex.test.common;
 
+import com.github.vertical_blank.sqlformatter.SqlFormatter;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.RawQueryTable;
+import com.mybatisflex.test.model.table.RoleTableDef;
+import com.mybatisflex.test.model.table.UserTableDef;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static com.mybatisflex.core.query.QueryMethods.*;
+import static com.mybatisflex.core.query.QueryMethods.case_;
+import static com.mybatisflex.core.query.QueryMethods.column;
+import static com.mybatisflex.core.query.QueryMethods.count;
+import static com.mybatisflex.core.query.QueryMethods.distinct;
+import static com.mybatisflex.core.query.QueryMethods.select;
 import static com.mybatisflex.test.model.table.RoleTableDef.ROLE;
 import static com.mybatisflex.test.model.table.UserRoleTableDef.USER_ROLE;
 import static com.mybatisflex.test.model.table.UserTableDef.USER;
@@ -130,6 +137,39 @@ class QueryWrapperTest {
             , queryWrapper.toSQL());
 
         System.out.println(queryWrapper.toSQL());
+    }
+
+    @Test
+    void test05() {
+        RoleTableDef r = ROLE.as("r");
+        UserTableDef u = USER.as("u");
+
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select(USER.USER_NAME)
+            .from(USER)
+            .leftJoin(u).on(u.USER_ID.eq(USER.USER_ID))
+            .where(USER.USER_ID.eq(1))
+            // 子查询里面用了父查询里面的表
+            .and(column(select(r.ROLE_ID).from(r).where(u.USER_ID.eq(r.ROLE_ID))).le(2));
+
+        String sql = SqlFormatter.format(queryWrapper.toSQL());
+        System.out.println(sql);
+
+        Assertions.assertEquals("SELECT\n" +
+            "  ` tb_user `.` user_name `\n" +
+            "FROM\n" +
+            "  ` tb_user `\n" +
+            "  LEFT JOIN ` tb_user ` AS ` u ` ON ` u `.` user_id ` = ` tb_user `.` user_id `\n" +
+            "WHERE\n" +
+            "  ` tb_user `.` user_id ` = 1\n" +
+            "  AND (\n" +
+            "    SELECT\n" +
+            "      ` r `.` role_id `\n" +
+            "    FROM\n" +
+            "      ` tb_role ` AS ` r `\n" +
+            "    WHERE\n" +
+            "      ` u `.` user_id ` = ` r `.` role_id `\n" +
+            "  ) <= 2", sql);
     }
 
 }
