@@ -132,4 +132,20 @@ class QueryWrapperTest {
         System.out.println(queryWrapper.toSQL());
     }
 
+    @Test
+    void test05() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select("a.*")
+            .from(new RawQueryTable("(select * from app)").as("a"))
+            .where(USER.USER_ID.eq(null,true))
+            .and(USER_ROLE.ROLE_ID.like("",true))
+            .orderBy(USER.USER_ID.desc())
+            ;
+
+        Assertions.assertEquals("SELECT a.* FROM (select * from app) AS `a` WHERE `user_id` = null AND `role_id` LIKE '%%' ORDER BY `user_id` DESC"
+            , queryWrapper.toSQL());
+
+        System.out.println(queryWrapper.toSQL());
+    }
+
 }

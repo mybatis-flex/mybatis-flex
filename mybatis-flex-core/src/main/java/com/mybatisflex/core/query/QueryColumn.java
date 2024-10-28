@@ -154,7 +154,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (!isEffective) {
             return QueryCondition.createEmpty();
         }
-        return eq(value);
+        return eq_(value);
     }
 
     @Override
