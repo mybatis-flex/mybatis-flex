@@ -170,11 +170,11 @@ class WrapperUtil {
     }
 
     static String buildAlias(String alias, IDialect dialect) {
-        return StringUtil.isBlank(alias) ? SqlConsts.EMPTY : getAsKeyWord(dialect) + dialect.wrap(alias);
+        return StringUtil.noText(alias) ? SqlConsts.EMPTY : getAsKeyWord(dialect) + dialect.wrap(alias);
     }
 
     static String buildColumnAlias(String alias, IDialect dialect) {
-        return StringUtil.isBlank(alias) ? SqlConsts.EMPTY : getAsKeyWord(dialect) + dialect.wrapColumnAlias(alias);
+        return StringUtil.noText(alias) ? SqlConsts.EMPTY : getAsKeyWord(dialect) + dialect.wrapColumnAlias(alias);
     }
 
     private static String getAsKeyWord(IDialect dialect) {

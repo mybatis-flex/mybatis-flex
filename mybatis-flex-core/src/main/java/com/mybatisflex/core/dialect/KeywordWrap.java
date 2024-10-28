@@ -115,7 +115,7 @@ public class KeywordWrap {
     }
 
     public String wrap(String keyword) {
-        if (StringUtil.isBlank(keyword) || SqlConsts.ASTERISK.equals(keyword.trim())) {
+        if (StringUtil.noText(keyword) || SqlConsts.ASTERISK.equals(keyword.trim())) {
             return keyword;
         }
 
@@ -146,7 +146,7 @@ public class KeywordWrap {
 
     //sqlserver 转义 scheme table colums 包装 根据 . 分割后分别包装
     public String wrap4Sqlserver(String keyword) {
-        if (StringUtil.isBlank(keyword) || SqlConsts.ASTERISK.equals(keyword.trim())) {
+        if (StringUtil.noText(keyword) || SqlConsts.ASTERISK.equals(keyword.trim())) {
             return keyword;
         }
 

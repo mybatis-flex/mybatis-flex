@@ -94,7 +94,7 @@ public class ArithmeticQueryColumn extends QueryColumn implements HasParamsColum
         for (int i = 0; i < arithmeticInfos.size(); i++) {
             sql.append(arithmeticInfos.get(i).toSql(queryTables, dialect, i));
         }
-        if (StringUtil.isNotBlank(alias)) {
+        if (StringUtil.hasText(alias)) {
             return WrapperUtil.withAlias(sql.toString(), alias, dialect);
         }
         return sql.toString();

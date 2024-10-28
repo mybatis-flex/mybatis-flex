@@ -153,7 +153,7 @@ public class TableInfoFactory {
 
 
     public static TableInfo ofTableName(String tableName) {
-        return StringUtil.isNotBlank(tableName) ? tableInfoMap.get(tableName) : null;
+        return StringUtil.hasText(tableName) ? tableInfoMap.get(tableName) : null;
     }
 
 
@@ -289,7 +289,7 @@ public class TableInfoFactory {
                 tableInfo.setOnSetListeners(setListeners);
             }
 
-            if (StringUtil.isNotBlank(table.dataSource())) {
+            if (StringUtil.hasText(table.dataSource())) {
                 tableInfo.setDataSource(table.dataSource());
             }
         }
@@ -412,12 +412,12 @@ public class TableInfoFactory {
             }
 
 
-            if (columnAnnotation != null && StringUtil.isNotBlank(columnAnnotation.onInsertValue())) {
+            if (columnAnnotation != null && StringUtil.hasText(columnAnnotation.onInsertValue())) {
                 onInsertColumns.put(columnName, columnAnnotation.onInsertValue().trim());
             }
 
 
-            if (columnAnnotation != null && StringUtil.isNotBlank(columnAnnotation.onUpdateValue())) {
+            if (columnAnnotation != null && StringUtil.hasText(columnAnnotation.onUpdateValue())) {
                 onUpdateColumns.put(columnName, columnAnnotation.onUpdateValue().trim());
             }
 
@@ -499,7 +499,7 @@ public class TableInfoFactory {
 
             // 数据脱敏配置
             ColumnMask columnMask = field.getAnnotation(ColumnMask.class);
-            if (columnMask != null && StringUtil.isNotBlank(columnMask.value())) {
+            if (columnMask != null && StringUtil.hasText(columnMask.value())) {
                 if (String.class != fieldType) {
                     throw new IllegalStateException("@ColumnMask() only support for string type field. error: " + entityClass.getName() + "." + field.getName());
                 }
@@ -586,7 +586,7 @@ public class TableInfoFactory {
 
 
     static String getColumnName(boolean isCamelToUnderline, Field field, Column column) {
-        if (column != null && StringUtil.isNotBlank(column.value())) {
+        if (column != null && StringUtil.hasText(column.value())) {
             return column.value();
         }
         if (isCamelToUnderline) {

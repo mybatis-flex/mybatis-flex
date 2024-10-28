@@ -78,7 +78,7 @@ public class PackageConfig implements Serializable {
      * 获取生成目录。
      */
     public String getSourceDir() {
-        if (StringUtil.isBlank(sourceDir)) {
+        if (StringUtil.noText(sourceDir)) {
             return System.getProperty("user.dir") + "/src/main/java";
         }
         return sourceDir;
@@ -111,7 +111,7 @@ public class PackageConfig implements Serializable {
      * 获取实体类层包路径。
      */
     public String getEntityPackage() {
-        if (StringUtil.isBlank(entityPackage)) {
+        if (StringUtil.noText(entityPackage)) {
             return basePackage.concat(".entity");
         }
         return entityPackage;
@@ -129,7 +129,7 @@ public class PackageConfig implements Serializable {
      * 获取映射层包路径。
      */
     public String getMapperPackage() {
-        if (StringUtil.isBlank(mapperPackage)) {
+        if (StringUtil.noText(mapperPackage)) {
             return basePackage.concat(".mapper");
         }
         return mapperPackage;
@@ -147,7 +147,7 @@ public class PackageConfig implements Serializable {
      * 获取服务层包路径。
      */
     public String getServicePackage() {
-        if (StringUtil.isBlank(servicePackage)) {
+        if (StringUtil.noText(servicePackage)) {
             return basePackage.concat(".service");
         }
         return servicePackage;
@@ -165,7 +165,7 @@ public class PackageConfig implements Serializable {
      * 获取服务层实现包路径。
      */
     public String getServiceImplPackage() {
-        if (StringUtil.isBlank(serviceImplPackage)) {
+        if (StringUtil.noText(serviceImplPackage)) {
             return basePackage.concat(".service.impl");
         }
         return serviceImplPackage;
@@ -183,7 +183,7 @@ public class PackageConfig implements Serializable {
      * 获取控制层包路径。
      */
     public String getControllerPackage() {
-        if (StringUtil.isBlank(controllerPackage)) {
+        if (StringUtil.noText(controllerPackage)) {
             return basePackage.concat(".controller");
         }
         return controllerPackage;
@@ -201,7 +201,7 @@ public class PackageConfig implements Serializable {
      * 获取表定义层包路径。
      */
     public String getTableDefPackage() {
-        if (StringUtil.isBlank(tableDefPackage)) {
+        if (StringUtil.noText(tableDefPackage)) {
             return getEntityPackage().concat(".table");
         }
         return tableDefPackage;
@@ -219,7 +219,7 @@ public class PackageConfig implements Serializable {
      * 获取 Mapper XML 文件路径。
      */
     public String getMapperXmlPath() {
-        if (StringUtil.isBlank(mapperXmlPath)) {
+        if (StringUtil.noText(mapperXmlPath)) {
             return System.getProperty("user.dir").concat("/src/main/resources/mapper");
         }
         return mapperXmlPath;

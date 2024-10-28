@@ -60,7 +60,7 @@ public class RowCustomKeyGenerator implements KeyGenerator {
             Object existId = row.get(rowKey.getKeyColumn());
             // 若用户主动设置了主键，则使用用户自己设置的主键，不再生成主键
             // 只有主键为 null 或者 空字符串时，对主键进行设置
-            if (existId == null || (existId instanceof String && StringUtil.isBlank((String) existId))) {
+            if (existId == null || (existId instanceof String && StringUtil.noText((String) existId))) {
                 Object generateId = keyGenerator.generate(row, rowKey.getKeyColumn());
                 row.put(rowKey.getKeyColumn(), generateId);
             }

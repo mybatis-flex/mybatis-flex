@@ -637,7 +637,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R eq(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).eq(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).eq_(value));
+        }
         return (R) this;
     }
 
@@ -650,7 +652,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R eq(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).eq(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).eq_(value));
+        }
         return (R) this;
     }
 
@@ -663,7 +667,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R eq(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).eq(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).eq_(value));
+        }
         return (R) this;
     }
 
@@ -676,7 +682,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R eq(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).eq(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).eq_(value));
+        }
         return (R) this;
     }
 
@@ -714,7 +722,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R ne(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).ne(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).ne_(value));
+        }
         return (R) this;
     }
 
@@ -727,7 +737,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R ne(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).ne(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).ne_(value));
+        }
         return (R) this;
     }
 
@@ -740,7 +752,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R ne(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).ne(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).ne_(value));
+        }
         return (R) this;
     }
 
@@ -753,7 +767,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R ne(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).ne(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).ne_(value));
+        }
         return (R) this;
     }
 
@@ -791,7 +807,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R gt(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).gt(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).gt_(value));
+        }
         return (R) this;
     }
 
@@ -804,7 +822,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R gt(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).gt(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).gt_(value));
+        }
         return (R) this;
     }
 
@@ -817,7 +837,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R gt(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).gt(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).gt_(value));
+        }
         return (R) this;
     }
 
@@ -830,7 +852,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R gt(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).gt(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).gt_(value));
+        }
         return (R) this;
     }
 
@@ -843,7 +867,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R ge(String column, Object value) {
-        and(QueryMethods.column(column).ge(value));
+        and(QueryMethods.column(column).ge_(value));
         return (R) this;
     }
 
@@ -855,7 +879,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R ge(LambdaGetter<T> column, Object value) {
-        and(QueryMethods.column(column).ge(value));
+        and(QueryMethods.column(column).ge_(value));
         return (R) this;
     }
 
@@ -868,7 +892,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R ge(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).ge(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).ge_(value));
+        }
         return (R) this;
     }
 
@@ -881,7 +907,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R ge(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).ge(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).ge_(value));
+        }
         return (R) this;
     }
 
@@ -894,7 +922,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R ge(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).ge(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).ge_(value));
+        }
         return (R) this;
     }
 
@@ -907,7 +937,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R ge(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).ge(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).ge_(value));
+        }
         return (R) this;
     }
 
@@ -945,7 +977,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R lt(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).lt(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).lt_(value));
+        }
         return (R) this;
     }
 
@@ -958,7 +992,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R lt(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).lt(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).lt_(value));
+        }
         return (R) this;
     }
 
@@ -971,7 +1007,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R lt(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).lt(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).lt_(value));
+        }
         return (R) this;
     }
 
@@ -984,7 +1022,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R lt(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).lt(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).lt_(value));
+        }
         return (R) this;
     }
 
@@ -1022,7 +1062,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R le(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).le(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).le_(value));
+        }
         return (R) this;
     }
 
@@ -1035,7 +1077,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R le(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).le(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).le_(value));
+        }
         return (R) this;
     }
 
@@ -1048,7 +1092,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R le(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).le(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).le_(value));
+        }
         return (R) this;
     }
 
@@ -1061,7 +1107,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R le(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).le(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).le_(value));
+        }
         return (R) this;
     }
 
@@ -1074,7 +1122,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R in(String column, Object... values) {
-        and(QueryMethods.column(column).in(values));
+        and(QueryMethods.column(column).in(values, true));
         return (R) this;
     }
 
@@ -1086,7 +1134,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R in(LambdaGetter<T> column, Object... values) {
-        and(QueryMethods.column(column).in(values));
+        and(QueryMethods.column(column).in(values, true));
         return (R) this;
     }
 
@@ -1150,7 +1198,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R in(String column, Object[] values, boolean isEffective) {
-        and(QueryMethods.column(column).in(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in(values, true));
+        }
         return (R) this;
     }
 
@@ -1162,7 +1212,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R in(LambdaGetter<T> column, Object[] values, boolean isEffective) {
-        and(QueryMethods.column(column).in(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in(values, true));
+        }
         return (R) this;
     }
 
@@ -1175,7 +1227,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R in(String column, Collection<?> values, boolean isEffective) {
-        and(QueryMethods.column(column).in(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in(values, true));
+        }
         return (R) this;
     }
 
@@ -1187,7 +1241,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R in(LambdaGetter<T> column, Collection<?> values, boolean isEffective) {
-        and(QueryMethods.column(column).in(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in(values, true));
+        }
         return (R) this;
     }
 
@@ -1200,7 +1256,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R in(String column, QueryWrapper queryWrapper, boolean isEffective) {
-        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in(queryWrapper, true));
+        }
         return (R) this;
     }
 
@@ -1213,7 +1271,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R in(LambdaGetter<T> column, QueryWrapper queryWrapper, boolean isEffective) {
-        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in(queryWrapper, true));
+        }
         return (R) this;
     }
 
@@ -1226,7 +1286,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R in(String column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).in(queryWrapper, true));
+        }
         return (R) this;
     }
 
@@ -1239,7 +1301,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R in(LambdaGetter<T> column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).in(queryWrapper, true));
+        }
         return (R) this;
     }
 
@@ -1328,7 +1392,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R notIn(String column, Object[] values, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn(values, true));
+        }
         return (R) this;
     }
 
@@ -1340,7 +1406,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R notIn(LambdaGetter<T> column, Object[] values, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn(values, true));
+        }
         return (R) this;
     }
 
@@ -1353,7 +1421,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R notIn(String column, Collection<?> values, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn(values, true));
+        }
         return (R) this;
     }
 
@@ -1365,7 +1435,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R notIn(LambdaGetter<T> column, Collection<?> values, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn(values, true));
+        }
         return (R) this;
     }
 
@@ -1378,7 +1450,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R notIn(String column, QueryWrapper queryWrapper, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn(queryWrapper, true));
+        }
         return (R) this;
     }
 
@@ -1391,7 +1465,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R notIn(LambdaGetter<T> column, QueryWrapper queryWrapper, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn(queryWrapper, true));
+        }
         return (R) this;
     }
 
@@ -1404,7 +1480,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R notIn(String column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).notIn(queryWrapper, true));
+        }
         return (R) this;
     }
 
@@ -1417,7 +1495,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R notIn(LambdaGetter<T> column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).notIn(queryWrapper, true));
+        }
         return (R) this;
     }
 
@@ -1457,7 +1537,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R between(String column, Object start, Object end, boolean isEffective) {
-        and(QueryMethods.column(column).between(start, end, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).between(start, end, true));
+        }
         return (R) this;
     }
 
@@ -1470,7 +1552,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R between(LambdaGetter<T> column, Object start, Object end, boolean isEffective) {
-        and(QueryMethods.column(column).between(start, end, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).between(start, end, true));
+        }
         return (R) this;
     }
 
@@ -1484,7 +1568,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R between(String column, Object start, Object end, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).between(start, end, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).between(start, end, true));
+        }
         return (R) this;
     }
 
@@ -1497,7 +1583,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R between(LambdaGetter<T> column, Object start, Object end, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).between(start, end, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).between(start, end, true));
+        }
         return (R) this;
     }
 
@@ -1537,7 +1625,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R notBetween(String column, Object start, Object end, boolean isEffective) {
-        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notBetween(start, end, true));
+        }
         return (R) this;
     }
 
@@ -1550,7 +1640,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R notBetween(LambdaGetter<T> column, Object start, Object end, boolean isEffective) {
-        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notBetween(start, end, true));
+        }
         return (R) this;
     }
 
@@ -1564,7 +1656,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R notBetween(String column, Object start, Object end, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).notBetween(start, end, true));
+        }
         return (R) this;
     }
 
@@ -1577,7 +1671,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R notBetween(LambdaGetter<T> column, Object start, Object end, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).notBetween(start, end, true));
+        }
         return (R) this;
     }
 
@@ -1615,7 +1711,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R like(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).like(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).like_(value));
+        }
         return (R) this;
     }
 
@@ -1628,7 +1726,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R like(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).like(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).like_(value));
+        }
         return (R) this;
     }
 
@@ -1641,7 +1741,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R like(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).like(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).like_(value));
+        }
         return (R) this;
     }
 
@@ -1654,7 +1756,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R like(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).like(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).like_(value));
+        }
         return (R) this;
     }
 
@@ -1692,7 +1796,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R likeLeft(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).likeLeft(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).likeLeft_(value));
+        }
         return (R) this;
     }
 
@@ -1705,7 +1811,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R likeLeft(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).likeLeft(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).likeLeft_(value));
+        }
         return (R) this;
     }
 
@@ -1718,7 +1826,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R likeLeft(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).likeLeft(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).likeLeft_(value));
+        }
         return (R) this;
     }
 
@@ -1731,7 +1841,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R likeLeft(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).likeLeft(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).likeLeft_(value));
+        }
         return (R) this;
     }
 
@@ -1769,7 +1881,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R likeRight(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).likeRight(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).likeRight_(value));
+        }
         return (R) this;
     }
 
@@ -1782,7 +1896,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R likeRight(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).likeRight(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).likeRight_(value));
+        }
         return (R) this;
     }
 
@@ -1795,7 +1911,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R likeRight(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).likeRight(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).likeRight_(value));
+        }
         return (R) this;
     }
 
@@ -1808,7 +1926,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R likeRight(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).likeRight(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).likeRight_(value));
+        }
         return (R) this;
     }
 
@@ -1846,7 +1966,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R notLike(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLike(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLike_(value));
+        }
         return (R) this;
     }
 
@@ -1859,7 +1981,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R notLike(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLike(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLike_(value));
+        }
         return (R) this;
     }
 
@@ -1872,7 +1996,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R notLike(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLike(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLike_(value));
+        }
         return (R) this;
     }
 
@@ -1885,7 +2011,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R notLike(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLike(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLike_(value));
+        }
         return (R) this;
     }
 
@@ -1923,7 +2051,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R notLikeLeft(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLikeLeft(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLikeLeft_(value));
+        }
         return (R) this;
     }
 
@@ -1936,7 +2066,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R notLikeLeft(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLikeLeft(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLikeLeft_(value));
+        }
         return (R) this;
     }
 
@@ -1949,7 +2081,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R notLikeLeft(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLikeLeft(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLikeLeft_(value));
+        }
         return (R) this;
     }
 
@@ -1962,7 +2096,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R notLikeLeft(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLikeLeft(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLikeLeft_(value));
+        }
         return (R) this;
     }
 
@@ -2000,7 +2136,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R notLikeRight(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLikeRight(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLikeRight_(value));
+        }
         return (R) this;
     }
 
@@ -2013,7 +2151,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R notLikeRight(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLikeRight(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLikeRight_(value));
+        }
         return (R) this;
     }
 
@@ -2026,7 +2166,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <V> R notLikeRight(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLikeRight(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLikeRight_(value));
+        }
         return (R) this;
     }
 
@@ -2039,7 +2181,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T, V> R notLikeRight(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLikeRight(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLikeRight_(value));
+        }
         return (R) this;
     }
 
@@ -2074,7 +2218,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R isNull(String column, boolean isEffective) {
-        and(QueryMethods.column(column).isNull(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).isNull());
+        }
         return (R) this;
     }
 
@@ -2086,7 +2232,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R isNull(LambdaGetter<T> column, boolean isEffective) {
-        and(QueryMethods.column(column).isNull(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).isNull());
+        }
         return (R) this;
     }
 
@@ -2098,7 +2246,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R isNull(String column, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).isNull(isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).isNull());
+        }
         return (R) this;
     }
 
@@ -2110,7 +2260,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R isNull(LambdaGetter<T> column, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).isNull(isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).isNull());
+        }
         return (R) this;
     }
 
@@ -2145,7 +2297,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R isNotNull(String column, boolean isEffective) {
-        and(QueryMethods.column(column).isNotNull(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).isNotNull());
+        }
         return (R) this;
     }
 
@@ -2157,7 +2311,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R isNotNull(LambdaGetter<T> column, boolean isEffective) {
-        and(QueryMethods.column(column).isNotNull(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).isNotNull());
+        }
         return (R) this;
     }
 
@@ -2169,7 +2325,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R isNotNull(String column, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).isNotNull(isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).isNotNull());
+        }
         return (R) this;
     }
 
@@ -2181,7 +2339,9 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R isNotNull(LambdaGetter<T> column, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).isNotNull(isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).isNotNull());
+        }
         return (R) this;
     }
 

@@ -209,7 +209,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
     public QueryWrapper from(String... tables) {
         for (String table : tables) {
-            if (StringUtil.isBlank(table)) {
+            if (StringUtil.noText(table)) {
                 throw new IllegalArgumentException("table must not be null or blank.");
             }
             from(new QueryTable(table));
@@ -801,7 +801,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             return this;
         }
         for (String queryOrderBy : orderBys) {
-            if (StringUtil.isNotBlank(queryOrderBy)) {
+            if (StringUtil.hasText(queryOrderBy)) {
                 addOrderBy(new RawQueryOrderBy(queryOrderBy));
             }
         }
@@ -813,7 +813,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
             return this;
         }
         for (String queryOrderBy : rawOrderBy) {
-            if (StringUtil.isNotBlank(queryOrderBy)) {
+            if (StringUtil.hasText(queryOrderBy)) {
                 addOrderBy(new RawQueryOrderBy(queryOrderBy, false));
             }
         }
@@ -888,7 +888,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper eq(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).eq(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).eq_(value));
+        }
         return this;
     }
 
@@ -900,7 +902,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper eq(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).eq(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).eq_(value));
+        }
         return this;
     }
 
@@ -912,7 +916,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper eq(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).eq(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).eq_(value));
+        }
         return this;
     }
 
@@ -924,7 +930,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper eq(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).eq(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).eq_(value));
+        }
         return this;
     }
 
@@ -959,7 +967,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper ne(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).ne(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).ne_(value));
+        }
         return this;
     }
 
@@ -971,7 +981,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper ne(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).ne(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).ne_(value));
+        }
         return this;
     }
 
@@ -983,7 +995,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper ne(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).ne(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).ne_(value));
+        }
         return this;
     }
 
@@ -995,7 +1009,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper ne(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).ne(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).ne_(value));
+        }
         return this;
     }
 
@@ -1030,7 +1046,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper gt(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).gt(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).gt_(value));
+        }
         return this;
     }
 
@@ -1042,7 +1060,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper gt(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).gt(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).gt_(value));
+        }
         return this;
     }
 
@@ -1054,7 +1074,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper gt(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).gt(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).gt_(value));
+        }
         return this;
     }
 
@@ -1066,7 +1088,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper gt(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).gt(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).gt_(value));
+        }
         return this;
     }
 
@@ -1101,7 +1125,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper ge(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).ge(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).ge_(value));
+        }
         return this;
     }
 
@@ -1113,7 +1139,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper ge(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).ge(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).ge_(value));
+        }
         return this;
     }
 
@@ -1125,7 +1153,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper ge(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).ge(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).ge_(value));
+        }
         return this;
     }
 
@@ -1137,7 +1167,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper ge(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).ge(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).ge_(value));
+        }
         return this;
     }
 
@@ -1172,7 +1204,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper lt(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).lt(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).lt_(value));
+        }
         return this;
     }
 
@@ -1184,7 +1218,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper lt(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).lt(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).lt_(value));
+        }
         return this;
     }
 
@@ -1196,7 +1232,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper lt(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).lt(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).lt_(value));
+        }
         return this;
     }
 
@@ -1208,7 +1246,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper lt(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).lt(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).lt_(value));
+        }
         return this;
     }
 
@@ -1243,7 +1283,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper le(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).le(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).le_(value));
+        }
         return this;
     }
 
@@ -1255,7 +1297,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper le(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).le(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).le_(value));
+        }
         return this;
     }
 
@@ -1267,7 +1311,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper le(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).le(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).le_(value));
+        }
         return this;
     }
 
@@ -1279,7 +1325,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper le(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).le(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).le_(value));
+        }
         return this;
     }
 
@@ -1361,7 +1409,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param values 条件的值
      */
     public QueryWrapper in(String column, Object[] values, boolean isEffective) {
-        and(QueryMethods.column(column).in(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in_(values));
+        }
         return this;
     }
 
@@ -1372,7 +1422,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param values 值
      */
     public <T> QueryWrapper in(LambdaGetter<T> column, Object[] values, boolean isEffective) {
-        and(QueryMethods.column(column).in(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in_(values));
+        }
         return this;
     }
 
@@ -1384,7 +1436,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param values 条件的值
      */
     public QueryWrapper in(String column, Collection<?> values, boolean isEffective) {
-        and(QueryMethods.column(column).in(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in_(values));
+        }
         return this;
     }
 
@@ -1395,7 +1449,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param values 值
      */
     public <T> QueryWrapper in(LambdaGetter<T> column, Collection<?> values, boolean isEffective) {
-        and(QueryMethods.column(column).in(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in_(values));
+        }
         return this;
     }
 
@@ -1407,7 +1463,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param queryWrapper 条件的值
      */
     public QueryWrapper in(String column, QueryWrapper queryWrapper, boolean isEffective) {
-        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in_(queryWrapper));
+        }
         return this;
     }
 
@@ -1419,7 +1477,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param queryWrapper 值
      */
     public <T> QueryWrapper in(LambdaGetter<T> column, QueryWrapper queryWrapper, boolean isEffective) {
-        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).in_(queryWrapper));
+        }
         return this;
     }
 
@@ -1431,7 +1491,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param queryWrapper 条件的值
      */
     public QueryWrapper in(String column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).in_(queryWrapper));
+        }
         return this;
     }
 
@@ -1443,7 +1505,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param queryWrapper 值
      */
     public <T> QueryWrapper in(LambdaGetter<T> column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).in(queryWrapper, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).in_(queryWrapper));
+        }
         return this;
     }
 
@@ -1525,7 +1589,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param values 条件的值
      */
     public QueryWrapper notIn(String column, Object[] values, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn_(values));
+        }
         return this;
     }
 
@@ -1536,7 +1602,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param values 值
      */
     public <T> QueryWrapper notIn(LambdaGetter<T> column, Object[] values, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn_(values));
+        }
         return this;
     }
 
@@ -1548,7 +1616,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param values 条件的值
      */
     public QueryWrapper notIn(String column, Collection<?> values, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn_(values));
+        }
         return this;
     }
 
@@ -1559,7 +1629,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param values 值
      */
     public <T> QueryWrapper notIn(LambdaGetter<T> column, Collection<?> values, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(values, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn_(values));
+        }
         return this;
     }
 
@@ -1571,7 +1643,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param queryWrapper 条件的值
      */
     public QueryWrapper notIn(String column, QueryWrapper queryWrapper, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn_(queryWrapper));
+        }
         return this;
     }
 
@@ -1583,7 +1657,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param queryWrapper 值
      */
     public <T> QueryWrapper notIn(LambdaGetter<T> column, QueryWrapper queryWrapper, boolean isEffective) {
-        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notIn_(queryWrapper));
+        }
         return this;
     }
 
@@ -1595,7 +1671,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param queryWrapper 条件的值
      */
     public QueryWrapper notIn(String column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).notIn_(queryWrapper));
+        }
         return this;
     }
 
@@ -1607,7 +1685,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param queryWrapper 值
      */
     public <T> QueryWrapper notIn(LambdaGetter<T> column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).notIn(queryWrapper, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).notIn_(queryWrapper));
+        }
         return this;
     }
 
@@ -1644,7 +1724,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param end    结束的值
      */
     public QueryWrapper between(String column, Object start, Object end, boolean isEffective) {
-        and(QueryMethods.column(column).between(start, end, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).between_(start, end));
+        }
         return this;
     }
 
@@ -1656,7 +1738,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param end    结束的值
      */
     public <T> QueryWrapper between(LambdaGetter<T> column, Object start, Object end, boolean isEffective) {
-        and(QueryMethods.column(column).between(start, end, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).between_(start, end));
+        }
         return this;
     }
 
@@ -1669,7 +1753,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param end    结束的值
      */
     public QueryWrapper between(String column, Object start, Object end, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).between(start, end, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).between_(start, end));
+        }
         return this;
     }
 
@@ -1681,7 +1767,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param end    结束的值
      */
     public <T> QueryWrapper between(LambdaGetter<T> column, Object start, Object end, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).between(start, end, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).between_(start, end));
+        }
         return this;
     }
 
@@ -1718,7 +1806,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param end    结束的值
      */
     public QueryWrapper notBetween(String column, Object start, Object end, boolean isEffective) {
-        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notBetween_(start, end));
+        }
         return this;
     }
 
@@ -1730,7 +1820,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param end    结束的值
      */
     public <T> QueryWrapper notBetween(LambdaGetter<T> column, Object start, Object end, boolean isEffective) {
-        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notBetween_(start, end));
+        }
         return this;
     }
 
@@ -1743,7 +1835,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param end    结束的值
      */
     public QueryWrapper notBetween(String column, Object start, Object end, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).notBetween_(start, end));
+        }
         return this;
     }
 
@@ -1755,7 +1849,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param end    结束的值
      */
     public <T> QueryWrapper notBetween(LambdaGetter<T> column, Object start, Object end, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).notBetween(start, end, isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).notBetween_(start, end));
+        }
         return this;
     }
 
@@ -1790,7 +1886,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper like(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).like(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).like_(value));
+        }
         return this;
     }
 
@@ -1802,7 +1900,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper like(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).like(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).like_(value));
+        }
         return this;
     }
 
@@ -1814,7 +1914,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper like(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).like(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).like_(value));
+        }
         return this;
     }
 
@@ -1826,7 +1928,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper like(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).like(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).like_(value));
+        }
         return this;
     }
 
@@ -1861,7 +1965,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper likeLeft(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).likeLeft(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).likeLeft_(value));
+        }
         return this;
     }
 
@@ -1873,7 +1979,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper likeLeft(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).likeLeft(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).likeLeft_(value));
+        }
         return this;
     }
 
@@ -1885,7 +1993,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper likeLeft(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).likeLeft(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).likeLeft_(value));
+        }
         return this;
     }
 
@@ -1897,7 +2007,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper likeLeft(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).likeLeft(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).likeLeft_(value));
+        }
         return this;
     }
 
@@ -1932,7 +2044,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper likeRight(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).likeRight(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).likeRight_(value));
+        }
         return this;
     }
 
@@ -1944,7 +2058,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper likeRight(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).likeRight(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).likeRight_(value));
+        }
         return this;
     }
 
@@ -1956,7 +2072,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper likeRight(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).likeRight(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).likeRight_(value));
+        }
         return this;
     }
 
@@ -1968,7 +2086,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper likeRight(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).likeRight(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).likeRight_(value));
+        }
         return this;
     }
 
@@ -2003,7 +2123,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper notLike(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLike(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLike_(value));
+        }
         return this;
     }
 
@@ -2015,7 +2137,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper notLike(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLike(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLike_(value));
+        }
         return this;
     }
 
@@ -2027,7 +2151,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper notLike(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLike(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLike_(value));
+        }
         return this;
     }
 
@@ -2039,7 +2165,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper notLike(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLike(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLike_(value));
+        }
         return this;
     }
 
@@ -2074,7 +2202,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper notLikeLeft(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLikeLeft(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLikeLeft_(value));
+        }
         return this;
     }
 
@@ -2086,7 +2216,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper notLikeLeft(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLikeLeft(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLikeLeft_(value));
+        }
         return this;
     }
 
@@ -2098,7 +2230,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper notLikeLeft(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLikeLeft(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLikeLeft_(value));
+        }
         return this;
     }
 
@@ -2110,7 +2244,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper notLikeLeft(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLikeLeft(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLikeLeft_(value));
+        }
         return this;
     }
 
@@ -2145,7 +2281,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper notLikeRight(String column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLikeRight(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLikeRight_(value));
+        }
         return this;
     }
 
@@ -2157,7 +2295,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper notLikeRight(LambdaGetter<T> column, Object value, boolean isEffective) {
-        and(QueryMethods.column(column).notLikeRight(value).when(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).notLikeRight_(value));
+        }
         return this;
     }
 
@@ -2169,7 +2309,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <V> QueryWrapper notLikeRight(String column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLikeRight(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLikeRight_(value));
+        }
         return this;
     }
 
@@ -2181,7 +2323,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T, V> QueryWrapper notLikeRight(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
-        and(QueryMethods.column(column).notLikeRight(value, isEffective));
+        if (isEffective.test(value)) {
+            and(QueryMethods.column(column).notLikeRight_(value));
+        }
         return this;
     }
 
@@ -2213,7 +2357,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper isNull(String column, boolean isEffective) {
-        and(QueryMethods.column(column).isNull(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).isNull());
+        }
         return this;
     }
 
@@ -2224,7 +2370,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper isNull(LambdaGetter<T> column, boolean isEffective) {
-        and(QueryMethods.column(column).isNull(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).isNull());
+        }
         return this;
     }
 
@@ -2235,7 +2383,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper isNull(String column, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).isNull(isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).isNull());
+        }
         return this;
     }
 
@@ -2246,7 +2396,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper isNull(LambdaGetter<T> column, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).isNull(isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).isNull());
+        }
         return this;
     }
 
@@ -2278,7 +2430,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper isNotNull(String column, boolean isEffective) {
-        and(QueryMethods.column(column).isNotNull(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).isNotNull());
+        }
         return this;
     }
 
@@ -2289,7 +2443,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper isNotNull(LambdaGetter<T> column, boolean isEffective) {
-        and(QueryMethods.column(column).isNotNull(isEffective));
+        if (isEffective) {
+            and(QueryMethods.column(column).isNotNull());
+        }
         return this;
     }
 
@@ -2300,7 +2456,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public QueryWrapper isNotNull(String column, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).isNotNull(isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).isNotNull());
+        }
         return this;
     }
 
@@ -2311,7 +2469,9 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param isEffective 是否有效
      */
     public <T> QueryWrapper isNotNull(LambdaGetter<T> column, BooleanSupplier isEffective) {
-        and(QueryMethods.column(column).isNotNull(isEffective));
+        if (isEffective.getAsBoolean()) {
+            and(QueryMethods.column(column).isNotNull());
+        }
         return this;
     }
 

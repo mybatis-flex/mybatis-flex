@@ -36,19 +36,19 @@ public class OracleJdbcDialect extends AbstractJdbcDialect {
 
     @Override
     public String forBuildColumnsSql(String schema, String tableName) {
-        return "SELECT * FROM \"" + (StringUtil.isNotBlank(schema) ? schema + "\".\"" : "") + tableName + "\" WHERE rownum < 1";
+        return "SELECT * FROM \"" + (StringUtil.hasText(schema) ? schema + "\".\"" : "") + tableName + "\" WHERE rownum < 1";
     }
 
     @Override
     public ResultSet getTablesResultSet(DatabaseMetaData dbMeta, Connection conn, String schema, String[] types) throws SQLException {
-        return dbMeta.getTables(conn.getCatalog(), StringUtil.isNotBlank(schema) ? schema : dbMeta.getUserName(), null, types);
+        return dbMeta.getTables(conn.getCatalog(), StringUtil.hasText(schema) ? schema : dbMeta.getUserName(), null, types);
     }
 
     @Override
     protected ResultSet forRemarks(String schema, Table table, DatabaseMetaData dbMeta, Connection conn) throws SQLException {
         if (conn instanceof OracleConnection) {
             ((OracleConnection) conn).setRemarksReporting(true);
-            return dbMeta.getColumns(conn.getCatalog(), StringUtil.isNotBlank(schema) ? schema : dbMeta.getUserName(), table.getName(), null);
+            return dbMeta.getColumns(conn.getCatalog(), StringUtil.hasText(schema) ? schema : dbMeta.getUserName(), table.getName(), null);
         } else if ("com.zaxxer.hikari.pool.HikariProxyConnection".equals(conn.getClass().getName())) {
             return forRemarks(schema, table, dbMeta, getOriginalConn(HikariProxyConnection.class, "delegate", conn));
         } else if ("com.alibaba.druid.pool.DruidPooledConnection".equals(conn.getClass().getName())) {

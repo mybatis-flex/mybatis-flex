@@ -176,7 +176,7 @@ public class TableInfo {
     }
 
     public String getWrapSchemaAndTableName(IDialect dialect, OperateType operateType) {
-        if (StringUtil.isNotBlank(schema)) {
+        if (StringUtil.hasText(schema)) {
             String table = dialect.getRealTable(tableName, operateType);
             return dialect.wrap(dialect.getRealSchema(schema, table, operateType)) + "." + dialect.wrap(table);
         } else {
@@ -187,7 +187,7 @@ public class TableInfo {
     public void setTableName(String tableName) {
         int indexOf = tableName.indexOf(".");
         if (indexOf > 0) {
-            if (StringUtil.isBlank(schema)) {
+            if (StringUtil.noText(schema)) {
                 this.schema = tableName.substring(0, indexOf);
                 this.tableName = tableName.substring(indexOf + 1);
             } else {
@@ -380,7 +380,7 @@ public class TableInfo {
                 }
             }
         }
-        return StringUtil.isNotBlank(column) ? column : property;
+        return StringUtil.hasText(column) ? column : property;
     }
 
     public Map<String, Class<?>> getAssociationType() {
@@ -812,7 +812,7 @@ public class TableInfo {
 
 
     public Object[] buildTenantIdArgs() {
-        if (StringUtil.isBlank(tenantIdColumn)) {
+        if (StringUtil.noText(tenantIdColumn)) {
             return null;
         }
 
@@ -889,7 +889,7 @@ public class TableInfo {
         }
 
         // 添加乐观锁条件，只有在 update 的时候进行处理
-        if (StringUtil.isNotBlank(getOptimisticLockColumnOrSkip()) && entity != null) {
+        if (StringUtil.hasText(getOptimisticLockColumnOrSkip()) && entity != null) {
             Object versionValue = buildColumnSqlArg(entity, versionColumn);
             if (versionValue == null) {
                 throw FlexExceptions.wrap(LocalizedFormats.ENTITY_VERSION_NULL, entity);
@@ -898,7 +898,7 @@ public class TableInfo {
         }
 
         // 逻辑删除
-        if (StringUtil.isNotBlank(getLogicDeleteColumnOrSkip())) {
+        if (StringUtil.hasText(getLogicDeleteColumnOrSkip())) {
             // 逻辑删除时 保证前面的条件被括号包裹
             // fix:https://gitee.com/mybatis-flex/mybatis-flex/issues/I9163G
             QueryCondition whereCondition = CPI.getWhereQueryCondition(queryWrapper);
@@ -941,7 +941,7 @@ public class TableInfo {
                 // join table
                 else {
                     String nameWithSchema = joinQueryTable.getNameWithSchema();
-                    if (StringUtil.isNotBlank(nameWithSchema)) {
+                    if (StringUtil.hasText(nameWithSchema)) {
                         TableInfo tableInfo = TableInfoFactory.ofTableName(nameWithSchema);
                         if (tableInfo != null) {
                             QueryCondition joinQueryCondition = CPI.getJoinQueryCondition(join);
@@ -977,7 +977,7 @@ public class TableInfo {
                     doAppendConditions(entity, childQuery);
                 } else {
                     String nameWithSchema = queryTable.getNameWithSchema();
-                    if (StringUtil.isNotBlank(nameWithSchema)) {
+                    if (StringUtil.hasText(nameWithSchema)) {
                         TableInfo tableInfo = TableInfoFactory.ofTableName(nameWithSchema);
                         if (tableInfo != null) {
                             tableInfo.appendConditions(entity, queryWrapper);
@@ -1374,7 +1374,7 @@ public class TableInfo {
      * @param entityObject
      */
     public void initVersionValueIfNecessary(Object entityObject) {
-        if (StringUtil.isBlank(versionColumn)) {
+        if (StringUtil.noText(versionColumn)) {
             return;
         }
 
@@ -1393,7 +1393,7 @@ public class TableInfo {
      * @param entityObject
      */
     public void initTenantIdIfNecessary(Object entityObject) {
-        if (StringUtil.isBlank(tenantIdColumn)) {
+        if (StringUtil.noText(tenantIdColumn)) {
             return;
         }
 
@@ -1426,7 +1426,7 @@ public class TableInfo {
      * @param entityObject
      */
     public void initLogicDeleteValueIfNecessary(Object entityObject) {
-        if (StringUtil.isBlank(getLogicDeleteColumnOrSkip())) {
+        if (StringUtil.noText(getLogicDeleteColumnOrSkip())) {
             return;
         }
 

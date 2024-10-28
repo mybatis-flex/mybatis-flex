@@ -55,7 +55,7 @@ public class ControllerGenerator implements IGenerator {
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         ControllerConfig controllerConfig = globalConfig.getControllerConfig();
 
-        String sourceDir = StringUtil.isNotBlank(controllerConfig.getSourceDir()) ? controllerConfig.getSourceDir() : packageConfig.getSourceDir();
+        String sourceDir = StringUtil.hasText(controllerConfig.getSourceDir()) ? controllerConfig.getSourceDir() : packageConfig.getSourceDir();
 
         String controllerPackagePath = packageConfig.getControllerPackage().replace(".", "/");
         File controllerJavaFile = new File(sourceDir, controllerPackagePath + "/" +

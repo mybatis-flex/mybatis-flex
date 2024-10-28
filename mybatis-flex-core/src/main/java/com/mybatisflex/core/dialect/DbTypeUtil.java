@@ -40,7 +40,7 @@ public class DbTypeUtil {
     public static DbType getDbType(DataSource dataSource) {
         String jdbcUrl = getJdbcUrl(dataSource);
 
-        if (StringUtil.isNotBlank(jdbcUrl)) {
+        if (StringUtil.hasText(jdbcUrl)) {
             return parseDbType(jdbcUrl);
         }
 

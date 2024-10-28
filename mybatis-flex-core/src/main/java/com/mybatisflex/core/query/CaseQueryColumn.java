@@ -43,7 +43,7 @@ public class CaseQueryColumn extends QueryColumn implements HasParamsColumn {
     @Override
     protected String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String sql = buildSql(queryTables, dialect);
-        if (StringUtil.isNotBlank(alias)) {
+        if (StringUtil.hasText(alias)) {
             return WrapperUtil.withAlias(sql, alias, dialect);
         }
         return sql;

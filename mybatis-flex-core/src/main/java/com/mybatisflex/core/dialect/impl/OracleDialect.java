@@ -167,7 +167,7 @@ public class OracleDialect extends CommonsDialectImpl {
         sql.append(INSERT_ALL);
 
         String table = getRealTable(tableName, OperateType.INSERT);
-        String tableNameWrap = StringUtil.isNotBlank(schema)
+        String tableNameWrap = StringUtil.hasText(schema)
             ? wrap(getRealSchema(schema, table, OperateType.INSERT)) + REFERENCE + wrap(table)
             : wrap(table);
         String questionStrings = SqlUtil.buildSqlParamPlaceholder(attrs.size());

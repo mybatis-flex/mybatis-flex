@@ -407,7 +407,7 @@ public class EntitySqlProvider {
             tableInfos = new ArrayList<>();
             for (QueryTable queryTable : queryTables) {
                 String tableNameWithSchema = queryTable.getNameWithSchema();
-                if (StringUtil.isNotBlank(tableNameWithSchema)) {
+                if (StringUtil.hasText(tableNameWithSchema)) {
                     TableInfo tableInfo = TableInfoFactory.ofTableName(tableNameWithSchema);
                     if (tableInfo != null) {
                         tableInfos.add(tableInfo);

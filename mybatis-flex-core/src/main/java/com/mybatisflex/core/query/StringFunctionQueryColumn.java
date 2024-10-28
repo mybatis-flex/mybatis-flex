@@ -59,10 +59,10 @@ public class StringFunctionQueryColumn extends QueryColumn {
     @Override
     public String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
         String sql = StringUtil.join(SqlConsts.DELIMITER, params);
-        if (StringUtil.isBlank(sql)) {
+        if (StringUtil.noText(sql)) {
             return SqlConsts.EMPTY;
         }
-        if (StringUtil.isBlank(alias)) {
+        if (StringUtil.noText(alias)) {
             return fnName + WrapperUtil.withBracket(sql);
         }
         return fnName + WrapperUtil.withAlias(sql, alias, dialect);
@@ -71,7 +71,7 @@ public class StringFunctionQueryColumn extends QueryColumn {
     @Override
     protected String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
         String sql = StringUtil.join(SqlConsts.DELIMITER, params);
-        if (StringUtil.isBlank(sql)) {
+        if (StringUtil.noText(sql)) {
             return SqlConsts.EMPTY;
         }
         return fnName + WrapperUtil.withBracket(sql);

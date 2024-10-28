@@ -36,7 +36,7 @@ public class SqlUtil {
     }
 
     public static void keepColumnSafely(String column) {
-        if (StringUtil.isBlank(column)) {
+        if (StringUtil.noText(column)) {
             throw new IllegalArgumentException("Column must not be empty");
         } else {
             column = column.trim();

@@ -29,7 +29,7 @@ public class MapUtil {
         int jvmVersion = -1;
         try {
             String javaSpecVer = StringUtil.tryTrim(System.getProperty("java.specification.version"));
-            if (StringUtil.isNotBlank(javaSpecVer)) {
+            if (StringUtil.hasText(javaSpecVer)) {
                 if (javaSpecVer.startsWith("1.")) {
                     javaSpecVer = javaSpecVer.substring(2);
                 }

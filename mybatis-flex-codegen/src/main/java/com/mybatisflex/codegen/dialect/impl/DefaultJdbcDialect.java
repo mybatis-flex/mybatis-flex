@@ -24,6 +24,6 @@ import com.mybatisflex.core.util.StringUtil;
 public class DefaultJdbcDialect extends AbstractJdbcDialect {
     @Override
     protected String forBuildColumnsSql(String schema, String tableName) {
-        return "SELECT * FROM " + (StringUtil.isNotBlank(schema) ? schema + "." : "") + tableName + " WHERE 1 = 2";
+        return "SELECT * FROM " + (StringUtil.hasText(schema) ? schema + "." : "") + tableName + " WHERE 1 = 2";
     }
 }

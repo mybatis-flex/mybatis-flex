@@ -70,7 +70,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
         String[] primaryKeys = RowCPI.obtainsPrimaryKeyStrings(row);
 
         sql.append(ALTER_TABLE);
-        if (StringUtil.isNotBlank(schema)) {
+        if (StringUtil.hasText(schema)) {
             sql.append(wrap(getRealSchema(schema, table, OperateType.UPDATE))).append(REFERENCE);
         }
         sql.append(wrap(table)).append(CK_UPDATE);
@@ -118,7 +118,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
         StringBuilder sql = new StringBuilder();
 
         sql.append(ALTER_TABLE);
-        if (StringUtil.isNotBlank(schema)) {
+        if (StringUtil.hasText(schema)) {
             sql.append(wrap(getRealSchema(schema, table, OperateType.DELETE))).append(REFERENCE);
         }
         sql.append(wrap(table));
@@ -206,7 +206,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
         String table = getRealTable(tableName, OperateType.DELETE);
         StringBuilder sql = new StringBuilder();
         sql.append(ALTER_TABLE);
-        if (StringUtil.isNotBlank(schema)) {
+        if (StringUtil.hasText(schema)) {
             sql.append(wrap(getRealSchema(schema, table, OperateType.DELETE))).append(REFERENCE);
         }
         sql.append(wrap(table));
@@ -256,7 +256,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
         // 正常删除
-        if (StringUtil.isBlank(logicDeleteColumn)) {
+        if (StringUtil.noText(logicDeleteColumn)) {
             String deleteSQL = forDeleteBatchByIds(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryColumns(), primaryValues);
 
             // 多租户
@@ -322,7 +322,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
         // ignore selectColumns
         StringBuilder sqlBuilder = new StringBuilder(ALTER_TABLE);
         String hint = CPI.getHint(queryWrapper);
-        if (StringUtil.isNotBlank(hint)) {
+        if (StringUtil.hasText(hint)) {
             sqlBuilder.append(BLANK).append(hint).deleteCharAt(sqlBuilder.length() - 1);
         }
 
@@ -357,7 +357,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
 
         // 正常删除
-        if (StringUtil.isBlank(logicDeleteColumn)) {
+        if (StringUtil.noText(logicDeleteColumn)) {
             return forDeleteByQuery(queryWrapper);
         }
 
@@ -418,7 +418,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
 
         // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
-        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
+        if (StringUtil.hasText(tableInfo.getOptimisticLockColumnOrSkip())) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 
@@ -434,7 +434,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
 
         // 逻辑删除条件，已删除的数据不能被修改
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+        if (StringUtil.hasText(logicDeleteColumn)) {
             sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn, tableInfo));
         }
 
@@ -444,7 +444,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
 
         // 乐观锁条件
-        if (StringUtil.isNotBlank(versionColumn)) {
+        if (StringUtil.hasText(versionColumn)) {
             Object versionValue = tableInfo.buildColumnSqlArg(entity, versionColumn);
             if (versionValue == null) {
                 throw FlexExceptions.wrap(LocalizedFormats.ENTITY_VERSION_NULL, entity);
@@ -491,7 +491,7 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
 
         // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
-        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
+        if (StringUtil.hasText(tableInfo.getOptimisticLockColumnOrSkip())) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 

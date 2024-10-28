@@ -245,14 +245,14 @@ public class CPI {
     }
 
     public static void setFromIfNecessary(QueryWrapper queryWrapper, String tableName) {
-        if (StringUtil.isNotBlank(tableName)
+        if (StringUtil.hasText(tableName)
             && CollectionUtil.isEmpty(queryWrapper.getQueryTables())) {
             queryWrapper.from(tableName);
         }
     }
 
     public static void setFromIfNecessary(QueryWrapper queryWrapper, String schema, String tableName) {
-        if (StringUtil.isNotBlank(tableName)
+        if (StringUtil.hasText(tableName)
             && CollectionUtil.isEmpty(queryWrapper.getQueryTables())) {
             queryWrapper.from(new QueryTable(schema, tableName));
         }

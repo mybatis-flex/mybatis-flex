@@ -47,8 +47,8 @@ public class RawQueryTable extends QueryTable {
             return false;
         }
         // 只比较别名，不比较内容
-        if (StringUtil.isNotBlank(alias)
-            && StringUtil.isNotBlank(table.alias)) {
+        if (StringUtil.hasText(alias)
+            && StringUtil.hasText(table.alias)) {
             return Objects.equals(alias, table.alias);
         }
         return false;

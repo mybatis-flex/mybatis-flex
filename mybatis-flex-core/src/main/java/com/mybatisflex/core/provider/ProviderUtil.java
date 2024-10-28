@@ -65,7 +65,7 @@ class ProviderUtil {
 
     public static String[] getPrimaryKeys(Map params) {
         String primaryKey = (String) params.get(FlexConsts.PRIMARY_KEY);
-        if (StringUtil.isBlank(primaryKey)) {
+        if (StringUtil.noText(primaryKey)) {
             throw FlexExceptions.wrap(LocalizedFormats.OBJECT_NULL_OR_BLANK, "primaryKey");
         }
         String[] primaryKeys = primaryKey.split(",");

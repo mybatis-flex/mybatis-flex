@@ -68,7 +68,7 @@ public class EntityGenerator implements IGenerator {
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         EntityConfig entityConfig = globalConfig.getEntityConfig();
 
-        String sourceDir = StringUtil.isNotBlank(entityConfig.getSourceDir()) ? entityConfig.getSourceDir() : packageConfig.getSourceDir();
+        String sourceDir = StringUtil.hasText(entityConfig.getSourceDir()) ? entityConfig.getSourceDir() : packageConfig.getSourceDir();
 
         String entityPackagePath = packageConfig.getEntityPackage().replace(".", "/");
         String entityClassName = table.buildEntityClassName();
@@ -107,7 +107,7 @@ public class EntityGenerator implements IGenerator {
             String baseClassName = table.buildEntityClassName() + entityConfig.getWithBaseClassSuffix();
             params.put("baseClassName", baseClassName);
 
-            String baseClassPackage = StringUtil.isNotBlank(entityConfig.getWithBasePackage())
+            String baseClassPackage = StringUtil.hasText(entityConfig.getWithBasePackage())
                 ? entityConfig.getWithBasePackage() : packageConfig.getEntityPackage() + ".base";
             params.put("baseClassPackage", baseClassPackage);
 
@@ -129,10 +129,10 @@ public class EntityGenerator implements IGenerator {
         }
 
         PackageConfig packageConfig = globalConfig.getPackageConfig();
-        String sourceDir = StringUtil.isNotBlank(entityConfig.getSourceDir()) ? entityConfig.getSourceDir() : packageConfig.getSourceDir();
+        String sourceDir = StringUtil.hasText(entityConfig.getSourceDir()) ? entityConfig.getSourceDir() : packageConfig.getSourceDir();
 
         String baseEntityPackagePath = packageConfig.getEntityPackage().replace(".", "/");
-        baseEntityPackagePath = StringUtil.isNotBlank(entityConfig.getWithBasePackage()) ? entityConfig.getWithBasePackage().replace(".", "")
+        baseEntityPackagePath = StringUtil.hasText(entityConfig.getWithBasePackage()) ? entityConfig.getWithBasePackage().replace(".", "")
             : baseEntityPackagePath + "/base";
 
         String baseEntityClassName = table.buildEntityClassName() + entityConfig.getWithBaseClassSuffix();

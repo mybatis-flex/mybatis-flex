@@ -39,7 +39,7 @@ public class FlexTransactionManager extends AbstractPlatformTransactionManager {
     @Override
     protected boolean isExistingTransaction(Object transaction) throws TransactionException {
         TransactionObject transactionObject = (TransactionObject) transaction;
-        return StringUtil.isNotBlank(transactionObject.prevXid);
+        return StringUtil.hasText(transactionObject.prevXid);
     }
 
     @Override

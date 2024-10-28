@@ -112,9 +112,9 @@ public class FlexDataSource extends AbstractDataSource {
     @Override
     public Connection getConnection() throws SQLException {
         String xid = TransactionContext.getXID();
-        if (StringUtil.isNotBlank(xid)) {
+        if (StringUtil.hasText(xid)) {
             String dataSourceKey = DataSourceKey.get();
-            if (StringUtil.isBlank(dataSourceKey)) {
+            if (StringUtil.noText(dataSourceKey)) {
                 dataSourceKey = defaultDataSourceKey;
             }
 
@@ -133,9 +133,9 @@ public class FlexDataSource extends AbstractDataSource {
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
         String xid = TransactionContext.getXID();
-        if (StringUtil.isNotBlank(xid)) {
+        if (StringUtil.hasText(xid)) {
             String dataSourceKey = DataSourceKey.get();
-            if (StringUtil.isBlank(dataSourceKey)) {
+            if (StringUtil.noText(dataSourceKey)) {
                 dataSourceKey = defaultDataSourceKey;
             }
             Connection connection = TransactionalManager.getConnection(xid, dataSourceKey);
@@ -206,7 +206,7 @@ public class FlexDataSource extends AbstractDataSource {
         DataSource dataSource = defaultDataSource;
         if (dataSourceMap.size() > 1) {
             String dataSourceKey = DataSourceKey.get();
-            if (StringUtil.isNotBlank(dataSourceKey)) {
+            if (StringUtil.hasText(dataSourceKey)) {
                 //负载均衡 key
                 if (dataSourceKey.charAt(dataSourceKey.length() - 1) == LOAD_BALANCE_KEY_SUFFIX) {
                     String prefix = dataSourceKey.substring(0, dataSourceKey.length() - 1);

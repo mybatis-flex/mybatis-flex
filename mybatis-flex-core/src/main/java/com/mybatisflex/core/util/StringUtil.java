@@ -84,7 +84,7 @@ public class StringUtil {
      * @param string
      */
     public static String camelToUnderline(String string) {
-        if (isBlank(string)) {
+        if (noText(string)) {
             return "";
         }
         int strLen = string.length();
@@ -108,7 +108,7 @@ public class StringUtil {
      * @param string
      */
     public static String underlineToCamel(String string) {
-        if (isBlank(string)) {
+        if (noText(string)) {
             return "";
         }
         if (Character.isUpperCase(string.charAt(0))) {
@@ -134,7 +134,7 @@ public class StringUtil {
      * 删除字符串中的字符
      */
     public static String deleteChar(String string, char deleteChar) {
-        if (isBlank(string)) {
+        if (noText(string)) {
             return "";
         }
         char[] chars = string.toCharArray();
@@ -148,7 +148,7 @@ public class StringUtil {
     }
 
     public static String deleteChar(String string, char deleteChar1, char deleteChar2) {
-        if (isBlank(string)) {
+        if (noText(string)) {
             return "";
         }
         char[] chars = string.toCharArray();
@@ -161,30 +161,9 @@ public class StringUtil {
         return sb.toString();
     }
 
-    /**
-     * 字符串为 null 或者内部字符全部为 ' ', '\t', '\n', '\r' 这四类字符时返回 true
-     */
-    public static boolean isBlank(String string) {
-        if (string == null) {
-            return true;
-        }
-
-        for (int i = 0, len = string.length(); i < len; i++) {
-            if (string.charAt(i) > ' ') {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-    public static boolean isAnyBlank(String... strings) {
-        if (strings == null || strings.length == 0) {
-            throw new IllegalArgumentException("strings is null or empty.");
-        }
-
-        for (String string : strings) {
-            if (isBlank(string)) {
+    private static boolean containsText(CharSequence charSequence) {
+        for (int i = 0; i < charSequence.length(); i++) {
+            if (!Character.isWhitespace(charSequence.charAt(i))) {
                 return true;
             }
         }
@@ -192,13 +171,25 @@ public class StringUtil {
     }
 
 
-    public static boolean isNotBlank(String str) {
-        return !isBlank(str);
+    public static boolean hasText(String string) {
+        return string != null && !string.isEmpty() && containsText(string);
     }
 
 
-    public static boolean areNotBlank(String... strings) {
-        return !isAnyBlank(strings);
+    public static boolean allHasText(String... strings) {
+        for (String string : strings) {
+            if (!hasText(string)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 字符串为 null 或者内部字符全部为 ' ', '\t', '\n', '\r' 这四类字符时返回 true
+     */
+    public static boolean noText(String string) {
+        return !hasText(string);
     }
 
 
@@ -209,7 +200,7 @@ public class StringUtil {
      * @return 全部数数值时返回 true，否则返回 false
      */
     public static boolean isNumeric(String string) {
-        if (isBlank(string)) {
+        if (noText(string)) {
             return false;
         }
         for (int i = string.length(); --i >= 0; ) {
@@ -223,7 +214,7 @@ public class StringUtil {
 
 
     public static boolean startsWithAny(String string, String... prefixes) {
-        if (isBlank(string) || prefixes == null) {
+        if (noText(string) || prefixes == null) {
             return false;
         }
 
@@ -237,7 +228,7 @@ public class StringUtil {
 
 
     public static boolean endsWithAny(String str, String... suffixes) {
-        if (isBlank(str) || suffixes == null) {
+        if (noText(str) || suffixes == null) {
             return false;
         }
 
@@ -326,7 +317,7 @@ public class StringUtil {
     }
 
     public static String buildSchemaWithTable(String schema, String tableName) {
-        return isNotBlank(schema) ? schema + "." + tableName : tableName;
+        return hasText(schema) ? schema + "." + tableName : tableName;
     }
 
     public static String[] getSchemaAndTableName(String tableNameWithSchema) {

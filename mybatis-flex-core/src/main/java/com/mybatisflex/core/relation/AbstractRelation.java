@@ -87,12 +87,12 @@ public abstract class AbstractRelation<SelfEntity> {
         this.selfFieldWrapper = FieldWrapper.of(entityClass, selfField);
 
         //以使用者注解配置为主
-        this.targetTableInfo = StringUtil.isBlank(targetTable) ? TableInfoFactory.ofEntityClass(relationFieldWrapper.getMappingType()) : TableInfoFactory.ofTableName(targetTable);
+        this.targetTableInfo = StringUtil.noText(targetTable) ? TableInfoFactory.ofEntityClass(relationFieldWrapper.getMappingType()) : TableInfoFactory.ofTableName(targetTable);
         this.targetSchema = targetTableInfo != null ? targetTableInfo.getSchema() : targetSchema;
         this.targetTable = targetTableInfo != null ? targetTableInfo.getTableName() : targetTable;
 
         //当指定了 valueField 的时候，一般是 String Integer 等基本数据类型
-        this.targetEntityClass = (StringUtil.isNotBlank(valueField) && targetTableInfo != null) ? targetTableInfo.getEntityClass() : relationFieldWrapper.getMappingType();
+        this.targetEntityClass = (StringUtil.hasText(valueField) && targetTableInfo != null) ? targetTableInfo.getEntityClass() : relationFieldWrapper.getMappingType();
 
         this.targetField = ClassUtil.getFirstField(targetEntityClass, field -> field.getName().equalsIgnoreCase(targetField));
         if (this.targetField == null) {
@@ -102,7 +102,7 @@ public abstract class AbstractRelation<SelfEntity> {
         this.targetFieldWrapper = FieldWrapper.of(targetEntityClass, targetField);
 
         this.valueField = valueField;
-        this.onlyQueryValueField = StringUtil.isNotBlank(valueField);
+        this.onlyQueryValueField = StringUtil.hasText(valueField);
 
         this.conditionColumn = targetTableInfo == null ? column(targetTable, StringUtil.camelToUnderline(this.targetField.getName()))
             : column(targetTable, targetTableInfo.getColumnByProperty(this.targetField.getName()));
@@ -126,7 +126,7 @@ public abstract class AbstractRelation<SelfEntity> {
     }
 
     protected void initExtraCondition(String extraCondition) {
-        if (StringUtil.isBlank(extraCondition)) {
+        if (StringUtil.noText(extraCondition)) {
             return;
         }
 
@@ -336,15 +336,15 @@ public abstract class AbstractRelation<SelfEntity> {
     }
 
     public String getTargetTableWithSchema() {
-        if (StringUtil.isNotBlank(targetTable)) {
-            return StringUtil.isNotBlank(targetSchema) ? targetSchema + "." + targetTable : targetTable;
+        if (StringUtil.hasText(targetTable)) {
+            return StringUtil.hasText(targetSchema) ? targetSchema + "." + targetTable : targetTable;
         } else {
             return targetTableInfo.getTableNameWithSchema();
         }
     }
 
     protected boolean isRelationByMiddleTable() {
-        return StringUtil.isNotBlank(joinTable);
+        return StringUtil.hasText(joinTable);
     }
 
 
@@ -353,7 +353,7 @@ public abstract class AbstractRelation<SelfEntity> {
     }
 
     protected static String getDefaultPrimaryProperty(String key, Class<?> entityClass, String message) {
-        if (StringUtil.isNotBlank(key)) {
+        if (StringUtil.hasText(key)) {
             return key;
         }
 
@@ -388,7 +388,7 @@ public abstract class AbstractRelation<SelfEntity> {
             queryWrapper.where(conditionColumn.eq(targetValues.iterator().next()));
         }
 
-        if (StringUtil.isNotBlank(extraConditionSql)) {
+        if (StringUtil.hasText(extraConditionSql)) {
             queryWrapper.and(extraConditionSql, RelationManager.getExtraConditionParams(extraConditionParamKeys));
         }
 

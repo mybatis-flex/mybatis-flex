@@ -113,7 +113,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forHint(String hintString) {
-        return StringUtil.isNotBlank(hintString) ? HINT_START + hintString + HINT_END : EMPTY;
+        return StringUtil.hasText(hintString) ? HINT_START + hintString + HINT_END : EMPTY;
     }
 
     @Override
@@ -143,7 +143,7 @@ public class CommonsDialectImpl implements IDialect {
         String table = getRealTable(tableName, OperateType.INSERT);
         StringBuilder sql = new StringBuilder();
         sql.append(INSERT_INTO);
-        if (StringUtil.isNotBlank(schema)) {
+        if (StringUtil.hasText(schema)) {
             sql.append(wrap(getRealSchema(schema, table, OperateType.INSERT))).append(REFERENCE);
         }
         sql.append(wrap(table));
@@ -179,7 +179,7 @@ public class CommonsDialectImpl implements IDialect {
         String table = getRealTable(tableName, OperateType.INSERT);
         StringBuilder sql = new StringBuilder();
         sql.append(INSERT_INTO);
-        if (StringUtil.isNotBlank(schema)) {
+        if (StringUtil.hasText(schema)) {
             sql.append(wrap(getRealSchema(schema, table, OperateType.INSERT))).append(REFERENCE);
         }
         sql.append(wrap(table));
@@ -196,7 +196,7 @@ public class CommonsDialectImpl implements IDialect {
         String table = getRealTable(tableName, OperateType.DELETE);
         StringBuilder sql = new StringBuilder();
         sql.append(DELETE_FROM);
-        if (StringUtil.isNotBlank(schema)) {
+        if (StringUtil.hasText(schema)) {
             sql.append(wrap(getRealSchema(schema, table, OperateType.DELETE))).append(REFERENCE);
         }
         sql.append(wrap(table));
@@ -217,7 +217,7 @@ public class CommonsDialectImpl implements IDialect {
         String table = getRealTable(tableName, OperateType.DELETE);
         StringBuilder sql = new StringBuilder();
         sql.append(DELETE_FROM);
-        if (StringUtil.isNotBlank(schema)) {
+        if (StringUtil.hasText(schema)) {
             sql.append(wrap(getRealSchema(schema, table, OperateType.DELETE))).append(REFERENCE);
         }
 
@@ -268,7 +268,7 @@ public class CommonsDialectImpl implements IDialect {
         String[] primaryKeys = RowCPI.obtainsPrimaryKeyStrings(row);
 
         sql.append(UPDATE);
-        if (StringUtil.isNotBlank(schema)) {
+        if (StringUtil.hasText(schema)) {
             sql.append(wrap(getRealSchema(schema, table, OperateType.UPDATE))).append(REFERENCE);
         }
 
@@ -369,7 +369,7 @@ public class CommonsDialectImpl implements IDialect {
     public String forSelectOneById(String schema, String tableName, String[] primaryKeys, Object[] primaryValues) {
         String table = getRealTable(tableName, OperateType.SELECT);
         StringBuilder sql = new StringBuilder(SELECT_ALL_FROM);
-        if (StringUtil.isNotBlank(schema)) {
+        if (StringUtil.hasText(schema)) {
             sql.append(wrap(getRealSchema(schema, table, OperateType.SELECT))).append(REFERENCE);
         }
         sql.append(wrap(table)).append(WHERE);
@@ -409,8 +409,8 @@ public class CommonsDialectImpl implements IDialect {
                 .entrySet()
                 .stream()
                 // 需要处理别名的情况
-                .filter(e -> StringUtil.isNotBlank(e.getValue().getName()))
-                .filter(e -> StringUtil.isBlank(e.getValue().getAlias()))
+                .filter(e -> StringUtil.hasText(e.getValue().getName()))
+                .filter(e -> StringUtil.noText(e.getValue().getAlias()))
                 .filter(e -> !"*".equals(e.getValue().getName()))
                 // 将相同字段对象放在一个集合里
                 .collect(Collectors.groupingBy(e -> e.getValue().getName(),
@@ -423,7 +423,7 @@ public class CommonsDialectImpl implements IDialect {
                 .flatMap(Collection::stream)
                 // 过滤出来可以添加别名的列
                 .filter(e -> e.getValue().getTable() != null)
-                .filter(e -> StringUtil.isNotBlank(e.getValue().getTable().getName()))
+                .filter(e -> StringUtil.hasText(e.getValue().getTable().getName()))
                 // 添加别名并放回原集合索引位置
                 .forEach(e -> selectColumns.set(e.getKey(),
                     e.getValue().as(e.getValue().getTable().getName() + "$" + e.getValue().getName())));
@@ -534,7 +534,7 @@ public class CommonsDialectImpl implements IDialect {
         // ignore selectColumns
         StringBuilder sqlBuilder = new StringBuilder(DELETE);
         String hint = CPI.getHint(queryWrapper);
-        if (StringUtil.isNotBlank(hint)) {
+        if (StringUtil.hasText(hint)) {
             sqlBuilder.append(BLANK).append(hint).deleteCharAt(sqlBuilder.length() - 1);
         }
 
@@ -547,7 +547,7 @@ public class CommonsDialectImpl implements IDialect {
             }
             QueryTable queryTable = queryTables.get(0);
             String table = getRealTable(queryTable.getName(), OperateType.DELETE);
-            if (StringUtil.isNotBlank(queryTable.getSchema())) {
+            if (StringUtil.hasText(queryTable.getSchema())) {
                 sqlBuilder.append(wrap(getRealSchema(queryTable.getSchema(), table, OperateType.DELETE))).append(REFERENCE);
             }
             sqlBuilder.append(BLANK).append(wrap(getRealTable(table, OperateType.DELETE)));
@@ -692,7 +692,7 @@ public class CommonsDialectImpl implements IDialect {
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
         // 正常删除
-        if (StringUtil.isBlank(logicDeleteColumn)) {
+        if (StringUtil.noText(logicDeleteColumn)) {
             String deleteByIdSql = forDeleteById(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryColumns());
             return tableInfo.buildTenantCondition(deleteByIdSql, tenantIdArgs, this);
         }
@@ -726,7 +726,7 @@ public class CommonsDialectImpl implements IDialect {
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
         // 正常删除
-        if (StringUtil.isBlank(logicDeleteColumn)) {
+        if (StringUtil.noText(logicDeleteColumn)) {
             String deleteSQL = forDeleteBatchByIds(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryColumns(), primaryValues);
 
             // 多租户
@@ -785,7 +785,7 @@ public class CommonsDialectImpl implements IDialect {
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
 
         // 正常删除
-        if (StringUtil.isBlank(logicDeleteColumn)) {
+        if (StringUtil.noText(logicDeleteColumn)) {
             return forDeleteByQuery(queryWrapper);
         }
 
@@ -842,7 +842,7 @@ public class CommonsDialectImpl implements IDialect {
 
         // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
-        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
+        if (StringUtil.hasText(tableInfo.getOptimisticLockColumnOrSkip())) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 
@@ -858,7 +858,7 @@ public class CommonsDialectImpl implements IDialect {
 
         // 逻辑删除条件，已删除的数据不能被修改
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+        if (StringUtil.hasText(logicDeleteColumn)) {
             sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn, tableInfo));
         }
 
@@ -868,7 +868,7 @@ public class CommonsDialectImpl implements IDialect {
         tableInfo.buildTenantCondition(sql, tenantIdArgs, this);
 
         // 乐观锁条件
-        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
+        if (StringUtil.hasText(tableInfo.getOptimisticLockColumnOrSkip())) {
             Object versionValue = tableInfo.buildColumnSqlArg(entity, versionColumn);
             if (versionValue == null) {
                 throw FlexExceptions.wrap(LocalizedFormats.ENTITY_VERSION_NULL, entity);
@@ -917,7 +917,7 @@ public class CommonsDialectImpl implements IDialect {
 
         // 乐观锁字段
         String versionColumn = tableInfo.getVersionColumn();
-        if (StringUtil.isNotBlank(tableInfo.getOptimisticLockColumnOrSkip())) {
+        if (StringUtil.hasText(tableInfo.getOptimisticLockColumnOrSkip())) {
             stringJoiner.add(wrap(versionColumn) + EQUALS + wrap(versionColumn) + " + 1 ");
         }
 
@@ -965,7 +965,7 @@ public class CommonsDialectImpl implements IDialect {
 
         // 逻辑删除的情况下，需要添加逻辑删除的条件
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+        if (StringUtil.hasText(logicDeleteColumn)) {
             sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn, tableInfo));
         }
 
@@ -987,7 +987,7 @@ public class CommonsDialectImpl implements IDialect {
 
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
-        if (StringUtil.isNotBlank(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
+        if (StringUtil.hasText(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
             sql.append(BRACKET_LEFT);
         }
 
@@ -1017,12 +1017,12 @@ public class CommonsDialectImpl implements IDialect {
             }
         }
 
-        if (StringUtil.isNotBlank(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
+        if (StringUtil.hasText(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {
             sql.append(BRACKET_RIGHT);
         }
 
 
-        if (StringUtil.isNotBlank(logicDeleteColumn)) {
+        if (StringUtil.hasText(logicDeleteColumn)) {
             sql.append(AND).append(buildLogicNormalCondition(logicDeleteColumn, tableInfo));
         }
 
@@ -1053,7 +1053,7 @@ public class CommonsDialectImpl implements IDialect {
         QueryCondition whereQueryCondition = CPI.getWhereQueryCondition(queryWrapper);
         if (whereQueryCondition != null) {
             String whereSql = whereQueryCondition.toSql(queryTables, this);
-            if (StringUtil.isNotBlank(whereSql)) {
+            if (StringUtil.hasText(whereSql)) {
                 sqlBuilder.append(WHERE).append(whereSql);
             } else if (!allowNoCondition) {
                 throw FlexExceptions.wrap(LocalizedFormats.UPDATE_OR_DELETE_NOT_ALLOW);
@@ -1088,7 +1088,7 @@ public class CommonsDialectImpl implements IDialect {
         QueryCondition havingQueryCondition = CPI.getHavingQueryCondition(queryWrapper);
         if (havingQueryCondition != null) {
             String havingSql = havingQueryCondition.toSql(queryTables, this);
-            if (StringUtil.isNotBlank(havingSql)) {
+            if (StringUtil.hasText(havingSql)) {
                 sqlBuilder.append(HAVING).append(havingSql);
             }
         }

@@ -55,7 +55,7 @@ public class TableDefGenerator implements IGenerator {
         PackageConfig packageConfig = globalConfig.getPackageConfig();
         TableDefConfig tableDefConfig = globalConfig.getTableDefConfig();
 
-        String sourceDir = StringUtil.isNotBlank(tableDefConfig.getSourceDir()) ? tableDefConfig.getSourceDir() : packageConfig.getSourceDir();
+        String sourceDir = StringUtil.hasText(tableDefConfig.getSourceDir()) ? tableDefConfig.getSourceDir() : packageConfig.getSourceDir();
 
         String tableDefPackagePath = packageConfig.getTableDefPackage().replace(".", "/");
         File tableDefJavaFile = new File(sourceDir, tableDefPackagePath + "/" +

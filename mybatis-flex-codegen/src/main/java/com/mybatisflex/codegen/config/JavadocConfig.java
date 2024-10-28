@@ -124,7 +124,7 @@ public class JavadocConfig implements Serializable {
     }
 
     public String formatTableComment(String comment) {
-        if (StringUtil.isBlank(comment)) {
+        if (StringUtil.noText(comment)) {
             return "";
         }
         return tableCommentFormat.apply(comment);
@@ -146,7 +146,7 @@ public class JavadocConfig implements Serializable {
     }
 
     public String formatColumnComment(String comment) {
-        if (StringUtil.isBlank(comment)) {
+        if (StringUtil.noText(comment)) {
             return "";
         }
         return columnCommentFormat.apply(comment);

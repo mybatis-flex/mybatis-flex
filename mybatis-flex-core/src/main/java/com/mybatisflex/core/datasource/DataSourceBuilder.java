@@ -49,15 +49,15 @@ public class DataSourceBuilder {
     public DataSource build() {
         String dataSourceClassName = null;
         String type = dataSourceProperties.get("type");
-        if (StringUtil.isNotBlank(type)) {
+        if (StringUtil.hasText(type)) {
             dataSourceClassName = dataSourceAlias.getOrDefault(type, type);
         } else {
             dataSourceClassName = detectDataSourceClass();
         }
 
 
-        if (StringUtil.isBlank(dataSourceClassName)) {
-            if (StringUtil.isBlank(type)) {
+        if (StringUtil.noText(dataSourceClassName)) {
+            if (StringUtil.noText(type)) {
                 throw FlexExceptions.wrap(LocalizedFormats.DATASOURCE_TYPE_BLANK);
             } else {
                 throw FlexExceptions.wrap(LocalizedFormats.DATASOURCE_TYPE_NOT_FIND, type);
