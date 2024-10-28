@@ -889,7 +889,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper eq(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).eq(value));
+            and(QueryMethods.column(column).eq_(value));
         }
         return this;
     }
@@ -903,7 +903,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper eq(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).eq(value));
+            and(QueryMethods.column(column).eq_(value));
         }
         return this;
     }
@@ -917,7 +917,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper eq(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).eq(value));
+            and(QueryMethods.column(column).eq_(value));
         }
         return this;
     }
@@ -931,7 +931,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper eq(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).eq(value));
+            and(QueryMethods.column(column).eq_(value));
         }
         return this;
     }
@@ -968,7 +968,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper ne(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).ne(value));
+            and(QueryMethods.column(column).ne_(value));
         }
         return this;
     }
@@ -982,7 +982,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper ne(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).ne(value));
+            and(QueryMethods.column(column).ne_(value));
         }
         return this;
     }
@@ -996,7 +996,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper ne(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).ne(value));
+            and(QueryMethods.column(column).ne_(value));
         }
         return this;
     }
@@ -1010,7 +1010,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper ne(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).ne(value));
+            and(QueryMethods.column(column).ne_(value));
         }
         return this;
     }
@@ -1047,7 +1047,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper gt(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).gt(value));
+            and(QueryMethods.column(column).gt_(value));
         }
         return this;
     }
@@ -1061,7 +1061,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper gt(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).gt(value));
+            and(QueryMethods.column(column).gt_(value));
         }
         return this;
     }
@@ -1075,7 +1075,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper gt(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).gt(value));
+            and(QueryMethods.column(column).gt_(value));
         }
         return this;
     }
@@ -1089,7 +1089,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper gt(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).gt(value));
+            and(QueryMethods.column(column).gt_(value));
         }
         return this;
     }
@@ -1126,7 +1126,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper ge(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).ge(value));
+            and(QueryMethods.column(column).ge_(value));
         }
         return this;
     }
@@ -1140,7 +1140,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper ge(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).ge(value));
+            and(QueryMethods.column(column).ge_(value));
         }
         return this;
     }
@@ -1154,7 +1154,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper ge(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).ge(value));
+            and(QueryMethods.column(column).ge_(value));
         }
         return this;
     }
@@ -1168,7 +1168,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper ge(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).ge(value));
+            and(QueryMethods.column(column).ge_(value));
         }
         return this;
     }
@@ -1205,7 +1205,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper lt(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).lt(value));
+            and(QueryMethods.column(column).lt_(value));
         }
         return this;
     }
@@ -1219,7 +1219,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper lt(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).lt(value));
+            and(QueryMethods.column(column).lt_(value));
         }
         return this;
     }
@@ -1233,7 +1233,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper lt(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).lt(value));
+            and(QueryMethods.column(column).lt_(value));
         }
         return this;
     }
@@ -1247,7 +1247,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper lt(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).lt(value));
+            and(QueryMethods.column(column).lt_(value));
         }
         return this;
     }
@@ -1284,7 +1284,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper le(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).le(value));
+            and(QueryMethods.column(column).le_(value));
         }
         return this;
     }
@@ -1298,7 +1298,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper le(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).le(value));
+            and(QueryMethods.column(column).le_(value));
         }
         return this;
     }
@@ -1312,7 +1312,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper le(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).le(value));
+            and(QueryMethods.column(column).le_(value));
         }
         return this;
     }
@@ -1326,7 +1326,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper le(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).le(value));
+            and(QueryMethods.column(column).le_(value));
         }
         return this;
     }
@@ -1410,7 +1410,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper in(String column, Object[] values, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).in(values));
+            and(QueryMethods.column(column).in_(values));
         }
         return this;
     }
@@ -1423,7 +1423,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper in(LambdaGetter<T> column, Object[] values, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).in(values));
+            and(QueryMethods.column(column).in_(values));
         }
         return this;
     }
@@ -1437,7 +1437,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper in(String column, Collection<?> values, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).in(values));
+            and(QueryMethods.column(column).in_(values));
         }
         return this;
     }
@@ -1450,7 +1450,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper in(LambdaGetter<T> column, Collection<?> values, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).in(values));
+            and(QueryMethods.column(column).in_(values));
         }
         return this;
     }
@@ -1464,7 +1464,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper in(String column, QueryWrapper queryWrapper, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).in(queryWrapper));
+            and(QueryMethods.column(column).in_(queryWrapper));
         }
         return this;
     }
@@ -1478,7 +1478,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper in(LambdaGetter<T> column, QueryWrapper queryWrapper, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).in(queryWrapper));
+            and(QueryMethods.column(column).in_(queryWrapper));
         }
         return this;
     }
@@ -1492,7 +1492,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper in(String column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
         if (isEffective.getAsBoolean()) {
-            and(QueryMethods.column(column).in(queryWrapper));
+            and(QueryMethods.column(column).in_(queryWrapper));
         }
         return this;
     }
@@ -1506,7 +1506,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper in(LambdaGetter<T> column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
         if (isEffective.getAsBoolean()) {
-            and(QueryMethods.column(column).in(queryWrapper));
+            and(QueryMethods.column(column).in_(queryWrapper));
         }
         return this;
     }
@@ -1590,7 +1590,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper notIn(String column, Object[] values, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notIn(values));
+            and(QueryMethods.column(column).notIn_(values));
         }
         return this;
     }
@@ -1603,7 +1603,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper notIn(LambdaGetter<T> column, Object[] values, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notIn(values));
+            and(QueryMethods.column(column).notIn_(values));
         }
         return this;
     }
@@ -1617,7 +1617,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper notIn(String column, Collection<?> values, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notIn(values));
+            and(QueryMethods.column(column).notIn_(values));
         }
         return this;
     }
@@ -1630,7 +1630,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper notIn(LambdaGetter<T> column, Collection<?> values, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notIn(values));
+            and(QueryMethods.column(column).notIn_(values));
         }
         return this;
     }
@@ -1644,7 +1644,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper notIn(String column, QueryWrapper queryWrapper, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notIn(queryWrapper));
+            and(QueryMethods.column(column).notIn_(queryWrapper));
         }
         return this;
     }
@@ -1658,7 +1658,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper notIn(LambdaGetter<T> column, QueryWrapper queryWrapper, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notIn(queryWrapper));
+            and(QueryMethods.column(column).notIn_(queryWrapper));
         }
         return this;
     }
@@ -1672,7 +1672,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper notIn(String column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
         if (isEffective.getAsBoolean()) {
-            and(QueryMethods.column(column).notIn(queryWrapper));
+            and(QueryMethods.column(column).notIn_(queryWrapper));
         }
         return this;
     }
@@ -1686,7 +1686,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper notIn(LambdaGetter<T> column, QueryWrapper queryWrapper, BooleanSupplier isEffective) {
         if (isEffective.getAsBoolean()) {
-            and(QueryMethods.column(column).notIn(queryWrapper));
+            and(QueryMethods.column(column).notIn_(queryWrapper));
         }
         return this;
     }
@@ -1725,7 +1725,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper between(String column, Object start, Object end, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).between(start, end));
+            and(QueryMethods.column(column).between_(start, end));
         }
         return this;
     }
@@ -1739,7 +1739,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper between(LambdaGetter<T> column, Object start, Object end, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).between(start, end));
+            and(QueryMethods.column(column).between_(start, end));
         }
         return this;
     }
@@ -1754,7 +1754,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper between(String column, Object start, Object end, BooleanSupplier isEffective) {
         if (isEffective.getAsBoolean()) {
-            and(QueryMethods.column(column).between(start, end));
+            and(QueryMethods.column(column).between_(start, end));
         }
         return this;
     }
@@ -1768,7 +1768,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper between(LambdaGetter<T> column, Object start, Object end, BooleanSupplier isEffective) {
         if (isEffective.getAsBoolean()) {
-            and(QueryMethods.column(column).between(start, end));
+            and(QueryMethods.column(column).between_(start, end));
         }
         return this;
     }
@@ -1807,7 +1807,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper notBetween(String column, Object start, Object end, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notBetween(start, end));
+            and(QueryMethods.column(column).notBetween_(start, end));
         }
         return this;
     }
@@ -1821,7 +1821,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper notBetween(LambdaGetter<T> column, Object start, Object end, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notBetween(start, end));
+            and(QueryMethods.column(column).notBetween_(start, end));
         }
         return this;
     }
@@ -1836,7 +1836,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper notBetween(String column, Object start, Object end, BooleanSupplier isEffective) {
         if (isEffective.getAsBoolean()) {
-            and(QueryMethods.column(column).notBetween(start, end));
+            and(QueryMethods.column(column).notBetween_(start, end));
         }
         return this;
     }
@@ -1850,7 +1850,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper notBetween(LambdaGetter<T> column, Object start, Object end, BooleanSupplier isEffective) {
         if (isEffective.getAsBoolean()) {
-            and(QueryMethods.column(column).notBetween(start, end));
+            and(QueryMethods.column(column).notBetween_(start, end));
         }
         return this;
     }
@@ -1887,7 +1887,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper like(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).like(value));
+            and(QueryMethods.column(column).like_(value));
         }
         return this;
     }
@@ -1901,7 +1901,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper like(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).like(value));
+            and(QueryMethods.column(column).like_(value));
         }
         return this;
     }
@@ -1915,7 +1915,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper like(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).like(value));
+            and(QueryMethods.column(column).like_(value));
         }
         return this;
     }
@@ -1929,7 +1929,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper like(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).like(value));
+            and(QueryMethods.column(column).like_(value));
         }
         return this;
     }
@@ -1966,7 +1966,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper likeLeft(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).likeLeft(value));
+            and(QueryMethods.column(column).likeLeft_(value));
         }
         return this;
     }
@@ -1980,7 +1980,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper likeLeft(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).likeLeft(value));
+            and(QueryMethods.column(column).likeLeft_(value));
         }
         return this;
     }
@@ -1994,7 +1994,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper likeLeft(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).likeLeft(value));
+            and(QueryMethods.column(column).likeLeft_(value));
         }
         return this;
     }
@@ -2008,7 +2008,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper likeLeft(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).likeLeft(value));
+            and(QueryMethods.column(column).likeLeft_(value));
         }
         return this;
     }
@@ -2045,7 +2045,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper likeRight(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).likeRight(value));
+            and(QueryMethods.column(column).likeRight_(value));
         }
         return this;
     }
@@ -2059,7 +2059,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper likeRight(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).likeRight(value));
+            and(QueryMethods.column(column).likeRight_(value));
         }
         return this;
     }
@@ -2073,7 +2073,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper likeRight(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).likeRight(value));
+            and(QueryMethods.column(column).likeRight_(value));
         }
         return this;
     }
@@ -2087,7 +2087,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper likeRight(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).likeRight(value));
+            and(QueryMethods.column(column).likeRight_(value));
         }
         return this;
     }
@@ -2124,7 +2124,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper notLike(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notLike(value));
+            and(QueryMethods.column(column).notLike_(value));
         }
         return this;
     }
@@ -2138,7 +2138,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper notLike(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notLike(value));
+            and(QueryMethods.column(column).notLike_(value));
         }
         return this;
     }
@@ -2152,7 +2152,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper notLike(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).notLike(value));
+            and(QueryMethods.column(column).notLike_(value));
         }
         return this;
     }
@@ -2166,7 +2166,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper notLike(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).notLike(value));
+            and(QueryMethods.column(column).notLike_(value));
         }
         return this;
     }
@@ -2203,7 +2203,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper notLikeLeft(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notLikeLeft(value));
+            and(QueryMethods.column(column).notLikeLeft_(value));
         }
         return this;
     }
@@ -2217,7 +2217,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper notLikeLeft(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notLikeLeft(value));
+            and(QueryMethods.column(column).notLikeLeft_(value));
         }
         return this;
     }
@@ -2231,7 +2231,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper notLikeLeft(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).notLikeLeft(value));
+            and(QueryMethods.column(column).notLikeLeft_(value));
         }
         return this;
     }
@@ -2245,7 +2245,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper notLikeLeft(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).notLikeLeft(value));
+            and(QueryMethods.column(column).notLikeLeft_(value));
         }
         return this;
     }
@@ -2282,7 +2282,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public QueryWrapper notLikeRight(String column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notLikeRight(value));
+            and(QueryMethods.column(column).notLikeRight_(value));
         }
         return this;
     }
@@ -2296,7 +2296,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T> QueryWrapper notLikeRight(LambdaGetter<T> column, Object value, boolean isEffective) {
         if (isEffective) {
-            and(QueryMethods.column(column).notLikeRight(value));
+            and(QueryMethods.column(column).notLikeRight_(value));
         }
         return this;
     }
@@ -2310,7 +2310,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <V> QueryWrapper notLikeRight(String column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).notLikeRight(value));
+            and(QueryMethods.column(column).notLikeRight_(value));
         }
         return this;
     }
@@ -2324,7 +2324,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      */
     public <T, V> QueryWrapper notLikeRight(LambdaGetter<T> column, V value, Predicate<V> isEffective) {
         if (isEffective.test(value)) {
-            and(QueryMethods.column(column).notLikeRight(value));
+            and(QueryMethods.column(column).notLikeRight_(value));
         }
         return this;
     }
