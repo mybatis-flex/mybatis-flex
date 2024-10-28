@@ -978,15 +978,17 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         // 可以省略表的引用，直接使用列名
         // SELECT 1
         // SELECT id FROM tb_user
-        if (queryTables == null || queryTables.isEmpty() || queryTables.size() == 1) {
+        if (queryTables == null || queryTables.isEmpty()) {
             return null;
         }
+
+        QueryTable consideredTable = queryTables.get(0);
 
         // 列未指定表名，仅以字符串的形式输入列名
         // 以查询表中的第一个表为主
         // SELECT tb_user.id FROM tb_user
         if (selfTable == null) {
-            return queryTables.get(0);
+            return consideredTable;
         }
 
         // 当前表有别名，以别名为主
@@ -995,7 +997,14 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
             return selfTable;
         }
 
-        QueryTable consideredTable = selfTable;
+        // 当前表没有别名，查询表只有一个
+        // 如果两个表是一样的则可以忽略表的引用
+        // 兼容子查询时，子查询的查询表和父查询没有合并的问题
+        if (queryTables.size() == 1 && Objects.equals(selfTable.name, consideredTable.name)) {
+            return null;
+        }
+
+        consideredTable = selfTable;
 
         // 当前表存在且没有别名
         ListIterator<QueryTable> it = queryTables.listIterator(queryTables.size());

@@ -69,17 +69,20 @@ public class MapperUtil {
             .select(count().as("total"))
             .from(queryWrapper).as("t");
     }
-    public static QueryWrapper rawCountQueryWrapper(QueryWrapper queryWrapper,List<QueryColumn> customCountColumns) {
-        return customCountColumns!=null?QueryWrapper.create()
+
+    public static QueryWrapper rawCountQueryWrapper(QueryWrapper queryWrapper, List<QueryColumn> customCountColumns) {
+        return customCountColumns != null ? QueryWrapper.create()
             .select(customCountColumns)
-            .from(queryWrapper).as("t"):rawCountQueryWrapper(queryWrapper);
+            .from(queryWrapper).as("t") : rawCountQueryWrapper(queryWrapper);
     }
+
     /**
      * 优化 COUNT 查询语句。
      */
     public static QueryWrapper optimizeCountQueryWrapper(QueryWrapper queryWrapper) {
         return optimizeCountQueryWrapper(queryWrapper, Collections.singletonList(count().as("total")));
     }
+
     /**
      * 优化 COUNT 查询语句。
      */
@@ -88,10 +91,10 @@ public class MapperUtil {
         QueryWrapper clone = queryWrapper.clone();
 
         List<UnionWrapper> unions = CPI.getUnions(clone);
-        if(!CollectionUtil.isEmpty(unions)){
+        if (!CollectionUtil.isEmpty(unions)) {
             List<UnionWrapper> newUnions = new ArrayList<>(unions.size());
             for (UnionWrapper union : unions) {
-                QueryWrapper unionQuery = optimizeCountQueryWrapper(union.getQueryWrapper().clone(),null);
+                QueryWrapper unionQuery = optimizeCountQueryWrapper(union.getQueryWrapper().clone(), null);
                 UnionWrapper clone1 = union.clone();
                 clone1.setQueryWrapper(unionQuery);
                 newUnions.add(clone1);
@@ -108,17 +111,17 @@ public class MapperUtil {
         // 如果有 distinct、group by、having 等语句则不优化
         // 这种一旦优化了就会造成 count 语句查询出来的值不对
         if (hasDistinct(selectColumns) || hasGroupBy(groupByColumns) || havingCondition != null) {
-            return clone;
+            return rawCountQueryWrapper(clone);
         }
         // 判断能不能清除 join 语句
         if (canClearJoins(clone)) {
             CPI.setJoins(clone, null);
         }
         // 将 select 里面的列换成 COUNT(*) AS `total`
-        if(customCountColumns!=null){
-            if(hasUnion(clone)){
-                return rawCountQueryWrapper(clone,customCountColumns);
-            }else {
+        if (customCountColumns != null) {
+            if (hasUnion(clone)) {
+                return rawCountQueryWrapper(clone, customCountColumns);
+            } else {
                 CPI.setSelectColumns(clone, customCountColumns);
             }
         }
