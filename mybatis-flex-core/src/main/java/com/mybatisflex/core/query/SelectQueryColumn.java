@@ -41,7 +41,7 @@ public class SelectQueryColumn extends QueryColumn implements HasParamsColumn {
 
     @Override
     protected String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
-        return dialect.forSelectByQuery(queryWrapper);
+        return WrapperUtil.withBracket(dialect.forSelectByQuery(queryWrapper));
     }
 
     @Override
