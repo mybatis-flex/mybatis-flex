@@ -31,6 +31,7 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
  */
 public class FlexTransactionManager extends AbstractPlatformTransactionManager {
 
+
     @Override
     protected Object doGetTransaction() throws TransactionException {
         return new TransactionObject(TransactionContext.getXID());
@@ -58,6 +59,7 @@ public class FlexTransactionManager extends AbstractPlatformTransactionManager {
     @Override
     protected void doBegin(Object transaction, TransactionDefinition definition) throws TransactionException {
         TransactionObject transactionObject = (TransactionObject) transaction;
+        TransactionDefinitionManager.setTransactionDefinition(definition);
         transactionObject.currentXid = TransactionalManager.startTransactional();
     }
 
@@ -84,8 +86,13 @@ public class FlexTransactionManager extends AbstractPlatformTransactionManager {
         transactionObject.setRollbackOnly();
     }
 
+    @Override
+    protected void doCleanupAfterCompletion(Object transaction) {
+        TransactionDefinitionManager.clear();
+    }
 
     static class TransactionObject extends JdbcTransactionObjectSupport {
+
 
         private static final ThreadLocal<String> ROLLBACK_ONLY_XIDS = new ThreadLocal<>();
 

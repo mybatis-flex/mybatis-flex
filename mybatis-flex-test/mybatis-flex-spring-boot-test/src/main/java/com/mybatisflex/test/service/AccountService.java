@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class AccountService {
@@ -33,11 +34,21 @@ public class AccountService {
 
     @Transactional
     public void update2() {
-        int x = 1/0;
+        int x = 1 / 0;
         Account account = new Account();
         account.setId(2L);
         account.setUserName("haha");
         accountMapper.update(account);
+    }
+
+    @Transactional(rollbackFor = Exception.class, timeout = 3)
+    public void transactionTimeTest() throws InterruptedException {
+        Account account = new Account();
+        account.setId(100L);
+        account.setUserName("aliothmoon");
+        accountMapper.insert(account);
+        TimeUnit.SECONDS.sleep(5);
+        accountMapper.selectOneById(account.getId());
     }
 
 }
