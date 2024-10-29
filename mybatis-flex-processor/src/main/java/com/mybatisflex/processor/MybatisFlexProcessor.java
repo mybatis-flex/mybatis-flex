@@ -200,7 +200,15 @@ public class MybatisFlexProcessor extends AbstractProcessor {
                     String realMapperPackage = StrUtil.isBlank(mapperPackage) ? StrUtil.buildMapperPackage(entityClass) : StrUtil.processPackageExpression(entityClass, mapperPackage);
                     String mapperClassName = entityClassName.concat("Mapper");
                     boolean mapperAnnotationEnable = "true".equalsIgnoreCase(mapperAnnotation);
-                    String mapperClassContent = ContentBuilder.buildMapper(tableInfo, realMapperPackage, mapperClassName, mapperBaseClass, mapperAnnotationEnable);
+                    String finalMapperBaseClass;
+                    if (table.baseMapper().isEmpty()) {
+                        // 如果@Table注解中未指定，则使用 mybatis-flex.config 中配置的内容或默认值
+                        finalMapperBaseClass = mapperBaseClass;
+                    } else {
+                        // 如果指定了，则使用指定的
+                        finalMapperBaseClass = table.baseMapper();
+                    }
+                    String mapperClassContent = ContentBuilder.buildMapper(tableInfo, realMapperPackage, mapperClassName, finalMapperBaseClass, mapperAnnotationEnable);
                     // 生成的 Mapper 依赖于此 Element。
                     processGenClass(genPath, realMapperPackage, mapperClassName, mapperClassContent, entityClassElement);
                 }

@@ -48,6 +48,12 @@ public @interface Table {
      * 在某些场景下，我们需要手动编写 Mapper，可以通过这个注解来关闭 APT 的 Mapper 生成
      */
     boolean mapperGenerateEnable() default true;
+
+    /**
+     * APT过程中为每个PO设定独立的BaseMapper类，这在某些场景下很有用，比如，业务表与中间表往往会有不同的BaseMapper。
+     * 默认为空，表示使用APT默认的BaseMapper。
+     */
+    String baseMapper() default "";
 }
 ```
 
@@ -154,6 +160,12 @@ public class MySetListener implements SetListener {
 ```
 
 > 注意：若 entity 的属性配置了 `typeHandler`，`typeHandler` 的执行顺序高于 `SetListener`。
+
+## baseMapper
+
+`baseMapper` 可用于设置当前 `Entity` 在 APT 过程中生成 Mapper 的父类，默认为空，表示使用APT默认的BaseMapper。
+
+此配置的优先级大于优先级大于在 `mybatis-flex.config` 中设置的 `processor.mapper.baseClass` 属性，且只对当前标注的实体有效。
 
 ## 全局设置
 

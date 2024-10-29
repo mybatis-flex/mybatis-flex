@@ -72,4 +72,11 @@ public @interface Table {
      */
     boolean mapperGenerateEnable() default true;
 
+    /**
+     * 为每个PO设定独立的BaseMapper类，这在某些场景下很有用，比如，业务表与中间表往往会有不同的BaseMapper。
+     * <br>
+     * 如果为空时，使用APT默认值。
+     */
+    String baseMapper() default "";
+
 }
