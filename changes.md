@@ -4,15 +4,15 @@
 
 
 ## v1.9.9 20241031
-优化：重构 QueryWrapper 使之优先使用用户设置的条件
-优化：优化 BaseMapper.insertOrUpdate，使之在传入空字符串时走 save
-优化：Spring 的 ServiceImpl#getMapper 返回约束泛型类型， 感谢 @aliothmoon
-优化：修改 StringUtil 的 isBlank 为 noText, 以及 isNotBlank 为 hasText
-修复：修复事务超时时间问题 & 提供更完善的Spring事务定义上下文，感谢 @aliothmoon
-修复：子查询作为条件没有括号的问题
-修复：子查询用到了外部查询的列时，两个列重名没有列名指向的问题
-修复：分页在某些情况下，无法优化 COUNT 查询的问题
-文档：修正文档的部分拼写错误，感谢 @kings
+- 优化：重构 QueryWrapper 使之优先使用用户设置的条件
+- 优化：优化 BaseMapper.insertOrUpdate，使之在传入空字符串时走 save
+- 优化：Spring 的 ServiceImpl#getMapper 返回约束泛型类型， 感谢 @aliothmoon
+- 优化：修改 StringUtil 的 isBlank 为 noText, 以及 isNotBlank 为 hasText
+- 修复：修复事务超时时间问题 & 提供更完善的Spring事务定义上下文，感谢 @aliothmoon
+- 修复：子查询作为条件没有括号的问题
+- 修复：子查询用到了外部查询的列时，两个列重名没有列名指向的问题
+- 修复：分页在某些情况下，无法优化 COUNT 查询的问题
+- 文档：修正文档的部分拼写错误，感谢 @kings
 
 
 
