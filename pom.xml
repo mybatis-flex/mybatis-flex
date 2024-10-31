@@ -7,7 +7,7 @@
     <groupId>com.mybatis-flex</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.9.8</version>
+    <version>1.9.9</version>
 
     <name>mybatis-flex</name>
     <url>https://mybatis-flex.com</url>
@@ -63,7 +63,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
-        <mybatis-flex.version>1.9.8</mybatis-flex.version>
+        <mybatis-flex.version>1.9.9</mybatis-flex.version>
 
         <mybatis.version>3.5.16</mybatis.version>
         <mybatis-spring.version>2.1.2</mybatis-spring.version>
