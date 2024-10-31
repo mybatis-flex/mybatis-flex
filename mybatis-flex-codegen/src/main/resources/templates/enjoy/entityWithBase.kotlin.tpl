@@ -32,4 +32,4 @@ import io.swagger.v3.oas.annotations.media.Schema
 @Schema(description = "#(table.getComment())")
 #end
 #if(!isBase)#(table.buildTableAnnotation())#end
-class #(entityClassName) : #(baseClassName)()
+open class #(entityClassName) : #(baseClassName)()

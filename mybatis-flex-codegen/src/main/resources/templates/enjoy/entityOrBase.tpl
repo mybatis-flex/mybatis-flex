@@ -77,13 +77,13 @@ public class #(entityClassName)#if(withActiveRecord) extends Model<#(entityClass
 
 #for(column : table.columns)
     #set(comment = javadocConfig.formatColumnComment(column.comment))
-    #if(isNotBlank(comment))
+    #if(hasText(comment))
     /**
      * #(comment)
      */
     #end
     #set(annotations = column.buildAnnotations())
-    #if(isNotBlank(annotations))
+    #if(hasText(annotations))
     #(annotations)
     #end
     #if(withSwagger && swaggerVersion.getName() == "FOX")
@@ -92,7 +92,7 @@ public class #(entityClassName)#if(withActiveRecord) extends Model<#(entityClass
     #if(withSwagger && swaggerVersion.getName() == "DOC")
     @Schema(description = "#(column.comment)")
     #end
-    private #(column.propertySimpleType) #(column.property)#if(isNotBlank(column.propertyDefaultValue)) = #(column.propertyDefaultValue)#end;
+    private #(column.propertySimpleType) #(column.property)#if(hasText(column.propertyDefaultValue)) = #(column.propertyDefaultValue)#end;
 
 #end
 #if(!withLombok)
