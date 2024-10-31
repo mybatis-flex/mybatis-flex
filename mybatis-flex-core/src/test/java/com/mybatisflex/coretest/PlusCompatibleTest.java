@@ -42,10 +42,7 @@ public class PlusCompatibleTest {
                     .ge(Account::getSex, 0);
             });
 
-        Assert.assertEquals("SELECT * FROM `user` " +
-                "WHERE `age` >= 18 " +
-                "OR (column2 LIKE 'value2%') " +
-                "OR (column3 = 'value3' AND `sex` >= 0)"
+        Assert.assertEquals("SELECT * FROM `user` WHERE `tb_account`.`age` >= 18 OR (column2 LIKE 'value2%') OR (column3 = 'value3' AND `tb_account`.`sex` >= 0)"
             , queryWrapper.toSQL());
 
         System.out.println(queryWrapper.toSQL());

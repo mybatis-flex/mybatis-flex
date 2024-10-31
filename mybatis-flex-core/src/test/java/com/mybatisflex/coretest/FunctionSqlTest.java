@@ -132,7 +132,7 @@ public class FunctionSqlTest {
             .toSQL();
 
         System.out.println(sql);
-        assertEquals("SELECT CASE WHEN SELECT `id` FROM `tb_article` WHERE `id` >= 1 >= 0 THEN 1 ELSE 0 END FROM `tb_account`", sql);
+        assertEquals("SELECT CASE WHEN (SELECT `id` FROM `tb_article` WHERE `id` >= 1) >= 0 THEN 1 ELSE 0 END FROM `tb_account`", sql);
     }
 
     @Test

@@ -189,7 +189,7 @@ public class DynamicConditionTest {
             .where(ACCOUNT.USER_NAME.in(""));
 
         System.out.println(queryWrapper.toSQL());
-        assertEquals("SELECT * FROM `tb_account`", queryWrapper.toSQL());
+        assertEquals("SELECT * FROM `tb_account` WHERE `user_name` IN ('')", queryWrapper.toSQL());
         // 重置QueryColumnBehavior
         QueryColumnBehavior.setIgnoreFunction(Objects::isNull);
     }
