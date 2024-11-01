@@ -334,7 +334,7 @@ public class FlexGlobalConfig {
     }
 
     public void setUnMappedColumnHandler(UnMappedColumnHandler unMappedColumnHandler) {
-        this.unMappedColumnHandler = unMappedColumnHandler;
+        FlexGlobalConfig.unMappedColumnHandler = unMappedColumnHandler;
     }
 
     public FlexDataSource getDataSource() {
