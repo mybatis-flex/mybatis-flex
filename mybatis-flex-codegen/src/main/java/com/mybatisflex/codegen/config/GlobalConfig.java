@@ -670,6 +670,14 @@ public class GlobalConfig implements Serializable {
         return getStrategyConfig().getColumnConfig(tableName, columnName);
     }
 
+    public ColumnConfigFactory getColumnConfigFactory() {
+        return getStrategyConfig().getColumnConfigFactory();
+    }
+
+    public void setColumnConfigFactory(ColumnConfigFactory columnConfigFactory) {
+        getStrategyConfig().setColumnConfigFactory(columnConfigFactory);
+    }
+
     /**
      * @see StrategyConfig#isGenerateForView()
      */
