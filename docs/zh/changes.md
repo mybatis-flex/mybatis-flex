@@ -3,6 +3,13 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.10.0 20241104
+- 新增：代码生成器添加  ColumnConfigFactory 配置的支持
+- 修复：修复由于 1.10.0 修复方法名称后导致代码生成器出错的问题
+- 优化：优化 unMappedColumnHandler 在 FlexGlobalConfig 的定义
+
+
+
 ## v1.9.9 20241031
 - 优化：重构 QueryWrapper 使之优先使用用户设置的条件
 - 优化：优化 BaseMapper.insertOrUpdate，使之在传入空字符串时走 save
@@ -20,7 +27,7 @@
 - 新增：新增 trino 方言，感谢 @chenjh3
 - 新增：新增 OptimisticLockManager，用于处理跳过乐观锁的场景，感谢 @tiankafei
 - 新增：添加 solon 事务支持，感谢 @noear_admin
-- 新增: 增加未匹配列的自定义处理拓展接口，感谢 @something4ArthurW
+- 新增: 增加未匹配列的自定义处理拓展接口，感谢 @somethingaw
 - 新增：添加查询列和查询条件相互转换的适配器，感谢 @Suomm
 - 新增：无法顺序读取数据源配置时，可以手动指定默认数据源，感谢 @Suomm
 - 新增：使用实体类构建 QueryWrapper 时，可以使用实体类中属性标记的 TypeHandler 对值进行处理，感谢 @Suomm
