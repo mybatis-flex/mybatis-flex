@@ -3,6 +3,13 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.10.0 20241104
+- 新增：代码生成器添加  ColumnConfigFactory 配置的支持
+- 修复：修复由于 1.10.0 修复方法名称后导致代码生成器出错的问题
+- 优化：优化 unMappedColumnHandler 在 FlexGlobalConfig 的定义
+
+
+
 ## v1.9.9 20241031
 - 优化：重构 QueryWrapper 使之优先使用用户设置的条件
 - 优化：优化 BaseMapper.insertOrUpdate，使之在传入空字符串时走 save
