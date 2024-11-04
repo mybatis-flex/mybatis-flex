@@ -594,14 +594,15 @@ public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
                 }
             }
         } else {
-            if (FlexGlobalConfig.getUnMappedColumnHandler() != null) {
+            UnMappedColumnHandler unMappedColumnHandler = FlexGlobalConfig.getDefaultConfig().getUnMappedColumnHandler();
+            if (unMappedColumnHandler != null) {
                 // 增加未匹配列自定义处理
                 final List<String> unmappedColumnNames = rsw.getUnmappedColumnNames(resultMap, columnPrefix);
                 for (String unmappedColumnName : unmappedColumnNames) {
                     // 不明确类型，直接取object
                     final Object value = typeHandlerRegistry.getMappingTypeHandler(UnknownTypeHandler.class).getResult(rsw.getResultSet(), unmappedColumnName);
                     // 自定义处理未匹配列
-                    FlexGlobalConfig.getUnMappedColumnHandler().handleUnMappedColumn(metaObject, unmappedColumnName, value);
+                    unMappedColumnHandler.handleUnMappedColumn(metaObject, unmappedColumnName, value);
                 }
             }
         }
