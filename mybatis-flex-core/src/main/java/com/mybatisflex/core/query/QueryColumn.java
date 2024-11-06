@@ -252,12 +252,12 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition ge(Object value, BooleanSupplier isEffective) {
-        return gt(value, isEffective.getAsBoolean());
+        return ge(value, isEffective.getAsBoolean());
     }
 
     @Override
     public <T> QueryCondition ge(T value, Predicate<T> isEffective) {
-        return gt(value, isEffective.test(value));
+        return ge(value, isEffective.test(value));
     }
 
 
@@ -541,7 +541,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
             return QueryCondition.createEmpty();
         }
-        return between_(new Object[]{start, end});
+        return between_(start, end);
     }
 
     @Override
@@ -549,7 +549,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (!isEffective) {
             return QueryCondition.createEmpty();
         }
-        return between_(new Object[]{start, end});
+        return between_(start, end);
     }
 
     @Override
@@ -595,7 +595,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
             return QueryCondition.createEmpty();
         }
-        return notBetween_(new Object[]{start, end});
+        return notBetween_(start, end);
     }
 
     @Override
@@ -603,7 +603,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (!isEffective) {
             return QueryCondition.createEmpty();
         }
-        return notBetween_(new Object[]{start, end});
+        return notBetween_(start, end);
     }
 
     @Override
