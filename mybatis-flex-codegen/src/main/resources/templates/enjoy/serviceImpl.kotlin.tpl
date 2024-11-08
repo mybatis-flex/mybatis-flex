@@ -3,7 +3,9 @@ package #(packageConfig.serviceImplPackage);
 import #(serviceImplConfig.buildSuperClassImport());
 import #(packageConfig.entityPackage).#(table.buildEntityClassName());
 import #(packageConfig.mapperPackage).#(table.buildMapperClassName());
+#if(table.getGlobalConfig().isServiceGenerateEnable())
 import #(packageConfig.servicePackage).#(table.buildServiceClassName());
+#end
 import org.springframework.stereotype.Service;
 
 /**
