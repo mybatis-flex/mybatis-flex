@@ -97,27 +97,27 @@ const {Layout} = DefaultTheme
     <Layout>
 
         <!--docs: https://vitepress.dev/guide/extending-default-theme#layout-slots-->
-        <template #doc-before>
-            <div style="margin-bottom: 30px">
-                <a href="https://mp.weixin.qq.com/s/_0cjlA6KSxeeUqhXpqIPVA" target="_blank">
-                    <img src="/assets/images/ad/admin-banner.jpg">
-                </a>
-            </div>
-        </template>
+<!--        <template #doc-before>-->
+<!--            <div style="margin-bottom: 30px">-->
+<!--                <a href="https://mp.weixin.qq.com/s/1pTQ9m3C4ebfSQdyWUAyaQ" target="_blank">-->
+<!--                    <img src="/assets/images/ad/aiadmin.gif">-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </template>-->
 
-        <template #home-features-after>
-            <div class="banner-home">
-                <a href="https://mp.weixin.qq.com/s/_0cjlA6KSxeeUqhXpqIPVA" target="_blank">
-                    <img src="/assets/images/ad/admin-banner.jpg">
-                </a>
-            </div>
-        </template>
+<!--        <template #home-features-after>-->
+<!--            <div class="banner-home">-->
+<!--                <a href="https://mp.weixin.qq.com/s/1pTQ9m3C4ebfSQdyWUAyaQ" target="_blank">-->
+<!--                    <img src="/assets/images/ad/aiadmin.gif">-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </template>-->
 
 
         <!--        <template #home-features-after>-->
         <!--            <div style="display: flex; justify-content: center;margin-top: 60px">-->
-        <!--                <a href="https://mp.weixin.qq.com/s/sAe_bO4eW7dJsNgwoG0x9g" target="_blank" style="max-width: 90%">-->
-        <!--                    <img src="/assets/images/ad/admin-banner.jpg" style="width: 650px;">-->
+        <!--                <a href="https://mp.weixin.qq.com/s/1pTQ9m3C4ebfSQdyWUAyaQ" target="_blank" style="max-width: 90%">-->
+        <!--                    <img src="/assets/images/ad/aiadmin.gif" style="width: 650px;">-->
         <!--                </a>-->
         <!--            </div>-->
         <!--        </template>-->
