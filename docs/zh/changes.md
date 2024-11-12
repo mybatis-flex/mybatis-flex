@@ -2,10 +2,15 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.10.1 20241112
+- 修复：代码生成器 在禁用Service接口生成时，serviceImpl去除Service接口
+- 修复：在使用 QueryColumn 的 ge 方法时, 大于等于会实际仅是大于的问题
+
+
 
 ## v1.10.0 20241104
 - 新增：代码生成器添加  ColumnConfigFactory 配置的支持
-- 修复：修复由于 1.10.0 修复方法名称后导致代码生成器出错的问题
+- 修复：修复由于 1.9.9 修复方法名称后导致代码生成器出错的问题
 - 优化：优化 unMappedColumnHandler 在 FlexGlobalConfig 的定义
 
 
