@@ -34,7 +34,7 @@ public class FlexTransactionFactory extends SpringManagedTransactionFactory {
      */
     @Override
     public Transaction newTransaction(DataSource dataSource, TransactionIsolationLevel level, boolean autoCommit) {
-        return new FlexSpringTransaction((FlexDataSource) dataSource);
+        return new FlexSpringTransaction(dataSource);
     }
 
     /**
