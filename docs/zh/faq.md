@@ -356,3 +356,25 @@ public ProcessEngineConfiguration processEngineConfiguration(
     ...
 }
 ```
+
+## MyBatis-Flex 与camunda工作流引擎集成事务兼容问题？
+ 当Mybatis-Flex 与camunda集成时,存在事务不兼容问题;需要覆盖其自动配置；添加 mybatis-flex 的事务管理器（FlexTransactionManager）和 DataSource（FlexDataSource）
+注入到 ProcessEngineConfiguration，配置代码如下：
+
+```java
+ @Bean(name = "processEngineConfiguration")
+    public ProcessEngineConfigurationImpl processEngineConfiguration(SqlSessionFactory sqlSessionFactory,
+                                                                     PlatformTransactionManager annotationDrivenTransactionManager) throws NoSuchFieldException, IllegalAccessException {
+        final SpringProcessEngineConfiguration processEngineConfiguration = CamundaSpringBootUtil.springProcessEngineConfiguration();
+        DataSource dataSource = sqlSessionFactory.getConfiguration().getEnvironment().getDataSource();
+        //获取私有字段
+        Field field = ProcessEngineConfiguration.class .getDeclaredField("dataSource");
+        field.setAccessible(true);
+        field.set(processEngineConfiguration, dataSource);
+        processEngineConfiguration.setTransactionManager(annotationDrivenTransactionManager);
+        processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE);
+        processEngineConfiguration.setTransactionFactory(new FlexTransactionFactory());
+        processEngineConfiguration.setHistoryLevel(HistoryLevel.HISTORY_LEVEL_FULL);
+        return processEngineConfiguration;
+    }
+```
