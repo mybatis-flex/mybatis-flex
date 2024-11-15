@@ -104,13 +104,13 @@ public class LambdaSqlTest {
 
         printSQL(queryWrapper);
         assertEquals("SELECT\n" +
-            "  ` ac `.` id `,\n" +
-            "  ` ac `.` user_name `,\n" +
-            "  ` ac `.` birthday `,\n" +
-            "  ` ac `.` sex `,\n" +
             "  ` ac `.` age `,\n" +
-            "  ` ac `.` is_normal `,\n" +
+            "  ` ac `.` birthday `,\n" +
+            "  ` ac `.` id `,\n" +
             "  ` ac `.` is_delete `,\n" +
+            "  ` ac `.` is_normal `,\n" +
+            "  ` ac `.` sex `,\n" +
+            "  ` ac `.` user_name `,\n" +
             "  ` ar `.` title `,\n" +
             "  ` ar `.` content `\n" +
             "FROM\n" +
@@ -131,13 +131,13 @@ public class LambdaSqlTest {
 
         printSQL(queryWrapper);
         assertEquals("SELECT\n" +
-            "  ` ac `.` id `,\n" +
-            "  ` ac `.` user_name `,\n" +
-            "  ` ac `.` birthday `,\n" +
-            "  ` ac `.` sex `,\n" +
             "  ` ac `.` age `,\n" +
-            "  ` ac `.` is_normal `,\n" +
+            "  ` ac `.` birthday `,\n" +
+            "  ` ac `.` id `,\n" +
             "  ` ac `.` is_delete `,\n" +
+            "  ` ac `.` is_normal `,\n" +
+            "  ` ac `.` sex `,\n" +
+            "  ` ac `.` user_name `,\n" +
             "  ` ar `.*\n" +
             "FROM\n" +
             "  ` tb_account ` AS ` ac `\n" +

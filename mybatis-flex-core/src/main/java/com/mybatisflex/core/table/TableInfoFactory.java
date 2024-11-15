@@ -71,6 +71,7 @@ import java.time.chrono.JapaneseDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -316,6 +317,7 @@ public class TableInfoFactory {
         Set<String> defaultQueryColumns = new LinkedHashSet<>();
 
         List<Field> entityFields = getColumnFields(entityClass);
+        Collections.sort(entityFields, (field1, field2) -> field1.getName().compareTo(field2.getName()));
 
         FlexGlobalConfig config = FlexGlobalConfig.getDefaultConfig();
 
