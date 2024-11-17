@@ -18,7 +18,6 @@ package com.mybatisflex.test;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.mybatisflex.core.MybatisFlexBootstrap;
-import com.mybatisflex.core.datasource.DataSourceDecipher;
 import com.mybatisflex.core.datasource.DataSourceManager;
 import com.mybatisflex.core.datasource.DataSourceProperty;
 import com.mybatisflex.core.row.Db;

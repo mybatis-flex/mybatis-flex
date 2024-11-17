@@ -107,12 +107,16 @@ public class Table {
         this.comment = comment;
     }
 
+    /**
+     * 默认主键。
+     */
+    private Column defaultPrimaryKey;
+
     public Column getPrimaryKey() {
-        // 这里默认表中一定会有字段，就不做空判断了
-        return columns.stream()
-            .filter(Column::isPrimaryKey)
-            .findFirst()
-            .orElseThrow(() -> new NullPointerException("PrimaryKey can't be null"));
+        if (defaultPrimaryKey == null) {
+            throw new NullPointerException("PrimaryKey can't be null");
+        }
+        return defaultPrimaryKey;
     }
 
     public Set<String> getPrimaryKeys() {
@@ -176,32 +180,38 @@ public class Table {
         }
         return false;
     }
+
     List<String> superColumns = null;
 
     public void addColumn(Column column) {
-        if (superColumns == null){
+        if (superColumns == null) {
             superColumns = new ArrayList<>();
             Class<?> superClass = entityConfig.getSuperClass(this);
-            //获取所有 private字段
+            // 获取所有 private字段
             if (superClass != null) {
                 Field[] fields = superClass.getDeclaredFields();
                 for (Field field : fields) {
                     int modifiers = field.getModifiers();
-                    if(Modifier.isPrivate(modifiers)){
+                    if (Modifier.isPrivate(modifiers)) {
                         superColumns.add(field.getName());
                     }
                 }
             }
         }
-        if (superColumns.contains(column.getProperty())){
-            return;
-        }
-        //主键
+
+        // 主键
         if (primaryKeys != null && primaryKeys.contains(column.getName())) {
             column.setPrimaryKey(true);
             if (column.getAutoIncrement() == null && (column.getPropertyType().equals(Integer.class.getName()) || column.getPropertyType().equals(BigInteger.class.getName()))) {
                 column.setAutoIncrement(true);
             }
+            if (defaultPrimaryKey == null) {
+                defaultPrimaryKey = column;
+            }
+        }
+
+        if (superColumns.contains(column.getProperty())) {
+            return;
         }
 
         if (column.getAutoIncrement() == null) {
@@ -246,14 +256,14 @@ public class Table {
     public List<String> buildImports(boolean isBase) {
         Set<String> imports = new HashSet<>();
 
-        //base 类不需要添加 Table 的导入，没有 @Table 注解
+        // base 类不需要添加 Table 的导入，没有 @Table 注解
         if (!isBase) {
             imports.add("com.mybatisflex.annotation.Table");
         }
 
         EntityConfig entityConfig = globalConfig.getEntityConfig();
 
-        //未开启基类生成，或者是基类的情况下，添加 Column 类型的导入
+        // 未开启基类生成，或者是基类的情况下，添加 Column 类型的导入
         if (!entityConfig.isWithBaseClassEnable() || (entityConfig.isWithBaseClassEnable() && isBase)) {
             for (Column column : columns) {
                 imports.addAll(column.getImportClasses());
@@ -368,7 +378,7 @@ public class Table {
         EntityConfig entityConfig = globalConfig.getEntityConfig();
         Class<?> superClass = entityConfig.getSuperClass(this);
         if (superClass != null) {
-            return " extends " + superClass.getSimpleName()+(entityConfig.isSuperClassGenericity(this)?("<"+buildEntityClassName()+(isBase?entityConfig.getWithBaseClassSuffix():"")+">"):"");
+            return " extends " + superClass.getSimpleName() + (entityConfig.isSuperClassGenericity(this) ? ("<" + buildEntityClassName() + (isBase ? entityConfig.getWithBaseClassSuffix() : "") + ">") : "");
         } else {
             return "";
         }
@@ -386,19 +396,20 @@ public class Table {
             return "";
         }
     }
+
     /**
      * 构建 kt 继承
      */
-    public String buildKtExtends(boolean isBase){
+    public String buildKtExtends(boolean isBase) {
         EntityConfig entityConfig = globalConfig.getEntityConfig();
         Class<?> superClass = entityConfig.getSuperClass(this);
         List<String> s = new ArrayList<>();
         if (superClass != null) {
             String name = superClass.getSimpleName();
-            if (entityConfig.isSuperClassGenericity(this)){
-                name+="<"+buildEntityClassName()+(isBase?entityConfig.getWithBaseClassSuffix():"")+">";
+            if (entityConfig.isSuperClassGenericity(this)) {
+                name += "<" + buildEntityClassName() + (isBase ? entityConfig.getWithBaseClassSuffix() : "") + ">";
             }
-            name+="()";
+            name += "()";
             s.add(name);
         }
         Class<?>[] entityInterfaces = globalConfig.getEntityConfig().getImplInterfaces();
@@ -407,10 +418,10 @@ public class Table {
                 s.add(inter.getSimpleName());
             }
         }
-        if (s.isEmpty()){
+        if (s.isEmpty()) {
             return "";
         }
-        return " :"+String.join(",", s);
+        return " :" + String.join(",", s);
     }
 
     // ===== 构建相关类名 =====
