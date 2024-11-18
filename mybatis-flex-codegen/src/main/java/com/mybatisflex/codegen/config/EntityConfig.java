@@ -65,6 +65,8 @@ public class EntityConfig implements Serializable {
      */
     private Class<?>[] implInterfaces = {Serializable.class};
 
+    private Function<Table, Class<?>[]> interfaceFactory;
+
     /**
      * Entity 是否使用 Lombok 注解。
      */
@@ -225,6 +227,25 @@ public class EntityConfig implements Serializable {
      */
     public EntityConfig setOverwriteEnable(boolean overwriteEnable) {
         this.overwriteEnable = overwriteEnable;
+        return this;
+    }
+
+    /**
+     * 获取实现接口。
+     */
+    public Class<?>[] getInterfaces(Table table) {
+        if (interfaceFactory != null) {
+            return interfaceFactory.apply(table);
+        }
+        return implInterfaces;
+    }
+
+    public Function<Table, Class<?>[]> getInterfaceFactory() {
+        return interfaceFactory;
+    }
+
+    public EntityConfig setInterfaceFactory(Function<Table, Class<?>[]> interfaceFactory) {
+        this.interfaceFactory = interfaceFactory;
         return this;
     }
 

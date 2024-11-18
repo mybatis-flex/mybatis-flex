@@ -264,8 +264,9 @@ public class Table {
                 imports.add(superClass.getName());
             }
 
-            if (entityConfig.getImplInterfaces() != null) {
-                for (Class<?> entityInterface : entityConfig.getImplInterfaces()) {
+            Class<?>[] interfaces = entityConfig.getInterfaces(this);
+            if (interfaces != null) {
+                for (Class<?> entityInterface : interfaces) {
                     imports.add(entityInterface.getName());
                 }
             }
@@ -378,7 +379,7 @@ public class Table {
      * 构建 implements 实现。
      */
     public String buildImplements() {
-        Class<?>[] entityInterfaces = globalConfig.getEntityConfig().getImplInterfaces();
+        Class<?>[] entityInterfaces = globalConfig.getEntityConfig().getInterfaces(this);
         if (entityInterfaces != null && entityInterfaces.length > 0) {
             return " implements " + StringUtil.join(", ", Arrays.stream(entityInterfaces)
                 .map(Class::getSimpleName).collect(Collectors.toList()));
@@ -401,8 +402,8 @@ public class Table {
             name+="()";
             s.add(name);
         }
-        Class<?>[] entityInterfaces = globalConfig.getEntityConfig().getImplInterfaces();
-        if (entityInterfaces != null && entityInterfaces.length > 0) {
+        Class<?>[] entityInterfaces = globalConfig.getEntityConfig().getInterfaces(this);
+        if (entityInterfaces != null) {
             for (Class<?> inter : entityInterfaces) {
                 s.add(inter.getSimpleName());
             }
