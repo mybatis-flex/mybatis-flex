@@ -40,26 +40,41 @@ public class If {
     }
 
     public static <T> boolean isEmpty(T[] array) {
-        return array != null && array.length == 0;
+        return array == null || array.length == 0;
     }
 
+    @Deprecated
     public static <T> boolean isNotEmpty(T[] array) {
+        return notEmpty(array);
+    }
+
+    public static <T> boolean notEmpty(T[] array) {
         return !isEmpty(array);
     }
 
     public static boolean isEmpty(Map<?, ?> map) {
-        return map != null && map.isEmpty();
+        return map == null || map.isEmpty();
     }
 
+    @Deprecated
     public static boolean isNotEmpty(Map<?, ?> map) {
+        return notEmpty(map);
+    }
+
+    public static boolean notEmpty(Map<?, ?> map) {
         return !isEmpty(map);
     }
 
     public static boolean isEmpty(Collection<?> collection) {
-        return collection != null && collection.isEmpty();
+        return collection == null || collection.isEmpty();
     }
 
+    @Deprecated
     public static boolean isNotEmpty(Collection<?> collection) {
+        return notEmpty(collection);
+    }
+
+    public static boolean notEmpty(Collection<?> collection) {
         return !isEmpty(collection);
     }
 
