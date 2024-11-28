@@ -78,11 +78,12 @@ public class If {
         return !isEmpty(collection);
     }
 
-    /**
-     * 查看某个 string 对象是否有文本内容
-     */
     public static boolean hasText(String string) {
         return StringUtil.hasText(string);
+    }
+
+    public static boolean noText(String string) {
+        return StringUtil.noText(string);
     }
 
 }

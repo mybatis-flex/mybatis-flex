@@ -2,6 +2,15 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+
+## v1.10.2 20241128
+- 优化：删除 DataSource 不必要的类型转换，集成第三方框架时，dataSource 可能为 FlexDataSource 的包装类，从而导致类型转换错误
+- 优化：优化 If.java 添加更多的方法
+- 优化：升级 mybatis 到 3.5.17 最新版本
+- 修复：代码生成器主键定义在父实体类，可能出错的问题
+
+
+
 ## v1.10.1 20241112
 - 修复：代码生成器 在禁用Service接口生成时，serviceImpl去除Service接口
 - 修复：在使用 QueryColumn 的 ge 方法时, 大于等于会实际仅是大于的问题
