@@ -252,18 +252,19 @@ globalConfig.getPackageConfig()
 
 ## 策略配置 `StrategyConfig`
 
-| 配置                             | 描述                     | 默认值   |
-|--------------------------------|------------------------|-------|
-| setTablePrefix(String)         | 数据库表前缀，多个前缀用英文逗号（,） 隔开 | null  |
-| setLogicDeleteColumn(String)   | 逻辑删除的默认字段名称            | null  |
-| setVersionColumn(String)       | 乐观锁的字段名称               | null  |
-| setGenerateForView(boolean)    | 是否生成视图映射               | false |
-| setTableConfig(TableConfig)    | 单独为某张表添加独立的配置          | null  |
-| setColumnConfig(ColumnConfig)  | 设置某个列的全局配置             | null  |
-| setGenerateSchema(String)      | 生成哪个schema下的表          | null  |
-| setGenerateTables(String...)   | 生成哪些表，白名单              | null  |
-| setUnGenerateTables(String...) | 不生成哪些表，黑名单             | null  |
-| setIgnoreColumns(String...)    | 需要忽略的列，父类定义的字段         | null  |
+| 配置                                                  | 描述                                                                     | 默认值   |
+|-----------------------------------------------------|------------------------------------------------------------------------|-------|
+| setTablePrefix(String)                              | 数据库表前缀，多个前缀用英文逗号（,） 隔开                                                 | null  |
+| setLogicDeleteColumn(String)                        | 逻辑删除的默认字段名称                                                            | null  |
+| setVersionColumn(String)                            | 乐观锁的字段名称                                                               | null  |
+| setGenerateForView(boolean)                         | 是否生成视图映射                                                               | false |
+| setTableConfig(TableConfig)                         | 单独为某张表添加独立的配置                                                          | null  |
+| setColumnConfig(ColumnConfig)                       | 设置某个列的全局配置                                                             | null  |
+| setGenerateSchema(String)                           | 生成哪个schema下的表                                                          | null  |
+| setGenerateTables(String...)                        | 生成哪些表，白名单                                                              | null  |
+| setUnGenerateTables(String...)                      | 不生成哪些表，黑名单                                                             | null  |
+| setGenerateTableStrategy(Function<String, Boolean>) | 入参为表名，出参为是否生成，如果配置此项 `setGenerateTables` 和 `setUnGenerateTables` 将会失效 | null  |
+| setIgnoreColumns(String...)                         | 需要忽略的列，父类定义的字段                                                         | null  |
 
 ```java
 globalConfig.getStrategyConfig()
@@ -295,20 +296,21 @@ globalConfig.getTemplateConfig()
 
 ## Entity 生成配置 `EntityConfig`
 
-| 配置                                           | 描述                                                | 默认值                |
-|----------------------------------------------|---------------------------------------------------|--------------------|
-| setClassPrefix(String)                       | Entity 类的前缀                                       | ""                 |
-| setClassSuffix(String)                       | Entity 类的后缀                                       | ""                 |
-| setSuperClass(Class)                         | Entity 类的父类，可以自定义一些 BaseEntity 类                  | null               |
-| setSuperClassFactory(Function<Table, Class>) | Entity 类的父类工厂，可以用于对特定的 Class 设置父类，而非全部 Entity 的父类 | null               |
-| setOverwriteEnable(boolean)                  | 是否覆盖之前生成的文件                                       | false              |
-| setImplInterfaces(Class[])                   | Entity 默认实现的接口                                    | Serializable.class |
-| setWithLombok(boolean)                       | Entity 是否使用 Lombok 注解                             | false              |
-| setWithSwagger(boolean)                      | Entity 是否使用 Swagger 注解                            | false              |
+| 配置                                            | 描述                                                | 默认值                |
+|-----------------------------------------------|---------------------------------------------------|--------------------|
+| setClassPrefix(String)                        | Entity 类的前缀                                       | ""                 |
+| setClassSuffix(String)                        | Entity 类的后缀                                       | ""                 |
+| setSuperClass(Class)                          | Entity 类的父类，可以自定义一些 BaseEntity 类                  | null               |
+| setSuperClassFactory(Function<Table, Class>)  | Entity 类的父类工厂，可以用于对特定的 Class 设置父类，而非全部 Entity 的父类 | null               |
+| setOverwriteEnable(boolean)                   | 是否覆盖之前生成的文件                                       | false              |
+| setInterfaceFactory(Function<Table, Class>)   | Entity 类的接口工厂，可以用于对特定的 Class 设置接口，而非全部 Entity 的接口 | null               |
+| setImplInterfaces(Class[])                    | Entity 默认实现的接口                                    | Serializable.class |
+| setWithLombok(boolean)                        | Entity 是否使用 Lombok 注解                             | false              |
+| setWithSwagger(boolean)                       | Entity 是否使用 Swagger 注解                            | false              |
 | setSwaggerVersion(EntityConfig.SwaggerVersion) | Swagger 注解版本                                      | SwaggerVersion.FOX |
-| setWithActiveRecord(boolean)                 | 是否生成 Active Record 模式的 Entity                     | false              |
-| setDataSource(String)                        | 统一使用的数据源                                          | null               |
-| setJdkVersion(int)                           | 设置项目的jdk版本                                        | 0                  |
+| setWithActiveRecord(boolean)                  | 是否生成 Active Record 模式的 Entity                     | false              |
+| setDataSource(String)                         | 统一使用的数据源                                          | null               |
+| setJdkVersion(int)                            | 设置项目的jdk版本                                        | 0                  |
 
 ```java
 globalConfig.getEntityConfig()

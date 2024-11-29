@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * 表策略配置。
@@ -79,6 +80,12 @@ public class StrategyConfig implements Serializable {
      * 需要生成的表在哪个模式下
      */
     private String generateSchema;
+
+    /**
+     * 根据表明动态判断是否可以生成
+     */
+    private Function<String, Boolean> generateTableStrategy;
+
     /**
      * 生成哪些表，白名单。
      */
@@ -225,6 +232,15 @@ public class StrategyConfig implements Serializable {
         this.columnConfigFactory = columnConfigFactory;
     }
 
+    public Function<String, Boolean> getGenerateTableStrategy() {
+        return generateTableStrategy;
+    }
+
+    public StrategyConfig setGenerateTableStrategy(Function<String, Boolean> generateTableStrategy) {
+        this.generateTableStrategy = generateTableStrategy;
+        return this;
+    }
+
     /**
      * 设置生成哪些表。
      */
@@ -263,6 +279,9 @@ public class StrategyConfig implements Serializable {
     public boolean isSupportGenerate(String table) {
         if (table == null || table.isEmpty()) {
             return true;
+        }
+        if (generateTableStrategy != null) {
+            return generateTableStrategy.apply(table);
         }
         if (unGenerateTables != null) {
             for (String unGenerateTable : unGenerateTables) {
