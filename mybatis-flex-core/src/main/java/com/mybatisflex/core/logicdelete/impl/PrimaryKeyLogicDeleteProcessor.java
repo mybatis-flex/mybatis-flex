@@ -40,7 +40,8 @@ public class PrimaryKeyLogicDeleteProcessor extends NullableColumnLogicDeletePro
         List<IdInfo> primaryKeys = tableInfo.getPrimaryKeyList();
         FlexAssert.notEmpty(primaryKeys, "primaryKeys");
         String column = primaryKeys.get(0).getColumn();
-        return dialect.wrap(logicColumn) + EQUALS + dialect.wrap(column);
+        String sql = dialect.wrap(logicColumn) + EQUALS + dialect.wrap(column);
+        return invokeOnLogicDeleteListener(sql, tableInfo, dialect);
     }
 
     /**

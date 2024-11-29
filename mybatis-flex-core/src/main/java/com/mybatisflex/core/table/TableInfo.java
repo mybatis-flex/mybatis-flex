@@ -18,6 +18,7 @@ package com.mybatisflex.core.table;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.LogicDeleteListener;
 import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.FlexConsts;
@@ -134,6 +135,7 @@ public class TableInfo {
 
     private List<InsertListener> onInsertListeners;
     private List<UpdateListener> onUpdateListeners;
+    private List<LogicDeleteListener> onLogicDeleteListener;
     private List<SetListener> onSetListeners;
 
     /**
@@ -362,6 +364,14 @@ public class TableInfo {
 
     public void setOnSetListeners(List<SetListener> onSetListeners) {
         this.onSetListeners = onSetListeners;
+    }
+
+    public List<LogicDeleteListener> getOnLogicDeleteListener() {
+        return onLogicDeleteListener;
+    }
+
+    public void setOnLogicDeleteListener(List<LogicDeleteListener> onLogicDeleteListener) {
+        this.onLogicDeleteListener = onLogicDeleteListener;
     }
 
     public List<ColumnInfo> getColumnInfoList() {
@@ -1486,6 +1496,19 @@ public class TableInfo {
             value = setListener.onSet(entity, property, value);
         }
         return value;
+    }
+
+    private static final Map<Class<?>, List<LogicDeleteListener>> logicDeleteListenerCache = new ConcurrentHashMap<>();
+
+    public void invokeOnLogicDeleteListener(Object entity) {
+        List<LogicDeleteListener> listeners = MapUtil.computeIfAbsent(logicDeleteListenerCache, entityClass, aClass -> {
+            List<LogicDeleteListener> globalListeners = FlexGlobalConfig.getDefaultConfig()
+                .getSupportedLogicDeleteListener(entityClass);
+            List<LogicDeleteListener> allListeners = CollectionUtil.merge(onLogicDeleteListener, globalListeners);
+            Collections.sort(allListeners);
+            return allListeners;
+        });
+        listeners.forEach(logicDeleteListener -> logicDeleteListener.onLogicDelete(entity));
     }
 
     public QueryColumn getQueryColumnByProperty(String property) {

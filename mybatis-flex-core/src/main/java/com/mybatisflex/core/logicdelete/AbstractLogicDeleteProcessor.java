@@ -18,8 +18,14 @@ package com.mybatisflex.core.logicdelete;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.table.TableInfo;
+import com.mybatisflex.core.update.UpdateWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static com.mybatisflex.core.constant.SqlConsts.EQUALS;
+import static com.mybatisflex.core.constant.SqlConsts.SINGLE_QUOTE;
 
 /**
  * 逻辑删除处理器抽象类。
@@ -31,12 +37,13 @@ public abstract class AbstractLogicDeleteProcessor implements LogicDeleteProcess
 
     @Override
     public String buildLogicNormalCondition(String logicColumn, TableInfo tableInfo, IDialect dialect) {
-        return dialect.wrap(logicColumn) + EQUALS + getLogicNormalValue();
+        return dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicNormalValue());
     }
 
     @Override
     public String buildLogicDeletedSet(String logicColumn, TableInfo tableInfo, IDialect dialect) {
-        return dialect.wrap(logicColumn) + EQUALS + getLogicDeletedValue();
+        String sql = dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicDeletedValue());
+        return invokeOnLogicDeleteListener(sql, tableInfo, dialect);
     }
 
     @Override
@@ -46,6 +53,35 @@ public abstract class AbstractLogicDeleteProcessor implements LogicDeleteProcess
         queryWrapper.and(queryColumn.eq(getLogicNormalValue()));
     }
 
+    protected static Object prepareValue(Object value) {
+        if (value instanceof Number || value instanceof Boolean) {
+            return value;
+        }
+        return SINGLE_QUOTE + value + SINGLE_QUOTE;
+    }
+
+    /**
+     * 调用逻辑删除监听器，返回最终的 SQL
+     */
+    protected String invokeOnLogicDeleteListener(String sql, TableInfo tableInfo, IDialect dialect) {
+        // 获取逻辑删除的实体代理对象，并执行监听器
+        UpdateWrapper<?> entity = UpdateWrapper.of(tableInfo.getEntityClass());
+        tableInfo.invokeOnLogicDeleteListener(entity);
+        // 获取需要更新的列
+        Map<String, Object> updates = entity.getUpdates();
+        if (updates.isEmpty()) {
+            return sql;
+        }
+        // 构建 SET 语句
+        List<String> setColumnsSql = new ArrayList<>(updates.size() + 1);
+        // 逻辑删除列
+        setColumnsSql.add(sql);
+        // 其他列
+        updates.forEach((k, v) -> {
+            setColumnsSql.add(dialect.wrap(tableInfo.getColumnByProperty(k)) + EQUALS + prepareValue(v));
+        });
+        return String.join(",", setColumnsSql);
+    }
 }
 
 
