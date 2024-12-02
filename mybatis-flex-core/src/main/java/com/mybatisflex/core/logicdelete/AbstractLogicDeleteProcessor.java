@@ -37,12 +37,12 @@ public abstract class AbstractLogicDeleteProcessor implements LogicDeleteProcess
 
     @Override
     public String buildLogicNormalCondition(String logicColumn, TableInfo tableInfo, IDialect dialect) {
-        return dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicNormalValue());
+        return dialect.wrap(logicColumn) + EQUALS + getLogicNormalValue();
     }
 
     @Override
     public String buildLogicDeletedSet(String logicColumn, TableInfo tableInfo, IDialect dialect) {
-        String sql = dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicDeletedValue());
+        String sql = dialect.wrap(logicColumn) + EQUALS + getLogicDeletedValue();
         return invokeOnLogicDeleteListener(sql, tableInfo, dialect);
     }
 

@@ -30,6 +30,17 @@ import static com.mybatisflex.core.constant.SqlConsts.SINGLE_QUOTE;
 public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 
     @Override
+    public String buildLogicNormalCondition(String logicColumn, TableInfo tableInfo, IDialect dialect) {
+        return dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicNormalValue());
+    }
+
+    @Override
+    public String buildLogicDeletedSet(String logicColumn, TableInfo tableInfo, IDialect dialect) {
+        String sql = dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicDeletedValue());
+        return invokeOnLogicDeleteListener(sql, tableInfo, dialect);
+    }
+
+    @Override
     public Object getLogicNormalValue() {
         return FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
     }
