@@ -119,7 +119,11 @@ public class MyInsertListener implements InsertListener {
 
 ## onLogicDelete
 
-使用方式同 onInsert 一致，用于在数据被逻辑删除的时候，设置一些默认数据。
+使用方式同 onInsert 一致，用于在数据被逻辑删除的时候，设置一些数据。
+
+::: danger 注意
+由于删除大多场景为根据 id 进行删除，所以，在 onLogicDelete 监听中，拿不到当前对象的数据，只能用于设置删除人和删除时间等赋值操作。
+:::
 
 ## onSet
 
