@@ -20,14 +20,15 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
 import com.mybatisflex.core.row.RowMapperInvoker;
+import com.mybatisflex.solon.mybtais.MybatisAdapterDefault;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.solon.integration.MybatisAdapterDefault;
 import org.noear.solon.Utils;
 import org.noear.solon.core.BeanWrap;
 import org.noear.solon.core.Props;
 import org.noear.solon.core.VarHolder;
 import org.noear.solon.core.event.EventBus;
+import org.noear.solon.core.util.ClassUtil;
 
 import javax.sql.DataSource;
 
@@ -41,6 +42,7 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
     private FlexSqlSessionFactoryBuilder factoryBuilderPlus;
     private FlexGlobalConfig globalConfig;
     private RowMapperInvoker rowMapperInvoker;
+    private Class<?> typeAliasesBaseType;
 
     protected MybatisAdapterFlex(BeanWrap dsWrap) {
         super(dsWrap);
@@ -69,6 +71,11 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
     protected void initConfiguration(Environment environment) {
         //for configuration section
         config = new FlexConfiguration(environment);
+
+        String typeAliasesBaseTypeStr = dsProps.get("typeAliasesSuperType");
+        if (Utils.isNotEmpty(typeAliasesBaseTypeStr)) {
+            typeAliasesBaseType = ClassUtil.loadClass(typeAliasesBaseTypeStr);
+        }
 
         Props cfgProps = dsProps.getProp("configuration");
         if (cfgProps.size() > 0) {
@@ -133,5 +140,30 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
             }
             varH.setValue(rowMapperInvoker);
         }
+    }
+
+    @Override
+    protected boolean isTypeAliasesType(Class<?> type) {
+        //typeAliasesSuperType
+        if (typeAliasesBaseType == null) {
+            return true;
+        } else {
+            return typeAliasesBaseType.isAssignableFrom(type);
+        }
+    }
+
+    @Override
+    protected boolean isTypeAliasesKey(String key) {
+        return super.isTypeAliasesKey(key) || key.startsWith("typeAliasesPackage[");
+    }
+
+    @Override
+    protected boolean isTypeHandlersKey(String key) {
+        return super.isTypeHandlersKey(key) || key.startsWith("typeHandlersPackage[");
+    }
+
+    @Override
+    protected boolean isMappersKey(String key) {
+        return super.isMappersKey(key) || key.startsWith("mapperLocations[");
     }
 }
