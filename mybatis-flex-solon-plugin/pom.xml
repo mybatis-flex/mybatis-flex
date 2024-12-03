@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>org.noear</groupId>
-            <artifactId>mybatis-solon-plugin</artifactId>
+            <artifactId>solon-data</artifactId>
             <version>${solon.version}</version>
         </dependency>
 
@@ -29,6 +29,13 @@
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-core</artifactId>
             <version>${mybatis-flex.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-aot</artifactId>
+            <version>${solon.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
