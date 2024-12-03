@@ -10,16 +10,7 @@
 数据扩展插件，为 Solon Data 提供基于 mybatis-flex（[代码仓库](https://gitee.com/mybatis-flex/mybatis-flex)）的框架适配，以提供ORM支持。
 
 
-#### 2、强调多数据源支持
-
-> Solon 的 ORM 框架都是基于多数据源理念进行适配的。关于 Solon 数据源概念的描述，可参考：[多数据源与动态数据源](https://solon.noear.org/article/353)
-
-* 强调多数据源的配置。例：demo.db1...，demo.db2...
-* 强调带 name 的 DataSource Bean
-* 强调使用 @Db("name") 的数据源注解
-
-
-@Db 可注入类型：
+`@Inject` 可注入类型：
 
 | 支持类型 | 说明                                                                   |
 | -------- |----------------------------------------------------------------------|
@@ -34,7 +25,7 @@
 
 
 ```yml
-# 配置数据源
+# 配置数据源（或者使用 solon.dataSources 配置数据源，效果一样）
 mybatis-flex.datasource:
   db1:
       jdbcUrl: jdbc:mysql://localhost:3306/rock?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=true
@@ -99,8 +90,6 @@ mybatis-flex.mapper-locations: "classpath:mybatis/db1/*.xml"
 #### 4、代码应用
 
 ```java
-import com.mybatisflex.core.datasource.DataSourceKey;
-
 //配置 mf （如果配置不能满足需求，可以进一步代助代码）
 @Configuration
 public class Config {
