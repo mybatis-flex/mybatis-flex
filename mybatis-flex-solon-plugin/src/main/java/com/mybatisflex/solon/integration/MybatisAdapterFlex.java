@@ -77,8 +77,15 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
 
 
         //for globalConfig section
-        globalConfig = new FlexGlobalConfig();
-        globalConfig.setKeyConfig(new FlexGlobalConfig.KeyConfig());
+        if (dsWrap.typed()) {
+            globalConfig = FlexGlobalConfig.getDefaultConfig();
+        } else {
+            globalConfig = new FlexGlobalConfig();
+        }
+
+        if (globalConfig.getKeyConfig() == null) {
+            globalConfig.setKeyConfig(new FlexGlobalConfig.KeyConfig());
+        }
 
         Props globalProps = dsProps.getProp("globalConfig");
         if (globalProps.size() > 0) {
@@ -91,11 +98,6 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
 
         //增加事件扩展机制
         EventBus.publish(globalConfig);
-
-
-        if (dsWrap.typed()) {
-            FlexGlobalConfig.setDefaultConfig(globalConfig);
-        }
     }
 
     /**
@@ -132,5 +134,4 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
             varH.setValue(rowMapperInvoker);
         }
     }
-
 }
