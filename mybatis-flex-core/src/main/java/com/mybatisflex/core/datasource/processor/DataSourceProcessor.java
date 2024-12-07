@@ -1,5 +1,7 @@
 package com.mybatisflex.core.datasource.processor;
 
+import com.mybatisflex.core.mybatis.binding.FlexMapperProxy;
+
 import java.lang.reflect.Method;
 
 /**
@@ -14,7 +16,7 @@ public interface DataSourceProcessor {
     /**
      * 数据源key解析扩展
      *
-     * @param dataSourceKey 注解UseDataSource的value 值,调用process时不会为null,可能会空字符串
+     * @param dataSourceKey 注解UseDataSource的value 值,调用process时不会为null,不会为空{@link FlexMapperProxy#invoke(Object, Method, Object[])}
      * @param mapper        Mapper对象(代理对象)
      * @param method        Mapper当前执行的方法函数
      * @param arguments     Mapper当前执行的函数参数
