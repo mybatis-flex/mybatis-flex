@@ -62,7 +62,7 @@ public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
                 finalDsKey = getMethodDsKey(method, proxy);
             }
 
-            // 对数据源取值进行动态取值处理(#)
+            // 对数据源取值进行动态取值处理
             if (!StrUtil.isBlank(finalDsKey)) {
                 finalDsKey = DataSourceKey.processDataSourceKey(finalDsKey, proxy, method, args);
             }

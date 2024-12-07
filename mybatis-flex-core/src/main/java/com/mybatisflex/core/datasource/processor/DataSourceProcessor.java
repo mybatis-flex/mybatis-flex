@@ -3,7 +3,7 @@ package com.mybatisflex.core.datasource.processor;
 import java.lang.reflect.Method;
 
 /**
- * 动态数据源 @UseDataSource key 解析处理器,使用时推荐注入 DelegatingDataSourceProcessor{@link DelegatingDataSourceProcessor} 类
+ * 动态数据源 @UseDataSource的value值解析处理器(如表达式解析取值等),使用时推荐使用 DelegatingDataSourceProcessor{@link DelegatingDataSourceProcessor} 实例化
  * 对动态数据源注解@UseDataSource 增强处理{@link com.mybatisflex.annotation.UseDataSource}
  *
  * @author Alay
