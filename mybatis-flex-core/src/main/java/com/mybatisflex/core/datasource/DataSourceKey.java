@@ -78,6 +78,12 @@ public class DataSourceKey {
         lookup = threadLocal;
     }
 
+    public static String processDataSourceKey(String dataSourceKey, Object mapper, Method method, Object[] arguments) {
+        String dsKey = DataSourceManager.processDataSourceKey(dataSourceKey, mapper, method, arguments);
+        return dsKey != null ? dsKey : dataSourceKey;
+    }
+
+
     public static String getShardingDsKey(String dataSource, Object mapper, Method method, Object[] args) {
         String shardingDsKey = DataSourceManager.getShardingDsKey(dataSource, mapper, method, args);
         return shardingDsKey != null ? shardingDsKey : dataSource;
@@ -89,18 +95,22 @@ public class DataSourceKey {
     public static String getByManual() {
         throw new UnsupportedOperationException("使用 DataSource.get() 代替。");
     }
+
     @Deprecated
     public static String getByAnnotation() {
         throw new UnsupportedOperationException("使用 DataSource.get() 代替。");
     }
+
     @Deprecated
     public static void useWithAnnotation(String dataSourceKey) {
         throw new UnsupportedOperationException("使用 DataSource.use(String) 代替。");
     }
+
     @Deprecated
     public static void setAnnotationKeyThreadLocal(ThreadLocal<String> annotationKeyThreadLocal) {
         throw new UnsupportedOperationException("使用 DataSource.setThreadLocal(ThreadLocal<Deque<String>>) 代替。");
     }
+
     @Deprecated
     public static void setManualKeyThreadLocal(ThreadLocal<String> manualKeyThreadLocal) {
         throw new UnsupportedOperationException("使用 DataSource.setThreadLocal(ThreadLocal<Deque<String>>) 代替。");
