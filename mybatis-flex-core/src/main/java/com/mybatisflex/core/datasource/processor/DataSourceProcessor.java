@@ -18,7 +18,7 @@ public interface DataSourceProcessor {
      * @param mapper        Mapper对象(代理对象)
      * @param method        Mapper当前执行的方法函数
      * @param arguments     Mapper当前执行的函数参数
-     * @return 数据源名称（可能为null 为 null 时表示不符合当前处理器的处理,传递到下一个处理器进行处理）
+     * @return 数据源名称（可能为null 为 null 时表示不符合当前处理器的处理）
      */
     String process(String dataSourceKey, Object mapper, Method method, Object[] arguments);
 
