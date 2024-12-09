@@ -178,3 +178,54 @@ config.registerUpdateListener(updateListener, Entity1.class, Entity2.class);
 //为 Entity1 和 Entity2 注册 setListener
 config.registerSetListener(setListener, Entity1.class, Entity2.class);
 ```
+
+## 案例
+### 案例 1：设置创建和更新者的用户名
+需要自建一个**BaseEntity**，前提是涉及到的类需要继承BaseEntity
+
+```java
+
+public class MybatisUpdateListener implements UpdateListener {
+    @Override
+    public void onUpdate(Object o) {
+        Object username = StpUtil.getExtra("username");  //此处获取用户名
+        if (username != null && o instanceof BaseEntity entity) {
+            entity.setUpdateBy(username.toString());
+        }
+    }
+}
+
+```
+
+```java
+public class MybatisInsertListener implements InsertListener {
+    @Override
+    public void onInsert(Object o) {
+        Object username = StpUtil.getExtra("username");  //此处获取用户名
+        if (username != null && o instanceof BaseEntity entity) {
+            entity.setCreateBy(username.toString());
+        }
+    }
+}
+```
+
+
+配置
+```java
+@Configuration
+public class MyBatisFlexConfiguration {
+
+    public MyBatisFlexConfiguration() {
+
+        MybatisInsertListener mybatisInsertListener = new MybatisInsertListener();
+        MybatisUpdateListener mybatisUpdateListener = new MybatisUpdateListener();
+        FlexGlobalConfig config = FlexGlobalConfig.getDefaultConfig();
+
+        //设置BaseEntity类启用
+        config.registerInsertListener(mybatisInsertListener, BaseEntity.class);
+        config.registerUpdateListener(mybatisUpdateListener, BaseEntity.class);
+
+        );
+    }
+}
+```
