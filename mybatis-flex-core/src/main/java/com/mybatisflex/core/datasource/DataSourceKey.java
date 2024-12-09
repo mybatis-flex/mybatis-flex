@@ -78,8 +78,8 @@ public class DataSourceKey {
         lookup = threadLocal;
     }
 
-    public static String processDataSourceKey(String dataSourceKey, Object mapper, Method method, Object[] arguments) {
-        String dsKey = DataSourceManager.processDataSourceKey(dataSourceKey, mapper, method, arguments);
+    public static String processDataSourceKey(String dataSourceKey, Object targetOrProxy, Method method, Object[] arguments) {
+        String dsKey = DataSourceManager.processDataSourceKey(dataSourceKey, targetOrProxy, method, arguments);
         return dsKey != null ? dsKey : dataSourceKey;
     }
 

@@ -19,6 +19,7 @@ package com.mybatisflex.spring.datasource;
 import com.mybatisflex.annotation.UseDataSource;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.processor.util.StrUtil;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.core.MethodClassKey;
@@ -44,7 +45,7 @@ public class DataSourceInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        String dsKey = getDataSourceKey(invocation.getMethod(), invocation.getThis().getClass());
+        String dsKey = getDataSourceKey(invocation.getThis(), invocation.getMethod(), invocation.getArguments());
         if (StringUtil.noText(dsKey)) {
             return invocation.proceed();
         }
@@ -56,11 +57,15 @@ public class DataSourceInterceptor implements MethodInterceptor {
         }
     }
 
-    private String getDataSourceKey(Method method, Class<?> targetClass) {
-        Object cacheKey = new MethodClassKey(method, targetClass);
+    private String getDataSourceKey(Object target, Method method, Object[] arguments) {
+        Object cacheKey = new MethodClassKey(method, target.getClass());
         String dsKey = this.dsCache.get(cacheKey);
         if (dsKey == null) {
-            dsKey = determineDataSourceKey(method, targetClass);
+            dsKey = determineDataSourceKey(method, target.getClass());
+            // 对数据源取值进行动态取值处理
+            if (!StrUtil.isBlank(dsKey)) {
+                dsKey = DataSourceKey.processDataSourceKey(dsKey, target, method, arguments);
+            }
             this.dsCache.put(cacheKey, dsKey);
         }
         return dsKey;

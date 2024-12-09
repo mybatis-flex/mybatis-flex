@@ -109,9 +109,9 @@ public class DataSourceManager {
         return null;
     }
 
-    static String processDataSourceKey(String dataSourceKey, Object mapper, Method method, Object[] arguments) {
+    static String processDataSourceKey(String dataSourceKey, Object targetOrProxy, Method method, Object[] arguments) {
         // 如果没有配置 DataSourceProcessor 实例,则不做处理,返回原始值
-        return dataSourceProcessor == null ? dataSourceKey : dataSourceProcessor.process(dataSourceKey, mapper, method, arguments);
+        return dataSourceProcessor == null ? dataSourceKey : dataSourceProcessor.process(dataSourceKey, targetOrProxy, method, arguments);
     }
 
 
