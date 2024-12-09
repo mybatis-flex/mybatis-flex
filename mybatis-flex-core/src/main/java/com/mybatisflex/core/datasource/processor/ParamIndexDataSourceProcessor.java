@@ -28,9 +28,13 @@ public class ParamIndexDataSourceProcessor implements DataSourceProcessor {
         if (arguments.length == 0) return null;
 
         Integer index = null;
-        if (INDEX_FIRST.equals(dataSourceKey)) index = 0;
-        if (INDEX_LAST.equals(dataSourceKey)) index = arguments.length - 1;
-        if (dataSourceKey.startsWith(PARAM_INDEX)) index = parseIndex(dataSourceKey);
+        if (INDEX_FIRST.equals(dataSourceKey)) {
+            index = 0;
+        } else if (INDEX_LAST.equals(dataSourceKey)) {
+            index = arguments.length - 1;
+        } else if (dataSourceKey.startsWith(PARAM_INDEX)) {
+            index = parseIndex(dataSourceKey);
+        }
 
         // 没有符合约定的格式输入,则会返回 null
         if (null == index) return null;
