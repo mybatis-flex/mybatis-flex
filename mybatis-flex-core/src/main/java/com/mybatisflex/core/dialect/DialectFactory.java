@@ -152,6 +152,8 @@ public class DialectFactory {
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.SYBASE);
             case TRINO:
                 return new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.SQLSERVER);
+            case DUCKDB:
+                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.MYSQL);
             default:
                 return new CommonsDialectImpl();
         }

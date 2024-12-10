@@ -57,7 +57,7 @@ public interface LimitOffsetProcessor {
      * Postgresql 的处理器
      * 适合  {@link DbType#POSTGRE_SQL,DbType#SQLITE,DbType#H2,DbType#HSQL,DbType#KINGBASE_ES,DbType#PHOENIX}
      * 适合  {@link DbType#SAP_HANA,DbType#IMPALA,DbType#HIGH_GO,DbType#VERTICA,DbType#REDSHIFT}
-     * 适合  {@link DbType#OPENGAUSS,DbType#TDENGINE,DbType#UXDB}
+     * 适合  {@link DbType#OPENGAUSS,DbType#TDENGINE,DbType#UXDB,DbType#DUCKDB}
      */
     LimitOffsetProcessor POSTGRESQL = (dialect, sql, queryWrapper, limitRows, limitOffset) -> {
         if (limitRows != null && limitOffset != null) {

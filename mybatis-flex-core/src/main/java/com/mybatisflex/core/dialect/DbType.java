@@ -235,6 +235,11 @@ public enum DbType {
     TRINO("trino", "trino 数据库"),
 
     /**
+     * Duckdb
+     */
+    DUCKDB("duckdb", "duckdb 数据库"),
+
+    /**
      * UNKNOWN DB
      */
     OTHER("other", "其他数据库");

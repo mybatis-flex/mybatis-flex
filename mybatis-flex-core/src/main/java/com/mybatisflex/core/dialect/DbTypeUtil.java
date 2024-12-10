@@ -161,6 +161,8 @@ public class DbTypeUtil {
             return DbType.LEALONE;
         }  else if (jdbcUrl.contains(":hive2:")) {
             return DbType.HIVE;
+        }  else if (jdbcUrl.contains(":duckdb:")) {
+            return DbType.DUCKDB;
         } else {
             return DbType.OTHER;
         }
