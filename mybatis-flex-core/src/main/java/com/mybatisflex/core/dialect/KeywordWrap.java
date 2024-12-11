@@ -54,7 +54,7 @@ public class KeywordWrap {
     public static final KeywordWrap BACK_QUOTE = new KeywordWrap("`", "`");
 
     /**
-     * 双引号反义处理, 适用于 postgresql, sqlite, derby, oracle 等
+     * 双引号反义处理, 适用于 postgresql, sqlite, derby, oracle, duckdb 等
      */
     public static final KeywordWrap DOUBLE_QUOTATION = new KeywordWrap("\"", "\"");
 
