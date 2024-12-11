@@ -179,8 +179,9 @@ config.registerUpdateListener(updateListener, Entity1.class, Entity2.class);
 config.registerSetListener(setListener, Entity1.class, Entity2.class);
 ```
 
-## 案例
-### 案例 1：设置创建和更新者的用户名
+## 示例
+### 场景 1：设置创建和更新者的用户名
+
 需要自建一个**BaseEntity**，前提是涉及到的类需要继承BaseEntity
 
 ```java
@@ -210,7 +211,8 @@ public class MybatisInsertListener implements InsertListener {
 ```
 
 
-配置
+启动配置
+
 ```java
 @Configuration
 public class MyBatisFlexConfiguration {
@@ -224,8 +226,6 @@ public class MyBatisFlexConfiguration {
         //设置BaseEntity类启用
         config.registerInsertListener(mybatisInsertListener, BaseEntity.class);
         config.registerUpdateListener(mybatisUpdateListener, BaseEntity.class);
-
-        );
     }
 }
 ```
