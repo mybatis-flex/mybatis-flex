@@ -44,15 +44,30 @@ public class FlexDataSource extends AbstractDataSource {
     private final Map<String, DataSource> dataSourceMap = new HashMap<>();
     private final Map<String, DbType> dbTypeHashMap = new HashMap<>();
 
-    private final DbType defaultDbType;
-    private final String defaultDataSourceKey;
-    private final DataSource defaultDataSource;
+    private DbType defaultDbType;
+    private String defaultDataSourceKey;
+    private DataSource defaultDataSource;
 
     public FlexDataSource(String dataSourceKey, DataSource dataSource) {
         this(dataSourceKey, dataSource, true);
     }
 
     public FlexDataSource(String dataSourceKey, DataSource dataSource, boolean needDecryptDataSource) {
+        setDefaultDataSourceDo(dataSourceKey, dataSource, needDecryptDataSource);
+    }
+
+    /**
+     * 设置默认数据源（提供动态可控性）
+     */
+    public void setDefaultDataSource(String dataSourceKey, DataSource dataSource, boolean needDecryptDataSource) {
+        if (defaultDataSourceKey.equals(dataSourceKey)) {
+            return;
+        }
+
+        setDefaultDataSourceDo(dataSourceKey, dataSource, needDecryptDataSource);
+    }
+
+    private void setDefaultDataSourceDo(String dataSourceKey, DataSource dataSource, boolean needDecryptDataSource) {
         if (needDecryptDataSource) {
             DataSourceManager.decryptDataSource(dataSource);
         }
@@ -269,6 +284,4 @@ public class FlexDataSource extends AbstractDataSource {
         }
 
     }
-
-
 }
