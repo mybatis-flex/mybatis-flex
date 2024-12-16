@@ -87,7 +87,11 @@ public class XPluginImpl implements Plugin {
                 String dsName = entry.getKey();
                 DataSource ds = new DataSourceBuilder(entry.getValue()).build();
                 BeanWrap bw = context.wrap(dsName, ds, dsName.equals(flexProperties.getDefaultDatasourceKey()));
-                loadDs(context, bw);
+                context.putWrap(dsName, bw);
+                if (bw.typed()) {
+                    context.putWrap(DataSource.class, bw);
+                }
+                context.wrapPublish(bw);
             }
         }
     }
