@@ -20,12 +20,15 @@ import com.mybatisflex.annotation.UseDataSource;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
+import com.mybatisflex.core.datasource.DataSourceBuilder;
 import com.mybatisflex.core.datasource.DataSourceKey;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.row.RowMapperInvoker;
+import com.mybatisflex.solon.MybatisFlexProperties;
 import com.mybatisflex.solon.aot.MybatisRuntimeNativeRegistrar;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.noear.solon.Utils;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.aot.RuntimeNativeRegistrar;
 import org.noear.solon.core.AppContext;
@@ -35,7 +38,6 @@ import org.noear.solon.core.Props;
 import org.noear.solon.core.runtime.NativeDetector;
 import org.noear.solon.core.util.ClassUtil;
 import org.noear.solon.core.util.TmplUtil;
-import org.noear.solon.data.datasource.DsUtils;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -47,9 +49,7 @@ import java.util.Map;
  * @since 2.2
  */
 public class XPluginImpl implements Plugin {
-    private static final String CONFIG_PREFIX = "mybatisFlex";
-    private static final String CONFIG_DS_PREFIX = "mybatisFlex.datasource";
-    private static final String CONFIG_DS_DEF = "mybatisFlex.defaultDatasourceKey";
+    private static final String CONFIG_PREFIX = "mybatisFlex.";
 
     private static MybatisAdapterFlex adapterFlex;
 
@@ -57,10 +57,19 @@ public class XPluginImpl implements Plugin {
         return adapterFlex;
     }
 
+    private Props flexProps;
+    private MybatisFlexProperties flexProperties;
+
     @Override
     public void start(AppContext context) throws Throwable {
         // 注册动态数据源的事务路由
         //TranManager.routing(FlexDataSource.class, new FlexDataSourceRouting());
+
+        flexProps = context.cfg().getProp(CONFIG_PREFIX);
+        flexProperties = flexProps.toBean(MybatisFlexProperties.class);
+        if (flexProperties == null) {
+            flexProperties = new MybatisFlexProperties();
+        }
 
         // 订阅数据源
         context.subWrapsOfType(DataSource.class, bw -> {
@@ -72,18 +81,12 @@ public class XPluginImpl implements Plugin {
             context.wrapAndPut(MybatisRuntimeNativeRegistrar.class);
         }
 
-
         // 构建 mf 配置的数据源
-        Class<?> dsDefClz = ClassUtil.loadClass("com.zaxxer.hikari.HikariDataSource");
-        Props dsProps = context.cfg().getProp(CONFIG_DS_PREFIX);
-        String dsDef = context.cfg().get(CONFIG_DS_DEF);
-        if (dsProps.size() > 0) {
-            Map<String, DataSource> dsMap = DsUtils.buildDsMap(dsProps, dsDefClz);
-
-            for (Map.Entry<String, DataSource> entry : dsMap.entrySet()) {
+        if (Utils.isNotEmpty(flexProperties.getDatasource())) {
+            for (Map.Entry<String, Map<String, String>> entry : flexProperties.getDatasource().entrySet()) {
                 String dsName = entry.getKey();
-                DataSource ds = entry.getValue();
-                BeanWrap bw = context.wrap(dsName, ds, dsName.equals(dsDef));
+                DataSource ds = new DataSourceBuilder(entry.getValue()).build();
+                BeanWrap bw = context.wrap(dsName, ds, dsName.equals(flexProperties.getDefaultDatasourceKey()));
                 loadDs(context, bw);
             }
         }
@@ -106,7 +109,7 @@ public class XPluginImpl implements Plugin {
 
     private void initDo(AppContext context) {
         BeanWrap dsBw = context.wrap(FlexConsts.NAME, MybatisFlexBootstrap.getInstance().getDataSource(), true);
-        MybatisAdapterFlex dsFlex = new MybatisAdapterFlex(dsBw, context.cfg().getProp(CONFIG_PREFIX));
+        MybatisAdapterFlex dsFlex = new MybatisAdapterFlex(dsBw, flexProps, flexProperties);
         dsFlex.mapperPublish();
         adapterFlex = dsFlex;
 

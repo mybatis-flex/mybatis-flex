@@ -11,7 +11,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.type.TypeHandler;
-import org.noear.solon.Solon;
 import org.noear.solon.Utils;
 import org.noear.solon.core.BeanWrap;
 import org.noear.solon.core.LifecycleIndex;
@@ -39,11 +38,11 @@ import java.util.Map;
 public class MybatisAdapterDefault {
     protected static final Logger log = LoggerFactory.getLogger(MybatisAdapterDefault.class);
 
-    protected final BeanWrap dsWrap;
-    protected final Props dsProps;
+    protected BeanWrap dsWrap;
+    protected Props dsProps;
 
     //mapper 注解验证启用？
-    protected final boolean mapperVerifyEnabled;
+    protected boolean mapperVerifyEnabled;
 
     protected Configuration config;
     protected SqlSessionFactory factory;
@@ -51,16 +50,9 @@ public class MybatisAdapterDefault {
     protected SqlSessionFactoryBuilder factoryBuilder;
 
     /**
-     * 构建Sql工厂适配器，使用默认的 typeAliases 和 mappers 配置
-     */
-    protected MybatisAdapterDefault(BeanWrap dsWrap) {
-        this(dsWrap, Solon.cfg().getProp("mybatis"));
-    }
-
-    /**
      * 构建Sql工厂适配器，使用属性配置
      */
-    protected MybatisAdapterDefault(BeanWrap dsWrap, Props dsProps) {
+    protected void initStart(BeanWrap dsWrap, Props dsProps) {
         this.dsWrap = dsWrap;
         if (dsProps == null) {
             this.dsProps = new Props();
@@ -80,6 +72,7 @@ public class MybatisAdapterDefault {
         TransactionFactory tf = new SolonManagedTransactionFactory();
         Environment environment = new Environment(dataSourceId, tf, dataSource);
 
+        //1.初始化配置器
         initConfiguration(environment);
 
         //加载插件（通过Bean）
@@ -91,11 +84,11 @@ public class MybatisAdapterDefault {
             });
         });
 
-        //1.分发事件，推给扩展处理
+        //2.分发事件，推给扩展处理
         EventBus.publish(config);
 
-        //2.初始化（顺序不能乱）
-        initDo();
+        //3.加载配置器的内容（顺序不能乱）
+        loadConfiguration();
 
         dsWrap.context().getBeanAsync(SqlSessionFactoryBuilder.class, bean -> {
             factoryBuilder = bean;
@@ -124,19 +117,19 @@ public class MybatisAdapterDefault {
         return true;
     }
 
-    protected boolean isTypeAliasesKey(String key){
+    protected boolean isTypeAliasesKey(String key) {
         return key.startsWith("typeAliases[") || key.equals("typeAliases");
     }
 
-    protected boolean isTypeHandlersKey(String key){
+    protected boolean isTypeHandlersKey(String key) {
         return key.startsWith("typeHandlers[") || key.equals("typeHandlers");
     }
 
-    protected boolean isMappersKey(String key){
+    protected boolean isMappersKey(String key) {
         return key.startsWith("mappers[") || key.equals("mappers");
     }
 
-    protected void initDo() {
+    protected void loadConfiguration() {
         //for typeAliases & typeHandlers section
         dsProps.forEach((k, v) -> {
             if (k instanceof String && v instanceof String) {
@@ -283,9 +276,9 @@ public class MybatisAdapterDefault {
                     MybatisMapperInterceptor handler = new MybatisMapperInterceptor(getFactory(), mapperClz);
 
                     mapper = Proxy.newProxyInstance(
-                            mapperClz.getClassLoader(),
-                            new Class[]{mapperClz},
-                            handler);
+                        mapperClz.getClassLoader(),
+                        new Class[]{mapperClz},
+                        handler);
                     mapperCached.put(mapperClz, mapper);
                 }
             }
