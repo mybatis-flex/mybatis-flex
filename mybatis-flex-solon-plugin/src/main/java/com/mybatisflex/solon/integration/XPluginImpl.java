@@ -21,6 +21,7 @@ import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.datasource.DataSourceKey;
+import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.row.RowMapperInvoker;
 import com.mybatisflex.solon.aot.MybatisRuntimeNativeRegistrar;
@@ -89,6 +90,12 @@ public class XPluginImpl implements Plugin {
     private void loadDs(AppContext context, BeanWrap bw) {
         boolean isInit = MybatisFlexBootstrap.getInstance().getDataSource() == null;
         MybatisFlexBootstrap.getInstance().addDataSource(bw.name(), bw.raw());
+
+        if (bw.typed()) {
+            //控制默认数据源
+            FlexDataSource flexDataSource = (FlexDataSource) MybatisFlexBootstrap.getInstance().getDataSource();
+            flexDataSource.setDefaultDataSource(bw.name(), bw.raw(), true);
+        }
 
         if (isInit) {
             initDo(context);
