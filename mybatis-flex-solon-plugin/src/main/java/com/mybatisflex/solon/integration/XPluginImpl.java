@@ -49,6 +49,7 @@ import java.util.Map;
 public class XPluginImpl implements Plugin {
     private static final String CONFIG_PREFIX = "mybatisFlex";
     private static final String CONFIG_DS_PREFIX = "mybatisFlex.datasource";
+    private static final String CONFIG_DS_DEF = "mybatisFlex.defaultDatasourceKey";
 
     private static MybatisAdapterFlex adapterFlex;
 
@@ -75,13 +76,14 @@ public class XPluginImpl implements Plugin {
         // 构建 mf 配置的数据源
         Class<?> dsDefClz = ClassUtil.loadClass("com.zaxxer.hikari.HikariDataSource");
         Props dsProps = context.cfg().getProp(CONFIG_DS_PREFIX);
+        String dsDef = context.cfg().get(CONFIG_DS_DEF);
         if (dsProps.size() > 0) {
             Map<String, DataSource> dsMap = DsUtils.buildDsMap(dsProps, dsDefClz);
 
             for (Map.Entry<String, DataSource> entry : dsMap.entrySet()) {
                 String dsName = entry.getKey();
                 DataSource ds = entry.getValue();
-                BeanWrap bw = context.wrap(dsName, ds);
+                BeanWrap bw = context.wrap(dsName, ds, dsName.equals(dsDef));
                 loadDs(context, bw);
             }
         }
@@ -94,7 +96,7 @@ public class XPluginImpl implements Plugin {
         if (bw.typed()) {
             //控制默认数据源
             FlexDataSource flexDataSource = (FlexDataSource) MybatisFlexBootstrap.getInstance().getDataSource();
-            flexDataSource.setDefaultDataSource(bw.name(), bw.raw(), true);
+            flexDataSource.setDefaultDataSource(bw.name());
         }
 
         if (isInit) {
