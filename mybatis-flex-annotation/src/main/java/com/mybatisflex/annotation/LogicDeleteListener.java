@@ -16,28 +16,20 @@
 package com.mybatisflex.annotation;
 
 /**
- * 空监听器。
+ * 用于监听实体类数据被逻辑删除，可以在实体类被删除时做一些前置操作。
+ *
+ * @author fangzhengjin
+ * @since 2024/12/1
+ * @see AbstractInsertListener
  */
-public final class NoneListener implements InsertListener, UpdateListener, LogicDeleteListener, SetListener {
+@FunctionalInterface
+public interface LogicDeleteListener extends Listener {
 
-    @Override
-    public void onInsert(Object entity) {
-        // do nothing here.
-    }
-
-    @Override
-    public void onUpdate(Object entity) {
-        // do nothing here.
-    }
-
-    @Override
-    public void onLogicDelete(Object entity) {
-        // do nothing here.
-    }
-
-    @Override
-    public Object onSet(Object entity, String property, Object value) {
-        return value;
-    }
+    /**
+     * 逻辑删除操作的前置操作。
+     *
+     * @param entity 代理实体类，用于收集需要更新的字段，所有字段均为 null。
+     */
+    void onLogicDelete(Object entity);
 
 }

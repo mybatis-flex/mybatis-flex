@@ -36,7 +36,8 @@ public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 
     @Override
     public String buildLogicDeletedSet(String logicColumn, TableInfo tableInfo, IDialect dialect) {
-        return dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicDeletedValue());
+        String sql = dialect.wrap(logicColumn) + EQUALS + prepareValue(getLogicDeletedValue());
+        return invokeOnLogicDeleteListener(sql, tableInfo, dialect);
     }
 
     @Override
@@ -47,13 +48,6 @@ public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
     @Override
     public Object getLogicDeletedValue() {
         return FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete();
-    }
-
-    private static Object prepareValue(Object value) {
-        if (value instanceof Number || value instanceof Boolean) {
-            return value;
-        }
-        return SINGLE_QUOTE + value + SINGLE_QUOTE;
     }
 
 }
