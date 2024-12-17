@@ -20,11 +20,16 @@ import com.mybatisflex.annotation.UseDataSource;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
-import com.mybatisflex.core.datasource.DataSourceBuilder;
-import com.mybatisflex.core.datasource.DataSourceKey;
-import com.mybatisflex.core.datasource.FlexDataSource;
+import com.mybatisflex.core.datasource.*;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
+import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.row.RowMapperInvoker;
+import com.mybatisflex.core.table.DynamicSchemaProcessor;
+import com.mybatisflex.core.table.DynamicTableProcessor;
+import com.mybatisflex.core.table.TableManager;
+import com.mybatisflex.core.tenant.TenantFactory;
+import com.mybatisflex.core.tenant.TenantManager;
 import com.mybatisflex.solon.MybatisFlexProperties;
 import com.mybatisflex.solon.aot.MybatisRuntimeNativeRegistrar;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -70,6 +75,31 @@ public class XPluginImpl implements Plugin {
         if (flexProperties == null) {
             flexProperties = new MybatisFlexProperties();
         }
+
+        //数据源解密器
+        context.getBeanAsync(DataSourceDecipher.class, bean->{
+            DataSourceManager.setDecipher(bean);
+        });
+
+        // 动态表名配置
+        context.getBeanAsync(DynamicTableProcessor.class, bean->{
+            TableManager.setDynamicTableProcessor(bean);
+        });
+
+        // 动态 schema 处理器配置
+        context.getBeanAsync(DynamicSchemaProcessor.class, bean->{
+            TableManager.setDynamicSchemaProcessor(bean);
+        });
+
+        //多租户
+        context.getBeanAsync(TenantFactory.class, bean->{
+            TenantManager.setTenantFactory(bean);
+        });
+
+        //逻辑删除处理器
+        context.getBeanAsync(LogicDeleteProcessor.class, bean->{
+            LogicDeleteManager.setProcessor(bean);
+        });
 
         // 订阅数据源
         context.subWrapsOfType(DataSource.class, bw -> {
