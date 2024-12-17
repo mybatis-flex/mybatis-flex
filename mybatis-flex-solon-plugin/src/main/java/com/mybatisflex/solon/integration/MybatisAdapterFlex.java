@@ -20,6 +20,7 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
 import com.mybatisflex.core.row.RowMapperInvoker;
+import com.mybatisflex.solon.MybatisFlexProperties;
 import com.mybatisflex.solon.mybtais.MybatisAdapterDefault;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -28,7 +29,6 @@ import org.noear.solon.core.BeanWrap;
 import org.noear.solon.core.Props;
 import org.noear.solon.core.VarHolder;
 import org.noear.solon.core.event.EventBus;
-import org.noear.solon.core.util.ClassUtil;
 
 import javax.sql.DataSource;
 
@@ -43,18 +43,16 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
     private FlexGlobalConfig globalConfig;
     private RowMapperInvoker rowMapperInvoker;
     private Class<?> typeAliasesBaseType;
+    private MybatisFlexProperties flexProperties;
 
-    protected MybatisAdapterFlex(BeanWrap dsWrap) {
-        super(dsWrap);
+    protected MybatisAdapterFlex(BeanWrap dsWrap, Props flexProps, MybatisFlexProperties flexProperties) {
+        this.factoryBuilderPlus = new FlexSqlSessionFactoryBuilder();
+        this.flexProperties = flexProperties;
 
-        factoryBuilderPlus = new FlexSqlSessionFactoryBuilder();
-        initAfter(dsWrap);
-    }
+        //初始化开始
+        initStart(dsWrap, flexProps);
 
-    protected MybatisAdapterFlex(BeanWrap dsWrap, Props dsProps) {
-        super(dsWrap, dsProps);
-
-        factoryBuilderPlus = new FlexSqlSessionFactoryBuilder();
+        //初始化之前
         initAfter(dsWrap);
     }
 
@@ -72,16 +70,13 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
         //for configuration section
         config = new FlexConfiguration(environment);
 
-        String typeAliasesBaseTypeStr = dsProps.get("typeAliasesSuperType");
-        if (Utils.isNotEmpty(typeAliasesBaseTypeStr)) {
-            typeAliasesBaseType = ClassUtil.loadClass(typeAliasesBaseTypeStr);
+        if (Utils.isNotEmpty(flexProperties.getConfigurationProperties())) {
+            Utils.injectProperties(config, flexProperties.getConfigurationProperties());
         }
 
-        Props cfgProps = dsProps.getProp("configuration");
-        if (cfgProps.size() > 0) {
-            Utils.injectProperties(config, cfgProps);
+        if (flexProperties.getConfiguration() != null) {
+            flexProperties.getConfiguration().applyTo(config);
         }
-
 
         //for globalConfig section
         if (dsWrap.typed()) {
@@ -90,21 +85,27 @@ public class MybatisAdapterFlex extends MybatisAdapterDefault {
             globalConfig = new FlexGlobalConfig();
         }
 
+        if (flexProperties.getGlobalConfig() != null) {
+            flexProperties.getGlobalConfig().applyTo(globalConfig);
+        }
+
         if (globalConfig.getKeyConfig() == null) {
+            //如果没有，给个默认值
             globalConfig.setKeyConfig(new FlexGlobalConfig.KeyConfig());
         }
 
-        Props globalProps = dsProps.getProp("globalConfig");
-        if (globalProps.size() > 0) {
-            //尝试配置注入
-            Utils.injectProperties(globalConfig, globalProps);
-        }
         globalConfig.setConfiguration(config);
 
         FlexGlobalConfig.setConfig(environment.getId(), globalConfig, false);
 
         //增加事件扩展机制
         EventBus.publish(globalConfig);
+    }
+
+    @Override
+    protected void loadConfiguration() {
+        typeAliasesBaseType = flexProperties.getTypeAliasesSuperType();
+        super.loadConfiguration();
     }
 
     /**

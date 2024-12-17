@@ -53,21 +53,6 @@ public class FlexDataSource extends AbstractDataSource {
     }
 
     public FlexDataSource(String dataSourceKey, DataSource dataSource, boolean needDecryptDataSource) {
-        setDefaultDataSourceDo(dataSourceKey, dataSource, needDecryptDataSource);
-    }
-
-    /**
-     * 设置默认数据源（提供动态可控性）
-     */
-    public void setDefaultDataSource(String dataSourceKey, DataSource dataSource, boolean needDecryptDataSource) {
-        if (defaultDataSourceKey.equals(dataSourceKey)) {
-            return;
-        }
-
-        setDefaultDataSourceDo(dataSourceKey, dataSource, needDecryptDataSource);
-    }
-
-    private void setDefaultDataSourceDo(String dataSourceKey, DataSource dataSource, boolean needDecryptDataSource) {
         if (needDecryptDataSource) {
             DataSourceManager.decryptDataSource(dataSource);
         }
@@ -78,6 +63,21 @@ public class FlexDataSource extends AbstractDataSource {
 
         dataSourceMap.put(dataSourceKey, dataSource);
         dbTypeHashMap.put(dataSourceKey, defaultDbType);
+    }
+
+    /**
+     * 设置默认数据源（提供动态可控性）
+     */
+    public void setDefaultDataSource(String dataSourceKey) {
+        DataSource ds = dataSourceMap.get(dataSourceKey);
+
+        if (ds != null) {
+            this.defaultDataSourceKey = dataSourceKey;
+            this.defaultDataSource = ds;
+            this.defaultDbType = DbTypeUtil.getDbType(ds);
+        } else {
+            throw new IllegalStateException("DataSource not found by key: \"" + dataSourceKey + "\"");
+        }
     }
 
     public void addDataSource(String dataSourceKey, DataSource dataSource) {

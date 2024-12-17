@@ -20,12 +20,20 @@ import com.mybatisflex.annotation.UseDataSource;
 import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
-import com.mybatisflex.core.datasource.DataSourceKey;
-import com.mybatisflex.core.datasource.FlexDataSource;
+import com.mybatisflex.core.datasource.*;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
+import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.row.RowMapperInvoker;
+import com.mybatisflex.core.table.DynamicSchemaProcessor;
+import com.mybatisflex.core.table.DynamicTableProcessor;
+import com.mybatisflex.core.table.TableManager;
+import com.mybatisflex.core.tenant.TenantFactory;
+import com.mybatisflex.core.tenant.TenantManager;
+import com.mybatisflex.solon.MybatisFlexProperties;
 import com.mybatisflex.solon.aot.MybatisRuntimeNativeRegistrar;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.noear.solon.Utils;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.aot.RuntimeNativeRegistrar;
 import org.noear.solon.core.AppContext;
@@ -35,7 +43,6 @@ import org.noear.solon.core.Props;
 import org.noear.solon.core.runtime.NativeDetector;
 import org.noear.solon.core.util.ClassUtil;
 import org.noear.solon.core.util.TmplUtil;
-import org.noear.solon.data.datasource.DsUtils;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -47,8 +54,7 @@ import java.util.Map;
  * @since 2.2
  */
 public class XPluginImpl implements Plugin {
-    private static final String CONFIG_PREFIX = "mybatisFlex";
-    private static final String CONFIG_DS_PREFIX = "mybatisFlex.datasource";
+    private static final String CONFIG_PREFIX = "mybatisFlex.";
 
     private static MybatisAdapterFlex adapterFlex;
 
@@ -56,10 +62,44 @@ public class XPluginImpl implements Plugin {
         return adapterFlex;
     }
 
+    private Props flexProps;
+    private MybatisFlexProperties flexProperties;
+
     @Override
     public void start(AppContext context) throws Throwable {
         // 注册动态数据源的事务路由
         //TranManager.routing(FlexDataSource.class, new FlexDataSourceRouting());
+
+        flexProps = context.cfg().getProp(CONFIG_PREFIX);
+        flexProperties = flexProps.toBean(MybatisFlexProperties.class);
+        if (flexProperties == null) {
+            flexProperties = new MybatisFlexProperties();
+        }
+
+        //数据源解密器
+        context.getBeanAsync(DataSourceDecipher.class, bean->{
+            DataSourceManager.setDecipher(bean);
+        });
+
+        // 动态表名配置
+        context.getBeanAsync(DynamicTableProcessor.class, bean->{
+            TableManager.setDynamicTableProcessor(bean);
+        });
+
+        // 动态 schema 处理器配置
+        context.getBeanAsync(DynamicSchemaProcessor.class, bean->{
+            TableManager.setDynamicSchemaProcessor(bean);
+        });
+
+        //多租户
+        context.getBeanAsync(TenantFactory.class, bean->{
+            TenantManager.setTenantFactory(bean);
+        });
+
+        //逻辑删除处理器
+        context.getBeanAsync(LogicDeleteProcessor.class, bean->{
+            LogicDeleteManager.setProcessor(bean);
+        });
 
         // 订阅数据源
         context.subWrapsOfType(DataSource.class, bw -> {
@@ -71,18 +111,17 @@ public class XPluginImpl implements Plugin {
             context.wrapAndPut(MybatisRuntimeNativeRegistrar.class);
         }
 
-
         // 构建 mf 配置的数据源
-        Class<?> dsDefClz = ClassUtil.loadClass("com.zaxxer.hikari.HikariDataSource");
-        Props dsProps = context.cfg().getProp(CONFIG_DS_PREFIX);
-        if (dsProps.size() > 0) {
-            Map<String, DataSource> dsMap = DsUtils.buildDsMap(dsProps, dsDefClz);
-
-            for (Map.Entry<String, DataSource> entry : dsMap.entrySet()) {
+        if (Utils.isNotEmpty(flexProperties.getDatasource())) {
+            for (Map.Entry<String, Map<String, String>> entry : flexProperties.getDatasource().entrySet()) {
                 String dsName = entry.getKey();
-                DataSource ds = entry.getValue();
-                BeanWrap bw = context.wrap(dsName, ds);
-                loadDs(context, bw);
+                DataSource ds = new DataSourceBuilder(entry.getValue()).build();
+                BeanWrap bw = context.wrap(dsName, ds, dsName.equals(flexProperties.getDefaultDatasourceKey()));
+                context.putWrap(dsName, bw);
+                if (bw.typed()) {
+                    context.putWrap(DataSource.class, bw);
+                }
+                context.wrapPublish(bw);
             }
         }
     }
@@ -94,7 +133,7 @@ public class XPluginImpl implements Plugin {
         if (bw.typed()) {
             //控制默认数据源
             FlexDataSource flexDataSource = (FlexDataSource) MybatisFlexBootstrap.getInstance().getDataSource();
-            flexDataSource.setDefaultDataSource(bw.name(), bw.raw(), true);
+            flexDataSource.setDefaultDataSource(bw.name());
         }
 
         if (isInit) {
@@ -104,7 +143,7 @@ public class XPluginImpl implements Plugin {
 
     private void initDo(AppContext context) {
         BeanWrap dsBw = context.wrap(FlexConsts.NAME, MybatisFlexBootstrap.getInstance().getDataSource(), true);
-        MybatisAdapterFlex dsFlex = new MybatisAdapterFlex(dsBw, context.cfg().getProp(CONFIG_PREFIX));
+        MybatisAdapterFlex dsFlex = new MybatisAdapterFlex(dsBw, flexProps, flexProperties);
         dsFlex.mapperPublish();
         adapterFlex = dsFlex;
 
