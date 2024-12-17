@@ -63,19 +63,6 @@ mybatis-flex:
 #
 ```
 
-主要支持的属性说明：
-
-| 支持属性                    | 别名（保持与之前的兼容）               | 说明                               |
-|-------------------------|----------------------------|----------------------------------|
-| type-aliases-package    | typeAliases                | 类型别名                             |
-| type-aliases-super-type | typeAliasesSuperType       | 类型别名的父类（用于过滤）                    |
-| type-handlers-package   | typeHandlers               | 类型处理器                            |
-| mapper-locations        | mappers                    | mapper 类或xml文件                   |
-| configuration           | configuration              | mybatis 配置。对应类：FlexConfiguration |
-| global-config           | globalConfig               | 全局部置。对应类：FlexGlobalConfig        |
-
-
-
 ##### Mapper 配置注意事项：
 
 * 通过 mapper 类包名配置。 xml 与 mapper 需同包同名
@@ -95,13 +82,15 @@ mybatis-flex.mapper-locations: "classpath:mybatis/db1/*.xml"
 
 ```java
 //配置 mf （如果配置不能满足需求，可以进一步代助代码）
-@Configuration
-public class Config {
-    @Bean
-    public void ormConfig(@Inject FlexConfiguration cfg,
-                          @Inject FlexGlobalConfig globalConfig) {
+@Component
+public class MyBatisFlexCustomizerImpl implements MyBatisFlexCustomizer, ConfigurationCustomizer {
+    @Override
+    public void customize(FlexGlobalConfig globalConfig) {
 
-        cfg.setCacheEnabled(false);
+    }
+
+    @Override
+    public void customize(FlexConfiguration configuration) {
 
     }
 }

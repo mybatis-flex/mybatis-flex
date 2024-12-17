@@ -1,7 +1,7 @@
 package com.mybatisflex.solon.aot;
 
-import com.mybatisflex.solon.integration.XPluginImpl;
-import com.mybatisflex.solon.mybtais.MybatisAdapterDefault;
+import com.mybatisflex.core.mybatis.FlexConfiguration;
+import com.mybatisflex.solon.MybatisFlexProperties;
 import org.apache.ibatis.cache.decorators.FifoCache;
 import org.apache.ibatis.cache.decorators.LruCache;
 import org.apache.ibatis.cache.decorators.SoftCache;
@@ -25,6 +25,7 @@ import org.apache.ibatis.scripting.defaults.RawLanguageDriver;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.type.TypeHandler;
 import org.noear.solon.aot.NativeMetadataUtils;
 import org.noear.solon.aot.RuntimeNativeMetadata;
 import org.noear.solon.aot.RuntimeNativeRegistrar;
@@ -98,40 +99,49 @@ public class MybatisRuntimeNativeRegistrar implements RuntimeNativeRegistrar {
         metadata.registerReflection(DefaultVFS.class, MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS);
 
 
-        registerMybatisAdapter(context, metadata, XPluginImpl.getAdapterFlex());
+        registerMybatisAdapter(context, metadata);
 
     }
 
-    protected void registerMybatisAdapter(AppContext context, RuntimeNativeMetadata metadata, MybatisAdapterDefault bean) {
-        if (bean == null) {
-            return;
-        }
+    protected void registerMybatisAdapter(AppContext context, RuntimeNativeMetadata metadata) {
+        MybatisFlexProperties flexProperties = context.getBean(MybatisFlexProperties.class);
 
         //注册 xml 资源
-        for (String res : bean.getMappers()) {
-            if (res.startsWith(ResourceUtil.TAG_classpath)) {
-                res = res.substring(ResourceUtil.TAG_classpath.length());
-                res = res.replace("**", "*");
-                res = res.replace("*", ".*");
-                metadata.registerResourceInclude(res);
+        if (flexProperties != null) {
+            for (String res : flexProperties.getMapperLocations()) {
+                if (ResourceUtil.hasClasspath(res)) {
+                    res = ResourceUtil.remSchema(res);
+                    res = res.replace("**", "*");
+                    res = res.replace("*", ".*");
+                    metadata.registerResourceInclude(res);
+                }
             }
         }
 
-        //注册 mapper 代理
-        for (Class<?> clz : bean.getConfiguration().getMapperRegistry().getMappers()) {
-            metadata.registerJdkProxy(clz);
-            metadata.registerReflection(clz, MemberCategory.INTROSPECT_PUBLIC_METHODS);
-            Method[] declaredMethods = clz.getDeclaredMethods();
-            for (Method method : declaredMethods) {
-                MethodWrap methodWrap = context.methodGet(method);
-                NativeMetadataUtils.registerMethodAndParamAndReturnType(metadata, methodWrap);
+        FlexConfiguration flexConfiguration = context.getBean(FlexConfiguration.class);
+        if (flexConfiguration != null) {
+            //注册 mapper 代理
+            for (Class<?> clz : flexConfiguration.getMapperRegistry().getMappers()) {
+                metadata.registerJdkProxy(clz);
+                metadata.registerReflection(clz, MemberCategory.INTROSPECT_PUBLIC_METHODS);
+                Method[] declaredMethods = clz.getDeclaredMethods();
+                for (Method method : declaredMethods) {
+                    MethodWrap methodWrap = context.methodGet(method);
+                    NativeMetadataUtils.registerMethodAndParamAndReturnType(metadata, methodWrap);
+                }
             }
-        }
 
-        // 注册 entity
-        for (Class<?> clz : bean.getConfiguration().getTypeAliasRegistry().getTypeAliases().values()) {
-            metadata.registerReflection(clz, MemberCategory.DECLARED_FIELDS, MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS);
-            metadata.registerDefaultConstructor(clz);
+            // 注册 entity
+            for (Class<?> clz : flexConfiguration.getTypeAliasRegistry().getTypeAliases().values()) {
+                metadata.registerReflection(clz, MemberCategory.DECLARED_FIELDS, MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS);
+                metadata.registerDefaultConstructor(clz);
+            }
+
+            //注处 typeHandler
+            for (TypeHandler typeHandler : flexConfiguration.getTypeHandlerRegistry().getTypeHandlers()) {
+                metadata.registerReflection(typeHandler.getClass(), MemberCategory.DECLARED_FIELDS, MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS);
+                metadata.registerDefaultConstructor(typeHandler.getClass());
+            }
         }
     }
 }

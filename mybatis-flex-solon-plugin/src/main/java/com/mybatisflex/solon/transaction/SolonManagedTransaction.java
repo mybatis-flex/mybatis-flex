@@ -1,4 +1,4 @@
-package com.mybatisflex.solon.mybtais;
+package com.mybatisflex.solon.transaction;
 
 import com.mybatisflex.core.datasource.FlexDataSourceRouting;
 import org.apache.ibatis.transaction.Transaction;
