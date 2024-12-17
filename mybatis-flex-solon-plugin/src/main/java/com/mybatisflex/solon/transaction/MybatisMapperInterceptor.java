@@ -1,4 +1,4 @@
-package com.mybatisflex.solon.mybtais;
+package com.mybatisflex.solon.transaction;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

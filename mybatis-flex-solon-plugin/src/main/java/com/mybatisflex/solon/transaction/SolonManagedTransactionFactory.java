@@ -1,4 +1,4 @@
-package com.mybatisflex.solon.mybtais;
+package com.mybatisflex.solon.transaction;
 
 import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.apache.ibatis.transaction.Transaction;

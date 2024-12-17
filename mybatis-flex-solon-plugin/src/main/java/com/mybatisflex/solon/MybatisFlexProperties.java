@@ -24,13 +24,11 @@ import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.*;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
+import org.noear.solon.annotation.Inject;
 import org.noear.solon.core.util.ResourceUtil;
 
 import java.net.URI;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -42,6 +40,8 @@ import java.util.stream.Stream;
  * @author micahel
  * @author 王帅
  */
+@org.noear.solon.annotation.Configuration
+@Inject("${mybatisFlex}")
 public class MybatisFlexProperties {
     private String defaultDatasourceKey;
 
@@ -77,7 +77,7 @@ public class MybatisFlexProperties {
     /**
      * Packages to search type aliases. (Package delimiters are ",; \t\n")
      */
-    private String typeAliasesPackage;
+    private String[] typeAliasesPackage;
 
     /**
      * The super class for filtering type alias. If this not specifies, the MyBatis deal as type alias all classes that
@@ -88,7 +88,7 @@ public class MybatisFlexProperties {
     /**
      * Packages to search for type handlers. (Package delimiters are ",; \t\n")
      */
-    private String typeHandlersPackage;
+    private String[] typeHandlersPackage;
 
     /**
      * Indicates whether perform presence check of the MyBatis xml config file.
@@ -183,19 +183,19 @@ public class MybatisFlexProperties {
         this.mapperLocations = mapperLocations;
     }
 
-    public String getTypeHandlersPackage() {
+    public String[] getTypeHandlersPackage() {
         return this.typeHandlersPackage;
     }
 
-    public void setTypeHandlersPackage(String typeHandlersPackage) {
+    public void setTypeHandlersPackage(String[] typeHandlersPackage) {
         this.typeHandlersPackage = typeHandlersPackage;
     }
 
-    public String getTypeAliasesPackage() {
+    public String[] getTypeAliasesPackage() {
         return this.typeAliasesPackage;
     }
 
-    public void setTypeAliasesPackage(String typeAliasesPackage) {
+    public void setTypeAliasesPackage(String[] typeAliasesPackage) {
         this.typeAliasesPackage = typeAliasesPackage;
     }
 
