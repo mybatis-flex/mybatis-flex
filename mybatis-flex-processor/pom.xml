@@ -5,13 +5,13 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.10.2</version>
+        <version>1.10.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-flex-processor</artifactId>
     <packaging>jar</packaging>
-    <version>1.10.2</version>
+    <version>1.10.3</version>
 
 
     <properties>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-annotation</artifactId>
-            <version>1.10.2</version>
+            <version>1.10.3</version>
         </dependency>
     </dependencies>
 
