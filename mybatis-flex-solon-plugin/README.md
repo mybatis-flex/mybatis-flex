@@ -7,24 +7,25 @@
 </dependency>
 ```
 
-#### 1、描述
+### 1、描述
 
 数据扩展插件，为 Solon Data 提供基于 mybatis-flex（[代码仓库](https://gitee.com/mybatis-flex/mybatis-flex)）的框架适配，以提供ORM支持。
 
 
 可注入类型：
 
-| 支持类型 | 说明                                                                   |
-| -------- |----------------------------------------------------------------------|
-| Mapper.class     | 注入 Mapper。例：`@Inject UserMapper userMapper`                          |
-| FlexConfiguration     | 注入 FlexConfiguration，一般仅用于配置。例：`@Inject FlexConfiguration db1Cfg` |
-| FlexGlobalConfig     | 注入 FlexGlobalConfig，一般仅用于配置。例：`@Inject FlexGlobalConfig db1Gc`    |
-| SqlSessionFactory     | 注入 SqlSessionFactory。例：`@Inject SqlSessionFactory db1` （不推荐直接使用）  |
-| RowMapperInvoker | 注入 RowMapperInvoker。例：`@Inject RowMapperInvoker rowMapper`        |
+| 支持类型 | 说明                                                                           |
+| -------- |------------------------------------------------------------------------------|
+| Mapper.class     | 注入 Mapper。例：`@Inject UserMapper userMapper`                                  |
+| FlexConfiguration     | 注入 FlexConfiguration，一般仅用于配置。例：`@Inject FlexConfiguration flexConfiguration` |
+| FlexGlobalConfig     | 注入 FlexGlobalConfig，一般仅用于配置。例：`@Inject FlexGlobalConfig flexGlobalConfig`    |
+| SqlSessionFactory     | 注入 SqlSessionFactory。例：`@Inject SqlSessionFactory sessionFactory` （不推荐直接使用）  |
+| RowMapperInvoker | 注入 RowMapperInvoker。例：`@Inject RowMapperInvoker rowMapper`                   |
 
 
-#### 3、数据源配置
+### 3、数据源配置
 
+`mybatis-flex` 配置对应在的实体为： MybatisFlexProperties
 
 ```yml
 # 配置数据源（或者使用 solon.dataSources 配置数据源，效果一样）
@@ -63,7 +64,7 @@ mybatis-flex:
 #
 ```
 
-##### Mapper 配置注意事项：
+#### Mapper 配置注意事项：
 
 * 通过 mapper 类包名配置。 xml 与 mapper 需同包同名
 
@@ -78,7 +79,7 @@ mybatis-flex.mapper-locations: "classpath:mybatis/db1/*.xml"
 ```
 
 
-#### 4、代码应用
+### 4、代码应用
 
 ```java
 //配置 mf （如果配置不能满足需求，可以进一步代助代码）
