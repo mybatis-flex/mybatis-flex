@@ -102,6 +102,9 @@ public class MybatisFlexAutoConfiguration {
         //增加事件总线扩展
         EventBus.publish(globalConfig);
 
+        //绑定（不能少）
+        FlexGlobalConfig.setConfig(flexConfiguration.getEnvironment().getId(), globalConfig, true);
+
         return globalConfig;
     }
 
