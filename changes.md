@@ -2,6 +2,11 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.10.3 20241220
+- 新增：添加了duckdb 数据库支持，感谢 @PTmore
+- 优化：优化 mybatis-flex-solon-plugin 插件，感谢 @noear_admin
+
+
 
 ## v1.10.2 20241128
 - 优化：删除 DataSource 不必要的类型转换，集成第三方框架时，dataSource 可能为 FlexDataSource 的包装类，从而导致类型转换错误
