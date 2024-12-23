@@ -163,6 +163,7 @@ public class MybatisFlexAutoConfiguration {
             }
         }
 
+        //所有配置全准备好了（flexConfiguration、globalConfig），才能构建
         return sqlSessionFactoryBuilder.build(flexConfiguration);
     }
 
