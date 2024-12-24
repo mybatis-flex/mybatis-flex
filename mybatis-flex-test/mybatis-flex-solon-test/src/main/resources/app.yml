@@ -1,0 +1,33 @@
+# DataSource Config
+#mybatis-flex:
+#  admin-config:
+#    enable: true
+#    endpoint: http://localhost/admin
+#    secret-key: secretKey
+#  mapper-locations:
+#    - classpath*:/mapper/*.xml
+#  global-config:
+#    print-banner: false
+#    key-config:
+#      key-type: generator
+#      value: uuid
+#  configuration:
+#    use-generated-keys: true
+#  datasource:
+#    data-center:
+#      url: jdbc:mysql://localhost:3306/flex_test
+#      username: root
+#      password: 12345678
+mybatis-flex:
+  datasource:
+    ds1:
+      url: jdbc:mysql://127.0.0.1:3306/flex_test
+      username: root
+      password: 123456
+    ds2:
+      url: jdbc:mysql://127.0.0.1:3306/flex_test
+      username: root
+      password: 123456
+  mapper-locations:
+    - "com.mybatisflex.test.mapper"
+    - "classpath:mapper/*.xml"

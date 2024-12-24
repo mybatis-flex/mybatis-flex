@@ -3,57 +3,79 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>parent</artifactId>
+        <artifactId>mybatis-flex-test</artifactId>
         <groupId>com.mybatis-flex</groupId>
         <version>1.10.3</version>
+        <relativePath />
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>mybatis-flex-test</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>mybatis-flex-solon-test</artifactId>
+    <packaging>jar</packaging>
 
-
-    <modules>
-        <module>mybatis-flex-native-test</module>
-<!--        <module>mybatis-flex-seata-test</module>-->
-        <module>mybatis-flex-spring-test</module>
-        <module>mybatis-flex-spring-boot-test</module>
-        <module>mybatis-flex-spring-cloud-test</module>
-        <module>mybatis-flex-solon-test</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <commons-io.version>2.15.1</commons-io.version>
-        <org.projectlombok.version>1.18.30</org.projectlombok.version>
-        <!-- 高版本基于 JDK17，勿动 -->
-        <json-unit-assertj.version>2.38.0</json-unit-assertj.version>
+
+        <solon.version>3.0.5</solon.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.github.vertical-blank</groupId>
-            <artifactId>sql-formatter</artifactId>
-            <version>2.0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-solon-plugin</artifactId>
+            <version>${mybatis-flex.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${org.projectlombok.version}</version>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-web</artifactId>
+            <version>${solon.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>net.javacrumbs.json-unit</groupId>
-            <artifactId>json-unit-assertj</artifactId>
-            <version>${json-unit-assertj.version}</version>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-data-sqlutils</artifactId>
+            <version>${solon.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-logging-simple</artifactId>
+            <version>${solon.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>2.0.32</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.h2database</groupId>-->
+<!--            <artifactId>h2</artifactId>-->
+<!--            <version>2.1.214</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.noear</groupId>
+            <artifactId>solon-test</artifactId>
+            <version>${solon.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -82,4 +104,5 @@
 
         </plugins>
     </build>
+
 </project>
