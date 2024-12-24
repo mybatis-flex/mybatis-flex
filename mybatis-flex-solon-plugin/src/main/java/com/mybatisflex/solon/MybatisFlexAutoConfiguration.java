@@ -78,8 +78,40 @@ public class MybatisFlexAutoConfiguration {
     }
 
     @Bean
+    public FlexGlobalConfig globalConfig(MybatisFlexProperties flexProperties,
+                                         FlexConfiguration flexConfiguration,
+                                         @Inject(required = false) MyBatisFlexCustomizer flexCustomizer) {
+
+        FlexGlobalConfig globalConfig = FlexGlobalConfig.getDefaultConfig();
+
+        if (flexProperties.getGlobalConfig() != null) {
+            flexProperties.getGlobalConfig().applyTo(globalConfig);
+        }
+
+        if (globalConfig.getKeyConfig() == null) {
+            //如果没有，给个默认值
+            globalConfig.setKeyConfig(new FlexGlobalConfig.KeyConfig());
+        }
+
+        globalConfig.setConfiguration(flexConfiguration);
+
+        if (flexCustomizer != null) {
+            flexCustomizer.customize(globalConfig);
+        }
+
+        //增加事件总线扩展
+        EventBus.publish(globalConfig);
+
+        //绑定（不能少）
+        FlexGlobalConfig.setConfig(flexConfiguration.getEnvironment().getId(), globalConfig, true);
+
+        return globalConfig;
+    }
+
+    @Bean
     public SqlSessionFactory sqlSessionFactory(MybatisFlexProperties flexProperties,
                                                FlexConfiguration flexConfiguration,
+                                               FlexGlobalConfig globalConfig,
                                                SqlSessionFactoryBuilder sqlSessionFactoryBuilder) {
         appContext.subBeansOfType(Interceptor.class, bean -> {
             flexConfiguration.addInterceptor(bean);
@@ -131,37 +163,8 @@ public class MybatisFlexAutoConfiguration {
             }
         }
 
+        //所有配置全准备好了（flexConfiguration、globalConfig），才能构建
         return sqlSessionFactoryBuilder.build(flexConfiguration);
-    }
-
-    @Bean
-    public FlexGlobalConfig globalConfig(MybatisFlexProperties flexProperties,
-                                         FlexConfiguration flexConfiguration,
-                                         SqlSessionFactory sqlSessionFactory,
-                                         @Inject(required = false) MyBatisFlexCustomizer flexCustomizer) {
-
-        FlexGlobalConfig globalConfig = FlexGlobalConfig.getDefaultConfig();
-
-        if (flexProperties.getGlobalConfig() != null) {
-            flexProperties.getGlobalConfig().applyTo(globalConfig);
-        }
-
-        if (globalConfig.getKeyConfig() == null) {
-            //如果没有，给个默认值
-            globalConfig.setKeyConfig(new FlexGlobalConfig.KeyConfig());
-        }
-
-        globalConfig.setConfiguration(flexConfiguration);
-        globalConfig.setSqlSessionFactory(sqlSessionFactory);
-
-        if (flexCustomizer != null) {
-            flexCustomizer.customize(globalConfig);
-        }
-
-        //增加事件总线扩展
-        EventBus.publish(globalConfig);
-
-        return globalConfig;
     }
 
     @Bean
