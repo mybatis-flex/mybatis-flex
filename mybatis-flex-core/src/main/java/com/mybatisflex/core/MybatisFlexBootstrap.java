@@ -133,7 +133,7 @@ public class MybatisFlexBootstrap {
      * @return mapperObject
      */
     public <T> T getMapper(Class<T> mapperClass) {
-        return Mappers.ofMapperClass(mapperClass);
+        return Mappers.ofMapperClass(getEnvironmentId(), mapperClass);
     }
 
 
