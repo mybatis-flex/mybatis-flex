@@ -6,7 +6,6 @@
         <artifactId>mybatis-flex-test</artifactId>
         <groupId>com.mybatis-flex</groupId>
         <version>1.10.4</version>
-        <relativePath />
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
