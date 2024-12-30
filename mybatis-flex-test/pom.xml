@@ -5,7 +5,7 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.10.3</version>
+        <version>1.10.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -19,7 +19,7 @@
         <module>mybatis-flex-spring-test</module>
         <module>mybatis-flex-spring-boot-test</module>
         <module>mybatis-flex-spring-cloud-test</module>
-        <module>mybatis-flex-solon-test</module>
+<!--        <module>mybatis-flex-solon-test</module>-->
     </modules>
 
     <properties>

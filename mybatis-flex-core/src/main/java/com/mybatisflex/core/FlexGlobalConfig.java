@@ -423,7 +423,7 @@ public class FlexGlobalConfig {
             defaultConfig.setConfiguration(config.configuration);
         }
 
-        globalConfigs.put(id, isDefault ? defaultConfig : config);
+        globalConfigs.put(id, config);
     }
 
 }

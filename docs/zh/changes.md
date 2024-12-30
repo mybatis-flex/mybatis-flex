@@ -2,6 +2,13 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.10.4 20241228
+- 修复：多 MybatisFlexBootstrap 实例时，`MybatisFlexBootstrap.getMapper(Class<T> mapperClass)` 方法只能获取最后的实例的 mapper 的问题，感谢 @wcc1433
+- 修复：多 MybatisFlexBootstrap 实例时，`FlexGlobalConfig.getConfig(environmentId)` 获取的 config 永远是 defaultConfig，感谢 @wcc1433
+- 优化：进一步优化 mybatis-flex-solon-plugin 插件，感谢 @noear_admin
+
+
+
 ## v1.10.3 20241220
 - 新增：添加了duckdb 数据库支持，感谢 @PTmore
 - 优化：优化 mybatis-flex-solon-plugin 插件，感谢 @noear_admin
