@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * DataSourceProcessor 委托扩展类,对 DataSourceProcessor 结构进行扩大和增强
  * 如果多个实例化，建议通过 DelegatingDataSourceProcessor.with(多个解析处理器实例) 方式进行实例化。
- * 需要注意的是委托解析处理器之间有先后顺序，一点排列前面的解析处理器正常处理后，将直接返回处理值，不再往下传递处理
+ * 需要注意的是委托解析处理器之间有先后顺序，一旦排列前面的解析处理器正常处理后，将直接返回处理值，不再往下传递处理
  *
  * @author Alay
  * @since 2024-12-07 15:38

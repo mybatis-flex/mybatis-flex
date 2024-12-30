@@ -7,6 +7,14 @@ import java.lang.reflect.Method;
 /**
  * 动态数据源 @UseDataSource的value值解析处理器(如表达式解析取值等),使用时推荐使用 DelegatingDataSourceProcessor{@link DelegatingDataSourceProcessor} 实例化
  * 对动态数据源注解@UseDataSource 增强处理{@link com.mybatisflex.annotation.UseDataSource}
+ * <p>
+ * 使用区分Spring模式 和 非Spring模式，Spring模式下，代理处理逻辑 DataSourceInterceptor{@link com.mybatisflex.spring.datasource.DataSourceInterceptor} 优先级高于 FlexMapperProxy{@link com.mybatisflex.core.mybatis.binding.FlexMapperProxy} ;
+ * 所以Spring模式下仅 DataSourceInterceptor 生效(切面生效的前提下)。非Spring 模式下,仅支持注解使用到 Mapper(Dao层),使用到其他层(如Service层)不支持注解解析。
+ * <p>
+ * Spring模式下,切面生效的前提下,不区分使用到程序的层(Controller、Service、Dao层都支持)，但是建议使用到Mapper层使用注解。其更接近数据操作，更符合控制粒度。
+ * 使用在 Controller 和 Service 层则其下层调用的所有操作都会受影响，控制粒度会比较粗，受影响面大。而且容易被下层的注解配置替换上层的注解配置。
+ * <p>
+ * 如果同一个调用链多处使用注解 @UseDataSource 则越接近Dao层优先级越高，如 Service 和 Mapper 上同时使用了，则 Service 中解析出来后，当执行 Mapper 时再次解析，会覆盖之前的值。
  *
  * @author Alay
  * @since 2024-12-07 15:34
