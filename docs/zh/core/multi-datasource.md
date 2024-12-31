@@ -18,7 +18,7 @@ mybatis-flex:
 
 在以上配置中，`ds1` 和 `ds2` 是由用户自定义的，我们可以理解为数据源的名称，或者数据源的 `key`，这个在动态切换数据库中非常有用。
 
-在无 Spring 框架的场景下，代码如下：
+在无 Spring 或 Solon 框架的场景下，代码如下：
 
 ```java
 DataSource dataSource1 = new HikariDataSource();
@@ -72,7 +72,7 @@ MyBatis-Flex 提供了 4 种方式来配置数据源：
 - 3、`@UseDataSource("dataSourceName")` 在 Mapper 方法上，添加注解，用于指定使用哪个数据源。
 - 4、`@Table(dataSource="dataSourceName")` 在 Entity 类上添加注解，该 Entity 的增删改查请求默认使用该数据源。
 
-> 在 SpringBoot 项目上，`@UseDataSource("dataSourceName")` 也可用于在 Controller 或者 Service 上。若是 Spring 项目（非 SpringBoot）,
+> 在 SpringBoot 或 Solon 项目上，`@UseDataSource("dataSourceName")` 也可用于在 Controller 或者 Service 类上。若是 Spring 项目（非 SpringBoot）,
 > 用户需要参考 `MultiDataSourceAutoConfiguration` 进行配置后才能使用。
 
 
@@ -123,7 +123,7 @@ public class Account {
 `DataSourceKey.use()` > `@UseDataSource()在方法上` > `@UseDataSource()在类上` >`@Table(dataSource="...")`
 :::
 
-## 更多的 Spring Yaml 配置支持
+## 更多的 Spring 或 Solon Yaml 配置支持
 ```yaml
 mybatis-flex:
   datasource:
