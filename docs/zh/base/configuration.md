@@ -26,7 +26,7 @@ mybatis-flex:
 - 类型：`Map<String, Map<String, String>>`
 - 默认值：`null`
 
-MyBatis-Flex 多数据源配置，参考 [多数据源配置](../core/multi-datasource.md#更多的-yaml-配置支持)。
+MyBatis-Flex 多数据源配置，参考 [多数据源配置](../core/multi-datasource.md#更多的 Spring 或 Solon Yaml 配置支持)。
 
 ### config-location
 
