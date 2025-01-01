@@ -58,7 +58,28 @@ dependencies {
 }
 ```
 
-4、配置 annotationProcessor
+
+4、用到了 Solon 的场景
+
+**【Kotlin】**
+
+```kotlin
+dependencies {
+    implementation("com.mybatis-flex:mybatis-flex-solon-plugin:1.10.4")
+}
+```
+
+**【Groovy】**
+
+```groovy
+dependencies {
+    implementation 'com.mybatis-flex:mybatis-flex-solon-plugin:1.10.4'
+}
+```
+
+
+
+5、配置 annotationProcessor
 
 由 `mybatis-flex-processor` 提供APT服务。
 

@@ -4,7 +4,7 @@
 
 - 熟悉 Java 环境配置及其开发
 - 熟悉 关系型 数据库，比如 MySQL
-- 熟悉 Spring Boot 及相关框架
+- 熟悉 Spring Boot 或 Solon 等相关框架
 - 熟悉 Java 构建工具，比如 Maven
 
 > 当前章节涉及到的源码已经全部上传到：https://gitee.com/Suomm/mybatis-flex-test ，在开始之前，
