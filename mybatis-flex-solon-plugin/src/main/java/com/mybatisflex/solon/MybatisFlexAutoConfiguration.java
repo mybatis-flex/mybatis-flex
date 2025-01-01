@@ -6,8 +6,8 @@ import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.mybatis.FlexConfiguration;
 import com.mybatisflex.core.mybatis.FlexSqlSessionFactoryBuilder;
 import com.mybatisflex.core.row.RowMapperInvoker;
-import com.mybatisflex.solon.transaction.MybatisMapperInterceptor;
 import com.mybatisflex.solon.transaction.SolonManagedTransactionFactory;
+import com.mybatisflex.solon.transaction.MybatisSessionTemplate;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.io.Resources;
@@ -171,13 +171,10 @@ public class MybatisFlexAutoConfiguration {
     public void mapperPublish(FlexConfiguration flexConfiguration,
                               FlexGlobalConfig globalConfig,
                               SqlSessionFactory sqlSessionFactory) {
-        for (Class<?> mapperClz : flexConfiguration.getMapperRegistry().getMappers()) {
-            MybatisMapperInterceptor handler = new MybatisMapperInterceptor(sqlSessionFactory, mapperClz);
+        MybatisSessionTemplate sqlSessionTemplate = new MybatisSessionTemplate(sqlSessionFactory);
 
-            Object mapperProxy = Proxy.newProxyInstance(
-                mapperClz.getClassLoader(),
-                new Class[]{mapperClz},
-                handler);
+        for (Class<?> mapperClz : flexConfiguration.getMapperRegistry().getMappers()) {
+            Object mapperProxy = sqlSessionTemplate.getMapper(mapperClz);
 
             //推入容器，之后可以被注入
             appContext.wrapAndPut(mapperClz, mapperProxy);

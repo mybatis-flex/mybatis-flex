@@ -1,6 +1,6 @@
-# SpringBoot 配置文件
+# SpringBoot 或 Solon 配置文件
 
-SpringBoot 配置文件（`application.yml` 等）主要是用于对 MyBatis 原生以及 MyBatis-Flex 的 `FlexGlobalConfig` 进行配置。
+SpringBoot 配置文件（`application.yml` 等）；Solon 配置文件（`app.yml` 等）。主要是用于对 MyBatis 原生以及 MyBatis-Flex 的 `FlexGlobalConfig` 进行配置。
 
 示例如下：
 
@@ -26,7 +26,7 @@ mybatis-flex:
 - 类型：`Map<String, Map<String, String>>`
 - 默认值：`null`
 
-MyBatis-Flex 多数据源配置，参考 [多数据源配置](../core/multi-datasource.md#更多的-spring-yaml-配置支持)。
+MyBatis-Flex 多数据源配置，参考 [多数据源配置](../core/multi-datasource.md#更多的 Spring 或 Solon Yaml 配置支持)。
 
 ### config-location
 
@@ -203,7 +203,7 @@ mybatis-flex:
 
 ### seata-mode
 
-- 类型：`com.mybatisflex.spring.boot.MybatisFlexProperties.SeataMode`
+- 类型：`com.mybatisflex.spring.boot.MybatisFlexProperties.SeataMode`，或者 `com.mybatisflex.solon.MybatisFlexProperties.SeataMode`
 - 默认值：`AT`
 
 使用 Seata AT 模式代理数据源。
