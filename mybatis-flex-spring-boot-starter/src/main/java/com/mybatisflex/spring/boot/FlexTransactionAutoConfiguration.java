@@ -17,6 +17,7 @@ package com.mybatisflex.spring.boot;
 
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.spring.FlexTransactionManager;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
@@ -26,6 +27,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 import org.springframework.core.Ordered;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -38,6 +40,7 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
  * @author michael
  */
 @ConditionalOnClass(Db.class)
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 @ConditionalOnMissingBean(TransactionManager.class)
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
