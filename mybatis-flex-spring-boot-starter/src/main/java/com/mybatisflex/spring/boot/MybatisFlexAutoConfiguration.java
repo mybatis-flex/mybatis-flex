@@ -136,7 +136,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
     protected final LogicDeleteProcessor logicDeleteProcessor;
 
     //初始化监听
-    protected final MyBatisFlexCustomizer mybatisFlexCustomizer;
+    protected final List<MyBatisFlexCustomizer> mybatisFlexCustomizers;
 
 
     public MybatisFlexAutoConfiguration(MybatisFlexProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider,
@@ -149,7 +149,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
                                         ObjectProvider<DynamicSchemaProcessor> dynamicSchemaProcessorProvider,
                                         ObjectProvider<TenantFactory> tenantFactoryProvider,
                                         ObjectProvider<LogicDeleteProcessor> logicDeleteProcessorProvider,
-                                        ObjectProvider<MyBatisFlexCustomizer> mybatisFlexCustomizerProvider
+                                        ObjectProvider<MyBatisFlexCustomizer> mybatisFlexCustomizerProviders
     ) {
         this.properties = properties;
         this.interceptors = interceptorsProvider.getIfAvailable();
@@ -176,7 +176,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         this.logicDeleteProcessor = logicDeleteProcessorProvider.getIfAvailable();
 
         //初始化监听器
-        this.mybatisFlexCustomizer = mybatisFlexCustomizerProvider.getIfAvailable();
+        this.mybatisFlexCustomizers = mybatisFlexCustomizerProviders.orderedStream().collect(Collectors.toList());
     }
 
     @Override
@@ -215,8 +215,8 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
         }
 
         //初始化监听器
-        if (mybatisFlexCustomizer != null) {
-            mybatisFlexCustomizer.customize(FlexGlobalConfig.getDefaultConfig());
+        if (mybatisFlexCustomizers != null) {
+            mybatisFlexCustomizers.forEach(myBatisFlexCustomizer -> myBatisFlexCustomizer.customize(FlexGlobalConfig.getDefaultConfig()));
         }
     }
 
