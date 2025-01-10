@@ -2,6 +2,17 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+
+## v1.10.5 20250110
+- 新增：MyBatisFlexCustomizer 支持定义多个 bean 实例进行配置，感谢 @RexSheng
+- 优化：引入 actuator 后日志出现告警的问题，感谢 @lin-mt
+- 优化：进一步优化 mybatis-flex-solon-plugin 插件，感谢 @noear_admin
+- 优化：优化 duckdb 方言配置，duckdb 方言总体类似于 PG 方言
+- 修复：在某些情况下子线程中使用可能出现 NPE 的问题
+- 修复：多数据源 + WithRelations 查询时导致后面查询的数据源选择异常的问题
+
+
+
 ## v1.10.4 20241228
 - 修复：多 MybatisFlexBootstrap 实例时，`MybatisFlexBootstrap.getMapper(Class<T> mapperClass)` 方法只能获取最后的实例的 mapper 的问题，感谢 @wcc1433
 - 修复：多 MybatisFlexBootstrap 实例时，`FlexGlobalConfig.getConfig(environmentId)` 获取的 config 永远是 defaultConfig，感谢 @wcc1433
