@@ -33,18 +33,24 @@ public class DataSourceKey {
     }
 
     public static void use(String dataSourceKey) {
-        lookup.get().push(dataSourceKey);
+        Deque<String> deque = lookup.get();
+        if (deque != null) {
+            deque.push(dataSourceKey);
+        }
     }
 
     public static String get() {
-        return lookup.get().peek();
+        Deque<String> deque = lookup.get();
+        return deque != null ? deque.peek() : null;
     }
 
     public static void clear() {
         Deque<String> deque = lookup.get();
-        deque.pop();
-        if (deque.isEmpty()) {
-            lookup.remove();
+        if (deque != null) {
+            deque.pop();
+            if (deque.isEmpty()) {
+                lookup.remove();
+            }
         }
     }
 
@@ -89,18 +95,22 @@ public class DataSourceKey {
     public static String getByManual() {
         throw new UnsupportedOperationException("使用 DataSource.get() 代替。");
     }
+
     @Deprecated
     public static String getByAnnotation() {
         throw new UnsupportedOperationException("使用 DataSource.get() 代替。");
     }
+
     @Deprecated
     public static void useWithAnnotation(String dataSourceKey) {
         throw new UnsupportedOperationException("使用 DataSource.use(String) 代替。");
     }
+
     @Deprecated
     public static void setAnnotationKeyThreadLocal(ThreadLocal<String> annotationKeyThreadLocal) {
         throw new UnsupportedOperationException("使用 DataSource.setThreadLocal(ThreadLocal<Deque<String>>) 代替。");
     }
+
     @Deprecated
     public static void setManualKeyThreadLocal(ThreadLocal<String> manualKeyThreadLocal) {
         throw new UnsupportedOperationException("使用 DataSource.setThreadLocal(ThreadLocal<Deque<String>>) 代替。");
