@@ -309,98 +309,87 @@ public class RelationManager {
             return;
         }
 
-        String currentDsKey = DataSourceKey.get();
-        try {
-            relations.forEach(relation -> {
+        relations.forEach(relation -> {
 
-                //ignore
-                if (ignoreRelations != null && (ignoreRelations.contains(relation.getSimpleName())
-                    || ignoreRelations.contains(relation.getName()))) {
-                    return;
-                }
+            //ignore
+            if (ignoreRelations != null && (ignoreRelations.contains(relation.getSimpleName())
+                || ignoreRelations.contains(relation.getName()))) {
+                return;
+            }
 
-                //only query
-                if (queryRelations != null && !queryRelations.isEmpty()
-                    && !queryRelations.contains(relation.getSimpleName())
-                    && !queryRelations.contains(relation.getName())) {
-                    return;
-                }
+            //only query
+            if (queryRelations != null && !queryRelations.isEmpty()
+                && !queryRelations.contains(relation.getSimpleName())
+                && !queryRelations.contains(relation.getName())) {
+                return;
+            }
 
-                //注解配置的数据源
-                String configDsKey = relation.getDataSource();
-                if (StringUtil.noText(configDsKey) && currentDsKey != null) {
-                    configDsKey = currentDsKey;
-                }
+            //注解配置的数据源
+            String relationDsKey = relation.getDataSource();
+            if (StringUtil.hasText(relationDsKey)) {
+                DataSourceKey.use(relationDsKey);
+            }
 
-                try {
-                    if (StringUtil.hasText(configDsKey)) {
-                        DataSourceKey.use(configDsKey);
+            try {
+                Set<Object> targetValues;
+                List<Row> mappingRows = null;
+
+                //通过中间表关联查询
+                if (relation.isRelationByMiddleTable()) {
+
+                    Set selfFieldValues = relation.getSelfFieldValues(entities);
+                    // 当数据对应的字段没有值的情况下，直接返回
+                    if (selfFieldValues.isEmpty()) {
+                        return;
+                    }
+                    QueryWrapper queryWrapper = QueryWrapper.create().select()
+                        .from(relation.getJoinTable());
+                    if (selfFieldValues.size() > 1) {
+                        queryWrapper.where(column(relation.getJoinSelfColumn()).in(selfFieldValues));
+                    } else {
+                        queryWrapper.where(column(relation.getJoinSelfColumn()).eq(selfFieldValues.iterator().next()));
                     }
 
-                    Set<Object> targetValues;
-                    List<Row> mappingRows = null;
-
-                    //通过中间表关联查询
-                    if (relation.isRelationByMiddleTable()) {
-
-                        Set selfFieldValues = relation.getSelfFieldValues(entities);
-                        // 当数据对应的字段没有值的情况下，直接返回
-                        if (selfFieldValues.isEmpty()) {
-                            return;
-                        }
-                        QueryWrapper queryWrapper = QueryWrapper.create().select()
-                            .from(relation.getJoinTable());
-                        if (selfFieldValues.size() > 1) {
-                            queryWrapper.where(column(relation.getJoinSelfColumn()).in(selfFieldValues));
-                        } else {
-                            queryWrapper.where(column(relation.getJoinSelfColumn()).eq(selfFieldValues.iterator().next()));
-                        }
-
-                        mappingRows = mapper.selectRowsByQuery(queryWrapper);
-                        if (CollectionUtil.isEmpty(mappingRows)) {
-                            return;
-                        }
-
-                        targetValues = new HashSet<>();
-
-                        for (Row mappingData : mappingRows) {
-                            Object targetValue = mappingData.getIgnoreCase(relation.getJoinTargetColumn());
-                            if (targetValue != null) {
-                                targetValues.add(targetValue);
-                            }
-                        }
-                    }
-                    //通过外键字段关联查询
-                    else {
-                        targetValues = relation.getSelfFieldValues(entities);
-                    }
-
-                    if (CollectionUtil.isEmpty(targetValues)) {
+                    mappingRows = mapper.selectRowsByQuery(queryWrapper);
+                    if (CollectionUtil.isEmpty(mappingRows)) {
                         return;
                     }
 
-                    //仅绑定字段:As目标实体类 不进行字段绑定:As映射类型
-                    QueryWrapper queryWrapper = relation.buildQueryWrapper(targetValues);
-                    List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, relation.isOnlyQueryValueField() ? relation.getTargetEntityClass() : relation.getMappingType());
-                    if (CollectionUtil.isNotEmpty(targetObjectList)) {
+                    targetValues = new HashSet<>();
 
-                        //递归查询
-                        doQueryRelations(mapper, targetObjectList, currentDepth + 1, maxDepth, ignoreRelations, queryRelations);
-
-                        //进行内存 join
-                        relation.join(entities, targetObjectList, mappingRows);
-                    }
-                } finally {
-                    if (StringUtil.hasText(configDsKey)) {
-                        DataSourceKey.clear();
+                    for (Row mappingData : mappingRows) {
+                        Object targetValue = mappingData.getIgnoreCase(relation.getJoinTargetColumn());
+                        if (targetValue != null) {
+                            targetValues.add(targetValue);
+                        }
                     }
                 }
-            });
-        } finally {
-            if (currentDsKey != null) {
-                DataSourceKey.use(currentDsKey);
+                //通过外键字段关联查询
+                else {
+                    targetValues = relation.getSelfFieldValues(entities);
+                }
+
+                if (CollectionUtil.isEmpty(targetValues)) {
+                    return;
+                }
+
+                //仅绑定字段:As目标实体类 不进行字段绑定:As映射类型
+                QueryWrapper queryWrapper = relation.buildQueryWrapper(targetValues);
+                List<?> targetObjectList = mapper.selectListByQueryAs(queryWrapper, relation.isOnlyQueryValueField() ? relation.getTargetEntityClass() : relation.getMappingType());
+                if (CollectionUtil.isNotEmpty(targetObjectList)) {
+
+                    //递归查询
+                    doQueryRelations(mapper, targetObjectList, currentDepth + 1, maxDepth, ignoreRelations, queryRelations);
+
+                    //进行内存 join
+                    relation.join(entities, targetObjectList, mappingRows);
+                }
+            } finally {
+                if (StringUtil.hasText(relationDsKey)) {
+                    DataSourceKey.clear();
+                }
             }
-        }
+        });
     }
 
 }
