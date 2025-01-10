@@ -320,9 +320,10 @@ public class FlexConfiguration extends Configuration {
 
 
     private TableInfo getTableInfo(MappedStatement ms) {
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         String mapperClassName = ms.getId().substring(0, ms.getId().lastIndexOf("."));
         try {
-            Class<?> mapperClass = Class.forName(mapperClassName);
+            Class<?> mapperClass = Class.forName(mapperClassName, true, contextClassLoader);
             return TableInfoFactory.ofMapperClass(mapperClass);
         } catch (ClassNotFoundException e) {
             return null;

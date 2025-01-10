@@ -58,7 +58,7 @@ public class LambdaUtil {
     public static <T> Class<?> getImplClass(LambdaGetter<T> getter) {
         return MapUtil.computeIfAbsent(implClassMap, getter.getClass(), aClass -> {
             SerializedLambda lambda = getSerializedLambda(getter);
-            return getImplClass(lambda, getter.getClass().getClassLoader());
+            return getImplClass0(lambda);
         });
     }
 
@@ -75,9 +75,8 @@ public class LambdaUtil {
 
     public static <T> QueryColumn getQueryColumn(LambdaGetter<T> getter) {
         return MapUtil.computeIfAbsent(queryColumnMap, getter.getClass(), aClass -> {
-            ClassLoader classLoader = getter.getClass().getClassLoader();
             SerializedLambda lambda = getSerializedLambda(getter);
-            Class<?> entityClass = getImplClass(lambda, classLoader);
+            Class<?> entityClass = getImplClass0(lambda);
             TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
             String propertyName = getFieldName(getter);
             return tableInfo.getQueryColumnByProperty(propertyName);
@@ -96,7 +95,8 @@ public class LambdaUtil {
     }
 
 
-    private static Class<?> getImplClass(SerializedLambda lambda, ClassLoader classLoader) {
+    private static Class<?> getImplClass0(SerializedLambda lambda) {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String implClass = getImplClassName(lambda);
         try {
             return Class.forName(implClass.replace("/", "."), true, classLoader);
