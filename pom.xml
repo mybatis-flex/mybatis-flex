@@ -65,7 +65,7 @@
 
         <mybatis-flex.version>1.10.5</mybatis-flex.version>
 
-        <mybatis.version>3.5.17</mybatis.version>
+        <mybatis.version>3.5.19</mybatis.version>
         <mybatis-spring.version>2.1.2</mybatis-spring.version>
         <mybatis-freemarker.version>1.2.4</mybatis-freemarker.version>
         <mybatis-velocity.version>2.1.2</mybatis-velocity.version>
