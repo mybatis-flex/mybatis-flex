@@ -23,14 +23,24 @@ import com.mybatisflex.core.audit.http.HttpUtil;
  */
 public class DefaultMessageFactory implements MessageFactory {
 
-    private final String hostIp = HttpUtil.getHostIp();
+    private String hostIp;
 
     @Override
     public AuditMessage create() {
         AuditMessage message = new AuditMessage();
         message.setPlatform(FlexConsts.NAME);
-        message.setHostIp(hostIp);
+        message.setHostIp(getHostIp());
         return message;
     }
 
+    public String getHostIp() {
+        if (hostIp == null) {
+            hostIp = HttpUtil.getHostIp();
+        }
+        return hostIp;
+    }
+
+    public void setHostIp(String hostIp) {
+        this.hostIp = hostIp;
+    }
 }

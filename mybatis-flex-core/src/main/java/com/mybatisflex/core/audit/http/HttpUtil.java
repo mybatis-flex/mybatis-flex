@@ -58,8 +58,8 @@ public class HttpUtil {
                 if (networkInterface.isLoopback() || networkInterface.isVirtual() || !networkInterface.isUp()) {
                     continue;
                 }
-                for (Enumeration<InetAddress> addrs = networkInterface.getInetAddresses(); addrs.hasMoreElements(); ) {
-                    InetAddress addr = addrs.nextElement();
+                for (Enumeration<InetAddress> addresses = networkInterface.getInetAddresses(); addresses.hasMoreElements(); ) {
+                    InetAddress addr = addresses.nextElement();
                     if (addr instanceof Inet4Address) {
                         return addr.getHostAddress();
                     }
