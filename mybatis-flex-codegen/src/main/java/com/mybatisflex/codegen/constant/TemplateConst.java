@@ -45,5 +45,6 @@ public final class TemplateConst {
     public static final String PACKAGE_INFO = "/templates/enjoy/package-info.tpl";
 
     public static final String SERVICE_IMPL_SOLON = "/templates/enjoy/serviceImpl-Solon.tpl";
+    public static final String CONTROLLER_SOLON = "/templates/enjoy/controller-Solon.tpl";
 
 }
