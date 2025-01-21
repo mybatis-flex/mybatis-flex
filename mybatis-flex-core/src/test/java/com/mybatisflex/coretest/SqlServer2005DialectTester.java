@@ -16,6 +16,9 @@
 
 package com.mybatisflex.coretest;
 
+import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
+import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
+
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
@@ -26,78 +29,62 @@ import com.mybatisflex.core.query.QueryWrapper;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.mybatisflex.coretest.table.AccountTableDef.ACCOUNT;
-
 public class SqlServer2005DialectTester {
 
 
     @Test
     public void testSelectSql() {
-        QueryWrapper query = new QueryWrapper()
-            .select()
-            .from(ACCOUNT)
-            .where(ACCOUNT.ID.in("100", "200"))
-            .and(ACCOUNT.SEX.eq(1))
-            .orderBy(ACCOUNT.ID.desc())
-            .limit(10, 10);
+        QueryWrapper query = new QueryWrapper().select().from(ACCOUNT).where(ACCOUNT.ID.in("100", "200"))
+            .and(ACCOUNT.SEX.eq(1)).orderBy(ACCOUNT.ID.desc()).limit(10, 10);
 
         IDialect dialect = new CommonsDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER_2005);
         String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
         Assert.assertEquals("WITH temp_datas AS("
-            + "SELECT ROW_NUMBER() OVER ( ORDER BY [id] DESC) as __rn, * FROM [tb_account] WHERE [id] IN (?, ?) AND [sex] = ?"
-            +
-            ") " +
-            "SELECT * FROM temp_datas WHERE __rn BETWEEN 11 AND 20 ORDER BY __rn", sql);
+            + "SELECT *, ROW_NUMBER() OVER ( ORDER BY [id] DESC) as __rn  FROM [tb_account] WHERE [id] IN (?, ?) AND [sex] = ?"
+            + ") " + "SELECT * FROM temp_datas WHERE __rn BETWEEN 11 AND 20 ORDER BY __rn", sql);
     }
 
     @Test
     public void testSelectSqlSqlserver2005() {
-        QueryWrapper query = new QueryWrapper().select()
-            .from("TEST.dbo.tb_account")
-            .where(ACCOUNT.ID.in("100", "200"))
-            .and(ACCOUNT.SEX.eq(1))
-            .orderBy(ACCOUNT.ID.desc())
-            .limit(0, 10);
-
+        QueryWrapper query = new QueryWrapper().select(ACCOUNT.ID.as("ID"), ACCOUNT.AGE.as("AGE"), ARTICLE.ID)
+            .from(ACCOUNT.as("account"))
+            .innerJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID))
+            .where(ACCOUNT.ID.in("100", "200")).and(ACCOUNT.SEX.eq(1))
+            .orderBy(ACCOUNT.ID.as("ID").desc(), ACCOUNT.AGE.asc(), ARTICLE.ID.desc()).limit(10);
         IDialect dialect = new Sqlserver2005DialectImpl(KeywordWrap.SQUARE_BRACKETS,
             LimitOffsetProcessor.SQLSERVER_2005);
         String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
         Assert.assertEquals(
-            "WITH temp_datas AS(SELECT ROW_NUMBER() OVER ( ORDER BY [tb_account].[id] DESC) as __rn, * FROM [TEST].[dbo].[tb_account] WHERE [tb_account].[id] IN (?, ?) AND [tb_account].[sex] = ?) SELECT * FROM temp_datas WHERE __rn BETWEEN 1 AND 10 ORDER BY __rn",
+            "WITH temp_datas AS(SELECT [account].[id] AS [ID], [account].[age] AS [AGE], [tb_article].[id], ROW_NUMBER() OVER ( ORDER BY [account].[id] DESC, [account].[age] ASC, [tb_article].[id] DESC) as __rn  FROM [tb_account] AS [account] INNER JOIN [tb_article] ON [tb_article].[account_id] = [account].[id] WHERE [account].[id] IN (?, ?) AND [account].[sex] = ?) SELECT * FROM temp_datas WHERE __rn BETWEEN 1 AND 10 ORDER BY __rn",
             sql);
     }
 
     @Test
     public void testSelectSqlSqlserver2005With() {
-        QueryWrapper query = new QueryWrapper().select(ACCOUNT.ID.as("user_id"), ACCOUNT.AGE)
+        QueryWrapper query = new QueryWrapper()
+            .select(ACCOUNT.ID.as("user_id"), ACCOUNT.AGE)
             .from("TEST.dbo.tb_account")
-            .where(ACCOUNT.ID.in("100", "200"))
+            .innerJoin(ARTICLE).on(ARTICLE.ACCOUNT_ID.eq(ACCOUNT.ID)).where(ACCOUNT.ID.in("100", "200"))
             .and(ACCOUNT.SEX.eq(1))
-            .orderBy(ACCOUNT.ID.desc())
-            .limit(0, 10);
+            .orderBy(ACCOUNT.ID.desc()).limit(0, 10);
 
         IDialect dialect = new Sqlserver2005DialectImpl(KeywordWrap.SQUARE_BRACKETS,
             LimitOffsetProcessor.SQLSERVER_2005);
         String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
         Assert.assertEquals(
-            "WITH temp_datas AS(SELECT ROW_NUMBER() OVER ( ORDER BY [tb_account].[id] DESC) as __rn, [tb_account].[id] AS [user_id], [tb_account].[age] FROM [TEST].[dbo].[tb_account] WHERE [tb_account].[id] IN (?, ?) AND [tb_account].[sex] = ?) SELECT user_id, age  FROM temp_datas WHERE __rn BETWEEN 1 AND 10 ORDER BY __rn",
+            "WITH temp_datas AS(SELECT [tb_account].[id] AS [user_id], [tb_account].[age], ROW_NUMBER() OVER ( ORDER BY [tb_account].[id] DESC) as __rn  FROM [TEST].[dbo].[tb_account] INNER JOIN [tb_article] ON [tb_article].[account_id] = [tb_account].[id] WHERE [tb_account].[id] IN (?, ?) AND [tb_account].[sex] = ?) SELECT * FROM temp_datas WHERE __rn BETWEEN 1 AND 10 ORDER BY __rn",
             sql);
     }
 
     @Test
     public void testSelectSqlSqlserver() {
-        QueryWrapper query = new QueryWrapper().select()
-            .from("TEST.dbo.tb_account")
-            .where(ACCOUNT.ID.in("100", "200"))
-            .and(ACCOUNT.SEX.eq(1))
-            .orderBy(ACCOUNT.ID.desc())
-            .limit(0, 10);
+        QueryWrapper query = new QueryWrapper().select().from("TEST.dbo.tb_account").where(ACCOUNT.ID.in("100", "200"))
+            .and(ACCOUNT.SEX.eq(1)).orderBy(ACCOUNT.ID.desc()).limit(0, 10);
 
-        IDialect dialect = new SqlserverDialectImpl(KeywordWrap.SQUARE_BRACKETS,
-            LimitOffsetProcessor.SQLSERVER);
+        IDialect dialect = new SqlserverDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER);
         String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
         Assert.assertEquals(
@@ -107,15 +94,10 @@ public class SqlServer2005DialectTester {
 
     @Test
     public void testSelectSqlSqlserver1() {
-        QueryWrapper query = new QueryWrapper().select()
-            .from("tb_account")
-            .where(ACCOUNT.ID.in("100", "200"))
-            .and(ACCOUNT.SEX.eq(1))
-            .orderBy(ACCOUNT.ID.desc())
-            .limit(0, 10);
+        QueryWrapper query = new QueryWrapper().select().from("tb_account").where(ACCOUNT.ID.in("100", "200"))
+            .and(ACCOUNT.SEX.eq(1)).orderBy(ACCOUNT.ID.desc()).limit(0, 10);
 
-        IDialect dialect = new SqlserverDialectImpl(KeywordWrap.SQUARE_BRACKETS,
-            LimitOffsetProcessor.SQLSERVER);
+        IDialect dialect = new SqlserverDialectImpl(KeywordWrap.SQUARE_BRACKETS, LimitOffsetProcessor.SQLSERVER);
         String sql = dialect.forSelectByQuery(query);
         System.out.println(sql);
         Assert.assertEquals(
