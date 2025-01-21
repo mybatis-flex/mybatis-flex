@@ -84,6 +84,12 @@ public class DataSourceKey {
         lookup = threadLocal;
     }
 
+    public static String processDataSourceKey(String dataSourceKey, Object targetOrProxy, Method method, Object[] arguments) {
+        String dsKey = DataSourceManager.processDataSourceKey(dataSourceKey, targetOrProxy, method, arguments);
+        return dsKey != null ? dsKey : dataSourceKey;
+    }
+
+
     public static String getShardingDsKey(String dataSource, Object mapper, Method method, Object[] args) {
         String shardingDsKey = DataSourceManager.getShardingDsKey(dataSource, mapper, method, args);
         return shardingDsKey != null ? shardingDsKey : dataSource;

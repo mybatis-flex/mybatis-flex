@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.datasource;
 
+import com.mybatisflex.core.datasource.processor.DataSourceProcessor;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.ClassUtil;
 import org.apache.ibatis.logging.LogFactory;
@@ -35,6 +36,19 @@ public class DataSourceManager {
 
     public static void setDecipher(DataSourceDecipher decipher) {
         DataSourceManager.decipher = decipher;
+    }
+
+    /**
+     * 动态数据源key取值处理
+     */
+    private static DataSourceProcessor dataSourceProcessor;
+
+    public static DataSourceProcessor getDataSourceProcessor() {
+        return dataSourceProcessor;
+    }
+
+    public static void setDataSourceProcessor(DataSourceProcessor dataSourceProcessor) {
+        DataSourceManager.dataSourceProcessor = dataSourceProcessor;
     }
 
     private static DataSourceShardingStrategy dataSourceShardingStrategy;
@@ -93,6 +107,11 @@ public class DataSourceManager {
             LogFactory.getLog(DataSourceManager.class).error("Can not invoke method: " + method.getName(), e);
         }
         return null;
+    }
+
+    static String processDataSourceKey(String dataSourceKey, Object targetOrProxy, Method method, Object[] arguments) {
+        // 如果没有配置 DataSourceProcessor 实例,则不做处理,返回原始值
+        return dataSourceProcessor == null ? dataSourceKey : dataSourceProcessor.process(dataSourceKey, targetOrProxy, method, arguments);
     }
 
 
