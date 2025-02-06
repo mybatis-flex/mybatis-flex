@@ -2,6 +2,14 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.10.6 20250206
+- 新增：动态数据源 @UseDataSource 的value值扩展支持表达式解析处理
+- 优化：代码生成器补充 solon 的 controller
+- 优化：SqlServer2005 方言 Lis t查询 SQL 语句 BUG
+- 修复：Doris 查询分离 lib 部署字段映射错误的问题 https://github.com/mybatis-flex/mybatis-flex/issues/472
+- 修复：当 NetworkInterface.getNetworkInterfaces() 方法阻塞时，导致我整个应用该程序都卡住，无法正常启动 https://github.com/mybatis-flex/mybatis-flex/issues/470
+
+
 
 ## v1.10.5 20250110
 - 新增：MyBatisFlexCustomizer 支持定义多个 bean 实例进行配置，感谢 @RexSheng
