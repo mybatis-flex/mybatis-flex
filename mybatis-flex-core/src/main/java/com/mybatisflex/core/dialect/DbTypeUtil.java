@@ -19,13 +19,15 @@ package com.mybatisflex.core.dialect;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.util.StringUtil;
+import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
+import org.apache.ibatis.logging.LogFactory;
+
+import javax.sql.DataSource;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.regex.Pattern;
-import javax.sql.DataSource;
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 
 /**
  * DbType 解析 工具类
@@ -43,7 +45,10 @@ public class DbTypeUtil {
         if (StringUtil.hasText(jdbcUrl)) {
             //FIX [Bug]: sqlserver2022下方言识别不对，手动set也无效  https://gitee.com/mybatis-flex/mybatis-flex/issues/IBIHW3
             if (jdbcUrl.contains(":sqlserver:")) {
-                return getSqlserverDbType(dataSource);
+                DbType sqlserverDbType = getSqlserverDbType(dataSource);
+                if (sqlserverDbType != null) {
+                    return sqlserverDbType;
+                }
             }
             return parseDbType(jdbcUrl);
         }
@@ -52,12 +57,14 @@ public class DbTypeUtil {
     }
 
     /**
-     * 通过数据源获取SQLserver 版本
+     * 通过数据源获取 SQLserver 版本
      *
      * @return DbType
      */
     private static DbType getSqlserverDbType(DataSource dataSource) {
-        try (ResultSet resultSet = dataSource.getConnection().prepareStatement("SELECT @@VERSION").executeQuery()) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT @@VERSION");
+             ResultSet resultSet = preparedStatement.executeQuery()) {
             //SELECT @@VERSION 查询返回信息：
             /*
              Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64)
@@ -75,8 +82,9 @@ public class DbTypeUtil {
                 }
             }
             return DbType.SQLSERVER;
-        } catch (SQLException e) {
-            return DbType.SQLSERVER;
+        } catch (Exception e) {
+            LogFactory.getLog(DbTypeUtil.class).warn("Failed to get SQLServer version. parse by url. " + e);
+            return null;
         }
     }
 
@@ -122,6 +130,10 @@ public class DbTypeUtil {
             return DbType.MARIADB;
         } else if (jdbcUrl.contains(":oracle:")) {
             return DbType.ORACLE;
+        } else if (jdbcUrl.contains(":sqlserver2012:")) {
+            return DbType.SQLSERVER;
+        } else if (jdbcUrl.contains(":sqlserver:") || jdbcUrl.contains(":microsoft:")) {
+            return DbType.SQLSERVER_2005;
         } else if (jdbcUrl.contains(":postgresql:")) {
             return DbType.POSTGRE_SQL;
         } else if (jdbcUrl.contains(":hsqldb:")) {
