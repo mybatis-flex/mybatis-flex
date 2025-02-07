@@ -1,6 +1,6 @@
 package com.mybatisflex.core.datasource.processor;
 
-import com.mybatisflex.processor.util.StrUtil;
+import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Method;
 
@@ -22,7 +22,7 @@ public class ParamIndexDataSourceProcessor implements DataSourceProcessor {
      */
     @Override
     public String process(String dataSourceKey, Object mapper, Method method, Object[] arguments) {
-        if (StrUtil.isBlank(dataSourceKey)) return null;
+        if (StringUtil.noText(dataSourceKey)) return null;
         if (!dataSourceKey.startsWith(DYNAMIC_PREFIX)) return null;
         // 无效的参数
         if (arguments.length == 0) return null;
@@ -43,7 +43,7 @@ public class ParamIndexDataSourceProcessor implements DataSourceProcessor {
 
         // 参数中按照索引取出数值
         String value = String.valueOf(arguments[index]);
-        if (StrUtil.isBlank(value) || NULL_STR.equals(value)) return null;
+        if (StringUtil.noText(value) || NULL_STR.equals(value)) return null;
 
         return value;
     }

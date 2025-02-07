@@ -1,7 +1,7 @@
 package com.mybatisflex.spring.datasource.processor;
 
 import com.mybatisflex.core.datasource.processor.DataSourceProcessor;
-import com.mybatisflex.processor.util.StrUtil;
+import com.mybatisflex.core.util.StringUtil;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
@@ -59,7 +59,7 @@ public class SpelExpressionDataSourceProcessor implements DataSourceProcessor {
 
     @Override
     public String process(String dataSourceKey, Object mapper, Method method, Object[] arguments) {
-        if (StrUtil.isBlank(dataSourceKey)) return null;
+        if (StringUtil.noText(dataSourceKey)) return null;
         if (!dataSourceKey.startsWith(DYNAMIC_PREFIX)) return null;
         if (arguments.length == 0) return null;
 
