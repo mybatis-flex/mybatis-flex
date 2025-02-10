@@ -2,6 +2,13 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+
+## v1.10.7 20250210
+- 修复：在不使用 mybatis-flex-processor 模块时，会出现 StrUtil 找不到的问题
+- 修复：代码生成器 Controller 代码生成格式和详情无法生成文档的问题
+
+
+
 ## v1.10.6 20250206
 - 新增：动态数据源 @UseDataSource 的value值扩展支持表达式解析处理
 - 优化：代码生成器补充 solon 的 controller
