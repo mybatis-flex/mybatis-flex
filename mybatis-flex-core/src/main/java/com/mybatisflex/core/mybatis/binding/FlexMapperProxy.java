@@ -26,7 +26,6 @@ import com.mybatisflex.core.row.RowMapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.StringUtil;
-import com.mybatisflex.processor.util.StrUtil;
 import org.apache.ibatis.reflection.ExceptionUtil;
 import org.apache.ibatis.session.SqlSession;
 
@@ -62,7 +61,7 @@ public class FlexMapperProxy<T> extends MybatisMapperProxy<T> {
                 // Mapper 方法上获取 UseDataSource的value值
                 finalDsKey = getMethodDsKey(method, proxy);
                 // 对数据源取值进行动态取值处理
-                if (!StrUtil.isBlank(finalDsKey)) {
+                if (StringUtil.hasText(finalDsKey)) {
                     finalDsKey = DataSourceKey.processDataSourceKey(finalDsKey, proxy, method, args);
                 }
             }
