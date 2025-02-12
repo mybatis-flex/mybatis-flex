@@ -25,8 +25,12 @@ import java.util.List;
 /**
  * #(table.getComment()) 服务层实现。
  *
+#if(javadocConfig.getAuthor())
  * @author #(javadocConfig.getAuthor())
+#end
+#if(javadocConfig.getSince())
  * @since #(javadocConfig.getSince())
+#end
  */
 @Service
 #if(isCacheExample)

@@ -39,8 +39,12 @@ import java.util.List;
 /**
  * #(tableComment) 控制层。
  *
+#if(javadocConfig.getAuthor())
  * @author #(javadocConfig.getAuthor())
+#end
+#if(javadocConfig.getSince())
  * @since #(javadocConfig.getSince())
+#end
  */
 #if(controllerConfig.restStyle)
 @RestController
