@@ -43,8 +43,12 @@ import lombok.EqualsAndHashCode;
 /**
  * #(table.getComment()) 实体类。
  *
+#if(javadocConfig.getAuthor())
  * @author #(javadocConfig.getAuthor())
+#end
+#if(javadocConfig.getSince())
  * @since #(javadocConfig.getSince())
+#end
  */
 #if(withLombok)
 #if(withActiveRecord)

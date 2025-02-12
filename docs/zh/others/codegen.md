@@ -213,8 +213,8 @@ globalConfig.enableEntity()
 
 | 配置                               | 描述              | 默认值                             |
 |----------------------------------|-----------------|---------------------------------|
-| setAuthor(String)                | 作者              | System.getProperty("user.name") |
-| setSince(String)                 | 自               | 日期（yyyy-MM-dd）                  |
+| setAuthor(String)                | 作者（可填写日期、版本号等，设置为 `""` 则不添加 `@author`）  | System.getProperty("user.name") |
+| setSince(String)                 | 自（可填写日期、版本号等，设置为 `""` 则不添加 `@since`） | `yyyy-MM-dd` 格式的日期              |
 | setTableCommentFormat(Function)  | 表注释格式化          | 原表注释                            |
 | setColumnCommentFormat(Function) | 字段注释格式化         | 原字段注释                           |
 | setEntityPackage(String)         | Entity 包注释      | "实体类层（Entity）软件包。"              |

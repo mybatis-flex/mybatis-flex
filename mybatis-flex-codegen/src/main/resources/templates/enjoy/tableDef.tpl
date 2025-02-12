@@ -13,8 +13,12 @@ import java.io.Serial;
 /**
  * #(table.getComment()) 表定义层。
  *
+#if(javadocConfig.getAuthor())
  * @author #(javadocConfig.getAuthor())
+#end
+#if(javadocConfig.getSince())
  * @since #(javadocConfig.getSince())
+#end
  */
 public class #(tableDefClassName) extends TableDef {
 

@@ -19,11 +19,16 @@ import io.swagger.annotations.ApiModelProperty
 #if(withSwagger && swaggerVersion.getName() == "DOC")
 import io.swagger.v3.oas.annotations.media.Schema
 #end
+
 /**
  * #(table.getComment()) 实体类。
  *
+#if(javadocConfig.getAuthor())
  * @author #(javadocConfig.getAuthor())
+#end
+#if(javadocConfig.getSince())
  * @since #(javadocConfig.getSince())
+#end
  */
 #if(withSwagger && swaggerVersion.getName() == "FOX")
 @ApiModel("#(table.getComment())")

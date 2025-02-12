@@ -9,8 +9,12 @@ import #(packageConfig.entityPackage).#(table.buildEntityClassName());
 /**
  * #(table.getComment()) 映射层。
  *
+#if(javadocConfig.getAuthor())
  * @author #(javadocConfig.getAuthor())
+#end
+#if(javadocConfig.getSince())
  * @since #(javadocConfig.getSince())
+#end
  */
 #if(mapperConfig.isMapperAnnotation())
 @Mapper
