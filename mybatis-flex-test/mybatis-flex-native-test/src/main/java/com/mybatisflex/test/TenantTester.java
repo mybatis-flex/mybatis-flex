@@ -24,6 +24,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
+import java.util.Date;
 
 public class TenantTester {
 
@@ -53,6 +54,23 @@ public class TenantTester {
 
         mapper.selectAll().forEach(System.out::println);
 
+        TenantAccount bean = new TenantAccount();
+        bean.setTenantId(3L);
+        bean.setUserName("test");
+        bean.setAge(10);
+        bean.setBirthday(new Date());
+        bean.setId(102L);
+
+        TenantManager.withoutTenantCondition(() -> mapper.insert(bean , true));
+        bean.setTenantId(4L);
+        TenantManager.withoutTenantCondition(() -> mapper.update(bean , true));
+        bean.setTenantId(4L);
+        mapper.update(bean , true);
+        TenantManager.setTenantFactory(() -> new Object[]{1, 2,4});
+        mapper.selectAll().forEach(System.out::println);
+        TenantAccount tenantAccount = mapper.selectOneById(102L);
+        mapper.deleteById(102L);
+        assert tenantAccount.getTenantId() == 4;
 //        mapper.selectListByQuery(QueryWrapper.create()
 //            .select(TENANT_ACCOUNT.ALL_COLUMNS)
 //            .from(TENANT_ACCOUNT.as("c"), ACCOUNT.as("b"))
