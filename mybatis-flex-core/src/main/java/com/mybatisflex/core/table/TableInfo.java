@@ -616,6 +616,7 @@ public class TableInfo {
     public Set<String> obtainUpdateColumns(Object entity, boolean ignoreNulls, boolean includePrimary) {
         MetaObject metaObject = EntityMetaObject.forObject(entity, reflectorFactory);
         Set<String> columns = new LinkedHashSet<>(); // 需使用 LinkedHashSet 保证 columns 的顺序
+        boolean isIgnoreTenantCondition = TenantManager.isIgnoreTenantCondition();
         if (entity instanceof UpdateWrapper) {
             Map<String, Object> updates = ((UpdateWrapper) entity).getUpdates();
             if (updates.isEmpty()) {
@@ -629,8 +630,13 @@ public class TableInfo {
                     continue;
                 }
 
-                // 过滤乐观锁字段 和 租户字段
-                if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
+                // 忽略租户字段时 不要过滤租户字段
+                if(isIgnoreTenantCondition){
+                    if (Objects.equals(column, versionColumn)) {
+                        continue;
+                    }
+                    // 过滤乐观锁字段 和 租户字段
+                }else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 
@@ -654,8 +660,13 @@ public class TableInfo {
                     continue;
                 }
 
-                // 过滤乐观锁字段 和 租户字段
-                if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
+                // 忽略租户字段时 不要过滤租户字段
+                if(isIgnoreTenantCondition){
+                    if (Objects.equals(column, versionColumn)) {
+                        continue;
+                    }
+                    // 过滤乐观锁字段 和 租户字段
+                }else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 
@@ -679,6 +690,7 @@ public class TableInfo {
     public Object[] buildUpdateSqlArgs(Object entity, boolean ignoreNulls, boolean includePrimary) {
 
         List<Object> values = new ArrayList<>();
+        boolean isIgnoreTenantCondition = TenantManager.isIgnoreTenantCondition();
         if (entity instanceof UpdateWrapper) {
             Map<String, Object> updates = ((UpdateWrapper) entity).getUpdates();
             if (updates.isEmpty()) {
@@ -691,8 +703,13 @@ public class TableInfo {
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
                     continue;
                 }
-                // 过滤乐观锁字段 和 租户字段
-                if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
+                // 忽略租户字段时 不要过滤租户字段
+                if(isIgnoreTenantCondition){
+                    if (Objects.equals(column, versionColumn)) {
+                        continue;
+                    }
+                    // 过滤乐观锁字段 和 租户字段
+                }else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 
@@ -739,8 +756,13 @@ public class TableInfo {
                     continue;
                 }
 
-                // 过滤乐观锁字段 和 租户字段
-                if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
+                // 忽略租户字段时 不要过滤租户字段
+                if(isIgnoreTenantCondition){
+                    if (Objects.equals(column, versionColumn)) {
+                        continue;
+                    }
+                    // 过滤乐观锁字段 和 租户字段
+                }else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 

@@ -66,6 +66,12 @@ public class TenantManager {
         ignoreFlags.set(Boolean.TRUE);
     }
 
+    /**
+     * 是否忽略 tenant 条件
+     */
+    public static boolean isIgnoreTenantCondition() {
+        return Boolean.TRUE.equals(ignoreFlags.get());
+    }
 
     /**
      * 恢复 tenant 条件
@@ -83,8 +89,7 @@ public class TenantManager {
     }
 
     public static Object[] getTenantIds(String tableName) {
-        Boolean ignoreFlag = ignoreFlags.get();
-        if (ignoreFlag != null && ignoreFlag) {
+        if (isIgnoreTenantCondition()) {
             return null;
         }
         return tenantFactory != null ? tenantFactory.getTenantIds(tableName) : null;
