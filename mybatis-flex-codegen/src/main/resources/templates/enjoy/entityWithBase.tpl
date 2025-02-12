@@ -35,12 +35,17 @@ import lombok.NoArgsConstructor;
 #if(jdkVersion >= 14)
 import java.io.Serial;
 #end
+
 #if(!isBase)
 /**
  * #(table.getComment()) 实体类。
  *
+#if(javadocConfig.getAuthor())
  * @author #(javadocConfig.getAuthor())
+#end
+#if(javadocConfig.getSince())
  * @since #(javadocConfig.getSince())
+#end
  */
 #end
 #if(withLombok)
