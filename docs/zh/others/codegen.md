@@ -297,6 +297,7 @@ globalConfig.getTemplateConfig()
 
 | 配置                                           | 描述                                                | 默认值                |
 |----------------------------------------------|---------------------------------------------------|--------------------|
+| setEntityWithBaseClassEnable(boolean)          | 当开启这个配置后，Entity 会生成两个类，自动生成的 getter setter 字段等都在 Base 类里，而开发者可以在 Account.java 中添加自己的业务代码  | false                 |
 | setClassPrefix(String)                       | Entity 类的前缀                                       | ""                 |
 | setClassSuffix(String)                       | Entity 类的后缀                                       | ""                 |
 | setSuperClass(Class)                         | Entity 类的父类，可以自定义一些 BaseEntity 类                  | null               |
