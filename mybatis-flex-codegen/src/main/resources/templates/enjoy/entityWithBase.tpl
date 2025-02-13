@@ -66,7 +66,6 @@ import java.io.Serial;
 #if(withSwagger && swaggerVersion.getName() == "DOC")
 @Schema(description = "#(table.getComment())")
 #end
-
 #if(!isBase)#(table.buildTableAnnotation())#end
 public class #(entityClassName) extends #(baseClassName) {
 }
