@@ -15,6 +15,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -27,11 +28,14 @@ public class ContributorsDocGen {
         //请先配置 cookie 后再运行
         String cookie = "";
 
-        List<String> urls = Arrays.asList(
-            "https://gitee.com/mybatis-flex/mybatis-flex/contributors?ref=main"
-            , "https://gitee.com/mybatis-flex/mybatis-flex/contributors?page=2&ref=main"
-            , "https://gitee.com/mybatis-flex/mybatis-flex/contributors?page=3&ref=main"
-        );
+        // Gitee贡献者列表 总页数
+        int pageCount = 4;
+        List<String> urls = new ArrayList<>();
+        for (int page = 1; page <= pageCount; page++) {
+            String url = "https://gitee.com/mybatis-flex/mybatis-flex/contributors?page=" + page + "&ref=main";
+            urls.add(url);
+        }
+
         StringBuilder markdown = new StringBuilder();
         markdown.append("|     |     |     |     |     |\n" +
             "|-----|-----|-----|-----|-----|\n");
