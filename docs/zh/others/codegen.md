@@ -303,6 +303,7 @@ globalConfig.getTemplateConfig()
 | setSuperClass(Class)                         | Entity 类的父类，可以自定义一些 BaseEntity 类                  | null               |
 | setSuperClassFactory(Function<Table, Class>) | Entity 类的父类工厂，可以用于对特定的 Class 设置父类，而非全部 Entity 的父类 | null               |
 | setOverwriteEnable(boolean)                  | 是否覆盖之前生成的文件                                       | false              |
+| setEntityBaseOverwriteEnable(boolean)        | 生成Base类时是否覆盖之前生成的文件                           | false              |
 | setImplInterfaces(Class[])                   | Entity 默认实现的接口                                    | Serializable.class |
 | setWithLombok(boolean)                       | Entity 是否使用 Lombok 注解                             | false              |
 | setWithSwagger(boolean)                      | Entity 是否使用 Swagger 注解                            | false              |

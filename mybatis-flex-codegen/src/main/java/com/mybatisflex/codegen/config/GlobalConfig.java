@@ -889,6 +889,20 @@ public class GlobalConfig implements Serializable {
     }
 
     /**
+     * @see EntityConfig#isBaseOverwriteEnable()
+     */
+    public boolean isEntityBaseOverwriteEnable() {
+        return getEntityConfig().isBaseOverwriteEnable();
+    }
+
+    /**
+     * @see EntityConfig#setBaseOverwriteEnable(boolean)
+     */
+    public void setEntityBaseOverwriteEnable(boolean entityBaseOverwriteEnable) {
+        getEntityConfig().setBaseOverwriteEnable(entityBaseOverwriteEnable);
+    }
+
+    /**
      * @see EntityConfig#getClassPrefix()
      */
     public String getEntityClassPrefix() {
