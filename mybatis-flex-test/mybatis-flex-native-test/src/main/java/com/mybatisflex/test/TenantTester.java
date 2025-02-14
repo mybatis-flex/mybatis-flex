@@ -19,7 +19,9 @@ import com.mybatisflex.core.MybatisFlexBootstrap;
 import com.mybatisflex.core.audit.AuditManager;
 import com.mybatisflex.core.audit.ConsoleMessageCollector;
 import com.mybatisflex.core.tenant.TenantManager;
+import com.mybatisflex.core.util.UpdateEntity;
 import com.mybatisflex.mapper.TenantAccountMapper;
+import org.junit.Test;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
@@ -28,7 +30,8 @@ import java.util.Date;
 
 public class TenantTester {
 
-    public static void main(String[] args) {
+    @Test
+    public void test(){
 
         DataSource dataSource = new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
@@ -60,17 +63,30 @@ public class TenantTester {
         bean.setAge(10);
         bean.setBirthday(new Date());
         bean.setId(102L);
-
+        mapper.deleteById(102L);
         TenantManager.withoutTenantCondition(() -> mapper.insert(bean , true));
         bean.setTenantId(4L);
         TenantManager.withoutTenantCondition(() -> mapper.update(bean , true));
         bean.setTenantId(4L);
         mapper.update(bean , true);
-        TenantManager.setTenantFactory(() -> new Object[]{1, 2,4});
+        TenantManager.setTenantFactory(() -> new Object[]{1, 2,4,5});
         mapper.selectAll().forEach(System.out::println);
         TenantAccount tenantAccount = mapper.selectOneById(102L);
-        mapper.deleteById(102L);
         assert tenantAccount.getTenantId() == 4;
+        tenantAccount = UpdateEntity.of(TenantAccount.class, 102L);
+        tenantAccount.setTenantId(5L);
+        tenantAccount.setAge(8);
+        mapper.update(tenantAccount , true);
+        tenantAccount = mapper.selectOneById(102L);
+        assert tenantAccount.getTenantId() == 4;
+        tenantAccount = UpdateEntity.of(TenantAccount.class, 102L);
+        tenantAccount.setTenantId(5L);
+        tenantAccount.setAge(8);
+        TenantAccount finalTenantAccount = tenantAccount;
+        TenantManager.withoutTenantCondition(() -> mapper.update(finalTenantAccount, true));
+        tenantAccount = mapper.selectOneById(102L);
+        assert tenantAccount.getTenantId() == 5;
+
 //        mapper.selectListByQuery(QueryWrapper.create()
 //            .select(TENANT_ACCOUNT.ALL_COLUMNS)
 //            .from(TENANT_ACCOUNT.as("c"), ACCOUNT.as("b"))
