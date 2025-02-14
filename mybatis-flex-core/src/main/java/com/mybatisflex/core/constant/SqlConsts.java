@@ -56,6 +56,7 @@ public final class SqlConsts {
     public static final String THEN = " THEN ";
     public static final String ELSE = " ELSE ";
     public static final String FROM = " FROM ";
+    public static final String DUAL = "DUAL";
     public static final String WHERE = " WHERE ";
     public static final String SELECT = "SELECT ";
     public static final String VALUES = " VALUES ";

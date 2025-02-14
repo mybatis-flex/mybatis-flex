@@ -80,4 +80,34 @@ public class QueryWrapperTest {
         Assert.assertEquals(CPI.getValueArray(wrapper).length, 3);
     }
 
+    /**
+     * https://github.com/mybatis-flex/mybatis-flex/issues/491
+     */
+    @Test
+    public void testIssues491() {
+        String demo1 = "SELECT c1 FROM ((SELECT 1 as c1) UNION ALL (SELECT 2 as c1) UNION ALL (SELECT 3 as c1)) AS `t`";
+
+        QueryWrapper query1 = QueryWrapper.create()
+            .select("c1")
+            .from(QueryWrapper.create().select("1 as c1")
+                .unionAll(QueryWrapper.create().select("2 as c1"))
+                .unionAll(QueryWrapper.create().select("3 as c1")))
+            .as("t");
+
+       Assert.assertTrue(query1.toSQL().equals(demo1));
+
+
+        String demo2 = "SELECT c1 FROM ((SELECT 1 as c1 FROM dual) UNION ALL (SELECT 2 as c1 FROM dual) UNION ALL " +
+            "(SELECT 3 as c1 FROM dual)) AS `t`";
+
+        QueryWrapper query2 = QueryWrapper.create()
+            .select("c1")
+            .from(QueryWrapper.create().select("1 as c1").from("dual")
+                .unionAll(QueryWrapper.create().select("2 as c1").from("dual"))
+                .unionAll(QueryWrapper.create().select("3 as c1").from("dual")))
+            .as("t");
+
+        Assert.assertTrue(query2.toSQL().equals(demo2));
+    }
+
 }
