@@ -61,6 +61,11 @@ public class EntityConfig implements Serializable {
     private boolean overwriteEnable;
 
     /**
+     * 生成Base类时是否覆盖之前生成的文件。
+     */
+    private boolean baseOverwriteEnable;
+
+    /**
      * Entity 默认实现的接口。
      */
     private Class<?>[] implInterfaces = {Serializable.class};
@@ -225,6 +230,21 @@ public class EntityConfig implements Serializable {
      */
     public EntityConfig setOverwriteEnable(boolean overwriteEnable) {
         this.overwriteEnable = overwriteEnable;
+        return this;
+    }
+
+    /**
+     * 生成Base类时是否覆盖原有文件。
+     */
+    public boolean isBaseOverwriteEnable() {
+        return baseOverwriteEnable;
+    }
+
+    /**
+     * 设置生成Base类时是否覆盖原有文件。
+     */
+    public EntityConfig setBaseOverwriteEnable(boolean baseOverwriteEnable) {
+        this.baseOverwriteEnable = baseOverwriteEnable;
         return this;
     }
 

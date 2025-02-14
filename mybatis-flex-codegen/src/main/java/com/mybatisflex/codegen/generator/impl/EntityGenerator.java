@@ -139,7 +139,9 @@ public class EntityGenerator implements IGenerator {
 
         File baseEntityJavaFile = new File(sourceDir, baseEntityPackagePath + "/" + baseEntityClassName + globalConfig.getFileType());
 
-
+        if (baseEntityJavaFile.exists() && !entityConfig.isBaseOverwriteEnable()) {
+            return;
+        }
         // 排除忽略列
         if (globalConfig.getStrategyConfig().getIgnoreColumns() != null) {
             table.getColumns().removeIf(column -> globalConfig.getStrategyConfig().getIgnoreColumns().contains(column.getName().toLowerCase()));
