@@ -987,6 +987,34 @@ public class GlobalConfig implements Serializable {
     }
 
     /**
+     * @see EntityConfig#isLombokNoArgsConstructorEnable()
+     */
+    public boolean isEntityLombokNoArgsConstructorEnable() {
+        return getEntityConfig().isLombokNoArgsConstructorEnable();
+    }
+
+    /**
+     * @see EntityConfig#setLombokNoArgsConstructorEnable(boolean)
+     */
+    public EntityConfig setEntityLombokNoArgsConstructorEnable(boolean entityLombokNoArgsConstructorEnable) {
+        return getEntityConfig().setLombokNoArgsConstructorEnable(entityLombokNoArgsConstructorEnable);
+    }
+
+    /**
+     * @see EntityConfig#isLombokAllArgsConstructorEnable()
+     */
+    public boolean isEntityLombokAllArgsConstructorEnable() {
+        return getEntityConfig().isLombokAllArgsConstructorEnable();
+    }
+
+    /**
+     * @see EntityConfig#setLombokAllArgsConstructorEnable(boolean)
+     */
+    public EntityConfig setEntityLombokAllArgsConstructorEnable(boolean entityLombokAllArgsConstructorEnable) {
+        return getEntityConfig().setLombokAllArgsConstructorEnable(entityLombokAllArgsConstructorEnable);
+    }
+
+    /**
      * @see EntityConfig#isWithSwagger()
      */
     public boolean isEntityWithSwagger() {
