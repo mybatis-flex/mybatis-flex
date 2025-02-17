@@ -3,8 +3,17 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.10.8 20250217
+- 新增：代码生成器 GlobalConfig 添加 setEntityWithBaseClassEnable 设置，感谢 @coder-xiaomo
+- 新增：代码生成器生成 entity base 时支持设置是否覆盖已有文件，感谢 @coder-xiaomo
+- 新增：QueryWrapper 支持常量查询，感谢 @weichangming
+- 优化：代码生成器 setAuthor 和 setSince 方法传入空字符串时，不添加注释 @author, @since 部分，感谢 @coder-xiaomo
+- 修复：在不使用 mybatis-flex-processor 模块时，会出现 StrUtil 找不到的问题，感谢 @codetangxin
+- 修复：TenantFactory.withoutTenantCondition 在修改时无效的问题，感谢 @codetangxin
+
+
+
 ## v1.10.7 20250210
-- 修复：在不使用 mybatis-flex-processor 模块时，会出现 StrUtil 找不到的问题
 - 修复：代码生成器 Controller 代码生成格式和详情无法生成文档的问题
 
 
