@@ -202,7 +202,7 @@ public class AccountNativeTest implements WithAssertions {
         queryWrapper.where(Account::getId).ge(100)
             .and(Account::getUserName).like("michael")
             .or(Account::getUserName).like(null, If::notNull);
-        String expectSql = "SELECT * FROM  WHERE `id` >= 100 AND `user_name` LIKE '%michael%'";
+        String expectSql = "SELECT * WHERE `id` >= 100 AND `user_name` LIKE '%michael%'";
         assertThat(queryWrapper.toSQL()).isEqualTo(expectSql);
     }
 
