@@ -26,10 +26,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 #else
+#if(entityConfig.isLombokAllArgsConstructorEnable())
 import lombok.AllArgsConstructor;
+#end
 import lombok.Builder;
 import lombok.Data;
+#if(entityConfig.isLombokNoArgsConstructorEnable())
 import lombok.NoArgsConstructor;
+#end
 #end
 #end
 #if(jdkVersion >= 14)
@@ -56,8 +60,12 @@ import java.io.Serial;
 #else
 @Data
 @Builder
+#if(entityConfig.isLombokNoArgsConstructorEnable())
 @NoArgsConstructor
+#end
+#if(entityConfig.isLombokAllArgsConstructorEnable())
 @AllArgsConstructor
+#end
 #end
 #end
 #if(withSwagger && swaggerVersion.getName() == "FOX")
