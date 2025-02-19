@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.datasource;
 
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DbTypeUtil;
 import com.mybatisflex.core.transaction.TransactionContext;
@@ -30,7 +31,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -182,7 +187,7 @@ public class FlexDataSource extends AbstractDataSource {
         } catch (SQLException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Error resetting autoCommit to true before closing the connection. " +
-                    "Cause: " + e);
+                          "Cause: " + e);
             }
         }
     }
@@ -217,19 +222,43 @@ public class FlexDataSource extends AbstractDataSource {
         return (iface.isInstance(this) || getDataSource().isWrapperFor(iface));
     }
 
+    /**
+     * 获取数据源缺失处理器。
+     * @return DataSourceMissingHandler 数据源缺失处理器实例，用于自定义处理逻辑（如：记录日志、抛出异常或提供默认数据源）。
+     */
+    public DataSourceMissingHandler getDataSourceMissingHandler() {
+        return FlexGlobalConfig.getDefaultConfig().getDataSourceMissingHandler();
+    }
 
     protected DataSource getDataSource() {
         DataSource dataSource = defaultDataSource;
+        DataSourceMissingHandler dataSourceMissingHandler = getDataSourceMissingHandler();
+
         if (dataSourceMap.size() > 1) {
             String dataSourceKey = DataSourceKey.get();
+
             if (StringUtil.hasText(dataSourceKey)) {
-                //负载均衡 key
+                // 负载均衡 key
                 if (dataSourceKey.charAt(dataSourceKey.length() - 1) == LOAD_BALANCE_KEY_SUFFIX) {
                     String prefix = dataSourceKey.substring(0, dataSourceKey.length() - 1);
                     List<String> matchedKeys = new ArrayList<>();
+
                     for (String key : dataSourceMap.keySet()) {
                         if (key.startsWith(prefix)) {
                             matchedKeys.add(key);
+                        }
+                    }
+
+                    // 当找不到匹配的 key 时，尝试后备匹配
+                    if (matchedKeys.isEmpty() && dataSourceMissingHandler != null) {
+                        Map<String, DataSource> dsMap = dataSourceMissingHandler.handle(dataSourceKey, dataSourceMap);
+
+                        if (dsMap != null && !dsMap.isEmpty()) {
+                            for (String key : dsMap.keySet()) {
+                                if (key.startsWith(prefix)) {
+                                    matchedKeys.add(key);
+                                }
+                            }
                         }
                     }
 
@@ -238,17 +267,29 @@ public class FlexDataSource extends AbstractDataSource {
                     }
 
                     String randomKey = matchedKeys.get(ThreadLocalRandom.current().nextInt(matchedKeys.size()));
+
                     return dataSourceMap.get(randomKey);
                 }
-                //非负载均衡 key
+                // 非负载均衡 key
                 else {
                     dataSource = dataSourceMap.get(dataSourceKey);
+
+                    // 当找不到匹配的 key 时，尝试后备匹配
+                    if (dataSource == null && dataSourceMissingHandler != null) {
+                        Map<String, DataSource> dsMap = dataSourceMissingHandler.handle(dataSourceKey, dataSourceMap);
+
+                        if (dsMap != null && !dsMap.isEmpty()) {
+                            dataSource = dsMap.get(dataSourceKey);
+                        }
+                    }
+
                     if (dataSource == null) {
                         throw new IllegalStateException("Cannot get target dataSource by key: \"" + dataSourceKey + "\"");
                     }
                 }
             }
         }
+
         return dataSource;
     }
 
@@ -267,11 +308,11 @@ public class FlexDataSource extends AbstractDataSource {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (ArrayUtil.contains(proxyMethods, method.getName())
                 && isTransactional()) {
-                //do nothing
+                // do nothing
                 return null;
             }
 
-            //setAutoCommit: true
+            // setAutoCommit: true
             if ("close".equalsIgnoreCase(method.getName())) {
                 resetAutoCommit(original);
             }
