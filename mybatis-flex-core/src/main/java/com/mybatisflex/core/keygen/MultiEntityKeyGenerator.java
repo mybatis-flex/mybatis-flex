@@ -22,6 +22,7 @@ import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.mapping.MappedStatement;
 
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class MultiEntityKeyGenerator implements KeyGenerator {
 
     @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
-        List<Object> entities = (List<Object>) ((Map) parameter).get(FlexConsts.ENTITIES);
+        Collection<Object> entities = (Collection<Object>) ((Map) parameter).get(FlexConsts.ENTITIES);
         if (CollectionUtil.isNotEmpty(entities)) {
             for (Object entity : entities) {
                 ((Map) parameter).put(FlexConsts.ENTITY, entity);
