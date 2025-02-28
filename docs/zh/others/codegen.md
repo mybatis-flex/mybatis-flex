@@ -306,6 +306,8 @@ globalConfig.getTemplateConfig()
 | setEntityBaseOverwriteEnable(boolean)        | 生成Base类时是否覆盖之前生成的文件                           | false              |
 | setImplInterfaces(Class[])                   | Entity 默认实现的接口                                    | Serializable.class |
 | setWithLombok(boolean)                       | Entity 是否使用 Lombok 注解                             | false              |
+| lombokNoArgsConstructorEnable(boolean)       | 当开启 Lombok 注解且不使用 Active Record 时，是否生成 Entity @NoArgsConstructor 注解 | true              |
+| lombokAllArgsConstructorEnable(boolean)      | 当开启 Lombok 注解且不使用 Active Record 时，是否生成 Entity @AllArgsConstructor 注解 | true              |
 | setWithSwagger(boolean)                      | Entity 是否使用 Swagger 注解                            | false              |
 | setSwaggerVersion(EntityConfig.SwaggerVersion) | Swagger 注解版本                                      | SwaggerVersion.FOX |
 | setWithActiveRecord(boolean)                 | 是否生成 Active Record 模式的 Entity                     | false              |
