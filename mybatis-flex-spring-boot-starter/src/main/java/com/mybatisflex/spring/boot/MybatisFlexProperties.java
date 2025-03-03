@@ -823,6 +823,10 @@ public class MybatisFlexProperties {
          */
         private String versionColumn;
 
+        /**
+         * 全局忽略 @Table 中配置的 schema
+         */
+        private boolean ignoreSchema = false;
 
         public boolean isPrintBanner() {
             return printBanner;
@@ -896,6 +900,14 @@ public class MybatisFlexProperties {
             this.versionColumn = versionColumn;
         }
 
+        public boolean isIgnoreSchema() {
+            return ignoreSchema;
+        }
+
+        public void setIgnoreSchema(boolean ignoreSchema) {
+            this.ignoreSchema = ignoreSchema;
+        }
+
         void applyTo(FlexGlobalConfig target) {
             PropertyMapper mapper = PropertyMapper.get().alwaysApplyingWhenNonNull();
             mapper.from(isPrintBanner()).to(target::setPrintBanner);
@@ -907,6 +919,7 @@ public class MybatisFlexProperties {
             mapper.from(getLogicDeleteColumn()).to(target::setLogicDeleteColumn);
             mapper.from(getVersionColumn()).to(target::setVersionColumn);
             mapper.from(getTenantColumn()).to(target::setTenantColumn);
+            mapper.from(isIgnoreSchema()).to(target::setIgnoreSchema);
         }
 
     }
