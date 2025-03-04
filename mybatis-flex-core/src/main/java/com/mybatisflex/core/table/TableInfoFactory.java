@@ -235,6 +235,8 @@ public class TableInfoFactory {
         Reflector reflector = Reflectors.of(entityClass);
         tableInfo.setReflector(reflector);
 
+        FlexGlobalConfig config = FlexGlobalConfig.getDefaultConfig();
+
         // 初始化表名
         Table table = entityClass.getAnnotation(Table.class);
         if (table == null) {
@@ -242,7 +244,9 @@ public class TableInfoFactory {
             if (vo != null) {
                 TableInfo refTableInfo = ofEntityClass(vo.value());
                 // 设置 VO 类对应的真实的表名
-                tableInfo.setSchema(refTableInfo.getSchema());
+                if (!config.isIgnoreSchema()) {
+                    tableInfo.setSchema(refTableInfo.getSchema());
+                }
                 tableInfo.setTableName(refTableInfo.getTableName());
                 // 将 @Table 注解的属性复制到 VO 类当中
                 if (vo.copyTableProps()) {
@@ -260,7 +264,9 @@ public class TableInfoFactory {
                 tableInfo.setTableName(tableName);
             }
         } else {
-            tableInfo.setSchema(table.schema());
+            if (!config.isIgnoreSchema()) {
+                tableInfo.setSchema(table.schema());
+            }
             tableInfo.setTableName(table.value());
             tableInfo.setCamelToUnderline(table.camelToUnderline());
             tableInfo.setComment(table.comment());
@@ -316,8 +322,6 @@ public class TableInfoFactory {
         Set<String> defaultQueryColumns = new LinkedHashSet<>();
 
         List<Field> entityFields = getColumnFields(entityClass);
-
-        FlexGlobalConfig config = FlexGlobalConfig.getDefaultConfig();
 
         TypeHandlerRegistry typeHandlerRegistry = null;
         if (config.getConfiguration() != null) {

@@ -111,6 +111,11 @@ public class FlexGlobalConfig {
     private String versionColumn;
 
     /**
+     * 全局忽略 @Table 中配置的 schema
+     */
+    private boolean ignoreSchema = false;
+
+    /**
      * 未匹配列处理器
      */
     private UnMappedColumnHandler unMappedColumnHandler;
@@ -327,6 +332,14 @@ public class FlexGlobalConfig {
 
     public void setVersionColumn(String versionColumn) {
         this.versionColumn = versionColumn;
+    }
+
+    public boolean isIgnoreSchema() {
+        return ignoreSchema;
+    }
+
+    public void setIgnoreSchema(boolean ignoreSchema) {
+        this.ignoreSchema = ignoreSchema;
     }
 
     public UnMappedColumnHandler getUnMappedColumnHandler() {
