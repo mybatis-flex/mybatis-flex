@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.dialect;
 
+import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.table.TableInfo;
@@ -63,6 +64,10 @@ public interface IDialect {
     String forSelectByQuery(QueryWrapper queryWrapper);
 
     String buildSelectSql(QueryWrapper queryWrapper);
+
+    default String buildSelectSql(QueryWrapper queryWrapper, List<QueryTable> contextTables) {
+        return buildSelectSql(queryWrapper);
+    }
 
     String buildNoSelectSql(QueryWrapper queryWrapper);
 
