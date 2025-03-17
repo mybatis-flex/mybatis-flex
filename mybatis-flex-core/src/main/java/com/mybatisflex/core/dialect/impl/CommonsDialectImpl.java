@@ -395,10 +395,16 @@ public class CommonsDialectImpl implements IDialect {
     ////////////build query sql///////
     @Override
     public String buildSelectSql(QueryWrapper queryWrapper) {
+        return buildSelectSql(queryWrapper, Collections.emptyList());
+    }
+
+    @Override
+    public String buildSelectSql(QueryWrapper queryWrapper, List<QueryTable> contextTables) {
         List<QueryTable> queryTables = CPI.getQueryTables(queryWrapper);
 
         List<QueryTable> joinTables = CPI.getJoinTables(queryWrapper);
         List<QueryTable> allTables = CollectionUtil.merge(queryTables, joinTables);
+        allTables = CollectionUtil.merge(allTables, contextTables);
 
         List<QueryColumn> selectColumns = CPI.getSelectColumns(queryWrapper);
 

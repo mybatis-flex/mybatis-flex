@@ -400,7 +400,7 @@ public class AccountSqlTester {
 
         Assert.assertEquals("SELECT * FROM `tb_account` " +
                 "WHERE `id` >= 100 " +
-                "AND EXISTS (SELECT 1 AS `temp_one` FROM `tb_article` AS `a` WHERE `id` >= 100)"
+                "AND EXISTS (SELECT 1 AS `temp_one` FROM `tb_article` AS `a` WHERE `a`.`id` >= 100)"
             , query.toSQL());
 
         System.out.println(query.toSQL());
