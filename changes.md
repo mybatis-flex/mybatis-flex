@@ -2,6 +2,14 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.10.9 20250319
+- 新增: 代码生成器支持配置 entity 类 lombok 注解生成 (@NoArgsConstructor, @AllArgsConstructor)，感谢 @coder-xiaomo
+- 新增：增加全局忽略 schema 配置的支持，感谢 @cui
+- 修复：MultiEntityKeyGenerator 不支持 set 设置的问题，感谢 @zhb
+- 修复：exists 条件中的表别名和父查询保持一致的问题，感谢 @cybzzz
+- 修复：修复在 diaelct 中去调用 Db 工具时可能出现类型转换错误的问题
+
+
 
 ## v1.10.8 20250217
 - 新增：代码生成器 GlobalConfig 添加 setEntityWithBaseClassEnable 设置，感谢 @coder-xiaomo
