@@ -16,6 +16,10 @@
 package com.mybatisflex.core.dialect;
 
 
+import com.mybatisflex.core.util.StringUtil;
+
+import java.util.Arrays;
+
 public enum DbType {
 
     /**
@@ -262,5 +266,22 @@ public enum DbType {
 
     public String getName() {
         return name;
+    }
+
+    /**
+     * 根据数据库类型名称自动识别数据库类型
+     *
+     * @param name 名称
+     * @return 数据库类型
+     */
+    public static DbType findByName(String name) {
+        if (StringUtil.noText(name)) {
+            return null;
+        }
+
+        return Arrays.stream(values())
+            .filter(em -> em.getName().equalsIgnoreCase(name))
+            .findFirst()
+            .orElse(null);
     }
 }
