@@ -15,6 +15,7 @@
  */
 package com.mybatisflex.core.row;
 
+import com.mybatisflex.core.mybatis.MappedStatementTypes;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.executor.BatchResult;
@@ -36,10 +37,21 @@ public class RowMapperInvoker {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
-    private <R> R execute(Function<RowMapper, R> function) {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
-            RowMapper mapper = sqlSession.getMapper(RowMapper.class);
-            return function.apply(mapper);
+    protected <R> R execute(Function<RowMapper, R> function) {
+        Class<?> currentType = MappedStatementTypes.getCurrentType();
+        if (currentType == null) {
+            try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
+                RowMapper mapper = sqlSession.getMapper(RowMapper.class);
+                return function.apply(mapper);
+            }
+        } else {
+            MappedStatementTypes.clear();
+            try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
+                RowMapper mapper = sqlSession.getMapper(RowMapper.class);
+                return function.apply(mapper);
+            } finally {
+                MappedStatementTypes.setCurrentType(currentType);
+            }
         }
     }
 
@@ -115,7 +127,6 @@ public class RowMapperInvoker {
     }
 
 
-
     public <M> int[] executeBatch(int totalSize, int batchSize, Class<M> mapperClass, BiConsumer<M, Integer> consumer) {
         int[] results = new int[totalSize];
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, true)) {
@@ -189,12 +200,15 @@ public class RowMapperInvoker {
     public List<Row> selectAll(String schema, String tableName) {
         return execute(mapper -> mapper.selectAll(schema, tableName));
     }
+
     public Map selectFirstAndSecondColumnsAsMapByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
         return execute(mapper -> mapper.selectFirstAndSecondColumnsAsMapByQuery(schema, tableName, queryWrapper));
     }
+
     public Map selectFirstAndSecondColumnsAsMap(String sql, Object... args) {
         return execute(mapper -> mapper.selectFirstAndSecondColumnsAsMap(sql, args));
     }
+
     public Object selectObjectByQuery(String schema, String tableName, QueryWrapper queryWrapper) {
         return execute(mapper -> mapper.selectObjectByQuery(schema, tableName, queryWrapper));
     }
