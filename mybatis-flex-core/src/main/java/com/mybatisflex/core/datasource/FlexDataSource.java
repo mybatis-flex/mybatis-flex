@@ -53,16 +53,23 @@ public class FlexDataSource extends AbstractDataSource {
     }
 
     public FlexDataSource(String dataSourceKey, DataSource dataSource, boolean needDecryptDataSource) {
+        this(dataSourceKey, dataSource, DbTypeUtil.getDbType(dataSource), needDecryptDataSource);
+    }
+
+    public FlexDataSource(String dataSourceKey, DataSource dataSource, DbType dbType, boolean needDecryptDataSource){
         if (needDecryptDataSource) {
             DataSourceManager.decryptDataSource(dataSource);
         }
 
+        // 处理dbType
+        dbType = Optional.ofNullable(dbType).orElse(DbTypeUtil.getDbType(dataSource));
+
         this.defaultDataSourceKey = dataSourceKey;
         this.defaultDataSource = dataSource;
-        this.defaultDbType = DbTypeUtil.getDbType(dataSource);
+        this.defaultDbType = dbType;
 
         dataSourceMap.put(dataSourceKey, dataSource);
-        dbTypeHashMap.put(dataSourceKey, defaultDbType);
+        dbTypeHashMap.put(dataSourceKey, dbType);
     }
 
     /**
@@ -71,26 +78,37 @@ public class FlexDataSource extends AbstractDataSource {
     public void setDefaultDataSource(String dataSourceKey) {
         DataSource ds = dataSourceMap.get(dataSourceKey);
 
-        if (ds != null) {
-            this.defaultDataSourceKey = dataSourceKey;
-            this.defaultDataSource = ds;
-            this.defaultDbType = DbTypeUtil.getDbType(ds);
-        } else {
+        if (Objects.isNull(ds)) {
             throw new IllegalStateException("DataSource not found by key: \"" + dataSourceKey + "\"");
         }
+
+        // 优先取缓存，否则根据数据源返回数据库类型
+        DbType dbType = Optional.ofNullable(dbTypeHashMap.get(dataSourceKey))
+            .orElse(DbTypeUtil.getDbType(ds));
+
+        this.defaultDataSourceKey = dataSourceKey;
+        this.defaultDataSource = ds;
+        this.defaultDbType = dbType;
     }
 
     public void addDataSource(String dataSourceKey, DataSource dataSource) {
         addDataSource(dataSourceKey, dataSource, true);
     }
 
-
     public void addDataSource(String dataSourceKey, DataSource dataSource, boolean needDecryptDataSource) {
+        addDataSource(dataSourceKey, dataSource, DbTypeUtil.getDbType(dataSource), needDecryptDataSource);
+    }
+
+    public void addDataSource(String dataSourceKey, DataSource dataSource, DbType dbType,boolean needDecryptDataSource) {
         if (needDecryptDataSource) {
             DataSourceManager.decryptDataSource(dataSource);
         }
+
+        dbType = Optional.ofNullable(dbTypeHashMap.get(dataSourceKey))
+            .orElse(DbTypeUtil.getDbType(dataSource));
+
         dataSourceMap.put(dataSourceKey, dataSource);
-        dbTypeHashMap.put(dataSourceKey, DbTypeUtil.getDbType(dataSource));
+        dbTypeHashMap.put(dataSourceKey, dbType);
     }
 
 

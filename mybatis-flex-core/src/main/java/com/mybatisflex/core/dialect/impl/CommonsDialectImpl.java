@@ -19,6 +19,7 @@ import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.dialect.KeywordWrap;
 import com.mybatisflex.core.dialect.LimitOffsetProcessor;
 import com.mybatisflex.core.dialect.OperateType;
+import com.mybatisflex.core.exception.FlexAssert;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.logicdelete.LogicDeleteManager;
@@ -40,12 +41,7 @@ import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -195,6 +191,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forDeleteById(String schema, String tableName, String[] primaryKeys) {
+        assertPrimaryKeysNotEmpty(primaryKeys);
         String table = getRealTable(tableName, OperateType.DELETE);
         StringBuilder sql = new StringBuilder();
         sql.append(DELETE_FROM);
@@ -216,6 +213,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forDeleteBatchByIds(String schema, String tableName, String[] primaryKeys, Object[] ids) {
+        assertPrimaryKeysNotEmpty(primaryKeys);
         String table = getRealTable(tableName, OperateType.DELETE);
         StringBuilder sql = new StringBuilder();
         sql.append(DELETE_FROM);
@@ -268,6 +266,7 @@ public class CommonsDialectImpl implements IDialect {
         Set<String> modifyAttrs = RowCPI.getModifyAttrs(row);
         Map<String, RawValue> rawValueMap = RowCPI.getRawValueMap(row);
         String[] primaryKeys = RowCPI.obtainsPrimaryKeyStrings(row);
+        assertPrimaryKeysNotEmpty(primaryKeys);
 
         sql.append(UPDATE);
         if (StringUtil.hasText(schema)) {
@@ -369,6 +368,7 @@ public class CommonsDialectImpl implements IDialect {
 
     @Override
     public String forSelectOneById(String schema, String tableName, String[] primaryKeys, Object[] primaryValues) {
+        assertPrimaryKeysNotEmpty(primaryKeys);
         String table = getRealTable(tableName, OperateType.SELECT);
         StringBuilder sql = new StringBuilder(SELECT_ALL_FROM);
         if (StringUtil.hasText(schema)) {
@@ -701,16 +701,17 @@ public class CommonsDialectImpl implements IDialect {
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
+        String[] primaryKeys = tableInfo.getPrimaryColumns();
+        assertPrimaryKeysNotEmpty(primaryKeys);
+
         // 正常删除
         if (StringUtil.noText(logicDeleteColumn)) {
-            String deleteByIdSql = forDeleteById(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryColumns());
+            String deleteByIdSql = forDeleteById(tableInfo.getSchema(), tableInfo.getTableName(), primaryKeys);
             return tableInfo.buildTenantCondition(deleteByIdSql, tenantIdArgs, this);
         }
 
         // 逻辑删除
         StringBuilder sql = new StringBuilder();
-        String[] primaryKeys = tableInfo.getPrimaryColumns();
-
         sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.UPDATE));
         sql.append(SET).append(buildLogicDeletedSet(logicDeleteColumn, tableInfo));
         sql.append(WHERE);
@@ -735,9 +736,12 @@ public class CommonsDialectImpl implements IDialect {
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
 
+        String[] primaryKeys = tableInfo.getPrimaryColumns();
+        assertPrimaryKeysNotEmpty(primaryKeys);
+
         // 正常删除
         if (StringUtil.noText(logicDeleteColumn)) {
-            String deleteSQL = forDeleteBatchByIds(tableInfo.getSchema(), tableInfo.getTableName(), tableInfo.getPrimaryColumns(), primaryValues);
+            String deleteSQL = forDeleteBatchByIds(tableInfo.getSchema(), tableInfo.getTableName(), primaryKeys, primaryValues);
 
             // 多租户
             if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
@@ -753,8 +757,6 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(SET).append(buildLogicDeletedSet(logicDeleteColumn, tableInfo));
         sql.append(WHERE);
         sql.append(BRACKET_LEFT);
-
-        String[] primaryKeys = tableInfo.getPrimaryColumns();
 
         // 多主键的场景
         if (primaryKeys.length > 1) {
@@ -832,6 +834,7 @@ public class CommonsDialectImpl implements IDialect {
         Set<String> updateColumns = tableInfo.obtainUpdateColumns(entity, ignoreNulls, false);
         Map<String, RawValue> rawValueMap = tableInfo.obtainUpdateRawValueMap(entity);
         String[] primaryKeys = tableInfo.getPrimaryColumns();
+        assertPrimaryKeysNotEmpty(primaryKeys);
 
         sql.append(UPDATE).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.UPDATE)).append(SET);
 
@@ -966,6 +969,8 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.SELECT));
         sql.append(WHERE);
         String[] pKeys = tableInfo.getPrimaryColumns();
+        assertPrimaryKeysNotEmpty(pKeys);
+
         for (int i = 0; i < pKeys.length; i++) {
             if (i > 0) {
                 sql.append(AND);
@@ -994,6 +999,7 @@ public class CommonsDialectImpl implements IDialect {
         sql.append(FROM).append(tableInfo.getWrapSchemaAndTableName(this, OperateType.SELECT));
         sql.append(WHERE);
         String[] primaryKeys = tableInfo.getPrimaryColumns();
+        assertPrimaryKeysNotEmpty(primaryKeys);
 
         String logicDeleteColumn = tableInfo.getLogicDeleteColumnOrSkip();
         Object[] tenantIdArgs = tableInfo.buildTenantIdArgs();
@@ -1138,5 +1144,14 @@ public class CommonsDialectImpl implements IDialect {
         return LogicDeleteManager.getProcessor().buildLogicDeletedSet(logicColumn, tableInfo, this);
     }
 
-
+    /**
+     * 断言主键非空
+     *
+     * @param primaryKeys 主键
+     */
+    protected void assertPrimaryKeysNotEmpty(String[] primaryKeys) {
+        if (Objects.isNull(primaryKeys) || primaryKeys.length == 0 || Arrays.stream(primaryKeys).allMatch(String::isEmpty)) {
+            throw FlexExceptions.wrap("primary key not recognized! Please check the @com.mybatisflex.annotation.Id annotation");
+        }
+    }
 }
