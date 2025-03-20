@@ -579,7 +579,7 @@ public class ColumnConfig implements Serializable {
 ```
 
 
-## 自定 Entity 的义属性类型
+## 自定义 Entity 的属性类型
 
 **方式 1：通过 JdbcTypeMapping**
 
