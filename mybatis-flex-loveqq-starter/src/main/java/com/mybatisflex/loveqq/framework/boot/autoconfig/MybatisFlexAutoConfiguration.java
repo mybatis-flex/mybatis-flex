@@ -189,6 +189,7 @@ public class MybatisFlexAutoConfiguration implements InitializingBean {
      * @param dataSource 数据源
      * @return 事务管理器
      */
+    @ConditionalOnMybatisFlexDatasource
     @Bean(resolveNested = false, independent = true)
     public PlatformTransactionManager flexDataSourceTransactionManager(DataSource dataSource) {
         return new FlexTransactionManager();

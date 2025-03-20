@@ -80,7 +80,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean {
     }
 
     @Override
-    protected void buildMapperLocations() {
+    protected void buildMapperLocations(Configuration configuration) {
         // mybatis-flex 要延迟加载
     }
 
@@ -92,7 +92,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean {
     @Override
     protected SqlSessionFactory build(Configuration configuration) {
         SqlSessionFactory sqlSessionFactory = new FlexSqlSessionFactoryBuilder().build(configuration);
-        super.buildMapperLocations();
+        super.buildMapperLocations(configuration);
         return sqlSessionFactory;
     }
 }
