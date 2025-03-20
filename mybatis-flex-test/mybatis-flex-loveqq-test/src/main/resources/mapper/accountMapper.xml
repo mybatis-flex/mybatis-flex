@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mybatisflex.loveqq.test.mapper.MyAccountMapper">
+
+<!--    <resultMap id="testResultMap" type="com.mybatisflex.test.model.UserVO">-->
+<!--        <id column="user_id" property="userId"/>-->
+<!--        <result column="user_name" property="userName"/>-->
+<!--        <collection property="roleList" ofType="com.mybatisflex.test.model.Role">-->
+<!--            <id column="role_id" property="roleId"/>-->
+<!--            <result column="role_key" property="roleKey"/>-->
+<!--            <result column="role_name" property="roleName"/>-->
+<!--        </collection>-->
+<!--        <association property="role" javaType="com.mybatisflex.test.model.Role">-->
+<!--            <id column="role_id" property="roleId"/>-->
+<!--            <result column="role_key" property="roleKey"/>-->
+<!--            <result column="role_name" property="roleName"/>-->
+<!--        </association>-->
+<!--    </resultMap>-->
+
+    <!-- selectByName -->
+    <select id="selectByName" resultType="com.mybatisflex.loveqq.test.model.AccountDto">
+        select * from `tb_account` ${qwSql} limit ${pageOffset}, ${pageSize}
+    </select>
+
+    <select id="selectByName_COUNT" resultType="long">
+        select count(*) from `tb_account` ${qwSql}
+    </select>
+
+    <resultMap id="AccountViewObject" type="com.mybatisflex.loveqq.test.model.AccountView">
+        <id property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="birthday" column="birthday"/>
+        <association property="accountList" column="id" select="selectAssociation"/>
+    </resultMap>
+
+    <select id="selectViewObject" resultMap="AccountViewObject">
+        select id, user_name, birthday from tb_account where id = 1
+    </select>
+
+    <select id="selectAssociation" resultType="com.mybatisflex.loveqq.test.model.Account">
+        select * from tb_account where id = #{id}
+    </select>
+
+</mapper>

@@ -20,6 +20,7 @@
         <module>mybatis-flex-spring-boot-test</module>
         <module>mybatis-flex-spring-cloud-test</module>
 <!--        <module>mybatis-flex-solon-test</module>-->
+        <module>mybatis-flex-loveqq-test</module>
     </modules>
 
     <properties>

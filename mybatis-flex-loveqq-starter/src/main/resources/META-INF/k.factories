@@ -1,0 +1,4 @@
+com.kfyty.loveqq.framework.core.autoconfig.annotation.EnableAutoConfiguration=\
+    com.mybatisflex.loveqq.framework.boot.autoconfig.MybatisFlexProperties,\
+    com.mybatisflex.loveqq.framework.boot.autoconfig.MybatisFlexAutoConfiguration,\
+    com.mybatisflex.loveqq.framework.boot.autoconfig.MybatisFlexAdminAutoConfiguration
