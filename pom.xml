@@ -55,6 +55,7 @@
         <module>mybatis-flex-spring-boot-starter</module>
         <module>mybatis-flex-spring-boot3-starter</module>
         <module>mybatis-flex-solon-plugin</module>
+        <module>mybatis-flex-loveqq-starter</module>
         <module>mybatis-flex-test</module>
         <module>mybatis-flex-processor</module>
     </modules>
@@ -77,7 +78,9 @@
         <spring.version>5.3.27</spring.version>
         <spring-boot.version>2.7.11</spring-boot.version>
         <solon.version>3.0.1</solon.version>
+        <loveqq.version>1.1.0-java8</loveqq.version>
 
+        <lombok.version>1.18.30</lombok.version>
         <junit.version>4.13.2</junit.version>
         <testcontainers.version>1.19.3</testcontainers.version>
         <maven-flatten.version>1.5.0</maven-flatten.version>
