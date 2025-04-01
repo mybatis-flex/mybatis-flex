@@ -70,18 +70,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -867,11 +856,16 @@ public class TableInfo {
 
     public void buildTenantCondition(QueryWrapper queryWrapper) {
         Object[] tenantIdArgs = buildTenantIdArgs();
+        // 优先使用 join 表的 alias
+        String tableAlias =
+            Optional.ofNullable(CPI.getContext(queryWrapper).get("joinTableAlias"))
+                .map(String::valueOf)
+                .orElse(tableName);
         if (ArrayUtil.isNotEmpty(tenantIdArgs)) {
             if (tenantIdArgs.length == 1) {
-                queryWrapper.where(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.EQUALS, tenantIdArgs[0]));
+                queryWrapper.where(QueryCondition.create(schema, tableAlias, tenantIdColumn, SqlConsts.EQUALS, tenantIdArgs[0]));
             } else {
-                queryWrapper.where(QueryCondition.create(schema, tableName, tenantIdColumn, SqlConsts.IN, tenantIdArgs));
+                queryWrapper.where(QueryCondition.create(schema, tableAlias, tenantIdColumn, SqlConsts.IN, tenantIdArgs));
             }
         }
     }
