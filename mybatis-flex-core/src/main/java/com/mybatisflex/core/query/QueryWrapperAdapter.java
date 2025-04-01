@@ -867,7 +867,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public R ge(String column, Object value) {
-        and(QueryMethods.column(column).ge_(value));
+        and(QueryMethods.column(column).ge(value));
         return (R) this;
     }
 
@@ -879,7 +879,7 @@ public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends Query
      */
     @Override
     public <T> R ge(LambdaGetter<T> column, Object value) {
-        and(QueryMethods.column(column).ge_(value));
+        and(QueryMethods.column(column).ge(value));
         return (R) this;
     }
 
