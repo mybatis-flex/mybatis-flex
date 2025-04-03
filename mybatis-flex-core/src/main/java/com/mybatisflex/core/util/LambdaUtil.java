@@ -35,6 +35,10 @@ public class LambdaUtil {
     private static final Map<Class<?>, Class<?>> implClassMap = new ConcurrentHashMap<>();
     private static final Map<Class<?>, QueryColumn> queryColumnMap = new ConcurrentHashMap<>();
 
+    public static Map<Class<?>, String> getFieldNameMap() {
+        return fieldNameMap;
+    }
+
     public static <T> String getFieldName(LambdaGetter<T> getter) {
         return MapUtil.computeIfAbsent(fieldNameMap, getter.getClass(), aClass -> {
             SerializedLambda lambda = getSerializedLambda(getter);
