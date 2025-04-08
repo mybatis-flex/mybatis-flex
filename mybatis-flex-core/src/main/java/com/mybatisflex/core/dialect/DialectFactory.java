@@ -106,6 +106,9 @@ public class DialectFactory {
             case CSIIDB:
             case HIVE:
             case DORIS:
+            case GOLDENDB:
+            case SUNDB:
+            case YASDB:
                 return new CommonsDialectImpl(KeywordWrap.BACK_QUOTE, LimitOffsetProcessor.MYSQL);
             case CLICK_HOUSE:
                 return new ClickhouseDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.MYSQL);
@@ -131,6 +134,11 @@ public class DialectFactory {
             case UXDB:
             case LEALONE:
             case DUCKDB:
+            case GBASE_8C:
+            case GBASE_8S_PG:
+            case VASTBASE:
+            case TRINO:
+            case PRESTO:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.POSTGRESQL);
             case TDENGINE:
                 return new CommonsDialectImpl(KeywordWrap.BACK_QUOTE, LimitOffsetProcessor.POSTGRESQL);
@@ -151,8 +159,6 @@ public class DialectFactory {
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.SINODB);
             case SYBASE:
                 return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.SYBASE);
-            case TRINO:
-                return new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.SQLSERVER);
             default:
                 return new CommonsDialectImpl();
         }

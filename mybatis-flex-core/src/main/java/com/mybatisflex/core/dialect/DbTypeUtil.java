@@ -63,15 +63,15 @@ public class DbTypeUtil {
      */
     private static DbType getSqlserverDbType(DataSource dataSource) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT @@VERSION");
-             ResultSet resultSet = preparedStatement.executeQuery()) {
+                PreparedStatement preparedStatement = connection.prepareStatement("SELECT @@VERSION");
+                ResultSet resultSet = preparedStatement.executeQuery()) {
             //SELECT @@VERSION 查询返回信息：
             /*
-             Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64)
-             Sep 24 2019 13:48:23
-             Copyright (C) 2019 Microsoft Corporation
-             Enterprise Edition (64-bit) on Windows Server 2019 Datacenter 10.0 <X64> (Build 17763: ) (Hypervisor)
-             */
+            Microsoft SQL Server 2019 (RTM) - 15.0.2000.5 (X64)
+            Sep 24 2019 13:48:23
+            Copyright (C) 2019 Microsoft Corporation
+            Enterprise Edition (64-bit) on Windows Server 2019 Datacenter 10.0 <X64> (Build 17763: ) (Hypervisor)
+            */
             if (resultSet.next()) {
                 String version = resultSet.getString(1);
                 if (StringUtil.hasText(version)) {
@@ -124,86 +124,106 @@ public class DbTypeUtil {
      */
     public static DbType parseDbType(String jdbcUrl) {
         jdbcUrl = jdbcUrl.toLowerCase();
-        if (jdbcUrl.contains(":mysql:") || jdbcUrl.contains(":cobar:")) {
+        if (jdbcUrl.contains(":ch:") || jdbcUrl.contains(":clickhouse:")) {
+            return DbType.CLICK_HOUSE;
+        } else if (jdbcUrl.contains(":cobar:")) {
             return DbType.MYSQL;
-        } else if (jdbcUrl.contains(":mariadb:")) {
-            return DbType.MARIADB;
-        } else if (jdbcUrl.contains(":oracle:")) {
-            return DbType.ORACLE;
-        } else if (jdbcUrl.contains(":sqlserver2012:")) {
-            return DbType.SQLSERVER;
-        } else if (jdbcUrl.contains(":sqlserver:") || jdbcUrl.contains(":microsoft:")) {
-            return DbType.SQLSERVER_2005;
-        } else if (jdbcUrl.contains(":postgresql:")) {
-            return DbType.POSTGRE_SQL;
-        } else if (jdbcUrl.contains(":hsqldb:")) {
-            return DbType.HSQL;
+        } else if (jdbcUrl.contains(":csiidb:")) {
+            return DbType.CSIIDB;
+        } else if (jdbcUrl.contains(":cubrid:")) {
+            return DbType.CUBRID;
         } else if (jdbcUrl.contains(":db2:")) {
             return DbType.DB2;
-        } else if (jdbcUrl.contains(":sqlite:")) {
-            return DbType.SQLITE;
-        } else if (jdbcUrl.contains(":h2:")) {
-            return DbType.H2;
+        } else if (jdbcUrl.contains(":derby:")) {
+            return DbType.DERBY;
         } else if (isMatchedRegex(":dm\\d*:", jdbcUrl)) {
             return DbType.DM;
-        } else if (jdbcUrl.contains(":xugu:")) {
-            return DbType.XUGU;
-        } else if (isMatchedRegex(":kingbase\\d*:", jdbcUrl)) {
-            return DbType.KINGBASE_ES;
-        } else if (jdbcUrl.contains(":phoenix:")) {
-            return DbType.PHOENIX;
-        } else if (jdbcUrl.contains(":zenith:")) {
+        } else if (jdbcUrl.contains(":duckdb:")) {
+            return DbType.DUCKDB;
+        } else if (jdbcUrl.contains(":firebirdsql:")) {
+            return DbType.FIREBIRD;
+        } else if (jdbcUrl.contains(":gaussdb:") || jdbcUrl.contains(":zenith:")) {
             return DbType.GAUSS;
         } else if (jdbcUrl.contains(":gbase:")) {
             return DbType.GBASE;
+        } else if (jdbcUrl.contains(":gbase8c:")) {
+            return DbType.GBASE_8C;
+        } else if (jdbcUrl.contains(":gbase8s-pg:")) {
+            return DbType.GBASE_8S_PG;
         } else if (jdbcUrl.contains(":gbasedbt-sqli:") || jdbcUrl.contains(":informix-sqli:")) {
             return DbType.GBASE_8S;
-        } else if (jdbcUrl.contains(":ch:") || jdbcUrl.contains(":clickhouse:")) {
-            return DbType.CLICK_HOUSE;
-        } else if (jdbcUrl.contains(":oscar:")) {
-            return DbType.OSCAR;
-        } else if (jdbcUrl.contains(":sybase:")) {
-            return DbType.SYBASE;
-        } else if (jdbcUrl.contains(":oceanbase:")) {
-            return DbType.OCEAN_BASE;
-        } else if (jdbcUrl.contains(":highgo:")) {
-            return DbType.HIGH_GO;
-        } else if (jdbcUrl.contains(":cubrid:")) {
-            return DbType.CUBRID;
+        } else if (jdbcUrl.contains(":goldendb:")) {
+            return DbType.GOLDENDB;
         } else if (jdbcUrl.contains(":goldilocks:")) {
             return DbType.GOLDILOCKS;
-        } else if (jdbcUrl.contains(":csiidb:")) {
-            return DbType.CSIIDB;
-        } else if (jdbcUrl.contains(":sap:")) {
-            return DbType.SAP_HANA;
+        } else if (jdbcUrl.contains(":greenplum:")) {
+            return DbType.GREENPLUM;
+        } else if (jdbcUrl.contains(":h2:")) {
+            return DbType.H2;
+        } else if (jdbcUrl.contains(":highgo:")) {
+            return DbType.HIGH_GO;
+        } else if (jdbcUrl.contains(":hive2:") || jdbcUrl.contains(":inceptor2:")) {
+            return DbType.HIVE;
+        } else if (jdbcUrl.contains(":hsqldb:")) {
+            return DbType.HSQL;
         } else if (jdbcUrl.contains(":impala:")) {
             return DbType.IMPALA;
+        } else if (jdbcUrl.contains(":informix")) {
+            return DbType.INFORMIX;
+        } else if (jdbcUrl.contains(":kingbase\\d*:") && isMatchedRegex(":kingbase\\d*:", jdbcUrl)) {
+            return DbType.KINGBASE_ES;
+        } else if (jdbcUrl.contains(":lealone:")) {
+            return DbType.LEALONE;
+        } else if (jdbcUrl.contains(":mariadb:")) {
+            return DbType.MARIADB;
+        } else if (jdbcUrl.contains(":mysql:")) {
+            return DbType.MYSQL;
+        } else if (jdbcUrl.contains(":oceanbase:")) {
+            return DbType.OCEAN_BASE;
+        } else if (jdbcUrl.contains(":opengauss:")) {
+            return DbType.OPENGAUSS;
+        } else if (jdbcUrl.contains(":oracle:")) {
+            return DbType.ORACLE;
+        } else if (jdbcUrl.contains(":oscar:")) {
+            return DbType.OSCAR;
+        } else if (jdbcUrl.contains(":phoenix:")) {
+            return DbType.PHOENIX;
+        } else if (jdbcUrl.contains(":postgresql:")) {
+            return DbType.POSTGRE_SQL;
+        } else if (jdbcUrl.contains(":presto:")) {
+            return DbType.PRESTO;
+        } else if (jdbcUrl.contains(":redshift:")) {
+            return DbType.REDSHIFT;
+        } else if (jdbcUrl.contains(":sap:")) {
+            return DbType.SAP_HANA;
+        } else if (jdbcUrl.contains(":sinodb")) {
+            return DbType.SINODB;
+        } else if (jdbcUrl.contains(":sqlite:")) {
+            return DbType.SQLITE;
+        } else if (jdbcUrl.contains(":sqlserver:")) {
+            return DbType.SQLSERVER_2005;
+        } else if (jdbcUrl.contains(":sqlserver2012:")) {
+            return DbType.SQLSERVER;
+        } else if (jdbcUrl.contains(":sundb:")) {
+            return DbType.SUNDB;
+        } else if (jdbcUrl.contains(":sybase:")) {
+            return DbType.SYBASE;
+        } else if (jdbcUrl.contains(":taos:") || jdbcUrl.contains(":taos-rs:")) {
+            return DbType.TDENGINE;
+        } else if (jdbcUrl.contains(":trino:")) {
+            return DbType.TRINO;
+        } else if (jdbcUrl.contains(":uxdb:")) {
+            return DbType.UXDB;
+        } else if (jdbcUrl.contains(":vastbase:")) {
+            return DbType.VASTBASE;
         } else if (jdbcUrl.contains(":vertica:")) {
             return DbType.VERTICA;
         } else if (jdbcUrl.contains(":xcloud:")) {
             return DbType.XCloud;
-        } else if (jdbcUrl.contains(":firebirdsql:")) {
-            return DbType.FIREBIRD;
-        } else if (jdbcUrl.contains(":redshift:")) {
-            return DbType.REDSHIFT;
-        } else if (jdbcUrl.contains(":opengauss:")) {
-            return DbType.OPENGAUSS;
-        } else if (jdbcUrl.contains(":taos:") || jdbcUrl.contains(":taos-rs:")) {
-            return DbType.TDENGINE;
-        } else if (jdbcUrl.contains(":informix")) {
-            return DbType.INFORMIX;
-        } else if (jdbcUrl.contains(":sinodb")) {
-            return DbType.SINODB;
-        } else if (jdbcUrl.contains(":uxdb:")) {
-            return DbType.UXDB;
-        } else if (jdbcUrl.contains(":greenplum:")) {
-            return DbType.GREENPLUM;
-        } else if (jdbcUrl.contains(":lealone:")) {
-            return DbType.LEALONE;
-        } else if (jdbcUrl.contains(":hive2:")) {
-            return DbType.HIVE;
-        } else if (jdbcUrl.contains(":duckdb:")) {
-            return DbType.DUCKDB;
+        } else if (jdbcUrl.contains(":xugu:")) {
+            return DbType.XUGU;
+        } else if (jdbcUrl.contains(":yasdb:")) {
+            return DbType.YASDB;
         } else {
             return DbType.OTHER;
         }
