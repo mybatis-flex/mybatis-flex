@@ -6,6 +6,7 @@
 - **`insertWithPk(entity, ignoreNulls)`**：带有主键的插入，此时实体类不会经过主键生成器生成主键。
 - **`insertBatch(entities)`**：批量插入实体类数据，只会根据第一条数据来构建插入的字段内容。
 - **`insertBatch(entities, size)`**：批量插入实体类数据，按 size 切分。
+- **`insertBatchSelective(entities)`**：批量插入实体类数据，忽略 `null` 值。
 - **`insertOrUpdate(entity)`**：插入或者更新，若主键有值，则更新，若没有主键值，则插入，插入或者更新都不会忽略 `null` 值。
 - **`insertOrUpdateSelective(entity)`**：插入或者更新，若主键有值，则更新，若没有主键值，则插入，插入或者更新都会忽略 `null`
   值。
