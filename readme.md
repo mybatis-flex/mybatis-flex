@@ -359,6 +359,6 @@ Build the project by IDE, or execute maven build command: `mvn clean package`
 
 ## Wechat Group
 
-![](./docs/assets/images/wechat-group.png)
+![](./docs/assets/images/wechat-group.jpg)
 
 

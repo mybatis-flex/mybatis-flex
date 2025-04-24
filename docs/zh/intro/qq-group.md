@@ -4,7 +4,7 @@
 
 ## MyBatis-Flex 微信交流群
 
-![](../../assets/images/wechat-group.png)
+![](../../assets/images/wechat-group.jpg)
 
 ## MyBatis-Flex QQ 交流群
 

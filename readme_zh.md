@@ -51,16 +51,9 @@
 > MyBatis-Flex 支持多主键、多表查询、逻辑删除、乐观锁、数据脱敏、数据加密、多数据源、分库分表、字段权限、字段加密、多租户、事务管理、SQL 审计等特性。 这一切，免费且灵动。
 
 
-## 交流群群
+## Star 用户专属交流群群
 
-微信群：
-![](./docs/assets/images/wechat-group.png)
-
-QQ 群
-
-- 群1：~~532992631~~（已满）
-- 群2：850176767（空位不多）
-- 群3：131665923（空位不多）
+![](./docs/assets/images/wechat-group.jpg)
 
 
 
@@ -674,10 +667,4 @@ public class Account {
 
 - [mybatis-flex](https://mybatis-flex.com)
 
-## 还有问题？
-
-加入微信群：
-![](./docs/assets/images/wechat-group.png)
-
-或 QQ群： 532992631
 
