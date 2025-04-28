@@ -36,6 +36,26 @@
 #      url: jdbc:mysql://localhost:3306/flex_test
 #      username: root
 #      password: 12345678
+
+#禁止项目启动自动运行job
+spring:
+  batch:
+    job:
+      enabled: false
+
+#springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.mybatisflex.test.controller
+
 mybatis-flex:
   datasource:
     ds1:
