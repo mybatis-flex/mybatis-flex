@@ -76,6 +76,7 @@
         <HikariCP.version>4.0.3</HikariCP.version>
 
         <spring.version>5.3.27</spring.version>
+        <spring-batch.version>4.3.10</spring-batch.version>
         <spring-boot.version>2.7.11</spring-boot.version>
         <solon.version>3.0.1</solon.version>
         <loveqq.version>1.1.0-java8</loveqq.version>
@@ -177,6 +178,18 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-test</artifactId>
                 <version>${spring-boot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.batch</groupId>
+                <artifactId>spring-batch-core</artifactId>
+                <version>${spring-batch.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.batch</groupId>
+                <artifactId>spring-batch-infrastructure</artifactId>
+                <version>${spring-batch.version}</version>
             </dependency>
 
             <!--for test-->
