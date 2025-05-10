@@ -64,10 +64,10 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
     private #(table.buildServiceClassName()) #(serviceVarName);
 
     /**
-     * 添加#(tableComment)。
+     * 保存#(tableComment)。
      *
      * @param #(entityVarName) #(tableComment)
-     * @return {@code true} 添加成功，{@code false} 添加失败
+     * @return {@code true} 保存成功，{@code false} 保存失败
      */
     @PostMapping("save")
     #if(withSwagger && swaggerVersion.getName() == "FOX")
@@ -88,10 +88,10 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
      */
     @DeleteMapping("remove/{id}")
     #if(withSwagger && swaggerVersion.getName() == "FOX")
-    @ApiOperation("根据主键#(tableComment)")
+    @ApiOperation("根据主键删除#(tableComment)")
     #end
     #if(withSwagger && swaggerVersion.getName() == "DOC")
-    @Operation(description="根据主键#(tableComment)")
+    @Operation(description="根据主键删除#(tableComment)")
     #end
     public boolean remove(@PathVariable #if(withSwagger && swaggerVersion.getName() == "FOX")@ApiParam("#(tableComment)主键") #end #if(withSwagger && swaggerVersion.getName() == "DOC")@Parameter(description="#(tableComment)主键") #end #(primaryKeyType) id) {
         return #(serviceVarName).removeById(id);
@@ -131,7 +131,7 @@ public class #(table.buildControllerClassName()) #if(controllerConfig.superClass
     }
 
     /**
-     * 根据#(tableComment)主键获取详细信息。
+     * 根据主键获取#(tableComment)。
      *
      * @param id #(tableComment)主键
      * @return #(tableComment)详情
