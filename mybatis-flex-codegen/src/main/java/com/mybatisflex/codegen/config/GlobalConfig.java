@@ -42,7 +42,7 @@ public class GlobalConfig implements Serializable {
 
     private final FileType fileType;
 
-    // === 必须配置 ===
+    //region === 必须配置 ===
 
     public GlobalConfig() {
         this(FileType.JAVA);
@@ -52,8 +52,9 @@ public class GlobalConfig implements Serializable {
     private final PackageConfig packageConfig;
     private final StrategyConfig strategyConfig;
     private final TemplateConfig templateConfig;
+    //endregion === 必须配置 ===
 
-    // === 可选配置 ===
+    //region === 可选配置 ===
 
     private EntityConfig entityConfig;
     private MapperConfig mapperConfig;
@@ -62,11 +63,13 @@ public class GlobalConfig implements Serializable {
     private ControllerConfig controllerConfig;
     private TableDefConfig tableDefConfig;
     private MapperXmlConfig mapperXmlConfig;
+    //endregion === 可选配置 ===
 
-    // === 其他自定义配置 ===
+    //region === 其他自定义配置 ===
     private Map<String, Object> customConfig = new HashMap<>();
+    //endregion === 其他自定义配置 ===
 
-    // === 是否启用生成 ===
+    //region === 是否启用生成 ===
 
     private boolean entityGenerateEnable;
     private boolean mapperGenerateEnable;
@@ -122,8 +125,9 @@ public class GlobalConfig implements Serializable {
         }
 
     }
+    //endregion === 是否启用生成 ===
 
-    // === 分类配置 ===
+    //region === 分类配置 ===
 
     public JavadocConfig getJavadocConfig() {
         return javadocConfig;
@@ -189,8 +193,9 @@ public class GlobalConfig implements Serializable {
         }
         return mapperXmlConfig;
     }
+    //endregion === 分类配置 ===
 
-    // === 启用配置 ===
+    //region === 启用配置 ===
 
     public EntityConfig enableEntity() {
         entityGenerateEnable = true;
@@ -230,8 +235,9 @@ public class GlobalConfig implements Serializable {
     public void enablePackageInfo() {
         packageInfoGenerateEnable = true;
     }
+    //endregion === 启用配置 ===
 
-    // === 禁用配置 ===
+    //region === 禁用配置 ===
 
     public void disableEntity() {
         entityGenerateEnable = false;
@@ -264,9 +270,9 @@ public class GlobalConfig implements Serializable {
     public void disablePackageInfo() {
         packageInfoGenerateEnable = false;
     }
+    //endregion === 禁用配置 ===
 
-
-    // === 自定义配置 ===
+    //region === 自定义配置 ===
 
     public Object getCustomConfig(String key) {
         return customConfig.get(key);
@@ -283,7 +289,9 @@ public class GlobalConfig implements Serializable {
     public void setCustomConfig(Map<String, Object> customConfig) {
         this.customConfig = customConfig;
     }
-    // === 分项配置 ===
+    //endregion === 自定义配置 ===
+
+    //region === 分项配置 ===
 
     /**
      * @see JavadocConfig#getAuthor()
@@ -1566,5 +1574,5 @@ public class GlobalConfig implements Serializable {
     public void setPackageInfoGenerateEnable(boolean packageInfoGenerateEnable) {
         this.packageInfoGenerateEnable = packageInfoGenerateEnable;
     }
-
+    //endregion === 分项配置 ===
 }

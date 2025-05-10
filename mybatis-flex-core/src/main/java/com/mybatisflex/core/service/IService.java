@@ -51,7 +51,7 @@ public interface IService<T> {
      */
     BaseMapper<T> getMapper();
 
-    // ===== 保存（增）操作 =====
+    //region ===== 保存（增）操作 =====
 
     /**
      * <p>保存实体类对象数据。
@@ -128,8 +128,9 @@ public interface IService<T> {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
         return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::insertOrUpdateSelective));
     }
+    //endregion ===== 保存（增）操作 =====
 
-    // ===== 删除（删）操作 =====
+    //region ===== 删除（删）操作 =====
 
     /**
      * <p>根据查询条件删除数据。
@@ -197,8 +198,9 @@ public interface IService<T> {
         }
         return remove(query().where(query));
     }
+    //endregion ===== 删除（删）操作 =====
 
-    // ===== 更新（改）操作 =====
+    //region ===== 更新（改）操作 =====
 
     /**
      * <p>根据数据主键更新数据。
@@ -313,8 +315,9 @@ public interface IService<T> {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
         return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, (mapper, entity) -> mapper.update(entity, ignoreNulls)));
     }
+    //endregion ===== 更新（改）操作 =====
 
-    // ===== 查询（查）操作 =====
+    //region ===== 查询（查）操作 =====
 
     /**
      * <p>根据数据主键查询一条数据。
@@ -546,8 +549,9 @@ public interface IService<T> {
     default List<T> listByMap(Map<String, Object> query) {
         return list(query().where(query));
     }
+    //endregion ===== 查询（查）操作 =====
 
-    // ===== 数量查询操作 =====
+    //region ===== 数量查询操作 =====
 
     /**
      * <p>根据查询条件判断数据是否存在。
@@ -605,8 +609,9 @@ public interface IService<T> {
     default long count(QueryCondition condition) {
         return count(query().where(condition));
     }
+    //endregion ===== 数量查询操作 =====
 
-    // ===== 分页查询操作 =====
+    //region ===== 分页查询操作 =====
 
     /**
      * <p>分页查询所有数据。
@@ -651,8 +656,9 @@ public interface IService<T> {
     default <R> Page<R> pageAs(Page<R> page, QueryWrapper query, Class<R> asType) {
         return getMapper().paginateAs(page, query, asType);
     }
+    //endregion ===== 分页查询操作 =====
 
-    // ===== 查询包装器操作 =====
+    //region ===== 查询包装器操作 =====
 
     /**
      * 默认 {@link QueryWrapper} 构建。
@@ -680,5 +686,5 @@ public interface IService<T> {
     default UpdateChain<T> updateChain() {
         return UpdateChain.create(getMapper());
     }
-
+    //endregion ===== 查询包装器操作 =====
 }
