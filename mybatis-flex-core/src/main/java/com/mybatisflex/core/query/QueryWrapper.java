@@ -796,7 +796,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper orderBy(String... orderBys) {
-        if (orderBys == null || orderBys[0] == null) {
+        if (orderBys == null || orderBys.length == 0 || orderBys[0] == null) {
             // ignore
             return this;
         }
@@ -809,7 +809,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
     }
 
     public QueryWrapper orderByUnSafely(String... rawOrderBy) {
-        if (rawOrderBy == null || rawOrderBy[0] == null) {
+        if (rawOrderBy == null || rawOrderBy.length == 0 || rawOrderBy[0] == null) {
             return this;
         }
         for (String queryOrderBy : rawOrderBy) {
