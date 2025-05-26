@@ -28,7 +28,6 @@ import com.mybatisflex.core.util.MapUtil;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -80,7 +79,7 @@ public class Mappers {
      * @return {@link BaseMapper} 对象
      */
     public static <M> M ofMapperClass(Class<M> mapperClass) {
-        Map<Class<?>, Object> mapperObjects = MapUtil.computeIfAbsent(MAPPER_OBJECTS_OF_ENV, "default", envId -> new HashMap<>());
+        Map<Class<?>, Object> mapperObjects = MapUtil.computeIfAbsent(MAPPER_OBJECTS_OF_ENV, "default", envId -> new ConcurrentHashMap<>());
         Object mapperObject = MapUtil.computeIfAbsent(mapperObjects, mapperClass, clazz ->
             Proxy.newProxyInstance(mapperClass.getClassLoader()
                 , new Class[]{mapperClass}
@@ -88,7 +87,7 @@ public class Mappers {
         return (M) mapperObject;
     }
     public static <M> M ofMapperClass(String environmentId, Class<M> mapperClass) {
-        Map<Class<?>, Object> mapperObjects = MapUtil.computeIfAbsent(MAPPER_OBJECTS_OF_ENV, environmentId, envId -> new HashMap<>());
+        Map<Class<?>, Object> mapperObjects = MapUtil.computeIfAbsent(MAPPER_OBJECTS_OF_ENV, environmentId, envId -> new ConcurrentHashMap<>());
         Object mapperObject = MapUtil.computeIfAbsent(mapperObjects, mapperClass, clazz ->
             Proxy.newProxyInstance(mapperClass.getClassLoader()
                 , new Class[]{mapperClass}
