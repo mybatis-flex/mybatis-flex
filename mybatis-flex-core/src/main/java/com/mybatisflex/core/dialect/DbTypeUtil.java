@@ -76,7 +76,7 @@ public class DbTypeUtil {
                 String version = resultSet.getString(1);
                 if (StringUtil.hasText(version)) {
                     String year = version.substring(21, 25);
-                    if (StringUtil.hasText(year) && year.compareTo("2005") <= 0) {
+                    if (StringUtil.hasText(year) && year.compareTo("2008") <= 0) {
                         return DbType.SQLSERVER_2005;
                     }
                 }
