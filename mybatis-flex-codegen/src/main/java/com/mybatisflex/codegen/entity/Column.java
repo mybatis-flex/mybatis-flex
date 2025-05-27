@@ -93,6 +93,10 @@ public class Column {
         this.property = buildPropertyName();
     }
 
+    public void setProperty(String property) {
+        this.property = property;
+    }
+
     public String getProperty() {
         return property;
     }
