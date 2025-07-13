@@ -2,6 +2,22 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.11.0 20250713
+- 新增：代码生成器 Column 支持带有范型的类型，感谢 @benshi
+- 新增：对于用户常用类，启用代码折叠支持，感谢 @hewei
+- 新增：Column 添加 setProperty 方法的支持，感谢 @benshi
+- 新增：增加 GBASE_8C、GBASE_8S_PG、GOLDENDB、SUNDB、VASTBASE、YASDB、PRESTO 驱动识别，感谢 @fangzhengjin
+- 新增：添加 loveqq-framework 启动器，感谢 @kfyty725
+- 优化：优化 `>=` 逻辑和 `<=` 逻辑保持一致，感谢 @fyh
+- 优化：调整 sqlserver 2008 版本的 DbType 为 SQLSERVER_2005，修复分页语句不支持 offset 问题，感谢 @all-around-badass
+- 修复：高斯数据库调整为无反义处理，避免严格大小写处理，感谢 @all-around-badass
+- 修复：在 join 多次相同的表时, 构建租户条件没能取到正确的别名，感谢 @gzkemays
+- 修复：在使用 UpdateChain 更新实体类字段时偶发 ClassCastException 异常问题，感谢 @iminifly
+- 修复：多环境导入相同 Mapper 冲突问题，感谢 @wcc1433
+- 文档：更新代码生成器的相关文档
+
+
+
 ## v1.10.9 20250319
 - 新增: 代码生成器支持配置 entity 类 lombok 注解生成 (@NoArgsConstructor, @AllArgsConstructor)，感谢 @coder-xiaomo
 - 新增：增加全局忽略 schema 配置的支持，感谢 @cui
