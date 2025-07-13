@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>mybatis-flex-solon-plugin</name>
     <artifactId>mybatis-flex-solon-plugin</artifactId>
     <packaging>jar</packaging>
 

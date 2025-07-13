@@ -9,7 +9,9 @@
         <version>1.11.0</version>
     </parent>
 
+    <name>mybatis-flex-spring-boot3-starter</name>
     <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

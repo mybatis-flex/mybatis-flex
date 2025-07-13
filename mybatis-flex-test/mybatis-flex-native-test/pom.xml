@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>mybatis-flex-native-test</name>
     <artifactId>mybatis-flex-native-test</artifactId>
     <packaging>jar</packaging>
 

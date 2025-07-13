@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>mybatis-flex-test</name>
     <artifactId>mybatis-flex-test</artifactId>
     <packaging>pom</packaging>
 

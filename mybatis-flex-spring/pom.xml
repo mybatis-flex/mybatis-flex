@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>mybatis-flex-spring</name>
     <artifactId>mybatis-flex-spring</artifactId>
     <packaging>jar</packaging>
 

@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>mybatis-flex-solon-test</name>
     <artifactId>mybatis-flex-solon-test</artifactId>
     <packaging>jar</packaging>
 

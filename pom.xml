@@ -51,6 +51,7 @@
         <module>mybatis-flex-annotation</module>
         <module>mybatis-flex-codegen</module>
         <module>mybatis-flex-core</module>
+        <module>mybatis-flex-dependencies</module>
         <module>mybatis-flex-spring</module>
         <module>mybatis-flex-spring-boot-starter</module>
         <module>mybatis-flex-spring-boot3-starter</module>

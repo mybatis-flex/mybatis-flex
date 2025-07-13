@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>mybatis-flex-spring-boot-test</name>
     <artifactId>mybatis-flex-spring-boot-test</artifactId>
     <packaging>jar</packaging>
 

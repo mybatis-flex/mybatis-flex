@@ -9,6 +9,7 @@
         <version>1.11.0</version>
     </parent>
 
+    <name>mybatis-flex-loveqq-starter</name>
     <artifactId>mybatis-flex-loveqq-starter</artifactId>
     <packaging>jar</packaging>
 
