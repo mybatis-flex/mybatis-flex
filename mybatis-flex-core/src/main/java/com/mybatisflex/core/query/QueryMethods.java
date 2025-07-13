@@ -35,7 +35,7 @@ public class QueryMethods {
     private QueryMethods() {
     }
 
-    // === 数学函数 ===
+    //region === 数学函数 ===
 
     /**
      * 返回 x 的绝对值。
@@ -680,8 +680,9 @@ public class QueryMethods {
     public static <T> QueryColumn cot(LambdaGetter<T> columnX) {
         return new FunctionQueryColumn(COT, LambdaUtil.getQueryColumn(columnX));
     }
+    //endregion === 数学函数 ===
 
-    // === 字符串函数 ===
+    //region === 字符串函数 ===
 
     /**
      * 返回字符串 s 的字符数。
@@ -1181,8 +1182,9 @@ public class QueryMethods {
     public static <S1, S2> QueryColumn findInSet(LambdaGetter<S1> columnS1, LambdaGetter<S2> columnS2) {
         return new FunctionQueryColumn(FIND_IN_SET, LambdaUtil.getQueryColumn(columnS1), LambdaUtil.getQueryColumn(columnS2));
     }
+    //endregion === 字符串函数 ===
 
-    // === 日期时间函数 ===
+    //region === 日期时间函数 ===
 
     /**
      * 返回当前日期。
@@ -1884,8 +1886,9 @@ public class QueryMethods {
     public static <T, S> QueryColumn getFormat(LambdaGetter<T> columnType, LambdaGetter<S> columnS) {
         return new FunctionQueryColumn(GET_FORMAT, LambdaUtil.getQueryColumn(columnType), LambdaUtil.getQueryColumn(columnS));
     }
+    //endregion === 日期时间函数 ===
 
-    // === 系统信息函数 ===
+    //region === 系统信息函数 ===
 
     /**
      * 返回数据库的版本号。
@@ -1970,8 +1973,9 @@ public class QueryMethods {
     public static QueryColumn lastInsertId() {
         return new FunctionQueryColumn(LAST_INSERT_ID);
     }
+    //endregion === 系统信息函数 ===
 
-    // === 加密函数 ===
+    //region === 加密函数 ===
 
     /**
      * 对字符串 str 进行加密。
@@ -2056,8 +2060,9 @@ public class QueryMethods {
     public static <C, P> QueryColumn decode(LambdaGetter<C> columnCryptStr, LambdaGetter<P> columnPswdStr) {
         return new FunctionQueryColumn(DECODE, LambdaUtil.getQueryColumn(columnCryptStr), LambdaUtil.getQueryColumn(columnPswdStr));
     }
+    //endregion === 加密函数 ===
 
-    // === 其他函数 ===
+    //region === 其他函数 ===
 
     /**
      * 格式化函数，可以将数字 x 进行格式化，将 x 保留到小数点后 n 位，这个过程需要进行四舍五入。
@@ -2226,8 +2231,9 @@ public class QueryMethods {
     public static <T> QueryColumn inetNtoa(LambdaGetter<T> columnN) {
         return new FunctionQueryColumn(INET_NTOA, LambdaUtil.getQueryColumn(columnN));
     }
+    //endregion === 其他函数 ===
 
-    // === 聚合函数 ===
+    //region === 聚合函数 ===
 
     /**
      * 返回指定列的最大值。
@@ -2312,8 +2318,9 @@ public class QueryMethods {
     public static <T> FunctionQueryColumn sum(LambdaGetter<T> column) {
         return new FunctionQueryColumn(SUM, LambdaUtil.getQueryColumn(column));
     }
+    //endregion === 聚合函数 ===
 
-    // === COUNT ===
+    //region === COUNT ===
 
     /**
      * 返回指定列的总行数。
@@ -2342,9 +2349,9 @@ public class QueryMethods {
     public static <T> FunctionQueryColumn count(LambdaGetter<T> column) {
         return new FunctionQueryColumn(COUNT, LambdaUtil.getQueryColumn(column));
     }
+    //endregion === COUNT ===
 
-
-    // === DISTINCT ===
+    //region === DISTINCT ===
 
     /**
      * 对指定列进行去重。
@@ -2358,8 +2365,9 @@ public class QueryMethods {
         return new DistinctQueryColumn(Arrays.stream(columns)
             .map(LambdaUtil::getQueryColumn).toArray(QueryColumn[]::new));
     }
+    //endregion === DISTINCT ===
 
-    // === CASE THEN ELSE ===
+    //region === CASE THEN ELSE ===
 
     /**
      * 构建 case then when 语句。
@@ -2374,8 +2382,9 @@ public class QueryMethods {
     public static CaseSearchQueryColumn.Builder case_(QueryColumn column) {
         return new CaseSearchQueryColumn.Builder(column);
     }
+    //endregion === CASE THEN ELSE ===
 
-    // === CONVERT ===
+    //region === CONVERT ===
 
     /**
      * 将所给类型类型转换为另一种类型。
@@ -2383,8 +2392,9 @@ public class QueryMethods {
     public static StringFunctionQueryColumn convert(String... params) {
         return new StringFunctionQueryColumn(CONVERT, params);
     }
+    //endregion === CONVERT ===
 
-    // === 构建 column 列 ===
+    //region === 构建 column 列 ===
 
     /**
      * 构建 TRUE 常量。
@@ -2494,8 +2504,9 @@ public class QueryMethods {
         }
         return queryColumns;
     }
+    //endregion === 构建 column 列 ===
 
-    // === IF 函数 ===
+    //region === IF 函数 ===
 
     /**
      * IF 函数。
@@ -2552,9 +2563,9 @@ public class QueryMethods {
     public static <N> QueryColumn ifNull(LambdaGetter<N> nullColumn, String elseColumn) {
         return ifNull(nullColumn, new QueryColumn(elseColumn));
     }
+    //endregion === IF 函数 ===
 
-
-    // === 构建 QueryCondition 查询条件 ===
+    //region === 构建 QueryCondition 查询条件 ===
 
     /**
      * EXIST (SELECT ...)
@@ -2597,8 +2608,9 @@ public class QueryMethods {
     public static QueryCondition bracket(QueryCondition condition) {
         return new Brackets(condition);
     }
+    //endregion === 构建 QueryCondition 查询条件 ===
 
-    // === 构建 QueryWrapper 查询 ===
+    //region === 构建 QueryWrapper 查询 ===
 
     /**
      * SELECT queryColumns FROM table
@@ -2673,5 +2685,5 @@ public class QueryMethods {
     public static FunctionQueryColumn date(QueryColumn column) {
         return new FunctionQueryColumn("DATE", column);
     }
-
+    //endregion === 构建 QueryWrapper 查询 ===
 }

@@ -74,7 +74,7 @@ public interface BaseMapper<T> {
      */
     int DEFAULT_BATCH_SIZE = 1000;
 
-    // === 增（insert） ===
+    //region === 增（insert） ===
 
     /**
      * 插入实体类数据，不忽略 {@code null} 值。
@@ -253,8 +253,9 @@ public interface BaseMapper<T> {
             return update(entity, ignoreNulls);
         }
     }
+    //endregion === 增（insert） ===
 
-    // === 删（delete） ===
+    //region === 删（delete） ===
 
     /**
      * 根据实体主键来删除数据。
@@ -343,8 +344,9 @@ public interface BaseMapper<T> {
      */
     @DeleteProvider(type = EntitySqlProvider.class, method = "deleteByQuery")
     int deleteByQuery(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+    //endregion === 删（delete） ===
 
-    // === 改（update） ===
+    //region === 改（update） ===
 
     /**
      * 根据主键来更新数据，若实体类属性数据为 {@code null}，该属性不会更新到数据库。
@@ -439,9 +441,9 @@ public interface BaseMapper<T> {
      */
     @UpdateProvider(type = EntitySqlProvider.class, method = "updateByQuery")
     int updateByQuery(@Param(FlexConsts.ENTITY) T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
+    //endregion === 改（update） ===
 
-
-    // === 查（select） ===
+    //region === 改（update） ===
 
     /**
      * 根据实体主键查询数据。
@@ -1264,5 +1266,5 @@ public interface BaseMapper<T> {
         }
         return page;
     }
-
+    //endregion === 改（update） ===
 }
