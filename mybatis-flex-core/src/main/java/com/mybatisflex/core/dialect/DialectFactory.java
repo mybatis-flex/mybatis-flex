@@ -119,7 +119,7 @@ public class DialectFactory {
             case ORACLE:
                 return new OracleDialect();
             case GAUSS:
-                return new CommonsDialectImpl(KeywordWrap.DOUBLE_QUOTATION, LimitOffsetProcessor.ORACLE);
+                return new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.ORACLE);
             case POSTGRE_SQL:
             case SQLITE:
             case HSQL:
