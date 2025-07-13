@@ -97,21 +97,21 @@ const {Layout} = DefaultTheme
     <Layout>
 
         <!--docs: https://vitepress.dev/guide/extending-default-theme#layout-slots-->
-<!--        <template #doc-before>-->
-<!--            <div style="margin-bottom: 30px">-->
-<!--                <a href="https://mp.weixin.qq.com/s/1pTQ9m3C4ebfSQdyWUAyaQ" target="_blank">-->
-<!--                    <img src="/assets/images/ad/aiadmin.gif">-->
-<!--                </a>-->
-<!--            </div>-->
-<!--        </template>-->
+        <template #doc-before>
+            <div style="margin-bottom: 30px">
+                <a href="https://gitee.com/aiflowy/aiflowy" target="_blank">
+                    <img src="/assets/images/ad/aiflowy-banner.jpg">
+                </a>
+            </div>
+        </template>
 
-<!--        <template #home-features-after>-->
-<!--            <div class="banner-home">-->
-<!--                <a href="https://mp.weixin.qq.com/s/1pTQ9m3C4ebfSQdyWUAyaQ" target="_blank">-->
-<!--                    <img src="/assets/images/ad/aiadmin.gif">-->
-<!--                </a>-->
-<!--            </div>-->
-<!--        </template>-->
+        <template #home-features-after>
+            <div class="banner-home">
+                <a href="https://gitee.com/aiflowy/aiflowy" target="_blank">
+                    <img src="/assets/images/ad/aiflowy-banner.jpg">
+                </a>
+            </div>
+        </template>
 
 
         <!--        <template #home-features-after>-->
@@ -142,10 +142,10 @@ const {Layout} = DefaultTheme
 <!--                        <a href="https://dromara.gitee.io/fast-request/" target="_blank"><img-->
 <!--                            src="/assets/images/ad/fast-request-20230828.svg" style="width: 120px;height: 50px"></a>-->
 <!--                    </div>-->
-                    <div class="banner">
-                        <a href="https://www.5iot.com/source?key=flex" target="_blank"><img
-                            src="/assets/images/ad/iotlink_20240802.png"></a>
-                    </div>
+<!--                    <div class="banner">-->
+<!--                        <a href="https://www.5iot.com/source?key=flex" target="_blank"><img-->
+<!--                            src="/assets/images/ad/iotlink_20240802.png"></a>-->
+<!--                    </div>-->
                     <div class="banner">
                         <a href="http://www.jpress.cn" target="_blank" style="height:50px;
             background: rgb(247 247 247);width: 105px;color: #000;font-size: 18px">
@@ -159,10 +159,10 @@ const {Layout} = DefaultTheme
                     <div class="banner">
                         <a href="http://www.codeformat.cn" target="_blank"><img src="/assets/images/ad/code-format.png"></a>
                     </div>
-                    <div class="banner">
-                        <a href="https://eiam.topiam.cn" target="_blank"><img
-                            src="/assets/images/ad/topiam_20230909.png" style="width: 105px;height: 50px"></a>
-                    </div>
+<!--                    <div class="banner">-->
+<!--                        <a href="https://eiam.topiam.cn" target="_blank"><img-->
+<!--                            src="/assets/images/ad/topiam_20230909.png" style="width: 105px;height: 50px"></a>-->
+<!--                    </div>-->
                     <div class="banner">
                         虚位以待
                     </div>
@@ -174,10 +174,10 @@ const {Layout} = DefaultTheme
                     <a href="https://www.orangeforms.com" target="_blank"><img
                         src="/assets/images/ad/cd_20250620.jpg" data-expired="20250620"></a>
                 </div>
-                <div class="banner-bottom">
-                    <a href="https://www.diboot.com/?from=mf" target="_blank"><img
-                        src="https://www.diboot.com/diboot_mf.png" data-expired="20250116"></a>
-                </div>
+<!--                <div class="banner-bottom">-->
+<!--                    <a href="https://www.diboot.com/?from=mf" target="_blank"><img-->
+<!--                        src="https://www.diboot.com/diboot_mf.png" data-expired="20250116"></a>-->
+<!--                </div>-->
             </div>
         </template>
     </Layout>
