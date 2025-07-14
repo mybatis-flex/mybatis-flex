@@ -94,7 +94,12 @@ public class QueryColumnBehavior {
     /**
      * 当 {@code IN(...)} 条件只有 1 个参数时，是否自动把的内容转换为相等。
      */
-    private static boolean smartConvertInToEquals = false;
+    private static boolean smartConvertInToEquals = true;
+
+    /**
+     * 当 {@code BETWEEN ... AND ...} 条件只有 1 个参数时，是否自动把的内容转换为小于等于或大于等于。
+     */
+    private static boolean smartConvertBetweenToLeOrGe = true;
 
     public static Predicate<Object> getIgnoreFunction() {
         return ignoreFunction;
@@ -110,6 +115,14 @@ public class QueryColumnBehavior {
 
     public static void setSmartConvertInToEquals(boolean smartConvertInToEquals) {
         QueryColumnBehavior.smartConvertInToEquals = smartConvertInToEquals;
+    }
+
+    public static boolean isSmartConvertBetweenToLeOrGe() {
+        return smartConvertBetweenToLeOrGe;
+    }
+
+    public static void setSmartConvertBetweenToLeOrGe(boolean smartConvertBetweenToLeOrGe) {
+        QueryColumnBehavior.smartConvertBetweenToLeOrGe = smartConvertBetweenToLeOrGe;
     }
 
     static boolean shouldIgnoreValue(Object value) {

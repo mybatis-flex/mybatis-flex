@@ -513,18 +513,37 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         if (values == null || values.length != 2) {
             throw new IllegalArgumentException("values is null or length is not 2");
         }
-        return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.BETWEEN, values));
+        Object start = values[0], end = values[1];
+        return between_(start, end);
     }
 
     QueryCondition between_(Object start, Object end) {
+        if (start == null && end == null) {
+            return QueryCondition.createEmpty();
+        }
+
+        boolean smartConvertBetweenToLeOrGe = QueryColumnBehavior.isSmartConvertBetweenToLeOrGe();
+        if ((start == null || end == null) && !smartConvertBetweenToLeOrGe) {
+            return QueryCondition.createEmpty();
+        }
+
+        /* && end != null */
+        if (start == null) {
+            return le_(end);
+        }
+
+        /* && start != null */
+        if (end == null) {
+            return ge_(start);
+        }
         return QueryColumnBehavior.castCondition(QueryCondition.create(this, SqlConsts.BETWEEN, new Object[]{start, end}));
     }
 
     @Override
     public QueryCondition between(Object[] values) {
-        if (QueryColumnBehavior.shouldIgnoreValue(values)) {
-            return QueryCondition.createEmpty();
-        }
+//        if (QueryColumnBehavior.shouldIgnoreValue(values)) {
+//            return QueryCondition.createEmpty();
+//        }
         return between_(values);
     }
 
@@ -538,9 +557,9 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition between(Object start, Object end) {
-        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
-            return QueryCondition.createEmpty();
-        }
+//        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
+//            return QueryCondition.createEmpty();
+//        }
         return between_(start, end);
     }
 
@@ -576,9 +595,9 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notBetween(Object[] values) {
-        if (QueryColumnBehavior.shouldIgnoreValue(values)) {
-            return QueryCondition.createEmpty();
-        }
+//        if (QueryColumnBehavior.shouldIgnoreValue(values)) {
+//            return QueryCondition.createEmpty();
+//        }
         return notBetween_(values);
     }
 
@@ -592,9 +611,9 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
 
     @Override
     public QueryCondition notBetween(Object start, Object end) {
-        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
-            return QueryCondition.createEmpty();
-        }
+//        if (QueryColumnBehavior.shouldIgnoreValue(start) || QueryColumnBehavior.shouldIgnoreValue(end)) {
+//            return QueryCondition.createEmpty();
+//        }
         return notBetween_(start, end);
     }
 
@@ -892,7 +911,7 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
     }
 
 
-    ////order by ////
+    /// /order by ////
     public QueryOrderBy asc() {
         return new QueryOrderBy(this, SqlConsts.ASC);
     }
