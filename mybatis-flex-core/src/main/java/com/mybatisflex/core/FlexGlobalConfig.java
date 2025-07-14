@@ -20,6 +20,7 @@ import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Listener;
 import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
+import com.mybatisflex.core.datasource.DataSourceMissingHandler;
 import com.mybatisflex.core.datasource.FlexDataSource;
 import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.exception.FlexAssert;
@@ -119,6 +120,11 @@ public class FlexGlobalConfig {
      * 未匹配列处理器
      */
     private UnMappedColumnHandler unMappedColumnHandler;
+
+    /**
+     * 数据源缺失处理器
+     */
+    private DataSourceMissingHandler dataSourceMissingHandler;
 
     public boolean isPrintBanner() {
         return printBanner;
@@ -362,6 +368,21 @@ public class FlexGlobalConfig {
         FlexGlobalConfig.globalConfigs = globalConfigs;
     }
 
+    /**
+     * 获取数据源缺失处理器。
+     * @return DataSourceMissingHandler 数据源缺失处理器实例，用于自定义处理逻辑（如：记录日志、抛出异常或提供默认数据源）。
+     */
+    public DataSourceMissingHandler getDataSourceMissingHandler() {
+        return dataSourceMissingHandler;
+    }
+
+    /**
+     * 设置获取数据源缺失处理器。
+     * @param dataSourceMissingHandler 数据源缺失处理器实例，用于自定义处理逻辑（如：记录日志、抛出异常或提供默认数据源）。
+     */
+    public void setDataSourceMissingHandler(final DataSourceMissingHandler dataSourceMissingHandler) {
+        this.dataSourceMissingHandler = dataSourceMissingHandler;
+    }
 
     /**
      * 对应的是 注解 {@link com.mybatisflex.annotation.Id} 的配置
@@ -399,7 +420,7 @@ public class FlexGlobalConfig {
     }
 
 
-    /////static factory methods/////
+    /// //static factory methods/////
     private static ConcurrentHashMap<String, FlexGlobalConfig> globalConfigs = new ConcurrentHashMap<>();
     private static FlexGlobalConfig defaultConfig = new FlexGlobalConfig();
 

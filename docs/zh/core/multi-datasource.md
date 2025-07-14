@@ -206,6 +206,43 @@ public class Account {
 `DataSourceKey.use()` > `@UseDataSource()在方法上` > `@UseDataSource()在类上` >`@Table(dataSource="...")`
 :::
 
+## 数据源缺失处理器
+
+当无法根据 `dataSourceKey` 找到数据源时，默认情况下会抛出 `IllegalStateException` 异常。
+数据源缺失处理器（`DataSourceMissingHandler`）提供了更加灵活的处理方式，你可以通过它自定义处理逻辑（如：记录日志、抛出异常或主动初始化新的数据源）。
+
+### 使用示例
+
+我们推荐使用 `MyBatisFlexCustomizer` 来配置数据源缺失处理器，如下所示：
+
+```java
+@Configuration
+public class MyBatisFlexConfiguration implements MyBatisFlexCustomizer {
+
+    @Override
+    public void customize(FlexGlobalConfig globalConfig) {
+        // ...
+
+        // 配置数据源缺失处理器：此处演示的是以后备逻辑主动初始化数据源
+        globalConfig.setDataSourceMissingHandler((dataSourceKey, dataSourceMap) -> {
+            // 根据 key 获取数据源
+            DataSource ds = customCreateDataSource(dataSourceKey);
+
+            // 取不到的时候返回 null，后续代码逻辑仍然由 FlexDataSource 处理（即抛出异常）
+            if (ds == null) return null;
+
+            // 添加新的数据源，避免下次再次触发和创建
+            dataSourceMap.put(dataSourceKey, ds);
+
+            return dataSourceMap;
+        });
+
+        // ...
+    }
+
+}
+```
+
 ## 更多的 Spring 或 Solon Yaml 配置支持
 ```yaml
 mybatis-flex:
