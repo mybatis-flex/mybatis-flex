@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -61,13 +62,13 @@ public class FlexDataSource extends AbstractDataSource {
         this(dataSourceKey, dataSource, DbTypeUtil.getDbType(dataSource), needDecryptDataSource);
     }
 
-    public FlexDataSource(String dataSourceKey, DataSource dataSource, DbType dbType, boolean needDecryptDataSource){
+    public FlexDataSource(String dataSourceKey, DataSource dataSource, DbType dbType, boolean needDecryptDataSource) {
         if (needDecryptDataSource) {
             DataSourceManager.decryptDataSource(dataSource);
         }
 
         // 处理dbType
-        dbType = Optional.ofNullable(dbType).orElse(DbTypeUtil.getDbType(dataSource));
+        dbType = Optional.ofNullable(dbType).orElseGet(() -> DbTypeUtil.getDbType(dataSource));
 
         this.defaultDataSourceKey = dataSourceKey;
         this.defaultDataSource = dataSource;
@@ -88,8 +89,7 @@ public class FlexDataSource extends AbstractDataSource {
         }
 
         // 优先取缓存，否则根据数据源返回数据库类型
-        DbType dbType = Optional.ofNullable(dbTypeHashMap.get(dataSourceKey))
-            .orElse(DbTypeUtil.getDbType(ds));
+        DbType dbType = Optional.ofNullable(dbTypeHashMap.get(dataSourceKey)).orElseGet(() -> DbTypeUtil.getDbType(ds));
 
         this.defaultDataSourceKey = dataSourceKey;
         this.defaultDataSource = ds;
@@ -104,13 +104,12 @@ public class FlexDataSource extends AbstractDataSource {
         addDataSource(dataSourceKey, dataSource, DbTypeUtil.getDbType(dataSource), needDecryptDataSource);
     }
 
-    public void addDataSource(String dataSourceKey, DataSource dataSource, DbType dbType,boolean needDecryptDataSource) {
+    public void addDataSource(String dataSourceKey, DataSource dataSource, DbType dbType, boolean needDecryptDataSource) {
         if (needDecryptDataSource) {
             DataSourceManager.decryptDataSource(dataSource);
         }
 
-        dbType = Optional.ofNullable(dbTypeHashMap.get(dataSourceKey))
-            .orElse(DbTypeUtil.getDbType(dataSource));
+        dbType = Optional.ofNullable(dbType).orElseGet(() -> DbTypeUtil.getDbType(dataSource));
 
         dataSourceMap.put(dataSourceKey, dataSource);
         dbTypeHashMap.put(dataSourceKey, dbType);
@@ -205,7 +204,7 @@ public class FlexDataSource extends AbstractDataSource {
         } catch (SQLException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Error resetting autoCommit to true before closing the connection. " +
-                          "Cause: " + e);
+                    "Cause: " + e);
             }
         }
     }
@@ -242,6 +241,7 @@ public class FlexDataSource extends AbstractDataSource {
 
     /**
      * 获取数据源缺失处理器。
+     *
      * @return DataSourceMissingHandler 数据源缺失处理器实例，用于自定义处理逻辑（如：记录日志、抛出异常或提供默认数据源）。
      */
     public DataSourceMissingHandler getDataSourceMissingHandler() {
