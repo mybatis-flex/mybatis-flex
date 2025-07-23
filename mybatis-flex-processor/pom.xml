@@ -5,14 +5,15 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.11.1</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <name>mybatis-flex-processor</name>
     <artifactId>mybatis-flex-processor</artifactId>
     <packaging>jar</packaging>
-    <version>1.11.1</version>
+    <version>${revision}</version>
 
 
     <properties>
@@ -24,7 +25,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-annotation</artifactId>
-            <version>1.11.1</version>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 

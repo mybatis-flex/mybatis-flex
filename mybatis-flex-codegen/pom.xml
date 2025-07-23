@@ -5,7 +5,8 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.11.1</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -24,7 +25,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-core</artifactId>
-            <version>1.11.1</version>
+            <version>${revision}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.mybatis-flex</groupId>
@@ -121,7 +122,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-spring</artifactId>
-            <version>${mybatis-flex.version}</version>
+            <version>${revision}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.mybatis-flex</groupId>
@@ -135,7 +136,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-solon-plugin</artifactId>
-            <version>${mybatis-flex.version}</version>
+            <version>${revision}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.mybatis-flex</groupId>

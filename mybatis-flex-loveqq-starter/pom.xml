@@ -6,7 +6,8 @@
     <parent>
         <groupId>com.mybatis-flex</groupId>
         <artifactId>parent</artifactId>
-        <version>1.11.1</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <name>mybatis-flex-loveqq-starter</name>
@@ -34,7 +35,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-core</artifactId>
-            <version>${mybatis-flex.version}</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
