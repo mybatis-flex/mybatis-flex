@@ -128,7 +128,8 @@ public class MultiDataSourceAutoConfiguration {
         }
 
         // 如果没有构建成功dbType，需要自解析
-        dbType = Optional.ofNullable(dbType).orElse(DbTypeUtil.getDbType(dataSource));
+        final DataSource lambdaInnerDataSource = dataSource;
+        dbType = Optional.ofNullable(dbType).orElseGet(() -> DbTypeUtil.getDbType(lambdaInnerDataSource));
         if (flexDataSource == null) {
             flexDataSource = new FlexDataSource(entry.getKey(), dataSource, dbType, false);
         } else {
