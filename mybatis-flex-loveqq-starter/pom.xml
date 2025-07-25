@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.mybatis-flex</groupId>
         <artifactId>parent</artifactId>
-        <version>1.11.0</version>
+        <version>1.11.1</version>
     </parent>
 
     <name>mybatis-flex-loveqq-starter</name>
