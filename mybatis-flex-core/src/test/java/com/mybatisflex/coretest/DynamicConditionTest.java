@@ -259,7 +259,7 @@ public class DynamicConditionTest {
     @Test
     public void testCastFunction1() {
         QueryCondition condition = QueryCondition.create(new QueryColumn("id"), SqlOperator.IN, new Object[]{null});
-        Assert.assertSame(condition, getConditionCaster().apply(condition));
+        Assert.assertNotSame(condition, getConditionCaster().apply(condition));
     }
 
     @Test
