@@ -42,6 +42,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.batch</groupId>
+            <artifactId>spring-batch-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.batch</groupId>
+            <artifactId>spring-batch-infrastructure</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.gavlyukovskiy</groupId>
             <artifactId>datasource-decorator-spring-boot-autoconfigure</artifactId>
             <version>1.8.0</version>
