@@ -132,7 +132,9 @@ public class UUIDKeyGenerator implements IKeyGenerator {
 第 2 步：注册 UUIDKeyGenerator
 
 ```java
-KeyGeneratorFactory.register("myUUID", new UUIDKeyGenerator());
+static {
+    KeyGeneratorFactory.register("myUUID", new UUIDKeyGenerator());
+}
 ```
 
 第 3 步：在 Entity 里使用 "myUUID" 生成器：
