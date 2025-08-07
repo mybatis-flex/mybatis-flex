@@ -2685,11 +2685,27 @@ public class QueryMethods {
         return new FunctionQueryColumn(STRING_AGG, columnX, string(separator));
     }
 
+    public static QueryColumn stringAgg(String columnX, String separator) {
+        return new FunctionQueryColumn(STRING_AGG, columnX, separator);
+    }
+
+    public static <T> QueryColumn stringAgg(LambdaGetter<T> columnX, String separator) {
+        return new FunctionQueryColumn(STRING_AGG, LambdaUtil.getQueryColumn(columnX), string(separator));
+    }
+
     /**
      * LISTAGG 聚合函数
      */
     public static QueryColumn listAgg(QueryColumn columnX, String separator) {
         return new FunctionQueryColumn(LISTAGG, columnX, string(separator));
+    }
+
+    public static QueryColumn listAgg(String columnX, String separator) {
+        return new FunctionQueryColumn(STRING_AGG, columnX, separator);
+    }
+
+    public static <T> QueryColumn listAgg(LambdaGetter<T> columnX, String separator) {
+        return new FunctionQueryColumn(STRING_AGG, LambdaUtil.getQueryColumn(columnX), string(separator));
     }
 
     /**
