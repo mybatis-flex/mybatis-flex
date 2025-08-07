@@ -2679,6 +2679,20 @@ public class QueryMethods {
     }
 
     /**
+     * STRING_AGG 聚合函数
+     */
+    public static QueryColumn stringAgg(QueryColumn columnX, String separator) {
+        return new FunctionQueryColumn(STRING_AGG, columnX, string(separator));
+    }
+
+    /**
+     * LISTAGG 聚合函数
+     */
+    public static QueryColumn listAgg(QueryColumn columnX, String separator) {
+        return new FunctionQueryColumn(LISTAGG, columnX, string(separator));
+    }
+
+    /**
      * date 函数
      * @return
      */

@@ -17,6 +17,7 @@ package com.mybatisflex.core.dialect;
 
 import com.mybatisflex.core.util.StringUtil;
 import java.util.Arrays;
+import java.util.List;
 
 public enum DbType {
 
@@ -207,5 +208,45 @@ public enum DbType {
             .filter(em -> em.getName().equalsIgnoreCase(name))
             .findFirst()
             .orElse(null);
+    }
+
+    /**
+     * 获取所有数据库类型
+     *
+     * @return 包含所有数据库类型的列表
+     */
+    public static List<DbType> all() {
+        return Arrays.asList(DbType.values());
+    }
+
+    /**
+     * 判断当前数据库语法是否与MySQL属于同一类型
+     */
+    public boolean mysqlSameType() {
+        return this == MYSQL || this == MARIADB || this == GBASE || this == OSCAR || this == XUGU || this == CLICK_HOUSE || this == OCEAN_BASE || this == CUBRID || this == SUNDB || this == GOLDENDB || this == YASDB;
+    }
+
+    /**
+     * 判断当前数据库语法是否与Oracle属于同一类型
+     */
+    public boolean oracleSameType() {
+        return this == ORACLE || this == DM;
+    }
+
+    /**
+     * 判断当前数据库语法是否与PostgreSQL属于同一类型
+     */
+    public boolean postgresqlSameType() {
+        return this == POSTGRE_SQL || this == H2 || this == LEALONE || this == SQLITE || this == HSQL || this == KINGBASE_ES || this == PHOENIX || this == SAP_HANA || this == IMPALA || this == HIGH_GO || this == VERTICA || this == REDSHIFT || this == GAUSS || this == OPENGAUSS || this == TDENGINE || this == UXDB || this == GBASE_8S_PG || this == GBASE_8C || this == VASTBASE || this == DUCKDB;
+    }
+
+    /**
+     * 是否为已兼容的数据库类型
+     * 允许的数据库类型包括MySQL系列、Oracle系列和PostgreSQL系列
+     *
+     * @return 如果是允许的数据库类型返回true，否则返回false
+     */
+    public boolean isSupportDb() {
+        return mysqlSameType() || oracleSameType() || postgresqlSameType();
     }
 }
