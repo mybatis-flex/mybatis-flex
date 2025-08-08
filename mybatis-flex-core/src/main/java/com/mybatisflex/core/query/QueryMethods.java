@@ -2679,6 +2679,51 @@ public class QueryMethods {
     }
 
     /**
+     * STRING_AGG 聚合函数
+     */
+    public static QueryColumn stringAgg(QueryColumn columnX, String separator) {
+        return new FunctionQueryColumn(STRING_AGG, columnX, string(separator));
+    }
+
+    public static QueryColumn stringAgg(String columnX, String separator) {
+        return new FunctionQueryColumn(STRING_AGG, columnX, separator);
+    }
+
+    public static <T> QueryColumn stringAgg(LambdaGetter<T> columnX, String separator) {
+        return new FunctionQueryColumn(STRING_AGG, LambdaUtil.getQueryColumn(columnX), string(separator));
+    }
+
+    /**
+     * LISTAGG 聚合函数
+     */
+    public static QueryColumn listAgg(QueryColumn column, String separator) {
+        return new FunctionQueryColumn(LISTAGG, column, string(separator));
+    }
+
+    public static QueryColumn listAgg(String column, String separator) {
+        return new FunctionQueryColumn(STRING_AGG, column, separator);
+    }
+
+    public static <T> QueryColumn listAgg(LambdaGetter<T> column, String separator) {
+        return new FunctionQueryColumn(STRING_AGG, LambdaUtil.getQueryColumn(column), string(separator));
+    }
+
+    /**
+     * CAST函数查询列
+     */
+    public static <T> QueryColumn cast(QueryColumn column, String dataType) {
+        return new CastQueryColumn(column, dataType);
+    }
+
+    public static <T> QueryColumn cast(String column, String dataType) {
+        return new CastQueryColumn(column, dataType);
+    }
+
+    public static <T> QueryColumn cast(LambdaGetter<T> column, String dataType) {
+        return new CastQueryColumn(LambdaUtil.getQueryColumn(column), dataType);
+    }
+
+    /**
      * date 函数
      * @return
      */

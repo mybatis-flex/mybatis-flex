@@ -16,6 +16,7 @@
 package com.mybatisflex.core.dialect;
 
 
+import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.exception.locale.LocalizedFormats;
 import com.mybatisflex.core.util.StringUtil;
@@ -35,6 +36,20 @@ import java.util.regex.Pattern;
 public class DbTypeUtil {
 
     private DbTypeUtil() {
+    }
+
+    /**
+     * 获取当前数据库类型
+     * <p>首先从全局配置中获取数据库类型，如果全局配置中未设置，则尝试从方言工厂中获取线程局部变量设置的数据库类型
+     *
+     * @return 当前数据库类型，可能为null
+     */
+    public static DbType getCurrentDbType() {
+        DbType dbType = FlexGlobalConfig.getDefaultConfig().getDbType();
+        if (dbType == null) {
+            dbType = DialectFactory.getHintDbType();
+        }
+        return dbType;
     }
 
     /**
