@@ -5,7 +5,8 @@
     <parent>
         <artifactId>mybatis-flex-test</artifactId>
         <groupId>com.mybatis-flex</groupId>
-        <version>1.11.1</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -23,7 +24,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-spring-boot-starter</artifactId>
-            <version>${mybatis-flex.version}</version>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>

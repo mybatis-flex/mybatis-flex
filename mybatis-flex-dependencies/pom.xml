@@ -4,9 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.mybatis-flex</groupId>
+    <parent>
+        <groupId>com.mybatis-flex</groupId>
+        <artifactId>parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
     <artifactId>mybatis-flex-dependencies</artifactId>
-    <version>1.11.1</version>
+    <version>${revision}</version>
 
     <packaging>pom</packaging>
 
@@ -48,7 +54,6 @@
         </developer>
     </developers>
     <properties>
-        <mybatis-flex.version>1.11.1</mybatis-flex.version>
     </properties>
 
     <dependencyManagement>
@@ -56,42 +61,42 @@
             <dependency>
                 <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-annotation</artifactId>
-                <version>${mybatis-flex.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-codegen</artifactId>
-                <version>${mybatis-flex.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-core</artifactId>
-                <version>${mybatis-flex.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-processor</artifactId>
-                <version>${mybatis-flex.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-solon-plugin</artifactId>
-                <version>${mybatis-flex.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-spring</artifactId>
-                <version>${mybatis-flex.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-spring-boot-starter</artifactId>
-                <version>${mybatis-flex.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
-                <version>${mybatis-flex.version}</version>
+                <version>${revision}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -183,6 +188,115 @@
                 <configuration>
                     <publishingServerId>central</publishingServerId>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <!-- Create an effective POM (with versions expanded) for the CLI and
+                            documentation -->
+                        <id>flatten-effective-pom</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                        <configuration>
+                            <updatePomFile>false</updatePomFile>
+                            <outputDirectory>${project.build.directory}/effective-pom</outputDirectory>
+                            <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                            <pomElements>
+                                <dependencyManagement>expand</dependencyManagement>
+                                <pluginManagement>expand</pluginManagement>
+                                <properties>remove</properties>
+                                <repositories>remove</repositories>
+                            </pomElements>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!-- Flatten and simplify our own POM for install/deploy -->
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                        <configuration>
+                            <updatePomFile>true</updatePomFile>
+                            <flattenMode>bom</flattenMode>
+                            <pomElements>
+                                <pluginManagement>keep</pluginManagement>
+                                <properties>keep</properties>
+                                <repositories>remove</repositories>
+                            </pomElements>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>flatten-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xml-maven-plugin</artifactId>
+                <version>${xml-maven-plugin.version}</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <!-- Cleanup the effective POM -->
+                        <id>post-process-effective-pom</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>transform</goal>
+                        </goals>
+                        <configuration>
+                            <transformationSets>
+                                <transformationSet>
+                                    <dir>${project.build.directory}/effective-pom</dir>
+                                    <outputDir>${project.build.directory}/effective-pom</outputDir>
+                                    <stylesheet>src/main/xslt/post-process-flattened-pom.xsl</stylesheet>
+                                    <outputProperties>
+                                        <outputProperty>
+                                            <name>indent</name>
+                                            <value>yes</value>
+                                        </outputProperty>
+                                    </outputProperties>
+                                </transformationSet>
+                            </transformationSets>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!-- Cleanup the flattened project POM -->
+                        <id>post-process-flattened-pom</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>transform</goal>
+                        </goals>
+                        <configuration>
+                            <transformationSets>
+                                <transformationSet>
+                                    <dir>${project.basedir}</dir>
+                                    <outputDir>${project.basedir}</outputDir>
+                                    <includes>.flattened-pom.xml</includes>
+                                    <stylesheet>src/main/xslt/post-process-flattened-pom.xsl</stylesheet>
+                                    <outputProperties>
+                                        <outputProperty>
+                                            <name>indent</name>
+                                            <value>yes</value>
+                                        </outputProperty>
+                                    </outputProperties>
+                                </transformationSet>
+                            </transformationSets>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
