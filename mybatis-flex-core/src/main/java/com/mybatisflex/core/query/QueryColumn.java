@@ -955,6 +955,10 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
         return new ArithmeticQueryColumn(this).divide(number);
     }
 
+    public QueryColumn cast(String dataType) {
+        return new CastQueryColumn(this, dataType);
+    }
+
     /**
      * 生成列用于构建查询条件的 SQL 语句。
      *

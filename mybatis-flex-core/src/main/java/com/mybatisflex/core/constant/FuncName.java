@@ -144,6 +144,9 @@ public class FuncName {
     public static final String WEEKOFYEAR = "WEEKOFYEAR";
     public static final String YEAR = "YEAR";
     public static final String GROUP_CONCAT = "GROUP_CONCAT";
+    public static final String STRING_AGG = "STRING_AGG";
+    public static final String LISTAGG = "LISTAGG";
+
     private FuncName() {
     }
 
