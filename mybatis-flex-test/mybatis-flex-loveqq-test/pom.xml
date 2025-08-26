@@ -29,7 +29,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-loveqq-starter</artifactId>
-            <version>${revision}</version>
+            <version>${project.version</version>
         </dependency>
 
         <dependency>
