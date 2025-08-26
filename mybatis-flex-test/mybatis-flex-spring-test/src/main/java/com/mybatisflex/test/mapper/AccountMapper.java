@@ -18,11 +18,17 @@ package com.mybatisflex.test.mapper;
 
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.test.model.Account;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @author 王帅
  * @since 2023-06-23
  */
 public interface AccountMapper extends BaseMapper<Account> {
+
+    @Select("select * from tb_account")
+    List<Account> selectAccounts();
 
 }
