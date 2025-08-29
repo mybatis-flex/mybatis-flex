@@ -97,11 +97,12 @@ public class AuditManager {
     }
 
     @SuppressWarnings("rawtypes")
-    public static <T> T startAudit(AuditRunnable<T> supplier, Statement statement, BoundSql boundSql, Configuration configuration) throws SQLException {
+    public static <T> T startAudit(AuditRunnable<T> supplier, String stmtId, Statement statement, BoundSql boundSql, Configuration configuration) throws SQLException {
         AuditMessage auditMessage = messageFactory.create();
         if (auditMessage == null) {
             return supplier.execute();
         }
+        auditMessage.setStmtId(stmtId);
         String key = DataSourceKey.get();
         if (StringUtil.noText(key)) {
             key = FlexGlobalConfig.getDefaultConfig()

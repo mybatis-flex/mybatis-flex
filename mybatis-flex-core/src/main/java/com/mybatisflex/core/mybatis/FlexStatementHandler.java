@@ -46,9 +46,11 @@ public class FlexStatementHandler implements StatementHandler {
     private final BoundSql boundSql;
     private final boolean auditEnable = AuditManager.isAuditEnable();
     private final Configuration configuration;
+    private final String stmtId;
 
     public FlexStatementHandler(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
         configuration = ms.getConfiguration();
+        stmtId = ms.getId();
         switch (ms.getStatementType()) {
             case STATEMENT:
                 delegate = new SimpleStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
@@ -83,7 +85,7 @@ public class FlexStatementHandler implements StatementHandler {
             AuditManager.startAudit(() -> {
                 delegate.batch(statement);
                 return null;
-            }, statement, boundSql, configuration);
+            }, stmtId, statement, boundSql, configuration);
         } else {
             delegate.batch(statement);
         }
@@ -91,19 +93,19 @@ public class FlexStatementHandler implements StatementHandler {
 
     @Override
     public int update(Statement statement) throws SQLException {
-        return auditEnable ? AuditManager.startAudit(() -> delegate.update(statement), statement, boundSql, configuration)
+        return auditEnable ? AuditManager.startAudit(() -> delegate.update(statement), stmtId, statement, boundSql, configuration)
             : delegate.update(statement);
     }
 
     @Override
     public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
-        return auditEnable ? AuditManager.startAudit(() -> delegate.query(statement, resultHandler), statement, boundSql, configuration)
+        return auditEnable ? AuditManager.startAudit(() -> delegate.query(statement, resultHandler), stmtId, statement, boundSql, configuration)
             : delegate.query(statement, resultHandler);
     }
 
     @Override
     public <E> Cursor<E> queryCursor(Statement statement) throws SQLException {
-        return auditEnable ? AuditManager.startAudit(() -> delegate.queryCursor(statement), statement, boundSql, configuration)
+        return auditEnable ? AuditManager.startAudit(() -> delegate.queryCursor(statement), stmtId, statement, boundSql, configuration)
             : delegate.queryCursor(statement);
     }
 

@@ -13,8 +13,6 @@
     <name>mybatis-flex-processor</name>
     <artifactId>mybatis-flex-processor</artifactId>
     <packaging>jar</packaging>
-    <version>${revision}</version>
-
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -25,7 +23,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-annotation</artifactId>
-            <version>${revision}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

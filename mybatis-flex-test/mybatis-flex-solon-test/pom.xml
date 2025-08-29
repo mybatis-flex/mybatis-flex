@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-solon-plugin</artifactId>
-            <version>${revision}</version>
+            <version>${project.version</version>
         </dependency>
 
         <dependency>
@@ -97,7 +97,7 @@
                         <path>
                             <groupId>com.mybatis-flex</groupId>
                             <artifactId>mybatis-flex-processor</artifactId>
-                            <version>${revision}</version>
+                            <version>${project.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
