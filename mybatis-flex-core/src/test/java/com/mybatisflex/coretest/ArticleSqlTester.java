@@ -27,15 +27,15 @@ import org.junit.Test;
 import static com.mybatisflex.coretest.table.ArticleTableDef.ARTICLE;
 import static org.junit.Assert.assertEquals;
 
+import javax.management.Query;
 
 public class ArticleSqlTester {
-
 
     @Test
     public void testSelectSql() {
         QueryWrapper query = new QueryWrapper()
-            .select()
-            .from(ARTICLE);
+                .select()
+                .from(ARTICLE);
 
         IDialect dialect = new CommonsDialectImpl();
         String sql = dialect.forSelectByQuery(query);
@@ -53,10 +53,12 @@ public class ArticleSqlTester {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forInsertEntity(tableInfo, article, false);
         System.out.println(sql);
-        assertEquals("INSERT INTO `tb_article`(`uuid`, `account_id`, `title`, `content`, `created`, `modified`, `is_delete`, `version`) " +
-            "VALUES (?, ?, ?, ?, now(), now(), ?, ?)", sql);
+        assertEquals(
+                "INSERT INTO `tb_article`(`uuid`, `account_id`, `title`, `content`, `created`, `modified`, `is_delete`, `version`) "
+                        +
+                        "VALUES (?, ?, ?, ?, now(), now(), ?, ?)",
+                sql);
     }
-
 
     @Test
     public void testInsert1Sql() {
@@ -68,9 +70,10 @@ public class ArticleSqlTester {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forInsertEntity(tableInfo, article, true);
         System.out.println(sql);
-        assertEquals("INSERT INTO `tb_article`(`account_id`, `content`, `created`, `modified`) VALUES (?, ?, now(), now())", sql);
+        assertEquals(
+                "INSERT INTO `tb_article`(`account_id`, `content`, `created`, `modified`) VALUES (?, ?, now(), now())",
+                sql);
     }
-
 
     @Test
     public void testInsertBatchSql() {
@@ -86,10 +89,12 @@ public class ArticleSqlTester {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forInsertEntityBatch(tableInfo, CollectionUtil.newArrayList(article1, article2));
         System.out.println(sql);
-        assertEquals("INSERT INTO `tb_article`(`uuid`, `account_id`, `title`, `content`, `created`, `modified`, `is_delete`, `version`) " +
-            "VALUES (?, ?, ?, ?, now(), now(), ?, ?), (?, ?, ?, ?, now(), now(), ?, ?)", sql);
+        assertEquals(
+                "INSERT INTO `tb_article`(`uuid`, `account_id`, `title`, `content`, `created`, `modified`, `is_delete`, `version`) "
+                        +
+                        "VALUES (?, ?, ?, ?, now(), now(), ?, ?), (?, ?, ?, ?, now(), now(), ?, ?)",
+                sql);
     }
-
 
     @Test
     public void testDeleteSql() {
@@ -97,19 +102,19 @@ public class ArticleSqlTester {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forDeleteEntityById(tableInfo);
         System.out.println(sql);
-        assertEquals("UPDATE `tb_article` SET `is_delete` = 1 WHERE `id` = ?  AND `uuid` = ?  AND `is_delete` = 0", sql);
+        assertEquals("UPDATE `tb_article` SET `is_delete` = 1 WHERE `id` = ?  AND `uuid` = ?  AND `is_delete` = 0",
+                sql);
     }
-
 
     @Test
     public void testDeleteByIdsSql() {
         IDialect dialect = new CommonsDialectImpl();
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
-        String sql = dialect.forDeleteEntityBatchByIds(tableInfo, new Object[]{1, 2, 3});
+        String sql = dialect.forDeleteEntityBatchByIds(tableInfo, new Object[] { 1, 2, 3 });
         System.out.println(sql);
-        assertEquals("UPDATE `tb_article` SET `is_delete` = 1 WHERE ((`id` = ?  AND `uuid` = ? )) AND `is_delete` = 0", sql);
+        assertEquals("UPDATE `tb_article` SET `is_delete` = 1 WHERE ((`id` = ?  AND `uuid` = ? )) AND `is_delete` = 0",
+                sql);
     }
-
 
     @Test
     public void testUpdateSql() {
@@ -123,10 +128,9 @@ public class ArticleSqlTester {
         String sql = dialect.forUpdateEntity(tableInfo, article, true);
         System.out.println(sql);
         assertEquals("UPDATE `tb_article` " +
-            "SET `account_id` = ? , `content` = ? , `modified` = now(), `version` = `version` + 1  " +
-            "WHERE `id` = ?  AND `uuid` = ?  AND `is_delete` = 0 AND `version` = 1", sql);
+                "SET `account_id` = ? , `content` = ? , `modified` = now(), `version` = `version` + 1  " +
+                "WHERE `id` = ?  AND `uuid` = ?  AND `is_delete` = 0 AND `version` = 1", sql);
     }
-
 
     @Test
     public void testUpdateByQuerySql() {
@@ -136,13 +140,30 @@ public class ArticleSqlTester {
         article.setVersion(1L);
 
         QueryWrapper queryWrapper = new QueryWrapper()
-            .where(ARTICLE.ID.ge(100));
+                .where(ARTICLE.ID.ge(100));
 
         IDialect dialect = new CommonsDialectImpl();
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(Article.class);
         String sql = dialect.forUpdateEntityByQuery(tableInfo, article, true, queryWrapper);
         System.out.println(sql);
-        assertEquals("UPDATE `tb_article` SET `account_id` = ? , `content` = ? , `modified` = now(), `version` = `version` + 1  WHERE `id` >= ?", sql);
+        assertEquals(
+                "UPDATE `tb_article` SET `account_id` = ? , `content` = ? , `modified` = now(), `version` = `version` + 1  WHERE `id` >= ?",
+                sql);
+    }
+
+    @Test
+    public void testSelectByPlusQuerySql() {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.select("select");
+        queryWrapper.from("from");
+        queryWrapper.eq("select", 1);
+        queryWrapper.orderBy("order", true);
+        IDialect dialect = new CommonsDialectImpl();
+        String sql = dialect.forSelectByQuery(queryWrapper);
+        System.out.println(sql);
+        assertEquals(
+                "SELECT `select` FROM `from` WHERE `select` = ? ORDER BY `order` ASC",
+                sql);
     }
 
 }

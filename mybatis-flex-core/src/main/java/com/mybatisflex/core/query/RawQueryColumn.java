@@ -15,7 +15,6 @@
  */
 package com.mybatisflex.core.query;
 
-
 import com.mybatisflex.core.dialect.IDialect;
 
 import java.util.Arrays;
@@ -39,20 +38,20 @@ public class RawQueryColumn extends QueryColumn implements HasParamsColumn {
 
     @Override
     protected String toConditionSql(List<QueryTable> queryTables, IDialect dialect) {
-        return content;
+        return dialect.wrap(content);
     }
 
     @Override
     protected String toSelectSql(List<QueryTable> queryTables, IDialect dialect) {
-        return content + WrapperUtil.buildColumnAlias(alias, dialect);
+        return dialect.wrap(content) + WrapperUtil.buildColumnAlias(alias, dialect);
     }
 
     @Override
     public String toString() {
         return "RawQueryColumn{" +
-            "content='" + content + '\'' +
-            ", params='" + Arrays.toString(params) + '\'' +
-            '}';
+                "content='" + content + '\'' +
+                ", params='" + Arrays.toString(params) + '\'' +
+                '}';
     }
 
     public String getContent() {
