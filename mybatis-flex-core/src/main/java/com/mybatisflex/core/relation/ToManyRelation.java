@@ -75,7 +75,7 @@ public class ToManyRelation<SelfEntity> extends AbstractRelation<SelfEntity> {
                 String[] splitValues = ((String) targetValue).split(selfValueSplitBy);
                 for (String splitValue : splitValues) {
                     // 排除空值
-                    if (splitValue == null || splitValue.length() == 0) {
+                    if (splitValue == null || splitValue.isEmpty()) {
                         continue;
                     }
                     //优化分割后的数据类型(防止在数据库查询时候出现隐式转换)
