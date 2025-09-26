@@ -3,6 +3,19 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 
+## v1.11.2 20250926
+- 新增：添加 Assert 方便在执行 update 的时候进行断言
+- 新增：添加新函数并增强数据库类型判断能力，感谢 @fangzhengjin
+- 新增：添加 stringAgg 和 listAgg 函数的重载方法，感谢 @fangzhengjin
+- 新增：添加新函数并增强数据库类型判断能力，感谢 @fangzhengjin
+- 新增：AuditMessage 添加 stmtId ，感谢 @pbnoyz
+- 优化：bom 框架版本统一管理，感谢 @ruansheng8
+- 优化：bom 同步最新版本依赖，感谢 @ruansheng8
+- 优化：优化关联查询使用逗号分割时排除空值，感谢 @ruansheng8
+- 修复：修复自动关联查询功能：表信息查找根据Schema+表名，感谢 @ruansheng8
+- 文档：更新相关文档 docs/zh/core/id.md，感谢 @java-coding
+
+
 
 ## v1.11.1 20250725
 - 新增：添加数据源缺失处理器，方便项目启动后，再通过代码添加数据源
