@@ -2,6 +2,10 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.11.3 20250926
+- 修复： QueryColumn.between_(values) 不能为 null 的问题 #ID03CH
+
+
 
 ## v1.11.2 20250926
 - 新增：添加 Assert 方便在执行 update 的时候进行断言
