@@ -510,10 +510,16 @@ public class QueryColumn implements CloneSupport<QueryColumn>, Conditional<Query
     }
 
     QueryCondition between_(Object[] values) {
-        if (values == null || values.length != 2) {
-            throw new IllegalArgumentException("values is null or length is not 2");
+//        if (values == null || values.length != 2) {
+//            throw new IllegalArgumentException("values is null or length is not 2");
+//        }
+
+        if (values == null || values.length == 0) {
+            return QueryCondition.createEmpty();
         }
-        Object start = values[0], end = values[1];
+
+
+        Object start = values[0], end = values.length > 1 ? values[1] : null;
         return between_(start, end);
     }
 
