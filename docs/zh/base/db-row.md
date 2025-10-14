@@ -181,14 +181,14 @@ Other other = row.toObject(Other.class);
 ## Row 字段转化为驼峰风格
 
 ```java
-Row row = Db..selectOneBySql("select * from ....");
+Row row = Db.selectOneBySql("select * from ....");
 Map result = row.toCamelKeysMap();
 ```
 
 ## Row 字段转换为下划线风格
 
 ```java
-Row row = Db..selectOneBySql("select * from ....");
+Row row = Db.selectOneBySql("select * from ....");
 Map result = row.toUnderlineKeysMap();
 ```
 
