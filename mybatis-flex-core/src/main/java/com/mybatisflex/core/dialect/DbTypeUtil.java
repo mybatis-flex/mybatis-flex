@@ -185,7 +185,7 @@ public class DbTypeUtil {
             return DbType.IMPALA;
         } else if (jdbcUrl.contains(":informix")) {
             return DbType.INFORMIX;
-        } else if (jdbcUrl.contains(":kingbase\\d*:") && isMatchedRegex(":kingbase\\d*:", jdbcUrl)) {
+        } else if (isMatchedRegex(":kingbase\\d*:", jdbcUrl)) {
             return DbType.KINGBASE_ES;
         } else if (jdbcUrl.contains(":lealone:")) {
             return DbType.LEALONE;
