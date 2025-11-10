@@ -76,13 +76,22 @@ public class EnumWrapper<E extends Enum<E>> {
                 if (enumValueMethod.getParameterCount() > 0) {
                     throw new IllegalStateException("The \"@EnumValue\" annotation should be applied to no-argument getter methods in enum: " + enumClass.getName());
                 }
+
+                String enumValueFieldName;
+                if (methodName.startsWith("get")) {
+                    enumValueFieldName = StringUtil.firstCharToLowerCase(enumValueMethod.getName().substring(3));
+                } else {
+                    enumValueFieldName = enumValueMethod.getName().toLowerCase();
+                }
+                enumValueField = ClassUtil.getFirstField(enumClass, field -> enumValueFieldName.equals(field.getName()));
+                if (enumValueField != null) {
+                    propertyType = ClassUtil.getWrapType(enumValueField.getType());
+                } else {
+                    throw new IllegalStateException("Can not find field \"" + enumValueFieldName + "()\" in enum: " + enumClass.getName());
+                }
+
                 this.getterMethod = enumValueMethod;
                 this.hasEnumValueAnnotation = true;
-                Class<?> returnType = enumValueMethod.getReturnType();
-                if (returnType.isPrimitive()) {
-                    returnType = ConvertUtil.primitiveToBoxed(returnType);
-                }
-                this.propertyType = returnType;
             }
         }
     }

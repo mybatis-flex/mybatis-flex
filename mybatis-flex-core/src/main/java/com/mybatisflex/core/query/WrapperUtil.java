@@ -50,7 +50,12 @@ class WrapperUtil {
                     }
                 }
                 // not Brackets
-                else {
+                else if (condition instanceof OperatorSelectCondition) {
+                    if (list == null) {
+                        list = new ArrayList<>();
+                    }
+                    list.add(((OperatorSelectCondition) condition).getQueryWrapper());
+                } else {
                     Object value = condition.getValue();
                     if (value instanceof QueryWrapper) {
                         if (list == null) {
