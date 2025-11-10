@@ -73,9 +73,8 @@ public class EnumWrapper<E extends Enum<E>> {
         if (!hasEnumValueAnnotation) {
             Method enumValueMethod = ClassUtil.getFirstMethodByAnnotation(enumClass, EnumValue.class);
             if (enumValueMethod != null) {
-                String methodName = enumValueMethod.getName();
-                if (!(methodName.startsWith("get") && methodName.length() > 3)) {
-                    throw new IllegalStateException("Can not find get method \"" + methodName + "()\" in enum: " + enumClass.getName());
+                if (enumValueMethod.getParameterCount() > 0) {
+                    throw new IllegalStateException("The \"@EnumValue\" annotation should be applied to no-argument getter methods in enum: " + enumClass.getName());
                 }
                 this.getterMethod = enumValueMethod;
                 this.hasEnumValueAnnotation = true;
