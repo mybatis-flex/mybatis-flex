@@ -2,8 +2,17 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.11.4 20251113
+- 修复：修复 EXISTS、NOT EXISTS 的子 select 语句无法自动附加逻辑删除的问题，感谢 @Arowa_Z
+- 修复：@EnumValue 应用在接口方法且返回类型为泛型时失效的问题，感谢 @CShisan
+- 修复：人大金仓方言类型判断不准确的问题，感谢 @younger
+- 修复：RowKeyGenerator 的 autoKeyGeneratorNames 在某些情况下累积导致缓存污染的问题
+- 文档：修正示例代码中的语法错误，感谢 @涛声依旧
+
+
+
 ## v1.11.3 20250926
-- 修复： QueryColumn.between_(values) 不能为 null 的问题 #ID03CH
+- 修复：QueryColumn.between_(values) 不能为 null 的问题 #ID03CH
 
 
 
