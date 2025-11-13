@@ -42,8 +42,9 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
     private static final KeyGenerator[] NO_KEY_GENERATORS = new KeyGenerator[0];
 
     private final MappedStatement ms;
-    private KeyGenerator[] keyGenerators;
     private Set<String> autoKeyGeneratorNames;
+    private KeyGenerator[] keyGenerators;
+
 
     public RowKeyGenerator(MappedStatement methodMappedStatement) {
         this.ms = methodMappedStatement;
@@ -52,6 +53,8 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
     @Override
     public void processBefore(Executor executor, MappedStatement ms, Statement stmt, Object parameter) {
         Row row = (Row) ((Map<?, ?>) parameter).get(FlexConsts.ROW);
+        // 重置 autoKeyGeneratorNames fix https://gitee.com/mybatis-flex/mybatis-flex/issues/ID64KB
+        autoKeyGeneratorNames = null;
         keyGenerators = buildRowKeyGenerators(RowCPI.obtainsPrimaryKeys(row));
         for (KeyGenerator keyGenerator : keyGenerators) {
             keyGenerator.processBefore(executor, ms, stmt, parameter);
@@ -89,7 +92,7 @@ public class RowKeyGenerator implements KeyGenerator, IMultiKeyGenerator {
         String keyColumn = rowKey.getKeyColumn();
         if (rowKey.getKeyType() == KeyType.Auto) {
             if (autoKeyGeneratorNames == null) {
-                autoKeyGeneratorNames = new HashSet<>();
+                autoKeyGeneratorNames = new LinkedHashSet<>();
             }
             autoKeyGeneratorNames.add(keyColumn);
             return new RowJdbc3KeyGenerator(keyColumn);
