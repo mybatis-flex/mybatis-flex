@@ -31,11 +31,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.mybatisflex.core.query.QueryMethods.case_;
-import static com.mybatisflex.core.query.QueryMethods.column;
-import static com.mybatisflex.core.query.QueryMethods.count;
-import static com.mybatisflex.core.query.QueryMethods.distinct;
-import static com.mybatisflex.core.query.QueryMethods.select;
+import static com.mybatisflex.core.query.QueryMethods.*;
 import static com.mybatisflex.test.model.table.RoleTableDef.ROLE;
 import static com.mybatisflex.test.model.table.UserRoleTableDef.USER_ROLE;
 import static com.mybatisflex.test.model.table.UserTableDef.USER;
@@ -197,6 +193,28 @@ class QueryWrapperTest {
             "WHERE\n" +
             "  ` user_id ` = null\n" +
             "  AND ` user_name ` = ''", sql);
+    }
+
+    @Test
+    void test07() {
+        QueryWrapper queryWrapper = QueryWrapper.create()
+            .select()
+            .from(USER.as("u"))
+            .leftJoin(USER_ROLE).as("ur").on(USER.USER_ID.eq(USER_ROLE.USER_ID))
+            .where(QueryCondition.createEmpty())
+            .and(USER.USER_ID.eq(1).or(USER.USER_ID.in(
+                QueryWrapper.create().select(USER_ROLE.USER_ID).from(USER_ROLE)))
+            )
+            .and(
+                exists(selectOne().from(ROLE)
+                    .where(ROLE.ROLE_ID.eq(USER_ROLE.ROLE_ID)))
+            )
+            .and(USER_ROLE.USER_ID.eq(1));
+        System.out.println(queryWrapper.toSQL());
+        QueryCondition whereQueryCondition = CPI.getWhereQueryCondition(queryWrapper);
+        boolean contained = CPI.containsTable(whereQueryCondition, "tb_user_role");
+
+        Assertions.assertTrue(contained);
     }
 
 }

@@ -76,7 +76,8 @@ public class OperatorSelectCondition extends QueryCondition {
     @Override
     boolean containsTable(String... tables) {
         QueryCondition condition = queryWrapper.getWhereQueryCondition();
-        return condition != null && condition.containsTable(tables);
+        boolean subContains = condition != null && condition.containsTable(tables);
+        return subContains || nextContainsTable(tables);
     }
 
     @Override
