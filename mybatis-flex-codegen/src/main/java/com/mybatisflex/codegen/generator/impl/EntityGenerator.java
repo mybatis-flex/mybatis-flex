@@ -132,7 +132,7 @@ public class EntityGenerator implements IGenerator {
         String sourceDir = StringUtil.hasText(entityConfig.getSourceDir()) ? entityConfig.getSourceDir() : packageConfig.getSourceDir();
 
         String baseEntityPackagePath = packageConfig.getEntityPackage().replace(".", "/");
-        baseEntityPackagePath = StringUtil.hasText(entityConfig.getWithBasePackage()) ? entityConfig.getWithBasePackage().replace(".", "")
+        baseEntityPackagePath = StringUtil.hasText(entityConfig.getWithBasePackage()) ? entityConfig.getWithBasePackage().replace(".", "/")
             : baseEntityPackagePath + "/base";
 
         String baseEntityClassName = table.buildEntityClassName() + entityConfig.getWithBaseClassSuffix();
