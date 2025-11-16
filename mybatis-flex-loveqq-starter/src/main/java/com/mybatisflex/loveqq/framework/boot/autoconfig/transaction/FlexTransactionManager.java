@@ -91,7 +91,7 @@ public class FlexTransactionManager extends AbstractPlatformTransactionManager {
         TimeoutHolder.clear();
     }
 
-    static class TransactionObject extends JdbcTransactionObjectSupport {
+    public static class TransactionObject extends JdbcTransactionObjectSupport {
 
         private static final ThreadLocal<String> ROLLBACK_ONLY_XIDS = new ThreadLocal<>();
 
