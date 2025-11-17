@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.spring.boot;
+package com.mybatisflex.spring.boot.v4;
 
 import com.mybatisflex.core.datasource.DataSourceBuilder;
 import com.mybatisflex.core.datasource.DataSourceDecipher;
@@ -23,7 +23,8 @@ import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DbTypeUtil;
 import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.util.MapUtil;
-import com.mybatisflex.spring.boot.MybatisFlexProperties.SeataConfig;
+import com.mybatisflex.spring.boot.ConditionalOnMybatisFlexDatasource;
+import com.mybatisflex.spring.boot.v4.MybatisFlexProperties.SeataConfig;
 import com.mybatisflex.spring.datasource.DataSourceAdvice;
 import io.seata.rm.datasource.DataSourceProxy;
 import io.seata.rm.datasource.xa.DataSourceProxyXA;
@@ -34,9 +35,9 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
+import org.springframework.boot.jdbc.autoconfigure.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
@@ -57,13 +58,13 @@ import java.util.Optional;
 @ConditionalOnClass(
     value = {SqlSessionFactory.class, SqlSessionFactoryBean.class},
     name = {
-        "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
-        "org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration",
+        "org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration",
+        "org.springframework.boot.jdbc.autoconfigure.DataSourceTransactionManagerAutoConfiguration",
     }
 )
 @AutoConfigureBefore(value = {DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class}
     , name = {"com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure",
-    "com.alibaba.druid.spring.boot3.autoconfigure.DruidDataSourceAutoConfigure"})
+    "com.alibaba.druid.spring.boot4.autoconfigure.DruidDataSourceAutoConfigure"})
 public class MultiDataSourceAutoConfiguration {
 
     private final String master;

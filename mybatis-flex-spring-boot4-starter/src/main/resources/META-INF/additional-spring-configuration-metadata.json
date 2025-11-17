@@ -1,0 +1,91 @@
+{
+    "properties": [
+        {
+            "defaultValue": false,
+            "name": "mybatis-flex.lazy-initialization",
+            "description": "Set whether enable lazy initialization for mapper bean.",
+            "type": "java.lang.Boolean"
+        },
+        {
+            "defaultValue": "",
+            "name": "mybatis-flex.mapper-default-scope",
+            "description": "A default scope for mapper bean that scanned by auto-configure.",
+            "type": "java.lang.String"
+        },
+        {
+            "defaultValue": true,
+            "name": "mybatis-flex.inject-sql-session-on-mapper-scan",
+            "description": "Set whether inject a SqlSessionTemplate or SqlSessionFactory bean (If you want to back to the behavior of 2.2.1 or before, specify false). If you use together with spring-native, should be set true.",
+            "type": "java.lang.Boolean"
+        },
+        {
+            "name": "mybatis-flex.scripting-language-driver.velocity.userdirective",
+            "deprecation": {
+                "level": "error",
+                "reason": "The 'userdirective' is deprecated since Velocity 2.x. This property defined for keeping backward compatibility with older velocity version.",
+                "replacement": "mybatis-flex.scripting-language-driver.velocity.velocity-settings.runtime.custom_directives"
+            }
+        },
+        {
+            "defaultValue": true,
+            "name": "mybatis-flex.datasource",
+            "description": "多数据源配置",
+            "type": "java.util.Map<java.lang.String,com.mybatisflex.spring.boot.DataSourceProperty>"
+        },
+        {
+            "defaultValue": 0,
+            "name": "mybatis-flex.global-config.normal-value-of-logic-delete",
+            "description": "逻辑删除未删除值标记",
+            "type": "java.lang.Object"
+        },
+        {
+            "defaultValue": 1,
+            "name": "mybatis-flex.global-config.deleted-value-of-logic-delete",
+            "description": "逻辑删除已删除值标记",
+            "type": "java.lang.Object"
+        },
+        {
+            "defaultValue": 10,
+            "name": "mybatis-flex.global-config.default-page-size",
+            "description": "默认的分页查询时的每页数据量",
+            "type": "java.lang.Integer"
+        },
+        {
+            "defaultValue": 2,
+            "name": "mybatis-flex.global-config.default-relation-query-depth",
+            "description": "默认的 Relation 注解查询深度",
+            "type": "java.lang.Integer"
+        },
+        {
+            "name": "mybatis-flex.global-config.key-config.value",
+            "description": "使用的 ID 生成器名称 或者 Sequence 执行的 SQL 内容",
+            "type": "java.lang.String"
+        },
+        {
+            "defaultValue": true,
+            "name": "mybatis-flex.global-config.key-config.before",
+            "description": "是否在数据插入之前执行，只在非自增上配置有效",
+            "type": "java.lang.Boolean"
+        },
+        {
+            "name": "mybatis-flex.global-config.key-config.key-type",
+            "description": "ID 生成策略",
+            "type": "com.mybatisflex.annotation.KeyType"
+        },
+        {
+            "name": "mybatis-flex.global-config.logic-delete-column",
+            "description": "全局默认逻辑删除字段",
+            "type": "java.lang.String"
+        },
+        {
+            "name": "mybatis-flex.global-config.tenant-column",
+            "description": "全局默认多租户字段",
+            "type": "java.lang.String"
+        },
+        {
+            "name": "mybatis-flex.global-config.version-column",
+            "description": "全局默认逻辑乐观锁字段",
+            "type": "java.lang.String"
+        }
+    ]
+}
