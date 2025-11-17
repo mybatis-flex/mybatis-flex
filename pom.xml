@@ -55,6 +55,7 @@
         <module>mybatis-flex-spring</module>
         <module>mybatis-flex-spring-boot-starter</module>
         <module>mybatis-flex-spring-boot3-starter</module>
+        <module>mybatis-flex-spring-boot4-starter</module>
         <module>mybatis-flex-solon-plugin</module>
         <module>mybatis-flex-loveqq-starter</module>
         <module>mybatis-flex-test</module>
@@ -86,6 +87,7 @@
         <spring.version>5.3.27</spring.version>
         <spring-batch.version>4.3.10</spring-batch.version>
         <spring-boot.version>2.7.11</spring-boot.version>
+        <spring-boot4.version>4.0.0-RC2</spring-boot4.version>
         <solon.version>3.0.1</solon.version>
         <loveqq.version>1.1.0-java8</loveqq.version>
 
@@ -331,7 +333,7 @@
                 <version>1.6</version>
                 <executions>
                     <execution>
-                        <phase>verify</phase>
+                        <phase>deploy</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
