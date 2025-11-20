@@ -333,7 +333,7 @@
                 <version>1.6</version>
                 <executions>
                     <execution>
-                        <phase>verify</phase>
+                        <phase>deploy</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
