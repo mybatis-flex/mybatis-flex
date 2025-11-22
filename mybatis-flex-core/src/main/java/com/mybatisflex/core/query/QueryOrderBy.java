@@ -71,7 +71,7 @@ public class QueryOrderBy implements CloneSupport<QueryOrderBy> {
     }
 
     public String getOrderType() {
-        return orderType;
+        return this.orderType;
     }
 
     public String toSql(List<QueryTable> queryTables, IDialect dialect) {
