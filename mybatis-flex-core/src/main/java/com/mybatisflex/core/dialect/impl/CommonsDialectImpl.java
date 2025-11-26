@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.mybatisflex.core.constant.SqlConsts.AND;
+import static com.mybatisflex.core.constant.SqlConsts.IN;
 import static com.mybatisflex.core.constant.SqlConsts.ASTERISK;
 import static com.mybatisflex.core.constant.SqlConsts.BLANK;
 import static com.mybatisflex.core.constant.SqlConsts.BRACKET_LEFT;
@@ -242,12 +243,14 @@ public class CommonsDialectImpl implements IDialect {
         }
         // 单主键
         else {
+            sql.append(wrap(primaryKeys[0])).append(IN).append(BRACKET_LEFT);
             for (int i = 0; i < ids.length; i++) {
                 if (i > 0) {
-                    sql.append(OR);
+                    sql.append(DELIMITER);
                 }
-                sql.append(wrap(primaryKeys[0])).append(EQUALS_PLACEHOLDER);
+                sql.append(PLACEHOLDER);
             }
+            sql.append(BRACKET_RIGHT);
         }
         prepareAuth(schema, table, sql, OperateType.DELETE);
         return sql.toString();
@@ -776,12 +779,14 @@ public class CommonsDialectImpl implements IDialect {
         }
         // 单主键
         else {
+            sql.append(wrap(primaryKeys[0])).append(IN).append(BRACKET_LEFT);
             for (int i = 0; i < primaryValues.length; i++) {
                 if (i > 0) {
-                    sql.append(OR);
+                    sql.append(DELIMITER);
                 }
-                sql.append(wrap(primaryKeys[0])).append(EQUALS_PLACEHOLDER);
+                sql.append(PLACEHOLDER);
             }
+            sql.append(BRACKET_RIGHT);
         }
 
         sql.append(BRACKET_RIGHT).append(AND).append(buildLogicNormalCondition(logicDeleteColumn, tableInfo));
@@ -1025,12 +1030,14 @@ public class CommonsDialectImpl implements IDialect {
         }
         // 单主键
         else {
+            sql.append(wrap(primaryKeys[0])).append(IN).append(BRACKET_LEFT);
             for (int i = 0; i < primaryValues.length; i++) {
                 if (i > 0) {
-                    sql.append(OR);
+                    sql.append(DELIMITER);
                 }
-                sql.append(wrap(primaryKeys[0])).append(EQUALS_PLACEHOLDER);
+                sql.append(PLACEHOLDER);
             }
+            sql.append(BRACKET_RIGHT);
         }
 
         if (StringUtil.hasText(logicDeleteColumn) || ArrayUtil.isNotEmpty(tenantIdArgs)) {

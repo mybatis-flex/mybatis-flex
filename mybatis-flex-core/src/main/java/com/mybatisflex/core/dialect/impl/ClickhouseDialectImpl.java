@@ -231,12 +231,14 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
         }
         // 单主键
         else {
+            sql.append(wrap(primaryKeys[0])).append(IN).append(BRACKET_LEFT);
             for (int i = 0; i < ids.length; i++) {
                 if (i > 0) {
-                    sql.append(OR);
+                    sql.append(DELIMITER);
                 }
-                sql.append(wrap(primaryKeys[0])).append(EQUALS_PLACEHOLDER);
+                sql.append(PLACEHOLDER);
             }
+            sql.append(BRACKET_RIGHT);
         }
         prepareAuth(schema, table, sql, OperateType.DELETE);
         return sql.toString();
@@ -294,12 +296,14 @@ public class ClickhouseDialectImpl extends CommonsDialectImpl {
         }
         // 单主键
         else {
+            sql.append(wrap(primaryKeys[0])).append(IN).append(BRACKET_LEFT);
             for (int i = 0; i < primaryValues.length; i++) {
                 if (i > 0) {
-                    sql.append(OR);
+                    sql.append(DELIMITER);
                 }
-                sql.append(wrap(primaryKeys[0])).append(EQUALS_PLACEHOLDER);
+                sql.append(PLACEHOLDER);
             }
+            sql.append(BRACKET_RIGHT);
         }
 
         sql.append(BRACKET_RIGHT).append(AND).append(buildLogicNormalCondition(logicDeleteColumn, tableInfo));
