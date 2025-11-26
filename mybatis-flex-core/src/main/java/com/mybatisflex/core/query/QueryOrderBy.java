@@ -66,6 +66,13 @@ public class QueryOrderBy implements CloneSupport<QueryOrderBy> {
         return this;
     }
 
+    public QueryColumn getQueryColumn() {
+        return this.queryColumn;
+    }
+
+    public String getOrderType() {
+        return this.orderType;
+    }
 
     public String toSql(List<QueryTable> queryTables, IDialect dialect) {
         String sql = queryColumn.toConditionSql(queryTables, dialect) + orderType;
