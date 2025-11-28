@@ -25,10 +25,11 @@ import org.noear.solon.annotation.Inject;
 import org.noear.solon.core.AppContext;
 import org.noear.solon.core.event.EventBus;
 import org.noear.solon.core.util.ResourceUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.InputStream;
-import java.lang.reflect.Proxy;
 
 /**
  * Mybatis-Flex 自动装配
@@ -37,6 +38,8 @@ import java.lang.reflect.Proxy;
  */
 @Configuration
 public class MybatisFlexAutoConfiguration {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MybatisFlexAutoConfiguration.class);
+
     private DataSource getDataSource() {
         return MybatisFlexBootstrap.getInstance().getDataSource();
     }
@@ -159,7 +162,9 @@ public class MybatisFlexAutoConfiguration {
 
             //如果有配置，但是没有 mapper 注册成功；说明有问题了
             if (flexConfiguration.getMapperRegistry().getMappers().size() == 0) {
-                throw new IllegalStateException("Missing mapper registration, please check the 'mapperLocations' configuration!");
+                if (LOGGER.isWarnEnabled()) {
+                    LOGGER.warn("Property 'mapperLocations' was specified but matching resources are not found.");
+                }
             }
         }
 
