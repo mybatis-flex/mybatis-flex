@@ -663,6 +663,19 @@ public class Account {
 
 > 更多关于主键的配置，请点击 [这里](./docs/zh/core/id.md)
 
+## 开发者说明：JSR-305 空值注解规范
+
+- **依赖与作用范围**
+  - 从 `1.11.4` 起，核心模块和集成模块统一引入 `com.google.code.findbugs:jsr305` 依赖，仅用于静态分析和 IDE 空值推断，不参与运行时逻辑。
+- **默认非空策略**
+  - `com.mybatisflex.annotation`、`com.mybatisflex.core`、`com.mybatisflex.core.query`、`com.mybatisflex.core.row`、
+    `com.mybatisflex.spring`、`com.mybatisflex.spring.boot`、`com.mybatisflex.spring.boot.v4`、`com.mybatisflex.solon.integration`
+    等包通过 `@ParametersAreNonnullByDefault` 声明「方法参数默认非空」。
+- **@Nullable / @Nonnull 使用约定**
+  - 当方法返回值可能为 `null` 时，使用 `@Nullable` 显式标注；当明确保证非空且框架内部依赖该约定时，使用 `@Nonnull`。
+  - 对外暴露的配置类、扩展点接口、`Db` / `QueryWrapper` 静态工厂方法等，会逐步按照上述规则补充空值注解。
+  - 对库使用者而言，若开启 IDE 的 JSR-305 支持，可获得更准确的空指针分析与自动补全提示。
+
 ## 更多文档
 
 - [mybatis-flex](https://mybatis-flex.com)

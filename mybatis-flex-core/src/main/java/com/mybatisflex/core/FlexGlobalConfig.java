@@ -28,6 +28,8 @@ import com.mybatisflex.core.mybatis.UnMappedColumnHandler;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,6 +136,7 @@ public class FlexGlobalConfig {
         this.printBanner = printBanner;
     }
 
+    @Nonnull
     public DbType getDbType() {
         return dbType;
     }
@@ -142,6 +145,7 @@ public class FlexGlobalConfig {
         this.dbType = dbType;
     }
 
+    @Nullable
     public Configuration getConfiguration() {
         return configuration;
     }
@@ -154,6 +158,7 @@ public class FlexGlobalConfig {
         }
     }
 
+    @Nullable
     public SqlSessionFactory getSqlSessionFactory() {
         return sqlSessionFactory;
     }
@@ -162,6 +167,7 @@ public class FlexGlobalConfig {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
+    @Nullable
     public KeyConfig getKeyConfig() {
         return keyConfig;
     }
@@ -316,6 +322,7 @@ public class FlexGlobalConfig {
         this.defaultRelationQueryDepth = defaultRelationQueryDepth;
     }
 
+    @Nullable
     public String getLogicDeleteColumn() {
         return logicDeleteColumn;
     }
@@ -324,6 +331,7 @@ public class FlexGlobalConfig {
         this.logicDeleteColumn = logicDeleteColumn;
     }
 
+    @Nullable
     public String getTenantColumn() {
         return tenantColumn;
     }
@@ -332,6 +340,7 @@ public class FlexGlobalConfig {
         this.tenantColumn = tenantColumn;
     }
 
+    @Nullable
     public String getVersionColumn() {
         return versionColumn;
     }
@@ -348,6 +357,7 @@ public class FlexGlobalConfig {
         this.ignoreSchema = ignoreSchema;
     }
 
+    @Nullable
     public UnMappedColumnHandler getUnMappedColumnHandler() {
         return unMappedColumnHandler;
     }
@@ -356,10 +366,12 @@ public class FlexGlobalConfig {
         this.unMappedColumnHandler = unMappedColumnHandler;
     }
 
+    @Nonnull
     public FlexDataSource getDataSource() {
         return (FlexDataSource) getConfiguration().getEnvironment().getDataSource();
     }
 
+    @Nonnull
     public static ConcurrentHashMap<String, FlexGlobalConfig> getGlobalConfigs() {
         return globalConfigs;
     }
@@ -372,6 +384,7 @@ public class FlexGlobalConfig {
      * 获取数据源缺失处理器。
      * @return DataSourceMissingHandler 数据源缺失处理器实例，用于自定义处理逻辑（如：记录日志、抛出异常或提供默认数据源）。
      */
+    @Nullable
     public DataSourceMissingHandler getDataSourceMissingHandler() {
         return dataSourceMissingHandler;
     }
@@ -424,6 +437,7 @@ public class FlexGlobalConfig {
     private static ConcurrentHashMap<String, FlexGlobalConfig> globalConfigs = new ConcurrentHashMap<>();
     private static FlexGlobalConfig defaultConfig = new FlexGlobalConfig();
 
+    @Nonnull
     public static FlexGlobalConfig getDefaultConfig() {
         return defaultConfig;
     }
@@ -435,10 +449,12 @@ public class FlexGlobalConfig {
         defaultConfig = config;
     }
 
+    @Nullable
     public static FlexGlobalConfig getConfig(Configuration configuration) {
         return getConfig(configuration.getEnvironment().getId());
     }
 
+    @Nullable
     public static FlexGlobalConfig getConfig(String environmentId) {
         return globalConfigs.get(environmentId);
     }

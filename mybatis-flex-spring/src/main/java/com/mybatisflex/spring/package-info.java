@@ -17,4 +17,5 @@
 /**
  * MyBatis-Flex Spring 支持。
  */
+@javax.annotation.ParametersAreNonnullByDefault
 package com.mybatisflex.spring;

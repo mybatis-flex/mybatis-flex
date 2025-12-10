@@ -17,4 +17,5 @@
 /**
  * Db + Row 功能。
  */
+@javax.annotation.ParametersAreNonnullByDefault
 package com.mybatisflex.core.row;

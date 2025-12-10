@@ -17,4 +17,5 @@
 /**
  * MyBatis-Flex 相关注解。
  */
+@javax.annotation.ParametersAreNonnullByDefault
 package com.mybatisflex.annotation;
