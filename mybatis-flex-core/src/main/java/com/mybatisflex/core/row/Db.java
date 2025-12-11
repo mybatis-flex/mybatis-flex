@@ -28,6 +28,9 @@ import com.mybatisflex.core.util.CollectionUtil;
 import org.apache.ibatis.session.SqlSessionFactory;
 import com.mybatisflex.core.util.MapUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -47,6 +50,7 @@ public class Db {
     private static final Map<String, RowMapperInvoker> INVOKER_MAP = new ConcurrentHashMap<>();
     static RowMapperInvoker defaultRowMapperInvoker;
 
+    @Nonnull
     public static RowMapperInvoker invoker() {
         if (defaultRowMapperInvoker == null) {
             FlexGlobalConfig defaultConfig = FlexGlobalConfig.getDefaultConfig();
@@ -56,6 +60,7 @@ public class Db {
         return defaultRowMapperInvoker;
     }
 
+    @Nonnull
     public static RowMapperInvoker invoker(String environmentId) {
         return MapUtil.computeIfAbsent(INVOKER_MAP, environmentId, key -> {
             SqlSessionFactory sqlSessionFactory = FlexGlobalConfig.getConfig(key).getSqlSessionFactory();
@@ -71,7 +76,7 @@ public class Db {
      * @param tableName 表名
      * @param row       数据
      */
-    public static int insert(String schema, String tableName, Row row) {
+    public static int insert(@Nullable String schema, String tableName, Row row) {
         return invoker().insert(schema, tableName, row);
     }
 
@@ -104,7 +109,7 @@ public class Db {
      * @param tableName 表名
      * @param rows      数据
      */
-    public static int[] insertBatch(String schema, String tableName, Collection<Row> rows) {
+    public static int[] insertBatch(@Nullable String schema, String tableName, Collection<Row> rows) {
         return insertBatch(schema, tableName, rows, rows.size());
     }
 
@@ -126,7 +131,7 @@ public class Db {
      * @param rows      数据
      * @param batchSize 每次提交的数据量
      */
-    public static int[] insertBatch(String schema, String tableName, Collection<Row> rows, int batchSize) {
+    public static int[] insertBatch(@Nullable String schema, String tableName, Collection<Row> rows, int batchSize) {
         return executeBatch(rows, batchSize, RowMapper.class, (mapper, row) -> mapper.insert(schema, tableName, row));
     }
 
@@ -148,7 +153,7 @@ public class Db {
      * @param tableName 表名
      * @param rows      数据
      */
-    public static int insertBatchWithFirstRowColumns(String schema, String tableName, List<Row> rows) {
+    public static int insertBatchWithFirstRowColumns(@Nullable String schema, String tableName, List<Row> rows) {
         return invoker().insertBatchWithFirstRowColumns(schema, tableName, rows);
     }
 
@@ -179,7 +184,7 @@ public class Db {
      * @param tableName 表名
      * @param row       主键 和 id值
      */
-    public static int deleteById(String schema, String tableName, Row row) {
+    public static int deleteById(@Nullable String schema, String tableName, Row row) {
         return invoker().deleteById(schema, tableName, row);
     }
 
@@ -202,7 +207,7 @@ public class Db {
      * @param primaryKey 主键字段名称
      * @param id         主键值
      */
-    public static int deleteById(String schema, String tableName, String primaryKey, Object id) {
+    public static int deleteById(@Nullable String schema, String tableName, String primaryKey, Object id) {
         return invoker().deleteById(schema, tableName, primaryKey, id);
     }
 
@@ -226,7 +231,7 @@ public class Db {
      * @param primaryKey 主键字段名称
      * @param ids        id 集合
      */
-    public static int deleteBatchByIds(String schema, String tableName, String primaryKey, Collection<?> ids) {
+    public static int deleteBatchByIds(@Nullable String schema, String tableName, String primaryKey, Collection<?> ids) {
         return invoker().deleteBatchByIds(schema, tableName, primaryKey, ids);
     }
 
@@ -248,7 +253,7 @@ public class Db {
      * @param tableName    表名
      * @param whereColumns where 条件
      */
-    public static int deleteByMap(String schema, String tableName, Map<String, Object> whereColumns) {
+    public static int deleteByMap(@Nullable String schema, String tableName, Map<String, Object> whereColumns) {
         return invoker().deleteByQuery(schema, tableName, new QueryWrapper().where(whereColumns));
     }
 

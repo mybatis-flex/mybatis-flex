@@ -17,4 +17,5 @@
 /**
  * MyBatis-Flex Solon 支持。
  */
+@javax.annotation.ParametersAreNonnullByDefault
 package com.mybatisflex.solon.integration;
