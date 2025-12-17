@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>com.mybatis-flex</groupId>
 			<artifactId>mybatis-flex-spring-boot-starter</artifactId>
-			<version>${project.version</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
