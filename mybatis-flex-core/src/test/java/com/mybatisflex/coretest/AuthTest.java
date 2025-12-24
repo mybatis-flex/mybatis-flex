@@ -52,8 +52,10 @@ public class AuthTest {
         assert "DELETE FROM `tb_project` WHERE `id` = ?  AND `insert_user_id` = 1"
             .equals(dialect.forDeleteById(PROJECT.getSchema(), PROJECT.getName(), new String[]{PROJECT.ID.getName()}));
         // 2.批量删除
-        assert "DELETE FROM `tb_project` WHERE `id` = ?  AND `insert_user_id` = 1"
-            .equals(dialect.forDeleteBatchByIds(PROJECT.getSchema(), PROJECT.getName(), new String[]{PROJECT.ID.getName()}, new Object[]{1L}));
+        String forDeleteBatchByIds = dialect.forDeleteBatchByIds(PROJECT.getSchema(), PROJECT.getName(), new String[]{PROJECT.ID.getName()}, new Object[]{1L});
+        System.out.println(forDeleteBatchByIds);
+        assert "DELETE FROM `tb_project` WHERE `id` IN (?) AND `insert_user_id` = 1"
+            .equals(forDeleteBatchByIds);
         // 3.查询
         QueryWrapper deleteWrapper =
             QueryWrapper.create(new Project()).where(PROJECT.ID.eq(1));
@@ -81,8 +83,10 @@ public class AuthTest {
         assert "UPDATE `tb_project` SET `is_delete` = 1 WHERE `id` = ?  AND `is_delete` = 0 AND `insert_user_id` = 1"
             .equals(dialect.forDeleteEntityById(TableInfoFactory.ofEntityClass(Project.class)));
         // 9.批量删除
-        assert "UPDATE `tb_project` SET `is_delete` = 1 WHERE (`id` = ? ) AND `is_delete` = 0 AND `insert_user_id` = 1"
-            .equals(dialect.forDeleteEntityBatchByIds(TableInfoFactory.ofEntityClass(Project.class), new String[]{PROJECT.ID.getName()}));
+        String forDeleteEntityBatchByIds = dialect.forDeleteEntityBatchByIds(TableInfoFactory.ofEntityClass(Project.class), new String[]{PROJECT.ID.getName()});
+        System.out.println(forDeleteEntityBatchByIds);
+        assert "UPDATE `tb_project` SET `is_delete` = 1 WHERE (`id` IN (?)) AND `is_delete` = 0 AND `insert_user_id` = 1"
+            .equals(forDeleteEntityBatchByIds);
         // 10.query删除
         assert "UPDATE `tb_project` SET `is_delete` = 1 WHERE `id` = ? AND `insert_user_id` = ? AND `insert_user_id` = ?"
             .equals(dialect.forDeleteEntityBatchByQuery(TableInfoFactory.ofEntityClass(Project.class), queryWrapper));
@@ -98,8 +102,10 @@ public class AuthTest {
         assert "SELECT * FROM `tb_project` WHERE `id` = ?  AND `is_delete` = 0 AND `insert_user_id` = 1"
             .equals(dialect.forSelectOneEntityById(TableInfoFactory.ofEntityClass(Project.class)));
         // 14.查询
-        assert "SELECT `id`, `name`, `insert_user_id`, `is_delete` FROM `tb_project` WHERE (`id` = ? ) AND `is_delete` = 0 AND `insert_user_id` = 1"
-            .equals(dialect.forSelectEntityListByIds(TableInfoFactory.ofEntityClass(Project.class), new String[]{PROJECT.ID.getName()}));
+        String forSelectEntityListByIds = dialect.forSelectEntityListByIds(TableInfoFactory.ofEntityClass(Project.class), new String[]{PROJECT.ID.getName()});
+        System.out.println(forSelectEntityListByIds);
+        assert "SELECT `id`, `name`, `insert_user_id`, `is_delete` FROM `tb_project` WHERE (`id` IN (?)) AND `is_delete` = 0 AND `insert_user_id` = 1"
+            .equals(forSelectEntityListByIds);
     }
 
     @Test
