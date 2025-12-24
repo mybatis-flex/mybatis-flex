@@ -99,7 +99,7 @@ const {Layout} = DefaultTheme
         <!--docs: https://vitepress.dev/guide/extending-default-theme#layout-slots-->
         <template #doc-before>
             <div style="margin-bottom: 30px">
-                <a href="https://gitee.com/aiflowy/aiflowy" target="_blank">
+                <a href="https://gitee.com/activity/2025opensource?ident=INV9BE" target="_blank">
                     <img src="/assets/images/ad/aiflowy-banner.jpg">
                 </a>
             </div>
@@ -107,7 +107,7 @@ const {Layout} = DefaultTheme
 
         <template #home-features-after>
             <div class="banner-home">
-                <a href="https://gitee.com/aiflowy/aiflowy" target="_blank">
+                <a href="https://gitee.com/activity/2025opensource?ident=INV9BE" target="_blank">
                     <img src="/assets/images/ad/aiflowy-banner.jpg">
                 </a>
             </div>
