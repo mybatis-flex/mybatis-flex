@@ -10,7 +10,7 @@
 
 ```kotlin
 dependencies {
-    implementation("com.mybatis-flex:mybatis-flex-core:1.11.4")
+    implementation("com.mybatis-flex:mybatis-flex-core:1.11.5")
 }
 ```
 
@@ -18,7 +18,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.mybatis-flex:mybatis-flex-core:1.11.4'
+    implementation 'com.mybatis-flex:mybatis-flex-core:1.11.5'
 }
 ```
 
@@ -28,7 +28,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("com.mybatis-flex:mybatis-flex-spring:1.11.4")
+    implementation("com.mybatis-flex:mybatis-flex-spring:1.11.5")
 }
 ```
 
@@ -36,7 +36,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.mybatis-flex:mybatis-flex-spring:1.11.4'
+    implementation 'com.mybatis-flex:mybatis-flex-spring:1.11.5'
 }
 ```
 
@@ -46,7 +46,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("com.mybatis-flex:mybatis-flex-spring-boot-starter:1.11.4")
+    implementation("com.mybatis-flex:mybatis-flex-spring-boot-starter:1.11.5")
 }
 ```
 
@@ -54,7 +54,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.mybatis-flex:mybatis-flex-spring-boot-starter:1.11.4'
+    implementation 'com.mybatis-flex:mybatis-flex-spring-boot-starter:1.11.5'
 }
 ```
 
@@ -65,7 +65,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("com.mybatis-flex:mybatis-flex-solon-plugin:1.11.4")
+    implementation("com.mybatis-flex:mybatis-flex-solon-plugin:1.11.5")
 }
 ```
 
@@ -73,7 +73,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'com.mybatis-flex:mybatis-flex-solon-plugin:1.11.4'
+    implementation 'com.mybatis-flex:mybatis-flex-solon-plugin:1.11.5'
 }
 ```
 
@@ -91,7 +91,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    annotationProcessor("com.mybatis-flex:mybatis-flex-processor:1.11.4")
+    annotationProcessor("com.mybatis-flex:mybatis-flex-processor:1.11.5")
 }
 ```
 
@@ -99,6 +99,6 @@ dependencies {
 
 ```groovy
 dependencies {
-    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.11.4'
+    annotationProcessor 'com.mybatis-flex:mybatis-flex-processor:1.11.5'
 }
 ```
