@@ -116,6 +116,7 @@ public class DialectFactory {
                 return new CommonsDialectImpl(KeywordWrap.NONE, LimitOffsetProcessor.MYSQL);
             case DM:
                 return new DmDialect();
+            case OCEAN_BASE_ORACLE:
             case ORACLE:
                 return new OracleDialect();
             case GAUSS:
