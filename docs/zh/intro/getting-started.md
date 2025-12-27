@@ -1,5 +1,7 @@
 # 快速开始
 
+## 前言
+
 在开始之前，我们假定您已经：
 
 - 熟悉 Java 环境配置及其开发
@@ -7,24 +9,19 @@
 - 熟悉 Spring Boot 或 Solon 等相关框架
 - 熟悉 Java 构建工具，比如 Maven
 
+> [!NOTE]
 > 当前章节涉及到的源码已经全部上传到：https://gitee.com/Suomm/mybatis-flex-test ，在开始之前，
 > 您也可以先下载到本地，导入到 idea 开发工具后，在继续看文档。
 
-
-
 ## 本章节视频教程
-
 
 <iframe width="100%" height="400px" src="//player.bilibili.com/player.html?aid=955526987&bvid=BV1yW4y1Z74j&cid=1187300793&page=1&autoplay=no" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 
 > MyBatis-Flex 视频系列：https://www.bilibili.com/video/BV1yW4y1Z74j
 
-
-
 ## Hello World 文档
 
-
-**第 1 步：创建数据库表**
+### 第 1 步：创建数据库表
 
 ```sql
 CREATE TABLE IF NOT EXISTS `tb_account`
@@ -40,15 +37,20 @@ VALUES (1, '张三', 18, '2020-01-11'),
        (2, '李四', 19, '2021-03-21');
 ```
 
-**第 2 步：创建 Spring Boot 项目，并添加 Maven 依赖**
+### 第 2 步：创建 Spring Boot 项目，并添加 Maven 依赖
 
-::: tip
-可以使用 [Spring Initializer](https://start.spring.io/) 快速初始化一个 Spring Boot 工程。
-:::
+1.  创建一个 Spring Boot 项目。
 
-需要添加的 Maven 主要依赖示例：
+    > [!TIP] Tip
+    > 可以使用 [Spring Initializer](https://start.spring.io/) 快速初始化一个 Spring Boot 工程。
 
-```xml
+2.  添加 Maven 依赖
+
+    需要添加的主要依赖如下：
+
+::: code-group
+
+```xml [Spring Boot 2] 4
 <dependencies>
     <dependency>
         <groupId>com.mybatis-flex</groupId>
@@ -73,10 +75,7 @@ VALUES (1, '张三', 18, '2020-01-11'),
 </dependencies>
 ```
 
-**注意**： 如果您当前使用的是 SpringBoot v3.x 版本，需要把依赖 `mybatis-flex-spring-boot-starter` 修改为：`mybatis-flex-spring-boot3-starter`,
-如下代码所示：
-
-```xml 4
+```xml [Spring boot 3] 4
 <dependencies>
     <dependency>
         <groupId>com.mybatis-flex</groupId>
@@ -101,8 +100,55 @@ VALUES (1, '张三', 18, '2020-01-11'),
 </dependencies>
 ```
 
+```xml [Spring boot 4] 4,7-11
+<dependencies>
+    <dependency>
+        <groupId>com.mybatis-flex</groupId>
+        <artifactId>mybatis-flex-spring-boot4-starter</artifactId>
+        <version>1.11.5</version>
+    </dependency>
+    <!-- provide the autoconfigure for jdbc(datasource) in 4.x -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.zaxxer</groupId>
+        <artifactId>HikariCP</artifactId>
+    </dependency>
+    <!-- for test only -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
 
-**第 3 步：对 Spring Boot 项目进行配置**
+:::
+
+> [!IMPORTANT] Tip
+> 如果您当前使用的是 SpringBoot v3.x 版本，
+>
+> 需要把依赖 `mybatis-flex-spring-boot-starter` 修改为 `mybatis-flex-spring-boot3-starter`
+>
+> 如果您当前使用的是 SpringBoot v4.x 版本，
+>
+> 需要把依赖 `mybatis-flex-spring-boot-starter` 修改为 `mybatis-flex-spring-boot4-starter`
+
+> [!WARNING] Tip
+> Spring Boot v4.x 版本，因 `stater` 提供的 `spring-boot-autoconfigure` ，不再默认包含 `jdbc`(datasource) 的 autoconfigure，需要添加依赖 `spring-boot-starter-jdbc`
+>
+> > 参考：[Modularizing Spring Boot](https://spring.io/blog/2025/10/28/modularizing-spring-boot)
+
+:::
+
+### 第 3 步：对 Spring Boot 项目进行配置
 
 在 application.yml 中配置数据源：
 
@@ -129,7 +175,7 @@ public class MybatisFlexTestApplication {
 }
 ```
 
-**第 4 步：编写实体类和 Mapper 接口**
+### 第 4 步：编写实体类和 Mapper 接口
 
 这里使用了 [Lombok](https://www.projectlombok.org/) 来简化代码。
 
@@ -160,8 +206,7 @@ public interface AccountMapper extends BaseMapper<Account> {
 
 > 这部分也可以使用 MyBatis-Flex 的代码生成器来生，功能非常强大的。详情进入：[代码生成器章节](../others/codegen.md) 了解。
 
-
-**第 5 步：开始使用**
+### 第 5 步：开始使用
 
 添加测试类，进行功能测试：
 
