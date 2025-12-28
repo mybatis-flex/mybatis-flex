@@ -1,19 +1,19 @@
 :root {
-    --vp-c-brand-1:#F06C33;
-    --vp-home-hero-name-color:#F06C33;
-    --vp-button-brand-bg:#F06C33;
-    --vp-button-brand-hover-bg:#ff986b;
+  --vp-c-brand-1: #f06c33;
+  --vp-home-hero-name-color: #f06c33;
+  --vp-button-brand-bg: #f06c33;
+  --vp-button-brand-hover-bg: #ff986b;
 }
 
 .vp-doc .custom-block p {
-    font-size: 15px;
+  font-size: 15px;
 }
 
 .custom-block.tip code {
-    background-color: #f3f3f3;
-    font-weight: 600;
+  background-color: #f3f3f3;
+  font-weight: 600;
 }
 
-.vp-doc .custom-block a{
-    color: var(--vp-c-brand);
+.vp-doc .custom-block a {
+  color: var(--vp-c-brand);
 }

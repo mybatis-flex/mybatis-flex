@@ -1,18 +1,52 @@
-target
-logs
-.idea
-*.iml
-*.log
-.logs
-*.iws
-*.report
-*.classpath
-.DS_Store
-.ossutil_checkpoint
-*.patch
-~$*
-node_modules
-yarn.lock
-dist
-package-lock.json
+target/
+dist/
+node_modules/
 .flattened-pom.xml
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor
+.idea/
+*.iws
+*.iml
+*.ipr
+*.classpath
+*.project
+.settings/
+.vscode/
+*.code-workspace
+*.ntvs*
+*.njsproj
+*.suo
+*.sln
+*.sw?
+
+# Temp
+*.tmp
+*.temp
+~$*
+*.patch
+.cache/
+.temp/
+*.report
+/docs/.vitepress/cache
+
+# Local
+*.local
+.local-*
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ossutil
+.ossutil_checkpoint

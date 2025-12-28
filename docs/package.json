@@ -1,11 +1,15 @@
 {
-    "type": "module",
-    "scripts": {
-        "docs:dev": "vitepress dev",
-        "docs:build": "vitepress build",
-        "docs:preview": "vitepress preview"
-    },
-    "devDependencies": {
-        "vitepress": "^1.0.0-rc.32"
-    }
+  "name": "mybatis-flex-document",
+  "version": "1.11.5",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4",
+    "vue": "^3.5.26"
+  }
 }

@@ -7,13 +7,14 @@ export default defineConfig({
   titleTemplate: ':title - MyBatis-Flex 官方网站',
   description: '一个优雅的 MyBatis 增强框架',
   lastUpdated: true,
-
-  // logo: '/assets/images/logo02.png',
-
   themeConfig: {
+    // https://vitepress.dev/reference/default-theme-config
+
+    // logo: '/assets/images/logo01.png',
+    // logo: '/assets/images/logo02.png',
     outline: {
-      level: [2, 3],
       label: '章节',
+      level: [2, 3],
     },
     search: {
       provider: 'local',
@@ -23,8 +24,6 @@ export default defineConfig({
       pattern: 'https://gitee.com/mybatis-flex/mybatis-flex/edit/main/docs/:path',
       text: '编辑当前页面',
     },
-    // https://vitepress.dev/reference/default-theme-config
-    // logo: '/assets/images/logo01.png',
     nav: [
       { text: '首页', link: '/' },
 
@@ -47,7 +46,6 @@ export default defineConfig({
         ],
       },
     ],
-
     sidebar: [
       {
         text: '简介',
@@ -116,7 +114,6 @@ export default defineConfig({
         ],
       },
     ],
-
     footer: {
       message: 'Released under the Apache License.',
       copyright:
@@ -131,7 +128,6 @@ export default defineConfig({
   },
   head: [
     ['link', { rel: 'icon', href: '/assets/images/logo02.png' }],
-
     [
       // 添加百度统计
       'script',
@@ -139,14 +135,13 @@ export default defineConfig({
       `
       var _hmt = _hmt || [];
       (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?3f50d5fbe3bf955411748b5616b24a24";
-        var s = document.getElementsByTagName("script")[0];
+        var hm = document.createElement('script');
+        hm.src = 'https://hm.baidu.com/hm.js?3f50d5fbe3bf955411748b5616b24a24';
+        var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(hm, s);
       })();
         `,
     ],
-
     [
       // 自动跳转 https
       'script',
