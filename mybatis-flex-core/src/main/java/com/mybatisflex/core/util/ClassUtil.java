@@ -236,7 +236,7 @@ public class ClassUtil {
     /**
      * 应用类及其除Object外的所有父类
      *
-     * @param clazz  需要应用的类
+     * @param clazz           需要应用的类
      * @param checkToContinue 应用当前类并检测是否继续应用, 返回false则停止应用, 返回true继续向上取父类
      * @author KAMOsama
      */
@@ -372,6 +372,27 @@ public class ClassUtil {
 
     public static boolean isObjectMethod(String methodName) {
         return ArrayUtil.contains(OBJECT_METHODS, methodName);
+    }
+
+
+    public static ClassLoader getDefaultClassLoader() {
+        ClassLoader classLoader = null;
+        try {
+            classLoader = Thread.currentThread().getContextClassLoader();
+        } catch (Throwable ex) {
+            // Cannot access thread context ClassLoader - falling back...
+        }
+        if (classLoader == null) {
+            classLoader = ClassUtil.class.getClassLoader();
+            if (classLoader == null) {
+                try {
+                    classLoader = ClassLoader.getSystemClassLoader();
+                } catch (Throwable ex) {
+                    // Cannot access system ClassLoader - oh well, maybe the caller can live with null...
+                }
+            }
+        }
+        return classLoader;
     }
 
 }

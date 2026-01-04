@@ -100,7 +100,7 @@ public class LambdaUtil {
 
 
     private static Class<?> getImplClass0(SerializedLambda lambda) {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classLoader = ClassUtil.getDefaultClassLoader();
         String implClass = getImplClassName(lambda);
         try {
             return Class.forName(implClass.replace("/", "."), true, classLoader);
@@ -113,5 +113,8 @@ public class LambdaUtil {
         String type = lambda.getInstantiatedMethodType();
         return type.substring(2, type.indexOf(";"));
     }
+
+
+
 
 }
