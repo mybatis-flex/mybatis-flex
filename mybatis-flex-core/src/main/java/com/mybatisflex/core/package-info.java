@@ -17,4 +17,5 @@
 /**
  * MyBatis-Flex 一个优雅的 MyBatis 增强框架。
  */
+@javax.annotation.ParametersAreNonnullByDefault
 package com.mybatisflex.core;

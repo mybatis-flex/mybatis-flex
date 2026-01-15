@@ -30,6 +30,8 @@ import com.mybatisflex.core.util.LambdaUtil;
 import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
 
+import javax.annotation.Nonnull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,6 +44,7 @@ import java.util.function.Predicate;
 
 public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
 
+    @Nonnull
     public static QueryWrapper create() {
         return new QueryWrapper();
     }
@@ -52,6 +55,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param entity 实体类对象
      * @return 查询对象 QueryWrapper
      */
+    @Nonnull
     public static QueryWrapper create(Object entity) {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
         return tableInfo.buildQueryWrapper(entity, null);
@@ -64,6 +68,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param operators 每个属性对应的操作符
      * @return 查询对象 QueryWrapper
      */
+    @Nonnull
     public static QueryWrapper create(Object entity, SqlOperators operators) {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
         return tableInfo.buildQueryWrapper(entity, operators);
@@ -75,6 +80,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param map Map 对象
      * @return 查询对象 QueryWrapper
      */
+    @Nonnull
     public static QueryWrapper create(Map map) {
         return create().where(map);
     }
@@ -86,6 +92,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param operators 每个属性对应的操作符
      * @return 查询对象 QueryWrapper
      */
+    @Nonnull
     public static QueryWrapper create(Map map, SqlOperators operators) {
         return create().where(map, operators);
     }

@@ -17,4 +17,5 @@
 /**
  * SQL 条件构造功能。
  */
+@javax.annotation.ParametersAreNonnullByDefault
 package com.mybatisflex.core.query;

@@ -35,6 +35,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
+import javax.annotation.Nullable;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
@@ -56,6 +58,7 @@ public class MybatisFlexProperties {
 
     private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 
+    @Nullable
     private String defaultDatasourceKey;
 
     /**
@@ -65,21 +68,25 @@ public class MybatisFlexProperties {
      * mybatis-flex.datasource.ds1.url=***<br>
      * mybatis-flex.datasource.ds2.url=***
      */
+    @Nullable
     private Map<String, Map<String, String>> datasource;
 
     /**
      * 全局配置。
      */
+    @Nullable
     private GlobalConfig globalConfig;
 
     /**
      * MyBatis-Flex-Admin 配置。
      */
+    @Nullable
     private AdminConfig adminConfig;
 
     /**
      * Location of MyBatis xml config file.
      */
+    @Nullable
     private String configLocation;
 
     /**
@@ -90,17 +97,20 @@ public class MybatisFlexProperties {
     /**
      * Packages to search type aliases. (Package delimiters are ",; \t\n")
      */
+    @Nullable
     private String typeAliasesPackage;
 
     /**
      * The super class for filtering type alias. If this not specifies, the MyBatis deal as type alias all classes that
      * searched from typeAliasesPackage.
      */
+    @Nullable
     private Class<?> typeAliasesSuperType;
 
     /**
      * Packages to search for type handlers. (Package delimiters are ",; \t\n")
      */
+    @Nullable
     private String typeHandlersPackage;
 
     /**
@@ -111,22 +121,26 @@ public class MybatisFlexProperties {
     /**
      * Execution mode for {@link org.mybatis.spring.SqlSessionTemplate}.
      */
+    @Nullable
     private ExecutorType executorType;
 
     /**
      * The default scripting language driver class. (Available when use together with mybatis-spring 2.0.2+)
      */
+    @Nullable
     private Class<? extends LanguageDriver> defaultScriptingLanguageDriver;
 
     /**
      * Externalized properties for MyBatis configuration.
      */
+    @Nullable
     private Properties configurationProperties;
 
     /**
      * A Configuration object for customize default settings. If {@link #configLocation} is specified, this property is
      * not used.
      */
+    @Nullable
     private CoreConfiguration configuration;
 
     /**
