@@ -70,7 +70,7 @@
         <maven.compiler.target>8</maven.compiler.target>
 
         <!-- Mybatis-Flex 版本 -->
-        <revision>1.11.4</revision>
+        <revision>1.11.5</revision>
 
         <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
         <xml-maven-plugin.version>1.1.0</xml-maven-plugin.version>
@@ -87,7 +87,6 @@
         <spring.version>5.3.27</spring.version>
         <spring-batch.version>4.3.10</spring-batch.version>
         <spring-boot.version>2.7.11</spring-boot.version>
-        <spring-boot4.version>4.0.0</spring-boot4.version>
         <solon.version>3.0.1</solon.version>
         <loveqq.version>1.1.0-java8</loveqq.version>
 

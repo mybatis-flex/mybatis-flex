@@ -1,9 +1,10 @@
 ---
+# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
-  name: "MyBatis-Flex"
-  text: "一个优雅的 MyBatis 增强框架"
+  name: MyBatis-Flex
+  text: 一个优雅的 MyBatis  增强框架
   tagline: 更轻量、更灵活、以及更高的性能。
   image:
     src: /assets/images/logo01.png
@@ -24,4 +25,3 @@ features:
   - title: 更高的性能
     details: MyBatis-Flex 通过独特的架构，没有任何 MyBatis 拦截器、在 SQL 执行的过程中，没有任何的 SQL Parse，因此会带来指数级的性能增长。
 ---
-

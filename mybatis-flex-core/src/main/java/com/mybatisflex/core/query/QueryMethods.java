@@ -2565,6 +2565,36 @@ public class QueryMethods {
     }
     //endregion === IF 函数 ===
 
+    //region === COALESCE 函数 ===
+    /** COALESCE 函数。 */
+    public static QueryColumn coalesce(String nullColumn, String elseColumn) {
+        return new FunctionQueryColumn(
+            "COALESCE", new QueryColumn(nullColumn), new QueryColumn(elseColumn));
+    }
+
+    /** COALESCE 函数。 */
+    public static QueryColumn coalesce(QueryColumn nullColumn, QueryColumn elseColumn) {
+        return new FunctionQueryColumn("COALESCE", nullColumn, elseColumn);
+    }
+
+    /** COALESCE 函数。 */
+    public static <N, E> QueryColumn coalesce(
+        LambdaGetter<N> nullColumn, LambdaGetter<E> elseColumn) {
+        return new FunctionQueryColumn(
+            "COALESCE", LambdaUtil.getQueryColumn(nullColumn), LambdaUtil.getQueryColumn(elseColumn));
+    }
+
+    /** COALESCE 函数。 */
+    public static <N> QueryColumn coalesce(LambdaGetter<N> nullColumn, QueryColumn elseColumn) {
+        return coalesce(LambdaUtil.getQueryColumn(nullColumn), elseColumn);
+    }
+
+    /** COALESCE 函数。 */
+    public static <N> QueryColumn coalesce(LambdaGetter<N> nullColumn, String elseColumn) {
+        return coalesce(nullColumn, new QueryColumn(elseColumn));
+    }
+    //endregion === COALESCE 函数 ==
+
     //region === 构建 QueryCondition 查询条件 ===
 
     /**

@@ -21,6 +21,7 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -85,10 +86,24 @@ public class EnumWrapper<E extends Enum<E>> {
                     enumValueFieldName = enumValueMethod.getName().toLowerCase();
                 }
                 enumValueField = ClassUtil.getFirstField(enumClass, field -> enumValueFieldName.equals(field.getName()));
+                // If the corresponding field is not found, but there is an annotated method, still use the method
                 if (enumValueField != null) {
                     propertyType = ClassUtil.getWrapType(enumValueField.getType());
                 } else {
-                    throw new IllegalStateException("Can not find field \"" + enumValueFieldName + "()\" in enum: " + enumClass.getName());
+                    // Check method return type, throw error if it's generic, otherwise use return type
+                    Type genericReturnType = enumValueMethod.getGenericReturnType();
+                    Class<?> returnType = enumValueMethod.getReturnType();
+
+                    // Check if return type is parameterized type (e.g. List<String>) or type variable (e.g. T)
+                    if (genericReturnType instanceof java.lang.reflect.ParameterizedType ||
+                        genericReturnType instanceof java.lang.reflect.TypeVariable) {
+                        // If return type is generic, throw exception
+                        throw new IllegalStateException("Can not find field \"" + enumValueFieldName + "()\" in enum: " + enumClass.getName()
+                            + ", and the method return type is generic which is not supported: " + genericReturnType.getTypeName());
+                    } else {
+                        // No longer throw exception, directly use the found method
+                        propertyType = ClassUtil.getWrapType(returnType);
+                    }
                 }
 
                 this.getterMethod = enumValueMethod;
