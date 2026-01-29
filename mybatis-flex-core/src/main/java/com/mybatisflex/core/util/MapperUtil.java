@@ -31,6 +31,8 @@ import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,13 +66,13 @@ public class MapperUtil {
      *
      * <p>不进行 SQL 优化的时候，返回的就是这样的 COUNT 查询语句。
      */
-    public static QueryWrapper rawCountQueryWrapper(QueryWrapper queryWrapper) {
+    public static @NonNull QueryWrapper rawCountQueryWrapper(@NonNull QueryWrapper queryWrapper) {
         return QueryWrapper.create()
             .select(count().as("total"))
             .from(queryWrapper).as("t");
     }
 
-    public static QueryWrapper rawCountQueryWrapper(QueryWrapper queryWrapper, List<QueryColumn> customCountColumns) {
+    public static @NonNull QueryWrapper rawCountQueryWrapper(@NonNull QueryWrapper queryWrapper, @Nullable List<QueryColumn> customCountColumns) {
         return customCountColumns != null ? QueryWrapper.create()
             .select(customCountColumns)
             .from(queryWrapper).as("t") : rawCountQueryWrapper(queryWrapper);
@@ -79,14 +81,14 @@ public class MapperUtil {
     /**
      * 优化 COUNT 查询语句。
      */
-    public static QueryWrapper optimizeCountQueryWrapper(QueryWrapper queryWrapper) {
+    public static @NonNull QueryWrapper optimizeCountQueryWrapper(@NonNull QueryWrapper queryWrapper) {
         return optimizeCountQueryWrapper(queryWrapper, Collections.singletonList(count().as("total")));
     }
 
     /**
      * 优化 COUNT 查询语句。
      */
-    public static QueryWrapper optimizeCountQueryWrapper(QueryWrapper queryWrapper, List<QueryColumn> customCountColumns) {
+    public static @NonNull QueryWrapper optimizeCountQueryWrapper(@NonNull QueryWrapper queryWrapper, @Nullable List<QueryColumn> customCountColumns) {
         // 对克隆对象进行操作，不影响原来的 QueryWrapper 对象
         QueryWrapper clone = queryWrapper.clone();
 
@@ -184,11 +186,11 @@ public class MapperUtil {
     }
 
     @SafeVarargs
-    public static <T, R> Page<R> doPaginate(
-        BaseMapper<T> mapper,
-        Page<R> page,
-        QueryWrapper queryWrapper,
-        Class<R> asType,
+    public static <T, R> @NonNull Page<R> doPaginate(
+        @NonNull BaseMapper<T> mapper,
+        @NonNull Page<R> page,
+        @NonNull QueryWrapper queryWrapper,
+        @Nullable Class<R> asType,
         boolean withRelations,
         Consumer<FieldQueryBuilder<R>>... consumers
     ) {
@@ -251,7 +253,7 @@ public class MapperUtil {
     }
 
 
-    public static <R> void queryFields(BaseMapper<?> mapper, List<R> list, Consumer<FieldQueryBuilder<R>>[] consumers) {
+    public static <R> void queryFields(@NonNull BaseMapper<?> mapper, @Nullable List<R> list, @Nullable Consumer<FieldQueryBuilder<R>>[] consumers) {
         if (CollectionUtil.isEmpty(list) || ArrayUtil.isEmpty(consumers) || consumers[0] == null) {
             return;
         }
@@ -274,7 +276,7 @@ public class MapperUtil {
     }
 
 
-    public static <E> E queryRelations(BaseMapper<?> mapper, E entity) {
+    public static <E> @Nullable E queryRelations(@NonNull BaseMapper<?> mapper, @Nullable E entity) {
         if (entity != null) {
             queryRelations(mapper, Collections.singletonList(entity));
         } else {
@@ -283,13 +285,13 @@ public class MapperUtil {
         return entity;
     }
 
-    public static <E> List<E> queryRelations(BaseMapper<?> mapper, List<E> entities) {
+    public static <E> @NonNull List<E> queryRelations(@NonNull BaseMapper<?> mapper, @NonNull List<E> entities) {
         RelationManager.queryRelations(mapper, entities);
         return entities;
     }
 
 
-    public static Class<? extends Collection> getCollectionWrapType(Class<?> type) {
+    public static @NonNull Class<? extends Collection> getCollectionWrapType(@NonNull Class<?> type) {
         if (ClassUtil.canInstance(type.getModifiers())) {
             return (Class<? extends Collection>) type;
         }
@@ -309,7 +311,7 @@ public class MapperUtil {
     /**
      * 搬运加改造 {@link DefaultSqlSession#selectOne(String, Object)}
      */
-    public static <T> T getSelectOneResult(List<T> list) {
+    public static <T> @Nullable T getSelectOneResult(@Nullable List<T> list) {
         if (list == null || list.isEmpty()) {
             return null;
         }
@@ -333,7 +335,12 @@ public class MapperUtil {
     }
 
 
-    public static Map<String, Object> preparedParams(BaseMapper<?> baseMapper, Page<?> page, QueryWrapper queryWrapper, Map<String, Object> params) {
+    public static @NonNull Map<String, Object> preparedParams(
+        @NonNull BaseMapper<?> baseMapper,
+        @NonNull Page<?> page,
+        @Nullable QueryWrapper queryWrapper,
+        @Nullable Map<String, Object> params
+    ) {
         Map<String, Object> newParams = new HashMap<>();
 
         if (params != null) {
@@ -349,7 +356,9 @@ public class MapperUtil {
 
         if (queryWrapper != null) {
             TableInfo tableInfo = TableInfoFactory.ofMapperClass(baseMapper.getClass());
-            tableInfo.appendConditions(null, queryWrapper);
+            if (tableInfo != null) {
+                tableInfo.appendConditions(null, queryWrapper);
+            }
             preparedQueryWrapper(newParams, queryWrapper);
         }
 

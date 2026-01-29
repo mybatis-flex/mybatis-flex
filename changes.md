@@ -4,6 +4,7 @@
 
 ## v1.11.5 20251224
 * 新增：新增 `mybatis-flex-spring-boot4-starter` 模块，支持 Spring Boot 4
+* 新增：引入 JSpecify 空值注解，用于 API 空值标注（不包含空值检查工具）
 * 新增：Query 模块新增 `OrderType` 获取方法，感谢 @ruansheng8
 * 新增：Core 模块新增 `getQueryColumn` 方法，感谢 @ruansheng8
 * 优化：统一 Core 模块的代码风格（`-m core`），感谢 @ruansheng8

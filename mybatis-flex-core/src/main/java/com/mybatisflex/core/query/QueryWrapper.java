@@ -29,6 +29,7 @@ import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.core.util.StringUtil;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +53,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param entity 实体类对象
      * @return 查询对象 QueryWrapper
      */
-    public static QueryWrapper create(Object entity) {
+    public static QueryWrapper create(@NonNull Object entity) {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
         return tableInfo.buildQueryWrapper(entity, null);
     }
@@ -64,7 +65,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param operators 每个属性对应的操作符
      * @return 查询对象 QueryWrapper
      */
-    public static QueryWrapper create(Object entity, SqlOperators operators) {
+    public static QueryWrapper create(@NonNull Object entity, SqlOperators operators) {
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(ClassUtil.getUsefulClass(entity.getClass()));
         return tableInfo.buildQueryWrapper(entity, operators);
     }
@@ -139,14 +140,14 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper select(String... columns) {
+    public QueryWrapper select(@NonNull String... columns) {
         for (String column : columns) {
             addSelectColumn(new RawQueryColumn(column));
         }
         return this;
     }
 
-    public <T> QueryWrapper select(LambdaGetter<T>... lambdaGetters) {
+    public <T> QueryWrapper select(@NonNull LambdaGetter<T>... lambdaGetters) {
         for (LambdaGetter<?> lambdaGetter : lambdaGetters) {
             QueryColumn queryColumn = LambdaUtil.getQueryColumn(lambdaGetter);
             addSelectColumn(queryColumn);
@@ -154,7 +155,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper select(QueryColumn... queryColumns) {
+    public QueryWrapper select(@NonNull QueryColumn... queryColumns) {
         for (QueryColumn column : queryColumns) {
             if (column != null) {
                 addSelectColumn(column);
@@ -163,7 +164,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper select(Iterable<QueryColumn> queryColumns) {
+    public QueryWrapper select(@NonNull Iterable<QueryColumn> queryColumns) {
         for (QueryColumn column : queryColumns) {
             if (column != null) {
                 addSelectColumn(column);
@@ -172,7 +173,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper select(QueryColumn[]... queryColumns) {
+    public QueryWrapper select(@NonNull QueryColumn[]... queryColumns) {
         for (QueryColumn[] columnArray : queryColumns) {
             if (columnArray != null) {
                 for (QueryColumn column : columnArray) {
@@ -185,7 +186,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper select(QueryColumn[] queryColumns, QueryColumn... queryColumns2) {
+    public QueryWrapper select(@NonNull QueryColumn[] queryColumns, @NonNull QueryColumn... queryColumns2) {
         for (QueryColumn column : queryColumns) {
             if (column != null) {
                 addSelectColumn(column);
@@ -199,7 +200,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper from(Class<?>... entityClasses) {
+    public QueryWrapper from(@NonNull Class<?>... entityClasses) {
         for (Class<?> entityClass : entityClasses) {
             TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
             from(new QueryTable(tableInfo.getSchema(), tableInfo.getTableName()));
@@ -207,7 +208,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper from(String... tables) {
+    public QueryWrapper from(@NonNull String... tables) {
         for (String table : tables) {
             if (StringUtil.noText(table)) {
                 throw new IllegalArgumentException("table must not be null or blank.");
@@ -217,7 +218,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper from(QueryTable... tables) {
+    public QueryWrapper from(@NonNull QueryTable... tables) {
         if (CollectionUtil.isEmpty(queryTables)) {
             queryTables = new ArrayList<>();
             queryTables.addAll(Arrays.asList(tables));
@@ -237,7 +238,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return this;
     }
 
-    public QueryWrapper from(QueryWrapper queryWrapper) {
+    public QueryWrapper from(@NonNull QueryWrapper queryWrapper) {
         return from(new SelectQueryTable(queryWrapper));
     }
 
@@ -270,7 +271,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
      * @param alias 别名
      * @return 当前查询包装器
      */
-    public QueryWrapper as(String alias) {
+    public QueryWrapper as(@NonNull String alias) {
         if (CollectionUtil.isEmpty(queryTables)) {
             throw new IllegalArgumentException("query table must not be empty.");
         }
@@ -328,11 +329,11 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return new QueryConditionBuilder<>(this, LambdaUtil.getQueryColumn(fn), SqlConnector.AND);
     }
 
-    public QueryWrapper and(Consumer<QueryWrapper> consumer) {
+    public QueryWrapper and(@NonNull Consumer<QueryWrapper> consumer) {
         return and(consumer, true);
     }
 
-    public QueryWrapper and(Consumer<QueryWrapper> consumer, boolean condition) {
+    public QueryWrapper and(@NonNull Consumer<QueryWrapper> consumer, boolean condition) {
         if (!condition) {
             return this;
         }
@@ -377,11 +378,11 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return new QueryConditionBuilder<>(this, LambdaUtil.getQueryColumn(fn), SqlConnector.OR);
     }
 
-    public QueryWrapper or(Consumer<QueryWrapper> consumer) {
+    public QueryWrapper or(@NonNull Consumer<QueryWrapper> consumer) {
         return or(consumer, true);
     }
 
-    public QueryWrapper or(Consumer<QueryWrapper> consumer, boolean condition) {
+    public QueryWrapper or(@NonNull Consumer<QueryWrapper> consumer, boolean condition) {
         if (!condition) {
             return this;
         }

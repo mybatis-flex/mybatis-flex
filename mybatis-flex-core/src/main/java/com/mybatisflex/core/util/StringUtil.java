@@ -17,6 +17,8 @@ package com.mybatisflex.core.util;
 
 
 import com.mybatisflex.core.exception.FlexExceptions;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -31,7 +33,7 @@ public class StringUtil {
     /**
      * @see org.apache.ibatis.reflection.property.PropertyNamer#methodToProperty(String)
      */
-    public static String methodToProperty(String name) {
+    public static @NonNull String methodToProperty(@NonNull String name) {
         if (name.startsWith("is")) {
             name = name.substring(2);
         } else if (name.startsWith("get") || name.startsWith("set")) {
@@ -51,7 +53,7 @@ public class StringUtil {
      *
      * @param string
      */
-    public static String firstCharToLowerCase(String string) {
+    public static @NonNull String firstCharToLowerCase(@NonNull String string) {
         char firstChar = string.charAt(0);
         if (firstChar >= 'A' && firstChar <= 'Z') {
             char[] chars = string.toCharArray();
@@ -67,7 +69,7 @@ public class StringUtil {
      *
      * @param string
      */
-    public static String firstCharToUpperCase(String string) {
+    public static @NonNull String firstCharToUpperCase(@NonNull String string) {
         char firstChar = string.charAt(0);
         if (firstChar >= 'a' && firstChar <= 'z') {
             char[] chars = string.toCharArray();
@@ -316,27 +318,27 @@ public class StringUtil {
         }
     }
 
-    public static String buildSchemaWithTable(String schema, String tableName) {
+    public static @NonNull String buildSchemaWithTable(String schema, @NonNull String tableName) {
         return hasText(schema) ? schema + "." + tableName : tableName;
     }
 
-    public static String[] getSchemaAndTableName(String tableNameWithSchema) {
+    public static @NonNull String[] getSchemaAndTableName(@NonNull String tableNameWithSchema) {
         int index = tableNameWithSchema.indexOf(".");
         return index <= 0 ? new String[]{null, tableNameWithSchema.trim()}
             : new String[]{tableNameWithSchema.substring(0, index).trim(), tableNameWithSchema.substring(index + 1).trim()};
     }
 
-    public static String[] getTableNameWithAlias(String tableNameWithAlias) {
+    public static @NonNull String[] getTableNameWithAlias(@NonNull String tableNameWithAlias) {
         int index = tableNameWithAlias.indexOf(".");
         return index <= 0 ? new String[]{tableNameWithAlias, null}
             : new String[]{tableNameWithAlias.substring(0, index), tableNameWithAlias.substring(index + 1)};
     }
 
-    public static String tryTrim(String string) {
+    public static @Nullable String tryTrim(String string) {
         return string != null ? string.trim() : null;
     }
 
-    public static String substringAfterLast(String text, String prefix) {
+    public static @Nullable String substringAfterLast(String text, String prefix) {
         if (text == null) {
             return null;
         }

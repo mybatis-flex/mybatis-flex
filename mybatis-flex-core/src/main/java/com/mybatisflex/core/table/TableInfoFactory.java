@@ -45,6 +45,8 @@ import org.apache.ibatis.type.TypeException;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.apache.ibatis.type.UnknownTypeHandler;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -118,7 +120,7 @@ public class TableInfoFactory {
      *
      * @param mapperPackageName mapper 的包名
      */
-    public synchronized static void init(String mapperPackageName) {
+    public synchronized static void init(@NonNull String mapperPackageName) {
         if (!initializedPackageNames.contains(mapperPackageName)) {
             ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
             resolverUtil.find(new ResolverUtil.IsA(BaseMapper.class), mapperPackageName);
@@ -131,7 +133,7 @@ public class TableInfoFactory {
     }
 
 
-    public static TableInfo ofMapperClass(Class<?> mapperClass) {
+    public static @Nullable TableInfo ofMapperClass(@NonNull Class<?> mapperClass) {
         return MapUtil.computeIfAbsent(mapperTableInfoMap, mapperClass, key -> {
             Class<?> entityClass = getEntityClass(mapperClass);
             if (entityClass == null) {
@@ -142,7 +144,7 @@ public class TableInfoFactory {
     }
 
 
-    public static TableInfo ofEntityClass(Class<?> entityClass) {
+    public static @NonNull TableInfo ofEntityClass(@NonNull Class<?> entityClass) {
         return MapUtil.computeIfAbsent(entityTableMap, entityClass, aClass -> {
             TableInfo tableInfo = createTableInfo(entityClass);
             // Entity 和 VO 有相同的表名，以第一次放入的 Entity 解析的 TableInfo 为主
@@ -152,19 +154,19 @@ public class TableInfoFactory {
     }
 
 
-    public static TableInfo ofTableName(String tableName) {
+    public static @Nullable TableInfo ofTableName(@Nullable String tableName) {
         return StringUtil.hasText(tableName) ? tableInfoMap.get(tableName) : null;
     }
 
 
-    private static Class<?> getEntityClass(Class<?> mapperClass) {
+    private static @Nullable Class<?> getEntityClass(@Nullable Class<?> mapperClass) {
         if (mapperClass == null || mapperClass == Object.class) {
             return null;
         }
         return getEntityClass(mapperClass, null);
     }
 
-    private static Class<?> getEntityClass(Class<?> mapperClass, Type[] actualTypeArguments) {
+    private static @Nullable Class<?> getEntityClass(@NonNull Class<?> mapperClass, @Nullable Type[] actualTypeArguments) {
         // 检查基接口
         Type[] genericInterfaces = mapperClass.getGenericInterfaces();
         for (Type type : genericInterfaces) {
@@ -228,7 +230,7 @@ public class TableInfoFactory {
     }
 
 
-    private static TableInfo createTableInfo(Class<?> entityClass) {
+    private static @NonNull TableInfo createTableInfo(@NonNull Class<?> entityClass) {
 
         TableInfo tableInfo = new TableInfo();
         tableInfo.setEntityClass(entityClass);
@@ -589,7 +591,7 @@ public class TableInfoFactory {
     }
 
 
-    static String getColumnName(boolean isCamelToUnderline, Field field, Column column) {
+    static @NonNull String getColumnName(boolean isCamelToUnderline, @NonNull Field field, @Nullable Column column) {
         if (column != null && StringUtil.hasText(column.value())) {
             return column.value();
         }
@@ -600,7 +602,7 @@ public class TableInfoFactory {
     }
 
 
-    public static List<Field> getColumnFields(Class<?> entityClass) {
+    public static @NonNull List<Field> getColumnFields(@NonNull Class<?> entityClass) {
         List<Field> fields = new ArrayList<>();
         doGetFields(entityClass, fields);
         return fields;

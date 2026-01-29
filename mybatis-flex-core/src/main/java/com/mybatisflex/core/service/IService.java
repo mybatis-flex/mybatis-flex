@@ -24,6 +24,8 @@ import com.mybatisflex.core.update.UpdateChain;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.core.util.SqlUtil;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -49,7 +51,7 @@ public interface IService<T> {
      *
      * @return 基础映射类（BaseMapper）
      */
-    BaseMapper<T> getMapper();
+    @NonNull BaseMapper<T> getMapper();
 
     //region ===== 保存（增）操作 =====
 
@@ -61,7 +63,7 @@ public interface IService<T> {
      * @apiNote 默认调用的是 {@link BaseMapper#insertSelective(Object)} 方法，忽略实体类
      * {@code null} 属性的数据，使数据库配置的默认值生效。
      */
-    default boolean save(T entity) {
+    default boolean save(@NonNull T entity) {
         return SqlUtil.toBool(getMapper().insert(entity, true));
     }
 
@@ -73,7 +75,7 @@ public interface IService<T> {
      * @apiNote 默认调用的是 {@link BaseMapper#insertSelective(Object)} 方法，忽略实体类
      * {@code null} 属性的数据，使数据库配置的默认值生效。
      */
-    default boolean saveBatch(Collection<T> entities) {
+    default boolean saveBatch(@NonNull Collection<T> entities) {
         return saveBatch(entities, DEFAULT_BATCH_SIZE);
     }
 
@@ -86,7 +88,7 @@ public interface IService<T> {
      * @apiNote 默认调用的是 {@link BaseMapper#insertSelective(Object)} 方法，忽略实体类
      * {@code null} 属性的数据，使数据库配置的默认值生效。
      */
-    default boolean saveBatch(Collection<T> entities, int batchSize) {
+    default boolean saveBatch(@NonNull Collection<T> entities, int batchSize) {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
         return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::insertSelective));
     }
@@ -99,7 +101,7 @@ public interface IService<T> {
      * @apiNote 如果实体类对象主键有值，则更新数据，若没有值，则保存数据，无论新增还是更新都会忽略实体类
      * {@code null} 属性的数据。
      */
-    default boolean saveOrUpdate(T entity) {
+    default boolean saveOrUpdate(@NonNull T entity) {
         return SqlUtil.toBool(getMapper().insertOrUpdate(entity, true));
     }
 
@@ -111,7 +113,7 @@ public interface IService<T> {
      * @apiNote 如果实体类对象主键有值，则更新数据，若没有值，则保存数据，无论新增还是更新都会忽略实体类
      * {@code null} 属性的数据。
      */
-    default boolean saveOrUpdateBatch(Collection<T> entities) {
+    default boolean saveOrUpdateBatch(@NonNull Collection<T> entities) {
         return saveOrUpdateBatch(entities, DEFAULT_BATCH_SIZE);
     }
 
@@ -124,7 +126,7 @@ public interface IService<T> {
      * @apiNote 如果实体类对象主键有值，则更新数据，若没有值，则保存数据，无论新增还是更新都会忽略实体类
      * {@code null} 属性的数据。
      */
-    default boolean saveOrUpdateBatch(Collection<T> entities, int batchSize) {
+    default boolean saveOrUpdateBatch(@NonNull Collection<T> entities, int batchSize) {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
         return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::insertOrUpdateSelective));
     }
@@ -138,7 +140,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
-    default boolean remove(QueryWrapper query) {
+    default boolean remove(@NonNull QueryWrapper query) {
         return SqlUtil.toBool(getMapper().deleteByQuery(query));
     }
 
@@ -148,7 +150,7 @@ public interface IService<T> {
      * @param condition 查询条件
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
-    default boolean remove(QueryCondition condition) {
+    default boolean remove(@NonNull QueryCondition condition) {
         return remove(query().where(condition));
     }
 
@@ -158,7 +160,7 @@ public interface IService<T> {
      * @param entity 实体类对象
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
-    default boolean removeById(T entity) {
+    default boolean removeById(@NonNull T entity) {
         return SqlUtil.toBool(getMapper().delete(entity));
     }
 
@@ -168,7 +170,7 @@ public interface IService<T> {
      * @param id 数据主键
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
-    default boolean removeById(Serializable id) {
+    default boolean removeById(@NonNull Serializable id) {
         return SqlUtil.toBool(getMapper().deleteById(id));
     }
 
@@ -178,7 +180,7 @@ public interface IService<T> {
      * @param ids 数据主键
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
-    default boolean removeByIds(Collection<? extends Serializable> ids) {
+    default boolean removeByIds(@NonNull Collection<? extends Serializable> ids) {
         if (CollectionUtil.isEmpty(ids)) {
             return false;
         }
@@ -191,7 +193,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return {@code true} 删除成功，{@code false} 删除失败。
      */
-    default boolean removeByMap(Map<String, Object> query) {
+    default boolean removeByMap(@NonNull Map<String, Object> query) {
         // 防止全表删除
         if (query == null || query.isEmpty()) {
             throw FlexExceptions.wrap("deleteByMap is not allow empty map.");
@@ -209,7 +211,7 @@ public interface IService<T> {
      * @return {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
-    default boolean updateById(T entity) {
+    default boolean updateById(@NonNull T entity) {
         return updateById(entity, true);
     }
 
@@ -220,7 +222,7 @@ public interface IService<T> {
      * @param ignoreNulls 是否忽略 null 值
      * @return {@code true} 更新成功，{@code false} 更新失败。
      */
-    default boolean updateById(T entity, boolean ignoreNulls) {
+    default boolean updateById(@NonNull T entity, boolean ignoreNulls) {
         return SqlUtil.toBool(getMapper().update(entity, ignoreNulls));
     }
 
@@ -232,7 +234,7 @@ public interface IService<T> {
      * @return {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
-    default boolean update(T entity, Map<String, Object> query) {
+    default boolean update(@NonNull T entity, @NonNull Map<String, Object> query) {
         return update(entity, query().where(query));
     }
 
@@ -244,7 +246,7 @@ public interface IService<T> {
      * @return {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
-    default boolean update(T entity, QueryWrapper query) {
+    default boolean update(@NonNull T entity, @NonNull QueryWrapper query) {
         return SqlUtil.toBool(getMapper().updateByQuery(entity, query));
     }
 
@@ -256,7 +258,7 @@ public interface IService<T> {
      * @return {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
-    default boolean update(T entity, QueryCondition condition) {
+    default boolean update(@NonNull T entity, @NonNull QueryCondition condition) {
         return update(entity, query().where(condition));
     }
 
@@ -267,7 +269,7 @@ public interface IService<T> {
      * @return boolean {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
-    default boolean updateBatch(Collection<T> entities) {
+    default boolean updateBatch(@NonNull Collection<T> entities) {
         return updateBatch(entities, DEFAULT_BATCH_SIZE);
     }
 
@@ -282,7 +284,7 @@ public interface IService<T> {
      * @return boolean {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若 {@code ignoreNulls} 为 {@code true}，实体类中为 {@code null} 的属性不会更新到数据库。
      */
-    default boolean updateBatch(Collection<T> entities, boolean ignoreNulls) {
+    default boolean updateBatch(@NonNull Collection<T> entities, boolean ignoreNulls) {
         return updateBatch(entities, DEFAULT_BATCH_SIZE, ignoreNulls);
     }
 
@@ -294,7 +296,7 @@ public interface IService<T> {
      * @return {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若实体类属性数据为 {@code null}，该属性不会新到数据库。
      */
-    default boolean updateBatch(Collection<T> entities, int batchSize) {
+    default boolean updateBatch(@NonNull Collection<T> entities, int batchSize) {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
         return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, BaseMapper::update));
     }
@@ -311,7 +313,7 @@ public interface IService<T> {
      * @return {@code true} 更新成功，{@code false} 更新失败。
      * @apiNote 若 {@code ignoreNulls} 为 {@code true}，实体类中为 {@code null} 的属性不会更新到数据库。
      */
-    default boolean updateBatch(Collection<T> entities, int batchSize, boolean ignoreNulls) {
+    default boolean updateBatch(@NonNull Collection<T> entities, int batchSize, boolean ignoreNulls) {
         Class<BaseMapper<T>> usefulClass = (Class<BaseMapper<T>>) ClassUtil.getUsefulClass(getMapper().getClass());
         return SqlUtil.toBool(Db.executeBatch(entities, batchSize, usefulClass, (mapper, entity) -> mapper.update(entity, ignoreNulls)));
     }
@@ -325,7 +327,7 @@ public interface IService<T> {
      * @param id 数据主键
      * @return 查询结果数据
      */
-    default T getById(Serializable id) {
+    default @Nullable T getById(@NonNull Serializable id) {
         return getMapper().selectOneById(id);
     }
 
@@ -335,7 +337,7 @@ public interface IService<T> {
      * @param entity 实体对象，必须包含有主键
      * @return 查询结果数据
      */
-    default T getOneByEntityId(T entity) {
+    default @Nullable T getOneByEntityId(@NonNull T entity) {
         return getMapper().selectOneByEntityId(entity);
     }
 
@@ -346,7 +348,7 @@ public interface IService<T> {
      * @return 查询结果数据
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
-    default Optional<T> getByEntityIdOpt(T entity) {
+    default Optional<T> getByEntityIdOpt(@NonNull T entity) {
         return Optional.ofNullable(getOneByEntityId(entity));
     }
 
@@ -357,7 +359,7 @@ public interface IService<T> {
      * @return 查询结果数据
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
-    default Optional<T> getByIdOpt(Serializable id) {
+    default Optional<T> getByIdOpt(@NonNull Serializable id) {
         return Optional.ofNullable(getById(id));
     }
 
@@ -367,7 +369,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return 查询结果数据
      */
-    default T getOne(QueryWrapper query) {
+    default @Nullable T getOne(@NonNull QueryWrapper query) {
         return getMapper().selectOneByQuery(query);
     }
 
@@ -378,7 +380,7 @@ public interface IService<T> {
      * @return 查询结果数据
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
-    default Optional<T> getOneOpt(QueryWrapper query) {
+    default Optional<T> getOneOpt(@NonNull QueryWrapper query) {
         return Optional.ofNullable(getOne(query));
     }
 
@@ -389,7 +391,7 @@ public interface IService<T> {
      * @param asType 接收的数据类型
      * @return 查询结果数据
      */
-    default <R> R getOneAs(QueryWrapper query, Class<R> asType) {
+    default <R> @Nullable R getOneAs(@NonNull QueryWrapper query, @NonNull Class<R> asType) {
         return getMapper().selectOneByQueryAs(query, asType);
     }
 
@@ -401,7 +403,7 @@ public interface IService<T> {
      * @return 查询结果数据
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
-    default <R> Optional<R> getOneAsOpt(QueryWrapper query, Class<R> asType) {
+    default <R> Optional<R> getOneAsOpt(@NonNull QueryWrapper query, @NonNull Class<R> asType) {
         return Optional.ofNullable(getOneAs(query, asType));
     }
 
@@ -411,7 +413,7 @@ public interface IService<T> {
      * @param condition 查询条件
      * @return 查询结果数据
      */
-    default T getOne(QueryCondition condition) {
+    default @Nullable T getOne(@NonNull QueryCondition condition) {
         return getOne(query().where(condition).limit(1));
     }
 
@@ -422,7 +424,7 @@ public interface IService<T> {
      * @return 查询结果数据
      * @apiNote 该方法会将查询结果封装为 {@link Optional} 类进行返回，方便链式操作。
      */
-    default Optional<T> getOneOpt(QueryCondition condition) {
+    default Optional<T> getOneOpt(@NonNull QueryCondition condition) {
         return Optional.ofNullable(getOne(condition));
     }
 
@@ -432,7 +434,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return 数据值
      */
-    default Object getObj(QueryWrapper query) {
+    default @Nullable Object getObj(@NonNull QueryWrapper query) {
         return getMapper().selectObjectByQuery(query);
     }
 
@@ -442,7 +444,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return 数据值
      */
-    default Optional<Object> getObjOpt(QueryWrapper query) {
+    default Optional<Object> getObjOpt(@NonNull QueryWrapper query) {
         return Optional.ofNullable(getObj(query));
     }
 
@@ -453,7 +455,7 @@ public interface IService<T> {
      * @param asType 接收的数据类型
      * @return 数据值
      */
-    default <R> R getObjAs(QueryWrapper query, Class<R> asType) {
+    default <R> @Nullable R getObjAs(@NonNull QueryWrapper query, @NonNull Class<R> asType) {
         return getMapper().selectObjectByQueryAs(query, asType);
     }
 
@@ -465,7 +467,7 @@ public interface IService<T> {
      * @param asType 接收的数据类型
      * @return 数据值
      */
-    default <R> Optional<R> getObjAsOpt(QueryWrapper query, Class<R> asType) {
+    default <R> Optional<R> getObjAsOpt(@NonNull QueryWrapper query, @NonNull Class<R> asType) {
         return Optional.ofNullable(getObjAs(query, asType));
     }
 
@@ -475,7 +477,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return 数据列表
      */
-    default List<Object> objList(QueryWrapper query) {
+    default List<Object> objList(@NonNull QueryWrapper query) {
         return getMapper().selectObjectListByQuery(query);
     }
 
@@ -486,7 +488,7 @@ public interface IService<T> {
      * @param asType 接收的数据类型
      * @return 数据列表
      */
-    default <R> List<R> objListAs(QueryWrapper query, Class<R> asType) {
+    default <R> List<R> objListAs(@NonNull QueryWrapper query, @NonNull Class<R> asType) {
         return getMapper().selectObjectListByQueryAs(query, asType);
     }
 
@@ -505,7 +507,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return 数据集合
      */
-    default List<T> list(QueryWrapper query) {
+    default List<T> list(@NonNull QueryWrapper query) {
         return getMapper().selectListByQuery(query);
     }
 
@@ -515,7 +517,7 @@ public interface IService<T> {
      * @param condition 查询条件
      * @return 数据集合
      */
-    default List<T> list(QueryCondition condition) {
+    default List<T> list(@NonNull QueryCondition condition) {
         return list(query().where(condition));
     }
 
@@ -526,7 +528,7 @@ public interface IService<T> {
      * @param asType 接收的数据类型
      * @return 数据集合
      */
-    default <R> List<R> listAs(QueryWrapper query, Class<R> asType) {
+    default <R> List<R> listAs(@NonNull QueryWrapper query, @NonNull Class<R> asType) {
         return getMapper().selectListByQueryAs(query, asType);
     }
 
@@ -536,7 +538,7 @@ public interface IService<T> {
      * @param ids 数据主键
      * @return 数据集合
      */
-    default List<T> listByIds(Collection<? extends Serializable> ids) {
+    default List<T> listByIds(@NonNull Collection<? extends Serializable> ids) {
         return getMapper().selectListByIds(ids);
     }
 
@@ -546,7 +548,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return 数据集合
      */
-    default List<T> listByMap(Map<String, Object> query) {
+    default List<T> listByMap(@NonNull Map<String, Object> query) {
         return list(query().where(query));
     }
     //endregion ===== 查询（查）操作 =====
@@ -559,7 +561,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return {@code true} 数据存在，{@code false} 数据不存在。
      */
-    default boolean exists(QueryWrapper query) {
+    default boolean exists(@NonNull QueryWrapper query) {
         return exists(CPI.getWhereQueryCondition(query));
     }
 
@@ -569,7 +571,7 @@ public interface IService<T> {
      * @param condition 查询条件
      * @return {@code true} 数据存在，{@code false} 数据不存在。
      */
-    default boolean exists(QueryCondition condition) {
+    default boolean exists(@NonNull QueryCondition condition) {
         // 根据查询条件构建 SQL 语句
         // SELECT 1 FROM table WHERE ... LIMIT 1
         QueryWrapper queryWrapper = QueryMethods.selectOne()
@@ -596,7 +598,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return 数据数量
      */
-    default long count(QueryWrapper query) {
+    default long count(@NonNull QueryWrapper query) {
         return getMapper().selectCountByQuery(query);
     }
 
@@ -606,7 +608,7 @@ public interface IService<T> {
      * @param condition 查询条件
      * @return 数据数量
      */
-    default long count(QueryCondition condition) {
+    default long count(@NonNull QueryCondition condition) {
         return count(query().where(condition));
     }
     //endregion ===== 数量查询操作 =====
@@ -630,7 +632,7 @@ public interface IService<T> {
      * @param query 查询条件
      * @return 分页对象
      */
-    default Page<T> page(Page<T> page, QueryWrapper query) {
+    default Page<T> page(@NonNull Page<T> page, @NonNull QueryWrapper query) {
         return pageAs(page, query, null);
     }
 
@@ -641,7 +643,7 @@ public interface IService<T> {
      * @param condition 查询条件
      * @return 分页对象
      */
-    default Page<T> page(Page<T> page, QueryCondition condition) {
+    default Page<T> page(@NonNull Page<T> page, @NonNull QueryCondition condition) {
         return page(page, query().where(condition));
     }
 
@@ -653,7 +655,7 @@ public interface IService<T> {
      * @param asType 接收的数据类型
      * @return 分页对象
      */
-    default <R> Page<R> pageAs(Page<R> page, QueryWrapper query, Class<R> asType) {
+    default <R> Page<R> pageAs(@NonNull Page<R> page, @NonNull QueryWrapper query, @Nullable Class<R> asType) {
         return getMapper().paginateAs(page, query, asType);
     }
     //endregion ===== 分页查询操作 =====
