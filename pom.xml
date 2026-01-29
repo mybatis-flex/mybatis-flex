@@ -94,6 +94,7 @@
         <junit.version>4.13.2</junit.version>
         <testcontainers.version>1.19.3</testcontainers.version>
         <maven-flatten.version>1.5.0</maven-flatten.version>
+        <jspecify.version>0.3.0</jspecify.version>
     </properties>
 
     <dependencyManagement>
@@ -127,6 +128,12 @@
                 <groupId>org.mybatis.scripting</groupId>
                 <artifactId>mybatis-thymeleaf</artifactId>
                 <version>${mybatis-thymeleaf.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>${jspecify.version}</version>
             </dependency>
 
             <dependency>

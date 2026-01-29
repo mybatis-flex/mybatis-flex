@@ -51,6 +51,7 @@
 5. Support combined primary keys and different primary key content generation strategies
 6. Extremely friendly SQL query, IDE automatically prompts and no worries about mistakes
 7. More little surprises
+8. JSpecify nullness annotations for API hints (no checker included)
 
 ## hello world(Without Spring)
 

@@ -17,6 +17,8 @@ package com.mybatisflex.core.util;
 
 
 import org.apache.ibatis.javassist.util.proxy.ProxyObject;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -58,7 +60,7 @@ public class ClassUtil {
     private static final String ENHANCER_BY = "$$EnhancerBy";
     private static final String JAVASSIST_BY = "_$$_";
 
-    public static boolean isProxy(Class<?> clazz) {
+    public static boolean isProxy(@NonNull Class<?> clazz) {
         for (Class<?> cls : clazz.getInterfaces()) {
             if (PROXY_CLASS_NAMES.contains(cls.getName())) {
                 return true;
@@ -68,7 +70,7 @@ public class ClassUtil {
         return Proxy.isProxyClass(clazz);
     }
 
-    public static <T> Class<T> getUsefulClass(Class<T> clazz) {
+    public static @NonNull <T> Class<T> getUsefulClass(@NonNull Class<T> clazz) {
 
         if (ProxyObject.class.isAssignableFrom(clazz)) {
             return (Class<T>) clazz.getSuperclass();
@@ -90,7 +92,7 @@ public class ClassUtil {
     }
 
 
-    public static Class<?> getWrapType(Class<?> clazz) {
+    public static @Nullable Class<?> getWrapType(@Nullable Class<?> clazz) {
         if (clazz == null || !clazz.isPrimitive()) {
             return clazz;
         }
@@ -117,7 +119,7 @@ public class ClassUtil {
     }
 
 
-    public static boolean isArray(Class<?> clazz) {
+    public static boolean isArray(@NonNull Class<?> clazz) {
         return clazz.isArray()
             || clazz == int[].class
             || clazz == long[].class
@@ -131,7 +133,7 @@ public class ClassUtil {
     }
 
 
-    public static <T> T newInstance(Class<T> clazz) {
+    public static <T> @NonNull T newInstance(@NonNull Class<T> clazz) {
         try {
             Constructor<?> defaultConstructor = null;
             Constructor<?> otherConstructor = null;
@@ -176,7 +178,7 @@ public class ClassUtil {
     }
 
 
-    public static <T> T newInstance(Class<T> clazz, Object... paras) {
+    public static <T> @NonNull T newInstance(@NonNull Class<T> clazz, Object... paras) {
         try {
             Constructor<?>[] constructors = clazz.getDeclaredConstructors();
             for (Constructor<?> constructor : constructors) {
@@ -215,19 +217,19 @@ public class ClassUtil {
     }
 
 
-    public static List<Field> getAllFields(Class<?> clazz) {
+    public static @NonNull List<Field> getAllFields(@NonNull Class<?> clazz) {
         List<Field> fields = new ArrayList<>();
         doGetFields(clazz, fields, null, false);
         return fields;
     }
 
-    public static List<Field> getAllFields(Class<?> clazz, Predicate<Field> predicate) {
+    public static @NonNull List<Field> getAllFields(@NonNull Class<?> clazz, @NonNull Predicate<Field> predicate) {
         List<Field> fields = new ArrayList<>();
         doGetFields(clazz, fields, predicate, false);
         return fields;
     }
 
-    public static Field getFirstField(Class<?> clazz, Predicate<Field> predicate) {
+    public static @Nullable Field getFirstField(@NonNull Class<?> clazz, @NonNull Predicate<Field> predicate) {
         List<Field> fields = new ArrayList<>();
         doGetFields(clazz, fields, predicate, true);
         return fields.isEmpty() ? null : fields.get(0);
@@ -240,7 +242,7 @@ public class ClassUtil {
      * @param checkToContinue 应用当前类并检测是否继续应用, 返回false则停止应用, 返回true继续向上取父类
      * @author KAMOsama
      */
-    public static void applyAllClass(Class<?> clazz, Predicate<Class<?>> checkToContinue) {
+    public static void applyAllClass(@NonNull Class<?> clazz, @NonNull Predicate<Class<?>> checkToContinue) {
         Class<?> currentClass = clazz;
         while (currentClass != null && currentClass != Object.class && checkToContinue.test(currentClass)) {
             currentClass = currentClass.getSuperclass();
@@ -263,29 +265,29 @@ public class ClassUtil {
         });
     }
 
-    public static List<Method> getAllMethods(Class<?> clazz) {
+    public static @NonNull List<Method> getAllMethods(@NonNull Class<?> clazz) {
         List<Method> methods = new ArrayList<>();
         doGetMethods(clazz, methods, null, false);
         return methods;
     }
 
-    public static List<Method> getAllMethods(Class<?> clazz, Predicate<Method> predicate) {
+    public static @NonNull List<Method> getAllMethods(@NonNull Class<?> clazz, @NonNull Predicate<Method> predicate) {
         List<Method> methods = new ArrayList<>();
         doGetMethods(clazz, methods, predicate, false);
         return methods;
     }
 
-    public static Method getAnyMethod(Class<?> clazz, String... methodNames) {
+    public static @Nullable Method getAnyMethod(@NonNull Class<?> clazz, @NonNull String... methodNames) {
         return getFirstMethod(clazz, method -> ArrayUtil.contains(methodNames, method.getName()));
     }
 
-    public static Method getFirstMethod(Class<?> clazz, Predicate<Method> predicate) {
+    public static @Nullable Method getFirstMethod(@NonNull Class<?> clazz, @NonNull Predicate<Method> predicate) {
         List<Method> methods = new ArrayList<>();
         doGetMethods(clazz, methods, predicate, true);
         return methods.isEmpty() ? null : methods.get(0);
     }
 
-    public static Method getFirstMethodByAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+    public static @Nullable Method getFirstMethodByAnnotation(@NonNull Class<?> clazz, @NonNull Class<? extends Annotation> annotationClass) {
         Set<Class<?>> visited = new HashSet<>();
         return findMethod(clazz, annotationClass, visited);
     }
@@ -370,12 +372,12 @@ public class ClassUtil {
         }
     }
 
-    public static boolean isObjectMethod(String methodName) {
+    public static boolean isObjectMethod(@NonNull String methodName) {
         return ArrayUtil.contains(OBJECT_METHODS, methodName);
     }
 
 
-    public static ClassLoader getDefaultClassLoader() {
+    public static @Nullable ClassLoader getDefaultClassLoader() {
         ClassLoader classLoader = null;
         try {
             classLoader = Thread.currentThread().getContextClassLoader();
