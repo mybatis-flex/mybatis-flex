@@ -636,7 +636,7 @@ public interface BaseMapper<T> {
      * @see com.mybatisflex.core.provider.EntitySqlProvider#selectListByIds(Map, ProviderContext)
      */
     @SelectProvider(type = EntitySqlProvider.class, method = "selectListByIds")
-    List<T> selectListByIds(@Param(FlexConsts.PRIMARY_VALUE) @NonNull Collection<? extends Serializable> ids);
+    @Nullable List<T> selectListByIds(@Param(FlexConsts.PRIMARY_VALUE) @NonNull Collection<? extends Serializable> ids);
 
     /**
      * 根据 Map 来构建查询条件，查询多条数据。
@@ -644,7 +644,7 @@ public interface BaseMapper<T> {
      * @param whereConditions 条件
      * @return 数据列表
      */
-    default List<T> selectListByMap(@NonNull Map<String, Object> whereConditions) {
+    default @Nullable List<T> selectListByMap(@NonNull Map<String, Object> whereConditions) {
         FlexAssert.notEmpty(whereConditions, "whereConditions");
         return selectListByQuery(QueryWrapper.create().where(whereConditions));
     }
@@ -692,7 +692,7 @@ public interface BaseMapper<T> {
      * @see com.mybatisflex.core.provider.EntitySqlProvider#selectListByQuery(Map, ProviderContext)
      */
     @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
-    List<T> selectListByQuery(@Param(FlexConsts.QUERY) @NonNull QueryWrapper queryWrapper);
+    @Nullable List<T> selectListByQuery(@Param(FlexConsts.QUERY) @NonNull QueryWrapper queryWrapper);
 
     /**
      * 根据查询条件查询数据列表。
@@ -701,7 +701,7 @@ public interface BaseMapper<T> {
      * @param consumers    字段查询
      * @return 数据列表
      */
-    default List<T> selectListByQuery(@NonNull QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
+    default @NonNull List<T> selectListByQuery(@NonNull QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
         List<T> list = selectListByQuery(queryWrapper);
         if (list == null || list.isEmpty()) {
             return Collections.emptyList();
@@ -742,7 +742,7 @@ public interface BaseMapper<T> {
      * @return 行数据
      */
     @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
-    List<Row> selectRowsByQuery(@Param(FlexConsts.QUERY) @NonNull QueryWrapper queryWrapper);
+    @Nullable List<Row> selectRowsByQuery(@Param(FlexConsts.QUERY) @NonNull QueryWrapper queryWrapper);
 
     /**
      * 根据查询条件查询数据列表，要求返回的数据为 asType。这种场景一般用在 left join 时，
@@ -752,7 +752,7 @@ public interface BaseMapper<T> {
      * @param asType       接收数据类型
      * @return 数据列表
      */
-    default <R> List<R> selectListByQueryAs(@NonNull QueryWrapper queryWrapper, @NonNull Class<R> asType) {
+    default <R> @Nullable List<R> selectListByQueryAs(@NonNull QueryWrapper queryWrapper, @NonNull Class<R> asType) {
         if (Number.class.isAssignableFrom(asType)
             || String.class == asType) {
             return selectObjectListByQueryAs(queryWrapper, asType);
@@ -778,7 +778,7 @@ public interface BaseMapper<T> {
      * @param consumers    字段查询
      * @return 数据列表
      */
-    default <R> List<R> selectListByQueryAs(@NonNull QueryWrapper queryWrapper, @NonNull Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
+    default <R> @NonNull List<R> selectListByQueryAs(@NonNull QueryWrapper queryWrapper, @NonNull Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
         List<R> list = selectListByQueryAs(queryWrapper, asType);
         if (list == null || list.isEmpty()) {
             return Collections.emptyList();
@@ -793,7 +793,7 @@ public interface BaseMapper<T> {
      *
      * @param queryWrapper 条件
      */
-    default List<T> selectListWithRelationsByQuery(@NonNull QueryWrapper queryWrapper) {
+    default @Nullable List<T> selectListWithRelationsByQuery(@NonNull QueryWrapper queryWrapper) {
         return MapperUtil.queryRelations(this, selectListByQuery(queryWrapper));
     }
 
@@ -804,7 +804,7 @@ public interface BaseMapper<T> {
      * @param asType       要求返回的数据类型
      * @return 数据列表
      */
-    default <R> List<R> selectListWithRelationsByQueryAs(@NonNull QueryWrapper queryWrapper, @NonNull Class<R> asType) {
+    default <R> @Nullable List<R> selectListWithRelationsByQueryAs(@NonNull QueryWrapper queryWrapper, @NonNull Class<R> asType) {
         if (Number.class.isAssignableFrom(asType)
             || String.class == asType) {
             return selectObjectListByQueryAs(queryWrapper, asType);
@@ -832,7 +832,7 @@ public interface BaseMapper<T> {
      * @param consumers    字段查询
      * @return 数据列表
      */
-    default <R> List<R> selectListWithRelationsByQueryAs(@NonNull QueryWrapper queryWrapper, @NonNull Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
+    default <R> @NonNull List<R> selectListWithRelationsByQueryAs(@NonNull QueryWrapper queryWrapper, @NonNull Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
         List<R> list = selectListByQueryAs(queryWrapper, asType);
         if (list == null || list.isEmpty()) {
             return Collections.emptyList();
@@ -848,7 +848,7 @@ public interface BaseMapper<T> {
      *
      * @return 数据列表
      */
-    default List<T> selectAll() {
+    default @Nullable List<T> selectAll() {
         return selectListByQuery(new QueryWrapper());
     }
 
@@ -857,7 +857,7 @@ public interface BaseMapper<T> {
      *
      * @return 数据列表
      */
-    default List<T> selectAllWithRelations() {
+    default @Nullable List<T> selectAllWithRelations() {
         return MapperUtil.queryRelations(this, selectListByQuery(new QueryWrapper()));
     }
 
@@ -893,7 +893,7 @@ public interface BaseMapper<T> {
      * @see EntitySqlProvider#selectObjectByQuery(Map, ProviderContext)
      */
     @SelectProvider(type = EntitySqlProvider.class, method = "selectObjectByQuery")
-    List<Object> selectObjectListByQuery(@Param(FlexConsts.QUERY) @NonNull QueryWrapper queryWrapper);
+    @Nullable List<Object> selectObjectListByQuery(@Param(FlexConsts.QUERY) @NonNull QueryWrapper queryWrapper);
 
     /**
      * 查询第一列返回的数据集合，QueryWrapper 执行的结果应该只有 1 列，例如：<br>
@@ -903,7 +903,7 @@ public interface BaseMapper<T> {
      * @param asType       转换成的数据类型
      * @return 数据列表
      */
-    default <R> List<R> selectObjectListByQueryAs(@NonNull QueryWrapper queryWrapper, @NonNull Class<R> asType) {
+    default <R> @NonNull List<R> selectObjectListByQueryAs(@NonNull QueryWrapper queryWrapper, @NonNull Class<R> asType) {
         List<Object> queryResults = selectObjectListByQuery(queryWrapper);
         if (queryResults == null || queryResults.isEmpty()) {
             return Collections.emptyList();
@@ -977,7 +977,7 @@ public interface BaseMapper<T> {
      * @param queryWrapper 条件
      * @return 分页数据
      */
-    default Page<T> paginate(Number pageNumber, Number pageSize, QueryWrapper queryWrapper) {
+    default @NonNull Page<T> paginate(Number pageNumber, Number pageSize, QueryWrapper queryWrapper) {
         Page<T> page = new Page<>(pageNumber, pageSize);
         return paginate(page, queryWrapper);
     }
@@ -990,7 +990,7 @@ public interface BaseMapper<T> {
      * @param queryWrapper 条件
      * @return 分页数据
      */
-    default Page<T> paginateWithRelations(Number pageNumber, Number pageSize, QueryWrapper queryWrapper) {
+    default @NonNull Page<T> paginateWithRelations(Number pageNumber, Number pageSize, QueryWrapper queryWrapper) {
         Page<T> page = new Page<>(pageNumber, pageSize);
         return paginateWithRelations(page, queryWrapper);
     }
@@ -1003,7 +1003,7 @@ public interface BaseMapper<T> {
      * @param whereConditions 条件
      * @return 分页数据
      */
-    default Page<T> paginate(Number pageNumber, Number pageSize, QueryCondition whereConditions) {
+    default @NonNull Page<T> paginate(Number pageNumber, Number pageSize, QueryCondition whereConditions) {
         Page<T> page = new Page<>(pageNumber, pageSize);
         return paginate(page, new QueryWrapper().where(whereConditions));
     }
@@ -1016,7 +1016,7 @@ public interface BaseMapper<T> {
      * @param whereConditions 条件
      * @return 分页数据
      */
-    default Page<T> paginateWithRelations(Number pageNumber, Number pageSize, QueryCondition whereConditions) {
+    default @NonNull Page<T> paginateWithRelations(Number pageNumber, Number pageSize, QueryCondition whereConditions) {
         Page<T> page = new Page<>(pageNumber, pageSize);
         return paginateWithRelations(page, new QueryWrapper().where(whereConditions));
     }
@@ -1030,7 +1030,7 @@ public interface BaseMapper<T> {
      * @param queryWrapper 条件
      * @return 分页数据
      */
-    default Page<T> paginate(Number pageNumber, Number pageSize, Number totalRow, QueryWrapper queryWrapper) {
+    default @NonNull Page<T> paginate(Number pageNumber, Number pageSize, Number totalRow, QueryWrapper queryWrapper) {
         Page<T> page = new Page<>(pageNumber, pageSize, totalRow);
         return paginate(page, queryWrapper);
     }
@@ -1044,7 +1044,7 @@ public interface BaseMapper<T> {
      * @param queryWrapper 条件
      * @return 分页数据
      */
-    default Page<T> paginateWithRelations(Number pageNumber, Number pageSize, Number totalRow, QueryWrapper queryWrapper) {
+    default @NonNull Page<T> paginateWithRelations(Number pageNumber, Number pageSize, Number totalRow, QueryWrapper queryWrapper) {
         Page<T> page = new Page<>(pageNumber, pageSize, totalRow);
         return paginateWithRelations(page, queryWrapper);
     }
@@ -1058,7 +1058,7 @@ public interface BaseMapper<T> {
      * @param whereConditions 条件
      * @return 分页数据
      */
-    default Page<T> paginate(Number pageNumber, Number pageSize, Number totalRow, QueryCondition whereConditions) {
+    default @NonNull Page<T> paginate(Number pageNumber, Number pageSize, Number totalRow, QueryCondition whereConditions) {
         FlexAssert.notNull(whereConditions, "whereConditions");
         Page<T> page = new Page<>(pageNumber, pageSize, totalRow);
         return paginate(page, new QueryWrapper().where(whereConditions));
@@ -1073,7 +1073,7 @@ public interface BaseMapper<T> {
      * @param whereConditions 条件
      * @return 分页数据
      */
-    default Page<T> paginateWithRelations(Number pageNumber, Number pageSize, Number totalRow, QueryCondition whereConditions) {
+    default @NonNull Page<T> paginateWithRelations(Number pageNumber, Number pageSize, Number totalRow, QueryCondition whereConditions) {
         FlexAssert.notNull(whereConditions, "whereConditions");
         Page<T> page = new Page<>(pageNumber, pageSize, totalRow);
         return paginateWithRelations(page, new QueryWrapper().where(whereConditions));
@@ -1086,7 +1086,7 @@ public interface BaseMapper<T> {
      * @param queryWrapper 条件
      * @return page 数据
      */
-    default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper) {
+    default @NonNull Page<T> paginate(Page<T> page, QueryWrapper queryWrapper) {
         return paginateAs(page, queryWrapper, null);
     }
 
@@ -1098,7 +1098,7 @@ public interface BaseMapper<T> {
      * @param consumers    字段查询
      * @return page 数据
      */
-    default Page<T> paginate(Page<T> page, QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
+    default @NonNull Page<T> paginate(Page<T> page, QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
         return paginateAs(page, queryWrapper, null, consumers);
     }
 
@@ -1109,7 +1109,7 @@ public interface BaseMapper<T> {
      * @param queryWrapper 条件
      * @return 分页数据
      */
-    default Page<T> paginateWithRelations(Page<T> page, QueryWrapper queryWrapper) {
+    default @NonNull Page<T> paginateWithRelations(Page<T> page, QueryWrapper queryWrapper) {
         return paginateWithRelationsAs(page, queryWrapper, null);
     }
 
@@ -1121,7 +1121,7 @@ public interface BaseMapper<T> {
      * @param consumers    字段查询
      * @return 分页数据
      */
-    default Page<T> paginateWithRelations(Page<T> page, QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
+    default @NonNull Page<T> paginateWithRelations(Page<T> page, QueryWrapper queryWrapper, Consumer<FieldQueryBuilder<T>>... consumers) {
         return paginateWithRelationsAs(page, queryWrapper, null, consumers);
     }
 
@@ -1134,7 +1134,7 @@ public interface BaseMapper<T> {
      * @param asType       接收数据类型
      * @return 分页数据
      */
-    default <R> Page<R> paginateAs(Number pageNumber, Number pageSize, QueryWrapper queryWrapper, Class<R> asType) {
+    default <R> @NonNull Page<R> paginateAs(Number pageNumber, Number pageSize, QueryWrapper queryWrapper, Class<R> asType) {
         Page<R> page = new Page<>(pageNumber, pageSize);
         return MapperUtil.doPaginate(this, page, queryWrapper, asType, false);
     }
@@ -1149,7 +1149,7 @@ public interface BaseMapper<T> {
      * @param asType       接收数据类型
      * @return 分页数据
      */
-    default <R> Page<R> paginateAs(Number pageNumber, Number pageSize, Number totalRow, QueryWrapper queryWrapper, Class<R> asType) {
+    default <R> @NonNull Page<R> paginateAs(Number pageNumber, Number pageSize, Number totalRow, QueryWrapper queryWrapper, Class<R> asType) {
         Page<R> page = new Page<>(pageNumber, pageSize, totalRow);
         return MapperUtil.doPaginate(this, page, queryWrapper, asType, false);
     }
@@ -1162,7 +1162,7 @@ public interface BaseMapper<T> {
      * @param asType       接收数据类型
      * @return 分页数据
      */
-    default <R> Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
+    default <R> @NonNull Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
         return MapperUtil.doPaginate(this, page, queryWrapper, asType, false);
     }
 
@@ -1175,7 +1175,7 @@ public interface BaseMapper<T> {
      * @param consumers    字段查询
      * @return 分页数据
      */
-    default <R> Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
+    default <R> @NonNull Page<R> paginateAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
         return MapperUtil.doPaginate(this, page, queryWrapper, asType, false, consumers);
     }
 
@@ -1188,7 +1188,7 @@ public interface BaseMapper<T> {
      * @param asType       接收数据类型
      * @return 分页数据
      */
-    default <R> Page<R> paginateWithRelationsAs(Number pageNumber, Number pageSize, QueryWrapper queryWrapper, Class<R> asType) {
+    default <R> @NonNull Page<R> paginateWithRelationsAs(Number pageNumber, Number pageSize, QueryWrapper queryWrapper, Class<R> asType) {
         Page<R> page = new Page<>(pageNumber, pageSize);
         return MapperUtil.doPaginate(this, page, queryWrapper, asType, true);
     }
@@ -1203,7 +1203,7 @@ public interface BaseMapper<T> {
      * @param asType       接收数据类型
      * @return 分页数据
      */
-    default <R> Page<R> paginateWithRelationsAs(Number pageNumber, Number pageSize, Number totalRow, QueryWrapper queryWrapper, Class<R> asType) {
+    default <R> @NonNull Page<R> paginateWithRelationsAs(Number pageNumber, Number pageSize, Number totalRow, QueryWrapper queryWrapper, Class<R> asType) {
         Page<R> page = new Page<>(pageNumber, pageSize, totalRow);
         return MapperUtil.doPaginate(this, page, queryWrapper, asType, true);
     }
@@ -1216,7 +1216,7 @@ public interface BaseMapper<T> {
      * @param asType       接收数据类型
      * @return 分页数据
      */
-    default <R> Page<R> paginateWithRelationsAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
+    default <R> @NonNull Page<R> paginateWithRelationsAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
         return MapperUtil.doPaginate(this, page, queryWrapper, asType, true);
     }
 
@@ -1229,24 +1229,24 @@ public interface BaseMapper<T> {
      * @param consumers    字段查询
      * @return 分页数据
      */
-    default <R> Page<R> paginateWithRelationsAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
+    default <R> @NonNull Page<R> paginateWithRelationsAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType, Consumer<FieldQueryBuilder<R>>... consumers) {
         return MapperUtil.doPaginate(this, page, queryWrapper, asType, true, consumers);
     }
 
 
-    default <E> Page<E> xmlPaginate(String dataSelectId, Page<E> page, QueryWrapper queryWrapper) {
+    default <E> @NonNull Page<E> xmlPaginate(String dataSelectId, Page<E> page, QueryWrapper queryWrapper) {
         return xmlPaginate(dataSelectId, dataSelectId + "_COUNT", page, queryWrapper, null);
     }
 
-    default <E> Page<E> xmlPaginate(String dataSelectId, Page<E> page, Map<String, Object> otherParams) {
+    default <E> @NonNull Page<E> xmlPaginate(String dataSelectId, Page<E> page, Map<String, Object> otherParams) {
         return xmlPaginate(dataSelectId, dataSelectId + "_COUNT", page, null, otherParams);
     }
 
-    default <E> Page<E> xmlPaginate(String dataSelectId, Page<E> page, QueryWrapper queryWrapper, Map<String, Object> otherParams) {
+    default <E> @NonNull Page<E> xmlPaginate(String dataSelectId, Page<E> page, QueryWrapper queryWrapper, Map<String, Object> otherParams) {
         return xmlPaginate(dataSelectId, dataSelectId + "_COUNT", page, queryWrapper, otherParams);
     }
 
-    default <E> Page<E> xmlPaginate(String dataSelectId, String countSelectId, Page<E> page, QueryWrapper queryWrapper, Map<String, Object> otherParams) {
+    default <E> @NonNull Page<E> xmlPaginate(String dataSelectId, String countSelectId, Page<E> page, QueryWrapper queryWrapper, Map<String, Object> otherParams) {
         SqlSessionFactory sqlSessionFactory = FlexGlobalConfig.getDefaultConfig().getSqlSessionFactory();
         ExecutorType executorType = FlexGlobalConfig.getDefaultConfig().getConfiguration().getDefaultExecutorType();
         String mapperClassName = ClassUtil.getUsefulClass(this.getClass()).getName();
