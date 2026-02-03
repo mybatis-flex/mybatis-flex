@@ -21,7 +21,7 @@
 <dependency>
     <groupId>com.mybatis-flex</groupId>
     <artifactId>mybatis-flex-codegen</artifactId>
-    <version>1.11.5</version>
+    <version>1.11.6</version>
 </dependency>
 ```
 
