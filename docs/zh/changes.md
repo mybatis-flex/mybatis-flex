@@ -3,13 +3,13 @@
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
 ## v1.11.6 20260203
-新增: 为core模块引入JSpecify，并为主要接口增加空值注解，感谢 @zhongying
-新增: QueryMethods 增加 COALESCE 函数方法，感谢 @Yang
-优化: 更新带有可空注释的方法返回类型
-优化: 添加默认的类加载器实用程序方法和重构的LambdaUtil，以使用ClassUtil.getDefaultClassLoader而不是直接上下文类加载器
-优化: 将mybatis-spring依赖项更新到4.0.0版本
-优化: 完善@EnumValue强制实现类包含同名字段问题，修改为仅判断泛型方法时需要同名字段，感谢 @Crazy
-优化: 更新SpringBoot4依赖及文档说明，感谢 @陶志鹏2025/12/24 15:50
+* 新增: 为core模块引入JSpecify，并为主要接口增加空值注解，感谢 @zhongying
+* 新增: QueryMethods 增加 COALESCE 函数方法，感谢 @Yang
+* 优化: 更新带有可空注释的方法返回类型
+* 优化: 添加默认的类加载器实用程序方法和重构的LambdaUtil，以使用ClassUtil.getDefaultClassLoader而不是直接上下文类加载器
+* 优化: 将mybatis-spring依赖项更新到4.0.0版本
+* 优化: 完善@EnumValue强制实现类包含同名字段问题，修改为仅判断泛型方法时需要同名字段，感谢 @Crazy
+* 优化: 更新SpringBoot4依赖及文档说明，感谢 @陶志鹏
 
 
 ## v1.11.5 20251224
