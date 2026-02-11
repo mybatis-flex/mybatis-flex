@@ -13,31 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.mybatisflex.annotation;
 
-/**
- * 空监听器。
- */
-public final class NoneListener implements InsertListener, UpdateListener, LogicDeleteListener, SetListener {
+package com.mybatisflex.test.model;
 
-    @Override
-    public void onInsert(Object entity) {
-        // do nothing here.
-    }
+import com.mybatisflex.annotation.LogicDeleteListener;
 
-    @Override
-    public void onUpdate(Object entity) {
-        // do nothing here.
-    }
-
+public class AccountOnLogicDeleteListener implements LogicDeleteListener {
     @Override
     public void onLogicDelete(Object entity) {
-        // do nothing here.
+        AccountMissingListenerTestModel model = (AccountMissingListenerTestModel) entity;
+        model.setUserName("测试逻辑删除的监听器-userName");
     }
-
-    @Override
-    public Object onSet(Object entity, String property, Object value) {
-        return value;
-    }
-
 }
