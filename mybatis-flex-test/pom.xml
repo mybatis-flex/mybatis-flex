@@ -29,7 +29,6 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <commons-io.version>2.15.1</commons-io.version>
-        <org.projectlombok.version>1.18.30</org.projectlombok.version>
         <!-- 高版本基于 JDK17，勿动 -->
         <json-unit-assertj.version>2.38.0</json-unit-assertj.version>
     </properties>
@@ -49,7 +48,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${org.projectlombok.version}</version>
+            <version>${lombok.version}</version>
         </dependency>
 
         <dependency>
@@ -72,7 +71,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>${org.projectlombok.version}</version>
+                            <version>${lombok.version}</version>
                         </path>
                         <path>
                             <groupId>com.mybatis-flex</groupId>
