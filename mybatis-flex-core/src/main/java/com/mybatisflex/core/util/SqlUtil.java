@@ -141,8 +141,16 @@ public class SqlUtil {
                     quote = 0;
                 }
             }
-            if (quote == 0 && ch == '?' && index < params.length) {
-                sqlBuilder.append(getParamString(params, index++));
+
+            if (quote == 0 && ch == '?') {
+                if (i + 1 < sql.length() && sql.charAt(i + 1) == '?') {
+                    sqlBuilder.append('?');
+                    i++;
+                } else if (index < params.length) {
+                    sqlBuilder.append(getParamString(params, index++));
+                } else {
+                    sqlBuilder.append(ch);
+                }
             } else {
                 sqlBuilder.append(ch);
             }
