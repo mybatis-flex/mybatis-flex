@@ -105,6 +105,7 @@ public enum DbType {
 
     /** OceanBase */
     OCEAN_BASE("oceanbase", "OceanBase 数据库"),
+    OCEAN_BASE_ORACLE("oceanbase_oracle", "OceanBase Oracle 数据库"),
 
     /** openGauss */
     OPENGAUSS("openGauss", "华为 openGauss 数据库"),
@@ -230,7 +231,7 @@ public enum DbType {
      * 判断当前数据库语法是否与Oracle属于同一类型
      */
     public boolean oracleSameType() {
-        return this == ORACLE || this == DM;
+        return this == ORACLE || this == DM || this==OCEAN_BASE_ORACLE;
     }
 
     /**
