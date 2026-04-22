@@ -19,10 +19,8 @@ package com.mybatisflex.codegen.config;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * 表策略配置。
@@ -70,6 +68,7 @@ public class StrategyConfig implements Serializable {
      */
     private Map<String, ColumnConfig> columnConfigMap;
 
+    private transient Map<String, Pattern> regexPatternMap;
     /**
      * 自定义列配置工厂。
      */
@@ -172,6 +171,14 @@ public class StrategyConfig implements Serializable {
             columnConfig = columnConfigMap.get(columnName);
         }
 
+        if (columnConfig == null && regexPatternMap != null) {
+            for (Map.Entry<String, Pattern> entry : regexPatternMap.entrySet()) {
+                if (entry.getValue().matcher(columnName).matches()) {
+                    columnConfig = this.columnConfigMap.get(entry.getKey());
+                }
+            }
+        }
+
         if (columnConfig == null) {
             columnConfig = new ColumnConfig();
         }
@@ -194,10 +201,19 @@ public class StrategyConfig implements Serializable {
      * 设置列配置。
      */
     public StrategyConfig setColumnConfig(ColumnConfig columnConfig) {
-        if (columnConfigMap == null) {
-            columnConfigMap = new HashMap<>();
+        if (this.columnConfigMap == null) {
+            this.columnConfigMap = new HashMap<>();
         }
-        columnConfigMap.put(columnConfig.getColumnName(), columnConfig);
+        this.columnConfigMap.put(columnConfig.getColumnName(), columnConfig);
+        if(columnConfig.getColumnName().contains("*")){
+            if(this.regexPatternMap == null){
+                this.regexPatternMap = new LinkedHashMap<>();
+            }
+            this.regexPatternMap.put(
+                columnConfig.getColumnName(),
+                Pattern.compile(columnConfig.getColumnName().replaceAll("\\*", ".*"))
+            );
+        }
         return this;
     }
 
