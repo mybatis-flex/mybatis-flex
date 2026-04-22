@@ -19,16 +19,23 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.row.Row;
+import com.mybatisflex.core.table.DynamicSchemaProcessor;
+import com.mybatisflex.core.table.DynamicTableProcessor;
 import com.mybatisflex.core.table.IdInfo;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
+import com.mybatisflex.core.table.TableManager;
 import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.ClassUtil;
 import com.mybatisflex.core.util.FieldWrapper;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.mybatisflex.core.query.QueryMethods.column;
 
@@ -254,7 +261,8 @@ public abstract class AbstractRelation<SelfEntity> {
     }
 
     public String getTargetSchema() {
-        return targetSchema;
+        DynamicSchemaProcessor dynamicSchemaProcessor = TableManager.getDynamicSchemaProcessor();
+        return dynamicSchemaProcessor == null ? targetSchema : dynamicSchemaProcessor.process(targetSchema, targetTable, null);
     }
 
     public void setTargetSchema(String targetSchema) {
@@ -337,10 +345,29 @@ public abstract class AbstractRelation<SelfEntity> {
     }
 
     public String getTargetTableWithSchema() {
-        if (StringUtil.hasText(targetTable)) {
-            return StringUtil.hasText(targetSchema) ? targetSchema + "." + targetTable : targetTable;
+        DynamicSchemaProcessor dynamicSchemaProcessor = TableManager.getDynamicSchemaProcessor();
+        DynamicTableProcessor dynamicTableProcessor = TableManager.getDynamicTableProcessor();
+
+        String schema = targetSchema;
+        String table = targetTable;
+        if (StringUtil.hasText(table)) {
+            if (dynamicSchemaProcessor != null && StringUtil.hasText(schema)) {
+                schema = dynamicSchemaProcessor.process(schema, table, null);
+            }
+            if (dynamicTableProcessor != null) {
+                table = dynamicTableProcessor.process(table, null);
+            }
+            return StringUtil.hasText(schema) ? schema + "." + table : table;
         } else {
-            return targetTableInfo.getTableNameWithSchema();
+            schema = targetTableInfo.getSchema();
+            table = targetTableInfo.getTableName();
+            if (dynamicSchemaProcessor != null) {
+                schema = dynamicSchemaProcessor.process(schema, table, null);
+            }
+            if (dynamicTableProcessor != null) {
+                table = dynamicTableProcessor.process(table, null);
+            }
+            return StringUtil.buildSchemaWithTable(schema, table);
         }
     }
 
