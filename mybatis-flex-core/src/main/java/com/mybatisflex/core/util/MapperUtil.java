@@ -215,6 +215,10 @@ public class MapperUtil {
                 CPI.setLimitRows(countQueryWrapper, null);
                 CPI.setLimitOffset(countQueryWrapper, null);
 
+                // 把原来的 join 语句设置到 countQueryWrapper 上
+                if (CPI.getJoins(countQueryWrapper) == null) {
+                    CPI.setJoins(countQueryWrapper, CPI.getJoins(queryWrapper));
+                }
                 page.setTotalRow(mapper.selectCountByQuery(countQueryWrapper));
             }
 
