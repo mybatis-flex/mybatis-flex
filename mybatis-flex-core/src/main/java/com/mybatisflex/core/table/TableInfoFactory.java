@@ -20,6 +20,7 @@ import com.mybatisflex.annotation.ColumnAlias;
 import com.mybatisflex.annotation.ColumnMask;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.annotation.LogicDeleteListener;
 import com.mybatisflex.annotation.NoneListener;
 import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.Table;
@@ -259,6 +260,7 @@ public class TableInfoFactory {
                     tableInfo.setOnSetListeners(refTableInfo.getOnSetListeners());
                     tableInfo.setOnInsertColumns(refTableInfo.getOnInsertColumns());
                     tableInfo.setOnUpdateListeners(refTableInfo.getOnUpdateListeners());
+                    tableInfo.setOnLogicDeleteListener(refTableInfo.getOnLogicDeleteListener());
                 }
             } else {
                 // 默认为类名转驼峰下划线
@@ -287,6 +289,14 @@ public class TableInfoFactory {
                     .map(ClassUtil::newInstance)
                     .collect(Collectors.toList());
                 tableInfo.setOnUpdateListeners(updateListeners);
+            }
+
+            if (table.onLogicDelete().length > 0) {
+                List<LogicDeleteListener> logicDeleteListeners = Arrays.stream(table.onLogicDelete())
+                    .filter(listener -> listener != NoneListener.class)
+                    .map(ClassUtil::newInstance)
+                    .collect(Collectors.toList());
+                tableInfo.setOnLogicDeleteListener(logicDeleteListeners);
             }
 
             if (table.onSet().length > 0) {
