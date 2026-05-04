@@ -2,6 +2,14 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.11.7 20260504
+- feat(transaction): 在 Db.tx 事务管理中，新增 txWithDecider 方法，用于自定义 Rollback 逻辑
+- fix: 修复flex原生关联查询未处理schema
+- fix: 为了适配 idea 2025.2.6 和 idea 2025.3, 统一 lombok 版本并升级到 1.18.38
+- fix: 处理 SQL 语句中存在问号运算符(?)时转义字符串(??)被当成参数化处理
+- fix: SORT不是达梦和ORACLE关键字，执行会报错
+
+
 ## v1.11.6 20260203
 * 新增: 为core模块引入JSpecify，并为主要接口增加空值注解，感谢 @zhongying
 * 新增: QueryMethods 增加 COALESCE 函数方法，感谢 @Yang
