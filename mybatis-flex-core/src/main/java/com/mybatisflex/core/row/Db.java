@@ -23,10 +23,11 @@ import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryTable;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.transaction.Propagation;
+import com.mybatisflex.core.transaction.RollbackDecider;
 import com.mybatisflex.core.transaction.TransactionalManager;
 import com.mybatisflex.core.util.CollectionUtil;
-import org.apache.ibatis.session.SqlSessionFactory;
 import com.mybatisflex.core.util.MapUtil;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -469,7 +470,6 @@ public class Db {
     public static <T> int updateEntitiesBatch(Collection<T> entities) {
         return updateEntitiesBatch(entities, RowMapper.DEFAULT_BATCH_SIZE);
     }
-
 
 
     /**
@@ -1160,7 +1160,7 @@ public class Db {
      * 进行事务操作，返回 null 或者 false 或者 抛出异常， 事务回滚
      */
     public static boolean tx(Supplier<Boolean> supplier, Propagation propagation) {
-        Boolean result = TransactionalManager.exec(supplier, propagation, false);
+        Boolean result = TransactionalManager.exec(supplier, propagation, (r, throwable) -> throwable != null || r == null || !r);
         return result != null && result;
     }
 
@@ -1175,7 +1175,22 @@ public class Db {
      * 进行事务操作，和返回结果无关，只有抛出异常时，事务回滚
      */
     public static <T> @Nullable T txWithResult(Supplier<T> supplier, Propagation propagation) {
-        return TransactionalManager.exec(supplier, propagation, true);
+        return TransactionalManager.exec(supplier, propagation, (result, throwable) -> throwable != null);
     }
+
+    /**
+     * 进行事务操作，返回结果，根据 RollbackDecider 判断是否回滚
+     */
+    public static <T> @Nullable T txWithDecider(Supplier<T> supplier, RollbackDecider<T> decider) {
+        return TransactionalManager.exec(supplier, Propagation.REQUIRED, decider);
+    }
+
+    /**
+     * 进行事务操作，返回结果，根据 RollbackDecider 判断是否回滚
+     */
+    public static <T> @Nullable T txWithDecider(Supplier<T> supplier, Propagation propagation, RollbackDecider<T> decider) {
+        return TransactionalManager.exec(supplier, propagation, decider);
+    }
+
 
 }
