@@ -24,16 +24,16 @@ const { Layout } = DefaultTheme
   <Layout>
     <template #doc-before>
       <div style="margin-bottom: 30px">
-        <a href="https://gitee.com/activity/2025opensource?ident=INV9BE" target="_blank">
-          <img src="/assets/images/ad/aiflowy-banner.jpg" />
+        <a href="https://gitee.com/aiflowy/aiflowy" target="_blank">
+          <img src="/assets/images/ad/aiflowy-banner.gif" />
         </a>
       </div>
     </template>
 
     <template #home-features-after>
       <div class="banner-home">
-        <a href="https://gitee.com/activity/2025opensource?ident=INV9BE" target="_blank">
-          <img src="/assets/images/ad/aiflowy-banner.jpg" />
+        <a href="https://gitee.com/aiflowy/aiflowy" target="_blank">
+          <img src="/assets/images/ad/aiflowy-banner.gif" />
         </a>
       </div>
     </template>
