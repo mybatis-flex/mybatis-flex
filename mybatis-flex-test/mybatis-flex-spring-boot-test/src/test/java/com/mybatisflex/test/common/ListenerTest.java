@@ -3,6 +3,7 @@ package com.mybatisflex.test.common;
 import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.core.BaseMapper;
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.mybatis.Mappers;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
@@ -10,6 +11,7 @@ import com.mybatisflex.core.util.CollectionUtil;
 import com.mybatisflex.test.listener.missingListenerFix.*;
 import com.mybatisflex.test.model.AccountMissingListenerTestModel;
 import com.mybatisflex.core.util.MapUtil;
+import com.mybatisflex.test.model.AccountOnLogicDeleteListener;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,6 +40,7 @@ class ListenerTest {
         FlexGlobalConfig config = FlexGlobalConfig.getDefaultConfig();
         config.registerInsertListener(new LogicDeleteInsertListener(), LogicDeleteInsertListenerFlag.class);
         config.registerInsertListener(new AccountAgeInsertListener(), AccountAgeInsertListenerFlag.class);
+        config.registerLogicDeleteListener(new AccountOnLogicDeleteListener(), AccountAgeInsertListenerFlag.class);
 
         //获取TableInfo
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(AccountMissingListenerTestModel.class);
@@ -83,5 +86,21 @@ class ListenerTest {
         expectedData.setDelete(false);
 
         Assertions.assertEquals(expectedData, dbData);
+
+        //逻辑删除
+        baseMapper.deleteById(dbData.getId());
+
+        //预期数据
+        AccountMissingListenerTestModel expectedLogicDeleteData = new AccountMissingListenerTestModel();
+        expectedLogicDeleteData.setId(dbData.getId());
+        expectedLogicDeleteData.setUserName("测试逻辑删除的监听器-userName");
+        expectedLogicDeleteData.setAge(18);
+        expectedLogicDeleteData.setDelete(true);
+
+        LogicDeleteManager.execWithoutLogicDelete(()->{
+            AccountMissingListenerTestModel dbData2 = (AccountMissingListenerTestModel) baseMapper.selectOneById(accountMissingListenerTestModel.getId());
+            Assertions.assertEquals(expectedLogicDeleteData, dbData2);
+        });
+
     }
 }

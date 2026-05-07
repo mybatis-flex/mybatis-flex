@@ -40,6 +40,11 @@ public @interface Table {
     Class<? extends UpdateListener> onUpdate() default NoneListener.class;
 
     /**
+     * 监听 entity 的 logicDelete 行为
+     */
+    Class<? extends LogicDeleteListener> onLogicDelete() default NoneListener.class;
+
+    /**
      * 监听 entity 的查询数据的 set 行为，用户主动 set 不会触发
      */
     Class<? extends SetListener> onSet() default NoneListener.class;
@@ -114,6 +119,14 @@ public class MyInsertListener implements InsertListener {
 也可以用于当前数据的 “权限检查”，比如：更新的数据的用户 id 不是当前登录的用户，则抛出异常，不允许更新等等。
 
 
+## onLogicDelete
+
+使用方式同 onInsert 一致，用于在数据被逻辑删除的时候，设置一些数据。
+
+::: danger 注意
+由于删除大多场景为根据 id 进行删除，所以，在 onLogicDelete 监听中，拿不到当前对象的数据，只能用于设置删除人和删除时间等赋值操作。
+:::
+
 ## onSet
 
 onSet 可以用于配置：查询数据 entity （或者 entity 列表、分页等）时，对 entity 的属性设置的监听，可以用于如下的场景。
@@ -160,12 +173,13 @@ public class MySetListener implements SetListener {
 
 ## 全局设置
 
-除了通过 `@Table` 注解去单独为某一个 Entity 设置 `onInsert`、`onUpdate`、`onSet` 监听以外，我们还可以通过全局的方式去配置，
+除了通过 `@Table` 注解去单独为某一个 Entity 设置 `onInsert`、`onUpdate`、`onLogicDelete`、`onSet` 监听以外，我们还可以通过全局的方式去配置，
 方法如下：
 
 ```java
 MyInsertListener insertListener = new MyInsertListener();
 MyUpdateListener updateListener = new MyUpdateListener();
+MyLogicDeleteListener logicDeleteListener = new MyLogicDeleteListener();
 MySetListener setListener = new MySetListener();
 
 FlexGlobalConfig config = FlexGlobalConfig.getDefaultConfig();
@@ -177,6 +191,9 @@ config.registerInsertListener(insertListener, Entity1.class, Entity2.class);
 //为 Entity1 和 Entity2 注册 updateListener
 config.registerUpdateListener(updateListener, Entity1.class, Entity2.class);
 
+
+//为 Entity1 和 Entity2 注册 logicDeleteListener
+config.registerLogicDeleteListener(logicDeleteListener, Entity1.class, Entity2.class);
 
 //为 Entity1 和 Entity2 注册 setListener
 config.registerSetListener(setListener, Entity1.class, Entity2.class);

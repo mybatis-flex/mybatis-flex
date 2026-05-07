@@ -18,6 +18,7 @@ package com.mybatisflex.core;
 import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Listener;
+import com.mybatisflex.annotation.LogicDeleteListener;
 import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.datasource.DataSourceMissingHandler;
@@ -72,6 +73,7 @@ public class FlexGlobalConfig {
     private Map<Class<?>, List<SetListener>> entitySetListeners = new ConcurrentHashMap<>();
     private Map<Class<?>, List<UpdateListener>> entityUpdateListeners = new ConcurrentHashMap<>();
     private Map<Class<?>, List<InsertListener>> entityInsertListeners = new ConcurrentHashMap<>();
+    private Map<Class<?>, List<LogicDeleteListener>> entityLogicDeleteListeners = new ConcurrentHashMap<>();
 
 
     /**
@@ -194,6 +196,14 @@ public class FlexGlobalConfig {
         this.entityInsertListeners = entityInsertListeners;
     }
 
+    public Map<Class<?>, List<LogicDeleteListener>> getEntityLogicDeleteListeners() {
+        return entityLogicDeleteListeners;
+    }
+
+    public void setEntityLogicDeleteListeners(Map<Class<?>, List<LogicDeleteListener>> entityLogicDeleteListeners) {
+        this.entityLogicDeleteListeners = entityLogicDeleteListeners;
+    }
+
     public void registerSetListener(SetListener listener, Class<?>... classes) {
         for (Class<?> aClass : classes) {
             entitySetListeners.computeIfAbsent(aClass, k -> new ArrayList<>()).add(listener);
@@ -209,6 +219,12 @@ public class FlexGlobalConfig {
     public void registerInsertListener(InsertListener listener, Class<?>... classes) {
         for (Class<?> aClass : classes) {
             entityInsertListeners.computeIfAbsent(aClass, k -> new ArrayList<>()).add(listener);
+        }
+    }
+
+    public void registerLogicDeleteListener(LogicDeleteListener listener, Class<?>... classes) {
+        for (Class<?> aClass : classes) {
+            entityLogicDeleteListeners.computeIfAbsent(aClass, k -> new ArrayList<>()).add(listener);
         }
     }
 
@@ -273,6 +289,22 @@ public class FlexGlobalConfig {
     public List<InsertListener> getSupportedInsertListener(Class<?> entityClass) {
         return this.findSupportedListeners(entityClass, this.entityInsertListeners);
     }
+
+    /**
+     * 获取支持该 {@code entityClass} 的logicDelete监听器
+     * <p>当registerClass是entityClass的本身或其超类时，则视为支持</p>
+     *
+     * @param entityClass 实体class
+     * @return LogicDeleteListener
+     */
+    public List<LogicDeleteListener> getSupportedLogicDeleteListener(Class<?> entityClass) {
+        return this.findSupportedListeners(entityClass, this.entityLogicDeleteListeners);
+    }
+
+    public List<LogicDeleteListener> getLogicDeleteListener(Class<?> entityClass) {
+        return entityLogicDeleteListeners.get(entityClass);
+    }
+
 
     public Object getNormalValueOfLogicDelete() {
         return normalValueOfLogicDelete;
