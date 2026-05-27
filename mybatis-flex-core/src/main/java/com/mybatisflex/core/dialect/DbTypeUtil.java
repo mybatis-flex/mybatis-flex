@@ -248,7 +248,7 @@ public class DbTypeUtil {
             return DbType.SUNDB;
         } else if (jdbcUrl.contains(":sybase:")) {
             return DbType.SYBASE;
-        } else if (jdbcUrl.contains(":taos:") || jdbcUrl.contains(":taos-rs:")) {
+        } else if (jdbcUrl.contains(":taos:") || jdbcUrl.contains(":taos-rs:")  || jdbcUrl.contains(":taos-ws:")) {
             return DbType.TDENGINE;
         } else if (jdbcUrl.contains(":trino:")) {
             return DbType.TRINO;
