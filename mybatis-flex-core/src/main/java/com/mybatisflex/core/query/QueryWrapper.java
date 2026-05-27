@@ -2678,6 +2678,14 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         return SqlUtil.replaceSqlParams(sql, getAllValueArray());
     }
 
+    public String toSQL(DbType dbType){
+        DbType oldDbType = DialectFactory.getHintDbType();
+        DialectFactory.setHintDbType(dbType);
+        String sql = DialectFactory.getDialect().forSelectByQuery(this);
+        DialectFactory.setHintDbType(oldDbType);
+        return SqlUtil.replaceSqlParams(sql, getAllValueArray());
+    }
+    
     @Override
     public QueryWrapper clone() {
         return super.clone();
