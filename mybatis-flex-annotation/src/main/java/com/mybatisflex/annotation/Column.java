@@ -91,4 +91,13 @@ public @interface Column {
      */
     String comment() default "";
 
+    /**
+     * 该字段是否参与insert设置值的操作(不影响where)
+     */
+    boolean insertable() default true;
+
+    /**
+     * 该字段是否参与update设置值的操作(不影响where)
+     */
+    boolean updatable() default true;
 }
