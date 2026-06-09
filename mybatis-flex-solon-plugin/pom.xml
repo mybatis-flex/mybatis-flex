@@ -32,13 +32,6 @@
             <artifactId>mybatis-flex-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.noear</groupId>
-            <artifactId>solon-aot</artifactId>
-            <version>${solon.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
 </project>

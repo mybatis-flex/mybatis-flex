@@ -24,6 +24,7 @@ import org.noear.solon.annotation.Configuration;
 import org.noear.solon.annotation.Inject;
 import org.noear.solon.core.AppContext;
 import org.noear.solon.core.event.EventBus;
+import org.noear.solon.core.util.ClassUtil;
 import org.noear.solon.core.util.ResourceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,7 +125,7 @@ public class MybatisFlexAutoConfiguration {
             Class<?> typeAliasesSuperType = flexProperties.getTypeAliasesSuperType();
             for (String val : flexProperties.getTypeAliasesPackage()) {
                 //package || type class，转为类表达式
-                for (Class<?> clz : ResourceUtil.scanClasses(appContext.getClassLoader(), val)) {
+                for (Class<?> clz : ClassUtil.scanClasses(appContext.getClassLoader(), val)) {
                     if (isTypeAliases(clz, typeAliasesSuperType)) {
                         flexConfiguration.getTypeAliasRegistry().registerAlias(clz);
                     }
@@ -134,7 +135,7 @@ public class MybatisFlexAutoConfiguration {
 
         if (isNotEmpty(flexProperties.getTypeHandlersPackage())) {
             for (String val : flexProperties.getTypeHandlersPackage()) {
-                for (Class<?> clz : ResourceUtil.scanClasses(appContext.getClassLoader(), val)) {
+                for (Class<?> clz : ClassUtil.scanClasses(appContext.getClassLoader(), val)) {
                     if (TypeHandler.class.isAssignableFrom(clz)) {
                         flexConfiguration.getTypeHandlerRegistry().register(clz);
                     }
@@ -151,7 +152,7 @@ public class MybatisFlexAutoConfiguration {
                     }
                 } else {
                     //package || type class，转为类表达式
-                    for (Class<?> clz : ResourceUtil.scanClasses(appContext.getClassLoader(), val)) {
+                    for (Class<?> clz : ClassUtil.scanClasses(appContext.getClassLoader(), val)) {
                         if (clz.isInterface()) {
                             //no mapperVerifyEnabled ...
                             flexConfiguration.addMapper(clz);

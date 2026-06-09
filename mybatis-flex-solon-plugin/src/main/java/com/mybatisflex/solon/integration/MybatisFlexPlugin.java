@@ -29,14 +29,10 @@ import com.mybatisflex.core.tenant.TenantManager;
 import com.mybatisflex.solon.MybatisFlexAutoConfiguration;
 import com.mybatisflex.solon.MybatisFlexProperties;
 import com.mybatisflex.solon.annotation.UseDataSourceInterceptor;
-import com.mybatisflex.solon.aot.MybatisRuntimeNativeRegistrar;
 import org.noear.solon.Utils;
-import org.noear.solon.aot.RuntimeNativeRegistrar;
 import org.noear.solon.core.AppContext;
 import org.noear.solon.core.BeanWrap;
 import org.noear.solon.core.Plugin;
-import org.noear.solon.core.runtime.NativeDetector;
-import org.noear.solon.core.util.ClassUtil;
 
 import javax.sql.DataSource;
 import java.util.Map;
@@ -66,7 +62,7 @@ public class MybatisFlexPlugin implements Plugin {
                 if (bw.typed()) {
                     context.putWrap(DataSource.class, bw);
                 }
-                context.wrapPublish(bw);
+                context.beanPublish(bw);
             }
         }
 
@@ -102,11 +98,6 @@ public class MybatisFlexPlugin implements Plugin {
         context.subWrapsOfType(DataSource.class, bw -> {
             loadDs(context, bw);
         });
-
-        // aot
-        if (NativeDetector.isAotRuntime() && ClassUtil.hasClass(() -> RuntimeNativeRegistrar.class)) {
-            context.wrapAndPut(MybatisRuntimeNativeRegistrar.class);
-        }
     }
 
     private AtomicBoolean initialized = new AtomicBoolean(false);
