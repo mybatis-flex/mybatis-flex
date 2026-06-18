@@ -52,11 +52,14 @@ public class EnumWrapper<E extends Enum<E>> {
 
         if (hasEnumValueAnnotation) {
             String getterMethodName = "get" + StringUtil.firstCharToUpperCase(enumValueField.getName());
+            Method getter = ClassUtil.getFirstMethod(enumClass,
+                method -> method.getName().equals(getterMethodName) && Modifier.isPublic(method.getModifiers()));
 
-            Method getter = ClassUtil.getFirstMethod(enumClass, method -> {
-                String methodName = method.getName();
-                return methodName.equals(getterMethodName) && Modifier.isPublic(method.getModifiers());
-            });
+            if (getter == null) {
+                String fluentGetterMethodName = enumValueField.getName();
+                getter = ClassUtil.getFirstMethod(enumClass,
+                    method -> method.getName().equals(fluentGetterMethodName) && Modifier.isPublic(method.getModifiers()));
+            }
 
             propertyType = ClassUtil.getWrapType(enumValueField.getType());
 
@@ -75,12 +78,11 @@ public class EnumWrapper<E extends Enum<E>> {
             Method enumValueMethod = ClassUtil.getFirstMethodByAnnotation(enumClass, EnumValue.class);
             if (enumValueMethod != null) {
                 String methodName = enumValueMethod.getName();
-                if (!(methodName.startsWith("get") && methodName.length() > 3)) {
-                    throw new IllegalStateException("Can not find get method \"" + methodName + "()\" in enum: " + enumClass.getName());
-                }
-
                 String enumValueFieldName;
                 if (methodName.startsWith("get")) {
+                    if (methodName.length() == 3) {
+                        throw new IllegalStateException("Can not find get method \"" + methodName + "()\" in enum: " + enumClass.getName());
+                    }
                     enumValueFieldName = StringUtil.firstCharToLowerCase(enumValueMethod.getName().substring(3));
                 } else {
                     enumValueFieldName = enumValueMethod.getName().toLowerCase();
@@ -129,7 +131,7 @@ public class EnumWrapper<E extends Enum<E>> {
             } else if (property != null) {
                 return property.get(object);
             } else {
-                //noinspection unchecked
+                // noinspection unchecked
                 return ((E) object).name();
             }
         } catch (Exception e) {
