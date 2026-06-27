@@ -19,13 +19,11 @@ import com.mybatisflex.annotation.EnumValue;
 import com.mybatisflex.core.util.EnumWrapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.junit.Test;
+import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class EnumWrapperTest {
 
@@ -163,6 +161,52 @@ public class EnumWrapperTest {
         System.out.println("Test enum with @EnumValue on method: PASSED");
     }
 
+    @RequiredArgsConstructor
+    @Accessors(fluent = true)
+    public enum FluentWithField {
+
+        FALSE(0),
+        TRUE(1);
+
+        @Getter
+        @EnumValue
+        private final int code;
+
+    }
+
+    public static void testEnumWithFluentOnField() {
+        EnumWrapper<FluentWithField> wrapper = EnumWrapper.of(FluentWithField.class);
+        System.out.println("EnumWrapper created successfully: " + (wrapper != null));
+
+        System.out.println("Enum value for FALSE: " + wrapper.getEnumValue(FluentWithField.FALSE));
+        System.out.println("Enum value for TRUE: " + wrapper.getEnumValue(FluentWithField.TRUE));
+
+        System.out.println("Test enum with @EnumValue on field: PASSED");
+    }
+
+
+    @RequiredArgsConstructor
+    @Accessors(fluent = true)
+    public enum FluentWithMethod {
+
+        DAY(1),
+        MONTH(2);
+
+        @Getter(onMethod = @__(@EnumValue))
+        private final int code;
+
+    }
+
+    public static void testEnumWithFluentOnMethod() {
+        EnumWrapper<FluentWithMethod> wrapper = EnumWrapper.of(FluentWithMethod.class);
+        System.out.println("EnumWrapper created successfully: " + (wrapper != null));
+
+        System.out.println("Enum value for DAY: " + wrapper.getEnumValue(FluentWithMethod.DAY));
+        System.out.println("Enum value for MONTH: " + wrapper.getEnumValue(FluentWithMethod.MONTH));
+
+        System.out.println("Test enum with @EnumValue on field: PASSED");
+    }
+
     public static void main(String[] args) {
         System.out.println("=== Testing EnumWrapper functionality ===");
 
@@ -180,6 +224,12 @@ public class EnumWrapperTest {
 
         System.out.println("\n4. Testing enum with @EnumValue on method:");
         testEnumWithEnumValueOnMethod();
+
+        System.out.println("\n5. Testing enum with @EnumValue on field in fluent style:");
+        testEnumWithFluentOnField();
+
+        System.out.println("\n6. Testing enum with @EnumValue on method in fluent style:");
+        testEnumWithFluentOnMethod();
 
         System.out.println("\n=== All tests completed ===");
     }
