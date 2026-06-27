@@ -88,6 +88,16 @@ public class ColumnInfo {
      */
     protected boolean ignore;
 
+    /**
+     * 该字段是否参与 insert 设置值的操作（不影响 where）
+     */
+    protected boolean insertable = true;
+
+    /**
+     * 该字段是否参与 update 设置值的操作（不影响 where）
+     */
+    protected boolean updatable = true;
+
 
     public String getColumn() {
         return column;
@@ -190,5 +200,21 @@ public class ColumnInfo {
 
     public void setIgnore(boolean ignore) {
         this.ignore = ignore;
+    }
+
+    public boolean isInsertable() {
+        return insertable;
+    }
+
+    public void setInsertable(boolean insertable) {
+        this.insertable = insertable;
+    }
+
+    public boolean isUpdatable() {
+        return updatable;
+    }
+
+    public void setUpdatable(boolean updatable) {
+        this.updatable = updatable;
     }
 }

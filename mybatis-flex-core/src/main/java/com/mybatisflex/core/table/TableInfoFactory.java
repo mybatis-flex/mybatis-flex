@@ -259,6 +259,8 @@ public class TableInfoFactory {
                     tableInfo.setOnSetListeners(refTableInfo.getOnSetListeners());
                     tableInfo.setOnInsertColumns(refTableInfo.getOnInsertColumns());
                     tableInfo.setOnUpdateListeners(refTableInfo.getOnUpdateListeners());
+                    tableInfo.setNotInsertableColumns(refTableInfo.getNotInsertableColumns());
+                    tableInfo.setNotUpdatableColumns(refTableInfo.getNotUpdatableColumns());
                 }
             } else {
                 // 默认为类名转驼峰下划线
@@ -463,6 +465,11 @@ public class TableInfoFactory {
             columnInfo.setProperty(field.getName());
             columnInfo.setPropertyType(fieldType);
             columnInfo.setIgnore(columnAnnotation != null && columnAnnotation.ignore());
+
+            if (columnAnnotation != null) {
+                columnInfo.setInsertable(columnAnnotation.insertable());
+                columnInfo.setUpdatable(columnAnnotation.updatable());
+            }
 
             if (columnAnnotation != null) {
                 columnInfo.setComment(columnAnnotation.comment());
