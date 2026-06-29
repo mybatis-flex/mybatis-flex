@@ -178,6 +178,9 @@ public class StringUtil {
     }
 
 
+    /**
+     * 所有字符串有内容时返回 true
+     */
     public static boolean allHasText(String... strings) {
         for (String string : strings) {
             if (!hasText(string)) {
@@ -188,18 +191,51 @@ public class StringUtil {
     }
 
     /**
+     * 任意字符串有内容时返回 true
+     */
+    public static boolean anyHasText(String... strings) {
+        for (String string : strings) {
+            if (hasText(string)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 字符串为 null 或者内部字符全部为 ' ', '\t', '\n', '\r' 这四类字符时返回 true
      */
     public static boolean noText(String string) {
         return !hasText(string);
     }
 
+    /**
+     * 只要有一个有内容，返回 false， 所有都没有内容时返回 true
+     */
+    public static boolean allNoText(String... strings) {
+        for (String string : strings) {
+            if (hasText(string)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 只要有一个没内容，返回 true，所有都有内容时返回 false
+     */
+    public static boolean anyNoText(String... strings) {
+        for (String string : strings) {
+            if (noText(string)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * 这个字符串是否是全是数字
-     *
-     * @param string
-     * @return 全部数数值时返回 true，否则返回 false
      */
     public static boolean isNumeric(String string) {
         if (noText(string)) {
