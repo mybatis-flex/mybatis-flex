@@ -509,17 +509,37 @@ public class TableInfo {
 
         List<Object> values = new ArrayList<>();
         for (String insertColumn : insertColumns) {
-            if (onInsertColumns == null || !onInsertColumns.containsKey(insertColumn)) {
-                if (rawValueMap.containsKey(insertColumn)) {
-                    values.addAll(Arrays.asList(rawValueMap.remove(insertColumn).getParams()));
-                    continue;
+//            if (onInsertColumns == null || !onInsertColumns.containsKey(insertColumn)) {
+//                if (rawValueMap.containsKey(insertColumn)) {
+//                    values.addAll(Arrays.asList(rawValueMap.remove(insertColumn).getParams()));
+//                    continue;
+//                }
+//                Object value = buildColumnSqlArg(metaObject, insertColumn);
+//                if (ignoreNulls && value == null) {
+//                    continue;
+//                }
+//                values.add(value);
+//            }
+            if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
+                String onInsertValue = onInsertColumns.get(insertColumn);
+                if (onInsertValue.contains("?")) {
+                    Object value = buildColumnSqlArg(metaObject, insertColumn);
+                    if (ignoreNulls && value == null) {
+                        continue;
+                    }
+                    values.add(value);
                 }
-                Object value = buildColumnSqlArg(metaObject, insertColumn);
-                if (ignoreNulls && value == null) {
-                    continue;
-                }
-                values.add(value);
+                continue;
             }
+            if (rawValueMap.containsKey(insertColumn)) {
+                values.addAll(Arrays.asList(rawValueMap.remove(insertColumn).getParams()));
+                continue;
+            }
+            Object value = buildColumnSqlArg(metaObject, insertColumn);
+            if (ignoreNulls && value == null) {
+                continue;
+            }
+            values.add(value);
         }
         values.addAll(rawValueMap.values()
             .stream()
@@ -568,13 +588,29 @@ public class TableInfo {
 
         List<Object> values = new ArrayList<>(insertColumns.length);
         for (String insertColumn : insertColumns) {
-            if (onInsertColumns == null || !onInsertColumns.containsKey(insertColumn)) {
-                Object value = buildColumnSqlArg(metaObject, insertColumn);
-                if (ignoreNulls && value == null) {
-                    continue;
+//            if (onInsertColumns == null || !onInsertColumns.containsKey(insertColumn)) {
+//                Object value = buildColumnSqlArg(metaObject, insertColumn);
+//                if (ignoreNulls && value == null) {
+//                    continue;
+//                }
+//                values.add(value);
+//            }
+            if (onInsertColumns != null && onInsertColumns.containsKey(insertColumn)) {
+                String onInsertValue = onInsertColumns.get(insertColumn);
+                if (onInsertValue.contains("?")) {
+                    Object value = buildColumnSqlArg(metaObject, insertColumn);
+                    if (ignoreNulls && value == null) {
+                        continue;
+                    }
+                    values.add(value);
                 }
-                values.add(value);
+                continue;
             }
+            Object value = buildColumnSqlArg(metaObject, insertColumn);
+            if (ignoreNulls && value == null) {
+                continue;
+            }
+            values.add(value);
         }
         return values.toArray();
     }
@@ -682,12 +718,12 @@ public class TableInfo {
                 }
 
                 // 忽略租户字段时 不要过滤租户字段
-                if(isIgnoreTenantCondition){
+                if (isIgnoreTenantCondition) {
                     if (Objects.equals(column, versionColumn)) {
                         continue;
                     }
                     // 过滤乐观锁字段 和 租户字段
-                }else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
+                } else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 
@@ -716,12 +752,12 @@ public class TableInfo {
                 }
 
                 // 忽略租户字段时 不要过滤租户字段
-                if(isIgnoreTenantCondition){
+                if (isIgnoreTenantCondition) {
                     if (Objects.equals(column, versionColumn)) {
                         continue;
                     }
                     // 过滤乐观锁字段 和 租户字段
-                }else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
+                } else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 
@@ -756,7 +792,10 @@ public class TableInfo {
                 String column = getColumnByProperty(property);
 
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
-                    continue;
+                    String onUpdateValue = onUpdateColumns.get(column);
+                    if (!onUpdateValue.contains("?")) {
+                        continue;
+                    }
                 }
 
                 if (ArrayUtil.contains(notUpdatableColumns, column)) {
@@ -764,12 +803,12 @@ public class TableInfo {
                 }
 
                 // 忽略租户字段时 不要过滤租户字段
-                if(isIgnoreTenantCondition){
+                if (isIgnoreTenantCondition) {
                     if (Objects.equals(column, versionColumn)) {
                         continue;
                     }
                     // 过滤乐观锁字段 和 租户字段
-                }else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
+                } else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 
@@ -813,7 +852,10 @@ public class TableInfo {
 
             for (String column : this.columns) {
                 if (onUpdateColumns != null && onUpdateColumns.containsKey(column)) {
-                    continue;
+                    String onUpdateValue = onUpdateColumns.get(column);
+                    if (!onUpdateValue.contains("?")) {
+                        continue;
+                    }
                 }
 
                 if (ArrayUtil.contains(notUpdatableColumns, column)) {
@@ -821,12 +863,12 @@ public class TableInfo {
                 }
 
                 // 忽略租户字段时 不要过滤租户字段
-                if(isIgnoreTenantCondition){
+                if (isIgnoreTenantCondition) {
                     if (Objects.equals(column, versionColumn)) {
                         continue;
                     }
                     // 过滤乐观锁字段 和 租户字段
-                }else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
+                } else if (ObjectUtil.equalsAny(column, versionColumn, tenantIdColumn)) {
                     continue;
                 }
 
