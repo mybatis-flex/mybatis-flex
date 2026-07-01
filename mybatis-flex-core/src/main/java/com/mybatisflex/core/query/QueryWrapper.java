@@ -19,24 +19,14 @@ import com.mybatisflex.core.FlexConsts;
 import com.mybatisflex.core.constant.SqlConnector;
 import com.mybatisflex.core.constant.SqlConsts;
 import com.mybatisflex.core.constant.SqlOperator;
+import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
-import com.mybatisflex.core.util.ArrayUtil;
-import com.mybatisflex.core.util.ClassUtil;
-import com.mybatisflex.core.util.CollectionUtil;
-import com.mybatisflex.core.util.LambdaGetter;
-import com.mybatisflex.core.util.LambdaUtil;
-import com.mybatisflex.core.util.SqlUtil;
-import com.mybatisflex.core.util.StringUtil;
+import com.mybatisflex.core.util.*;
 import org.jspecify.annotations.NonNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -2685,7 +2675,7 @@ public class QueryWrapper extends BaseQueryWrapper<QueryWrapper> {
         DialectFactory.setHintDbType(oldDbType);
         return SqlUtil.replaceSqlParams(sql, getAllValueArray());
     }
-    
+
     @Override
     public QueryWrapper clone() {
         return super.clone();

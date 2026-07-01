@@ -2,6 +2,14 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## v1.11.8 20260701
+- 新增: @EnumValue 注解支持标注在以 fluent 风格命名的非 get 开头的方法上 lixiangxiang
+- 优化： mybatis-flex-solon-plugin：solon 升为 3.1.1，替换弃用工具方法，移除 aot 适配代码（不成熟）
+- 新增: 让 @Column的onInsertValue和onUpdateValue支持拼接数据库函数 折翼仍飛
+- 优化：数据库类型适配支持 tdengine 的 websocket 连接方式 cb198811
+- 优化 QueryWrapper 生成 sql 可指定数据库类型生成 cb198811
+
+
 ## v1.11.7 20260504
 - feat(transaction): 在 Db.tx 事务管理中，新增 txWithDecider 方法，用于自定义 Rollback 逻辑
 - fix: 修复flex原生关联查询未处理schema
