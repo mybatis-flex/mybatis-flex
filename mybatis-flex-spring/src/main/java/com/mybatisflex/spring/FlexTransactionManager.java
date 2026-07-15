@@ -19,8 +19,10 @@ import com.mybatisflex.core.transaction.TransactionContext;
 import com.mybatisflex.core.transaction.TransactionalManager;
 import com.mybatisflex.core.util.StringUtil;
 import org.springframework.jdbc.datasource.JdbcTransactionObjectSupport;
+import org.springframework.transaction.NestedTransactionNotSupportedException;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 
@@ -31,9 +33,15 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
  */
 public class FlexTransactionManager extends AbstractPlatformTransactionManager {
 
+    public FlexTransactionManager() {
+        setNestedTransactionAllowed(true);
+    }
+
     @Override
     protected Object doGetTransaction() throws TransactionException {
-        return new TransactionObject(TransactionContext.getXID());
+        TransactionObject transactionObject = new TransactionObject(TransactionContext.getXID());
+        transactionObject.setSavepointAllowed(isNestedTransactionAllowed());
+        return transactionObject;
     }
 
     @Override
@@ -102,6 +110,33 @@ public class FlexTransactionManager extends AbstractPlatformTransactionManager {
             this.prevXid = prevXid;
         }
 
+        @Override
+        public Object createSavepoint() throws TransactionException {
+            try {
+                return TransactionalManager.createSavepoint(getXidForSavepoint());
+            } catch (com.mybatisflex.core.transaction.TransactionException e) {
+                throw new TransactionSystemException("Could not create MyBatis-Flex savepoint", e);
+            }
+        }
+
+        @Override
+        public void rollbackToSavepoint(Object savepoint) throws TransactionException {
+            try {
+                TransactionalManager.rollbackToSavepoint(getXidForSavepoint(), savepoint);
+            } catch (com.mybatisflex.core.transaction.TransactionException e) {
+                throw new TransactionSystemException("Could not roll back MyBatis-Flex savepoint", e);
+            }
+        }
+
+        @Override
+        public void releaseSavepoint(Object savepoint) throws TransactionException {
+            try {
+                TransactionalManager.releaseSavepoint(getXidForSavepoint(), savepoint);
+            } catch (com.mybatisflex.core.transaction.TransactionException e) {
+                throw new TransactionSystemException("Could not release MyBatis-Flex savepoint", e);
+            }
+        }
+
         public void setRollbackOnly() {
             ROLLBACK_ONLY_XIDS.set(prevXid);
         }
@@ -113,6 +148,17 @@ public class FlexTransactionManager extends AbstractPlatformTransactionManager {
         @Override
         public boolean isRollbackOnly() {
             return currentXid != null && currentXid.equals(ROLLBACK_ONLY_XIDS.get());
+        }
+
+        private String getXid() {
+            return currentXid != null ? currentXid : prevXid;
+        }
+
+        private String getXidForSavepoint() {
+            if (!isSavepointAllowed()) {
+                throw new NestedTransactionNotSupportedException("Transaction manager does not allow nested transactions");
+            }
+            return getXid();
         }
     }
 
