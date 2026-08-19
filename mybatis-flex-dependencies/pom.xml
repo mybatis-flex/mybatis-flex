@@ -84,6 +84,11 @@
             </dependency>
             <dependency>
                 <groupId>com.mybatis-flex</groupId>
+                <artifactId>mybatis-flex-jackson3</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mybatis-flex</groupId>
                 <artifactId>mybatis-flex-spring</artifactId>
                 <version>${project.version}</version>
             </dependency>
