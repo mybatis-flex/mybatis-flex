@@ -65,6 +65,7 @@ import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
@@ -377,6 +378,17 @@ public class TableInfo {
 
     public List<ColumnInfo> getColumnInfoList() {
         return columnInfoList;
+    }
+
+    /**
+     * 根据数据库列名获取其对应的 {@link ColumnInfo}。
+     *
+     * @param column 数据库列名
+     * @return 列信息，实体类中没有该列时返回 {@code null}
+     * @since 1.11.9
+     */
+    public @Nullable ColumnInfo getColumnInfo(@Nullable String column) {
+        return column == null ? null : columnInfoMapping.get(column);
     }
 
     public String getColumnByProperty(String property) {

@@ -272,6 +272,40 @@ mybatis-flex 内置的扩展 typeHandler 还有：
 
 当然，我们也可以写一个自己的类，实现 `TypeHandler` 接口，然后通过 `@Column(typeHandler = YourHandler.class)` 注释给需要的字段。
 
+### 条件参数 <Badge type="tip" text="^ v1.11.9" />
+
+从 v1.11.9 开始，`QueryWrapper` 构建条件时，参数也会应用该列配置的 typeHandler，与 insert、update 的行为保持一致。
+
+以字段加密的场景为例，`certNo` 在数据库中存放的是密文：
+
+```java
+@Column(typeHandler = CipherTypeHandler.class)
+private String certNo;
+```
+
+此时，我们直接使用明文构建条件即可，参数会由 `CipherTypeHandler` 加密后再传给数据库：
+
+```java
+QueryWrapper qw = QueryWrapper.create()
+    .from(ACCOUNT)
+    .where(ACCOUNT.CERT_NO.eq("110101199001011234"));
+```
+
+::: tip 提示
+在 v1.11.9 之前，条件参数不会应用列上的 typeHandler，因此上述场景需要开发者自行加密后再构建条件。
+若原有代码已经这样处理，升级后应关闭该行为，避免参数被处理两次：
+
+```java
+QueryColumnBehavior.setApplyConditionTypeHandler(false);
+```
+:::
+
+由于以下几种情况的参数无法与实体类的字段对应，MyBatis-Flex 不会为其应用 typeHandler：
+
+- `like`、`notLike` 条件，其参数是拼接了 `%` 的片段，而非该字段的完整值；
+- 函数列、原生列、子查询列等没有明确的实体类字段与之对应的列；
+- 参数类型与实体类的属性类型不匹配。
+
 ## 全局配置
 
 在某些场景下，我们的 entity 可能会有通用的字段以及配置，这种场景如果我们要为每个 entity 去设置，这会相对麻烦。

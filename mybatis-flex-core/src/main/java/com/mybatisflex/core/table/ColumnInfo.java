@@ -185,6 +185,15 @@ public class ColumnInfo {
         this.typeHandler = typeHandler;
     }
 
+    /**
+     * 该列是否配置了自定义的类型处理器，即 {@code @Column(typeHandler = ...)}。
+     *
+     * @since 1.11.9
+     */
+    public boolean hasCustomTypeHandler() {
+        return typeHandler != null;
+    }
+
     public String getMaskType() {
         return maskType;
     }
