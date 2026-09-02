@@ -24,6 +24,7 @@ import com.mybatisflex.core.exception.FlexExceptions;
 import com.mybatisflex.core.field.FieldQuery;
 import com.mybatisflex.core.field.FieldQueryBuilder;
 import com.mybatisflex.core.field.FieldQueryManager;
+import com.mybatisflex.core.mybatis.TypeHandlerObject;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.*;
 import com.mybatisflex.core.relation.RelationManager;
@@ -31,6 +32,7 @@ import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
+import org.apache.ibatis.type.TypeHandler;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -366,9 +368,11 @@ public class MapperUtil {
     }
 
 
-    private static void preparedQueryWrapper(Map<String, Object> params, QueryWrapper queryWrapper) {
+    static void preparedQueryWrapper(Map<String, Object> params, QueryWrapper queryWrapper) {
         String sql = DialectFactory.getDialect().buildNoSelectSql(queryWrapper);
         StringBuilder sqlBuilder = new StringBuilder();
+        // 每个 #{} 表达式在 sqlBuilder 中的起始位置
+        List<Integer> placeholderIndexes = new ArrayList<>();
         char quote = 0;
         int index = 0;
         for (int i = 0; i < sql.length(); ++i) {
@@ -387,16 +391,37 @@ public class MapperUtil {
                 }
             }
             if (quote == 0 && ch == '?') {
+                placeholderIndexes.add(sqlBuilder.length());
                 sqlBuilder.append("#{qwParams_").append(index++).append("}");
             } else {
                 sqlBuilder.append(ch);
             }
         }
-        params.put("qwSql", sqlBuilder.toString());
+
         Object[] valueArray = CPI.getValueArray(queryWrapper);
         for (int i = 0; i < valueArray.length; i++) {
-            params.put("qwParams_" + i, valueArray[i]);
+            Object value = valueArray[i];
+            // 此处的参数是通过 #{} 表达式设置的，而非 SqlArgsParameterHandler，
+            // 因此需要还原出未处理的原始值，并把列上配置的类型处理器写入表达式中
+            if (value instanceof TypeHandlerObject) {
+                value = ((TypeHandlerObject) value).getValue();
+            }
+            params.put("qwParams_" + i, value);
         }
+
+        // 表达式追加 typeHandler 属性后长度会变化，因此从后往前处理，避免影响其余表达式的位置
+        for (int i = Math.min(valueArray.length, placeholderIndexes.size()) - 1; i >= 0; i--) {
+            if (!(valueArray[i] instanceof TypeHandlerObject)) {
+                continue;
+            }
+            TypeHandler<?> typeHandler = ((TypeHandlerObject) valueArray[i]).getTypeHandler();
+            int end = sqlBuilder.indexOf("}", placeholderIndexes.get(i));
+            if (end > 0) {
+                sqlBuilder.insert(end, ", typeHandler=" + ClassUtil.getUsefulClass(typeHandler.getClass()).getName());
+            }
+        }
+
+        params.put("qwSql", sqlBuilder.toString());
     }
 
 }

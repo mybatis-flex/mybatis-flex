@@ -101,6 +101,11 @@ public class QueryColumnBehavior {
      */
     private static boolean smartConvertBetweenToLeOrGe = true;
 
+    /**
+     * 构建条件参数时，是否应用实体类 {@code @Column(typeHandler = ...)} 配置的类型处理器。
+     */
+    private static boolean applyConditionTypeHandler = true;
+
     public static Predicate<Object> getIgnoreFunction() {
         return ignoreFunction;
     }
@@ -123,6 +128,27 @@ public class QueryColumnBehavior {
 
     public static void setSmartConvertBetweenToLeOrGe(boolean smartConvertBetweenToLeOrGe) {
         QueryColumnBehavior.smartConvertBetweenToLeOrGe = smartConvertBetweenToLeOrGe;
+    }
+
+    /**
+     * 构建条件参数时，是否应用实体类 {@code @Column(typeHandler = ...)} 配置的类型处理器。
+     *
+     * @since 1.11.9
+     */
+    public static boolean isApplyConditionTypeHandler() {
+        return applyConditionTypeHandler;
+    }
+
+    /**
+     * 设置构建条件参数时，是否应用实体类 {@code @Column(typeHandler = ...)} 配置的类型处理器。
+     *
+     * <p>默认为 {@code true}。若原有代码已在构建条件前自行使用类型处理器处理过参数
+     * （例如字段加密场景下手动加密条件参数），则应将其关闭，避免参数被处理两次。
+     *
+     * @since 1.11.9
+     */
+    public static void setApplyConditionTypeHandler(boolean applyConditionTypeHandler) {
+        QueryColumnBehavior.applyConditionTypeHandler = applyConditionTypeHandler;
     }
 
     static boolean shouldIgnoreValue(Object value) {

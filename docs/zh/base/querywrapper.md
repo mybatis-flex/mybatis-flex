@@ -1316,6 +1316,14 @@ System.out.println(qw.toSQL());
 select * from tb_account where id = 1;
 ```
 
+另外，构建条件时，参数会应用该列 `@Column(typeHandler = ...)` 配置的类型处理器（<Badge type="tip" text="^ v1.11.9" />），
+若原有代码已在构建条件前自行处理过参数（例如字段加密场景下手动加密条件参数），则应将其关闭，避免参数被处理两次：
+
+```java
+QueryColumnBehavior.setApplyConditionTypeHandler(false);
+```
+
+更多内容请参考 [@Column 注解的使用](../core/column.md#条件参数)。
 
 
 ## 存在疑问？
