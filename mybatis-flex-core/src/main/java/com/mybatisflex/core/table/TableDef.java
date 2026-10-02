@@ -56,7 +56,7 @@ public class TableDef extends QueryTable {
     }
 
     public TableDef as(String alias) {
-        String key = getNameWithSchema() + "." + alias;
+        String key = getClass().getName() + "." + getNameWithSchema() + "." + alias;
         return getCache(key, k -> new TableDef(this.schema, this.name, alias));
     }
 
