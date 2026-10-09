@@ -27,6 +27,12 @@ public class KeyGenerators {
     public static final String uuid = "uuid";
 
     /**
+     * UUIDv7 主键生成器
+     * {@link com.mybatisflex.core.keygen.impl.UUIDv7KeyGenerator}
+     */
+    public static final String uuidv7 = "uuidv7";
+
+    /**
      * flexId 主键生成器
      * {@link com.mybatisflex.core.keygen.impl.FlexIDKeyGenerator}
      */
