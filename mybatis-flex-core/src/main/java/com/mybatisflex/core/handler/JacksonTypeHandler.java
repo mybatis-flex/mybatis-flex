@@ -15,12 +15,11 @@
  */
 package com.mybatisflex.core.handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybatisflex.core.exception.FlexExceptions;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.json.JsonMapper;
 
-import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -28,7 +27,7 @@ import java.util.Collection;
  */
 public class JacksonTypeHandler extends BaseJsonTypeHandler<Object> {
 
-    private static ObjectMapper objectMapper;
+    private static JsonMapper objectMapper;
     private final Class<?> propertyType;
     private Class<?> genericType;
     private JavaType javaType;
@@ -50,7 +49,7 @@ public class JacksonTypeHandler extends BaseJsonTypeHandler<Object> {
             } else {
                 return getObjectMapper().readValue(json, propertyType);
             }
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw FlexExceptions.wrap(e, "Can not parseJson by JacksonTypeHandler: " + json);
         }
     }
@@ -59,27 +58,27 @@ public class JacksonTypeHandler extends BaseJsonTypeHandler<Object> {
     protected String toJson(Object object) {
         try {
             return getObjectMapper().writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw FlexExceptions.wrap(e, "Can not convert object to Json by JacksonTypeHandler: " + object);
         }
     }
 
-
+    @SuppressWarnings("unchecked")
     public JavaType getJavaType() {
-        if (javaType == null){
+        if (javaType == null) {
             javaType = getObjectMapper().getTypeFactory().constructCollectionType((Class<? extends Collection>) propertyType, genericType);
         }
         return javaType;
     }
 
-    public static ObjectMapper getObjectMapper() {
+    public static JsonMapper getObjectMapper() {
         if (null == objectMapper) {
-            objectMapper = new ObjectMapper();
+            objectMapper = JsonMapper.builder().build();
         }
         return objectMapper;
     }
 
-    public static void setObjectMapper(ObjectMapper objectMapper) {
+    public static void setObjectMapper(JsonMapper objectMapper) {
         JacksonTypeHandler.objectMapper = objectMapper;
     }
 
