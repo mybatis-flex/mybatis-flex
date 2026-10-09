@@ -267,8 +267,28 @@ mybatis-flex 内置的扩展 typeHandler 还有：
 
 - FastjsonTypeHandler
 - GsonTypeHandler
-- JacksonTypeHandler
+- JacksonTypeHandler（Jackson 2，`com.fasterxml.jackson`，位于 `mybatis-flex-core`）
+- Jackson3TypeHandler（Jackson 3，`tools.jackson`，位于 `mybatis-flex-jackson3`，需要 JDK 17+）
 - CommaSplitTypeHandler: 数据库存放的是以英文逗号隔开的字符串数据，实体类定义的属性类型为 `List<String>`。
+
+Jackson 2 / Jackson 3 可并存（包名不同）。Spring Boot 4 默认使用 Jackson 3，推荐：
+
+```java
+@Column(typeHandler = Jackson3TypeHandler.class)
+private Map<String, Object> options;
+```
+
+并添加依赖：
+
+```xml
+<dependency>
+    <groupId>com.mybatis-flex</groupId>
+    <artifactId>mybatis-flex-jackson3</artifactId>
+    <version>${mybatis-flex.version}</version>
+</dependency>
+```
+
+使用 `mybatis-flex-spring-boot4-starter` 时，若容器中存在 Jackson 3 的 `JsonMapper`/`ObjectMapper` Bean，会自动注入到 `Jackson3TypeHandler`。
 
 当然，我们也可以写一个自己的类，实现 `TypeHandler` 接口，然后通过 `@Column(typeHandler = YourHandler.class)` 注释给需要的字段。
 

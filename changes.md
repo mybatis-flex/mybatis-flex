@@ -2,6 +2,9 @@
 
 查看 [全部代码贡献者](/zh/intro/what-is-mybatisflex.html#贡献者)。
 
+## Unreleased
+- 新增: `mybatis-flex-jackson3` 模块与 `Jackson3TypeHandler`，与 Jackson 2 的 `JacksonTypeHandler` 并存；Spring Boot 4 自动注入 `JsonMapper`
+
 ## v1.11.8 20260701
 - 新增: @EnumValue 注解支持标注在以 fluent 风格命名的非 get 开头的方法上 lixiangxiang
 - 优化： mybatis-flex-solon-plugin：solon 升为 3.1.1，替换弃用工具方法，移除 aot 适配代码（不成熟）
