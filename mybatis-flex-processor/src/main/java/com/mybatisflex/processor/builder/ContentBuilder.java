@@ -143,7 +143,7 @@ public class ContentBuilder {
             .append("    }\n\n");
 
         content.append("    public ").append(tableDefClassName).append(" as(String alias) {\n")
-            .append("        String key = getNameWithSchema() + \".\" + alias;\n")
+            .append("        String key = getClass().getName() + \".\" + getNameWithSchema() + \".\" + alias;\n")
             .append("        return getCache(key, k -> new ").append(tableDefClassName).append("(\"").append(schema).append("\", \"").append(tableName).append("\", alias));\n")
             .append("    }\n\n}\n");
         return content.toString();
