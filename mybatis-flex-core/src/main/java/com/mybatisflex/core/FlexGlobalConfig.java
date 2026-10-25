@@ -30,8 +30,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -362,6 +364,51 @@ public class FlexGlobalConfig {
 
     public static ConcurrentHashMap<String, FlexGlobalConfig> getGlobalConfigs() {
         return globalConfigs;
+    }
+
+    /**
+     * 移除并返回指定环境的全局配置。
+     *
+     * <p>此方法只移除 {@link #globalConfigs} 中的环境映射，不会清理该环境关联的
+     * MyBatis-Flex 静态缓存。插件卸载场景请优先使用
+     * {@link FlexCaches#evictMappers(String, Set)} 完成协调清理。
+     *
+     * @param environmentId 环境 ID
+     * @return 被移除的配置；环境不存在时返回 {@code null}
+     */
+    public static FlexGlobalConfig removeConfig(String environmentId) {
+        return globalConfigs.remove(environmentId);
+    }
+
+    /**
+     * 从默认配置和所有环境配置中移除指定实体类的监听器注册。
+     *
+     * @param entityClasses 要移除监听器注册的实体类
+     * @return 实际移除的监听器注册数
+     */
+    public static int evictEntityListeners(Set<Class<?>> entityClasses) {
+        if (entityClasses == null || entityClasses.isEmpty()) {
+            return 0;
+        }
+        Set<FlexGlobalConfig> configs = new HashSet<>(globalConfigs.values());
+        configs.add(defaultConfig);
+        int removed = 0;
+        for (FlexGlobalConfig config : configs) {
+            removed += config.evictEntityListenersFromMap(config.entitySetListeners, entityClasses);
+            removed += config.evictEntityListenersFromMap(config.entityUpdateListeners, entityClasses);
+            removed += config.evictEntityListenersFromMap(config.entityInsertListeners, entityClasses);
+        }
+        return removed;
+    }
+
+    private int evictEntityListenersFromMap(Map<Class<?>, ?> listeners, Set<Class<?>> entityClasses) {
+        int removed = 0;
+        for (Class<?> entityClass : entityClasses) {
+            if (entityClass != null && listeners.remove(entityClass) != null) {
+                removed++;
+            }
+        }
+        return removed;
     }
 
     public static void setGlobalConfigs(ConcurrentHashMap<String, FlexGlobalConfig> globalConfigs) {

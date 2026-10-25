@@ -270,6 +270,53 @@ public class FlexConfiguration extends Configuration {
     }
 
     /**
+     * 从全局动态 MappedStatement 缓存中移除引用指定实体类的条目。
+     *
+     * <p>与 {@link #evictEntity(Class)} 按类名后缀匹配不同，此方法比较 ResultMap
+     * 中的实际 {@link Class} 对象，避免清理一个插件的类时误删另一个 ClassLoader
+     * 中同名实体的条目。
+     *
+     * @param entityClasses 要清理的实体类
+     * @return 实际移除的动态 MappedStatement 数量
+     */
+    public static int evictDynamicMappedStatements(Set<Class<?>> entityClasses) {
+        if (entityClasses == null || entityClasses.isEmpty()) {
+            return 0;
+        }
+        int[] removed = {0};
+        dynamicMappedStatementCache.entrySet().removeIf(entry -> {
+            boolean matches = entry.getValue().getResultMaps().stream()
+                .anyMatch(resultMap -> entityClasses.contains(resultMap.getType()));
+            if (matches) {
+                removed[0]++;
+            }
+            return matches;
+        });
+        return removed[0];
+    }
+
+    /**
+     * 从此 Configuration 的 ResultMap 集合中移除类型为指定实体类的映射。
+     *
+     * @param entityClasses 要清理的实体类
+     * @return 实际移除的 ResultMap 数量
+     */
+    public int evictResultMaps(Set<Class<?>> entityClasses) {
+        if (entityClasses == null || entityClasses.isEmpty()) {
+            return 0;
+        }
+        int[] removed = {0};
+        resultMaps.entrySet().removeIf(entry -> {
+            boolean matches = entityClasses.contains(entry.getValue().getType());
+            if (matches) {
+                removed[0]++;
+            }
+            return matches;
+        });
+        return removed[0];
+    }
+
+    /**
      * 返回 {@link #dynamicMappedStatementCache} 中所有 key 的快照（副本）。
      *
      * <p>用于排查/统计，非高频路径使用。返回的是调用时的快照，后续缓存变更不影响返回值。
