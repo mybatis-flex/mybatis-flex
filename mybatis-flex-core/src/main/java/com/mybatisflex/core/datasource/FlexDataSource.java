@@ -20,13 +20,13 @@ import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DbTypeUtil;
 import com.mybatisflex.core.transaction.TransactionContext;
 import com.mybatisflex.core.transaction.TransactionalManager;
-import com.mybatisflex.core.util.ArrayUtil;
 import com.mybatisflex.core.util.StringUtil;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
@@ -157,8 +157,7 @@ public class FlexDataSource extends AbstractDataSource {
 
             Connection connection = TransactionalManager.getConnection(xid, dataSourceKey);
             if (connection == null) {
-                connection = proxy(getDataSource().getConnection(), xid);
-                TransactionalManager.hold(xid, dataSourceKey, connection);
+                connection = createTransactionalConnection(getDataSource().getConnection(), xid, dataSourceKey);
             }
             return connection;
         } else {
@@ -177,8 +176,8 @@ public class FlexDataSource extends AbstractDataSource {
             }
             Connection connection = TransactionalManager.getConnection(xid, dataSourceKey);
             if (connection == null) {
-                connection = proxy(getDataSource().getConnection(username, password), xid);
-                TransactionalManager.hold(xid, dataSourceKey, connection);
+                connection = createTransactionalConnection(
+                    getDataSource().getConnection(username, password), xid, dataSourceKey);
             }
             return connection;
         } else {
@@ -215,6 +214,22 @@ public class FlexDataSource extends AbstractDataSource {
             , new Class[]{Connection.class}
             , new ConnectionHandler(connection, xid)
         );
+    }
+
+    private Connection createTransactionalConnection(Connection original, String xid, String dataSourceKey) {
+        Connection connection = proxy(original, xid);
+        try {
+            TransactionalManager.hold(xid, dataSourceKey, connection);
+            return connection;
+        } catch (RuntimeException e) {
+            resetAutoCommit(original);
+            try {
+                original.close();
+            } catch (SQLException closeException) {
+                e.addSuppressed(closeException);
+            }
+            throw e;
+        }
     }
 
     /**
@@ -312,7 +327,6 @@ public class FlexDataSource extends AbstractDataSource {
     }
 
     private static class ConnectionHandler implements InvocationHandler {
-        private static final String[] proxyMethods = new String[]{"commit", "rollback", "close", "setAutoCommit"};
         private final Connection original;
         private final String xid;
 
@@ -324,8 +338,7 @@ public class FlexDataSource extends AbstractDataSource {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (ArrayUtil.contains(proxyMethods, method.getName())
-                && isTransactional()) {
+            if (isTransactionControlMethod(method, args) && isTransactional()) {
                 // do nothing
                 return null;
             }
@@ -335,7 +348,21 @@ public class FlexDataSource extends AbstractDataSource {
                 resetAutoCommit(original);
             }
 
-            return method.invoke(original, args);
+            try {
+                return method.invoke(original, args);
+            } catch (InvocationTargetException e) {
+                throw e.getCause();
+            }
+        }
+
+        private boolean isTransactionControlMethod(Method method, Object[] args) {
+            String methodName = method.getName();
+            if ("rollback".equals(methodName)) {
+                return args == null || args.length == 0;
+            }
+            return "commit".equals(methodName)
+                || "close".equals(methodName)
+                || "setAutoCommit".equals(methodName);
         }
 
         private boolean isTransactional() {
