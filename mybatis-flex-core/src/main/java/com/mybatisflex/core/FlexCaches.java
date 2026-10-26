@@ -16,10 +16,15 @@
 package com.mybatisflex.core;
 
 import com.mybatisflex.core.mybatis.FlexConfiguration;
+import com.mybatisflex.core.mybatis.Mappers;
+import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
 import com.mybatisflex.core.util.LambdaUtil;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.jspecify.annotations.Nullable;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * mybatis-flex 内部缓存的统一操作入口（Facade）。
@@ -171,6 +176,117 @@ public class FlexCaches {
         ((FlexConfiguration) configuration).clearDynamicMappedStatementCache();
         int msRemoved = msBefore - FlexConfiguration.getDynamicMappedStatementCacheSize();
         return flexReport + ", MappedStatement=" + msRemoved;
+    }
+
+    /**
+     * 清理插件环境及其 mapper 类关联的 MyBatis-Flex 静态缓存。
+     *
+     * <p>在调用前，必须先停止插件并关闭所有使用这些 mapper 类的 SqlSessionFactory、
+     * session 和后台任务。传入的 mapper 类应只属于已停止的插件；如果仍有活动环境
+     * 使用相同的 Class 对象，其缓存也会被清除。此方法不会关闭 SqlSessionFactory，
+     * 也不会替调用方停止线程或清理 Spring/PF4J 对象。
+     *
+     * <p>默认配置不会被移除。若默认配置或待清理环境引用了这些 mapper 类，方法会在执行
+     * 任何清理前抛出 {@link IllegalStateException}。除指定环境外，其他已注册且包含这些
+     * mapper 类的环境也会一并移除，避免插件 ClassLoader 仍被另一个全局配置持有。
+     * Lambda 解析缓存无法按实体类精确归属，因此会整体清空；其他环境会在后续访问时重建。
+     *
+     * @param environmentId 要移除的环境 ID
+     * @param mapperClasses 插件此前注册的 mapper 类集合
+     * @return 清理报告
+     * @since 1.11.9
+     */
+    public static String evictMappers(String environmentId, Set<Class<?>> mapperClasses) {
+        if (environmentId == null || environmentId.trim().isEmpty()) {
+            throw new IllegalArgumentException("environmentId must not be blank");
+        }
+        if (mapperClasses == null || mapperClasses.isEmpty()) {
+            throw new IllegalArgumentException("mapperClasses must not be empty");
+        }
+        Set<Class<?>> mappers = new HashSet<>();
+        for (Class<?> mapperClass : mapperClasses) {
+            if (mapperClass != null) {
+                mappers.add(mapperClass);
+            }
+        }
+        if (mappers.isEmpty()) {
+            throw new IllegalArgumentException("mapperClasses must contain at least one mapper class");
+        }
+
+        FlexGlobalConfig defaultConfig = FlexGlobalConfig.getDefaultConfig();
+        if (containsAnyMapper(defaultConfig.getConfiguration(), mappers)) {
+            throw new IllegalStateException("Cannot evict mapper classes used by the default configuration");
+        }
+
+        Set<String> environmentIds = new HashSet<>();
+        environmentIds.add(environmentId);
+        for (java.util.Map.Entry<String, FlexGlobalConfig> entry : FlexGlobalConfig.getGlobalConfigs().entrySet()) {
+            FlexGlobalConfig config = entry.getValue();
+            if (containsAnyMapper(config.getConfiguration(), mappers)) {
+                if (config == defaultConfig
+                    || sameNonNull(config.getConfiguration(), defaultConfig.getConfiguration())
+                    || sameNonNull(config.getSqlSessionFactory(), defaultConfig.getSqlSessionFactory())) {
+                    throw new IllegalStateException("Cannot evict the default MyBatis-Flex configuration");
+                }
+                environmentIds.add(entry.getKey());
+            }
+        }
+
+        for (String id : environmentIds) {
+            FlexGlobalConfig config = FlexGlobalConfig.getConfig(id);
+            if (config != null && (config == defaultConfig
+                || sameNonNull(config.getConfiguration(), defaultConfig.getConfiguration())
+                || sameNonNull(config.getSqlSessionFactory(), defaultConfig.getSqlSessionFactory()))) {
+                throw new IllegalStateException("Cannot evict the default MyBatis-Flex configuration");
+            }
+        }
+
+        Set<Class<?>> entityClasses = TableInfoFactory.evictMappers(mappers);
+        entityClasses.addAll(Mappers.evictMappers(mappers));
+        for (Class<?> entityClass : entityClasses) {
+            TableInfoFactory.evict(entityClass);
+        }
+        int tableListenerRemoved = TableInfo.evictListeners(entityClasses);
+        int globalListenerRemoved = FlexGlobalConfig.evictEntityListeners(entityClasses);
+        int mappedStatementRemoved = FlexConfiguration.evictDynamicMappedStatements(entityClasses);
+        int resultMapRemoved = 0;
+        for (String id : environmentIds) {
+            FlexGlobalConfig config = FlexGlobalConfig.getConfig(id);
+            if (config != null && config.getConfiguration() instanceof FlexConfiguration) {
+                resultMapRemoved += ((FlexConfiguration) config.getConfiguration()).evictResultMaps(entityClasses);
+            }
+        }
+        int lambdaRemoved = LambdaUtil.clear();
+        int configRemoved = 0;
+        for (String id : environmentIds) {
+            if (FlexGlobalConfig.removeConfig(id) != null) {
+                configRemoved++;
+            }
+        }
+        return "Environment=" + configRemoved
+            + ", Mapper=" + mappers.size()
+            + ", Entity=" + entityClasses.size()
+            + ", Listener=" + (tableListenerRemoved + globalListenerRemoved)
+            + ", MappedStatement=" + mappedStatementRemoved
+            + ", ResultMap=" + resultMapRemoved
+            + ", Lambda=" + lambdaRemoved;
+    }
+
+    private static boolean containsAnyMapper(org.apache.ibatis.session.Configuration configuration,
+                                             Set<Class<?>> mapperClasses) {
+        if (configuration == null) {
+            return false;
+        }
+        for (Class<?> mapperClass : mapperClasses) {
+            if (configuration.hasMapper(mapperClass)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean sameNonNull(Object left, Object right) {
+        return left != null && left == right;
     }
 
     // ---- 内部辅助：统计 dynamicMappedStatementCache 中匹配指定 FQN 的条目数 ----

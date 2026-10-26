@@ -686,6 +686,41 @@ public class TableInfoFactory {
         return removed;
     }
 
+    /**
+     * 移除指定 mapper 类及其关联实体类的 TableInfo 缓存。
+     *
+     * <p>实体类在删除 mapper 缓存前收集。此方法适用于 mapper 所属 ClassLoader
+     * 已停止使用后的卸载清理；若其他仍在运行的 mapper 共享这些实体类，也会重新解析
+     * 它们的 TableInfo。
+     *
+     * @param mapperClasses 要移除的 mapper 类
+     * @return 从缓存中发现并清理的实体类
+     */
+    public static Set<Class<?>> evictMappers(Set<Class<?>> mapperClasses) {
+        Set<Class<?>> entityClasses = new HashSet<>();
+        if (mapperClasses == null || mapperClasses.isEmpty()) {
+            return entityClasses;
+        }
+        for (Class<?> mapperClass : mapperClasses) {
+            if (mapperClass == null) {
+                continue;
+            }
+            TableInfo tableInfo = mapperTableInfoMap.get(mapperClass);
+            if (tableInfo != null && tableInfo.getEntityClass() != null) {
+                entityClasses.add(tableInfo.getEntityClass());
+            }
+        }
+        for (Class<?> mapperClass : mapperClasses) {
+            if (mapperClass != null) {
+                mapperTableInfoMap.remove(mapperClass);
+            }
+        }
+        for (Class<?> entityClass : entityClasses) {
+            evict(entityClass);
+        }
+        return entityClasses;
+    }
+
 
     /**
      * 清空 {@link TableInfoFactory} 的全部缓存：

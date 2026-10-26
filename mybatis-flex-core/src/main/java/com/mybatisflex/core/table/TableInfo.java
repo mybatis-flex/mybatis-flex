@@ -1579,6 +1579,33 @@ public class TableInfo {
 
     private static final Map<Class<?>, List<InsertListener>> insertListenerCache = new ConcurrentHashMap<>();
 
+    /**
+     * 移除指定实体类的静态监听器缓存。
+     *
+     * @param entityClasses 要清理的实体类
+     * @return 实际移除的缓存条目数
+     */
+    public static int evictListeners(Set<Class<?>> entityClasses) {
+        if (entityClasses == null || entityClasses.isEmpty()) {
+            return 0;
+        }
+        int removed = 0;
+        for (Class<?> entityClass : entityClasses) {
+            if (entityClass != null) {
+                if (insertListenerCache.remove(entityClass) != null) {
+                    removed++;
+                }
+                if (updateListenerCache.remove(entityClass) != null) {
+                    removed++;
+                }
+                if (setListenerCache.remove(entityClass) != null) {
+                    removed++;
+                }
+            }
+        }
+        return removed;
+    }
+
     public void invokeOnInsertListener(Object entity) {
         List<InsertListener> listeners = MapUtil.computeIfAbsent(insertListenerCache, entityClass, aClass -> {
             List<InsertListener> globalListeners = FlexGlobalConfig.getDefaultConfig()

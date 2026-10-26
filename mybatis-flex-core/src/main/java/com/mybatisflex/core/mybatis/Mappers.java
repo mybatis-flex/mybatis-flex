@@ -28,7 +28,9 @@ import com.mybatisflex.core.util.MapUtil;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -55,6 +57,38 @@ public class Mappers {
      */
     static void addMapping(Class<?> entityClass, Class<?> mapperClass) {
         ENTITY_MAPPER_MAP.put(entityClass, mapperClass);
+    }
+
+    /**
+     * 移除指定 mapper 类关联的实体映射及所有环境中的代理缓存。
+     *
+     * <p>调用方应确保这些 mapper 类不再被任何活动的 {@link SqlSessionFactory} 使用。
+     *
+     * @param mapperClasses 要移除的 mapper 类
+     * @return 被移除映射中的实体类
+     */
+    public static Set<Class<?>> evictMappers(Set<Class<?>> mapperClasses) {
+        Set<Class<?>> entityClasses = new HashSet<>();
+        if (mapperClasses == null || mapperClasses.isEmpty()) {
+            return entityClasses;
+        }
+        ENTITY_MAPPER_MAP.entrySet().removeIf(entry -> {
+            if (mapperClasses.contains(entry.getValue())) {
+                entityClasses.add(entry.getKey());
+                return true;
+            }
+            return false;
+        });
+        MAPPER_OBJECTS_OF_ENV.entrySet().removeIf(environmentEntry -> {
+            Map<Class<?>, Object> environmentMappers = environmentEntry.getValue();
+            for (Class<?> mapperClass : mapperClasses) {
+                if (mapperClass != null) {
+                    environmentMappers.remove(mapperClass);
+                }
+            }
+            return environmentMappers.isEmpty();
+        });
+        return entityClasses;
     }
 
     /**
