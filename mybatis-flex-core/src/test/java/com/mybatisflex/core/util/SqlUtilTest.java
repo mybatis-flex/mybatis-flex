@@ -36,4 +36,14 @@ public class SqlUtilTest {
         String result4 = SqlUtil.replaceSqlParams(sql4, params4);
         Assert.assertEquals("SELECT 'a??b' as col FROM test WHERE code LIKE 'test?' AND id = 5", result4);
     }
+
+    @Test
+    public void replaceSqlParamsEscapesSqlStringCharacters() {
+        String sql = "SELECT ?, ?, ?, ?";
+        Object[] params = {"O'Brien", "$1", "C:\\tmp", "'1--"};
+
+        String result = SqlUtil.replaceSqlParams(sql, params);
+
+        Assert.assertEquals("SELECT 'O''Brien', '$1', 'C:\\tmp', '''1--'", result);
+    }
 }

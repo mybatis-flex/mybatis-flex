@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.StringJoiner;
-import java.util.regex.Matcher;
 
 import static com.mybatisflex.core.constant.SqlConsts.*;
 
@@ -206,10 +205,10 @@ public class SqlUtil {
             } else if (value instanceof LocalDateTime) {
                 sb.append(((LocalDateTime) value).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             } else {
-                sb.append(value);
+                sb.append(value.toString().replace("'", "''"));
             }
             sb.append("'");
-            return Matcher.quoteReplacement(sb.toString());
+            return sb.toString();
         }
     }
 
