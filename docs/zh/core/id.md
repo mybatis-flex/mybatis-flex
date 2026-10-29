@@ -96,11 +96,37 @@ public class Account {
 
 ## 内置主键生成器
 
-MyBatis-Flex 内置了三种主键生成器，他们的名称都定义在 `KeyGenerators` 类里：
+MyBatis-Flex 内置了以下主键生成器，它们的名称都定义在 `KeyGenerators` 类里：
 
 - **uuid**：通过 `UUIDKeyGenerator` 生成 UUID 作为数据库主键。
+- **uuidv7**：通过 `UUIDv7KeyGenerator` 生成带毫秒时间戳的 UUIDv7 作为数据库主键。
 - **flexId**：独创的 FlexID 算法生成数据库主键（了解更多信息请参阅[源码](https://gitee.com/mybatis-flex/mybatis-flex/blob/main/mybatis-flex-core/src/main/java/com/mybatisflex/core/keygen/impl/FlexIDKeyGenerator.java))。
 - **snowFlakeId**：通过雪花算法（`SnowFlakeIDKeyGenerator`）生成数据库主键。
+- **ulid**：通过 `ULIDKeyGenerator` 生成 ULID 作为数据库主键。
+
+### UUIDv7 主键
+
+UUIDv7 的位布局遵循 [RFC 9562 §5.7](https://www.rfc-editor.org/rfc/rfc9562.html#section-5.7)，包含 48 位 Unix 毫秒时间戳和 74 位随机数，以及版本位和变体位。
+使用 `String` 类型的主键字段即可启用：
+
+```java
+@Table("tb_account")
+public class Account {
+
+    @Id(keyType = KeyType.Generator, value = KeyGenerators.uuidv7)
+    private String id;
+
+    // getter setter
+}
+```
+
+与内置 `uuid` 策略一样，`uuidv7` 返回 **32 位小写、无连字符的十六进制字符串**，可使用 `CHAR(32)` 或 `VARCHAR(32)` 存储。
+这是 UUID 的紧凑表示；标准 UUID 文本为带连字符的 36 位格式。使用 `UUID.fromString` 解析时，需要先恢复 `8-4-4-4-12` 分组的连字符。
+
+生成值按字符串字典序比较时，时间戳较大的值排在后面，但**同一毫秒内不保证严格递增，系统时钟回拨时也不保证递增**。
+随机部分使用 `SecureRandom` 生成，碰撞概率极低，但不保证绝对唯一。现有 `uuid` 策略仍生成 UUIDv4。
+
+### 其他内置主键生成器
 
 这些主键生成器为 MyBatis-Flex 内置的，可直接使用：
 

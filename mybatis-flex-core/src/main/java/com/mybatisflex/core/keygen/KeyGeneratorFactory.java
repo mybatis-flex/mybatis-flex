@@ -21,6 +21,7 @@ import com.mybatisflex.core.keygen.impl.FlexIDKeyGenerator;
 import com.mybatisflex.core.keygen.impl.SnowFlakeIDKeyGenerator;
 import com.mybatisflex.core.keygen.impl.ULIDKeyGenerator;
 import com.mybatisflex.core.keygen.impl.UUIDKeyGenerator;
+import com.mybatisflex.core.keygen.impl.UUIDv7KeyGenerator;
 import com.mybatisflex.core.util.StringUtil;
 
 import java.util.HashMap;
@@ -38,6 +39,7 @@ public class KeyGeneratorFactory {
          * {@link com.mybatisflex.annotation.Id}
          */
         register(KeyGenerators.uuid, new UUIDKeyGenerator());
+        register(KeyGenerators.uuidv7, new UUIDv7KeyGenerator());
         register(KeyGenerators.flexId, new FlexIDKeyGenerator());
         register(KeyGenerators.snowFlakeId, new SnowFlakeIDKeyGenerator());
         register(KeyGenerators.ulid, new ULIDKeyGenerator());
