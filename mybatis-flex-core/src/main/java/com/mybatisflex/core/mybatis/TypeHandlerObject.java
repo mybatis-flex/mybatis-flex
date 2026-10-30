@@ -54,6 +54,16 @@ public class TypeHandlerObject implements Serializable {
         return value;
     }
 
+    /**
+     * 获取该值使用的类型处理器。
+     *
+     * @return 类型处理器
+     * @since 1.11.9
+     */
+    public TypeHandler getTypeHandler() {
+        return typeHandler;
+    }
+
     @Override
     public String toString() {
         return "TypeHandlerObject{"

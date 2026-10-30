@@ -102,7 +102,7 @@ class WrapperUtil {
 
         QueryColumn column = condition.getColumn();
         if (column instanceof HasParamsColumn) {
-            addParam(params, ((HasParamsColumn) column).getParamValues());
+            addParam(params, ((HasParamsColumn) column).getParamValues(), null);
         }
 
         Object value = condition.getValue();
@@ -126,17 +126,31 @@ class WrapperUtil {
             return;
         }
 
-        addParam(params, value);
+        addParam(params, value, getTypeHandlerColumn(condition));
         getValues(condition.next, params);
     }
 
+    /**
+     * 获取用于应用列上类型处理器的列。
+     *
+     * <p>{@code LIKE} 系列条件的参数是拼接了 {@code %} 的片段，而非该列的完整值，
+     * 套用列上的类型处理器只会得到错误的结果，因此不予处理。
+     */
+    private static QueryColumn getTypeHandlerColumn(QueryCondition condition) {
+        String logic = condition.getLogic();
+        if (SqlConsts.LIKE.equals(logic) || SqlConsts.NOT_LIKE.equals(logic)) {
+            return null;
+        }
+        return condition.getColumn();
+    }
+
     @SuppressWarnings("all")
-    private static void addParam(List<Object> paras, Object value) {
+    private static void addParam(List<Object> paras, Object value, QueryColumn column) {
         if (value == null) {
             paras.add(null);
         } else if (ClassUtil.isArray(value.getClass())) {
             for (int i = 0; i < Array.getLength(value); i++) {
-                addParam(paras, Array.get(value, i));
+                addParam(paras, Array.get(value, i), column);
             }
         } else if (value instanceof QueryWrapper) {
             Object[] valueArray = ((QueryWrapper) value).getAllValueArray();
@@ -148,7 +162,7 @@ class WrapperUtil {
             value = enumWrapper.hasEnumValueAnnotation() ? enumWrapper.getEnumValue((Enum) value) : value;
             paras.add(value);
         } else {
-            paras.add(value);
+            paras.add(column == null ? value : ConditionTypeHandlers.wrap(column, value));
         }
 
     }
